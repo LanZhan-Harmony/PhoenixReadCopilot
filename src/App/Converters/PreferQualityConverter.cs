@@ -15,17 +15,14 @@ internal sealed class PreferQualityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        if (value is PreferQuality quality)
-        {
-            return quality switch
+        return value is PreferQuality quality
+            ? quality switch
             {
                 PreferQuality.HDFirst => ResourceToolkit.GetLocalizedString(StringNames.HDFirst),
                 PreferQuality.HighQuality => ResourceToolkit.GetLocalizedString(StringNames.PreferHighQuality),
                 _ => ResourceToolkit.GetLocalizedString(StringNames.Automatic),
-            };
-        }
-
-        return string.Empty;
+            }
+            : (object)string.Empty;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
