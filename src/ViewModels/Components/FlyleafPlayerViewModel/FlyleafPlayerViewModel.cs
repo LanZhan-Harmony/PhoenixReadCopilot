@@ -3,11 +3,11 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Bili.Copilot.Libs.Flyleaf;
-using Bili.Copilot.Libs.Flyleaf.MediaPlayer;
 using Bili.Copilot.Libs.Toolkit;
 using Bili.Copilot.Models.Constants.App;
 using Bili.Copilot.Models.Data.Player;
+using FlyleafLib;
+using FlyleafLib.MediaPlayer;
 using Microsoft.UI.Dispatching;
 using Windows.ApplicationModel;
 
@@ -16,14 +16,14 @@ namespace Bili.Copilot.ViewModels;
 /// <summary>
 /// 使用 FFmpeg 的播放器视图模型.
 /// </summary>
-public sealed partial class FFmpegPlayerViewModel : ViewModelBase, IPlayerViewModel
+public sealed partial class FlyleafPlayerViewModel : ViewModelBase, IPlayerViewModel
 {
     private bool _disposedValue;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FFmpegPlayerViewModel"/> class.
+    /// Initializes a new instance of the <see cref="FlyleafPlayerViewModel"/> class.
     /// </summary>
-    public FFmpegPlayerViewModel()
+    public FlyleafPlayerViewModel()
         => _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
     /// <summary>
@@ -176,7 +176,7 @@ public sealed partial class FFmpegPlayerViewModel : ViewModelBase, IPlayerViewMo
             {
                 Stop();
 
-                if (Player is IDisposable player)
+                if (Player is Player player)
                 {
                     player.Dispose();
                 }

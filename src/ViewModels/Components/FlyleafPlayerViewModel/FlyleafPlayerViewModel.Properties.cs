@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Bili Copilot. All rights reserved.
 
 using System;
-using Bili.Copilot.Libs.Flyleaf.MediaPlayer;
 using Bili.Copilot.Models.App.Args;
 using Bili.Copilot.Models.Constants.App;
 using Bili.Copilot.Models.Data.Player;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FlyleafLib.MediaPlayer;
 using Microsoft.UI.Dispatching;
 
 namespace Bili.Copilot.ViewModels;
@@ -13,7 +13,7 @@ namespace Bili.Copilot.ViewModels;
 /// <summary>
 /// 使用 FFmpeg 的播放器视图模型.
 /// </summary>
-public sealed partial class FFmpegPlayerViewModel
+public sealed partial class FlyleafPlayerViewModel
 {
     private readonly DispatcherQueue _dispatcherQueue;
 

@@ -5,15 +5,15 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Bili.Copilot.Libs.Flyleaf.MediaFramework.MediaContext;
-using Bili.Copilot.Libs.Flyleaf.MediaFramework.MediaPlaylist;
-using Bili.Copilot.Libs.Flyleaf.MediaPlayer;
 using Bili.Copilot.Libs.Provider;
 using Bili.Copilot.Libs.Toolkit;
 using Bili.Copilot.Models.App.Args;
 using Bili.Copilot.Models.App.Other;
 using Bili.Copilot.Models.Constants.App;
 using CommunityToolkit.Mvvm.Input;
+using FlyleafLib.MediaFramework.MediaContext;
+using FlyleafLib.MediaFramework.MediaPlaylist;
+using FlyleafLib.MediaPlayer;
 using Windows.Storage;
 using Windows.System;
 
@@ -22,7 +22,7 @@ namespace Bili.Copilot.ViewModels;
 /// <summary>
 /// 使用 FFmpeg 的播放器视图模型.
 /// </summary>
-public sealed partial class FFmpegPlayerViewModel
+public sealed partial class FlyleafPlayerViewModel
 {
     /// <summary>
     /// 获取当前正在播放的媒体信息.
@@ -67,15 +67,15 @@ public sealed partial class FFmpegPlayerViewModel
         return mediaInfo;
     }
 
-    private static PlayerStatus ConvertPlayerStatus(Libs.Flyleaf.MediaPlayer.Status status)
+    private static PlayerStatus ConvertPlayerStatus(FlyleafLib.MediaPlayer.Status status)
     {
         var s = status switch
         {
-            Libs.Flyleaf.MediaPlayer.Status.Paused => PlayerStatus.Pause,
-            Libs.Flyleaf.MediaPlayer.Status.Playing => PlayerStatus.Playing,
-            Libs.Flyleaf.MediaPlayer.Status.Stopped => PlayerStatus.End,
-            Libs.Flyleaf.MediaPlayer.Status.Opening => PlayerStatus.Buffering,
-            Libs.Flyleaf.MediaPlayer.Status.Failed => PlayerStatus.Failed,
+            FlyleafLib.MediaPlayer.Status.Paused => PlayerStatus.Pause,
+            FlyleafLib.MediaPlayer.Status.Playing => PlayerStatus.Playing,
+            FlyleafLib.MediaPlayer.Status.Stopped => PlayerStatus.End,
+            FlyleafLib.MediaPlayer.Status.Opening => PlayerStatus.Buffering,
+            FlyleafLib.MediaPlayer.Status.Failed => PlayerStatus.Failed,
             _ => PlayerStatus.NotLoad,
         };
 
@@ -271,7 +271,7 @@ public sealed partial class FFmpegPlayerViewModel
 
             if (e.Success)
             {
-                Status = ((Player)Player).Status == Libs.Flyleaf.MediaPlayer.Status.Paused ? PlayerStatus.Pause : PlayerStatus.End;
+                Status = ((Player)Player).Status == FlyleafLib.MediaPlayer.Status.Paused ? PlayerStatus.Pause : PlayerStatus.End;
                 if (Status == PlayerStatus.End)
                 {
                     MediaEnded?.Invoke(this, EventArgs.Empty);
