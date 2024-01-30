@@ -17,6 +17,7 @@
             IsOpen="False"
             Text="{ext:Locale Name=LoadingAndWait}" />
         <Button
+            x:Name="BackButton"
             Width="40"
             Height="40"
             Margin="24"
