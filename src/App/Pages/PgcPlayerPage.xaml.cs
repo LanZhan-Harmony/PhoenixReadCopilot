@@ -2,7 +2,6 @@
 
 using Bili.Copilot.App.Controls.Base;
 using Bili.Copilot.Models.App.Args;
-using Bili.Copilot.Models.Constants.App;
 using Bili.Copilot.ViewModels;
 
 namespace Bili.Copilot.App.Pages;
@@ -40,6 +39,7 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
             ViewModel.PlayerDetail.Player.Dispose();
             await ViewModel.PlayerDetail.ReportViewProgressCommand.ExecuteAsync(default);
             ViewModel.Dispose();
+            ViewModel = default;
         }
         catch (Exception)
         {
