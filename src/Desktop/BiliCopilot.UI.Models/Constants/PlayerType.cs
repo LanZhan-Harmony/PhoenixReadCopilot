@@ -16,4 +16,9 @@ public enum PlayerType
     /// MPV 播放器.
     /// </summary>
     Mpv,
+
+    /// <summary>
+    /// 外部播放器.
+    /// </summary>
+    External,
 }

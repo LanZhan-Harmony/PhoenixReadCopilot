@@ -19,6 +19,9 @@ internal sealed class PlayerTypeConverter : IValueConverter
                 case PlayerType.Native:
                     result = ResourceToolkit.GetLocalizedString(StringNames.Native);
                     break;
+                case PlayerType.External:
+                    result = ResourceToolkit.GetLocalizedString(StringNames.ExternalPlayer);
+                    break;
                 default:
                     result = "MPV";
                     break;
