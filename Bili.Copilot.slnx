@@ -1,0 +1,31 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Publish" />
+    <BuildType Name="Release" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Desktop/">
+    <Project Path="src/Desktop/BiliCopilot.UI.Models/BiliCopilot.UI.Models.csproj" />
+    <Project Path="src/Desktop/BiliCopilot.UI.ResourceGenerator/BiliCopilot.UI.ResourceGenerator.csproj" />
+    <Project Path="src/Desktop/BiliCopilot.UI/BiliCopilot.UI.csproj">
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/Libs/">
+    <Project Path="src/Libs/Beta/Connectors.WebDav/Connectors.WebDav.csproj">
+      <BuildType Solution="Publish|*" Project="Release" />
+    </Project>
+    <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj">
+      <BuildType Solution="Publish|*" Project="Release" />
+    </Project>
+    <Project Path="src/Libs/mpv-winui/src/Mpv.Core/Mpv.Core.csproj">
+      <BuildType Solution="Publish|*" Project="Release" />
+    </Project>
+  </Folder>
+</Solution>

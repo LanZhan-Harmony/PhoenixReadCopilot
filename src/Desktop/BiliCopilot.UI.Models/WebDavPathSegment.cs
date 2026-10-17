@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 namespace BiliCopilot.UI.Models;
 
@@ -23,7 +23,8 @@ public sealed class WebDavPathSegment
     public bool IsRoot => Path == "/";
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is WebDavPathSegment segment && Path == segment.Path;
+    public override bool Equals(object? obj) =>
+        obj is WebDavPathSegment segment && Path == segment.Path;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Path);

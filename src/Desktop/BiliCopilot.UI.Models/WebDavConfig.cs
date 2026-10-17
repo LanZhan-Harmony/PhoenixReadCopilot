@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 namespace BiliCopilot.UI.Models;
 
@@ -43,7 +43,7 @@ public sealed class WebDavConfig
     public string? Password { get; set; }
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is WebDavConfig config && Id == config.Id;
+    public override bool Equals(object? obj) => obj is WebDavConfig config && Id == config.Id;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Id);

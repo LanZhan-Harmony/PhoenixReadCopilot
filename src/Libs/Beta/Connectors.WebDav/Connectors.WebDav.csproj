@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>Connectors.WebDav</AssemblyName>
     <RootNamespace>Connectors.WebDav</RootNamespace>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591;NU1507</NoWarn>
@@ -12,7 +12,4 @@
     <Title>Connectors - WebDav</Title>
     <Description>WebDav connector.</Description>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.HashCode" />
-  </ItemGroup>
 </Project>

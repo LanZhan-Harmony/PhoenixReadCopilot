@@ -1,11 +1,11 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
+using System.Text.RegularExpressions;
 using BiliCopilot.UI.Forms;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.WinUIKernel.Share.Base;
-using System.Text.RegularExpressions;
 
 namespace BiliCopilot.UI.Controls.Components;
 
@@ -17,14 +17,22 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     /// <summary>
     /// <see cref="MaxLines"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty MaxLinesProperty =
-        DependencyProperty.Register(nameof(MaxLines), typeof(int), typeof(EmoteTextBlock), new PropertyMetadata(4));
+    public static readonly DependencyProperty MaxLinesProperty = DependencyProperty.Register(
+        nameof(MaxLines),
+        typeof(int),
+        typeof(EmoteTextBlock),
+        new PropertyMetadata(4)
+    );
 
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(EmoteText), typeof(EmoteTextBlock), new PropertyMetadata(default, new PropertyChangedCallback(OnTextChanged)));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(EmoteText),
+        typeof(EmoteTextBlock),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnTextChanged))
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteTextBlock"/> class.
@@ -49,8 +57,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         set => SetValue(TextProperty, value);
     }
 
-    protected override void OnControlUnloaded()
-        => Gallery.ItemsSource = default;
+    protected override void OnControlUnloaded() => Gallery?.ItemsSource = default;
 
     private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -100,8 +107,8 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         }
     }
 
-    private void OnTextTrimChanged(RichTextBlock sender, IsTextTrimmedChangedEventArgs args)
-        => CheckTextTrim();
+    private void OnTextTrimChanged(RichTextBlock sender, IsTextTrimmedChangedEventArgs args) =>
+        CheckTextTrim();
 
     private Paragraph? ParseText()
     {
@@ -127,7 +134,12 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
                     if (emoji != null && emoji.Uri is not null)
                     {
                         var inlineCon = new InlineUIContainer();
-                        var img = new Image() { Width = 20, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(2, 0, 2, -4) };
+                        var img = new Image()
+                        {
+                            Width = 20,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Margin = new Thickness(2, 0, 2, -4),
+                        };
                         var bitmap = new BitmapImage(emoji.Uri) { DecodePixelWidth = 40 };
                         img.Source = bitmap;
                         inlineCon.Child = img;
@@ -154,7 +166,9 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
 
     private void CheckTextTrim()
     {
-        OverflowButton.Visibility = RichBlock.IsTextTrimmed ? Visibility.Visible : Visibility.Collapsed;
+        OverflowButton.Visibility = RichBlock.IsTextTrimmed
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void OnImageTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
