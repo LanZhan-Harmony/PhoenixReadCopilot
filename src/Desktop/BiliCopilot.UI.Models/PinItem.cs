@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Models.Constants;
 
@@ -12,9 +12,7 @@ public sealed class PinItem
     /// <summary>
     /// Initializes a new instance of the <see cref="PinItem"/> class.
     /// </summary>
-    public PinItem()
-    {
-    }
+    public PinItem() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PinItem"/> class.
@@ -48,7 +46,7 @@ public sealed class PinItem
     public PinContentType Type { get; set; }
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is PinItem item && Id == item.Id;
+    public override bool Equals(object? obj) => obj is PinItem item && Id == item.Id;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Id);
