@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PhoenixReadCopilot.UI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PhoenixReadCopilot.UI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

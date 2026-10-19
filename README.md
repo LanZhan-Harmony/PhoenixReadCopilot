@@ -39,7 +39,7 @@
 
 1. 打开系统设置，依次选择 `系统` -> `开发者选项`，打开 `开发人员模式`。滚动到页面底部，展开 `PowerShell` 区块，开启 `更改执行策略...` 选项
 2. 打开 [Release](https://github.com/Richasy/Bili.Copilot/releases) 页面
-3. 在最新版本的 **Assets** 中找到应用包下载。命名格式为：`BiliCopilot_{version}_{platform}.zip`
+3. 在最新版本的 **Assets** 中找到应用包下载。命名格式为：`PhoenixReadCopilot_{version}_{platform}.zip`
 4. 下载应用包后解压，右键单击文件夹中的 `install.ps1` 脚本，选择 `使用 PowerShell 运行`
 
 ## 开发
@@ -71,16 +71,16 @@ git submodule update --init --recursive
 
 在克隆之后，你需要在命令行中进入克隆的子模块的目录，切换 HEAD，这是对应的列表：
 
-|模块|路径|HEAD (分支)|
-|-|-|-|
-|mpv-winui|src\Libs\mpv-winui|main|
+| 模块      | 路径               | HEAD (分支) |
+| --------- | ------------------ | ----------- |
+| mpv-winui | src\Libs\mpv-winui | main        |
 
 切换分支完成后，还需要下载 mpv / ffmpeg 到对应的目录：
 
-|文件名|目录|说明|
-|-|-|-|
-|libmpv-2.dll|src\Desktop\BiliCopilot.UI\Assets\libmpv\x64(或者 arm64)|可以在 [mpv-winbuild](https://github.com/zhongfly/mpv-winbuild) 下载最新的 dev 构建（x64 对应 x86_x64，arm64 对应 aarch64），把 libmpv-2.dll 放入对应文件夹中，用以 mpv 播放|
-|ffmpeg.exe|src\Desktop\BiliCopilot.UI\Assets\ffmpeg|可以在 [mpv-winbuild](https://github.com/zhongfly/mpv-winbuild) 下载最新 ffmpeg x64 构建，将 ffmpeg.exe 放入对应文件夹中，用于视频下载后的混流|
+| 文件名       | 目录                                                            | 说明                                                                                                                                                                         |
+| ------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| libmpv-2.dll | src\Desktop\PhoenixReadCopilot.UI\Assets\libmpv\x64(或者 arm64) | 可以在 [mpv-winbuild](https://github.com/zhongfly/mpv-winbuild) 下载最新的 dev 构建（x64 对应 x86_x64，arm64 对应 aarch64），把 libmpv-2.dll 放入对应文件夹中，用以 mpv 播放 |
+| ffmpeg.exe   | src\Desktop\PhoenixReadCopilot.UI\Assets\ffmpeg                 | 可以在 [mpv-winbuild](https://github.com/zhongfly/mpv-winbuild) 下载最新 ffmpeg x64 构建，将 ffmpeg.exe 放入对应文件夹中，用于视频下载后的混流                               |
 
 ## 使用
 
@@ -104,12 +104,12 @@ git submodule update --init --recursive
 
 下面是几种播放方案的具体比较，请根据自己的情况选择合适的播放方案：
 
-|方案|优点|缺点|
-|-|-|-|
-|MPV|解码速度快，播放稳定|内存占用相对较高|
-|原生|内存占用低，兼容性好|对2K以上的清晰度支持较差，部分直播无法播放|
-|外部播放器|自定义程度高，可以获得最佳播放体验|需要额外安装配置，门槛较高|
-|网页|只要不是断网就能播放|和打开浏览器看网页没有太大差别|
+| 方案       | 优点                               | 缺点                                       |
+| ---------- | ---------------------------------- | ------------------------------------------ |
+| MPV        | 解码速度快，播放稳定               | 内存占用相对较高                           |
+| 原生       | 内存占用低，兼容性好               | 对2K以上的清晰度支持较差，部分直播无法播放 |
+| 外部播放器 | 自定义程度高，可以获得最佳播放体验 | 需要额外安装配置，门槛较高                 |
+| 网页       | 只要不是断网就能播放               | 和打开浏览器看网页没有太大差别             |
 
 > [!TIP]
 > **关于网页播放器**

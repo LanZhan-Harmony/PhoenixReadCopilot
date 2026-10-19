@@ -1,0 +1,12 @@
+namespace PhoenixReadCopilot.UI.Controls.Player;
+
+/// <summary>
+/// PGC 播放器页面操作控件.
+/// </summary>
+public sealed partial class PgcOperationControl : PgcPlayerPageControlBase
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PgcOperationControl"/> class.
+    /// </summary>
+    public PgcOperationControl() => InitializeComponent();
+}

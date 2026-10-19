@@ -1,0 +1,44 @@
+using System.Collections.ObjectModel;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.ViewModels.Items;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
+using Richasy.BiliKernel.Bili.Search;
+using Richasy.BiliKernel.Models;
+
+namespace PhoenixReadCopilot.UI.ViewModels.Components;
+
+/// <summary>
+/// 视频搜索分区详情视图模型.
+/// </summary>
+public sealed partial class VideoSearchSectionDetailViewModel
+{
+    private readonly ISearchService _service;
+    private readonly ILogger<VideoSearchSectionDetailViewModel> _logger;
+
+    private bool _canRequest;
+    private int? _currentPage;
+    private string _keyword;
+    private bool _isPreventLoadMore;
+
+    [ObservableProperty] private bool _isEmpty;
+
+    [ObservableProperty] private bool _isLoading;
+
+    [ObservableProperty] private ComprehensiveSearchSortType _sort;
+
+    [ObservableProperty] private List<ComprehensiveSearchSortType> _sorts;
+
+    /// <summary>
+    /// 列表已完成更新.
+    /// </summary>
+    public event EventHandler ListUpdated;
+
+    /// <inheritdoc/>
+    public SearchSectionType SectionType => SearchSectionType.Video;
+
+    /// <summary>
+    /// 条目列表.
+    /// </summary>
+    public ObservableCollection<VideoItemViewModel> Items { get; } = new();
+}
