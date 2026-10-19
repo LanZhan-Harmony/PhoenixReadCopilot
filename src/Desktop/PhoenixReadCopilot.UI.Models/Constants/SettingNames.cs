@@ -87,8 +87,6 @@ public enum SettingNames
     IsPlayerWindowMaximized,
     PlayerWindowHeight,
     PlayerWindowWidth,
-    IsWebDavEnabled,
-    SelectedWebDavConfigId,
     LastMomentSectionIsVideo,
     LastUserSpaceSectionIsVideo,
     ExternalPlayer,

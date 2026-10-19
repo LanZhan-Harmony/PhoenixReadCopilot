@@ -1,9 +1,9 @@
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.Media;
 using Windows.Storage.Streams;
@@ -54,15 +54,6 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         updater.VideoProperties.Title = title;
         updater.VideoProperties.Subtitle = subtitle;
         updater.Update();
-    }
-
-    /// <summary>
-    /// 注入 WebDav 配置.
-    /// </summary>
-    public void InjectWebDavConfig(WebDavConfig config)
-    {
-        _webDavConfig = config;
-        SetWebDavConfig(config);
     }
 
     /// <summary>

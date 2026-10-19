@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Authorization;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
@@ -13,9 +13,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class ExternalPlayerViewModel
 {
-    /// <inheritdoc/>
-    protected override void SetWebDavConfig(WebDavConfig config) { }
-
     /// <inheritdoc/>
     protected override void BeforeLoadPlayData() { }
 
@@ -54,12 +51,9 @@ public sealed partial class ExternalPlayerViewModel
         var cookies = this.Get<IBiliCookiesResolver>().GetCookieString();
         var referer = IsLive ? LiveReferer : VideoReferer;
         var token = this.Get<IBiliTokenResolver>().GetToken().AccessToken;
-        var httpParams =
-            IsWebDav
-                ? $"--http-header-fields=\"Authorization: Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}\""
-                : IsLive
-                    ? $"--cookies --no-ytdl --user-agent=\"{LiveUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {LiveReferer}\""
-                    : $"--cookies --user-agent=\"{VideoUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {VideoReferer}\"";
+        var httpParams = IsLive
+            ? $"--cookies --no-ytdl --user-agent=\"{LiveUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {LiveReferer}\""
+            : $"--cookies --user-agent=\"{VideoUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {VideoReferer}\"";
         var externalPlayerType = SettingsToolkit.ReadLocalSetting(
             SettingNames.ExternalPlayer,
             ExternalPlayerType.Mpv

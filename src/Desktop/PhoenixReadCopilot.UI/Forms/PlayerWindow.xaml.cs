@@ -1,14 +1,13 @@
+using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Microsoft.UI.Input;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Input;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
-using WebDav;
 using Windows.Graphics;
 using Windows.System;
 using WinUIEx;
@@ -131,15 +130,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         MainFrame.Navigate(typeof(LivePlayerPage), room);
     }
 
-    /// <summary>
-    /// 打开 WebDAV 内容.
-    /// </summary>
-    public void OpenWebDav(WebDavResource resource, IList<WebDavResource> playlist)
-    {
-        Activate();
-        MainFrame.Navigate(typeof(WebDavPlayerPage), (playlist, resource));
-    }
-
     /// <inheritdoc/>
     public void EnterPlayerHostMode(PlayerDisplayMode mode)
     {
@@ -164,11 +154,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
             TitleBar.Title = lPage.ViewModel.Title;
             lPage.EnterPlayerHostMode();
         }
-        else if (MainFrame.Content is WebDavPlayerPage wPage)
-        {
-            TitleBar.Title = wPage.ViewModel.Title;
-            wPage.EnterPlayerHostMode();
-        }
 
         TitleBar.DelayUpdateAsync(100);
     }
@@ -191,10 +176,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         {
             lPage.ExitPlayerHostMode();
         }
-        else if (MainFrame.Content is WebDavPlayerPage wPage)
-        {
-            wPage.ExitPlayerHostMode();
-        }
 
         TitleBar.DelayUpdateAsync(100);
     }
@@ -202,10 +183,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup()
-        {
-            Text = text
-        };
+        var popup = new TipPopup() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);
@@ -299,11 +277,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
             lPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
             return true;
         }
-        else if (MainFrame.Content is WebDavPlayerPage wPage)
-        {
-            wPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
-            return true;
-        }
 
         return false;
     }
@@ -321,10 +294,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         else if (MainFrame.Content is LivePlayerPage lPage)
         {
             return lPage.ViewModel.Player.TryTogglePlayPause();
-        }
-        else if (MainFrame.Content is WebDavPlayerPage wPage)
-        {
-            return wPage.ViewModel.Player.TryTogglePlayPause();
         }
 
         return false;
@@ -371,10 +340,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         else if (MainFrame.Content is LivePlayerPage lPage)
         {
             lPage.ViewModel.CleanCommand.Execute(default);
-        }
-        else if (MainFrame.Content is WebDavPlayerPage wPage)
-        {
-            wPage.ViewModel.CleanCommand.Execute(default);
         }
     }
 

@@ -1,10 +1,10 @@
+using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Controls.AI;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using CommunityToolkit.Mvvm.Input;
 using Richasy.WinUIKernel.AI.ViewModels;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Windows.Storage;
@@ -196,8 +196,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         var copyrightTemplate = ResourceToolkit.GetLocalizedString(StringNames.Copyright);
         Copyright = string.Format(copyrightTemplate, 2024);
         PackageVersion = this.Get<IAppToolkit>().GetPackageVersion();
-
-        InitializeWebDavConfigCommand.Execute(default);
 
         _isInitialized = true;
     }
@@ -434,24 +432,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
             SettingNames.WithoutCredentialWhenGenDownloadCommand,
             value
         );
-
-    partial void OnIsWebDavEnabledChanged(bool value)
-    {
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsWebDavEnabled, value);
-        this.Get<NavigationViewModel>().CheckWebDavItemCommand.Execute(default);
-    }
-
-    partial void OnSelectedWebDavChanged(WebDavConfig value)
-    {
-        if (value is null)
-        {
-            SettingsToolkit.DeleteLocalSetting(SettingNames.SelectedWebDavConfigId);
-        }
-        else
-        {
-            SettingsToolkit.WriteLocalSetting(SettingNames.SelectedWebDavConfigId, value.Id);
-        }
-    }
 
     partial void OnFilterAISubtitleChanged(bool value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.FilterAISubtitle, value);

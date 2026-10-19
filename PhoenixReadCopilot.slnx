@@ -18,9 +18,6 @@
     </Project>
   </Folder>
   <Folder Name="/Libs/">
-    <Project Path="src/Libs/Beta/Connectors.WebDav/Connectors.WebDav.csproj">
-      <BuildType Solution="Publish|*" Project="Release" />
-    </Project>
     <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj">
       <BuildType Solution="Publish|*" Project="Release" />
     </Project>

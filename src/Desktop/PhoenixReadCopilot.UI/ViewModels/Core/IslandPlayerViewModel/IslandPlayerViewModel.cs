@@ -1,10 +1,10 @@
+using Mpv.Core;
+using Mpv.Core.Args;
+using Mpv.Core.Enums.Client;
 using PhoenixReadCopilot.UI.Controls.Core;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
-using Mpv.Core;
-using Mpv.Core.Args;
-using Mpv.Core.Enums.Client;
 using Richasy.BiliKernel.Bili.Authorization;
 using WinRT;
 #if !DEBUG
@@ -71,20 +71,17 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
             await Player.InitializeAsync(new InitializeArgument(configFilePath));
         }
 
-        if (!IsWebDav)
-        {
-            var cookies = this.Get<IBiliCookiesResolver>().GetCookieString();
-            var referer = IsLive ? LiveReferer : VideoReferer;
-            var userAgent = IsLive ? LiveUserAgent : VideoUserAgent;
-            var cookieStr = $"Cookie: {cookies}";
-            var refererStr = $"Referer: {referer}";
+        var cookies = this.Get<IBiliCookiesResolver>().GetCookieString();
+        var referer = IsLive ? LiveReferer : VideoReferer;
+        var userAgent = IsLive ? LiveUserAgent : VideoUserAgent;
+        var cookieStr = $"Cookie: {cookies}";
+        var refererStr = $"Referer: {referer}";
 
-            Player.Client.SetOption("cookies", "yes");
-            Player.Client.SetOption("user-agent", userAgent);
-            Player.Client.SetOption("http-header-fields", $"{cookieStr}\n{refererStr}");
-        }
+        Player.Client.SetOption("cookies", "yes");
+        Player.Client.SetOption("user-agent", userAgent);
+        Player.Client.SetOption("http-header-fields", $"{cookieStr}\n{refererStr}");
 
-        if (IsLive || IsWebDav)
+        if (IsLive)
         {
             Player.Client.SetOption("ytdl", "no");
             Player.IsLoggingEnabled = false;
@@ -101,9 +98,6 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
     /// 设置XAML内容.
     /// </summary>
     public void SetXamlContent(UIElement element) => _overlayWindow.SetContent(element);
-
-    /// <inheritdoc/>
-    protected override void SetWebDavConfig(WebDavConfig config) => LoadWebDavAuthorization();
 
     private void OnPositionChanged(object? sender, PlaybackPositionChangedEventArgs e)
     {
@@ -158,18 +152,6 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
         {
             await Player.TerminateAsync();
         }
-    }
-
-    private void LoadWebDavAuthorization()
-    {
-        if (_webDavConfig is null || Player?.Client is null)
-        {
-            return;
-        }
-
-        var auth =
-            $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}";
-        Player.Client.SetOption("http-header-fields", $"Authorization: {auth}");
     }
 
     private void InitializeDecode()

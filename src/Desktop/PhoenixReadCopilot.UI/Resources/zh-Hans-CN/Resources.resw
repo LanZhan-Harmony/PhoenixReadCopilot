@@ -486,9 +486,6 @@
   <data name="CurrentVolume" xml:space="preserve">
     <value>当前音量</value>
   </data>
-  <data name="CurrentWebDavService" xml:space="preserve">
-    <value>当前服务</value>
-  </data>
   <data name="Danmaku" xml:space="preserve">
     <value>弹幕</value>
   </data>
@@ -1617,9 +1614,6 @@
   <data name="RemoveViewLaterFailed" xml:space="preserve">
     <value>移除稍后再看失败</value>
   </data>
-  <data name="RemoveWebDavConfigWarning" xml:space="preserve">
-    <value>是否要删除 {0} 服务？</value>
-  </data>
   <data name="Replay" xml:space="preserve">
     <value>重新播放</value>
   </data>
@@ -2387,29 +2381,8 @@
   <data name="OpenInNewWindow" xml:space="preserve">
     <value>在新窗口中打开</value>
   </data>
-  <data name="CreateWebDavConfig" xml:space="preserve">
-    <value>创建 WebDAV 配置</value>
-  </data>
-  <data name="EditWebDavConfig" xml:space="preserve">
-    <value>编辑 WebDAV 配置</value>
-  </data>
-  <data name="CurrentWebDavServiceDescription" xml:space="preserve">
-    <value>当前选择的 WebDAV 服务</value>
-  </data>
-  <data name="NoWebDavService" xml:space="preserve">
-    <value>当前没有可用的 WebDAV 服务</value>
-  </data>
-  <data name="WebDavSettings" xml:space="preserve">
-    <value>WebDAV 设置 [预览]</value>
-  </data>
-  <data name="WebDavSettingsDescription" xml:space="preserve">
-    <value>使用本地播放器播放 WebDAV 内的视频内容 [预览功能，可能会在未来移除]</value>
-  </data>
   <data name="AddService" xml:space="preserve">
     <value>添加服务</value>
-  </data>
-  <data name="WebDav" xml:space="preserve">
-    <value>WebDAV</value>
   </data>
   <data name="Path" xml:space="preserve">
     <value>路径</value>

@@ -29,11 +29,6 @@ public abstract partial class PlayerViewModelBase
         IsPlayerDataLoading = false;
     }
 
-    /// <summary>
-    /// 设置 WebDAV 配置.
-    /// </summary>
-    protected abstract void SetWebDavConfig(WebDavConfig config);
-
     private static string GetScreenshotFolderPath() =>
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
@@ -70,12 +65,9 @@ public abstract partial class PlayerViewModelBase
 
     private void OpenWithMpvOrMpvNet(bool isMpv)
     {
-        var httpParams =
-            IsWebDav
-                ? $"--http-header-fields=\\\"Authorization: Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}\\\""
-                : IsLive
-                    ? $"--cookies --no-ytdl --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{LiveReferer}\\\" --user-agent \\\"{LiveUserAgent}\\\""
-                    : $"--cookies --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{VideoReferer}\\\" --user-agent=\\\"{VideoUserAgent}\\\"";
+        var httpParams = IsLive
+            ? $"--cookies --no-ytdl --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{LiveReferer}\\\" --user-agent \\\"{LiveUserAgent}\\\""
+            : $"--cookies --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{VideoReferer}\\\" --user-agent=\\\"{VideoUserAgent}\\\"";
         var exeName = isMpv ? "mpv" : "mpvnet";
         if (!string.IsNullOrEmpty(_extraOptions))
         {

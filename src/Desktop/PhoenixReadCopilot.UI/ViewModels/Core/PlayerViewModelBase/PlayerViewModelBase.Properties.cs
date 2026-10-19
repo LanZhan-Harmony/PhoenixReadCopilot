@@ -1,9 +1,9 @@
-using PhoenixReadCopilot.UI.Models;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.Models;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Media;
 using Windows.System.Display;
 
@@ -46,7 +46,6 @@ public abstract partial class PlayerViewModelBase
     protected bool _autoPlay;
     protected string? _contentType;
     protected string? _extraOptions;
-    protected WebDavConfig? _webDavConfig;
     protected Action<int, int> _progressAction;
     protected Action<PlayerState> _stateAction;
     protected Action<double> _speedAction;
@@ -61,45 +60,65 @@ public abstract partial class PlayerViewModelBase
     protected bool _isInitialized;
     protected bool _isClosed;
 
-    [ObservableProperty] private bool _isPlayerInitializing;
+    [ObservableProperty]
+    private bool _isPlayerInitializing;
 
-    [ObservableProperty] private bool _isPlayerDataLoading;
+    [ObservableProperty]
+    private bool _isPlayerDataLoading;
 
-    [ObservableProperty] private bool _isPaused = true;
+    [ObservableProperty]
+    private bool _isPaused = true;
 
-    [ObservableProperty] private bool _isFailed;
+    [ObservableProperty]
+    private bool _isFailed;
 
-    [ObservableProperty] private int _position;
+    [ObservableProperty]
+    private int _position;
 
-    [ObservableProperty] private int _duration;
+    [ObservableProperty]
+    private int _duration;
 
-    [ObservableProperty] private int _volume;
+    [ObservableProperty]
+    private int _volume;
 
-    [ObservableProperty] private double _speed;
+    [ObservableProperty]
+    private double _speed;
 
-    [ObservableProperty] private double _maxSpeed;
+    [ObservableProperty]
+    private double _maxSpeed;
 
-    [ObservableProperty] private double _speedStep;
+    [ObservableProperty]
+    private double _speedStep;
 
-    [ObservableProperty] private bool _isFullScreen;
+    [ObservableProperty]
+    private bool _isFullScreen;
 
-    [ObservableProperty] private bool _isCompactOverlay;
+    [ObservableProperty]
+    private bool _isCompactOverlay;
 
-    [ObservableProperty] private bool _isFullWindow;
+    [ObservableProperty]
+    private bool _isFullWindow;
 
-    [ObservableProperty] private bool _isBuffering;
+    [ObservableProperty]
+    private bool _isBuffering;
 
-    [ObservableProperty] private bool _isBottomProgressVisible;
+    [ObservableProperty]
+    private bool _isBottomProgressVisible;
 
-    [ObservableProperty] private bool _isSeparatorWindowPlayer;
+    [ObservableProperty]
+    private bool _isSeparatorWindowPlayer;
 
-    [ObservableProperty] private bool _isExternalPlayer;
+    [ObservableProperty]
+    private bool _isExternalPlayer;
 
-    [ObservableProperty] private bool _isAmdMpvWarningShown;
+    [ObservableProperty]
+    private bool _isAmdMpvWarningShown;
 
-    [ObservableProperty] private Uri? _cover;
+    [ObservableProperty]
+    private Uri? _cover;
 
-    [ObservableProperty] private bool _isDanmakuInputFocused;
+    [ObservableProperty]
+    private bool _isDanmakuInputFocused;
 
     /// <summary>
     /// 播放数据加载完成.
@@ -130,11 +149,6 @@ public abstract partial class PlayerViewModelBase
     /// 是否为 PGC 播放.
     /// </summary>
     public bool IsPgc { get; set; }
-
-    /// <summary>
-    /// 是否为 WebDav 播放.
-    /// </summary>
-    public bool IsWebDav { get; set; }
 
     /// <summary>
     /// 视频标题.
