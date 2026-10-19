@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Navigation;
 using Richasy.WinUIKernel.Share.Base;
@@ -33,8 +31,7 @@ public sealed partial class SearchPage : SearchPageBase
     }
 
     /// <inheritdoc/>
-    protected override void OnNavigatedFrom(NavigationEventArgs e)
-        => _keyword = string.Empty;
+    protected override void OnNavigatedFrom(NavigationEventArgs e) => _keyword = string.Empty;
 
     /// <inheritdoc/>
     protected override void OnPageLoaded()

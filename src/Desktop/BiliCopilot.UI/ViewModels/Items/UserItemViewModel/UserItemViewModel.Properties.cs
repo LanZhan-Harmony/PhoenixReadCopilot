@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiliCopilot.UI.ViewModels.Items;
@@ -9,8 +7,7 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class UserItemViewModel
 {
-    [ObservableProperty]
-    private bool _isFollowed;
+    [ObservableProperty] private bool _isFollowed;
 
     /// <summary>
     /// 用户名.

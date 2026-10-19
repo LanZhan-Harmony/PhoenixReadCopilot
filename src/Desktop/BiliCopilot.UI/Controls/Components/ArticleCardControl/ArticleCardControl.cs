@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -40,15 +38,16 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     }
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => ContextRequested += OnContextRequested;
+    protected override void OnControlLoaded() => ContextRequested += OnContextRequested;
 
     /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-        => ContextRequested -= OnContextRequested;
+    protected override void OnControlUnloaded() => ContextRequested -= OnContextRequested;
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(ArticleItemViewModel? oldValue, ArticleItemViewModel? newValue)
+    protected override void OnViewModelChanged(
+        ArticleItemViewModel? oldValue,
+        ArticleItemViewModel? newValue
+    )
     {
         if (_rootCard is not null)
         {
@@ -61,7 +60,10 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Globe
+            },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -71,7 +73,10 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.EnterUserSpace),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Person
+            },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -81,7 +86,10 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Pin
+            },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -91,7 +99,12 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.Remove),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Delete,
+                Foreground = this.Get<IResourceToolkit>()
+                    .GetThemeBrush("SystemFillColorCriticalBrush"),
+            },
             Tag = nameof(ViewModel.RemoveHistoryCommand),
         };
     }
@@ -102,7 +115,13 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         {
             CreateContextFlyout();
             args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this, new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point });
+            ContextFlyout.ShowAt(
+                this,
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
+                {
+                    Position = point
+                }
+            );
         }
 
         RelocateCommands();
@@ -111,7 +130,10 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
+        var menuFlyout = new MenuFlyout()
+        {
+            ShouldConstrainToRootBounds = false
+        };
         menuFlyout.Items.Add(CreateOpenInBroswerItem());
         menuFlyout.Items.Add(CreateEnterUserSpaceItem());
         menuFlyout.Items.Add(CreatePinItem());

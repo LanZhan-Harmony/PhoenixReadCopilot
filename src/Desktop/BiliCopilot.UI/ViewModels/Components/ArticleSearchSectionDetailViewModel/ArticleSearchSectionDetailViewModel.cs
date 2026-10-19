@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -13,13 +11,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 文章搜索分区详情视图模型.
 /// </summary>
-public sealed partial class ArticleSearchSectionDetailViewModel : ViewModelBase, ISearchSectionDetailViewModel
+public sealed partial class ArticleSearchSectionDetailViewModel
+    : ViewModelBase,
+        ISearchSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleSearchSectionDetailViewModel"/> class.
     /// </summary>
-    public ArticleSearchSectionDetailViewModel(
-        ISearchService service)
+    public ArticleSearchSectionDetailViewModel(ISearchService service)
     {
         _service = service;
         _logger = this.Get<ILogger<ArticleSearchSectionDetailViewModel>>();
@@ -46,8 +45,7 @@ public sealed partial class ArticleSearchSectionDetailViewModel : ViewModelBase,
     }
 
     [RelayCommand]
-    private Task TryFirstLoadAsync()
-        => Items.Count > 0 ? Task.CompletedTask : LoadItemsAsync();
+    private Task TryFirstLoadAsync() => Items.Count > 0 ? Task.CompletedTask : LoadItemsAsync();
 
     [RelayCommand]
     private async Task LoadItemsAsync()
@@ -60,13 +58,19 @@ public sealed partial class ArticleSearchSectionDetailViewModel : ViewModelBase,
         try
         {
             IsLoading = true;
-            var (result, nextOffset) = await _service.GetPartitionSearchResultAsync(_keyword, _partition, _offset);
+            var (result, nextOffset) = await _service.GetPartitionSearchResultAsync(
+                _keyword,
+                _partition,
+                _offset
+            );
             _offset = nextOffset;
             _canRequest = !string.IsNullOrEmpty(_offset);
 
             foreach (var item in result)
             {
-                Items.Add(new ArticleItemViewModel(item.Article, Models.Constants.ArticleCardStyle.Search));
+                Items.Add(
+                    new ArticleItemViewModel(item.Article, Models.Constants.ArticleCardStyle.Search)
+                );
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);

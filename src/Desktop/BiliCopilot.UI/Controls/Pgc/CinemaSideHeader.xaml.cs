@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Pgc;
@@ -36,7 +34,10 @@ public sealed partial class CinemaSideHeader : CinemaPageControlBase
         CheckSectionSelection();
     }
 
-    private void OnSectionSelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSectionSelectionChanged(
+        SelectorBar sender,
+        SelectorBarSelectionChangedEventArgs args
+    )
     {
         if (sender.SelectedItem?.Tag is not IPgcSectionDetailViewModel vm)
         {
@@ -53,12 +54,18 @@ public sealed partial class CinemaSideHeader : CinemaPageControlBase
             return;
         }
 
-        SectionSelector.SelectedItem = SectionSelector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        SectionSelector.SelectedItem = SectionSelector.Items.FirstOrDefault(p =>
+            p.Tag == ViewModel.SelectedSection
+        );
     }
 
     private void CheckSectionInitialization()
     {
-        if (ViewModel?.Sections is null || SectionSelector is null || SectionSelector.Items.Count > 0)
+        if (
+            ViewModel?.Sections is null
+            || SectionSelector is null
+            || SectionSelector.Items.Count > 0
+        )
         {
             return;
         }

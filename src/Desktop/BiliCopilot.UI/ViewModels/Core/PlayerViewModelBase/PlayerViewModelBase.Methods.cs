@@ -1,8 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics;
 using BiliCopilot.UI.Models;
 using Richasy.BiliKernel.Bili.Authorization;
-using System.Diagnostics;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -36,8 +34,11 @@ public abstract partial class PlayerViewModelBase
     /// </summary>
     protected abstract void SetWebDavConfig(WebDavConfig config);
 
-    private static string GetScreenshotFolderPath()
-        => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Bili-Screenshots");
+    private static string GetScreenshotFolderPath() =>
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+            "Bili-Screenshots"
+        );
 
     private void ActiveDisplay()
     {
@@ -71,10 +72,10 @@ public abstract partial class PlayerViewModelBase
     {
         var httpParams =
             IsWebDav
-            ? $"--http-header-fields=\\\"Authorization: Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}\\\""
-            : IsLive
-                ? $"--cookies --no-ytdl --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{LiveReferer}\\\" --user-agent \\\"{LiveUserAgent}\\\""
-                : $"--cookies --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{VideoReferer}\\\" --user-agent=\\\"{VideoUserAgent}\\\"";
+                ? $"--http-header-fields=\\\"Authorization: Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}\\\""
+                : IsLive
+                    ? $"--cookies --no-ytdl --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{LiveReferer}\\\" --user-agent \\\"{LiveUserAgent}\\\""
+                    : $"--cookies --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{VideoReferer}\\\" --user-agent=\\\"{VideoUserAgent}\\\"";
         var exeName = isMpv ? "mpv" : "mpvnet";
         if (!string.IsNullOrEmpty(_extraOptions))
         {

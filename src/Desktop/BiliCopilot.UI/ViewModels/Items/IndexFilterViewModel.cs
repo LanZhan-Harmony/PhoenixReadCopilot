@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.Appearance;
@@ -14,11 +12,9 @@ public sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
 {
     private readonly Action? _reloadAction;
 
-    [ObservableProperty]
-    private List<Condition>? _conditions;
+    [ObservableProperty] private List<Condition>? _conditions;
 
-    [ObservableProperty]
-    private Condition? _currentCondition;
+    [ObservableProperty] private Condition? _currentCondition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IndexFilterViewModel"/> class.

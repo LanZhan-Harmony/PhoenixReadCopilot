@@ -1,8 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.WinUIKernel.Share.Base;
-using System.Windows.Input;
 
 namespace BiliCopilot.UI.Controls.Comment;
 
@@ -14,26 +12,43 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(CommentTextBox), new PropertyMetadata(default));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(CommentTextBox),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="SendCommand"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SendCommandProperty =
-        DependencyProperty.Register(nameof(SendCommand), typeof(IAsyncRelayCommand), typeof(CommentTextBox), new PropertyMetadata(default));
+    public static readonly DependencyProperty SendCommandProperty = DependencyProperty.Register(
+        nameof(SendCommand),
+        typeof(IAsyncRelayCommand),
+        typeof(CommentTextBox),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="ReplyTip"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ReplyTipProperty =
-        DependencyProperty.Register(nameof(ReplyTip), typeof(string), typeof(CommentTextBox), new PropertyMetadata(default));
+    public static readonly DependencyProperty ReplyTipProperty = DependencyProperty.Register(
+        nameof(ReplyTip),
+        typeof(string),
+        typeof(CommentTextBox),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="ResetSelectedCommand"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty ResetSelectedCommandProperty =
-        DependencyProperty.Register(nameof(ResetSelectedCommand), typeof(ICommand), typeof(CommentTextBox), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(ResetSelectedCommand),
+            typeof(ICommand),
+            typeof(CommentTextBox),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentTextBox"/> class.
@@ -79,23 +94,22 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         set => SetValue(ResetSelectedCommandProperty, value);
     }
 
-    private async void OnReplySubmittedAsync(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    private async void OnReplySubmittedAsync(
+        AutoSuggestBox sender,
+        AutoSuggestBoxQuerySubmittedEventArgs args
+    )
     {
         if (string.IsNullOrEmpty(Text))
         {
             return;
         }
 
-        var finalText = string.IsNullOrEmpty(ReplyTip)
-            ? Text
-            : $"回复 @{ReplyTip} : {Text}";
+        var finalText = string.IsNullOrEmpty(ReplyTip) ? Text : $"回复 @{ReplyTip} : {Text}";
         await SendCommand.ExecuteAsync(finalText);
         Text = string.Empty;
     }
 
-    private void OnItemClick(object sender, string e)
-        => Text += e;
+    private void OnItemClick(object sender, string e) => Text += e;
 
-    private void OnFlyoutClosed(object sender, object e)
-        => ReplyBox.Focus(FocusState.Programmatic);
+    private void OnFlyoutClosed(object sender, object e) => ReplyBox.Focus(FocusState.Programmatic);
 }

@@ -51,8 +51,14 @@ internal class MyList : IAddChild
         var grid = new Grid();
         grid.ColumnSpacing = 8;
         grid.Padding = new Thickness(0, 4, 0, 4);
-        grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition()
+        {
+            Width = new GridLength(1, GridUnitType.Auto)
+        });
+        grid.ColumnDefinitions.Add(new ColumnDefinition()
+        {
+            Width = new GridLength(1, GridUnitType.Star)
+        });
         string bullet;
         if (_isOrdered)
         {

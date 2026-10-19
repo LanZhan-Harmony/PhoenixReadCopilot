@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -15,14 +13,11 @@ public sealed partial class AppViewModel : ViewModelBase
     private readonly ILogger<AppViewModel> _logger;
     private readonly IBiliTokenResolver _tokenResolver;
 
-    [ObservableProperty]
-    private Window _activatedWindow;
+    [ObservableProperty] private Window _activatedWindow;
 
-    [ObservableProperty]
-    private bool _isInitialLoading;
+    [ObservableProperty] private bool _isInitialLoading;
 
-    [ObservableProperty]
-    private bool _isUpdateShown;
+    [ObservableProperty] private bool _isUpdateShown;
 
     /// <summary>
     /// 已创建的窗口列表.

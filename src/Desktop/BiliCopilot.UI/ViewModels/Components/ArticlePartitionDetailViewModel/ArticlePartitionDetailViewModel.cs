@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -23,7 +21,8 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     /// </summary>
     public ArticlePartitionDetailViewModel(
         PartitionViewModel data,
-        IArticleDiscoveryService service)
+        IArticleDiscoveryService service
+    )
         : base(data)
     {
         _service = service;
@@ -43,7 +42,10 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         if (Data.Children is not null)
         {
             var children = Data.Children.ToList();
-            var rcmdPartition = new Partition(Data.Data.Id, ResourceToolkit.GetLocalizedString(StringNames.RecommendArticle));
+            var rcmdPartition = new Partition(
+                Data.Data.Id,
+                ResourceToolkit.GetLocalizedString(StringNames.RecommendArticle)
+            );
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
         }
@@ -73,13 +75,17 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         SelectedSortType = sortType;
 
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            _childPartitionArticleCache.Clear();
-            Articles.Clear();
-            _childPartitionOffsetCache.Clear();
-            await LoadArticlesAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    _childPartitionArticleCache.Clear();
+                    Articles.Clear();
+                    _childPartitionOffsetCache.Clear();
+                    await LoadArticlesAsync();
+                }
+            );
     }
 
     [RelayCommand]
@@ -97,11 +103,15 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
         }
 
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Articles.Clear();
-            await LoadArticlesAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    Articles.Clear();
+                    await LoadArticlesAsync();
+                }
+            );
     }
 
     [RelayCommand]
@@ -127,33 +137,42 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         CurrentPartition = partition;
 
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Articles.Clear();
-            if (IsRecommend && _recommendCache?.Count > 0)
-            {
-                foreach (var item in _recommendCache)
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
                 {
-                    Articles.Add(item);
-                }
-            }
-            else if (_childPartitionArticleCache.TryGetValue(CurrentPartition.Data.Id, out var cache))
-            {
-                foreach (var item in cache)
-                {
-                    Articles.Add(item);
-                }
-            }
+                    Articles.Clear();
+                    if (IsRecommend && _recommendCache?.Count > 0)
+                    {
+                        foreach (var item in _recommendCache)
+                        {
+                            Articles.Add(item);
+                        }
+                    }
+                    else if (
+                        _childPartitionArticleCache.TryGetValue(
+                            CurrentPartition.Data.Id,
+                            out var cache
+                        )
+                    )
+                    {
+                        foreach (var item in cache)
+                        {
+                            Articles.Add(item);
+                        }
+                    }
 
-            if (Articles.Count == 0)
-            {
-                await LoadArticlesAsync();
-            }
-            else
-            {
-                ArticleListUpdated?.Invoke(this, EventArgs.Empty);
-            }
-        });
+                    if (Articles.Count == 0)
+                    {
+                        await LoadArticlesAsync();
+                    }
+                    else
+                    {
+                        ArticleListUpdated?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            );
     }
 
     [RelayCommand]
@@ -190,7 +209,11 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     {
         try
         {
-            var (articles, offset) = await _service.GetPartitionArticlesAsync(CurrentPartition.Data, ArticleSortType.Default, _recommendOffset);
+            var (articles, offset) = await _service.GetPartitionArticlesAsync(
+                CurrentPartition.Data,
+                ArticleSortType.Default,
+                _recommendOffset
+            );
             _recommendOffset = offset;
             TryAddArticles(articles);
         }
@@ -205,18 +228,30 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         try
         {
             var pn = 0;
-            if (_childPartitionOffsetCache.TryGetValue(CurrentPartition.Data.Id, out var offsetCache))
+            if (
+                _childPartitionOffsetCache.TryGetValue(
+                    CurrentPartition.Data.Id,
+                    out var offsetCache
+                )
+            )
             {
                 pn = offsetCache;
             }
 
-            var (articles, nextPn) = await _service.GetPartitionArticlesAsync(CurrentPartition.Data, SelectedSortType, pn);
+            var (articles, nextPn) = await _service.GetPartitionArticlesAsync(
+                CurrentPartition.Data,
+                SelectedSortType,
+                pn
+            );
             _childPartitionOffsetCache[CurrentPartition.Data.Id] = nextPn;
             TryAddArticles(articles);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"尝试加载 {Data.Data.Name}/{CurrentPartition.Data.Name} 分区文章时出错.");
+            _logger.LogError(
+                ex,
+                $"尝试加载 {Data.Data.Name}/{CurrentPartition.Data.Name} 分区文章时出错."
+            );
         }
     }
 

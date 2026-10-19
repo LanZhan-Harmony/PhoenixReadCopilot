@@ -1,12 +1,10 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Authorization;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -16,14 +14,10 @@ namespace BiliCopilot.UI.ViewModels.Core;
 public sealed partial class ExternalPlayerViewModel
 {
     /// <inheritdoc/>
-    protected override void SetWebDavConfig(WebDavConfig config)
-    {
-    }
+    protected override void SetWebDavConfig(WebDavConfig config) { }
 
     /// <inheritdoc/>
-    protected override void BeforeLoadPlayData()
-    {
-    }
+    protected override void BeforeLoadPlayData() { }
 
     /// <inheritdoc/>
     protected override Task OnCloseAsync()
@@ -33,34 +27,25 @@ public sealed partial class ExternalPlayerViewModel
     }
 
     /// <inheritdoc/>
-    protected override bool IsMediaLoaded()
-        => PlayerProcess != null && !PlayerProcess.HasExited;
+    protected override bool IsMediaLoaded() => PlayerProcess != null && !PlayerProcess.HasExited;
 
     /// <inheritdoc/>
-    protected override Task OnTogglePlayPauseAsync()
-        => Task.CompletedTask;
+    protected override Task OnTogglePlayPauseAsync() => Task.CompletedTask;
 
     /// <inheritdoc/>
-    protected override Task OnSeekAsync(TimeSpan position)
-        => Task.CompletedTask;
+    protected override Task OnSeekAsync(TimeSpan position) => Task.CompletedTask;
 
     /// <inheritdoc/>
-    protected override Task ForcePlayAsync()
-        => Task.CompletedTask;
+    protected override Task ForcePlayAsync() => Task.CompletedTask;
 
     /// <inheritdoc/>
-    protected override void OnSetVolume(int value)
-    {
-    }
+    protected override void OnSetVolume(int value) { }
 
     /// <inheritdoc/>
-    protected override void OnSetSpeed(double speed)
-    {
-    }
+    protected override void OnSetSpeed(double speed) { }
 
     /// <inheritdoc/>
-    protected override Task OnTakeScreenshotAsync(string path)
-        => Task.CompletedTask;
+    protected override Task OnTakeScreenshotAsync(string path) => Task.CompletedTask;
 
     /// <inheritdoc/>
     protected override Task OnLoadPlayDataAsync()
@@ -70,12 +55,15 @@ public sealed partial class ExternalPlayerViewModel
         var referer = IsLive ? LiveReferer : VideoReferer;
         var token = this.Get<IBiliTokenResolver>().GetToken().AccessToken;
         var httpParams =
-            IsWebDav ?
-            $"--http-header-fields=\"Authorization: Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}\""
-            : IsLive
-                ? $"--cookies --no-ytdl --user-agent=\"{LiveUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {LiveReferer}\""
-                : $"--cookies --user-agent=\"{VideoUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {VideoReferer}\"";
-        var externalPlayerType = SettingsToolkit.ReadLocalSetting(SettingNames.ExternalPlayer, ExternalPlayerType.Mpv);
+            IsWebDav
+                ? $"--http-header-fields=\"Authorization: Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}\""
+                : IsLive
+                    ? $"--cookies --no-ytdl --user-agent=\"{LiveUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {LiveReferer}\""
+                    : $"--cookies --user-agent=\"{VideoUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {VideoReferer}\"";
+        var externalPlayerType = SettingsToolkit.ReadLocalSetting(
+            SettingNames.ExternalPlayer,
+            ExternalPlayerType.Mpv
+        );
         var externalPlayer = externalPlayerType switch
         {
             ExternalPlayerType.Mpv => "mpv",

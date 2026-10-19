@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Pages.Overlay;
@@ -24,7 +22,8 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public CinemaPageViewModel(
         IEntertainmentDiscoveryService discoveryService,
-        ILogger<CinemaPageViewModel> logger)
+        ILogger<CinemaPageViewModel> logger
+    )
     {
         _service = discoveryService;
         _logger = logger;
@@ -47,13 +46,20 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
             new EntertainmentIndexViewModel(PgcSectionType.TV, _service),
             new EntertainmentIndexViewModel(PgcSectionType.Documentary, _service),
         };
-        var lastType = SettingsToolkit.ReadLocalSetting(SettingNames.CinemaPageLastSelectedSectionType, PgcSectionType.Movie);
+        var lastType = SettingsToolkit.ReadLocalSetting(
+            SettingNames.CinemaPageLastSelectedSectionType,
+            PgcSectionType.Movie
+        );
         var section = Sections.FirstOrDefault(p => p.SectionType == lastType);
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
-        {
-            SelectSection(section ?? Sections.First());
-            SectionInitialized?.Invoke(this, EventArgs.Empty);
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                () =>
+                {
+                    SelectSection(section ?? Sections.First());
+                    SectionInitialized?.Invoke(this, EventArgs.Empty);
+                }
+            );
     }
 
     [RelayCommand]
@@ -65,14 +71,20 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection = section;
-        SettingsToolkit.WriteLocalSetting(SettingNames.CinemaPageLastSelectedSectionType, section.SectionType);
+        SettingsToolkit.WriteLocalSetting(
+            SettingNames.CinemaPageLastSelectedSectionType,
+            section.SectionType
+        );
         section.InitializeCommand.Execute(default);
     }
 
     [RelayCommand]
     private void ShowMyFavoriteCinema()
     {
-        SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedFavoriteSection, $"pgc_{PgcFavoriteType.Cinema}");
+        SettingsToolkit.WriteLocalSetting(
+            SettingNames.LastSelectedFavoriteSection,
+            $"pgc_{PgcFavoriteType.Cinema}"
+        );
         this.Get<NavigationViewModel>().NavigateToOver(typeof(FavoritesPage));
     }
 }

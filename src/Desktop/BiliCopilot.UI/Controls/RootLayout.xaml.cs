@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.ViewModels.Core;
@@ -41,10 +39,16 @@ public sealed partial class RootLayout : RootLayoutBase
         }
 
         MainTitleBar.Visibility = Visibility.Collapsed;
-        SecondaryTitleBar.Visibility = mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay ? Visibility.Visible : Visibility.Collapsed;
-        SecondaryTitleBar.IsBackButtonVisible = mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
-        SecondaryTitleBar.IsBackEnabled = mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
-        this.Get<AppViewModel>().ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Standard;
+        SecondaryTitleBar.Visibility =
+            mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        SecondaryTitleBar.IsBackButtonVisible =
+            mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
+        SecondaryTitleBar.IsBackEnabled =
+            mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
+        this.Get<AppViewModel>().ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
+            Microsoft.UI.Windowing.TitleBarHeightOption.Standard;
         NavView.IsPaneOpen = false;
         VisualStateManager.GoToState(NavView, "PaneCollapsed", false);
         VisualStateManager.GoToState(this, nameof(PlayerState), false);
@@ -87,7 +91,8 @@ public sealed partial class RootLayout : RootLayoutBase
         MainTitleBar.Visibility = Visibility.Visible;
         SecondaryTitleBar.Visibility = Visibility.Collapsed;
         SecondaryTitleBar.IsBackButtonVisible = false;
-        this.Get<AppViewModel>().ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
+        this.Get<AppViewModel>().ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
+            Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
         NavView.IsPaneOpen = true;
         VisualStateManager.GoToState(NavView, "PaneVisible", false);
         VisualStateManager.GoToState(this, nameof(NormalState), false);
@@ -238,10 +243,15 @@ public sealed partial class RootLayout : RootLayoutBase
         }
     }
 
-    private void OnNavViewBackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
-        => OnBackRequested(default, default);
+    private void OnNavViewBackRequested(
+        NavigationView sender,
+        NavigationViewBackRequestedEventArgs args
+    ) => OnBackRequested(default, default);
 
-    private void OnNavViewItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+    private void OnNavViewItemInvoked(
+        NavigationView sender,
+        NavigationViewItemInvokedEventArgs args
+    )
     {
         _ = this;
         var item = args.InvokedItemContainer as AppNavigationViewItem;
@@ -249,26 +259,25 @@ public sealed partial class RootLayout : RootLayoutBase
         context?.NavigateCommand.Execute(default);
     }
 
-    private void OnBackRequested(object sender, EventArgs e)
-        => ViewModel.Back();
+    private void OnBackRequested(object sender, EventArgs e) => ViewModel.Back();
 
-    private void OnUpdateActionButtonClick(TeachingTip sender, object args)
-        => _appViewModel.ShowUpdateCommand.Execute(default);
+    private void OnUpdateActionButtonClick(TeachingTip sender, object args) =>
+        _appViewModel.ShowUpdateCommand.Execute(default);
 
-    private void OnUpdateCloseButtonClick(TeachingTip sender, object args)
-        => _appViewModel.HideUpdateCommand.Execute(default);
+    private void OnUpdateCloseButtonClick(TeachingTip sender, object args) =>
+        _appViewModel.HideUpdateCommand.Execute(default);
 
-    private void OnFavoriteButtonClick(object sender, EventArgs e)
-        => ViewModel.NavigateToOver(typeof(FavoritesPage), default);
+    private void OnFavoriteButtonClick(object sender, EventArgs e) =>
+        ViewModel.NavigateToOver(typeof(FavoritesPage), default);
 
-    private void OnViewLaterButtonClick(object sender, EventArgs e)
-        => ViewModel.NavigateToOver(typeof(ViewLaterPage), default);
+    private void OnViewLaterButtonClick(object sender, EventArgs e) =>
+        ViewModel.NavigateToOver(typeof(ViewLaterPage), default);
 
-    private void OnHistoryButtonClick(object sender, EventArgs e)
-        => ViewModel.NavigateToOver(typeof(HistoryPage), default);
+    private void OnHistoryButtonClick(object sender, EventArgs e) =>
+        ViewModel.NavigateToOver(typeof(HistoryPage), default);
 
-    private void OnVideoBackRequested(object sender, EventArgs e)
-        => TryBackToDefaultIfPlayerHostMode();
+    private void OnVideoBackRequested(object sender, EventArgs e) =>
+        TryBackToDefaultIfPlayerHostMode();
 }
 
 /// <summary>

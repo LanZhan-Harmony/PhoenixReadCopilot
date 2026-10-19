@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Controls.Message;
@@ -41,7 +39,10 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(NotifyMessageSectionDetailViewModel? oldValue, NotifyMessageSectionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        NotifyMessageSectionDetailViewModel? oldValue,
+        NotifyMessageSectionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -65,13 +66,21 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (MessageScrollView.ExtentHeight - MessageScrollView.ViewportHeight - MessageScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (
+                    MessageScrollView.ExtentHeight
+                    - MessageScrollView.ViewportHeight
+                    - MessageScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -84,12 +93,15 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
 
     private void CheckMessageCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (MessageScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (MessageScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

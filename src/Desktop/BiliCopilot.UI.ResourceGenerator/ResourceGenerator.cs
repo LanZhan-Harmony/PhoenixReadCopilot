@@ -1,9 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using System.Text;
 using System.Xml;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 namespace BiliCopilot.UI.ResourceGenerator;
 
@@ -18,12 +16,19 @@ public class ResourceGenerator : IIncrementalGenerator
     {
         // 如果需要调试，取消下面的注释
         // if (!Debugger.IsAttached) Debugger.Launch();
-        var additionalFiles = context.AdditionalTextsProvider.Where(f => f.Path.EndsWith(".resw", StringComparison.OrdinalIgnoreCase));
-        var contents = additionalFiles.Select((file, cancellationToken) => file.GetText(cancellationToken).ToString());
-        context.RegisterSourceOutput(contents, (spc, content) =>
-        {
-            ProcessResourceFile(content, spc);
-        });
+        var additionalFiles = context.AdditionalTextsProvider.Where(f =>
+            f.Path.EndsWith(".resw", StringComparison.OrdinalIgnoreCase)
+        );
+        var contents = additionalFiles.Select(
+            (file, cancellationToken) => file.GetText(cancellationToken).ToString()
+        );
+        context.RegisterSourceOutput(
+            contents,
+            (spc, content) =>
+            {
+                ProcessResourceFile(content, spc);
+            }
+        );
     }
 
     private static void ProcessResourceFile(string content, SourceProductionContext context)
@@ -37,12 +42,13 @@ public class ResourceGenerator : IIncrementalGenerator
         {
             // Show the warning if no resource files are found
             var desc = new DiagnosticDescriptor(
-                        "RESW0002",
-                        "Failed to load .resw file",
-                        "An error was encountered while trying to parse the resw file, please check the resw document structure.",
-                        "Problem",
-                        DiagnosticSeverity.Error,
-                        true);
+                "RESW0002",
+                "Failed to load .resw file",
+                "An error was encountered while trying to parse the resw file, please check the resw document structure.",
+                "Problem",
+                DiagnosticSeverity.Error,
+                true
+            );
 
             context.ReportDiagnostic(Diagnostic.Create(desc, Location.None));
             return;

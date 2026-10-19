@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -12,7 +10,8 @@ namespace BiliCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class DownloadViewModel
 {
-    private const string VideoUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69";
+    private const string VideoUserAgent =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69";
     private readonly ILogger<DownloadViewModel> _logger;
     private readonly IBiliTokenResolver _tokenResolver;
     private readonly IBiliCookiesResolver _cookiesResolver;
@@ -24,17 +23,13 @@ public sealed partial class DownloadViewModel
     private string _parentUrl;
     private int _currentPartIndex;
 
-    [ObservableProperty]
-    private List<PlayerFormatInformation> _formats;
+    [ObservableProperty] private List<PlayerFormatInformation> _formats;
 
-    [ObservableProperty]
-    private List<VideoPart>? _parts;
+    [ObservableProperty] private List<VideoPart>? _parts;
 
-    [ObservableProperty]
-    private List<EpisodeInformation>? _episodes;
+    [ObservableProperty] private List<EpisodeInformation>? _episodes;
 
-    [ObservableProperty]
-    private bool _hasAvailableSubtitle;
+    [ObservableProperty] private bool _hasAvailableSubtitle;
 
     /// <summary>
     /// 元数据初始化完成事件.

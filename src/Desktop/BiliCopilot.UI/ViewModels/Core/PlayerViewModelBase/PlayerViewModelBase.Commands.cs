@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
@@ -104,7 +102,14 @@ public abstract partial class PlayerViewModelBase
         // 如果媒体已经播放结束，尝试重新加载媒体.
         if (!IsMediaLoaded())
         {
-            await SetPlayDataAsync(_videoUrl, _audioUrl, _autoPlay, Convert.ToInt32(value), _contentType, _extraOptions);
+            await SetPlayDataAsync(
+                _videoUrl,
+                _audioUrl,
+                _autoPlay,
+                Convert.ToInt32(value),
+                _contentType,
+                _extraOptions
+            );
             return;
         }
 
@@ -150,7 +155,10 @@ public abstract partial class PlayerViewModelBase
         if (Speed != speed)
         {
             Speed = speed;
-            var isShareSpeed = SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerSpeedShare, true);
+            var isShareSpeed = SettingsToolkit.ReadLocalSetting(
+                SettingNames.IsPlayerSpeedShare,
+                true
+            );
             if (isShareSpeed)
             {
                 SettingsToolkit.WriteLocalSetting(SettingNames.PlayerSpeed, speed);
@@ -284,7 +292,10 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void ForwardSkip()
     {
-        var seconds = SettingsToolkit.ReadLocalSetting(SettingNames.SingleFastForwardAndRewindSpan, 15d);
+        var seconds = SettingsToolkit.ReadLocalSetting(
+            SettingNames.SingleFastForwardAndRewindSpan,
+            15d
+        );
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -306,7 +317,10 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void BackwardSkip()
     {
-        var seconds = SettingsToolkit.ReadLocalSetting(SettingNames.SingleFastForwardAndRewindSpan, 15d);
+        var seconds = SettingsToolkit.ReadLocalSetting(
+            SettingNames.SingleFastForwardAndRewindSpan,
+            15d
+        );
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -341,16 +355,32 @@ public abstract partial class PlayerViewModelBase
             if (File.Exists(path))
             {
                 var file = await StorageFile.GetFileFromPathAsync(path);
-                var shouldCopyToClipboard = SettingsToolkit.ReadLocalSetting(SettingNames.CopyAfterScreenshot, true);
+                var shouldCopyToClipboard = SettingsToolkit.ReadLocalSetting(
+                    SettingNames.CopyAfterScreenshot,
+                    true
+                );
                 if (shouldCopyToClipboard)
                 {
                     var dp = new DataPackage();
-                    dp.SetBitmap(RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(path)));
+                    dp.SetBitmap(
+                        RandomAccessStreamReference.CreateFromFile(
+                            await StorageFile.GetFileFromPathAsync(path)
+                        )
+                    );
                     Clipboard.SetContent(dp);
-                    this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+                    this.Get<AppViewModel>()
+                        .ShowTipCommand.Execute(
+                            (
+                                ResourceToolkit.GetLocalizedString(StringNames.Copied),
+                                InfoType.Success
+                            )
+                        );
                 }
 
-                var shouldOpenFile = SettingsToolkit.ReadLocalSetting(SettingNames.OpenAfterScreenshot, true);
+                var shouldOpenFile = SettingsToolkit.ReadLocalSetting(
+                    SettingNames.OpenAfterScreenshot,
+                    true
+                );
                 if (shouldOpenFile)
                 {
                     await Launcher.LaunchFileAsync(file).AsTask();
@@ -375,10 +405,8 @@ public abstract partial class PlayerViewModelBase
     }
 
     [RelayCommand]
-    private void OpenWithMpv()
-        => OpenWithMpvOrMpvNet(true);
+    private void OpenWithMpv() => OpenWithMpvOrMpvNet(true);
 
     [RelayCommand]
-    private void OpenWithMpvNet()
-        => OpenWithMpvOrMpvNet(false);
+    private void OpenWithMpvNet() => OpenWithMpvOrMpvNet(false);
 }

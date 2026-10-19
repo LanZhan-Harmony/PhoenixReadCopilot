@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -21,7 +19,8 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     /// </summary>
     public UserMomentDetailViewModel(
         IMomentDiscoveryService service,
-        ILogger<UserMomentDetailViewModel> logger)
+        ILogger<UserMomentDetailViewModel> logger
+    )
     {
         _service = service;
         _logger = logger;
@@ -33,21 +32,22 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     public void SetIsVideo(bool isVideo)
     {
         _isVideo = isVideo;
-        Title = isVideo ? ResourceToolkit.GetLocalizedString(StringNames.Video) : ResourceToolkit.GetLocalizedString(StringNames.Comprehensive);
+        Title = isVideo
+            ? ResourceToolkit.GetLocalizedString(StringNames.Video)
+            : ResourceToolkit.GetLocalizedString(StringNames.Comprehensive);
     }
 
     /// <summary>
     /// 设置显示评论的动作.
     /// </summary>
-    public void SetShowCommentAction(Action<MomentItemViewModel> action)
-        => _showCommentAction = action;
+    public void SetShowCommentAction(Action<MomentItemViewModel> action) =>
+        _showCommentAction = action;
 
     /// <summary>
     /// 是否为视频动态模块.
     /// </summary>
     /// <returns>结果.</returns>
-    public bool IsVideo()
-        => _isVideo;
+    public bool IsVideo() => _isVideo;
 
     [RelayCommand]
     private void Reset(UserProfile profile)
@@ -101,7 +101,13 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             _preventLoadMore = !hasMore || string.IsNullOrEmpty(offset);
             if (moments is not null)
             {
-                foreach (var item in moments.Select(p => new MomentItemViewModel(p, _isVideo ? MomentCardStyle.Video : MomentCardStyle.Comprehensive, _showCommentAction)))
+                foreach (
+                    var item in moments.Select(p => new MomentItemViewModel(
+                        p,
+                        _isVideo ? MomentCardStyle.Video : MomentCardStyle.Comprehensive,
+                        _showCommentAction
+                    ))
+                )
                 {
                     Items.Add(item);
                 }

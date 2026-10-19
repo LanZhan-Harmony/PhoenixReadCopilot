@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -42,7 +40,10 @@ public sealed partial class VideoHistorySection : VideoHistorySectionBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(VideoHistorySectionDetailViewModel? oldValue, VideoHistorySectionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        VideoHistorySectionDetailViewModel? oldValue,
+        VideoHistorySectionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -65,14 +66,23 @@ public sealed partial class VideoHistorySection : VideoHistorySectionBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ExtentHeight - VideoScrollView.ViewportHeight - VideoScrollView.VerticalOffset <= 240)
+        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+            !args.IsIntermediate;
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (
+                    VideoScrollView.ExtentHeight
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -85,19 +95,21 @@ public sealed partial class VideoHistorySection : VideoHistorySectionBase
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }
 
 /// <summary>
 /// 视频历史记录区域基类.
 /// </summary>
-public abstract class VideoHistorySectionBase : LayoutUserControlBase<VideoHistorySectionDetailViewModel>
-{
-}
+public abstract class VideoHistorySectionBase
+    : LayoutUserControlBase<VideoHistorySectionDetailViewModel> { }

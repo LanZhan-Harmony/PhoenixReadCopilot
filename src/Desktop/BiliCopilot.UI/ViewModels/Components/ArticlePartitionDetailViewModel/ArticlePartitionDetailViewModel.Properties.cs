@@ -1,11 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.Components;
 
@@ -16,7 +14,8 @@ public sealed partial class ArticlePartitionDetailViewModel
 {
     private readonly ILogger<ArticlePartitionDetailViewModel> _logger;
     private readonly IArticleDiscoveryService _service;
-    private readonly Dictionary<string, List<ArticleItemViewModel>> _childPartitionArticleCache = new();
+    private readonly Dictionary<string, List<ArticleItemViewModel>> _childPartitionArticleCache =
+        new();
     private readonly Dictionary<string, int> _childPartitionOffsetCache = new();
     private readonly bool _isRecommendPartition;
     private readonly bool _isHotPartition;
@@ -25,23 +24,17 @@ public sealed partial class ArticlePartitionDetailViewModel
     private int _recommendOffset;
     private bool _preventLoadMore;
 
-    [ObservableProperty]
-    private List<ArticleSortType> _sortTypes;
+    [ObservableProperty] private List<ArticleSortType> _sortTypes;
 
-    [ObservableProperty]
-    private List<PartitionViewModel> _children;
+    [ObservableProperty] private List<PartitionViewModel> _children;
 
-    [ObservableProperty]
-    private ArticleSortType _selectedSortType;
+    [ObservableProperty] private ArticleSortType _selectedSortType;
 
-    [ObservableProperty]
-    private bool _isRecommend;
+    [ObservableProperty] private bool _isRecommend;
 
-    [ObservableProperty]
-    private bool _isArticleLoading;
+    [ObservableProperty] private bool _isArticleLoading;
 
-    [ObservableProperty]
-    private PartitionViewModel _currentPartition;
+    [ObservableProperty] private PartitionViewModel _currentPartition;
 
     /// <summary>
     /// 初始化完成.

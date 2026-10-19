@@ -1,12 +1,11 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 // 源自 https://learn.microsoft.com/zh-cn/windows/apps/develop/win2d/custom-effects#custom-effects-in-c-using-computesharp
+
+using System.Numerics;
 using ComputeSharp;
 using ComputeSharp.D2D1;
 using ComputeSharp.D2D1.WinUI;
 using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.UI;
-using System.Numerics;
 using Windows.Graphics.Effects;
 using Windows.UI;
 
@@ -21,7 +20,8 @@ public sealed partial class BlurCanvasEffect : CanvasEffect
     private static readonly CanvasEffectNode<ScaleEffect> _scaleNode = new();
     private static readonly CanvasEffectNode<GaussianBlurEffect> _gaussianBlurNode = new();
     private static readonly CanvasEffectNode<TintEffect> _tintNode = new();
-    private static readonly CanvasEffectNode<PixelShaderEffect<CrossFadeShader>> _crossFadeNode = new();
+    private static readonly CanvasEffectNode<PixelShaderEffect<CrossFadeShader>> _crossFadeNode =
+        new();
     private static readonly CanvasEffectNode<PixelShaderEffect<NoiseShader>> _noiseNode = new();
     private static readonly CanvasEffectNode<BlendEffect> _blendNode = new();
 
@@ -99,11 +99,21 @@ public sealed partial class BlurCanvasEffect : CanvasEffect
     /// <inheritdoc/>
     protected override void BuildEffectGraph(CanvasEffectGraph effectGraph)
     {
-        BorderEffect borderEffect = new() { ExtendY = Microsoft.Graphics.Canvas.CanvasEdgeBehavior.Mirror };
+        BorderEffect borderEffect = new()
+        {
+            ExtendY = Microsoft.Graphics.Canvas.CanvasEdgeBehavior.Mirror,
+        };
         ScaleEffect scaleEffect = new();
-        GaussianBlurEffect gaussianBlurEffect = new() { Optimization = EffectOptimization.Speed, BorderMode = EffectBorderMode.Hard };
+        GaussianBlurEffect gaussianBlurEffect = new()
+        {
+            Optimization = EffectOptimization.Speed,
+            BorderMode = EffectBorderMode.Hard,
+        };
         TintEffect tintEffect = new();
-        BlendEffect blendEffect = new() { Mode = BlendEffectMode.Luminosity };
+        BlendEffect blendEffect = new()
+        {
+            Mode = BlendEffectMode.Luminosity
+        };
         PremultiplyEffect noisePremultiplyEffect = new();
         PremultiplyEffect finalPremultiplyEffect = new();
         UnPremultiplyEffect unPremultiplyEffect1 = new();
@@ -140,10 +150,15 @@ public sealed partial class BlurCanvasEffect : CanvasEffect
     {
         effectGraph.GetNode(_noiseNode).ConstantBuffer = new NoiseShader(0.1f);
         effectGraph.GetNode(_borderNode).Source = _source;
-        effectGraph.GetNode(_scaleNode).Scale = new Vector2((float)_destinationRectangle.Width / (float)_sourceRectangle.Width);
+        effectGraph.GetNode(_scaleNode).Scale = new Vector2(
+            (float)_destinationRectangle.Width / (float)_sourceRectangle.Width
+        );
         effectGraph.GetNode(_gaussianBlurNode).BlurAmount = _blurAmount;
         effectGraph.GetNode(_tintNode).Color = _tintColor;
-        effectGraph.GetNode(_crossFadeNode).ConstantBuffer = new CrossFadeShader(_crossfadeVerticalOffset, _crossfadeVerticalLength);
+        effectGraph.GetNode(_crossFadeNode).ConstantBuffer = new CrossFadeShader(
+            _crossfadeVerticalOffset,
+            _crossfadeVerticalLength
+        );
         effectGraph.SetOutputNode(_crossFadeNode);
     }
 }

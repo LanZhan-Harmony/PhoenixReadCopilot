@@ -1,11 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.View;
 
@@ -16,37 +14,29 @@ public sealed partial class LivePartitionPageViewModel
 {
     private readonly ILiveDiscoveryService _service;
     private readonly ILogger<LivePartitionPageViewModel> _logger;
-    private readonly Dictionary<PartitionViewModel, LivePartitionDetailViewModel> _partitionCache = new();
+    private readonly Dictionary<PartitionViewModel, LivePartitionDetailViewModel> _partitionCache =
+        new();
     private readonly Dictionary<string, string> _partitionSelectedCache = new();
 
     private int _recommendOffset;
 
-    [ObservableProperty]
-    private double _subNavColumnWidth;
+    [ObservableProperty] private double _subNavColumnWidth;
 
-    [ObservableProperty]
-    private bool _isSubNavEnabled;
+    [ObservableProperty] private bool _isSubNavEnabled;
 
-    [ObservableProperty]
-    private List<PartitionViewModel>? _subPartitions;
+    [ObservableProperty] private List<PartitionViewModel>? _subPartitions;
 
-    [ObservableProperty]
-    private bool _isSectionLoading;
+    [ObservableProperty] private bool _isSectionLoading;
 
-    [ObservableProperty]
-    private bool _isRecommendLoading;
+    [ObservableProperty] private bool _isRecommendLoading;
 
-    [ObservableProperty]
-    private bool _isFollowRoomsEmpty;
+    [ObservableProperty] private bool _isFollowRoomsEmpty;
 
-    [ObservableProperty]
-    private PartitionViewModel _selectedMainSection;
+    [ObservableProperty] private PartitionViewModel _selectedMainSection;
 
-    [ObservableProperty]
-    private PartitionViewModel _selectedSubSection;
+    [ObservableProperty] private PartitionViewModel _selectedSubSection;
 
-    [ObservableProperty]
-    private LivePartitionDetailViewModel _selectedDetail;
+    [ObservableProperty] private LivePartitionDetailViewModel _selectedDetail;
 
     /// <summary>
     /// 分区加载完成.

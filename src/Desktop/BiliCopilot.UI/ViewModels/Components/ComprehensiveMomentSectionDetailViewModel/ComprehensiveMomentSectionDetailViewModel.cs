@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -11,21 +9,21 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 综合动态分区详情视图模型.
 /// </summary>
-public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPageViewModelBase, IMomentSectionDetailViewModel
+public sealed partial class ComprehensiveMomentSectionDetailViewModel
+    : LayoutPageViewModelBase,
+        IMomentSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ComprehensiveMomentSectionDetailViewModel"/> class.
     /// </summary>
-    public ComprehensiveMomentSectionDetailViewModel(
-        IMomentDiscoveryService service)
+    public ComprehensiveMomentSectionDetailViewModel(IMomentDiscoveryService service)
     {
         _service = service;
         _logger = this.Get<ILogger<VideoMomentSectionDetailViewModel>>();
     }
 
     /// <inheritdoc/>
-    protected override string GetPageKey()
-        => "ComprehensiveMoment";
+    protected override string GetPageKey() => "ComprehensiveMoment";
 
     [RelayCommand]
     private async Task InitializeAsync()
@@ -50,12 +48,16 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel : LayoutPa
         if (SelectedUper.IsTotal)
         {
             Upers.Clear();
-            this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-            {
-                SelectedUper?.Items?.Clear();
-                SelectedUper = default;
-                await InitializeAsync();
-            });
+            this.Get<DispatcherQueue>()
+                .TryEnqueue(
+                    DispatcherQueuePriority.Low,
+                    async () =>
+                    {
+                        SelectedUper?.Items?.Clear();
+                        SelectedUper = default;
+                        await InitializeAsync();
+                    }
+                );
         }
         else
         {

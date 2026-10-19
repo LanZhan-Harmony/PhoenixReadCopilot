@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -12,18 +10,19 @@ namespace BiliCopilot.UI.ViewModels.View;
 /// </summary>
 public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 {
-    [ObservableProperty]
-    private PlayerViewModelBase _player;
+    [ObservableProperty] private PlayerViewModelBase _player;
 
-    [ObservableProperty]
-    private bool _isSeparatorWindowPlayer;
+    [ObservableProperty] private bool _isSeparatorWindowPlayer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPageViewModelBase"/> class.
     /// </summary>
     protected PlayerPageViewModelBase()
     {
-        var playerType = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        var playerType = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
         if (playerType == PlayerType.Mpv)
         {
             playerType = PlayerType.Island;

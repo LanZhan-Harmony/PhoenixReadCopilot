@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Comment;
@@ -16,11 +14,9 @@ public sealed partial class CommentItemViewModel
     private readonly ILogger<CommentItemViewModel> _logger;
     private readonly Action<CommentItemViewModel> _markReplyTargetAction;
 
-    [ObservableProperty]
-    private bool _isLiked;
+    [ObservableProperty] private bool _isLiked;
 
-    [ObservableProperty]
-    private int _likeCount;
+    [ObservableProperty] private int _likeCount;
 
     /// <summary>
     /// 子评论条数.

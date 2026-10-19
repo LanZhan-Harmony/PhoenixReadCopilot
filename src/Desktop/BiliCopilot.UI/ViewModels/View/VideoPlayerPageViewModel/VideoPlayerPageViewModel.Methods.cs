@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -22,13 +20,30 @@ public sealed partial class VideoPlayerPageViewModel
         Title = view.Information.Identifier.Title;
         AvId = view.Information.Identifier.Id;
         BvId = view.Information.BvId;
-        IsMyVideo = _view.Information.Publisher.User.Id == this.Get<IBiliTokenResolver>().GetToken().UserId.ToString();
+        IsMyVideo =
+            _view.Information.Publisher.User.Id
+            == this.Get<IBiliTokenResolver>().GetToken().UserId.ToString();
         UpAvatar = view.Information.Publisher.User.Avatar.Uri;
         UpName = view.Information.Publisher.User.Name;
-        var relativeTime = DateTimeOffset.Now - view.Information.PublishTime > TimeSpan.FromDays(90) ? view.Information.PublishTime!.Value.ToString("yyyy-MM-dd HH:mm:ss") : view.Information.PublishTime.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
-        PublishRelativeTime = string.Format(ResourceToolkit.GetLocalizedString(StringNames.AuthorPublishTime), relativeTime);
-        Description = view.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description);
-        IsFollow = view.OwnerCommunity.Relation != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow && view.OwnerCommunity.Relation != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown;
+        var relativeTime =
+            DateTimeOffset.Now - view.Information.PublishTime > TimeSpan.FromDays(90)
+                ? view.Information.PublishTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                : view.Information.PublishTime.Humanize(
+                    default,
+                    new System.Globalization.CultureInfo("zh-CN")
+                );
+        PublishRelativeTime = string.Format(
+            ResourceToolkit.GetLocalizedString(StringNames.AuthorPublishTime),
+            relativeTime
+        );
+        Description = view.Information.GetExtensionIfNotNull<string>(
+            VideoExtensionDataId.Description
+        );
+        IsFollow =
+            view.OwnerCommunity.Relation
+            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow
+            && view.OwnerCommunity.Relation
+            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown;
         IsInteractionVideo = view.IsInteractiveVideo;
         Tags = view.Tags.ToList();
         InitializeCommunityInformation(view.Information.CommunityInformation);
@@ -57,7 +72,9 @@ public sealed partial class VideoPlayerPageViewModel
 
         // 这里针对 MPV 额外过滤掉杜比视界画质，目前使用 libmpv 暂时还不能正确处理色域映射.
         Downloader.Clear();
-        var isMpvPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island) == PlayerType.Mpv;
+        var isMpvPlayer =
+            SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island)
+            == PlayerType.Mpv;
         var formats = isMpvPlayer ? info.Formats.Where(p => p.Quality != 126) : info.Formats;
         Formats = formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
 
@@ -75,7 +92,10 @@ public sealed partial class VideoPlayerPageViewModel
             return;
         }
 
-        var preferFormatSetting = SettingsToolkit.ReadLocalSetting(SettingNames.PreferQuality, PreferQualityType.Auto);
+        var preferFormatSetting = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PreferQuality,
+            PreferQualityType.Auto
+        );
         var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
         var partIndex = _view.Parts?.IndexOf(_part) ?? 0;
 
@@ -84,11 +104,15 @@ public sealed partial class VideoPlayerPageViewModel
             GetWebLink(),
             info.Formats.AsReadOnly(),
             _view.Parts?.Count > 1 ? _view.Parts.AsReadOnly() : default,
-            partIndex + 1);
+            partIndex + 1
+        );
         PlayerFormatItemViewModel? selectedFormat = default;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
-            var lastSelectedFormat = SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedVideoQuality, 0);
+            var lastSelectedFormat = SettingsToolkit.ReadLocalSetting(
+                SettingNames.LastSelectedVideoQuality,
+                0
+            );
             selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
         }
         else if (preferFormatSetting == PreferQualityType.UHD)
@@ -97,7 +121,9 @@ public sealed partial class VideoPlayerPageViewModel
         }
         else if (preferFormatSetting == PreferQualityType.HD)
         {
-            var hdFormats = availableFormats.Where(p => p.Data.Quality == 116 || p.Data.Quality == 80).ToList();
+            var hdFormats = availableFormats
+                .Where(p => p.Data.Quality == 116 || p.Data.Quality == 80)
+                .ToList();
             selectedFormat = hdFormats.OrderByDescending(p => p.Data.Quality).FirstOrDefault();
         }
 
@@ -124,17 +150,29 @@ public sealed partial class VideoPlayerPageViewModel
 
         if (_view.Seasons is not null)
         {
-            sections.Insert(0, new VideoPlayerSeasonSectionDetailViewModel(this, _view.Seasons, AvId));
+            sections.Insert(
+                0,
+                new VideoPlayerSeasonSectionDetailViewModel(this, _view.Seasons, AvId)
+            );
         }
 
         if (_view.Parts?.Count > 1)
         {
-            sections.Add(new VideoPlayerPartSectionDetailViewModel(_view.Parts, _part.Identifier.Id, ChangePart));
+            sections.Add(
+                new VideoPlayerPartSectionDetailViewModel(
+                    _view.Parts,
+                    _part.Identifier.Id,
+                    ChangePart
+                )
+            );
         }
 
         if (_playlist is not null)
         {
-            sections.Insert(0, new VideoPlayerPlaylistSectionDetailViewModel(this, _playlist, AvId));
+            sections.Insert(
+                0,
+                new VideoPlayerPlaylistSectionDetailViewModel(this, _playlist, AvId)
+            );
         }
 
         if (_view.Recommends is not null)
@@ -181,12 +219,19 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void CalcPlayerHeight()
     {
-        if (PlayerWidth <= 0 || _view?.AspectRatio is null || Player.IsFullScreen || Player.IsCompactOverlay)
+        if (
+            PlayerWidth <= 0
+            || _view?.AspectRatio is null
+            || Player.IsFullScreen
+            || Player.IsCompactOverlay
+        )
         {
             return;
         }
 
-        PlayerHeight = (double)(PlayerWidth * _view.AspectRatio.Value.Height / _view.AspectRatio.Value.Width);
+        PlayerHeight = (double)(
+            PlayerWidth * _view.AspectRatio.Value.Height / _view.AspectRatio.Value.Width
+        );
     }
 
     private VideoPart? FindInitialPart(string? initialPartId = default)
@@ -205,7 +250,10 @@ public sealed partial class VideoPlayerPageViewModel
         if (part == null)
         {
             var historyPartId = _view.Progress?.Cid;
-            var autoLoadHistory = SettingsToolkit.ReadLocalSetting(SettingNames.AutoLoadHistory, true);
+            var autoLoadHistory = SettingsToolkit.ReadLocalSetting(
+                SettingNames.AutoLoadHistory,
+                true
+            );
             if (!string.IsNullOrEmpty(historyPartId) && autoLoadHistory)
             {
                 part = _view.Parts.FirstOrDefault(p => p.Identifier.Id == historyPartId);
@@ -238,7 +286,10 @@ public sealed partial class VideoPlayerPageViewModel
         var hasUgcSeason = Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().Any();
 
         // 1. 先检查分P列表中是否有下一个视频.
-        if (Sections.OfType<VideoPlayerPartSectionDetailViewModel>().FirstOrDefault() is VideoPlayerPartSectionDetailViewModel partSection)
+        if (
+            Sections.OfType<VideoPlayerPartSectionDetailViewModel>().FirstOrDefault()
+            is VideoPlayerPartSectionDetailViewModel partSection
+        )
         {
             var index = partSection.Parts.ToList().IndexOf(_part);
             if (index < partSection.Parts.Count - 1)
@@ -272,7 +323,10 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         // 3. 检查合集中是否有下一个视频.
-        if (Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().FirstOrDefault() is VideoPlayerSeasonSectionDetailViewModel seasonSection)
+        if (
+            Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().FirstOrDefault()
+            is VideoPlayerSeasonSectionDetailViewModel seasonSection
+        )
         {
             var index = seasonSection.Items.ToList().IndexOf(seasonSection.SelectedItem);
             if (index < seasonSection.Items.Count - 1)
@@ -286,8 +340,15 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         // 4. 检查推荐视频中是否有下一个视频.
-        var isAutoPlayRecommendVideo = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNextRecommendVideo, false);
-        if (isAutoPlayRecommendVideo && Sections.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault() is VideoPlayerRecommendSectionDetailViewModel recommendSection)
+        var isAutoPlayRecommendVideo = SettingsToolkit.ReadLocalSetting(
+            SettingNames.AutoPlayNextRecommendVideo,
+            false
+        );
+        if (
+            isAutoPlayRecommendVideo
+            && Sections.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault()
+                is VideoPlayerRecommendSectionDetailViewModel recommendSection
+        )
         {
             return recommendSection.Items.First().Data;
         }
@@ -306,11 +367,17 @@ public sealed partial class VideoPlayerPageViewModel
         HasNextVideo = next is not null;
         if (next is VideoPart part)
         {
-            NextVideoTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.PlayNextPartTipTemplate), part.Identifier.Title);
+            NextVideoTip = string.Format(
+                ResourceToolkit.GetLocalizedString(StringNames.PlayNextPartTipTemplate),
+                part.Identifier.Title
+            );
         }
         else if (next is VideoInformation video)
         {
-            NextVideoTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate), video.Identifier.Title);
+            NextVideoTip = string.Format(
+                ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate),
+                video.Identifier.Title
+            );
         }
     }
 
@@ -331,17 +398,28 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void SyncDownloadAndSubtitle()
     {
-        var isAISubtitleFiltered = SettingsToolkit.ReadLocalSetting(SettingNames.FilterAISubtitle, true);
-        Downloader.HasAvailableSubtitle = Subtitle.IsAvailable && (isAISubtitleFiltered ? Subtitle.Metas.Any(p => !p.IsAI) : true);
+        var isAISubtitleFiltered = SettingsToolkit.ReadLocalSetting(
+            SettingNames.FilterAISubtitle,
+            true
+        );
+        Downloader.HasAvailableSubtitle =
+            Subtitle.IsAvailable
+            && (isAISubtitleFiltered ? Subtitle.Metas.Any(p => !p.IsAI) : true);
     }
 
     private void InitializeLoops()
     {
         var currentType = CurrentLoop;
-        var loops = new List<VideoLoopType> { VideoLoopType.None, VideoLoopType.Single };
-        if (Sections.OfType<VideoPlayerPartSectionDetailViewModel>().Any()
-           || _playlist is not null
-           || Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().Any())
+        var loops = new List<VideoLoopType>
+        {
+            VideoLoopType.None,
+            VideoLoopType.Single
+        };
+        if (
+            Sections.OfType<VideoPlayerPartSectionDetailViewModel>().Any()
+            || _playlist is not null
+            || Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().Any()
+        )
         {
             loops.Add(VideoLoopType.List);
         }

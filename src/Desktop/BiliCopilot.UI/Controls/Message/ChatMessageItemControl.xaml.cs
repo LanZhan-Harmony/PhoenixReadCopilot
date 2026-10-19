@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,8 +17,10 @@ public sealed partial class ChatMessageItemControl : ChatMessageItemControlBase
     protected override void OnControlLoaded() => CheckState();
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(ChatMessageItemViewModel? oldValue, ChatMessageItemViewModel? newValue)
-        => CheckState();
+    protected override void OnViewModelChanged(
+        ChatMessageItemViewModel? oldValue,
+        ChatMessageItemViewModel? newValue
+    ) => CheckState();
 
     private void CheckState()
     {
@@ -30,14 +30,13 @@ public sealed partial class ChatMessageItemControl : ChatMessageItemControlBase
         }
 
         _ = ViewModel.IsMe
-                ? VisualStateManager.GoToState(this, nameof(MyState), false)
-                : VisualStateManager.GoToState(this, nameof(AssistantState), false);
+            ? VisualStateManager.GoToState(this, nameof(MyState), false)
+            : VisualStateManager.GoToState(this, nameof(AssistantState), false);
     }
 }
 
 /// <summary>
 /// 聊天消息项控件基类.
 /// </summary>
-public abstract class ChatMessageItemControlBase : LayoutUserControlBase<ChatMessageItemViewModel>
-{
-}
+public abstract class ChatMessageItemControlBase
+    : LayoutUserControlBase<ChatMessageItemViewModel> { }

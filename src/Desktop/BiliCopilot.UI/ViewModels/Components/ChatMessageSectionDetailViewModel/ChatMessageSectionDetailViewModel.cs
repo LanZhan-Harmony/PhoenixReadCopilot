@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
@@ -18,13 +16,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 聊天消息区块详情视图模型.
 /// </summary>
-public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<ChatSession>, IMessageSectionDetailViewModel
+public sealed partial class ChatMessageSectionDetailViewModel
+    : ViewModelBase<ChatSession>,
+        IMessageSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ChatMessageSectionDetailViewModel"/> class.
     /// </summary>
-    public ChatMessageSectionDetailViewModel(
-        ChatSession session)
+    public ChatMessageSectionDetailViewModel(ChatSession session)
         : base(session)
     {
         _service = this.Get<IMessageService>();
@@ -34,7 +33,10 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
         UserName = session.User?.Name;
         UnreadCount = session.UnreadCount;
         LastMessage = Data.LastMessage;
-        LastMessageTime = Data.Time.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
+        LastMessageTime = Data.Time.Humanize(
+            default,
+            new System.Globalization.CultureInfo("zh-CN")
+        );
     }
 
     [RelayCommand]
@@ -50,8 +52,8 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
     }
 
     [RelayCommand]
-    private void ShowUserSpace()
-        => this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User);
+    private void ShowUserSpace() =>
+        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User);
 
     [RelayCommand]
     private async Task RefreshAsync()
@@ -88,7 +90,13 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
         catch (Exception ex)
         {
             _logger.LogError(ex, "发送消息时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToSendMessage), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToSendMessage),
+                        InfoType.Error
+                    )
+                );
         }
         finally
         {
@@ -118,7 +126,9 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
                 if (LastMessage != messages.Last().Content.Text)
                 {
                     LastMessage = messages.Last().Content.Text;
-                    LastMessageTime = messages.Last().Time.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
+                    LastMessageTime = messages
+                        .Last()
+                        .Time.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
                 }
 
                 RequestScrollToBottom?.Invoke(this, EventArgs.Empty);
@@ -133,7 +143,13 @@ public sealed partial class ChatMessageSectionDetailViewModel : ViewModelBase<Ch
         {
             _preventLoadMore = true;
             _logger.LogError(ex, "加载聊天消息时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToLoadChatMessages), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToLoadChatMessages),
+                        InfoType.Error
+                    )
+                );
         }
         finally
         {

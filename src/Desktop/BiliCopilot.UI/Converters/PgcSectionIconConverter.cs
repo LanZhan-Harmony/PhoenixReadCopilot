@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.UI.Xaml.Data;
 
@@ -17,9 +15,10 @@ internal sealed partial class PgcSectionIconConverter : IValueConverter
             PgcSectionType.Movie => FluentIcons.Common.Symbol.MoviesAndTv,
             PgcSectionType.TV => FluentIcons.Common.Symbol.Tv,
             PgcSectionType.Documentary => FluentIcons.Common.Symbol.EarthLeaf,
-            _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

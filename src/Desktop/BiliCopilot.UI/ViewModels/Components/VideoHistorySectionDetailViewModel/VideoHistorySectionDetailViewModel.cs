@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -11,13 +9,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 视频历史记录视图模型.
 /// </summary>
-public sealed partial class VideoHistorySectionDetailViewModel : ViewModelBase, IHistorySectionDetailViewModel
+public sealed partial class VideoHistorySectionDetailViewModel
+    : ViewModelBase,
+        IHistorySectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoHistorySectionDetailViewModel"/> class.
     /// </summary>
-    public VideoHistorySectionDetailViewModel(
-        IViewHistoryService service)
+    public VideoHistorySectionDetailViewModel(IViewHistoryService service)
     {
         _service = service;
         _logger = this.Get<ILogger<VideoHistorySectionDetailViewModel>>();
@@ -62,7 +61,13 @@ public sealed partial class VideoHistorySectionDetailViewModel : ViewModelBase, 
             {
                 foreach (var video in group.Videos)
                 {
-                    Items.Add(new VideoItemViewModel(video, Models.Constants.VideoCardStyle.History, removeAction: RemoveHistory));
+                    Items.Add(
+                        new VideoItemViewModel(
+                            video,
+                            Models.Constants.VideoCardStyle.History,
+                            removeAction: RemoveHistory
+                        )
+                    );
                 }
             }
 

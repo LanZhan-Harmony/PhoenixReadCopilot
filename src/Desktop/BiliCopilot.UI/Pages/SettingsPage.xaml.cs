@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
@@ -25,13 +23,16 @@ public sealed partial class SettingsPage : SettingsPageBase
     }
 
     /// <inheritdoc/>
-    protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        => await ViewModel.CheckSaveServicesAsync();
+    protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
+        await ViewModel.CheckSaveServicesAsync();
 
-    private void OnJoinGroupButtonClick(object sender, RoutedEventArgs e)
-        => FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
+    private void OnJoinGroupButtonClick(object sender, RoutedEventArgs e) =>
+        FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
 
-    private async void OnSectionSelectorChangedAsync(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private async void OnSectionSelectorChangedAsync(
+        SelectorBar sender,
+        SelectorBarSelectionChangedEventArgs args
+    )
     {
         var index = Convert.ToInt32(sender.SelectedItem.Tag);
         if (index == 0)

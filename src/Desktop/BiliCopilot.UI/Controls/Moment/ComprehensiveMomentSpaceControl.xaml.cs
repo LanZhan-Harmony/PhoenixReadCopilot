@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.Moment;
 
 /// <summary>
@@ -42,13 +40,21 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (MomentScrollView.ExtentHeight - MomentScrollView.ViewportHeight - MomentScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (
+                    MomentScrollView.ExtentHeight
+                    - MomentScrollView.ViewportHeight
+                    - MomentScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -61,12 +67,15 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
 
     private void CheckMomentCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
@@ -24,7 +22,8 @@ public sealed partial class LivePartitionPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public LivePartitionPageViewModel(
         ILiveDiscoveryService service,
-        ILogger<LivePartitionPageViewModel> logger)
+        ILogger<LivePartitionPageViewModel> logger
+    )
     {
         _service = service;
         _logger = logger;
@@ -40,7 +39,10 @@ public sealed partial class LivePartitionPageViewModel : LayoutPageViewModelBase
     {
         base.IsNavManualHideChanged(value);
         IsSubNavEnabled = !value && SelectedMainSection?.Children?.Count > 0;
-        SubNavColumnWidth = !IsSubNavEnabled ? 0 : this.Get<ISettingsToolkit>().ReadLocalSetting($"{GetPageKey()}SubNavColumnWidth", 200d);
+        SubNavColumnWidth = !IsSubNavEnabled
+            ? 0
+            : this.Get<ISettingsToolkit>()
+                .ReadLocalSetting($"{GetPageKey()}SubNavColumnWidth", 200d);
     }
 
     [RelayCommand]
@@ -55,26 +57,35 @@ public sealed partial class LivePartitionPageViewModel : LayoutPageViewModelBase
         IsFollowRoomsEmpty = true;
         try
         {
-            this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-            {
-                MainSections.Clear();
-                var rcmdSection = new Partition("_", ResourceToolkit.GetLocalizedString(StringNames.RecommendLive));
-                MainSections.Add(new PartitionViewModel(rcmdSection));
-                var sections = await _service.GetLivePartitionsAsync();
-                foreach (var section in sections)
-                {
-                    if (section.Name == "推荐")
+            this.Get<DispatcherQueue>()
+                .TryEnqueue(
+                    DispatcherQueuePriority.Low,
+                    async () =>
                     {
-                        section.Name = ResourceToolkit.GetLocalizedString(StringNames.RecommendLivePartition);
+                        MainSections.Clear();
+                        var rcmdSection = new Partition(
+                            "_",
+                            ResourceToolkit.GetLocalizedString(StringNames.RecommendLive)
+                        );
+                        MainSections.Add(new PartitionViewModel(rcmdSection));
+                        var sections = await _service.GetLivePartitionsAsync();
+                        foreach (var section in sections)
+                        {
+                            if (section.Name == "推荐")
+                            {
+                                section.Name = ResourceToolkit.GetLocalizedString(
+                                    StringNames.RecommendLivePartition
+                                );
+                            }
+
+                            MainSections.Add(new PartitionViewModel(section));
+                        }
+
+                        await SelectMainSectionAsync(MainSections.First());
+                        SectionInitialized?.Invoke(this, EventArgs.Empty);
+                        IsSectionLoading = false;
                     }
-
-                    MainSections.Add(new PartitionViewModel(section));
-                }
-
-                await SelectMainSectionAsync(MainSections.First());
-                SectionInitialized?.Invoke(this, EventArgs.Empty);
-                IsSectionLoading = false;
-            });
+                );
         }
         catch (Exception ex)
         {
@@ -89,13 +100,17 @@ public sealed partial class LivePartitionPageViewModel : LayoutPageViewModelBase
         if (SelectedDetail is null)
         {
             _recommendOffset = 0;
-            this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-            {
-                RecommendRooms.Clear();
-                FollowRooms.Clear();
-                IsFollowRoomsEmpty = true;
-                await LoadRecommendRoomsAsync();
-            });
+            this.Get<DispatcherQueue>()
+                .TryEnqueue(
+                    DispatcherQueuePriority.Low,
+                    async () =>
+                    {
+                        RecommendRooms.Clear();
+                        FollowRooms.Clear();
+                        IsFollowRoomsEmpty = true;
+                        await LoadRecommendRoomsAsync();
+                    }
+                );
         }
         else
         {
@@ -220,7 +235,8 @@ public sealed partial class LivePartitionPageViewModel : LayoutPageViewModelBase
     {
         if (value > 0)
         {
-            this.Get<ISettingsToolkit>().WriteLocalSetting($"{GetPageKey()}SubNavColumnWidth", value);
+            this.Get<ISettingsToolkit>()
+                .WriteLocalSetting($"{GetPageKey()}SubNavColumnWidth", value);
         }
     }
 }

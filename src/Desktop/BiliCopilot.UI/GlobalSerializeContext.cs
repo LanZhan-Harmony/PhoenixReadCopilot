@@ -1,9 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Text.Json.Serialization;
 using BiliCopilot.UI.Models;
 using Richasy.AgentKernel;
 using Richasy.BiliKernel.Models.Media;
-using System.Text.Json.Serialization;
 
 namespace BiliCopilot.UI;
 
@@ -15,6 +13,4 @@ namespace BiliCopilot.UI;
 [JsonSerializable(typeof(List<PinItem>))]
 [JsonSerializable(typeof(WebDavConfig))]
 [JsonSerializable(typeof(List<WebDavConfig>))]
-internal sealed partial class GlobalSerializeContext : JsonSerializerContext
-{
-}
+internal sealed partial class GlobalSerializeContext : JsonSerializerContext { }

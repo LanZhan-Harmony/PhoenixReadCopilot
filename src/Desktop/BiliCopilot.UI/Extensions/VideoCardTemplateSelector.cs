@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.ViewModels.Items;
 
@@ -25,7 +23,7 @@ internal sealed partial class VideoCardTemplateSelector : DataTemplateSelector
                 VideoCardStyle.Recommend => RecommendTemplate,
                 VideoCardStyle.Hot => HotTemplate,
                 VideoCardStyle.Rank => RankTemplate,
-                _ => default
+                _ => default,
             };
         }
 

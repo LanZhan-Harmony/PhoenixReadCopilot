@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -12,14 +10,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 通知消息区块详情视图模型.
 /// </summary>
-public sealed partial class NotifyMessageSectionDetailViewModel : ViewModelBase, IMessageSectionDetailViewModel
+public sealed partial class NotifyMessageSectionDetailViewModel
+    : ViewModelBase,
+        IMessageSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="NotifyMessageSectionDetailViewModel"/> class.
     /// </summary>
-    public NotifyMessageSectionDetailViewModel(
-        NotifyMessageType type,
-        IMessageService service)
+    public NotifyMessageSectionDetailViewModel(NotifyMessageType type, IMessageService service)
     {
         _service = service;
         _logger = this.Get<ILogger<NotifyMessageSectionDetailViewModel>>();
@@ -59,7 +57,11 @@ public sealed partial class NotifyMessageSectionDetailViewModel : ViewModelBase,
         try
         {
             IsLoading = true;
-            var (messages, offsetId, offsetTime, hasMore) = await _service.GetNotifyMessagesAsync(Type, _offsetId, _offsetTime);
+            var (messages, offsetId, offsetTime, hasMore) = await _service.GetNotifyMessagesAsync(
+                Type,
+                _offsetId,
+                _offsetTime
+            );
             _preventLoadMore = messages is null || messages.Count == 0 || !hasMore;
             if (messages != null)
             {

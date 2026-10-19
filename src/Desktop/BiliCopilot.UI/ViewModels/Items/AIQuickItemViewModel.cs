@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -13,14 +11,11 @@ public sealed partial class AIQuickItemViewModel : ViewModelBase
 {
     private readonly Func<AIQuickItemViewModel, Task> _action;
 
-    [ObservableProperty]
-    private FluentIcons.Common.Symbol _symbol;
+    [ObservableProperty] private FluentIcons.Common.Symbol _symbol;
 
-    [ObservableProperty]
-    private string _title;
+    [ObservableProperty] private string _title;
 
-    [ObservableProperty]
-    private string _description;
+    [ObservableProperty] private string _description;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AIQuickItemViewModel"/> class.
@@ -31,7 +26,8 @@ public sealed partial class AIQuickItemViewModel : ViewModelBase
         string desc,
         string requestTemplate,
         string prompt,
-        Func<AIQuickItemViewModel, Task> activeAction)
+        Func<AIQuickItemViewModel, Task> activeAction
+    )
     {
         Symbol = symbol;
         Title = title;
@@ -52,7 +48,8 @@ public sealed partial class AIQuickItemViewModel : ViewModelBase
     public string Prompt { get; }
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is AIQuickItemViewModel model && Prompt == model.Prompt;
+    public override bool Equals(object? obj) =>
+        obj is AIQuickItemViewModel model && Prompt == model.Prompt;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Prompt);

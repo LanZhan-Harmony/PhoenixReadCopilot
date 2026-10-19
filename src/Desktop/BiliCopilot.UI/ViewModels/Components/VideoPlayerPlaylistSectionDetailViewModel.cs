@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -14,15 +12,15 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 视频播放器播放列表部分.
 /// </summary>
-public sealed partial class VideoPlayerPlaylistSectionDetailViewModel : ViewModelBase, IPlayerSectionDetailViewModel
+public sealed partial class VideoPlayerPlaylistSectionDetailViewModel
+    : ViewModelBase,
+        IPlayerSectionDetailViewModel
 {
     private readonly string _videoId;
 
-    [ObservableProperty]
-    private List<VideoItemViewModel> _items;
+    [ObservableProperty] private List<VideoItemViewModel> _items;
 
-    [ObservableProperty]
-    private VideoItemViewModel _selectedItem;
+    [ObservableProperty] private VideoItemViewModel _selectedItem;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPlaylistSectionDetailViewModel"/> class.
@@ -30,7 +28,8 @@ public sealed partial class VideoPlayerPlaylistSectionDetailViewModel : ViewMode
     public VideoPlayerPlaylistSectionDetailViewModel(
         VideoPlayerPageViewModel page,
         IList<VideoInformation> list,
-        string videoId)
+        string videoId
+    )
     {
         _videoId = videoId;
         Page = page;
@@ -47,6 +46,5 @@ public sealed partial class VideoPlayerPlaylistSectionDetailViewModel : ViewMode
     public VideoPlayerPageViewModel Page { get; }
 
     [RelayCommand]
-    private static Task TryFirstLoadAsync()
-        => Task.CompletedTask;
+    private static Task TryFirstLoadAsync() => Task.CompletedTask;
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.Pgc;
 
 /// <summary>
@@ -12,6 +10,5 @@ public sealed partial class EntertainmentIndexSideControl : EntertainmentIndexCo
     /// </summary>
     public EntertainmentIndexSideControl() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => FilterRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => FilterRepeater.ItemsSource = default;
 }

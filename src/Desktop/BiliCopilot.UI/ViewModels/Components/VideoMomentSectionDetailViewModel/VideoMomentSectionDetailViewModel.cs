@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
@@ -14,13 +12,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 视频动态分区详情视图模型.
 /// </summary>
-public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, IMomentSectionDetailViewModel
+public sealed partial class VideoMomentSectionDetailViewModel
+    : ViewModelBase,
+        IMomentSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoMomentSectionDetailViewModel"/> class.
     /// </summary>
-    public VideoMomentSectionDetailViewModel(
-        IMomentDiscoveryService service)
+    public VideoMomentSectionDetailViewModel(IMomentDiscoveryService service)
     {
         _service = service;
         _logger = this.Get<ILogger<VideoMomentSectionDetailViewModel>>();
@@ -46,11 +45,15 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
         IsEmpty = false;
         _preventLoadMore = false;
         Items.Clear();
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            await LoadItemsAsync();
-            SaveLastTenMomentIds();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    await LoadItemsAsync();
+                    SaveLastTenMomentIds();
+                }
+            );
     }
 
     [RelayCommand]
@@ -70,7 +73,13 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
                 _offset = view.Offset;
                 _baseline = view.UpdateBaseline;
                 _preventLoadMore = view.HasMoreMoments != true;
-                foreach (var item in view.Moments.Select(p => new MomentItemViewModel(p, Models.Constants.MomentCardStyle.Video, ShowComment)))
+                foreach (
+                    var item in view.Moments.Select(p => new MomentItemViewModel(
+                        p,
+                        Models.Constants.MomentCardStyle.Video,
+                        ShowComment
+                    ))
+                )
                 {
                     Items.Add(item);
                 }
@@ -90,13 +99,16 @@ public sealed partial class VideoMomentSectionDetailViewModel : ViewModelBase, I
         }
     }
 
-    private void ShowComment(MomentItemViewModel item)
-        => this.Get<MomentPageViewModel>().ShowCommentCommand.Execute(item.Data);
+    private void ShowComment(MomentItemViewModel item) =>
+        this.Get<MomentPageViewModel>().ShowCommentCommand.Execute(item.Data);
 
     private void SaveLastTenMomentIds()
     {
         var momentIds = Items.Take(10).Select(p => p.Data.Id).ToList();
         var lastTenMomentIds = string.Join(',', momentIds);
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.LastTenMomentIds, lastTenMomentIds);
+        SettingsToolkit.WriteLocalSetting(
+            Models.Constants.SettingNames.LastTenMomentIds,
+            lastTenMomentIds
+        );
     }
 }

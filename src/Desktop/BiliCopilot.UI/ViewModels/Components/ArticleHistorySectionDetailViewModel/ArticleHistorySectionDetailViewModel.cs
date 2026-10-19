@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -11,13 +9,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 文章历史记录详情视图模型.
 /// </summary>
-public sealed partial class ArticleHistorySectionDetailViewModel : ViewModelBase, IHistorySectionDetailViewModel
+public sealed partial class ArticleHistorySectionDetailViewModel
+    : ViewModelBase,
+        IHistorySectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleHistorySectionDetailViewModel"/> class.
     /// </summary>
-    public ArticleHistorySectionDetailViewModel(
-        IViewHistoryService service)
+    public ArticleHistorySectionDetailViewModel(IViewHistoryService service)
     {
         _service = service;
         _logger = this.Get<ILogger<ArticleHistorySectionDetailViewModel>>();
@@ -62,7 +61,13 @@ public sealed partial class ArticleHistorySectionDetailViewModel : ViewModelBase
             {
                 foreach (var article in group.Articles)
                 {
-                    Items.Add(new ArticleItemViewModel(article, Models.Constants.ArticleCardStyle.History, removeAction: RemoveArticle));
+                    Items.Add(
+                        new ArticleItemViewModel(
+                            article,
+                            Models.Constants.ArticleCardStyle.History,
+                            removeAction: RemoveArticle
+                        )
+                    );
                 }
             }
 

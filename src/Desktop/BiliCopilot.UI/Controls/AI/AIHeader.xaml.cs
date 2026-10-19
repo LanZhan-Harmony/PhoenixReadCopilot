@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.WinUIKernel.AI.ViewModels;
 
 namespace BiliCopilot.UI.Controls.AI;
@@ -14,8 +12,7 @@ public sealed partial class AIHeader : AIControlBase
     /// </summary>
     public AIHeader() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => ServiceRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => ServiceRepeater.ItemsSource = null;
 
     private void OnServiceItemClick(object sender, RoutedEventArgs e)
     {

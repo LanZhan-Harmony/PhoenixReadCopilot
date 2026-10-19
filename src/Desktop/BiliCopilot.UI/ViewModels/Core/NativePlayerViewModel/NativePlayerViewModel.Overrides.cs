@@ -1,12 +1,10 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.Graphics.Canvas;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
-using System.Diagnostics;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.Streaming.Adaptive;
@@ -46,8 +44,8 @@ public sealed partial class NativePlayerViewModel
     }
 
     /// <inheritdoc/>
-    protected override bool IsMediaLoaded()
-        => !_isDisposed && Player?.PlaybackSession?.NaturalDuration.Ticks > 0;
+    protected override bool IsMediaLoaded() =>
+        !_isDisposed && Player?.PlaybackSession?.NaturalDuration.Ticks > 0;
 
     /// <inheritdoc/>
     protected override Task OnTogglePlayPauseAsync()
@@ -85,7 +83,13 @@ public sealed partial class NativePlayerViewModel
     {
         if (!Player?.CanSeek ?? false)
         {
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.CanNotSeek), InfoType.Warning));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.CanNotSeek),
+                        InfoType.Warning
+                    )
+                );
             return Task.CompletedTask;
         }
 
@@ -147,10 +151,11 @@ public sealed partial class NativePlayerViewModel
     protected override async Task OnTakeScreenshotAsync(string path)
     {
         var renderTarget = new CanvasRenderTarget(
-                    CanvasDevice.GetSharedDevice(),
-                    Player.PlaybackSession.NaturalVideoWidth,
-                    Player.PlaybackSession.NaturalVideoHeight,
-                    96);
+            CanvasDevice.GetSharedDevice(),
+            Player.PlaybackSession.NaturalVideoWidth,
+            Player.PlaybackSession.NaturalVideoHeight,
+            96
+        );
         Player.CopyFrameToVideoSurface(renderTarget);
         await renderTarget.SaveAsync(path, CanvasBitmapFileFormat.Png);
     }
@@ -160,14 +165,18 @@ public sealed partial class NativePlayerViewModel
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("Referer", "https://www.bilibili.com/");
         httpClient.DefaultRequestHeaders.Add("User-Agent", VideoUserAgent);
-        httpClient.DefaultRequestHeaders.Add("Cookie", this.Get<IBiliCookiesResolver>().GetCookieString());
+        httpClient.DefaultRequestHeaders.Add(
+            "Cookie",
+            this.Get<IBiliCookiesResolver>().GetCookieString()
+        );
         return httpClient;
     }
 
     private HttpClient GetWebDavClient()
     {
         var httpClient = new HttpClient();
-        var auth = $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}";
+        var auth =
+            $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}";
         httpClient.DefaultRequestHeaders.Add("Authorization", auth);
         return httpClient;
     }
@@ -177,43 +186,50 @@ public sealed partial class NativePlayerViewModel
         var httpClient = GetVideoClient();
         var onlyVideo = !string.IsNullOrEmpty(_videoUrl) && string.IsNullOrEmpty(_audioUrl);
         var onlyAudio = string.IsNullOrEmpty(_videoUrl) && !string.IsNullOrEmpty(_audioUrl);
-        var mpdFilePath = onlyVideo ? "ms-appx:///Assets/DashVideoWithoutAudioTemplate.xml" : onlyAudio ? "ms-appx:///Assets/DashAudioWithoutVideoTemplate.xml" : "ms-appx:///Assets/DashVideoTemplate.xml";
+        var mpdFilePath =
+            onlyVideo ? "ms-appx:///Assets/DashVideoWithoutAudioTemplate.xml"
+            : onlyAudio ? "ms-appx:///Assets/DashAudioWithoutVideoTemplate.xml"
+            : "ms-appx:///Assets/DashVideoTemplate.xml";
         var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(mpdFilePath));
         var mpdStr = await FileIO.ReadTextAsync(file);
 
-        var videoStr =
-                $"""
-                <Representation bandwidth="{_videoSegment.Bandwidth}" codecs="{_videoSegment.Codecs}" height="{_videoSegment.Height}" mimeType="{_videoSegment.MimeType}" id="{_videoSegment.Id}" width="{_videoSegment.Width}" startWithSap="1">
-                    <BaseURL>{SecurityElement.Escape(_videoUrl)}</BaseURL>
-                    <SegmentBase indexRange="{_videoSegment.IndexRange}">
-                        <Initialization range="{_videoSegment.Initialization}" />
-                    </SegmentBase>
-                </Representation>
-                """;
+        var videoStr = $"""
+                        <Representation bandwidth="{_videoSegment.Bandwidth}" codecs="{_videoSegment.Codecs}" height="{_videoSegment.Height}" mimeType="{_videoSegment.MimeType}" id="{_videoSegment.Id}" width="{_videoSegment.Width}" startWithSap="1">
+                            <BaseURL>{SecurityElement.Escape(_videoUrl)}</BaseURL>
+                            <SegmentBase indexRange="{_videoSegment.IndexRange}">
+                                <Initialization range="{_videoSegment.Initialization}" />
+                            </SegmentBase>
+                        </Representation>
+                        """;
 
         var audioStr = string.Empty;
         if (!string.IsNullOrEmpty(_audioUrl))
         {
-            audioStr =
-                    $"""
-                    <Representation bandwidth="{_audioSegment.Bandwidth}" codecs="{_audioSegment.Codecs}" mimeType="{_audioSegment.MimeType}" id="{_audioSegment.Id}">
-                        <BaseURL>{SecurityElement.Escape(_audioUrl)}</BaseURL>
-                        <SegmentBase indexRange="{_audioSegment.IndexRange}">
-                            <Initialization range="{_audioSegment.Initialization}" />
-                        </SegmentBase>
-                    </Representation>
-                    """;
+            audioStr = $"""
+                        <Representation bandwidth="{_audioSegment.Bandwidth}" codecs="{_audioSegment.Codecs}" mimeType="{_audioSegment.MimeType}" id="{_audioSegment.Id}">
+                            <BaseURL>{SecurityElement.Escape(_audioUrl)}</BaseURL>
+                            <SegmentBase indexRange="{_audioSegment.IndexRange}">
+                                <Initialization range="{_audioSegment.Initialization}" />
+                            </SegmentBase>
+                        </Representation>
+                        """;
         }
 
         videoStr = videoStr.Trim();
         audioStr = audioStr.Trim();
-        mpdStr = mpdStr.Replace("{video}", videoStr)
-                       .Replace("{audio}", audioStr)
-                       .Replace("{bufferTime}", $"PT4S");
+        mpdStr = mpdStr
+            .Replace("{video}", videoStr)
+            .Replace("{audio}", audioStr)
+            .Replace("{bufferTime}", $"PT4S");
 
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(mpdStr)).AsInputStream();
         var url = onlyAudio ? _audioUrl : _videoUrl;
-        var source = await AdaptiveMediaSource.CreateFromStreamAsync(stream, new Uri(url), "application/dash+xml", httpClient);
+        var source = await AdaptiveMediaSource.CreateFromStreamAsync(
+            stream,
+            new Uri(url),
+            "application/dash+xml",
+            httpClient
+        );
         source.MediaSource.AdvancedSettings.AllSegmentsIndependent = false;
         Debug.Assert(source.Status == AdaptiveMediaSourceCreationStatus.Success, "解析MPD失败");
         var videoSource = MediaSource.CreateFromAdaptiveMediaSource(source.MediaSource);
@@ -222,7 +238,10 @@ public sealed partial class NativePlayerViewModel
 
     private async Task LoadWebDavAsync()
     {
-        var stream = await HttpRandomAccessStream.CreateAsync(GetWebDavClient(), new Uri(_videoUrl));
+        var stream = await HttpRandomAccessStream.CreateAsync(
+            GetWebDavClient(),
+            new Uri(_videoUrl)
+        );
         var source = MediaSource.CreateFromStream(stream, _contentType);
         Player.Source = new MediaPlaybackItem(source);
     }
@@ -268,20 +287,23 @@ public sealed partial class NativePlayerViewModel
         {
             var randomStream = new HttpRandomAccessStream(client, uri);
 
-            return AsyncInfo.Run(async (cancellationToken) =>
-            {
-                await randomStream.SendRequesAsync();
-                return randomStream;
-            }).AsTask();
+            return AsyncInfo
+                .Run(
+                    async (cancellationToken) =>
+                    {
+                        await randomStream.SendRequesAsync();
+                        return randomStream;
+                    }
+                )
+                .AsTask();
         }
 
         public IRandomAccessStream CloneStream() => this;
 
-        public IInputStream GetInputStreamAt(ulong position)
-            => _inputStream;
+        public IInputStream GetInputStreamAt(ulong position) => _inputStream;
 
-        public IOutputStream GetOutputStreamAt(ulong position)
-            => throw new NotImplementedException();
+        public IOutputStream GetOutputStreamAt(ulong position) =>
+            throw new NotImplementedException();
 
         public void Seek(ulong position)
         {
@@ -319,48 +341,56 @@ public sealed partial class NativePlayerViewModel
             }
         }
 
-        public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
+        public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(
+            IBuffer buffer,
+            uint count,
+            InputStreamOptions options
+        )
         {
-            return AsyncInfo.Run<IBuffer, uint>(async (cancellationToken, progress) =>
-            {
-                if (_isDisposing)
+            return AsyncInfo.Run<IBuffer, uint>(
+                async (cancellationToken, progress) =>
                 {
+                    if (_isDisposing)
+                    {
+                        return default;
+                    }
+
+                    progress.Report(0);
+
+                    try
+                    {
+                        if (_inputStream == null)
+                        {
+                            await SendRequesAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+
+                    if (_inputStream != null)
+                    {
+                        var result = await _inputStream
+                            .ReadAsync(buffer, count, options)
+                            .AsTask(cancellationToken, progress)
+                            .ConfigureAwait(false);
+
+                        // Move position forward.
+                        Position += result.Length;
+                        Debug.WriteLine("requestedPosition = {0:N0}", Position);
+                        return result;
+                    }
+
                     return default;
                 }
-
-                progress.Report(0);
-
-                try
-                {
-                    if (_inputStream == null)
-                    {
-                        await SendRequesAsync();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-
-                if (_inputStream != null)
-                {
-                    var result = await _inputStream.ReadAsync(buffer, count, options).AsTask(cancellationToken, progress).ConfigureAwait(false);
-
-                    // Move position forward.
-                    Position += result.Length;
-                    Debug.WriteLine("requestedPosition = {0:N0}", Position);
-                    return result;
-                }
-
-                return default;
-            });
+            );
         }
 
-        public IAsyncOperation<bool> FlushAsync()
-            => throw new NotImplementedException();
+        public IAsyncOperation<bool> FlushAsync() => throw new NotImplementedException();
 
-        public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
-            => throw new NotImplementedException();
+        public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer) =>
+            throw new NotImplementedException();
 
         private async Task SendRequesAsync()
         {
@@ -369,7 +399,10 @@ public sealed partial class NativePlayerViewModel
                 return;
             }
 
-            var request = new Windows.Web.Http.HttpRequestMessage(Windows.Web.Http.HttpMethod.Get, _requestedUri);
+            var request = new Windows.Web.Http.HttpRequestMessage(
+                Windows.Web.Http.HttpMethod.Get,
+                _requestedUri
+            );
 
             request.Headers.Add("Range", string.Format("bytes={0}-", Position));
             request.Headers.Add("Connection", "Keep-Alive");
@@ -384,9 +417,13 @@ public sealed partial class NativePlayerViewModel
                 return;
             }
 
-            var response = await _client.SendRequestAsync(
-                request,
-                Windows.Web.Http.HttpCompletionOption.ResponseHeadersRead).AsTask().ConfigureAwait(false);
+            var response = await _client
+                .SendRequestAsync(
+                    request,
+                    Windows.Web.Http.HttpCompletionOption.ResponseHeadersRead
+                )
+                .AsTask()
+                .ConfigureAwait(false);
 
             if (response.Content.Headers.ContentType != null)
             {
@@ -405,7 +442,10 @@ public sealed partial class NativePlayerViewModel
                 ContentType = response.Content.Headers["Content-Type"];
             }
 
-            _inputStream = await response.Content.ReadAsInputStreamAsync().AsTask().ConfigureAwait(false);
+            _inputStream = await response
+                .Content.ReadAsInputStreamAsync()
+                .AsTask()
+                .ConfigureAwait(false);
         }
     }
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
@@ -52,10 +50,16 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     public void OpenVideo(VideoSnapshot snapshot)
     {
         Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
         if (preferPlayer == PlayerType.Web)
         {
-            MainFrame.Navigate(typeof(WebPlayerPage), $"https://www.bilibili.com/video/av{snapshot.Video.Identifier.Id}");
+            MainFrame.Navigate(
+                typeof(WebPlayerPage),
+                $"https://www.bilibili.com/video/av{snapshot.Video.Identifier.Id}"
+            );
             return;
         }
 
@@ -68,10 +72,16 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     public void OpenVideo((List<VideoInformation> videos, VideoSnapshot snapshot) data)
     {
         Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
         if (preferPlayer == PlayerType.Web)
         {
-            MainFrame.Navigate(typeof(WebPlayerPage), $"https://www.bilibili.com/video/av{data.snapshot.Video.Identifier.Id}");
+            MainFrame.Navigate(
+                typeof(WebPlayerPage),
+                $"https://www.bilibili.com/video/av{data.snapshot.Video.Identifier.Id}"
+            );
             return;
         }
 
@@ -84,7 +94,10 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     public void OpenPgc(MediaIdentifier pgc)
     {
         Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
         if (preferPlayer == PlayerType.Web)
         {
             var url = $"https://www.bilibili.com/bangumi/play/{pgc.Id.Replace("_", string.Empty)}";
@@ -101,8 +114,14 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     public void OpenLive(MediaIdentifier room)
     {
         Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
-        var useWebPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.UseWebPlayerWhenLive, false);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
+        var useWebPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.UseWebPlayerWhenLive,
+            false
+        );
         if (preferPlayer == PlayerType.Web || useWebPlayer)
         {
             MainFrame.Navigate(typeof(WebPlayerPage), $"https://live.bilibili.com/{room.Id}");
@@ -124,9 +143,12 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     /// <inheritdoc/>
     public void EnterPlayerHostMode(PlayerDisplayMode mode)
     {
-        TitleBar.Visibility = mode == PlayerDisplayMode.FullScreen ? Visibility.Collapsed : Visibility.Visible;
-        TitleBar.IsBackButtonVisible = mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
-        TitleBar.IsBackEnabled = mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
+        TitleBar.Visibility =
+            mode == PlayerDisplayMode.FullScreen ? Visibility.Collapsed : Visibility.Visible;
+        TitleBar.IsBackButtonVisible =
+            mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
+        TitleBar.IsBackEnabled =
+            mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
         if (MainFrame.Content is VideoPlayerPage vPage)
         {
             TitleBar.Title = vPage.ViewModel.Title;
@@ -180,7 +202,10 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup() { Text = text };
+        var popup = new TipPopup()
+        {
+            Text = text
+        };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);
@@ -208,13 +233,19 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         }
 
         MoveAndResize();
-        var isMaximized = SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerWindowMaximized, false);
+        var isMaximized = SettingsToolkit.ReadLocalSetting(
+            SettingNames.IsPlayerWindowMaximized,
+            false
+        );
         if (isMaximized)
         {
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        var localTheme = SettingsToolkit.ReadLocalSetting(SettingNames.AppTheme, ElementTheme.Default);
+        var localTheme = SettingsToolkit.ReadLocalSetting(
+            SettingNames.AppTheme,
+            ElementTheme.Default
+        );
         this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }
@@ -231,7 +262,10 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         SaveCurrentWindowStats();
     }
 
-    private void OnInputActivationChanged(InputActivationListener sender, InputActivationListenerActivationChangedEventArgs args)
+    private void OnInputActivationChanged(
+        InputActivationListener sender,
+        InputActivationListenerActivationChangedEventArgs args
+    )
     {
         var isDeactivated = sender.State == InputActivationState.Deactivated;
         if (isDeactivated)
@@ -377,7 +411,10 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
         var previousWidth = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowWidth, 1120d);
-        var previousHeight = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowHeight, 740d);
+        var previousHeight = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerWindowHeight,
+            740d
+        );
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -390,20 +427,16 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         var lastPoint = GetSavedWindowPosition();
         var isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
         var isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
-        var left = isZeroPoint || !isValidPosition
-            ? (workArea.Width - width) / 2d
-            : lastPoint.X;
-        var top = isZeroPoint || !isValidPosition
-            ? (workArea.Height - height) / 2d
-            : lastPoint.Y;
+        var left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
+        var top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
         return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
     }
 
     private void MoveAndResize()
     {
         var lastPoint = GetSavedWindowPosition();
-        var displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
-            ?? DisplayArea.Primary;
+        var displayArea =
+            DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary) ?? DisplayArea.Primary;
         var rect = GetRenderRect(displayArea.WorkArea);
         AppWindow.MoveAndResize(rect);
     }
@@ -438,6 +471,5 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         }
     }
 
-    private void OnBackRequested(object sender, EventArgs e)
-        => TryBackToDefaultMode();
+    private void OnBackRequested(object sender, EventArgs e) => TryBackToDefaultMode();
 }

@@ -25,8 +25,14 @@ internal class MyQuote : IAddChild
         var inlineUIContainer = new InlineUIContainer();
 
         var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition()
+        {
+            Width = new GridLength(1, GridUnitType.Auto)
+        });
+        grid.ColumnDefinitions.Add(new ColumnDefinition()
+        {
+            Width = new GridLength(1, GridUnitType.Auto)
+        });
 
         var bar = new Grid
         {

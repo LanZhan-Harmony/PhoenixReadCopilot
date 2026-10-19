@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.BiliKernel.Models.User;
 
 namespace BiliCopilot.UI.Controls.Users;
@@ -30,8 +28,7 @@ public sealed partial class FollowsSideBody : FollowsPageControlBase
         ViewModel.GroupInitialized -= OnGroupInitialized;
     }
 
-    private void OnGroupInitialized(object? sender, EventArgs e)
-        => CheckGroupSelection();
+    private void OnGroupInitialized(object? sender, EventArgs e) => CheckGroupSelection();
 
     private void OnGroupSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {

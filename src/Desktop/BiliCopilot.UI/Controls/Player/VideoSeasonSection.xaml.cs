@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
@@ -19,15 +17,15 @@ public sealed partial class VideoSeasonSection : VideoSeasonSectionBase
     public VideoSeasonSection() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => CheckSelectedItem();
+    protected override void OnControlLoaded() => CheckSelectedItem();
 
-    protected override void OnControlUnloaded()
-        => View.ItemsSource = default;
+    protected override void OnControlUnloaded() => View.ItemsSource = default;
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(VideoPlayerSeasonSectionDetailViewModel? oldValue, VideoPlayerSeasonSectionDetailViewModel? newValue)
-        => CheckSelectedItem();
+    protected override void OnViewModelChanged(
+        VideoPlayerSeasonSectionDetailViewModel? oldValue,
+        VideoPlayerSeasonSectionDetailViewModel? newValue
+    ) => CheckSelectedItem();
 
     private void OnSeasonChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -61,6 +59,5 @@ public sealed partial class VideoSeasonSection : VideoSeasonSectionBase
 /// <summary>
 /// 视频播放器合集部分基类.
 /// </summary>
-public abstract class VideoSeasonSectionBase : LayoutUserControlBase<VideoPlayerSeasonSectionDetailViewModel>
-{
-}
+public abstract class VideoSeasonSectionBase
+    : LayoutUserControlBase<VideoPlayerSeasonSectionDetailViewModel> { }

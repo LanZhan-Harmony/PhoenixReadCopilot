@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.AgentKernel;
 using Richasy.WinUIKernel.AI.ViewModels;
 
@@ -16,7 +14,10 @@ public sealed partial class SettingsPageViewModel
             return;
         }
 
-        foreach (var provider in Enum.GetValues<ChatProviderType>().Where(p => p is not ChatProviderType.Windows and not ChatProviderType.Onnx))
+        foreach (
+            var provider in Enum.GetValues<ChatProviderType>()
+                .Where(p => p is not ChatProviderType.Windows and not ChatProviderType.Onnx)
+        )
         {
             ChatServices.Add(new ChatServiceItemViewModel(provider));
         }
@@ -27,7 +28,9 @@ public sealed partial class SettingsPageViewModel
     {
         await base.SaveChatServicesAsync();
         var configManager = this.Get<IChatConfigManager>();
-        var dict = ChatServices.Where(p => p.Config != null).ToDictionary(item => item.ProviderType, item => item.Config!);
+        var dict = ChatServices
+            .Where(p => p.Config != null)
+            .ToDictionary(item => item.ProviderType, item => item.Config!);
         await configManager.SaveChatConfigAsync(dict);
     }
 }

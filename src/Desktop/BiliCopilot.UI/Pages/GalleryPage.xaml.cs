@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Navigation;
 using Richasy.BiliKernel.Models.Appearance;
@@ -41,11 +39,12 @@ public sealed partial class GalleryPage : GalleryPageBase
         ImageView.Select(index);
     }
 
-    protected override void OnPageUnloaded()
-        => ImageView.ItemsSource = default;
+    protected override void OnPageUnloaded() => ImageView.ItemsSource = default;
 
-    private void OnScrollViewTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
-        => ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
+    private void OnScrollViewTapped(
+        object sender,
+        Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e
+    ) => ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
 
     private void CheckButtonStatus()
     {
@@ -59,17 +58,17 @@ public sealed partial class GalleryPage : GalleryPageBase
         CheckButtonStatus();
     }
 
-    private void OnZoomInButtonClick(object sender, RoutedEventArgs e)
-        => ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor + 0.1f, default);
+    private void OnZoomInButtonClick(object sender, RoutedEventArgs e) =>
+        ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor + 0.1f, default);
 
-    private void OnZoomOutButtonClick(object sender, RoutedEventArgs e)
-        => ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor - 0.1f, default);
+    private void OnZoomOutButtonClick(object sender, RoutedEventArgs e) =>
+        ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor - 0.1f, default);
 
-    private void OnSettingToBackgroundClickAsync(object sender, RoutedEventArgs e)
-        => ViewModel.SetWallPaperOrLockScreenCommand.Execute(true);
+    private void OnSettingToBackgroundClickAsync(object sender, RoutedEventArgs e) =>
+        ViewModel.SetWallPaperOrLockScreenCommand.Execute(true);
 
-    private void OnSettingToLockScreenClickAsync(object sender, RoutedEventArgs e)
-        => ViewModel.SetWallPaperOrLockScreenCommand.Execute(false);
+    private void OnSettingToLockScreenClickAsync(object sender, RoutedEventArgs e) =>
+        ViewModel.SetWallPaperOrLockScreenCommand.Execute(false);
 
     private void OnImageSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
@@ -81,6 +80,4 @@ public sealed partial class GalleryPage : GalleryPageBase
 /// <summary>
 /// 图片库页面基类.
 /// </summary>
-public abstract class GalleryPageBase : LayoutPageBase<GalleryPageViewModel>
-{
-}
+public abstract class GalleryPageBase : LayoutPageBase<GalleryPageViewModel> { }

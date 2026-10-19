@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.ViewLater;
 
 /// <summary>
@@ -39,13 +37,21 @@ public sealed partial class ViewLaterBody : ViewLaterPageControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ExtentHeight - VideoScrollView.ViewportHeight - VideoScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadVideosCommand.Execute(default);
+                if (
+                    VideoScrollView.ExtentHeight
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadVideosCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -58,12 +64,15 @@ public sealed partial class ViewLaterBody : ViewLaterPageControlBase
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadVideosCommand.Execute(default);
+                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadVideosCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Controls.AI;
 
 namespace BiliCopilot.UI.Controls.Player;
@@ -22,7 +20,7 @@ public sealed partial class VideoPlayerMainHeader : VideoPlayerPageControlBase
             flyout.Content = new AIPanel
             {
                 Height = 720,
-                ViewModel = ViewModel.AI,
+                ViewModel = ViewModel.AI
             };
         }
 

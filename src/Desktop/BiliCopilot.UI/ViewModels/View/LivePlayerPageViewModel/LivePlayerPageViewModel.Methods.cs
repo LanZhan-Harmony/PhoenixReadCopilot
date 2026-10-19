@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Humanizer;
@@ -18,11 +16,18 @@ public sealed partial class LivePlayerPageViewModel
         Cover = view.Information.Identifier.Cover.SourceUri;
         Title = view.Information.Identifier.Title;
         Player.Title = Title;
-        Description = view.Information.GetExtensionIfNotNull<string>(LiveExtensionDataId.Description);
+        Description = view.Information.GetExtensionIfNotNull<string>(
+            LiveExtensionDataId.Description
+        );
         UpName = view.Information.User.Name;
         UpAvatar = view.Information.User.Avatar.Uri;
-        StartTime = view.Information.GetExtensionIfNotNull<DateTimeOffset>(LiveExtensionDataId.StartTime);
-        StartRelativeTime = string.Format(ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LiveStartTimeTemplate), StartTime.Humanize(default, new System.Globalization.CultureInfo("zh-CN")));
+        StartTime = view.Information.GetExtensionIfNotNull<DateTimeOffset>(
+            LiveExtensionDataId.StartTime
+        );
+        StartRelativeTime = string.Format(
+            ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LiveStartTimeTemplate),
+            StartTime.Humanize(default, new System.Globalization.CultureInfo("zh-CN"))
+        );
         TagName = view.Tag.Name;
         RoomId = view.Information.Identifier.Id;
         ViewerCount = view.Information.GetExtensionIfNotNull<int>(LiveExtensionDataId.ViewerCount);
@@ -33,11 +38,18 @@ public sealed partial class LivePlayerPageViewModel
     private void InitializeLiveMedia(LiveMediaInformation info)
     {
         Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
-        Lines = info.Lines.ToList()
-            .Where(p => p.Urls.FirstOrDefault()?.Protocol == "http_hls" || p.Urls.FirstOrDefault()?.Protocol == "http_stream")
+        Lines = info
+            .Lines.ToList()
+            .Where(p =>
+                p.Urls.FirstOrDefault()?.Protocol == "http_hls"
+                || p.Urls.FirstOrDefault()?.Protocol == "http_stream"
+            )
             .ToList();
 
-        var currentQuality = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.LastSelectedLiveQuality, 400);
+        var currentQuality = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.LastSelectedLiveQuality,
+            400
+        );
         var format = Formats.FirstOrDefault(p => p.Data.Quality == currentQuality);
         SelectedFormat = format ?? Formats.FirstOrDefault();
     }
@@ -83,6 +95,5 @@ public sealed partial class LivePlayerPageViewModel
         ChangeFormatCommand.Execute(SelectedFormat);
     }
 
-    private void ScrollMessagesToBottom()
-        => Chat.ScrollToBottomCommand.Execute(default);
+    private void ScrollMessagesToBottom() => Chat.ScrollToBottomCommand.Execute(default);
 }

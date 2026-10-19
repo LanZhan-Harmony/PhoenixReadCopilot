@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -16,16 +14,30 @@ public sealed partial class AIViewModel
     {
         if (!FileToolkit.IsLocalDataExist("video_summarize.txt", "Prompt"))
         {
-            await this.Get<IFileToolkit>().WriteLocalDataAsync("video_summarize.txt", PromptConstants.VideoSummaryPrompt, default, "Prompt");
+            await this.Get<IFileToolkit>()
+                .WriteLocalDataAsync(
+                    "video_summarize.txt",
+                    PromptConstants.VideoSummaryPrompt,
+                    default,
+                    "Prompt"
+                );
         }
 
         if (!FileToolkit.IsLocalDataExist("video_evaluation.txt", "Prompt"))
         {
-            await this.Get<IFileToolkit>().WriteLocalDataAsync("video_evaluation.txt", PromptConstants.VideoEvaluationPrompt, default, "Prompt");
+            await this.Get<IFileToolkit>()
+                .WriteLocalDataAsync(
+                    "video_evaluation.txt",
+                    PromptConstants.VideoEvaluationPrompt,
+                    default,
+                    "Prompt"
+                );
         }
 
-        var videoSummarizePrompt = await this.Get<IFileToolkit>().ReadLocalDataAsync<string>("video_summarize.txt", default, string.Empty, "Prompt");
-        var videoEvaluationPrompt = await this.Get<IFileToolkit>().ReadLocalDataAsync<string>("video_evaluation.txt", default, string.Empty, "Prompt");
+        var videoSummarizePrompt = await this.Get<IFileToolkit>()
+            .ReadLocalDataAsync<string>("video_summarize.txt", default, string.Empty, "Prompt");
+        var videoEvaluationPrompt = await this.Get<IFileToolkit>()
+            .ReadLocalDataAsync<string>("video_evaluation.txt", default, string.Empty, "Prompt");
 
         var videoSummaryItem = new AIQuickItemViewModel(
             FluentIcons.Common.Symbol.TextBulletListSquareSparkle,
@@ -33,14 +45,16 @@ public sealed partial class AIViewModel
             "根据视频字幕及简介总结视频内容",
             "总结《{0}》的内容",
             videoSummarizePrompt,
-            SummaryVideoAsync);
+            SummaryVideoAsync
+        );
         var videoEvaluationItem = new AIQuickItemViewModel(
             FluentIcons.Common.Symbol.ChatSparkle,
             ResourceToolkit.GetLocalizedString(UI.Models.Constants.StringNames.VideoEvaluation),
             "根据视频内容及热门评论评价视频",
             "评价《{0}》的内容",
             videoEvaluationPrompt,
-            EvaluateVideoAsync);
+            EvaluateVideoAsync
+        );
         QuickItems = [videoSummaryItem, videoEvaluationItem];
     }
 
@@ -48,16 +62,30 @@ public sealed partial class AIViewModel
     {
         if (!FileToolkit.IsLocalDataExist("article_summarize.txt", "Prompt"))
         {
-            await this.Get<IFileToolkit>().WriteLocalDataAsync("article_summarize.txt", PromptConstants.ArticleSummaryPrompt, default, "Prompt");
+            await this.Get<IFileToolkit>()
+                .WriteLocalDataAsync(
+                    "article_summarize.txt",
+                    PromptConstants.ArticleSummaryPrompt,
+                    default,
+                    "Prompt"
+                );
         }
 
         if (!FileToolkit.IsLocalDataExist("article_evaluation.txt", "Prompt"))
         {
-            await this.Get<IFileToolkit>().WriteLocalDataAsync("article_evaluation.txt", PromptConstants.ArticleEvaluationPrompt, default, "Prompt");
+            await this.Get<IFileToolkit>()
+                .WriteLocalDataAsync(
+                    "article_evaluation.txt",
+                    PromptConstants.ArticleEvaluationPrompt,
+                    default,
+                    "Prompt"
+                );
         }
 
-        var articleSummarizePrompt = await this.Get<IFileToolkit>().ReadLocalDataAsync<string>("article_summarize.txt", default, string.Empty, "Prompt");
-        var articleEvaluationPrompt = await this.Get<IFileToolkit>().ReadLocalDataAsync<string>("article_evaluation.txt", default, string.Empty, "Prompt");
+        var articleSummarizePrompt = await this.Get<IFileToolkit>()
+            .ReadLocalDataAsync<string>("article_summarize.txt", default, string.Empty, "Prompt");
+        var articleEvaluationPrompt = await this.Get<IFileToolkit>()
+            .ReadLocalDataAsync<string>("article_evaluation.txt", default, string.Empty, "Prompt");
 
         var articleSummaryItem = new AIQuickItemViewModel(
             FluentIcons.Common.Symbol.DocumentOnePageSparkle,
@@ -65,14 +93,16 @@ public sealed partial class AIViewModel
             "根据文章内容总结文章",
             "总结《{0}》的内容",
             articleSummarizePrompt,
-            SummaryArticleAsync);
+            SummaryArticleAsync
+        );
         var articleEvaluationItem = new AIQuickItemViewModel(
             FluentIcons.Common.Symbol.ChatSparkle,
             "文章评价",
             "根据文章内容及热门评论评价文章",
             "评价《{0}》的内容",
             articleEvaluationPrompt,
-            EvaluateArticleAsync);
+            EvaluateArticleAsync
+        );
         QuickItems = [articleSummaryItem, articleEvaluationItem];
     }
 
@@ -96,6 +126,7 @@ public sealed partial class AIViewModel
             {
                 Discard();
                 return Task.CompletedTask;
-            });
+            }
+        );
     }
 }

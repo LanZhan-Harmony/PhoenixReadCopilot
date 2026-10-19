@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.ViewModels.Core;
 using CommunityToolkit.Mvvm.Input;
@@ -21,7 +19,11 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentItemViewModel"/> class.
     /// </summary>
-    public CommentItemViewModel(CommentInformation data, ICommentService service, Action<CommentItemViewModel> markReplyTargetAction)
+    public CommentItemViewModel(
+        CommentInformation data,
+        ICommentService service,
+        Action<CommentItemViewModel> markReplyTargetAction
+    )
         : base(data)
     {
         _service = service;
@@ -57,10 +59,9 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
     }
 
     [RelayCommand]
-    private void MarkReplyTarget()
-        => _markReplyTargetAction?.Invoke(this);
+    private void MarkReplyTarget() => _markReplyTargetAction?.Invoke(this);
 
     [RelayCommand]
-    private void ShowUserSpace()
-        => this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User.User);
+    private void ShowUserSpace() =>
+        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User.User);
 }

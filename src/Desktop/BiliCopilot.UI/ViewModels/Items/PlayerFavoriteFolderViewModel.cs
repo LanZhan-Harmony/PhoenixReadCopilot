@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -11,8 +9,7 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class PlayerFavoriteFolderViewModel : ViewModelBase<VideoFavoriteFolder>
 {
-    [ObservableProperty]
-    private bool _isSelected;
+    [ObservableProperty] private bool _isSelected;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFavoriteFolderViewModel"/> class.

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -24,27 +22,20 @@ public sealed partial class SubtitleViewModel : ViewModelBase
     private List<SubtitleInformation> _subtitles;
     private Action? _initializedAction;
 
-    [ObservableProperty]
-    private bool _isAvailable;
+    [ObservableProperty] private bool _isAvailable;
 
-    [ObservableProperty]
-    private bool _isEnabled;
+    [ObservableProperty] private bool _isEnabled;
 
-    [ObservableProperty]
-    private List<SubtitleMeta>? _metas;
+    [ObservableProperty] private List<SubtitleMeta>? _metas;
 
-    [ObservableProperty]
-    private SubtitleMeta? _selectedMeta;
+    [ObservableProperty] private SubtitleMeta? _selectedMeta;
 
-    [ObservableProperty]
-    private string? _currentSubtitle;
+    [ObservableProperty] private string? _currentSubtitle;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SubtitleViewModel"/> class.
     /// </summary>
-    public SubtitleViewModel(
-        ISubtitleService service,
-        ILogger<SubtitleViewModel> logger)
+    public SubtitleViewModel(ISubtitleService service, ILogger<SubtitleViewModel> logger)
     {
         _service = service;
         _logger = logger;
@@ -58,14 +49,16 @@ public sealed partial class SubtitleViewModel : ViewModelBase
         ClearAll();
         _aid = aid;
         _cid = cid;
-        IsEnabled = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.IsSubtitleEnabled, true);
+        IsEnabled = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.IsSubtitleEnabled,
+            true
+        );
     }
 
     /// <summary>
     /// 设置初始化回调.
     /// </summary>
-    public void SetInitializedCallback(Action action)
-        => _initializedAction = action;
+    public void SetInitializedCallback(Action action) => _initializedAction = action;
 
     /// <summary>
     /// 更新当前播放位置.
@@ -78,15 +71,16 @@ public sealed partial class SubtitleViewModel : ViewModelBase
             return;
         }
 
-        var subtitle = _subtitles.FirstOrDefault(p => p.StartPosition <= _position && p.EndPosition >= _position);
+        var subtitle = _subtitles.FirstOrDefault(p =>
+            p.StartPosition <= _position && p.EndPosition >= _position
+        );
         CurrentSubtitle = subtitle?.Content;
     }
 
     /// <summary>
     /// 清除字幕.
     /// </summary>
-    public void ClearSubtitle()
-        => CurrentSubtitle = default;
+    public void ClearSubtitle() => CurrentSubtitle = default;
 
     /// <summary>
     /// 清除所有数据.

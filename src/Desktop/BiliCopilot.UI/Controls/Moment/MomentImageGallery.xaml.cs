@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.WinUIKernel.Share.Base;
@@ -14,8 +12,12 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
     /// <summary>
     /// <see cref="ItemsSource"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ItemsSourceProperty =
-        DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(MomentImageGallery), new PropertyMetadata(default));
+    public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
+        nameof(ItemsSource),
+        typeof(object),
+        typeof(MomentImageGallery),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentImageGallery"/> class.
@@ -31,8 +33,7 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
         set => SetValue(ItemsSourceProperty, value);
     }
 
-    protected override void OnControlUnloaded()
-        => ImageRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => ImageRepeater.ItemsSource = default;
 
     private void OnImageTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
     {

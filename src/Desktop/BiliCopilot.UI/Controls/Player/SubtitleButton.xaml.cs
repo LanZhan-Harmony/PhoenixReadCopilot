@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.BiliKernel.Models.Subtitle;
 
 namespace BiliCopilot.UI.Controls.Player;
@@ -14,8 +12,7 @@ public sealed partial class SubtitleButton : SubtitleControlBase
     /// </summary>
     public SubtitleButton() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => SubtitleView.ItemsSource = default;
+    protected override void OnControlUnloaded() => SubtitleView.ItemsSource = default;
 
     private void OnMetaChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {

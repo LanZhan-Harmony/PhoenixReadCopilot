@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.UI.Xaml.Data;
@@ -19,11 +17,12 @@ internal sealed partial class SearchSectionTextConverter : IValueConverter
             SearchSectionType.Cinema => StringNames.Cinema,
             SearchSectionType.User => StringNames.User,
             SearchSectionType.Article => StringNames.Article,
-            _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };
 
         return ResourceToolkit.GetLocalizedString(lanName);
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

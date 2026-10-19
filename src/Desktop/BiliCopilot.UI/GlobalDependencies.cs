@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics.CodeAnalysis;
 using BiliCopilot.UI.Extensions;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -15,7 +14,6 @@ using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
 using RichasyKernel;
 using Serilog;
-using System.Diagnostics.CodeAnalysis;
 using Windows.Storage;
 
 namespace BiliCopilot.UI;
@@ -34,13 +32,13 @@ internal static class GlobalDependencies
             return;
         }
 
-        Kernel = Kernel.CreateBuilder()
+        Kernel = Kernel
+            .CreateBuilder()
             .AddSerilog()
             .AddDispatcherQueue()
             .AddShareToolkits()
             .AddConfigManager()
             .AddXamlRootProvider()
-
             .AddBiliClient()
             .AddBiliAuthenticator()
             .AddWinUICookiesResolver()
@@ -66,7 +64,6 @@ internal static class GlobalDependencies
             .AddDanmakuService()
             .AddSubtitleService()
             .AddPlayerService()
-
             .AddOpenAIChatService()
             .AddAzureOpenAIChatService()
             .AddAzureAIChatService()
@@ -89,7 +86,6 @@ internal static class GlobalDependencies
             .AddOllamaChatService()
             .AddMistralChatService()
             .AddPerplexityChatService()
-
             .AddTransient<CommentMainViewModel>()
             .AddSingleton<PinnerViewModel>()
             .AddSingleton<AppViewModel>()
@@ -149,7 +145,8 @@ internal static class GlobalDependencies
 
     public static IKernelBuilder AddShareToolkits(this IKernelBuilder builder)
     {
-        builder.Services.AddSingleton<IAppToolkit, AppToolkit>()
+        builder
+            .Services.AddSingleton<IAppToolkit, AppToolkit>()
             .AddSingleton<ISettingsToolkit, SettingsToolkit>()
             .AddSingleton<IFileToolkit, FileToolkit>()
             .AddSingleton<IResourceToolkit, ResourceToolkit>()
@@ -165,19 +162,24 @@ internal static class GlobalDependencies
 
     public static IKernelBuilder AddConfigManager(this IKernelBuilder builder)
     {
-        builder.Services
-            .AddSingleton<IChatConfigManager, ChatConfigManager>();
+        builder.Services.AddSingleton<IChatConfigManager, ChatConfigManager>();
         return builder;
     }
 
-    public static IKernelBuilder AddSingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IKernelBuilder kernelBuilder)
+    public static IKernelBuilder AddSingleton<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        T
+    >(this IKernelBuilder kernelBuilder)
         where T : class
     {
         kernelBuilder.Services.AddSingleton<T>();
         return kernelBuilder;
     }
 
-    public static IKernelBuilder AddTransient<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IKernelBuilder kernelBuilder)
+    public static IKernelBuilder AddTransient<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        T
+    >(this IKernelBuilder kernelBuilder)
         where T : class
     {
         kernelBuilder.Services.AddTransient<T>();
@@ -202,8 +204,7 @@ internal static class GlobalDependencies
     }
 
     public static T Get<T>(this object ele)
-        where T : class
-        => Kernel.GetRequiredService<T>();
+        where T : class => Kernel.GetRequiredService<T>();
 
     private static Task RenderQRCodeAsync(byte[] imageData)
     {

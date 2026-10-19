@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
@@ -40,7 +38,10 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(VideoPartitionDetailViewModel? oldValue, VideoPartitionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        VideoPartitionDetailViewModel? oldValue,
+        VideoPartitionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -56,14 +57,15 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         InitializeChildPartitions();
     }
 
-    private void OnViewModelInitialized(object? sender, EventArgs e)
-        => InitializeChildPartitions();
+    private void OnViewModelInitialized(object? sender, EventArgs e) => InitializeChildPartitions();
 
     private void OnSortTypeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.AddedItems.Any()
+        if (
+            e.AddedItems.Any()
             && e.AddedItems[0] is PartitionVideoSortType sortType
-            && sortType != ViewModel.SelectedSortType)
+            && sortType != ViewModel.SelectedSortType
+        )
         {
             ViewModel.ChangeSortTypeCommand.Execute(sortType);
         }
@@ -90,11 +92,13 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         {
             foreach (var item in ViewModel.Children)
             {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = item.Title ?? default,
-                    Tag = item,
-                });
+                Selector.Items.Add(
+                    new SelectorBarItem()
+                    {
+                        Text = item.Title ?? default,
+                        Tag = item
+                    }
+                );
             }
         }
 

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Microsoft.UI.Xaml.Data;
 
 namespace BiliCopilot.UI.Converters;
@@ -12,10 +10,14 @@ internal sealed partial class PgcFavoriteIconConverter : IValueConverter
         return type switch
         {
             Richasy.BiliKernel.Models.PgcFavoriteType.Anime => FluentIcons.Common.Symbol.Dust,
-            Richasy.BiliKernel.Models.PgcFavoriteType.Cinema => FluentIcons.Common.Symbol.MoviesAndTv,
+            Richasy.BiliKernel.Models.PgcFavoriteType.Cinema => FluentIcons
+                .Common
+                .Symbol
+                .MoviesAndTv,
             _ => throw new Exception("Unknown type."),
         };
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -12,12 +10,11 @@ internal sealed partial class UriToBitmapConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        return value is string url
-            ? new BitmapImage(new Uri(url))
-            : value is null
-                ? default
-                : new BitmapImage((Uri)value);
+        return value is string url ? new BitmapImage(new Uri(url))
+            : value is null ? default
+            : new BitmapImage((Uri)value);
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

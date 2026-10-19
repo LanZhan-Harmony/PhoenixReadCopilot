@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Text.RegularExpressions;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -13,7 +12,6 @@ using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
 using RichasyKernel;
-using System.Text.RegularExpressions;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -28,7 +26,10 @@ public sealed partial class AIViewModel
         {
             Erase();
             InitOtherPrompts(source);
-            RequestText = string.Format(source.RequestTemplate, _videoView.Information.Identifier.Title);
+            RequestText = string.Format(
+                source.RequestTemplate,
+                _videoView.Information.Identifier.Title
+            );
             var promptTemplate = source.Prompt;
             IsGenerating = true;
             _generateCancellationTokenSource = new CancellationTokenSource();
@@ -39,14 +40,17 @@ public sealed partial class AIViewModel
             ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.Summarizing);
             var prompt = promptTemplate
                 .Replace("{title}", _videoView.Information.Identifier.Title)
-                .Replace("{description}", _videoView.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description))
+                .Replace(
+                    "{description}",
+                    _videoView.Information.GetExtensionIfNotNull<string>(
+                        VideoExtensionDataId.Description
+                    )
+                )
                 .Replace("{subtitle}", subtitleText);
             await SendMessageAsync(prompt);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
-        {
-        }
+        catch (TaskCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "总结视频内容失败");
@@ -65,28 +69,37 @@ public sealed partial class AIViewModel
         {
             Erase();
             InitOtherPrompts(source);
-            RequestText = string.Format(source.RequestTemplate, _videoView.Information.Identifier.Title);
+            RequestText = string.Format(
+                source.RequestTemplate,
+                _videoView.Information.Identifier.Title
+            );
             var promptTemplate = source.Prompt;
             IsGenerating = true;
             _generateCancellationTokenSource = new CancellationTokenSource();
             var subtitleText = await GetVideoSubtitleAsync();
             subtitleText ??= "无字幕";
-            var commentText = await GetHotCommentTextAsync(_videoView.Information.Identifier.Id, CommentTargetType.Video);
+            var commentText = await GetHotCommentTextAsync(
+                _videoView.Information.Identifier.Id,
+                CommentTargetType.Video
+            );
             commentText ??= "无评论";
 
             // 生成总结.
             ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.Generating);
             var prompt = promptTemplate
                 .Replace("{title}", _videoView.Information.Identifier.Title)
-                .Replace("{description}", _videoView.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description))
+                .Replace(
+                    "{description}",
+                    _videoView.Information.GetExtensionIfNotNull<string>(
+                        VideoExtensionDataId.Description
+                    )
+                )
                 .Replace("{subtitle}", subtitleText)
                 .Replace("{comments}", commentText);
             await SendMessageAsync(prompt);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
-        {
-        }
+        catch (TaskCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "评价视频内容失败");
@@ -121,15 +134,18 @@ public sealed partial class AIViewModel
             ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.Generating);
             var prompt = promptTemplate
                 .Replace("{title}", _videoView.Information.Identifier.Title)
-                .Replace("{description}", _videoView.Information.GetExtensionIfNotNull<string>(VideoExtensionDataId.Description))
+                .Replace(
+                    "{description}",
+                    _videoView.Information.GetExtensionIfNotNull<string>(
+                        VideoExtensionDataId.Description
+                    )
+                )
                 .Replace("{subtitle}", subtitleText)
                 .Replace("{question}", question);
             await SendMessageAsync(prompt);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
-        {
-        }
+        catch (TaskCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "回答问题失败");
@@ -162,9 +178,7 @@ public sealed partial class AIViewModel
             await SendMessageAsync(prompt);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
-        {
-        }
+        catch (TaskCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "总结文章内容失败");
@@ -189,7 +203,10 @@ public sealed partial class AIViewModel
             _generateCancellationTokenSource = new CancellationTokenSource();
             var articleContent = GetArticlePlainText();
 
-            var commentText = await GetHotCommentTextAsync(_articleDetail.Identifier.Id, CommentTargetType.Article);
+            var commentText = await GetHotCommentTextAsync(
+                _articleDetail.Identifier.Id,
+                CommentTargetType.Article
+            );
             commentText ??= "无评论";
 
             // 生成总结.
@@ -201,9 +218,7 @@ public sealed partial class AIViewModel
             await SendMessageAsync(prompt);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
-        {
-        }
+        catch (TaskCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "评价文章内容失败");
@@ -242,9 +257,7 @@ public sealed partial class AIViewModel
             await SendMessageAsync(prompt);
             ProgressTip = default;
         }
-        catch (TaskCanceledException)
-        {
-        }
+        catch (TaskCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "回答问题失败");
@@ -265,7 +278,11 @@ public sealed partial class AIViewModel
 
             // 1. 先获取字幕元数据.
             ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleMeta);
-            var metas = await service.GetSubtitleMetasAsync(_videoView.Information.Identifier.Id, _videoPart.Identifier.Id, _generateCancellationTokenSource.Token);
+            var metas = await service.GetSubtitleMetasAsync(
+                _videoView.Information.Identifier.Id,
+                _videoPart.Identifier.Id,
+                _generateCancellationTokenSource.Token
+            );
             if (metas is null || metas.Count == 0)
             {
                 ErrorMessage = ResourceToolkit.GetLocalizedString(StringNames.NoSubtitleAvailable);
@@ -273,17 +290,30 @@ public sealed partial class AIViewModel
             }
 
             // 2. 选择字幕元数据.
-            ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.GettingSubtitleInformation);
+            ProgressTip = ResourceToolkit.GetLocalizedString(
+                StringNames.GettingSubtitleInformation
+            );
             var meta = metas.FirstOrDefault(p => !p.IsAI) ?? metas.First();
             if (_generateCancellationTokenSource?.IsCancellationRequested != false)
             {
                 return default;
             }
 
-            _subtitles = [.. await service.GetSubtitleDetailAsync(meta, _generateCancellationTokenSource.Token)];
+            _subtitles =
+            [
+                .. await service.GetSubtitleDetailAsync(
+                    meta,
+                    _generateCancellationTokenSource.Token
+                ),
+            ];
         }
 
-        return string.Join(Environment.NewLine, _subtitles.Select(p => $"{AppToolkit.FormatDuration(TimeSpan.FromSeconds(p.StartPosition))} - {AppToolkit.FormatDuration(TimeSpan.FromSeconds(p.EndPosition))}: {p.Content}"));
+        return string.Join(
+            Environment.NewLine,
+            _subtitles.Select(p =>
+                $"{AppToolkit.FormatDuration(TimeSpan.FromSeconds(p.StartPosition))} - {AppToolkit.FormatDuration(TimeSpan.FromSeconds(p.EndPosition))}: {p.Content}"
+            )
+        );
     }
 
     private async Task<string?> GetHotCommentTextAsync(string id, CommentTargetType target)
@@ -291,7 +321,12 @@ public sealed partial class AIViewModel
         // 获取评论.
         ProgressTip = ResourceToolkit.GetLocalizedString(StringNames.GettingHotComments);
         var commentService = this.Get<ICommentService>();
-        var comments = await commentService.GetCommentsAsync(id, target, CommentSortType.Hot, cancellationToken: _generateCancellationTokenSource.Token);
+        var comments = await commentService.GetCommentsAsync(
+            id,
+            target,
+            CommentSortType.Hot,
+            cancellationToken: _generateCancellationTokenSource.Token
+        );
         if (_generateCancellationTokenSource?.IsCancellationRequested != false)
         {
             return default;
@@ -323,10 +358,22 @@ public sealed partial class AIViewModel
                 return;
             }
 
-            var useStreaming = SettingsToolkit.ReadLocalSetting(SettingNames.IsAIStreamingResponse, true);
+            var useStreaming = SettingsToolkit.ReadLocalSetting(
+                SettingNames.IsAIStreamingResponse,
+                true
+            );
             var result = useStreaming
-                ? await SendMessageInternalAsync(SelectedService.ProviderType, prompt, OnStreaming, _generateCancellationTokenSource.Token)
-                : await SendMessageInternalAsync(SelectedService.ProviderType, prompt, cancellationToken: _generateCancellationTokenSource.Token);
+                ? await SendMessageInternalAsync(
+                    SelectedService.ProviderType,
+                    prompt,
+                    OnStreaming,
+                    _generateCancellationTokenSource.Token
+                )
+                : await SendMessageInternalAsync(
+                    SelectedService.ProviderType,
+                    prompt,
+                    cancellationToken: _generateCancellationTokenSource.Token
+                );
             TempResult = string.Empty;
 
             if (_generateCancellationTokenSource?.IsCancellationRequested != false)
@@ -338,7 +385,15 @@ public sealed partial class AIViewModel
         }
         catch (TaskCanceledException)
         {
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(UI.Models.Constants.StringNames.UserCancelled), InfoType.Warning));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(
+                            UI.Models.Constants.StringNames.UserCancelled
+                        ),
+                        InfoType.Warning
+                    )
+                );
         }
         catch (Exception ex)
         {
@@ -356,14 +411,16 @@ public sealed partial class AIViewModel
         ChatProviderType type,
         string? message,
         Action<string>? streamingAction = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         var messages = new List<ChatMessage>();
         var options = new ChatOptions
         {
-            ModelId = SelectedModel.Id,
+            ModelId = SelectedModel.Id
         };
-        var config = await this.Get<IChatConfigManager>().GetServiceConfigAsync(type, SelectedModel.Data);
+        var config = await this.Get<IChatConfigManager>()
+            .GetServiceConfigAsync(type, SelectedModel.Data);
         var service = GlobalDependencies.Kernel.GetRequiredService<IChatService>(type.ToString());
         service.Initialize(config);
         messages.Add(new(ChatRole.User, message));
@@ -372,12 +429,18 @@ public sealed partial class AIViewModel
         {
             if (streamingAction is null)
             {
-                var response = await service.Client!.GetResponseAsync(messages, options, cancellationToken).ConfigureAwait(false);
+                var response = await service
+                    .Client!.GetResponseAsync(messages, options, cancellationToken)
+                    .ConfigureAwait(false);
                 responseContent = response.Text ?? string.Empty;
             }
             else
             {
-                await foreach (var partialResponse in service.Client!.GetStreamingResponseAsync(messages, options, cancellationToken).ConfigureAwait(false))
+                await foreach (
+                    var partialResponse in service
+                        .Client!.GetStreamingResponseAsync(messages, options, cancellationToken)
+                        .ConfigureAwait(false)
+                )
                 {
                     if (!string.IsNullOrEmpty(partialResponse.Text))
                     {
@@ -398,7 +461,11 @@ public sealed partial class AIViewModel
             throw;
         }
 
-        return !string.IsNullOrEmpty(responseContent) ? responseContent : throw new KernelException($"{type} | {SelectedModel.Id} 返回空响应，具体错误请查看日志");
+        return !string.IsNullOrEmpty(responseContent)
+            ? responseContent
+            : throw new KernelException(
+                $"{type} | {SelectedModel.Id} 返回空响应，具体错误请查看日志"
+            );
     }
 
     private string GetArticlePlainText()
@@ -408,7 +475,9 @@ public sealed partial class AIViewModel
         html = Regex.Replace(html, @"\s+", " ");
         if (string.IsNullOrEmpty(html.Trim()))
         {
-            throw new Exception(ResourceToolkit.GetLocalizedString(StringNames.ArticleContentEmpty));
+            throw new Exception(
+                ResourceToolkit.GetLocalizedString(StringNames.ArticleContentEmpty)
+            );
         }
 
         return html;
@@ -418,7 +487,10 @@ public sealed partial class AIViewModel
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            if (_generateCancellationTokenSource is null || _generateCancellationTokenSource.IsCancellationRequested)
+            if (
+                _generateCancellationTokenSource is null
+                || _generateCancellationTokenSource.IsCancellationRequested
+            )
             {
                 TempResult = string.Empty;
             }

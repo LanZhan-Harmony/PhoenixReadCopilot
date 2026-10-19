@@ -1,10 +1,8 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
-using System.Collections.ObjectModel;
 using WebDav;
 
 namespace BiliCopilot.UI.ViewModels.View;
@@ -18,17 +16,13 @@ public sealed partial class WebDavPageViewModel
     private IWebDavClient _client;
     private WebDavConfig _config;
 
-    [ObservableProperty]
-    private bool _isInvalidConfig;
+    [ObservableProperty] private bool _isInvalidConfig;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private bool _isItemsEmpty;
+    [ObservableProperty] private bool _isItemsEmpty;
 
-    [ObservableProperty]
-    private List<WebDavStorageItemViewModel> _items;
+    [ObservableProperty] private List<WebDavStorageItemViewModel> _items;
 
     /// <summary>
     /// 路径段集合.

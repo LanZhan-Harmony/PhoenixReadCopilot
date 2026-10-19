@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Controls.Favorites;
@@ -41,7 +39,10 @@ public sealed partial class UgcFavoriteBody : UgcFavoriteControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(UgcSeasonFavoriteSectionDetailViewModel? oldValue, UgcSeasonFavoriteSectionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        UgcSeasonFavoriteSectionDetailViewModel? oldValue,
+        UgcSeasonFavoriteSectionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -64,14 +65,23 @@ public sealed partial class UgcFavoriteBody : UgcFavoriteControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ExtentHeight - VideoScrollView.ViewportHeight - VideoScrollView.VerticalOffset <= 240)
+        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+            !args.IsIntermediate;
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (
+                    VideoScrollView.ExtentHeight
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -84,12 +94,15 @@ public sealed partial class UgcFavoriteBody : UgcFavoriteControlBase
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

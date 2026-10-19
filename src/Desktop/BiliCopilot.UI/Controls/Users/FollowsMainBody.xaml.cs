@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.Users;
 
 /// <summary>
@@ -39,13 +37,21 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (UserScrollView.ExtentHeight - UserScrollView.ViewportHeight - UserScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadUsersCommand.Execute(default);
+                if (
+                    UserScrollView.ExtentHeight
+                    - UserScrollView.ViewportHeight
+                    - UserScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadUsersCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -58,12 +64,15 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
 
     private void CheckUserCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadUsersCommand.Execute(default);
+                if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadUsersCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

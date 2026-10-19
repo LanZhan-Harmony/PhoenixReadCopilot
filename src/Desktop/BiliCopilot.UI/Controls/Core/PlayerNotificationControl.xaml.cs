@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -16,17 +14,14 @@ public sealed partial class PlayerNotificationControl : PlayerNotificationContro
     public PlayerNotificationControl() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => ViewModel.StartCommand.Execute(default);
+    protected override void OnControlLoaded() => ViewModel.StartCommand.Execute(default);
 
     /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-        => ViewModel.CancelCommand.Execute(default);
+    protected override void OnControlUnloaded() => ViewModel.CancelCommand.Execute(default);
 }
 
 /// <summary>
 /// 播放器通知控件基类.
 /// </summary>
-public abstract class PlayerNotificationControlBase : LayoutUserControlBase<PlayerNotificationItemViewModel>
-{
-}
+public abstract class PlayerNotificationControlBase
+    : LayoutUserControlBase<PlayerNotificationItemViewModel> { }

@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Globalization;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
@@ -12,7 +11,6 @@ using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Article;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
-using System.Globalization;
 using Windows.Globalization;
 using WinRT;
 
@@ -29,7 +27,11 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleItemViewModel"/> class.
     /// </summary>
-    public ArticleItemViewModel(ArticleInformation data, ArticleCardStyle style, Action<ArticleItemViewModel>? removeAction = default)
+    public ArticleItemViewModel(
+        ArticleInformation data,
+        ArticleCardStyle style,
+        Action<ArticleItemViewModel>? removeAction = default
+    )
         : base(data)
     {
         var primaryLan = ApplicationLanguages.Languages[0];
@@ -41,7 +43,9 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
         PublishRelativeTime = data.PublishDateTime.Humanize(culture: new CultureInfo(primaryLan));
         LikeCount = data.CommunityInformation?.LikeCount;
         Style = style;
-        var collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(ArticleExtensionDataId.CollectTime);
+        var collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(
+            ArticleExtensionDataId.CollectTime
+        );
         if (collectTime is not null)
         {
             CollectRelativeTime = collectTime.Value.Humanize();
@@ -58,8 +62,8 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     }
 
     [RelayCommand]
-    private void ShowUserSpace()
-        => this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Publisher);
+    private void ShowUserSpace() =>
+        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Publisher);
 
     [RelayCommand]
     private async Task OpenInBroswerAsync()
@@ -79,14 +83,27 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
         catch (Exception ex)
         {
             this.Get<ILogger<ArticleItemViewModel>>().LogError(ex, "移除历史记录时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToRemoveVideoFromHistory), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(
+                            StringNames.FailedToRemoveVideoFromHistory
+                        ),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(Data.Identifier.Id, Data.Identifier.Title, Data.Identifier.Cover.Uri.ToString(), PinContentType.Article);
+        var pinItem = new PinItem(
+            Data.Identifier.Id,
+            Data.Identifier.Title,
+            Data.Identifier.Cover.Uri.ToString(),
+            PinContentType.Article
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 }

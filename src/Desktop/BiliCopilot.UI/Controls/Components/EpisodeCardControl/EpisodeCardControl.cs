@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -24,19 +22,20 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
     public EpisodeCardControl() => DefaultStyleKey = typeof(EpisodeCardControl);
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => ContextRequested += OnContextRequest;
+    protected override void OnControlLoaded() => ContextRequested += OnContextRequest;
 
     /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-        => ContextRequested -= OnContextRequest;
+    protected override void OnControlUnloaded() => ContextRequested -= OnContextRequest;
 
     private static MenuFlyoutItem CreateOpenInNewWindowItem()
     {
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInNewWindow),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.WindowPlay },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.WindowPlay,
+            },
             Tag = nameof(ViewModel.OpenInNewWindowCommand),
         };
     }
@@ -46,7 +45,10 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Globe
+            },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -56,7 +58,10 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Pin
+            },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -67,7 +72,13 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         {
             CreateContextFlyout();
             args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this, new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point });
+            ContextFlyout.ShowAt(
+                this,
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
+                {
+                    Position = point
+                }
+            );
         }
 
         RelocateCommands();

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -23,9 +21,16 @@ public sealed partial class BiliPlayer
             var height = frameEle.ActualHeight;
 
             // 测量 frameEle 相对于 MpvPlayer 的位置.
-            var transform = frameEle.TransformToVisual(_overlayContainer).TransformPoint(new Point(0, 0));
+            var transform = frameEle
+                .TransformToVisual(_overlayContainer)
+                .TransformPoint(new Point(0, 0));
 
-            _transportControlTriggerRect = new Rect((int)transform.X, (int)transform.Y, (int)width, (int)height);
+            _transportControlTriggerRect = new Rect(
+                (int)transform.X,
+                (int)transform.Y,
+                (int)width,
+                (int)height
+            );
         }
     }
 
@@ -36,30 +41,51 @@ public sealed partial class BiliPlayer
             return;
         }
 
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            const int initialWidth = 1280;
-            const int initialFontSize = 28;
-            const int initialPaddingLeft = 16;
-            const int initialPaddingTop = 12;
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
+            {
+                const int initialWidth = 1280;
+                const int initialFontSize = 28;
+                const int initialPaddingLeft = 16;
+                const int initialPaddingTop = 12;
 
-            // 根据实际宽度调整字幕大小，线性增长，每增加100px，字体大小增加3，横向边距增加8，纵向边距增加6.
-            var width = ActualWidth;
-            _subtitlePresenter.FontSize = Math.Max(12, (double)(initialFontSize + ((width - initialWidth) / 100 * 1.5)));
-            var horizontalPadding = Math.Max(8, initialPaddingLeft + ((width - initialWidth) / 100 * 2.5));
-            var verticalPadding = Math.Max(8, initialPaddingTop + ((width - initialWidth) / 100 * 1));
-            _subtitlePresenter.Padding = new Thickness(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
-        });
+                // 根据实际宽度调整字幕大小，线性增长，每增加100px，字体大小增加3，横向边距增加8，纵向边距增加6.
+                var width = ActualWidth;
+                _subtitlePresenter.FontSize = Math.Max(
+                    12,
+                    (double)(initialFontSize + ((width - initialWidth) / 100 * 1.5))
+                );
+                var horizontalPadding = Math.Max(
+                    8,
+                    initialPaddingLeft + ((width - initialWidth) / 100 * 2.5)
+                );
+                var verticalPadding = Math.Max(
+                    8,
+                    initialPaddingTop + ((width - initialWidth) / 100 * 1)
+                );
+                _subtitlePresenter.Padding = new Thickness(
+                    horizontalPadding,
+                    verticalPadding,
+                    horizontalPadding,
+                    verticalPadding
+                );
+            }
+        );
     }
 
     private void CheckTransportControlVisibility(PointerRoutedEventArgs? args = default)
     {
-        var isManual = SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic) == MTCBehavior.Manual;
-        if (isManual
+        var isManual =
+            SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
+            == MTCBehavior.Manual;
+        if (
+            isManual
             || _transportControl is null
             || ViewModel.IsPlayerDataLoading
             || ViewModel.IsPlayerInitializing
-            || ViewModel.IsExternalPlayer)
+            || ViewModel.IsExternalPlayer
+        )
         {
             return;
         }
@@ -87,7 +113,8 @@ public sealed partial class BiliPlayer
                 return;
             }
 
-            var isInStayArea = _lastRelativeMTCPoint != null
+            var isInStayArea =
+                _lastRelativeMTCPoint != null
                 && _lastRelativeMTCPoint.Value.X >= 0
                 && _lastRelativeMTCPoint.Value.Y >= 0
                 && _lastRelativeMTCPoint.Value.X <= _transportControl.ActualWidth
@@ -133,24 +160,34 @@ public sealed partial class BiliPlayer
         _cursorStayTime += 0.5;
         _mtcStayTime += 0.5;
 
-        if (_lastPressedTime != null && DateTimeOffset.Now - _lastPressedTime > TimeSpan.FromSeconds(1) && !_isHolding)
+        if (
+            _lastPressedTime != null
+            && DateTimeOffset.Now - _lastPressedTime > TimeSpan.FromSeconds(1)
+            && !_isHolding
+        )
         {
             _isHolding = true;
             ToggleTripleSpeed(true);
         }
 
-        if (_lastRightArrowPressedTime != null && DateTimeOffset.Now - _lastRightArrowPressedTime > TimeSpan.FromSeconds(1) && !_isHolding)
+        if (
+            _lastRightArrowPressedTime != null
+            && DateTimeOffset.Now - _lastRightArrowPressedTime > TimeSpan.FromSeconds(1)
+            && !_isHolding
+        )
         {
             _isHolding = true;
             ToggleTripleSpeed(true);
         }
 
         CheckTransportControlVisibility();
-        if (_cursorStayTime >= 2
+        if (
+            _cursorStayTime >= 2
             && _transportControl is not null
             && _transportControl.Visibility == Visibility.Collapsed
             && !ViewModel.IsPaused
-            && !ViewModel.IsPlayerDataLoading)
+            && !ViewModel.IsPlayerDataLoading
+        )
         {
             if (!_isCursorDisposed)
             {
@@ -172,7 +209,10 @@ public sealed partial class BiliPlayer
         }
     }
 
-    private void OnInteractionControlManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+    private void OnInteractionControlManipulationCompleted(
+        object sender,
+        ManipulationCompletedRoutedEventArgs e
+    )
     {
         _manipulationVolume = 0;
         _manipulationProgress = 0;
@@ -188,7 +228,10 @@ public sealed partial class BiliPlayer
         _manipulationBeforeIsPlay = false;
     }
 
-    private void OnInteractionControlManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+    private void OnInteractionControlManipulationDelta(
+        object sender,
+        ManipulationDeltaRoutedEventArgs e
+    )
     {
         if (ViewModel.IsBuffering)
         {
@@ -202,7 +245,9 @@ public sealed partial class BiliPlayer
             if (_manipulationType == PlayerManipulationType.None)
             {
                 var isVolume = Math.Abs(_manipulationDeltaY) > Math.Abs(_manipulationDeltaX);
-                _manipulationType = isVolume ? PlayerManipulationType.Volume : PlayerManipulationType.Progress;
+                _manipulationType = isVolume
+                    ? PlayerManipulationType.Volume
+                    : PlayerManipulationType.Progress;
             }
 
             if (_manipulationType == PlayerManipulationType.Volume)
@@ -221,7 +266,8 @@ public sealed partial class BiliPlayer
             }
             else
             {
-                var progress = _manipulationProgress + (_manipulationDeltaX * _manipulationUnitLength);
+                var progress =
+                    _manipulationProgress + (_manipulationDeltaX * _manipulationUnitLength);
                 if (progress > ViewModel.Duration)
                 {
                     progress = ViewModel.Duration;
@@ -236,7 +282,10 @@ public sealed partial class BiliPlayer
         }
     }
 
-    private void OnInteractionControlManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+    private void OnInteractionControlManipulationStarted(
+        object sender,
+        ManipulationStartedRoutedEventArgs e
+    )
     {
         if (ViewModel.IsPlayerDataLoading || ViewModel.IsBuffering || ViewModel.IsFailed)
         {
@@ -275,14 +324,17 @@ public sealed partial class BiliPlayer
         {
             var options = new FlyoutShowOptions
             {
-                Position = point.Position,
+                Position = point.Position
             };
             _contextFlyout.ShowAt(_interactionControl, options);
             return;
         }
 
         _isPointerHasPressed = true;
-        if (e.Pointer.PointerDeviceType == PointerDeviceType.Mouse || e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+        if (
+            e.Pointer.PointerDeviceType == PointerDeviceType.Mouse
+            || e.Pointer.PointerDeviceType == PointerDeviceType.Touch
+        )
         {
             _lastPressedTime = DateTimeOffset.Now;
         }
@@ -327,15 +379,19 @@ public sealed partial class BiliPlayer
         HandlePointerEvent(e, !ViewModel.IsDanmakuInputFocused);
     }
 
-    private void OnRootPointerEntered(object sender, PointerRoutedEventArgs e)
-        => HandlePointerEvent(e);
+    private void OnRootPointerEntered(object sender, PointerRoutedEventArgs e) =>
+        HandlePointerEvent(e);
 
-    private void OnRootPointerMoved(object sender, PointerRoutedEventArgs e)
-        => HandlePointerEvent(e);
+    private void OnRootPointerMoved(object sender, PointerRoutedEventArgs e) =>
+        HandlePointerEvent(e);
 
     private void OnRootPointerReleased(object sender, PointerRoutedEventArgs e)
     {
-        if (_isPointerHasPressed != true || e.GetCurrentPoint((UIElement)sender).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
+        if (
+            _isPointerHasPressed != true
+            || e.GetCurrentPoint((UIElement)sender).Properties.PointerUpdateKind
+            == PointerUpdateKind.RightButtonReleased
+        )
         {
             return;
         }
@@ -355,7 +411,9 @@ public sealed partial class BiliPlayer
                 return;
             }
 
-            var isManual = SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic) == MTCBehavior.Manual;
+            var isManual =
+                SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
+                == MTCBehavior.Manual;
             if (isManual)
             {
                 if (_transportControl is not null)

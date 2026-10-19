@@ -36,8 +36,14 @@ internal class MyCodeBlock : IAddChild
             Margin = new Thickness(0, 8, 0, 8),
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
-        grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-        grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+        grid.RowDefinitions.Add(new RowDefinition()
+        {
+            Height = GridLength.Auto
+        });
+        grid.RowDefinitions.Add(new RowDefinition()
+        {
+            Height = new GridLength(1, GridUnitType.Star)
+        });
         var richTextBlock = new RichTextBlock();
         richTextBlock.Foreground = config.Themes.CodeBlockForeground;
 
@@ -48,8 +54,14 @@ internal class MyCodeBlock : IAddChild
             CornerRadius = new CornerRadius(4, 4, 0, 0),
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
-        codeHeader.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-        codeHeader.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+        codeHeader.ColumnDefinitions.Add(new ColumnDefinition()
+        {
+            Width = new GridLength(1, GridUnitType.Star)
+        });
+        codeHeader.ColumnDefinitions.Add(new ColumnDefinition()
+        {
+            Width = GridLength.Auto
+        });
 
         var codeContainer = new Grid
         {
@@ -101,7 +113,10 @@ internal class MyCodeBlock : IAddChild
                 var lineString = line.ToString();
                 if (!string.IsNullOrWhiteSpace(lineString))
                 {
-                    paragraph.Inlines.Add(new Run() { Text = lineString });
+                    paragraph.Inlines.Add(new Run()
+                    {
+                        Text = lineString
+                    });
                 }
 
                 richTextBlock.Blocks.Add(paragraph);
@@ -124,7 +139,11 @@ internal class MyCodeBlock : IAddChild
 
         var btn = new Button()
         {
-            Content = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy, FontSize = 14 },
+            Content = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Copy,
+                FontSize = 14
+            },
             Background = new SolidColorBrush(Colors.Transparent),
             BorderBrush = new SolidColorBrush(Colors.Transparent),
             HorizontalAlignment = HorizontalAlignment.Right,
@@ -164,7 +183,5 @@ internal class MyCodeBlock : IAddChild
         GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
     }
 
-    public void AddChild(IAddChild child)
-    {
-    }
+    public void AddChild(IAddChild child) { }
 }

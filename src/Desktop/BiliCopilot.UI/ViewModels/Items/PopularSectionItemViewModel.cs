@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -16,7 +14,8 @@ public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSection
     public PopularSectionItemViewModel(
         FluentIcons.Common.Symbol symbol,
         string title,
-        PopularSectionType type)
+        PopularSectionType type
+    )
     {
         Icon = symbol;
         Title = title;
@@ -39,7 +38,8 @@ public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSection
     public PopularSectionType Type { get; init; }
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is PopularSectionItemViewModel model && Type == model.Type;
+    public override bool Equals(object? obj) =>
+        obj is PopularSectionItemViewModel model && Type == model.Type;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Type);

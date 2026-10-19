@@ -1,9 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Moment;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 
@@ -18,14 +16,11 @@ public sealed partial class MomentUperSectionViewModel
     private string? _offset;
     private string? _baseline;
 
-    [ObservableProperty]
-    private bool _hasUnread;
+    [ObservableProperty] private bool _hasUnread;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
     /// <summary>
     /// 列表已完成更新.
@@ -53,7 +48,11 @@ public sealed partial class MomentUperSectionViewModel
     public ObservableCollection<MomentItemViewModel> Items { get; } = new();
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is MomentUperSectionViewModel model && base.Equals(obj) && IsTotal == model.IsTotal && Name == model.Name;
+    public override bool Equals(object? obj) =>
+        obj is MomentUperSectionViewModel model
+        && base.Equals(obj)
+        && IsTotal == model.IsTotal
+        && Name == model.Name;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), IsTotal, Name);

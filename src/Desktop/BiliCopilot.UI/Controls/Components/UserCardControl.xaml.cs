@@ -1,11 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.ComponentModel;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Input;
 using Richasy.WinUIKernel.Share.Base;
-using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Components;
 
@@ -46,7 +44,10 @@ public sealed partial class UserCardControl : UserCardControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(UserItemViewModel? oldValue, UserItemViewModel? newValue)
+    protected override void OnViewModelChanged(
+        UserItemViewModel? oldValue,
+        UserItemViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -64,7 +65,10 @@ public sealed partial class UserCardControl : UserCardControlBase
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Pin
+            },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -86,7 +90,10 @@ public sealed partial class UserCardControl : UserCardControlBase
 
         if (FollowIcon is not null)
         {
-            FollowIcon.IconVariant = ViewModel?.IsFollowed == true ? FluentIcons.Common.IconVariant.Filled : FluentIcons.Common.IconVariant.Regular;
+            FollowIcon.IconVariant =
+                ViewModel?.IsFollowed == true
+                    ? FluentIcons.Common.IconVariant.Filled
+                    : FluentIcons.Common.IconVariant.Regular;
         }
     }
 
@@ -96,7 +103,13 @@ public sealed partial class UserCardControl : UserCardControlBase
         {
             CreateContextFlyout();
             args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this, new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point });
+            ContextFlyout.ShowAt(
+                this,
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
+                {
+                    Position = point
+                }
+            );
         }
 
         RelocateCommands();
@@ -105,7 +118,10 @@ public sealed partial class UserCardControl : UserCardControlBase
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
+        var menuFlyout = new MenuFlyout()
+        {
+            ShouldConstrainToRootBounds = false
+        };
         menuFlyout.Items.Add(CreatePinItem());
         ContextFlyout = menuFlyout;
     }

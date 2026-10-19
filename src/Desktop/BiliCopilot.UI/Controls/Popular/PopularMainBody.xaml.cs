@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Popular;
@@ -41,20 +39,34 @@ public sealed partial class PopularMainBody : PopularPageControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        if ((ViewModel.SelectedSection is PopularSectionItemViewModel secItem && secItem.Type == Models.Constants.PopularSectionType.Rank)
-            || ViewModel.SelectedSection is PopularRankPartitionViewModel)
+        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+            !args.IsIntermediate;
+        if (
+            (
+                ViewModel.SelectedSection is PopularSectionItemViewModel secItem
+                && secItem.Type == Models.Constants.PopularSectionType.Rank
+            )
+            || ViewModel.SelectedSection is PopularRankPartitionViewModel
+        )
         {
             return;
         }
 
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ExtentHeight - VideoScrollView.ViewportHeight - VideoScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadVideosCommand.Execute(default);
+                if (
+                    VideoScrollView.ExtentHeight
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadVideosCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -67,12 +79,15 @@ public sealed partial class PopularMainBody : PopularPageControlBase
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadVideosCommand.Execute(default);
+                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadVideosCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
@@ -19,9 +17,7 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     /// <summary>
     /// Initializes a new instance of the <see cref="EntertainmentIndexViewModel"/> class.
     /// </summary>
-    public EntertainmentIndexViewModel(
-        PgcSectionType type,
-        IEntertainmentDiscoveryService service)
+    public EntertainmentIndexViewModel(PgcSectionType type, IEntertainmentDiscoveryService service)
     {
         SectionType = type;
         _logger = this.Get<ILogger<EntertainmentIndexViewModel>>();
@@ -52,7 +48,9 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
         try
         {
             var filters = await _service.GetIndexFiltersAsync(GetEntertainmentType(SectionType));
-            Filters = filters.Select(p => new IndexFilterViewModel(p, RequestForConditionChanged)).ToList();
+            Filters = filters
+                .Select(p => new IndexFilterViewModel(p, RequestForConditionChanged))
+                .ToList();
             await RequestIndexAsync();
         }
         catch (Exception ex)
@@ -69,12 +67,16 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     private Task Refresh()
     {
         _pageNumer = 0;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Items.Clear();
-            Filters = default;
-            await InitializeAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    Items.Clear();
+                    Filters = default;
+                    await InitializeAsync();
+                }
+            );
 
         return Task.CompletedTask;
     }
@@ -91,7 +93,11 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
         try
         {
             var conditions = Filters.Select(p => (p.Data, p.CurrentCondition!)).ToDictionary();
-            var (seasons, hasNext) = await _service.GetIndexSeasonsWithFiltersAsync(GetEntertainmentType(SectionType), conditions, _pageNumer);
+            var (seasons, hasNext) = await _service.GetIndexSeasonsWithFiltersAsync(
+                GetEntertainmentType(SectionType),
+                conditions,
+                _pageNumer
+            );
             if (seasons is not null)
             {
                 foreach (var item in seasons)
@@ -120,10 +126,14 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     private void RequestForConditionChanged()
     {
         _pageNumer = 0;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
-        {
-            Items.Clear();
-            RequestIndexCommand.Execute(default);
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                () =>
+                {
+                    Items.Clear();
+                    RequestIndexCommand.Execute(default);
+                }
+            );
     }
 }

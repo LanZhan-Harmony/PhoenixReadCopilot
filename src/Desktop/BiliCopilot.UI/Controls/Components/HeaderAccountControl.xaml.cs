@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -16,11 +14,10 @@ public sealed partial class HeaderAccountControl : HeaderAccountControlBase
     public HeaderAccountControl() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(default);
 
-    private void OnFlyoutOpened(object sender, object e)
-        => ViewModel.UpdateCommunityInformationCommand.Execute(default);
+    private void OnFlyoutOpened(object sender, object e) =>
+        ViewModel.UpdateCommunityInformationCommand.Execute(default);
 }
 
 /// <summary>

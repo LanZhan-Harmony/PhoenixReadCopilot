@@ -1,9 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using BiliCopilot.UI.Models.Constants;
-using Richasy.WinUIKernel.Share.Toolkits;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using BiliCopilot.UI.Models.Constants;
+using Richasy.WinUIKernel.Share.Toolkits;
 
 namespace BiliCopilot.UI.Toolkits;
 
@@ -12,16 +10,15 @@ namespace BiliCopilot.UI.Toolkits;
 /// </summary>
 internal sealed partial class AppToolkit : SharedAppToolkit
 {
-    public AppToolkit(ISettingsToolkit settings) : base(settings)
-    {
-    }
+    public AppToolkit(ISettingsToolkit settings)
+        : base(settings) { }
 
     /// <summary>
     /// 格式化时长.
     /// </summary>
     /// <returns>时长文本，如 01:33.</returns>
-    public static string FormatDuration(TimeSpan duration)
-        => duration.TotalHours >= 1 ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(@"mm\:ss");
+    public static string FormatDuration(TimeSpan duration) =>
+        duration.TotalHours >= 1 ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(@"mm\:ss");
 
     /// <summary>
     /// 格式化数量.
@@ -97,7 +94,10 @@ internal sealed partial class AppToolkit : SharedAppToolkit
     /// <returns>解码标识符.</returns>
     public static string GetPreferCodecId()
     {
-        var preferCodec = SettingsToolkit.ReadLocalSetting(SettingNames.PreferCodec, PreferCodecType.H264);
+        var preferCodec = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PreferCodec,
+            PreferCodecType.H264
+        );
         return preferCodec switch
         {
             PreferCodecType.H265 => "hev",
@@ -120,8 +120,8 @@ internal sealed partial class AppToolkit : SharedAppToolkit
     /// 获取WebDav服务器地址.
     /// </summary>
     /// <returns>地址.</returns>
-    public static string GetWebDavServer(string server, string path)
-        => $"{server.TrimEnd('/')}/{path.TrimStart('/')}";
+    public static string GetWebDavServer(string server, string path) =>
+        $"{server.TrimEnd('/')}/{path.TrimStart('/')}";
 
     [GeneratedRegex(@"(mcdn.bilivideo.(cn|com)|szbdyd.com)")]
     private static partial Regex P2PRegex();

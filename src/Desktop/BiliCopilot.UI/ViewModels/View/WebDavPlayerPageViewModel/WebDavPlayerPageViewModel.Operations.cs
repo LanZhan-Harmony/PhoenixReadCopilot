@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -32,7 +30,10 @@ public sealed partial class WebDavPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
+            );
     }
 
     [RelayCommand]
@@ -100,32 +101,41 @@ public sealed partial class WebDavPlayerPageViewModel
 
     private void PlayerMediaEnded()
     {
-        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>().TryEnqueue(() =>
-        {
-            var autoNext = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNext, true);
-            if (!autoNext || !HasNextVideo)
+        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
+            .TryEnqueue(() =>
             {
-                Player.BackToDefaultModeCommand.Execute(default);
-                return;
-            }
+                var autoNext = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNext, true);
+                if (!autoNext || !HasNextVideo)
+                {
+                    Player.BackToDefaultModeCommand.Execute(default);
+                    return;
+                }
 
-            var next = FindNextVideo();
-            if (next is null)
-            {
-                return;
-            }
+                var next = FindNextVideo();
+                if (next is null)
+                {
+                    return;
+                }
 
-            var withoutTip = SettingsToolkit.ReadLocalSetting(SettingNames.PlayNextWithoutTip, false);
-            if (withoutTip)
-            {
-                PlayNextVideo();
-            }
-            else
-            {
-                var tip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.NextVideoNotificationTemplate), next.Data.DisplayName);
-                var notification = new PlayerNotification(PlayNextVideo, tip, 5);
-                Player.ShowNotification(notification);
-            }
-        });
+                var withoutTip = SettingsToolkit.ReadLocalSetting(
+                    SettingNames.PlayNextWithoutTip,
+                    false
+                );
+                if (withoutTip)
+                {
+                    PlayNextVideo();
+                }
+                else
+                {
+                    var tip = string.Format(
+                        ResourceToolkit.GetLocalizedString(
+                            StringNames.NextVideoNotificationTemplate
+                        ),
+                        next.Data.DisplayName
+                    );
+                    var notification = new PlayerNotification(PlayNextVideo, tip, 5);
+                    Player.ShowNotification(notification);
+                }
+            });
     }
 }

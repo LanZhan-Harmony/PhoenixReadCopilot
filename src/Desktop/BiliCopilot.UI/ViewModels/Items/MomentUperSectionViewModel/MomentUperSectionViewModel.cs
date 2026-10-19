@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.View;
@@ -37,16 +35,26 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = momentView.HasMoreMoments != true;
         _offset = momentView.Offset;
         _baseline = momentView.UpdateBaseline;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
-        {
-            Items.Clear();
-            foreach (var item in momentView.Moments)
-            {
-                Items.Add(new MomentItemViewModel(item, MomentCardStyle.Comprehensive, ShowComment));
-            }
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                () =>
+                {
+                    Items.Clear();
+                    foreach (var item in momentView.Moments)
+                    {
+                        Items.Add(
+                            new MomentItemViewModel(
+                                item,
+                                MomentCardStyle.Comprehensive,
+                                ShowComment
+                            )
+                        );
+                    }
 
-            ListUpdated?.Invoke(this, EventArgs.Empty);
-        });
+                    ListUpdated?.Invoke(this, EventArgs.Empty);
+                }
+            );
     }
 
     [RelayCommand]
@@ -74,10 +82,14 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = false;
         Items.Clear();
 
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            await LoadItemsAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    await LoadItemsAsync();
+                }
+            );
     }
 
     [RelayCommand]
@@ -124,7 +136,13 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
             _offset = view.Offset;
             _baseline = view.UpdateBaseline;
             _preventLoadMore = view.HasMoreMoments != true;
-            foreach (var item in view.Moments.Select(p => new MomentItemViewModel(p, MomentCardStyle.Comprehensive, ShowComment)))
+            foreach (
+                var item in view.Moments.Select(p => new MomentItemViewModel(
+                    p,
+                    MomentCardStyle.Comprehensive,
+                    ShowComment
+                ))
+            )
             {
                 Items.Add(item);
             }
@@ -140,7 +158,13 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = !hasMore || string.IsNullOrEmpty(offset);
         if (moments is not null)
         {
-            foreach (var item in moments.Select(p => new MomentItemViewModel(p, MomentCardStyle.Comprehensive, ShowComment)))
+            foreach (
+                var item in moments.Select(p => new MomentItemViewModel(
+                    p,
+                    MomentCardStyle.Comprehensive,
+                    ShowComment
+                ))
+            )
             {
                 Items.Add(item);
             }
@@ -149,6 +173,6 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         }
     }
 
-    private void ShowComment(MomentItemViewModel item)
-        => this.Get<MomentPageViewModel>().ShowCommentCommand.Execute(item.Data);
+    private void ShowComment(MomentItemViewModel item) =>
+        this.Get<MomentPageViewModel>().ShowCommentCommand.Execute(item.Data);
 }

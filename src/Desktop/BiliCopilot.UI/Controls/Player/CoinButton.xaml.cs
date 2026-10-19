@@ -1,7 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using Richasy.WinUIKernel.Share.Base;
 using System.Windows.Input;
+using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Player;
 
@@ -13,26 +11,42 @@ public sealed partial class CoinButton : LayoutUserControlBase
     /// <summary>
     /// <see cref="IsCoined"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsCoinedProperty =
-        DependencyProperty.Register(nameof(IsCoined), typeof(bool), typeof(CoinButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsCoinedProperty = DependencyProperty.Register(
+        nameof(IsCoined),
+        typeof(bool),
+        typeof(CoinButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="Tip"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TipProperty =
-        DependencyProperty.Register(nameof(CoinButton), typeof(string), typeof(CoinButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty TipProperty = DependencyProperty.Register(
+        nameof(CoinButton),
+        typeof(string),
+        typeof(CoinButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="Command"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty CommandProperty =
-        DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(CoinButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+        nameof(Command),
+        typeof(ICommand),
+        typeof(CoinButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="AlsoLike"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty AlsoLikeProperty =
-        DependencyProperty.Register(nameof(AlsoLike), typeof(bool), typeof(CoinButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty AlsoLikeProperty = DependencyProperty.Register(
+        nameof(AlsoLike),
+        typeof(bool),
+        typeof(CoinButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CoinButton"/> class.

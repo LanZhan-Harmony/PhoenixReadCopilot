@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,6 +17,4 @@ public sealed partial class MomentPresenter : MomentPresenterBase
 /// <summary>
 /// 动态显示器基类.
 /// </summary>
-public abstract class MomentPresenterBase : LayoutUserControlBase<MomentItemViewModel>
-{
-}
+public abstract class MomentPresenterBase : LayoutUserControlBase<MomentItemViewModel> { }

@@ -1,7 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using Richasy.WinUIKernel.Share.Base;
 using System.Windows.Input;
+using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Player;
 
@@ -13,32 +11,53 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
     /// <summary>
     /// <see cref="IsFavorited"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsFavoritedProperty =
-        DependencyProperty.Register(nameof(IsFavorited), typeof(bool), typeof(FavoriteButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsFavoritedProperty = DependencyProperty.Register(
+        nameof(IsFavorited),
+        typeof(bool),
+        typeof(FavoriteButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="Tip"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TipProperty =
-        DependencyProperty.Register(nameof(FavoriteButton), typeof(string), typeof(FavoriteButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty TipProperty = DependencyProperty.Register(
+        nameof(FavoriteButton),
+        typeof(string),
+        typeof(FavoriteButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="Command"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty CommandProperty =
-        DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(FavoriteButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+        nameof(Command),
+        typeof(ICommand),
+        typeof(FavoriteButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="InitializeCommand"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty InitializeCommandProperty =
-        DependencyProperty.Register(nameof(FavoriteButton), typeof(ICommand), typeof(FavoriteButton), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(FavoriteButton),
+            typeof(ICommand),
+            typeof(FavoriteButton),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// <see cref="ItemsSource"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ItemsSourceProperty =
-        DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(FavoriteButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
+        nameof(ItemsSource),
+        typeof(object),
+        typeof(FavoriteButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoriteButton"/> class.
@@ -90,8 +109,7 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
         set => SetValue(ItemsSourceProperty, value);
     }
 
-    protected override void OnControlUnloaded()
-        => FavoriteRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => FavoriteRepeater.ItemsSource = default;
 
     private void OnFavoriteButtonClick(object sender, RoutedEventArgs e)
     {

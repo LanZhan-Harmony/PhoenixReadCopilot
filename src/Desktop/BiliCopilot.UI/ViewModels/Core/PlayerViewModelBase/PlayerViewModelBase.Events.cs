@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using Windows.Media;
 
@@ -60,7 +58,10 @@ public abstract partial class PlayerViewModelBase
 
             if (_smtc is not null)
             {
-                _smtc.PlaybackStatus = IsFailed ? MediaPlaybackStatus.Stopped : IsPaused ? MediaPlaybackStatus.Paused : MediaPlaybackStatus.Playing;
+                _smtc.PlaybackStatus =
+                    IsFailed ? MediaPlaybackStatus.Stopped
+                    : IsPaused ? MediaPlaybackStatus.Paused
+                    : MediaPlaybackStatus.Playing;
             }
 
             IsFailed = state == PlayerState.Failed;
@@ -71,16 +72,17 @@ public abstract partial class PlayerViewModelBase
     /// <summary>
     /// 播放结束.
     /// </summary>
-    protected virtual void ReachEnd()
-        => _endAction?.Invoke();
+    protected virtual void ReachEnd() => _endAction?.Invoke();
 
     /// <summary>
     /// 初始化完成.
     /// </summary>
-    protected void RaiseInitializedEvent()
-        => Initialized?.Invoke(this, EventArgs.Empty);
+    protected void RaiseInitializedEvent() => Initialized?.Invoke(this, EventArgs.Empty);
 
-    private void OnSystemControlsButtonPressedAsync(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
+    private void OnSystemControlsButtonPressedAsync(
+        SystemMediaTransportControls sender,
+        SystemMediaTransportControlsButtonPressedEventArgs args
+    )
     {
         switch (args.Button)
         {

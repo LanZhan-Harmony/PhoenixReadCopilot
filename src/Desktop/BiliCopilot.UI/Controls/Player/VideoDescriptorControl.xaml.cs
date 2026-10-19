@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Base;
 
@@ -15,8 +13,7 @@ public sealed partial class VideoDescriptorControl : VideoPlayerPageControlBase
     /// </summary>
     public VideoDescriptorControl() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => TagRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => TagRepeater.ItemsSource = null;
 
     private void OnTagButtonClick(object sender, RoutedEventArgs e)
     {

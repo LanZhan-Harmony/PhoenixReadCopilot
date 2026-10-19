@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -22,9 +20,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewLaterPageViewModel"/> class.
     /// </summary>
-    public ViewLaterPageViewModel(
-        IViewLaterService service,
-        ILogger<ViewLaterPageViewModel> logger)
+    public ViewLaterPageViewModel(IViewLaterService service, ILogger<ViewLaterPageViewModel> logger)
     {
         _service = service;
         _logger = logger;
@@ -78,7 +74,13 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
                         continue;
                     }
 
-                    Videos.Add(new VideoItemViewModel(item, Models.Constants.VideoCardStyle.ViewLater, removeAction: RemoveVideo));
+                    Videos.Add(
+                        new VideoItemViewModel(
+                            item,
+                            Models.Constants.VideoCardStyle.ViewLater,
+                            removeAction: RemoveVideo
+                        )
+                    );
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -113,7 +115,10 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private void PlayAll()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
+            SettingNames.DefaultPlayerDisplayMode,
+            PlayerDisplayMode.Default
+        );
         if (Videos.Count == 1)
         {
             var video = Videos.First();
@@ -123,11 +128,15 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
                 return;
             }
 
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video.Data));
+            this.Get<NavigationViewModel>()
+                .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video.Data));
         }
         else
         {
-            var data = (Videos.Select(p => p.Data).ToList(), new VideoSnapshot(Videos.First().Data));
+            var data = (
+                Videos.Select(p => p.Data).ToList(),
+                new VideoSnapshot(Videos.First().Data)
+            );
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
                 new PlayerWindow().OpenVideo(data);

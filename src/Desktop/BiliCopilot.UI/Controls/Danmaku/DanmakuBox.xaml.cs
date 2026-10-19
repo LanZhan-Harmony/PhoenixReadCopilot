@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.Danmaku;
 
 /// <summary>
@@ -22,7 +20,10 @@ public sealed partial class DanmakuBox : DanmakuControlBase
     /// </summary>
     public event EventHandler InputGotFocus;
 
-    private async void OnDanmakuInputBoxSubmittedAsync(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    private async void OnDanmakuInputBoxSubmittedAsync(
+        AutoSuggestBox sender,
+        AutoSuggestBoxQuerySubmittedEventArgs args
+    )
     {
         if (string.IsNullOrEmpty(args.QueryText))
         {
@@ -38,12 +39,11 @@ public sealed partial class DanmakuBox : DanmakuControlBase
         });
     }
 
-    private void OnDisplayFlyoutClosed(object sender, object e)
-        => ViewModel.ResetStyle();
+    private void OnDisplayFlyoutClosed(object sender, object e) => ViewModel.ResetStyle();
 
-    private void OnInputLostFocus(object sender, RoutedEventArgs e)
-        => InputLostFocus?.Invoke(this, EventArgs.Empty);
+    private void OnInputLostFocus(object sender, RoutedEventArgs e) =>
+        InputLostFocus?.Invoke(this, EventArgs.Empty);
 
-    private void OnInputFocus(object sender, RoutedEventArgs e)
-        => InputGotFocus?.Invoke(this, EventArgs.Empty);
+    private void OnInputFocus(object sender, RoutedEventArgs e) =>
+        InputGotFocus?.Invoke(this, EventArgs.Empty);
 }

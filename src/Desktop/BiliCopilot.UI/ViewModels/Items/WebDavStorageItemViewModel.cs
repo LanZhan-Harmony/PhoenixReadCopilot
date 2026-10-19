@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.ViewModels.Core;
@@ -16,11 +14,9 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class WebDavStorageItemViewModel : ViewModelBase<WebDavResource>
 {
-    [ObservableProperty]
-    private bool _isFolder;
+    [ObservableProperty] private bool _isFolder;
 
-    [ObservableProperty]
-    private string _icon;
+    [ObservableProperty] private string _icon;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebDavStorageItemViewModel"/> class.
@@ -71,7 +67,10 @@ public sealed partial class WebDavStorageItemViewModel : ViewModelBase<WebDavRes
     /// <summary>
     /// 是否可用.
     /// </summary>
-    public bool IsEnabled => FileType == WebDavFileType.Directory || FileType == WebDavFileType.Video || FileType == WebDavFileType.Audio;
+    public bool IsEnabled =>
+        FileType == WebDavFileType.Directory
+        || FileType == WebDavFileType.Video
+        || FileType == WebDavFileType.Audio;
 
     [RelayCommand]
     private void Activate()
@@ -83,19 +82,115 @@ public sealed partial class WebDavStorageItemViewModel : ViewModelBase<WebDavRes
         }
         else
         {
-            var videoList = pageVM.Items.Where(p => p.FileType == WebDavFileType.Video).Select(p => p.Data).ToList() ?? new List<WebDavResource>();
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(WebDavPlayerPage), (videoList, Data));
+            var videoList =
+                pageVM
+                    .Items.Where(p => p.FileType == WebDavFileType.Video)
+                    .Select(p => p.Data)
+                    .ToList()
+                ?? new List<WebDavResource>();
+            this.Get<NavigationViewModel>()
+                .NavigateToOver(typeof(WebDavPlayerPage), (videoList, Data));
         }
     }
 
     internal static class FileExtensions
     {
-        internal static readonly string[] Text = { ".txt", ".doc", ".docx", ".pdf", ".rtf", ".odt", ".csv", ".xml", ".html", ".json", ".srt", ".ass" };
+        internal static readonly string[] Text =
+        {
+            ".txt",
+            ".doc",
+            ".docx",
+            ".pdf",
+            ".rtf",
+            ".odt",
+            ".csv",
+            ".xml",
+            ".html",
+            ".json",
+            ".srt",
+            ".ass",
+        };
 
-        internal static readonly string[] Video = { ".mp4", ".avi", ".mov", ".wmv", ".flv", ".f4v", ".m4v", ".rmvb", ".rm", ".3gp", ".dat", ".mts", ".vob", ".mkv", ".mpeg", ".mpg", ".ogv", ".webm", ".asf", ".divx", ".qt", ".m2ts", ".ts" };
+        internal static readonly string[] Video =
+        {
+            ".mp4",
+            ".avi",
+            ".mov",
+            ".wmv",
+            ".flv",
+            ".f4v",
+            ".m4v",
+            ".rmvb",
+            ".rm",
+            ".3gp",
+            ".dat",
+            ".mts",
+            ".vob",
+            ".mkv",
+            ".mpeg",
+            ".mpg",
+            ".ogv",
+            ".webm",
+            ".asf",
+            ".divx",
+            ".qt",
+            ".m2ts",
+            ".ts",
+        };
 
-        internal static readonly string[] Audio = { ".mp3", ".wav", ".wma", ".ogg", ".aac", ".flac", ".ape", ".m4a", ".m4r", ".mid", ".ra", ".amr", ".aiff", ".au", ".raw", ".mp2", ".m3u", ".oga", ".opus", ".spx", ".alac", ".dts", ".ac3", ".aax", ".mka" };
+        internal static readonly string[] Audio =
+        {
+            ".mp3",
+            ".wav",
+            ".wma",
+            ".ogg",
+            ".aac",
+            ".flac",
+            ".ape",
+            ".m4a",
+            ".m4r",
+            ".mid",
+            ".ra",
+            ".amr",
+            ".aiff",
+            ".au",
+            ".raw",
+            ".mp2",
+            ".m3u",
+            ".oga",
+            ".opus",
+            ".spx",
+            ".alac",
+            ".dts",
+            ".ac3",
+            ".aax",
+            ".mka",
+        };
 
-        internal static readonly string[] Image = { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".webp", ".tiff", ".psd", ".svg", ".raw", ".ico", ".heif", ".indd", ".ai", ".eps", ".pdf", ".pict", ".tif", ".cr2", ".nef", ".orf", ".sr2" };
+        internal static readonly string[] Image =
+        {
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".bmp",
+            ".gif",
+            ".webp",
+            ".tiff",
+            ".psd",
+            ".svg",
+            ".raw",
+            ".ico",
+            ".heif",
+            ".indd",
+            ".ai",
+            ".eps",
+            ".pdf",
+            ".pict",
+            ".tif",
+            ".cr2",
+            ".nef",
+            ".orf",
+            ".sr2",
+        };
     }
 }

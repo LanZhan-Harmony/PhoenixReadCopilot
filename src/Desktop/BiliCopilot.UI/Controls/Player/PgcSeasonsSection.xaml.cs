@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
@@ -25,12 +23,15 @@ public sealed partial class PgcSeasonsSection : PgcSeasonsSectionBase
         }
     }
 
-    protected override void OnControlUnloaded()
-        => View.ItemsSource = default;
+    protected override void OnControlUnloaded() => View.ItemsSource = default;
 
     private void OnSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        if (IsLoaded && sender.SelectedItem is SeasonItemViewModel season && season != ViewModel.SelectedItem)
+        if (
+            IsLoaded
+            && sender.SelectedItem is SeasonItemViewModel season
+            && season != ViewModel.SelectedItem
+        )
         {
             season.PlayCommand.Execute(default);
         }
@@ -40,6 +41,5 @@ public sealed partial class PgcSeasonsSection : PgcSeasonsSectionBase
 /// <summary>
 /// PGC 播放器页面剧集区域基类.
 /// </summary>
-public abstract class PgcSeasonsSectionBase : LayoutUserControlBase<PgcPlayerSeasonSectionDetailViewModel>
-{
-}
+public abstract class PgcSeasonsSectionBase
+    : LayoutUserControlBase<PgcPlayerSeasonSectionDetailViewModel> { }

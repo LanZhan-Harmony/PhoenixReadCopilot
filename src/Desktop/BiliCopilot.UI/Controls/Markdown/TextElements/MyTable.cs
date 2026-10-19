@@ -30,7 +30,7 @@ internal class MyTable : IAddChild
             new SolidColorBrush(Colors.Gray));
 
         _tableElement.HorizontalAlignment = HorizontalAlignment.Stretch;
-        _tableElement.Margin = new(0,6,0,6);
+        _tableElement.Margin = new(0, 6, 0, 6);
         var inlineUIContainer = new InlineUIContainer
         {
             Child = _tableElement,

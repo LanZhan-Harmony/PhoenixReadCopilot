@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Moment;
@@ -38,10 +36,12 @@ public sealed partial class ComprehensiveSideBody : ComprehensiveSectionControlB
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
 
-    private void OnInitialized(object? sender, EventArgs e)
-        => CheckSelection();
+    private void OnInitialized(object? sender, EventArgs e) => CheckSelection();
 
-    private void OnSectionSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
+    private void OnSectionSelectionChanged(
+        ItemsView sender,
+        ItemsViewSelectionChangedEventArgs args
+    )
     {
         var item = sender.SelectedItem as MomentUperSectionViewModel;
         ViewModel?.SelectUperCommand.Execute(item);

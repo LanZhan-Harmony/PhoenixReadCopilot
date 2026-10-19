@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.ViewLater;
 
 /// <summary>
@@ -12,6 +10,5 @@ public sealed partial class ViewLaterHeader : ViewLaterPageControlBase
     /// </summary>
     public ViewLaterHeader() => InitializeComponent();
 
-    private void OnCleanButtonClick(object sender, RoutedEventArgs e)
-        => CleanTip.IsOpen = true;
+    private void OnCleanButtonClick(object sender, RoutedEventArgs e) => CleanTip.IsOpen = true;
 }

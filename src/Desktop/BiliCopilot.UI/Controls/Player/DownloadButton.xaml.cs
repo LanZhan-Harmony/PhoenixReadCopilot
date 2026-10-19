@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
@@ -26,7 +24,10 @@ public sealed partial class DownloadButton : DownloadButtonBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(DownloadViewModel? oldValue, DownloadViewModel? newValue)
+    protected override void OnViewModelChanged(
+        DownloadViewModel? oldValue,
+        DownloadViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -42,8 +43,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
         DownloadFlyout.Items.Clear();
     }
 
-    private void OnMetaInitialized(object? sender, EventArgs e)
-        => DownloadFlyout.Items.Clear();
+    private void OnMetaInitialized(object? sender, EventArgs e) => DownloadFlyout.Items.Clear();
 
     private void InitializeDownloadFlyout()
     {
@@ -71,17 +71,23 @@ public sealed partial class DownloadButton : DownloadButtonBase
         {
             DownloadFlyout.Items.Add(new MenuFlyoutSeparator());
             var partHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
-            partHeader.Tag = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.BatchDownload);
+            partHeader.Tag = ResourceToolkit.GetLocalizedString(
+                Models.Constants.StringNames.BatchDownload
+            );
             var allPartsItem = new MenuFlyoutItem
             {
                 MinWidth = this.ActualWidth,
                 Command = ViewModel.BatchDownloadAllPartsCommand,
-                Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.DownloadAllParts),
+                Text = ResourceToolkit.GetLocalizedString(
+                    Models.Constants.StringNames.DownloadAllParts
+                ),
             };
             var selectPartsItem = new MenuFlyoutItem
             {
                 MinWidth = this.ActualWidth,
-                Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.SelectPartsDownload),
+                Text = ResourceToolkit.GetLocalizedString(
+                    Models.Constants.StringNames.SelectPartsDownload
+                ),
             };
             selectPartsItem.Click += (_, _) => ShowPartsSelectionTip();
             DownloadFlyout.Items.Add(partHeader);
@@ -114,7 +120,9 @@ public sealed partial class DownloadButton : DownloadButtonBase
             var downloadSubtitleItem = new MenuFlyoutItem
             {
                 MinWidth = this.ActualWidth,
-                Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.DownloadSubtitle),
+                Text = ResourceToolkit.GetLocalizedString(
+                    Models.Constants.StringNames.DownloadSubtitle
+                ),
                 Command = ViewModel.DownloadSubtitleCommand,
             };
 
@@ -128,7 +136,10 @@ public sealed partial class DownloadButton : DownloadButtonBase
         SelectionTip.IsOpen = true;
     }
 
-    private void OnSelectionSubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    private void OnSelectionSubmitted(
+        AutoSuggestBox sender,
+        AutoSuggestBoxQuerySubmittedEventArgs args
+    )
     {
         var text = args.QueryText;
         if (string.IsNullOrEmpty(text))
@@ -153,6 +164,4 @@ public sealed partial class DownloadButton : DownloadButtonBase
 /// <summary>
 /// 下载按钮基类.
 /// </summary>
-public abstract class DownloadButtonBase : LayoutUserControlBase<DownloadViewModel>
-{
-}
+public abstract class DownloadButtonBase : LayoutUserControlBase<DownloadViewModel> { }

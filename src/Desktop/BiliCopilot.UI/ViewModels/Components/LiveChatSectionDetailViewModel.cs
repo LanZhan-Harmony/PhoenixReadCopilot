@@ -1,5 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
+using System.Net.WebSockets;
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,8 +9,6 @@ using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
-using System.Collections.ObjectModel;
-using System.Net.WebSockets;
 
 namespace BiliCopilot.UI.ViewModels.Components;
 
@@ -29,18 +27,14 @@ public sealed partial class LiveChatSectionDetailViewModel : ViewModelBase
     private ClientWebSocket? _webSocket;
     private CancellationTokenSource? _cancellationTokenSource;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isSending;
+    [ObservableProperty] private bool _isSending;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LiveChatSectionDetailViewModel"/> class.
     /// </summary>
-    public LiveChatSectionDetailViewModel(
-        IPlayerService service,
-        LivePlayerPageViewModel pageVM)
+    public LiveChatSectionDetailViewModel(IPlayerService service, LivePlayerPageViewModel pageVM)
     {
         _service = service;
         Page = pageVM;
@@ -67,7 +61,11 @@ public sealed partial class LiveChatSectionDetailViewModel : ViewModelBase
     /// 开始监听.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    public async Task StartAsync(string roomId, Action<string> displayAction, Func<string, Task> sendDanmakuFunc)
+    public async Task StartAsync(
+        string roomId,
+        Action<string> displayAction,
+        Func<string, Task> sendDanmakuFunc
+    )
     {
         _roomId = roomId;
         _displayDanmakuAction = displayAction;
@@ -81,7 +79,7 @@ public sealed partial class LiveChatSectionDetailViewModel : ViewModelBase
         {
             _heartBeatTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(25),
+                Interval = TimeSpan.FromSeconds(25)
             };
             _heartBeatTimer.Tick += OnHeartBeatTimerTickAsync;
         }
@@ -111,7 +109,11 @@ public sealed partial class LiveChatSectionDetailViewModel : ViewModelBase
         _cancellationTokenSource = default;
         if (_webSocket?.State == WebSocketState.Open)
         {
-            await _webSocket?.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            await _webSocket?.CloseAsync(
+                WebSocketCloseStatus.NormalClosure,
+                string.Empty,
+                CancellationToken.None
+            );
         }
 
         _webSocket?.Dispose();
@@ -127,8 +129,7 @@ public sealed partial class LiveChatSectionDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ScrollToBottom()
-        => ScrollToBottomRequested?.Invoke(this, EventArgs.Empty);
+    private void ScrollToBottom() => ScrollToBottomRequested?.Invoke(this, EventArgs.Empty);
 
     private void MessageLoop()
     {
@@ -138,12 +139,17 @@ public sealed partial class LiveChatSectionDetailViewModel : ViewModelBase
             {
                 try
                 {
-                    var messages = await _service.GetLiveSocketMessagesAsync(_webSocket, _cancellationTokenSource.Token);
+                    var messages = await _service.GetLiveSocketMessagesAsync(
+                        _webSocket,
+                        _cancellationTokenSource.Token
+                    );
                     if (messages is not null)
                     {
                         foreach (var msg in messages)
                         {
-                            if (msg.Type == Richasy.BiliKernel.Models.LiveMessageType.ConnectSuccess)
+                            if (
+                                msg.Type == Richasy.BiliKernel.Models.LiveMessageType.ConnectSuccess
+                            )
                             {
                                 this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
                                     .TryEnqueue(() =>
@@ -151,12 +157,19 @@ public sealed partial class LiveChatSectionDetailViewModel : ViewModelBase
                                         _heartBeatTimer.Start();
                                     });
                             }
-                            else if (msg.Type == Richasy.BiliKernel.Models.LiveMessageType.Danmaku && msg.Data is LiveDanmakuInformation danmaku)
+                            else if (
+                                msg.Type == Richasy.BiliKernel.Models.LiveMessageType.Danmaku
+                                && msg.Data is LiveDanmakuInformation danmaku
+                            )
                             {
                                 this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
                                     .TryEnqueue(() =>
                                     {
-                                        if (_cancellationTokenSource is not null && _webSocket is not null && !_cancellationTokenSource.IsCancellationRequested)
+                                        if (
+                                            _cancellationTokenSource is not null
+                                            && _webSocket is not null
+                                            && !_cancellationTokenSource.IsCancellationRequested
+                                        )
                                         {
                                             if (Messages.Count > 2000)
                                             {

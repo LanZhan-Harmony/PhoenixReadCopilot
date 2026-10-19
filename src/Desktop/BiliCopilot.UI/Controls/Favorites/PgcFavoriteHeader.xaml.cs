@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models;
 
@@ -28,11 +26,14 @@ public sealed partial class PgcFavoriteHeader : PgcFavoriteControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-        => StatusComboBox.SelectionChanged -= OnStatusChanged;
+    protected override void OnControlUnloaded() =>
+        StatusComboBox.SelectionChanged -= OnStatusChanged;
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(PgcFavoriteSectionDetailViewModel? oldValue, PgcFavoriteSectionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        PgcFavoriteSectionDetailViewModel? oldValue,
+        PgcFavoriteSectionDetailViewModel? newValue
+    )
     {
         if (newValue is null)
         {

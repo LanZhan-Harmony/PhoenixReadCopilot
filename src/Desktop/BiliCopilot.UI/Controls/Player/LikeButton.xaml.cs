@@ -1,7 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using Richasy.WinUIKernel.Share.Base;
 using System.Windows.Input;
+using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Player;
 
@@ -13,26 +11,42 @@ public sealed partial class LikeButton : LayoutUserControlBase
     /// <summary>
     /// <see cref="IsLiked"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsLikedProperty =
-        DependencyProperty.Register(nameof(IsLiked), typeof(bool), typeof(LikeButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsLikedProperty = DependencyProperty.Register(
+        nameof(IsLiked),
+        typeof(bool),
+        typeof(LikeButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="Tip"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TipProperty =
-        DependencyProperty.Register(nameof(LikeButton), typeof(string), typeof(LikeButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty TipProperty = DependencyProperty.Register(
+        nameof(LikeButton),
+        typeof(string),
+        typeof(LikeButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="Command"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty CommandProperty =
-        DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(LikeButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+        nameof(Command),
+        typeof(ICommand),
+        typeof(LikeButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="TripleCommand"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TripleCommandProperty =
-        DependencyProperty.Register(nameof(TripleCommand), typeof(ICommand), typeof(LikeButton), new PropertyMetadata(default));
+    public static readonly DependencyProperty TripleCommandProperty = DependencyProperty.Register(
+        nameof(TripleCommand),
+        typeof(ICommand),
+        typeof(LikeButton),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LikeButton"/> class.
@@ -83,6 +97,5 @@ public sealed partial class LikeButton : LayoutUserControlBase
         }
     }
 
-    private void OnTripleButtonClick(TeachingTip sender, object args)
-        => TripleTip.IsOpen = false;
+    private void OnTripleButtonClick(TeachingTip sender, object args) => TripleTip.IsOpen = false;
 }

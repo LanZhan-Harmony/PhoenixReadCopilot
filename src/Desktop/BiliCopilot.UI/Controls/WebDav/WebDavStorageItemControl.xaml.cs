@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,6 +17,5 @@ public sealed partial class WebDavStorageItemControl : WebDavStorageItemControlB
 /// <summary>
 /// WebDAV 存储项控件基类.
 /// </summary>
-public abstract class WebDavStorageItemControlBase : LayoutUserControlBase<WebDavStorageItemViewModel>
-{
-}
+public abstract class WebDavStorageItemControlBase
+    : LayoutUserControlBase<WebDavStorageItemViewModel> { }

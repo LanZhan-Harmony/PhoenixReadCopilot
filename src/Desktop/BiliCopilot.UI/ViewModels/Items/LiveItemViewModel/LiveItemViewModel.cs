@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -29,7 +27,11 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
     /// <summary>
     /// Initializes a new instance of the <see cref="LiveItemViewModel"/> class.
     /// </summary>
-    public LiveItemViewModel(LiveInformation data, LiveCardStyle style, Action<LiveItemViewModel>? removeAction = default)
+    public LiveItemViewModel(
+        LiveInformation data,
+        LiveCardStyle style,
+        Action<LiveItemViewModel>? removeAction = default
+    )
         : base(data)
     {
         Title = data.Identifier.Title;
@@ -41,7 +43,9 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
         Subtitle = data.GetExtensionIfNotNull<string>(VideoExtensionDataId.Subtitle);
         TagName = data.GetExtensionIfNotNull<string>(LiveExtensionDataId.TagName);
         IsLiving = data.GetExtensionIfNotNull<bool?>(LiveExtensionDataId.IsLiving);
-        var collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(LiveExtensionDataId.CollectTime);
+        var collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(
+            LiveExtensionDataId.CollectTime
+        );
         if (collectTime is not null)
         {
             CollectRelativeTime = collectTime.Value.Humanize();
@@ -53,15 +57,24 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
+            SettingNames.DefaultPlayerDisplayMode,
+            PlayerDisplayMode.Default
+        );
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
-        var useWebPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.UseWebPlayerWhenLive, false);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
+        var useWebPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.UseWebPlayerWhenLive,
+            false
+        );
         if (preferPlayer == PlayerType.Web || useWebPlayer)
         {
             this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
@@ -72,12 +85,10 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
     }
 
     [RelayCommand]
-    private Task OpenInBroswerAsync()
-        => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
+    private Task OpenInBroswerAsync() => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
 
     [RelayCommand]
-    private void OpenInNewWindow()
-        => new PlayerWindow().OpenLive(Data.Identifier);
+    private void OpenInNewWindow() => new PlayerWindow().OpenLive(Data.Identifier);
 
     [RelayCommand]
     private async Task RemoveHistoryAsync()
@@ -90,21 +101,33 @@ public sealed partial class LiveItemViewModel : ViewModelBase<LiveInformation>
         catch (Exception ex)
         {
             this.Get<ILogger<LiveItemViewModel>>().LogError(ex, "移除直播历史记录失败.");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.FailedToRemoveVideoFromHistory), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(
+                            Models.Constants.StringNames.FailedToRemoveVideoFromHistory
+                        ),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
     [RelayCommand]
-    private void ShowUserSpace()
-        => this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User);
+    private void ShowUserSpace() =>
+        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User);
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(Data.Identifier.Id, Data.Identifier.Title, Data.Identifier.Cover.Uri.ToString(), PinContentType.Live);
+        var pinItem = new PinItem(
+            Data.Identifier.Id,
+            Data.Identifier.Title,
+            Data.Identifier.Cover.Uri.ToString(),
+            PinContentType.Live
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
-    private string GetWebUrl()
-        => $"https://live.bilibili.com/{Data.Identifier.Id}";
+    private string GetWebUrl() => $"https://live.bilibili.com/{Data.Identifier.Id}";
 }

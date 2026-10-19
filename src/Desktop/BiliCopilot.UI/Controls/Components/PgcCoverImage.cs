@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Richasy.WinUI.Share.Effects;
@@ -15,8 +13,12 @@ public sealed partial class PgcCoverImage : ImageExBase
     /// <summary>
     /// <see cref="BlurRatio"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty BlurRatioProperty =
-        DependencyProperty.Register(nameof(BlurRatio), typeof(double), typeof(PgcCoverImage), new PropertyMetadata(0.35));
+    public static readonly DependencyProperty BlurRatioProperty = DependencyProperty.Register(
+        nameof(BlurRatio),
+        typeof(double),
+        typeof(PgcCoverImage),
+        new PropertyMetadata(0.35)
+    );
 
     private static readonly BlurCanvasEffect _blurEffect = new();
 
@@ -48,12 +50,12 @@ public sealed partial class PgcCoverImage : ImageExBase
         DrawBlurImage(canvasBitmap, destRect, sourceRect);
     }
 
-    private void DrawBlurImage(
-        CanvasBitmap canvasBitmap,
-        Rect destinationRect,
-        Rect sourceRect)
+    private void DrawBlurImage(CanvasBitmap canvasBitmap, Rect destinationRect, Rect sourceRect)
     {
-        var crossfadeOffset = CanvasImageSource.ConvertDipsToPixels((float)(DecodeHeight - (DecodeHeight * BlurRatio)), CanvasDpiRounding.Round);
+        var crossfadeOffset = CanvasImageSource.ConvertDipsToPixels(
+            (float)(DecodeHeight - (DecodeHeight * BlurRatio)),
+            CanvasDpiRounding.Round
+        );
         var crossfadeLength = CanvasImageSource.ConvertDipsToPixels(68, CanvasDpiRounding.Round);
 
         _blurEffect.Source = canvasBitmap;

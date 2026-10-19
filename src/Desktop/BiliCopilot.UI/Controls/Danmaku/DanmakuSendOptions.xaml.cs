@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Windows.UI;
 
 namespace BiliCopilot.UI.Controls.Danmaku;
@@ -14,12 +12,13 @@ public sealed partial class DanmakuSendOptions : DanmakuControlBase
     /// </summary>
     public DanmakuSendOptions() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => ColorRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => ColorRepeater.ItemsSource = null;
 
-    private void OnSizeItemClick(object sender, RoutedEventArgs e)
-        => ViewModel.IsStandardSize = (sender as FrameworkElement).Tag.ToString() == "Standard";
+    private void OnSizeItemClick(object sender, RoutedEventArgs e) =>
+        ViewModel.IsStandardSize = (sender as FrameworkElement).Tag.ToString() == "Standard";
 
-    private void OnColorItemTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
-        => ViewModel.Color = (Color)(sender as FrameworkElement).DataContext;
+    private void OnColorItemTapped(
+        object sender,
+        Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e
+    ) => ViewModel.Color = (Color)(sender as FrameworkElement).DataContext;
 }

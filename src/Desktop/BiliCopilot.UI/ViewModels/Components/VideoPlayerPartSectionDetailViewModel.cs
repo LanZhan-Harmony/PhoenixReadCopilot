@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -13,18 +11,17 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 视频播放器分P详情视图模型.
 /// </summary>
-public sealed partial class VideoPlayerPartSectionDetailViewModel : ViewModelBase, IPlayerSectionDetailViewModel
+public sealed partial class VideoPlayerPartSectionDetailViewModel
+    : ViewModelBase,
+        IPlayerSectionDetailViewModel
 {
     private readonly Action<VideoPart> _partSelectedAction;
 
-    [ObservableProperty]
-    private List<VideoPart> _parts;
+    [ObservableProperty] private List<VideoPart> _parts;
 
-    [ObservableProperty]
-    private VideoPart _selectedPart;
+    [ObservableProperty] private VideoPart _selectedPart;
 
-    [ObservableProperty]
-    private bool _onlyIndex;
+    [ObservableProperty] private bool _onlyIndex;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPartSectionDetailViewModel"/> class.
@@ -32,12 +29,16 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel : ViewModelBas
     public VideoPlayerPartSectionDetailViewModel(
         IList<VideoPart> parts,
         string cid,
-        Action<VideoPart> action)
+        Action<VideoPart> action
+    )
     {
         _partSelectedAction = action;
         Parts = parts.ToList();
         SelectedPart = parts.FirstOrDefault(p => p.Identifier.Id == cid);
-        OnlyIndex = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.IsVideoPlayerPartsOnlyIndex, false);
+        OnlyIndex = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.IsVideoPlayerPartsOnlyIndex,
+            false
+        );
     }
 
     /// <summary>
@@ -49,8 +50,7 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel : ViewModelBas
     public string Title { get; } = ResourceToolkit.GetLocalizedString(StringNames.Parts);
 
     [RelayCommand]
-    private static Task TryFirstLoadAsync()
-        => Task.CompletedTask;
+    private static Task TryFirstLoadAsync() => Task.CompletedTask;
 
     [RelayCommand]
     private void SelectPart(VideoPart part)
@@ -73,9 +73,11 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel : ViewModelBas
     /// <summary>
     /// 发送分集变更事件.
     /// </summary>
-    private void RaisePartChanged()
-        => PartChanged?.Invoke(this, EventArgs.Empty);
+    private void RaisePartChanged() => PartChanged?.Invoke(this, EventArgs.Empty);
 
-    partial void OnOnlyIndexChanged(bool value)
-        => SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.IsVideoPlayerPartsOnlyIndex, value);
+    partial void OnOnlyIndexChanged(bool value) =>
+        SettingsToolkit.WriteLocalSetting(
+            Models.Constants.SettingNames.IsVideoPlayerPartsOnlyIndex,
+            value
+        );
 }

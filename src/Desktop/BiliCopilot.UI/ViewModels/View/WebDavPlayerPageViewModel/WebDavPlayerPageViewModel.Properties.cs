@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
@@ -15,20 +13,15 @@ public sealed partial class WebDavPlayerPageViewModel
 
     private int _initialProgress;
 
-    [ObservableProperty]
-    private WebDavStorageItemViewModel _current;
+    [ObservableProperty] private WebDavStorageItemViewModel _current;
 
-    [ObservableProperty]
-    private string _title;
+    [ObservableProperty] private string _title;
 
-    [ObservableProperty]
-    private string _nextVideoTip;
+    [ObservableProperty] private string _nextVideoTip;
 
-    [ObservableProperty]
-    private bool _hasNextVideo;
+    [ObservableProperty] private bool _hasNextVideo;
 
-    [ObservableProperty]
-    private IReadOnlyList<WebDavStorageItemViewModel> _playlist;
+    [ObservableProperty] private IReadOnlyList<WebDavStorageItemViewModel> _playlist;
 
     /// <summary>
     /// 视频选择更改事件.

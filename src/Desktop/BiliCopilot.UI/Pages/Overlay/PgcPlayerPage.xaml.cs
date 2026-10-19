@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Controls.Danmaku;
 using BiliCopilot.UI.Controls.Player;
@@ -29,14 +27,13 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
     /// <summary>
     /// 进入播放器主持模式.
     /// </summary>
-    public void EnterPlayerHostMode()
-        => VisualStateManager.GoToState(this, "PlayerHostState", false);
+    public void EnterPlayerHostMode() =>
+        VisualStateManager.GoToState(this, "PlayerHostState", false);
 
     /// <summary>
     /// 退出播放器主持模式.
     /// </summary>
-    public void ExitPlayerHostMode()
-        => VisualStateManager.GoToState(this, "DefaultState", false);
+    public void ExitPlayerHostMode() => VisualStateManager.GoToState(this, "DefaultState", false);
 
     /// <summary>
     /// 标记右箭头按下.
@@ -83,19 +80,37 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
     }
 
     /// <inheritdoc/>
-    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        => ViewModel.CleanCommand.Execute(default);
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
+        ViewModel.CleanCommand.Execute(default);
 
-    private DanmakuControlBase CreateDanmakuPanel()
-        => new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };
+    private DanmakuControlBase CreateDanmakuPanel() =>
+        new VideoDanmakuPanel()
+        {
+            ViewModel = ViewModel.Danmaku
+        };
 
     private FrameworkElement CreateTransportControl()
     {
-        var leftPanel = new PgcPlayerTransportLeftPanel() { ViewModel = ViewModel };
-        var danmakuBox = new DanmakuBox() { ViewModel = ViewModel.Danmaku };
-        var rightPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-        var formatButton = new PgcPlayerFormatButton() { ViewModel = ViewModel };
-        var subtitleButton = new SubtitleButton() { ViewModel = ViewModel.Subtitle };
+        var leftPanel = new PgcPlayerTransportLeftPanel()
+        {
+            ViewModel = ViewModel
+        };
+        var danmakuBox = new DanmakuBox()
+        {
+            ViewModel = ViewModel.Danmaku
+        };
+        var rightPanel = new StackPanel()
+        {
+            Orientation = Orientation.Horizontal
+        };
+        var formatButton = new PgcPlayerFormatButton()
+        {
+            ViewModel = ViewModel
+        };
+        var subtitleButton = new SubtitleButton()
+        {
+            ViewModel = ViewModel.Subtitle
+        };
         rightPanel.Children.Add(formatButton);
         rightPanel.Children.Add(subtitleButton);
         danmakuBox.InputGotFocus += OnDanmakuInputGotFocus;
@@ -113,11 +128,11 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
         };
     }
 
-    private void OnDanmakuInputGotFocus(object? sender, EventArgs e)
-        => ViewModel.Player.IsDanmakuInputFocused = true;
+    private void OnDanmakuInputGotFocus(object? sender, EventArgs e) =>
+        ViewModel.Player.IsDanmakuInputFocused = true;
 
-    private void OnDanmakuInputLostFocus(object? sender, EventArgs e)
-        => ViewModel.Player.IsDanmakuInputFocused = false;
+    private void OnDanmakuInputLostFocus(object? sender, EventArgs e) =>
+        ViewModel.Player.IsDanmakuInputFocused = false;
 
     private SubtitlePresenter CreateSubtitleControl()
     {

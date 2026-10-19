@@ -1,7 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using CommunityToolkit.Mvvm.ComponentModel;
 using System.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
 using WinRT;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -14,8 +12,7 @@ public sealed partial class ExternalPlayerViewModel : PlayerViewModelBase
 {
     private readonly List<string> _mpvDebugMessages = new();
 
-    [ObservableProperty]
-    private string _logMessage;
+    [ObservableProperty] private string _logMessage;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExternalPlayerViewModel"/> class.

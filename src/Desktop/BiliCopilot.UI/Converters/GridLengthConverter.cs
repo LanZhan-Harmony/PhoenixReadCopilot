@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Microsoft.UI.Xaml.Data;
 
 namespace BiliCopilot.UI.Converters;
@@ -12,5 +10,6 @@ internal sealed partial class GridLengthConverter : IValueConverter
         return v <= 0 ? GridLength.Auto : new GridLength(v);
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

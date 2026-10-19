@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Controls.Player;
 using BiliCopilot.UI.ViewModels.View;
@@ -26,14 +24,13 @@ public sealed partial class WebDavPlayerPage : WebDavPlayerPageBase
     /// <summary>
     /// 进入播放器主持模式.
     /// </summary>
-    public void EnterPlayerHostMode()
-        => VisualStateManager.GoToState(this, "PlayerHostState", false);
+    public void EnterPlayerHostMode() =>
+        VisualStateManager.GoToState(this, "PlayerHostState", false);
 
     /// <summary>
     /// 退出播放器主持模式.
     /// </summary>
-    public void ExitPlayerHostMode()
-        => VisualStateManager.GoToState(this, "DefaultState", false);
+    public void ExitPlayerHostMode() => VisualStateManager.GoToState(this, "DefaultState", false);
 
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -55,12 +52,15 @@ public sealed partial class WebDavPlayerPage : WebDavPlayerPageBase
     }
 
     /// <inheritdoc/>
-    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        => ViewModel.CleanCommand.Execute(default);
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
+        ViewModel.CleanCommand.Execute(default);
 
     private FrameworkElement CreateTransportControl()
     {
-        var nextBtn = new WebDavNextButton { ViewModel = ViewModel };
+        var nextBtn = new WebDavNextButton
+        {
+            ViewModel = ViewModel
+        };
         return new VideoTransportControl
         {
             MaxWidth = 800,

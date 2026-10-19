@@ -26,9 +26,7 @@ internal class AutoLinkInlineRenderer : WinUIObjectRenderer<AutolinkInline>
             url = "mailto:" + url;
         }
 
-        if (!Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
-        {
-        }
+        if (!Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute)) { }
 
         var autolink = new MyAutolinkInline(link);
 

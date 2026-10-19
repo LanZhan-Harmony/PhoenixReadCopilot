@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -56,9 +54,7 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
     }
 
     /// <inheritdoc/>
-    protected override void SetWebDavConfig(WebDavConfig config)
-    {
-    }
+    protected override void SetWebDavConfig(WebDavConfig config) { }
 
     private MediaPlayer CreatePlayer()
     {
@@ -76,7 +72,10 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
 
     private void OnMediaPlayerFailed(MediaPlayer sender, MediaPlayerFailedEventArgs args)
     {
-        if (args.ExtendedErrorCode?.HResult == -1072873851 || args.Error == MediaPlayerError.Unknown)
+        if (
+            args.ExtendedErrorCode?.HResult == -1072873851
+            || args.Error == MediaPlayerError.Unknown
+        )
         {
             // 不处理 Shutdown 造成的错误.
             return;
@@ -109,7 +108,9 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
             }
 
             UpdateState(PlayerState.Failed);
-            _logger.LogError($"播放失败: {args.Error} | {args.ErrorMessage} | {args.ExtendedErrorCode}");
+            _logger.LogError(
+                $"播放失败: {args.Error} | {args.ErrorMessage} | {args.ExtendedErrorCode}"
+            );
         });
     }
 
@@ -158,7 +159,10 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
                 return;
             }
 
-            sender.PlaybackSession.PlaybackRate = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerSpeed, 1d);
+            sender.PlaybackSession.PlaybackRate = SettingsToolkit.ReadLocalSetting(
+                SettingNames.PlayerSpeed,
+                1d
+            );
             _speedAction?.Invoke(sender.PlaybackSession.PlaybackRate);
 
             if (Position > 0)

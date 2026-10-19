@@ -1,12 +1,10 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.IO.Compression;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Web.WebView2.Core;
 using Richasy.WinUIKernel.Share.Base;
-using System.IO.Compression;
 using Windows.Storage;
 
 namespace BiliCopilot.UI.Pages.Overlay;
@@ -17,7 +15,8 @@ namespace BiliCopilot.UI.Pages.Overlay;
 public sealed partial class WebPlayerPage : LayoutPageBase
 {
     private const string BewlyVersion = "0.32.0";
-    private const string UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2048.1";
+    private const string UserAgent =
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2048.1";
     private string _url;
     private bool _isInitialized;
 
@@ -52,18 +51,27 @@ public sealed partial class WebPlayerPage : LayoutPageBase
     {
         ShowLoading();
 
-        var env = await CoreWebView2Environment.CreateWithOptionsAsync(default, default, new CoreWebView2EnvironmentOptions
-        {
-            AreBrowserExtensionsEnabled = true,
-            AdditionalBrowserArguments = "--autoplay-policy=no-user-gesture-required --enable-features=PlatformHEVCEncoderSupport --enable-features=HardwareMediaDecoding --enable-features=PlatformEncryptedDolbyVision",
-        });
+        var env = await CoreWebView2Environment.CreateWithOptionsAsync(
+            default,
+            default,
+            new CoreWebView2EnvironmentOptions
+            {
+                AreBrowserExtensionsEnabled = true,
+                AdditionalBrowserArguments =
+                    "--autoplay-policy=no-user-gesture-required --enable-features=PlatformHEVCEncoderSupport --enable-features=HardwareMediaDecoding --enable-features=PlatformEncryptedDolbyVision",
+            }
+        );
         await MainView.EnsureCoreWebView2Async(env);
         MainView.CoreWebView2.Settings.IsStatusBarEnabled = false;
         MainView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
         MainView.CoreWebView2.Settings.AreDevToolsEnabled = false;
         MainView.CoreWebView2.Settings.UserAgent = UserAgent;
-        MainView.CoreWebView2.ContainsFullScreenElementChanged += OnContainsFullScreenElementChanged;
-        MainView.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
+        MainView.CoreWebView2.ContainsFullScreenElementChanged +=
+            OnContainsFullScreenElementChanged;
+        MainView.CoreWebView2.AddWebResourceRequestedFilter(
+            "*",
+            CoreWebView2WebResourceContext.All
+        );
         MainView.CoreWebView2.WebResourceRequested += OnWebResourceRequested;
         MainView.CoreWebView2.NavigationStarting += OnNavigationStarting;
 
@@ -75,11 +83,15 @@ public sealed partial class WebPlayerPage : LayoutPageBase
         }
     }
 
-    private void OnNavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args)
-        => args.RequestHeaders.SetHeader("User-Agent", UserAgent);
+    private void OnNavigationStarting(
+        CoreWebView2 sender,
+        CoreWebView2NavigationStartingEventArgs args
+    ) => args.RequestHeaders.SetHeader("User-Agent", UserAgent);
 
-    private void OnWebResourceRequested(CoreWebView2 sender, CoreWebView2WebResourceRequestedEventArgs args)
-        => args.Request.Headers.SetHeader("User-Agent", UserAgent);
+    private void OnWebResourceRequested(
+        CoreWebView2 sender,
+        CoreWebView2WebResourceRequestedEventArgs args
+    ) => args.Request.Headers.SetHeader("User-Agent", UserAgent);
 
     private void OnContainsFullScreenElementChanged(CoreWebView2 sender, object args)
     {
@@ -94,16 +106,29 @@ public sealed partial class WebPlayerPage : LayoutPageBase
         }
     }
 
-    private async void OnNavigationCompletedAsync(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+    private async void OnNavigationCompletedAsync(
+        WebView2 sender,
+        CoreWebView2NavigationCompletedEventArgs args
+    )
     {
         HideLoading();
-        var scriptFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/WebPlayer.js"));
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
-        var isFullWindow = preferDisplayMode is PlayerDisplayMode.FullWindow or PlayerDisplayMode.NewWindow;
+        var scriptFile = await StorageFile.GetFileFromApplicationUriAsync(
+            new Uri("ms-appx:///Assets/WebPlayer.js")
+        );
+        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
+            SettingNames.DefaultPlayerDisplayMode,
+            PlayerDisplayMode.Default
+        );
+        var isFullWindow =
+            preferDisplayMode is PlayerDisplayMode.FullWindow or PlayerDisplayMode.NewWindow;
         var isFullScreen = preferDisplayMode == PlayerDisplayMode.FullScreen;
         var isMiniView = preferDisplayMode == PlayerDisplayMode.CompactOverlay;
-        var script = await FileIO.ReadTextAsync(scriptFile, Windows.Storage.Streams.UnicodeEncoding.Utf8);
-        script = script.Replace("`isFullWindow`", isFullWindow.ToString().ToLower())
+        var script = await FileIO.ReadTextAsync(
+            scriptFile,
+            Windows.Storage.Streams.UnicodeEncoding.Utf8
+        );
+        script = script
+            .Replace("`isFullWindow`", isFullWindow.ToString().ToLower())
             .Replace("`isFullScreen`", isFullScreen.ToString().ToLower())
             .Replace("`isMiniView`", isMiniView.ToString().ToLower());
         await MainView.CoreWebView2.ExecuteScriptAsync(script);
@@ -124,9 +149,15 @@ public sealed partial class WebPlayerPage : LayoutPageBase
     private async Task TryLoadExtensionAsync()
     {
         var localFolder = ApplicationData.Current.LocalFolder;
-        var extensionFolder = await localFolder.CreateFolderAsync("Extensions", CreationCollisionOption.OpenIfExists);
+        var extensionFolder = await localFolder.CreateFolderAsync(
+            "Extensions",
+            CreationCollisionOption.OpenIfExists
+        );
         var bewlyFolderPath = Path.Combine(extensionFolder.Path, "BewlyBewly");
-        var localVersion = SettingsToolkit.ReadLocalSetting(SettingNames.BewlyExtensionVersion, string.Empty);
+        var localVersion = SettingsToolkit.ReadLocalSetting(
+            SettingNames.BewlyExtensionVersion,
+            string.Empty
+        );
         if (localVersion != BewlyVersion)
         {
             if (Directory.Exists(bewlyFolderPath))
@@ -137,7 +168,9 @@ public sealed partial class WebPlayerPage : LayoutPageBase
             if (!Directory.Exists(bewlyFolderPath))
             {
                 Directory.CreateDirectory(bewlyFolderPath);
-                var bewlyZipFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/BewlyBewly.zip"));
+                var bewlyZipFile = await StorageFile.GetFileFromApplicationUriAsync(
+                    new Uri("ms-appx:///Assets/BewlyBewly.zip")
+                );
 
                 // Unzip file and copy to folder.
                 await Task.Run(() =>

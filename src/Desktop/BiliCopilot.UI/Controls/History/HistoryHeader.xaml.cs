@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -47,8 +45,8 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
         };
     }
 
-    private void OnViewModelSectionInitialized(object? sender, EventArgs e)
-        => InitializeChildPartitions();
+    private void OnViewModelSectionInitialized(object? sender, EventArgs e) =>
+        InitializeChildPartitions();
 
     private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -71,17 +69,20 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = GetSectionName(item.Type),
-                    Tag = item,
-                });
+                Selector.Items.Add(
+                    new SelectorBarItem()
+                    {
+                        Text = GetSectionName(item.Type),
+                        Tag = item
+                    }
+                );
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        Selector.SelectedItem = Selector.Items.FirstOrDefault(p =>
+            p.Tag == ViewModel.SelectedSection
+        );
     }
 
-    private void OnCleanButtonClick(object sender, RoutedEventArgs e)
-        => CleanTip.IsOpen = true;
+    private void OnCleanButtonClick(object sender, RoutedEventArgs e) => CleanTip.IsOpen = true;
 }

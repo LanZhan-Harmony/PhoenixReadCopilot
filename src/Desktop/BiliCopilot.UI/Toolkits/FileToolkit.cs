@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.WinUIKernel.Share.Toolkits;
 using Windows.Storage;
 

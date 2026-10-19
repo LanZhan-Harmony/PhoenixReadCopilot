@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -17,18 +15,14 @@ public sealed partial class EmoteModuleViewModel : ViewModelBase
     private readonly ICommentService _service;
     private readonly ILogger<EmoteModuleViewModel> _logger;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private List<EmotePackage>? _packages;
+    [ObservableProperty] private List<EmotePackage>? _packages;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteModuleViewModel"/> class.
     /// </summary>
-    public EmoteModuleViewModel(
-        ICommentService service,
-        ILogger<EmoteModuleViewModel> logger)
+    public EmoteModuleViewModel(ICommentService service, ILogger<EmoteModuleViewModel> logger)
     {
         _service = service;
         _logger = logger;

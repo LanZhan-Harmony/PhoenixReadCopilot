@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models;
 using Richasy.WinUIKernel.Share.Base;
@@ -44,7 +42,10 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(CommentMainViewModel? oldValue, CommentMainViewModel? newValue)
+    protected override void OnViewModelChanged(
+        CommentMainViewModel? oldValue,
+        CommentMainViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -69,17 +70,24 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (CommentScrollView.ExtentHeight - CommentScrollView.ViewportHeight - CommentScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (
+                    CommentScrollView.ExtentHeight
+                    - CommentScrollView.ViewportHeight
+                    - CommentScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
-    private void OnInitialized(object? sender, EventArgs e)
-        => CheckSortType();
+    private void OnInitialized(object? sender, EventArgs e) => CheckSortType();
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
     {
@@ -91,13 +99,16 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
 
     private void CheckCommentCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void CheckSortType()
@@ -127,6 +138,4 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
 /// <summary>
 /// 评论主面板基类.
 /// </summary>
-public abstract class CommentMainPanelBase : LayoutUserControlBase<CommentMainViewModel>
-{
-}
+public abstract class CommentMainPanelBase : LayoutUserControlBase<CommentMainViewModel> { }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Moment;
@@ -41,7 +39,10 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(MomentUperSectionViewModel? oldValue, MomentUperSectionViewModel? newValue)
+    protected override void OnViewModelChanged(
+        MomentUperSectionViewModel? oldValue,
+        MomentUperSectionViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -64,14 +65,23 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (MomentScrollView.ExtentHeight - MomentScrollView.ViewportHeight - MomentScrollView.VerticalOffset <= 240)
+        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+            !args.IsIntermediate;
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel?.LoadItemsCommand.Execute(default);
+                if (
+                    MomentScrollView.ExtentHeight
+                    - MomentScrollView.ViewportHeight
+                    - MomentScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel?.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -84,12 +94,15 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
 
     private void CheckMomentCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel?.LoadItemsCommand.Execute(default);
+                if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel?.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

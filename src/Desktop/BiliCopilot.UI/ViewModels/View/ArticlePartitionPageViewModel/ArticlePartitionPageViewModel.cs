@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
@@ -23,15 +21,15 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
     /// </summary>
     public ArticlePartitionPageViewModel(
         IArticleDiscoveryService discoveryService,
-        ILogger<ArticlePartitionPageViewModel> logger)
+        ILogger<ArticlePartitionPageViewModel> logger
+    )
     {
         _service = discoveryService;
         _logger = logger;
     }
 
     /// <inheritdoc/>
-    protected override string GetPageKey()
-        => nameof(ArticlePartitionPage);
+    protected override string GetPageKey() => nameof(ArticlePartitionPage);
 
     [RelayCommand]
     private async Task InitializeAsync()
@@ -42,7 +40,10 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
         }
 
         IsPartitionLoading = true;
-        var hotPartition = new Partition("-", ResourceToolkit.GetLocalizedString(StringNames.HotArticle));
+        var hotPartition = new Partition(
+            "-",
+            ResourceToolkit.GetLocalizedString(StringNames.HotArticle)
+        );
         Partitions.Add(new PartitionViewModel(hotPartition));
         var partitions = await _service.GetPartitionsAsync();
         if (partitions != null)
@@ -54,13 +55,22 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
         }
 
         IsPartitionLoading = false;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () =>
-        {
-            var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(SettingNames.ArticlePartitionPageLastSelectedPartitionId, Partitions.First().Data.Id);
-            var partition = Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId) ?? Partitions.First();
-            SelectPartition(partition);
-            PartitionInitialized?.Invoke(this, EventArgs.Empty);
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                () =>
+                {
+                    var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(
+                        SettingNames.ArticlePartitionPageLastSelectedPartitionId,
+                        Partitions.First().Data.Id
+                    );
+                    var partition =
+                        Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
+                        ?? Partitions.First();
+                    SelectPartition(partition);
+                    PartitionInitialized?.Invoke(this, EventArgs.Empty);
+                }
+            );
     }
 
     [RelayCommand]
@@ -83,6 +93,9 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
             vm.InitializeCommand.Execute(default);
         }
 
-        SettingsToolkit.WriteLocalSetting(SettingNames.ArticlePartitionPageLastSelectedPartitionId, partition.Data.Id);
+        SettingsToolkit.WriteLocalSetting(
+            SettingNames.ArticlePartitionPageLastSelectedPartitionId,
+            partition.Data.Id
+        );
     }
 }

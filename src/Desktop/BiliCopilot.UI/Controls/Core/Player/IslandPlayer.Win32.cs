@@ -1,9 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using Microsoft.UI;
-using Microsoft.UI.Xaml.Hosting;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.UI;
+using Microsoft.UI.Xaml.Hosting;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace BiliCopilot.UI.Controls.Core;
@@ -40,18 +38,13 @@ public class MpvPlayerWindow : IDisposable
     /// 获取句柄.
     /// </summary>
     /// <returns>Window handle.</returns>
-    public IntPtr GetHandle()
-        => _hwnd;
+    public IntPtr GetHandle() => _hwnd;
 
     /// <summary>
     /// 创建窗口.
     /// </summary>
     /// <returns>窗口句柄.</returns>
-    public unsafe IntPtr Create(
-        IntPtr parentWindow,
-        Point leftTopPoint,
-        int width,
-        int height)
+    public unsafe IntPtr Create(IntPtr parentWindow, Point leftTopPoint, int width, int height)
     {
         fixed (char* classNamePtr = PlayerWindowClassName)
         {
@@ -68,7 +61,8 @@ public class MpvPlayerWindow : IDisposable
                     height,
                     new(parentWindow),
                     HMENU.Null,
-                    HINSTANCE.Null);
+                    HINSTANCE.Null
+                );
                 if (hwnd == IntPtr.Zero)
                 {
                     var error = Marshal.GetLastWin32Error();
@@ -134,10 +128,7 @@ public class MpvPlayerOverlayWindow : IDisposable
     /// <summary>
     /// 创建窗口.
     /// </summary>
-    public void Create(
-        IntPtr parentWindow,
-        int width,
-        int height)
+    public void Create(IntPtr parentWindow, int width, int height)
     {
         _desktopWindowXamlSource = new DesktopWindowXamlSource();
         var windowId = Win32Interop.GetWindowIdFromWindow(parentWindow);
@@ -150,15 +141,19 @@ public class MpvPlayerOverlayWindow : IDisposable
     /// <summary>
     /// 移动位置.
     /// </summary>
-    public void MoveAndResize(
-        int width,
-        int height)
+    public void MoveAndResize(int width, int height)
     {
         // 判断窗口是否被销毁，如果销毁了就不重置位置
         // 之前没有判断直接重置窗口位置会导致程序闪退
-        if (_desktopWindowXamlSource != null && _desktopWindowXamlSource.SiteBridge != null && !_desktopWindowXamlSource.SiteBridge.IsClosed)
+        if (
+            _desktopWindowXamlSource != null
+            && _desktopWindowXamlSource.SiteBridge != null
+            && !_desktopWindowXamlSource.SiteBridge.IsClosed
+        )
         {
-            _desktopWindowXamlSource.SiteBridge.MoveAndResize(new Windows.Graphics.RectInt32(0, 0, width, height));
+            _desktopWindowXamlSource.SiteBridge.MoveAndResize(
+                new Windows.Graphics.RectInt32(0, 0, width, height)
+            );
         }
     }
 

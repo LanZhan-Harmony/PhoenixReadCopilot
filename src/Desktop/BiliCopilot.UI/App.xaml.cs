@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Text.Json;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Toolkits;
@@ -12,7 +11,6 @@ using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 using Richasy.BiliKernel.Models.Media;
 using Serilog;
-using System.Text.Json;
 using Windows.Storage;
 
 namespace BiliCopilot.UI;
@@ -66,7 +64,9 @@ public partial class App : Application
 
             instance.Activated += OnInstanceActivated;
             GlobalDependencies.Initialize();
-            GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
+            GlobalDependencies
+                .Kernel.GetRequiredService<AppViewModel>()
+                .LaunchCommand.Execute(default);
             var mainWindow = GetMainWindow();
             if (mainWindow is not null)
             {
@@ -76,16 +76,24 @@ public partial class App : Application
         else
         {
             var activatedArgs = instance.GetActivatedEventArgs();
-            _ = instance.RedirectActivationToAsync(activatedArgs).AsTask().ContinueWith(_ => Current.Exit());
+            _ = instance
+                .RedirectActivationToAsync(activatedArgs)
+                .AsTask()
+                .ContinueWith(_ => Current.Exit());
         }
     }
 
-    private static MainWindow? GetMainWindow()
-        => GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow) as MainWindow;
+    private static MainWindow? GetMainWindow() =>
+        GlobalDependencies
+            .Kernel.GetRequiredService<AppViewModel>()
+            .Windows.Find(p => p is MainWindow) as MainWindow;
 
     private void OnMainWindowClosed(object sender, WindowEventArgs args)
     {
-        var hideWhenClose = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.HideWhenCloseWindow, false);
+        var hideWhenClose = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.HideWhenCloseWindow,
+            false
+        );
         if (hideWhenClose)
         {
             if (TrayIcon is null)
@@ -143,20 +151,32 @@ public partial class App : Application
         Exit();
     }
 
-    private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    private void OnUnhandledException(
+        object sender,
+        Microsoft.UI.Xaml.UnhandledExceptionEventArgs e
+    )
     {
-        GlobalDependencies.Kernel.GetRequiredService<ILogger<App>>().LogError(e.Exception, "Unhandled exception occurred.");
+        GlobalDependencies
+            .Kernel.GetRequiredService<ILogger<App>>()
+            .LogError(e.Exception, "Unhandled exception occurred.");
         e.Handled = true;
 
         // 一旦出现布局循环检测异常，就删除上次选中的功能页，然后重启应用.
         if (e.Message.Contains("Layout cycle detected"))
         {
-            SettingsToolkit.DeleteLocalSetting(Models.Constants.SettingNames.LastSelectedFeaturePage);
-            GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().RestartCommand.Execute(default);
+            SettingsToolkit.DeleteLocalSetting(
+                Models.Constants.SettingNames.LastSelectedFeaturePage
+            );
+            GlobalDependencies
+                .Kernel.GetRequiredService<AppViewModel>()
+                .RestartCommand.Execute(default);
         }
     }
 
-    private void OnAppNotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)
+    private void OnAppNotificationInvoked(
+        AppNotificationManager sender,
+        AppNotificationActivatedEventArgs args
+    )
     {
         if (args.Arguments.TryGetValue("page", out var type))
         {
@@ -168,17 +188,28 @@ public partial class App : Application
 
             _dispatcherQueue.TryEnqueue(() =>
             {
-                var identifier = JsonSerializer.Deserialize(argsStr, GlobalSerializeContext.Default.MediaIdentifier);
-                var obj = type.Contains("VideoPlayer") ? (object)new VideoSnapshot(new VideoInformation(identifier, default)) : identifier;
+                var identifier = JsonSerializer.Deserialize(
+                    argsStr,
+                    GlobalSerializeContext.Default.MediaIdentifier
+                );
+                var obj = type.Contains("VideoPlayer")
+                    ? (object)new VideoSnapshot(new VideoInformation(identifier, default))
+                    : identifier;
                 var pageType = Type.GetType(type);
-                GlobalDependencies.Kernel.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);
+                GlobalDependencies
+                    .Kernel.GetRequiredService<NavigationViewModel>()
+                    .NavigateToOver(pageType, obj);
             });
         }
     }
 
-    private void OnQuitCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
-        => ExitApp();
+    private void OnQuitCommandExecuteRequested(
+        XamlUICommand sender,
+        ExecuteRequestedEventArgs args
+    ) => ExitApp();
 
-    private void OnShowHideWindowCommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
-        => GetMainWindow()?.Activate();
+    private void OnShowHideWindowCommandExecuteRequested(
+        XamlUICommand sender,
+        ExecuteRequestedEventArgs args
+    ) => GetMainWindow()?.Activate();
 }

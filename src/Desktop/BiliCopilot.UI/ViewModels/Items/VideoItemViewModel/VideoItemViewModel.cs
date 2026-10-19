@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Globalization;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -13,7 +12,6 @@ using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
-using System.Globalization;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Globalization;
 using WinRT;
@@ -36,7 +34,8 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         VideoInformation info,
         VideoCardStyle style,
         Action<VideoItemViewModel> removeAction = default,
-        VideoFavoriteFolder? favFolder = default)
+        VideoFavoriteFolder? favFolder = default
+    )
         : base(info)
     {
         _removeAction = removeAction;
@@ -55,7 +54,8 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         TagName = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.TagName);
         RecommendReason = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.RecommendReason);
         Subtitle = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.Subtitle);
-        CollectTime = info.GetExtensionIfNotNull<DateTimeOffset>(VideoExtensionDataId.CollectTime).Humanize(default, new CultureInfo("zh-CN"));
+        CollectTime = info.GetExtensionIfNotNull<DateTimeOffset>(VideoExtensionDataId.CollectTime)
+            .Humanize(default, new CultureInfo("zh-CN"));
         IsUserValid = info.Publisher?.User is not null;
         var progress = info.GetExtensionIfNotNull<int?>(VideoExtensionDataId.Progress);
         if (progress is not null)
@@ -67,33 +67,43 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
+            SettingNames.DefaultPlayerDisplayMode,
+            PlayerDisplayMode.Default
+        );
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
         if (preferPlayer == PlayerType.Web)
         {
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), GetWebUri().ToString());
+            this.Get<NavigationViewModel>()
+                .NavigateToOver(typeof(WebPlayerPage), GetWebUri().ToString());
             return;
         }
 
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data));
+        this.Get<NavigationViewModel>()
+            .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data));
     }
 
     [RelayCommand]
-    private void PlayInPrivate()
-        => this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data, true));
+    private void PlayInPrivate() =>
+        this.Get<NavigationViewModel>()
+            .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data, true));
 
     [RelayCommand]
     private void ShowUserSpace()
     {
         if (Data.Publisher?.User is not null)
         {
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);
+            this.Get<NavigationViewModel>()
+                .NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);
         }
     }
 
@@ -103,12 +113,24 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         try
         {
             await this.Get<IViewLaterService>().AddAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterSucceed), InfoType.Success));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterSucceed),
+                        InfoType.Success
+                    )
+                );
         }
         catch (Exception ex)
         {
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "添加稍后再看失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterFailed), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterFailed),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
@@ -123,7 +145,15 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除稍后再看视频失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToRemoveVideoFromViewLater), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(
+                            StringNames.FailedToRemoveVideoFromViewLater
+                        ),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
@@ -138,7 +168,15 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除历史记录视频失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToRemoveVideoFromHistory), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(
+                            StringNames.FailedToRemoveVideoFromHistory
+                        ),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
@@ -153,17 +191,24 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除收藏视频失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToRemoveVideoFromFavorite), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(
+                            StringNames.FailedToRemoveVideoFromFavorite
+                        ),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
     [RelayCommand]
-    private async Task OpenInBroswerAsync()
-        => await Windows.System.Launcher.LaunchUriAsync(GetWebUri()).AsTask();
+    private async Task OpenInBroswerAsync() =>
+        await Windows.System.Launcher.LaunchUriAsync(GetWebUri()).AsTask();
 
     [RelayCommand]
-    private void OpenInNewWindow()
-        => new PlayerWindow().OpenVideo(new VideoSnapshot(Data));
+    private void OpenInNewWindow() => new PlayerWindow().OpenVideo(new VideoSnapshot(Data));
 
     [RelayCommand]
     private void CopyUri()
@@ -172,19 +217,29 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         dp.SetText(GetWebUri().ToString());
         dp.SetWebLink(GetWebUri());
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
+            );
     }
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(Data.Identifier.Id, Data.Identifier.Title, Data.Identifier.Cover.Uri.ToString(), PinContentType.Video);
+        var pinItem = new PinItem(
+            Data.Identifier.Id,
+            Data.Identifier.Title,
+            Data.Identifier.Cover.Uri.ToString(),
+            PinContentType.Video
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
     private Uri GetWebUri()
     {
         var shortLink = Data.GetExtensionIfNotNull<string>(VideoExtensionDataId.ShortLink);
-        return string.IsNullOrEmpty(shortLink) ? new Uri($"https://www.bilibili.com/video/av{Data.Identifier.Id}") : new Uri(shortLink);
+        return string.IsNullOrEmpty(shortLink)
+            ? new Uri($"https://www.bilibili.com/video/av{Data.Identifier.Id}")
+            : new Uri(shortLink);
     }
 }

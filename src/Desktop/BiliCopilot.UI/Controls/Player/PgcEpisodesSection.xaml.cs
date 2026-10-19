@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
@@ -34,9 +32,16 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
         IndexView.ItemsSource = default;
     }
 
-    private void OnEpisodeSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
+    private void OnEpisodeSelectionChanged(
+        ItemsView sender,
+        ItemsViewSelectionChangedEventArgs args
+    )
     {
-        if (IsLoaded && sender.SelectedItem is EpisodeItemViewModel episode && episode != ViewModel.SelectedEpisode)
+        if (
+            IsLoaded
+            && sender.SelectedItem is EpisodeItemViewModel episode
+            && episode != ViewModel.SelectedEpisode
+        )
         {
             ViewModel.SelectEpisodeCommand.Execute(episode);
         }
@@ -53,11 +58,23 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
         await Task.Delay(100);
         if (ViewModel.OnlyIndex)
         {
-            IndexView.StartBringItemIntoView(ViewModel.Episodes.ToList().IndexOf(ViewModel.SelectedEpisode), new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 });
+            IndexView.StartBringItemIntoView(
+                ViewModel.Episodes.ToList().IndexOf(ViewModel.SelectedEpisode),
+                new BringIntoViewOptions
+                {
+                    VerticalAlignmentRatio = 0.5
+                }
+            );
         }
         else
         {
-            DefaultView.StartBringItemIntoView(ViewModel.Episodes.ToList().IndexOf(ViewModel.SelectedEpisode), new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 });
+            DefaultView.StartBringItemIntoView(
+                ViewModel.Episodes.ToList().IndexOf(ViewModel.SelectedEpisode),
+                new BringIntoViewOptions
+                {
+                    VerticalAlignmentRatio = 0.5
+                }
+            );
         }
     }
 }
@@ -65,6 +82,5 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
 /// <summary>
 /// PGC 播放器页面剧集控件基类.
 /// </summary>
-public abstract class PgcEpisodesSectionBase : LayoutUserControlBase<PgcPlayerEpisodeSectionDetailViewModel>
-{
-}
+public abstract class PgcEpisodesSectionBase
+    : LayoutUserControlBase<PgcPlayerEpisodeSectionDetailViewModel> { }

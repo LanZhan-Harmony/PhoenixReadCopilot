@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -40,8 +38,8 @@ public sealed partial class WebSignInWindow : WindowBase
         Activated += OnActivated;
     }
 
-    private void OnActivated(object sender, WindowActivatedEventArgs args)
-        => this.Get<StartupPageViewModel>().ExitCommand.Execute(default);
+    private void OnActivated(object sender, WindowActivatedEventArgs args) =>
+        this.Get<StartupPageViewModel>().ExitCommand.Execute(default);
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
@@ -67,19 +65,33 @@ public sealed partial class WebSignInWindow : WindowBase
         MainView.CoreWebView2.Navigate("https://passport.bilibili.com/login");
     }
 
-    private async void OnNavigationCompletedAsync(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
+    private async void OnNavigationCompletedAsync(
+        WebView2 sender,
+        Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args
+    )
     {
         if (sender.CoreWebView2.Source.StartsWith("https://passport.bilibili.com"))
         {
-            await sender.CoreWebView2.ExecuteScriptAsync("document.querySelector('.international-footer').remove();document.querySelector('.top-header').remove()");
+            await sender.CoreWebView2.ExecuteScriptAsync(
+                "document.querySelector('.international-footer').remove();document.querySelector('.top-header').remove()"
+            );
         }
         else if (sender.CoreWebView2.Source.StartsWith("https://www.bilibili.com"))
         {
-            var cookies = await sender.CoreWebView2.CookieManager.GetCookiesAsync(sender.Source.AbsoluteUri);
+            var cookies = await sender.CoreWebView2.CookieManager.GetCookiesAsync(
+                sender.Source.AbsoluteUri
+            );
             var cookieDict = cookies.Select(p => (p.Name, p.Value)).ToDictionary();
             if (cookieDict.Count > 0)
             {
-                await this.Get<IAuthenticationService>().SignInAsync(new Richasy.BiliKernel.Bili.AuthorizeExecutionSettings { Cookies = cookieDict }, _cancellationTokenSource.Token);
+                await this.Get<IAuthenticationService>()
+                    .SignInAsync(
+                        new Richasy.BiliKernel.Bili.AuthorizeExecutionSettings
+                        {
+                            Cookies = cookieDict,
+                        },
+                        _cancellationTokenSource.Token
+                    );
                 _cancellationTokenSource = default;
                 Close();
             }

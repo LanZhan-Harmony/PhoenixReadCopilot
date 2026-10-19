@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.ViewModels.Items;
 
@@ -28,7 +26,11 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
                 SearchSectionType.Live => LiveTemplate,
                 SearchSectionType.User => UserTemplate,
                 SearchSectionType.Article => ArticleTemplate,
-                _ => throw new ArgumentOutOfRangeException(nameof(searchSectionDetailViewModel.SectionType), searchSectionDetailViewModel.SectionType, null)
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(searchSectionDetailViewModel.SectionType),
+                    searchSectionDetailViewModel.SectionType,
+                    null
+                ),
             };
         }
 

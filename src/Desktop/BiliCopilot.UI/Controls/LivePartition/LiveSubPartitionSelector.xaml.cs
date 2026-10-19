@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Media;
 
@@ -38,7 +36,10 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(LivePartitionDetailViewModel? oldValue, LivePartitionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        LivePartitionDetailViewModel? oldValue,
+        LivePartitionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -54,8 +55,7 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
         InitializeTags();
     }
 
-    private void OnViewModelInitialized(object? sender, EventArgs e)
-        => InitializeTags();
+    private void OnViewModelInitialized(object? sender, EventArgs e) => InitializeTags();
 
     private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -78,11 +78,13 @@ public sealed partial class LiveSubPartitionSelector : LiveSubPartitionControlBa
         {
             foreach (var item in ViewModel.Children)
             {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = item.Name ?? default,
-                    Tag = item,
-                });
+                Selector.Items.Add(
+                    new SelectorBarItem()
+                    {
+                        Text = item.Name ?? default,
+                        Tag = item
+                    }
+                );
             }
         }
 

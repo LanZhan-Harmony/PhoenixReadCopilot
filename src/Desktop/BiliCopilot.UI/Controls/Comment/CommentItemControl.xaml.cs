@@ -1,8 +1,6 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Windows.Input;
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
-using System.Windows.Input;
 
 namespace BiliCopilot.UI.Controls.Comment;
 
@@ -14,20 +12,27 @@ public sealed partial class CommentItemControl : CommentItemControlBase
     /// <summary>
     /// <see cref="ShowMoreCommand"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ShowMoreCommandProperty =
-        DependencyProperty.Register(nameof(ShowMoreCommand), typeof(ICommand), typeof(CommentItemControl), new PropertyMetadata(default));
+    public static readonly DependencyProperty ShowMoreCommandProperty = DependencyProperty.Register(
+        nameof(ShowMoreCommand),
+        typeof(ICommand),
+        typeof(CommentItemControl),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="IsMoreEnabled"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsMoreEnabledProperty =
-        DependencyProperty.Register(nameof(IsMoreEnabled), typeof(bool), typeof(CommentItemControl), new PropertyMetadata(true));
+    public static readonly DependencyProperty IsMoreEnabledProperty = DependencyProperty.Register(
+        nameof(IsMoreEnabled),
+        typeof(bool),
+        typeof(CommentItemControl),
+        new PropertyMetadata(true)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentItemControl"/> class.
     /// </summary>
-    public CommentItemControl()
-        => InitializeComponent();
+    public CommentItemControl() => InitializeComponent();
 
     /// <summary>
     /// 显示更多命令.
