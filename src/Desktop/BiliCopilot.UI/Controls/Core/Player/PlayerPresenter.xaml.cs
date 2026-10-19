@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Core;
 using CommunityToolkit.WinUI;
 using Richasy.WinUIKernel.Share.Base;
@@ -20,13 +18,10 @@ public sealed partial class PlayerPresenter : PlayerPresenterBase
     /// 尝试获取岛屿播放器.
     /// </summary>
     /// <returns>实例.</returns>
-    public IslandPlayer? TryGetIslandPlayer()
-        => this.FindDescendant<IslandPlayer>();
+    public IslandPlayer? TryGetIslandPlayer() => this.FindDescendant<IslandPlayer>();
 }
 
 /// <summary>
 /// 播放器基类.
 /// </summary>
-public abstract class PlayerPresenterBase : LayoutUserControlBase<PlayerViewModelBase>
-{
-}
+public abstract class PlayerPresenterBase : LayoutUserControlBase<PlayerViewModelBase> { }

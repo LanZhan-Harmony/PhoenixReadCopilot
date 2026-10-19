@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Popular;
@@ -30,10 +28,12 @@ public sealed partial class PopularSideBody : PopularPageControlBase
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
 
-    private void OnSectionInitialized(object? sender, EventArgs e)
-        => CheckSectionSelection();
+    private void OnSectionInitialized(object? sender, EventArgs e) => CheckSectionSelection();
 
-    private void OnSectionSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
+    private void OnSectionSelectionChanged(
+        ItemsView sender,
+        ItemsViewSelectionChangedEventArgs args
+    )
     {
         var item = sender.SelectedItem as IPopularSectionItemViewModel;
         ViewModel.SelectSectionCommand.Execute(item);

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -26,7 +24,10 @@ public sealed partial class LiveChatSection : LiveChatSectionBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(LiveChatSectionDetailViewModel? oldValue, LiveChatSectionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        LiveChatSectionDetailViewModel? oldValue,
+        LiveChatSectionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -48,13 +49,23 @@ public sealed partial class LiveChatSection : LiveChatSectionBase
             return;
         }
 
-        if (View.ScrollView.VerticalOffset + View.ScrollView.ViewportHeight >= View.ScrollView.ExtentHeight - 50)
+        if (
+            View.ScrollView.VerticalOffset + View.ScrollView.ViewportHeight
+            >= View.ScrollView.ExtentHeight - 50
+        )
         {
-            View.ScrollView.ScrollTo(0, View.ScrollView.ExtentHeight + View.ScrollView.ViewportHeight + 50, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
+            View.ScrollView.ScrollTo(
+                0,
+                View.ScrollView.ExtentHeight + View.ScrollView.ViewportHeight + 50,
+                new ScrollingScrollOptions(ScrollingAnimationMode.Disabled)
+            );
         }
     }
 
-    private void OnDanmakuSubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+    private void OnDanmakuSubmitted(
+        AutoSuggestBox sender,
+        AutoSuggestBoxQuerySubmittedEventArgs args
+    )
     {
         if (string.IsNullOrEmpty(args.QueryText))
         {
@@ -69,6 +80,5 @@ public sealed partial class LiveChatSection : LiveChatSectionBase
 /// <summary>
 /// 直播聊天区基类.
 /// </summary>
-public abstract class LiveChatSectionBase : LayoutUserControlBase<LiveChatSectionDetailViewModel>
-{
-}
+public abstract class LiveChatSectionBase
+    : LayoutUserControlBase<LiveChatSectionDetailViewModel> { }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Components;
@@ -12,8 +10,12 @@ public sealed partial class ShimmerLayout : LayoutControlBase
     /// <summary>
     /// <see cref="IsActive"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsActiveProperty =
-        DependencyProperty.Register(nameof(IsActive), typeof(bool), typeof(ShimmerLayout), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register(
+        nameof(IsActive),
+        typeof(bool),
+        typeof(ShimmerLayout),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ShimmerLayout"/> class.

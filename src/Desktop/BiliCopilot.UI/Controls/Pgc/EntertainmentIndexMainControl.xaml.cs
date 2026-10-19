@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Controls.Pgc;
@@ -42,7 +40,10 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(EntertainmentIndexViewModel? oldValue, EntertainmentIndexViewModel? newValue)
+    protected override void OnViewModelChanged(
+        EntertainmentIndexViewModel? oldValue,
+        EntertainmentIndexViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -66,14 +67,23 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (SeasonScrollView.ExtentHeight - SeasonScrollView.ViewportHeight - SeasonScrollView.VerticalOffset <= 240)
+        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+            !args.IsIntermediate;
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.RequestIndexCommand.Execute(default);
+                if (
+                    SeasonScrollView.ExtentHeight
+                    - SeasonScrollView.ViewportHeight
+                    - SeasonScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.RequestIndexCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -86,12 +96,15 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
 
     private void CheckSeasonCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (SeasonScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.RequestIndexCommand.Execute(default);
+                if (SeasonScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.RequestIndexCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

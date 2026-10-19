@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
@@ -24,7 +22,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public PopularPageViewModel(
         IVideoDiscoveryService discoveryService,
-        ILogger<PopularPageViewModel> logger)
+        ILogger<PopularPageViewModel> logger
+    )
     {
         _service = discoveryService;
         _logger = logger;
@@ -41,15 +40,38 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        Sections.Add(new PopularSectionItemViewModel(FluentIcons.Common.Symbol.Balloon, ResourceToolkit.GetLocalizedString(StringNames.Recommend), PopularSectionType.Recommend));
-        Sections.Add(new PopularSectionItemViewModel(FluentIcons.Common.Symbol.Fire, ResourceToolkit.GetLocalizedString(StringNames.Hot), PopularSectionType.Hot));
-        Sections.Add(new PopularSectionItemViewModel(FluentIcons.Common.Symbol.RibbonStar, ResourceToolkit.GetLocalizedString(StringNames.Rank), PopularSectionType.Rank));
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.Balloon,
+                ResourceToolkit.GetLocalizedString(StringNames.Recommend),
+                PopularSectionType.Recommend
+            )
+        );
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.Fire,
+                ResourceToolkit.GetLocalizedString(StringNames.Hot),
+                PopularSectionType.Hot
+            )
+        );
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.RibbonStar,
+                ResourceToolkit.GetLocalizedString(StringNames.Rank),
+                PopularSectionType.Rank
+            )
+        );
         await LoadPartitionsAsync();
         await Task.Delay(200);
-        var lastSelectedSectionId = SettingsToolkit.ReadLocalSetting(SettingNames.PopularPageLastSelectedSectionId, PopularSectionType.Recommend.ToString());
+        var lastSelectedSectionId = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PopularPageLastSelectedSectionId,
+            PopularSectionType.Recommend.ToString()
+        );
         if (int.TryParse(lastSelectedSectionId, out var partitionId))
         {
-            var section = Sections.OfType<PopularRankPartitionViewModel>().FirstOrDefault(p => p.Data.Id == partitionId.ToString());
+            var section = Sections
+                .OfType<PopularRankPartitionViewModel>()
+                .FirstOrDefault(p => p.Data.Id == partitionId.ToString());
             if (section != null)
             {
                 SelectSectionCommand.Execute(section);
@@ -61,7 +83,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
         else if (Enum.TryParse<PopularSectionType>(lastSelectedSectionId, out var sectionType))
         {
-            var section = Sections.OfType<PopularSectionItemViewModel>().First(p => p.Type == sectionType);
+            var section = Sections
+                .OfType<PopularSectionItemViewModel>()
+                .First(p => p.Type == sectionType);
             SelectSectionCommand.Execute(section);
         }
         else
@@ -90,27 +114,31 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         {
             PopularSectionItemViewModel section => section.Type.ToString(),
             PopularRankPartitionViewModel partition => partition.Data.Id,
-            _ => string.Empty
+            _ => string.Empty,
         };
         SettingsToolkit.WriteLocalSetting(SettingNames.PopularPageLastSelectedSectionId, sectionId);
 
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Videos.Clear();
-            if (_videoCache.TryGetValue(vm, out var cacheVideos))
-            {
-                foreach (var video in cacheVideos)
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
                 {
-                    Videos.Add(video);
-                }
+                    Videos.Clear();
+                    if (_videoCache.TryGetValue(vm, out var cacheVideos))
+                    {
+                        foreach (var video in cacheVideos)
+                        {
+                            Videos.Add(video);
+                        }
 
-                VideoListUpdated?.Invoke(this, EventArgs.Empty);
-            }
-            else
-            {
-                await LoadVideosAsync();
-            }
-        });
+                        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        await LoadVideosAsync();
+                    }
+                }
+            );
     }
 
     [RelayCommand]
@@ -143,7 +171,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
 
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
     }
 
     [RelayCommand]
@@ -173,7 +202,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         {
             var videos = await _service.GetCuratedPlaylistAsync();
             var firstSnapshot = new VideoSnapshot(videos.First());
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), (videos, firstSnapshot));
+            this.Get<NavigationViewModel>()
+                .NavigateToOver(typeof(VideoPlayerPage), (videos, firstSnapshot));
         }
         catch (Exception ex)
         {

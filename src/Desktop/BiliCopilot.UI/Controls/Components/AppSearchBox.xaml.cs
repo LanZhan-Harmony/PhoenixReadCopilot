@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Search;
@@ -17,8 +15,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     /// </summary>
     public AppSearchBox() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => HotSearchView.ItemsSource = null;
+    protected override void OnControlUnloaded() => HotSearchView.ItemsSource = null;
 
     private void OnKeywordChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
@@ -28,7 +25,10 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
     }
 
-    private void OnBoxGettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
+    private void OnBoxGettingFocus(
+        UIElement sender,
+        Microsoft.UI.Xaml.Input.GettingFocusEventArgs args
+    )
     {
         if (!Box.IsSuggestionListOpen)
         {
@@ -37,8 +37,8 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
     }
 
-    private void OnHotSearchFlyoutOpened(object sender, object e)
-        => ViewModel.LoadHotSearchCommand.Execute(default);
+    private void OnHotSearchFlyoutOpened(object sender, object e) =>
+        ViewModel.LoadHotSearchCommand.Execute(default);
 
     private void OnHotSearchItemInvoked(ItemsView sender, ItemsViewItemInvokedEventArgs args)
     {
@@ -46,7 +46,9 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         if (context is not null)
         {
             ViewModel.Keyword = context.Keyword;
-            var vm = new SearchSuggestItemViewModel(new SearchSuggestItem(context.Keyword, context.Keyword));
+            var vm = new SearchSuggestItemViewModel(
+                new SearchSuggestItem(context.Keyword, context.Keyword)
+            );
             ViewModel.SearchCommand.Execute(vm);
         }
 
@@ -61,12 +63,17 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
         else if (!string.IsNullOrEmpty(args.QueryText))
         {
-            var vm = new SearchSuggestItemViewModel(new SearchSuggestItem(args.QueryText, args.QueryText));
+            var vm = new SearchSuggestItemViewModel(
+                new SearchSuggestItem(args.QueryText, args.QueryText)
+            );
             ViewModel.SearchCommand.Execute(vm);
         }
 
         ViewModel.TryCancelSuggestCommand.Execute(default);
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, ViewModel.Suggestion.Clear);
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            ViewModel.Suggestion.Clear
+        );
     }
 }
 

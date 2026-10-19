@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
@@ -17,17 +15,13 @@ public sealed partial class MomentItemViewModel
     private readonly ILogger<MomentItemViewModel> _logger;
     private readonly Action<MomentItemViewModel> _showMomentAction;
 
-    [ObservableProperty]
-    private double? _likeCount;
+    [ObservableProperty] private double? _likeCount;
 
-    [ObservableProperty]
-    private double? _commentCount;
+    [ObservableProperty] private double? _commentCount;
 
-    [ObservableProperty]
-    private bool _isLiked;
+    [ObservableProperty] private bool _isLiked;
 
-    [ObservableProperty]
-    private bool _isPgc;
+    [ObservableProperty] private bool _isPgc;
 
     /// <summary>
     /// 作者.

@@ -1,5 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -8,8 +8,6 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
 using Richasy.WinUIKernel.Share.Base;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Windows.Graphics;
 using Windows.System;
 using Windows.UI.WindowManagement;
@@ -49,17 +47,19 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
     }
 
     /// <inheritdoc/>
-    public void EnterPlayerHostMode(PlayerDisplayMode mode)
-        => RootLayout.PrepareFullPlayerPresenter(mode);
+    public void EnterPlayerHostMode(PlayerDisplayMode mode) =>
+        RootLayout.PrepareFullPlayerPresenter(mode);
 
     /// <inheritdoc/>
-    public void ExitPlayerHostMode()
-        => RootLayout.ExitFullPlayerPresenter();
+    public void ExitPlayerHostMode() => RootLayout.ExitFullPlayerPresenter();
 
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup() { Text = text };
+        var popup = new TipPopup()
+        {
+            Text = text
+        };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);
@@ -74,7 +74,10 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
         return new PointInt32(left, top);
     }
 
-    private void OnInputActivationChanged(InputActivationListener sender, InputActivationListenerActivationChangedEventArgs args)
+    private void OnInputActivationChanged(
+        InputActivationListener sender,
+        InputActivationListenerActivationChangedEventArgs args
+    )
     {
         var isDeactivated = sender.State == InputActivationState.Deactivated;
         if (isDeactivated)
@@ -104,13 +107,19 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
         }
 
         MoveAndResize();
-        var isMaximized = SettingsToolkit.ReadLocalSetting(SettingNames.IsMainWindowMaximized, false);
+        var isMaximized = SettingsToolkit.ReadLocalSetting(
+            SettingNames.IsMainWindowMaximized,
+            false
+        );
         if (isMaximized)
         {
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        var localTheme = SettingsToolkit.ReadLocalSetting(SettingNames.AppTheme, ElementTheme.Default);
+        var localTheme = SettingsToolkit.ReadLocalSetting(
+            SettingNames.AppTheme,
+            ElementTheme.Default
+        );
         this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }
@@ -133,7 +142,10 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
             _shouldExit = true;
             this.Hide();
 
-            var hideWhenClose = SettingsToolkit.ReadLocalSetting(SettingNames.HideWhenCloseWindow, false);
+            var hideWhenClose = SettingsToolkit.ReadLocalSetting(
+                SettingNames.HideWhenCloseWindow,
+                false
+            );
             if (!hideWhenClose)
             {
                 Activated -= OnActivated;
@@ -208,20 +220,16 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
         var lastPoint = GetSavedWindowPosition();
         var isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
         var isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
-        var left = isZeroPoint || !isValidPosition
-            ? (workArea.Width - width) / 2d
-            : lastPoint.X;
-        var top = isZeroPoint || !isValidPosition
-            ? (workArea.Height - height) / 2d
-            : lastPoint.Y;
+        var left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
+        var top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
         return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
     }
 
     private void MoveAndResize()
     {
         var lastPoint = GetSavedWindowPosition();
-        var displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
-            ?? DisplayArea.Primary;
+        var displayArea =
+            DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary) ?? DisplayArea.Primary;
         var rect = GetRenderRect(displayArea.WorkArea);
         AppWindow.MoveAndResize(rect);
     }
@@ -289,7 +297,12 @@ internal static class GlobalHook
     {
         using var curProcess = Process.GetCurrentProcess();
         using var curModule = curProcess.MainModule;
-        return PInvoke.SetWindowsHookEx(hookId, proc, PInvoke.GetModuleHandle(curModule.ModuleName), 0);
+        return PInvoke.SetWindowsHookEx(
+            hookId,
+            proc,
+            PInvoke.GetModuleHandle(curModule.ModuleName),
+            0
+        );
     }
 
     private static LRESULT HookKeyboardCallback(int nCode, WPARAM wParam, LPARAM lParam)

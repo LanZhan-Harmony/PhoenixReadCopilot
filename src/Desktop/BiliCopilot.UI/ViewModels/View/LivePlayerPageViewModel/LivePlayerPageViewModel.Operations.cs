@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
@@ -51,7 +49,10 @@ public sealed partial class LivePlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
+            );
     }
 
     [RelayCommand]
@@ -70,7 +71,9 @@ public sealed partial class LivePlayerPageViewModel
             dp.SetWebLink(new Uri(url));
             dp.Properties.Title = Title;
             dp.Properties.Description = Description;
-            dp.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(_view.Information.Identifier.Cover.Uri);
+            dp.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(
+                _view.Information.Identifier.Cover.Uri
+            );
             args.Request.Data = dp;
             sender.DataRequested -= OnTransferDataRequested;
         }
@@ -93,35 +96,41 @@ public sealed partial class LivePlayerPageViewModel
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(_view.Information.Identifier.Id, _view.Information.Identifier.Title, _view.Information.Identifier.Cover.Uri.ToString(), PinContentType.Live);
+        var pinItem = new PinItem(
+            _view.Information.Identifier.Id,
+            _view.Information.Identifier.Title,
+            _view.Information.Identifier.Cover.Uri.ToString(),
+            PinContentType.Live
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
     private void PlayerProgressChanged(int progress, int duration)
     {
-        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>().TryEnqueue(() =>
-        {
-            Duration = Convert.ToInt32((DateTimeOffset.Now - StartTime).TotalSeconds);
-        });
+        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
+            .TryEnqueue(() =>
+            {
+                Duration = Convert.ToInt32((DateTimeOffset.Now - StartTime).TotalSeconds);
+            });
     }
 
     private void PlayerStateChanged(PlayerState state)
     {
-        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>().TryEnqueue(() =>
-        {
-            if (state == PlayerState.Playing)
+        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
+            .TryEnqueue(() =>
             {
-                Danmaku?.Resume();
-            }
-            else if (state == PlayerState.Paused)
-            {
-                Danmaku?.Pause();
-            }
-        });
+                if (state == PlayerState.Playing)
+                {
+                    Danmaku?.Resume();
+                }
+                else if (state == PlayerState.Paused)
+                {
+                    Danmaku?.Pause();
+                }
+            });
     }
 
-    private void DisplayDanmaku(string text)
-        => Danmaku.AddDanmakuCommand.Execute(text);
+    private void DisplayDanmaku(string text) => Danmaku.AddDanmakuCommand.Execute(text);
 
     private async Task SendDanmakuAsync(string content)
     {
@@ -134,7 +143,13 @@ public sealed partial class LivePlayerPageViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "发送直播弹幕时失败.");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToSendDanmaku), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToSendDanmaku),
+                        InfoType.Error
+                    )
+                );
         }
     }
 }

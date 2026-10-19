@@ -149,12 +149,8 @@ internal class MyImage : IAddChild
                 _image.Height = _precedentHeight;
             }
         }
-        catch (Exception)
-        {
-        }
+        catch (Exception) { }
     }
 
-    public void AddChild(IAddChild child)
-    {
-    }
+    public void AddChild(IAddChild child) { }
 }

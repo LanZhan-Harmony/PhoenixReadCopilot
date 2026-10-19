@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Core;
 using Danmaku.Core;
 using Microsoft.Extensions.Logging;
@@ -45,7 +43,10 @@ public sealed partial class LiveDanmakuPanel : DanmakuControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(DanmakuViewModel? oldValue, DanmakuViewModel? newValue)
+    protected override void OnViewModelChanged(
+        DanmakuViewModel? oldValue,
+        DanmakuViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -104,11 +105,9 @@ public sealed partial class LiveDanmakuPanel : DanmakuControlBase
         _danmakuController?.AddRealtimeDanmaku(model, false);
     }
 
-    private void OnRequestResetStyle(object? sender, EventArgs e)
-        => ResetDanmakuStyle();
+    private void OnRequestResetStyle(object? sender, EventArgs e) => ResetDanmakuStyle();
 
-    private void OnRedrawDanmaku(object? sender, EventArgs e)
-        => Redraw();
+    private void OnRedrawDanmaku(object? sender, EventArgs e) => Redraw();
 
     private void ResetDanmakuStyle()
     {
@@ -129,16 +128,22 @@ public sealed partial class LiveDanmakuPanel : DanmakuControlBase
 
     private void Redraw()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            _danmakuController?.Close();
-            _danmakuController = new DanmakuFrostMaster(RootGrid, this.Get<ILogger<DanmakuFrostMaster>>());
-            ResetDanmakuStyle();
-
-            if (!ViewModel.IsPaused)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                _danmakuController?.Resume();
+                _danmakuController?.Close();
+                _danmakuController = new DanmakuFrostMaster(
+                    RootGrid,
+                    this.Get<ILogger<DanmakuFrostMaster>>()
+                );
+                ResetDanmakuStyle();
+
+                if (!ViewModel.IsPaused)
+                {
+                    _danmakuController?.Resume();
+                }
             }
-        });
+        );
     }
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,6 +17,4 @@ public sealed partial class CommentLikeButton : CommentLikeButtonBase
 /// <summary>
 /// 评论点赞按钮基类.
 /// </summary>
-public abstract class CommentLikeButtonBase : LayoutUserControlBase<CommentItemViewModel>
-{
-}
+public abstract class CommentLikeButtonBase : LayoutUserControlBase<CommentItemViewModel> { }

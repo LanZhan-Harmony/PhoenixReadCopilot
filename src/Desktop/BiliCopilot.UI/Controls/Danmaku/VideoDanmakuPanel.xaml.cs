@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Core;
 using Danmaku.Core;
 using Microsoft.Extensions.Logging;
@@ -53,7 +51,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(DanmakuViewModel? oldValue, DanmakuViewModel? newValue)
+    protected override void OnViewModelChanged(
+        DanmakuViewModel? oldValue,
+        DanmakuViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -139,11 +140,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         _danmakuController?.AddRealtimeDanmaku(model, true);
     }
 
-    private void OnRequestResetStyle(object? sender, EventArgs e)
-        => ResetDanmakuStyle();
+    private void OnRequestResetStyle(object? sender, EventArgs e) => ResetDanmakuStyle();
 
-    private void OnExtraSpeedChanged(object? sender, EventArgs e)
-        => ResetSpeed();
+    private void OnExtraSpeedChanged(object? sender, EventArgs e) => ResetSpeed();
 
     private void OnProgressChanged(object? sender, int e)
     {
@@ -151,14 +150,11 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         _danmakuController?.UpdateTime(Convert.ToUInt32(e * 1000));
     }
 
-    private void OnResumeDanmaku(object? sender, EventArgs e)
-        => _danmakuController?.Resume();
+    private void OnResumeDanmaku(object? sender, EventArgs e) => _danmakuController?.Resume();
 
-    private void OnPauseDanmaku(object? sender, EventArgs e)
-        => _danmakuController?.Pause();
+    private void OnPauseDanmaku(object? sender, EventArgs e) => _danmakuController?.Pause();
 
-    private void OnRedrawDanmaku(object? sender, EventArgs e)
-        => Redraw();
+    private void OnRedrawDanmaku(object? sender, EventArgs e) => Redraw();
 
     private void ResetDanmakuStyle()
     {
@@ -195,18 +191,24 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             return;
         }
 
-        DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            _danmakuController?.Close();
-            _danmakuController = new DanmakuFrostMaster(RootGrid, this.Get<ILogger<DanmakuFrostMaster>>());
-
-            if (_cachedDanmakus.Count != 0)
+        DispatcherQueue?.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                _danmakuController.AddDanmakuList(_cachedDanmakus);
-            }
+                _danmakuController?.Close();
+                _danmakuController = new DanmakuFrostMaster(
+                    RootGrid,
+                    this.Get<ILogger<DanmakuFrostMaster>>()
+                );
 
-            _danmakuController.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
-            ResetDanmakuStyle();
-        });
+                if (_cachedDanmakus.Count != 0)
+                {
+                    _danmakuController.AddDanmakuList(_cachedDanmakus);
+                }
+
+                _danmakuController.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
+                ResetDanmakuStyle();
+            }
+        );
     }
 }

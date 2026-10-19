@@ -1,10 +1,8 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.User;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.View;
 
@@ -18,14 +16,11 @@ public sealed partial class ViewLaterPageViewModel
 
     private int _pageNumber;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private int _totalCount;
+    [ObservableProperty] private int _totalCount;
 
     /// <summary>
     /// 视频列表已完成更新.

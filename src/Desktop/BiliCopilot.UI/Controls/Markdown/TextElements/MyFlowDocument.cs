@@ -27,9 +27,7 @@ public class MyFlowDocument : IAddChild
 
     public bool IsHtml => _htmlNode != null;
 
-    public MyFlowDocument()
-    {
-    }
+    public MyFlowDocument() { }
 
     public MyFlowDocument(MarkdownObject markdownObject) => _markdownObject = markdownObject;
 

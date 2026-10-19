@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
@@ -21,7 +19,8 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
     /// </summary>
     public VideoPartitionPageViewModel(
         IVideoDiscoveryService discoveryService,
-        ILogger<VideoPartitionPageViewModel> logger)
+        ILogger<VideoPartitionPageViewModel> logger
+    )
     {
         _service = discoveryService;
         _logger = logger;
@@ -50,8 +49,13 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
 
         IsPartitionLoading = false;
         await Task.Delay(200);
-        var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(SettingNames.VideoPartitionPageLastSelectedPartitionId, Partitions.First().Data.Id);
-        var partition = Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId) ?? Partitions.First();
+        var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(
+            SettingNames.VideoPartitionPageLastSelectedPartitionId,
+            Partitions.First().Data.Id
+        );
+        var partition =
+            Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
+            ?? Partitions.First();
         SelectPartition(partition);
         PartitionInitialized?.Invoke(this, EventArgs.Empty);
     }
@@ -76,6 +80,9 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
             vm.InitializeCommand.Execute(default);
         }
 
-        SettingsToolkit.WriteLocalSetting(SettingNames.VideoPartitionPageLastSelectedPartitionId, partition.Data.Id);
+        SettingsToolkit.WriteLocalSetting(
+            SettingNames.VideoPartitionPageLastSelectedPartitionId,
+            partition.Data.Id
+        );
     }
 }

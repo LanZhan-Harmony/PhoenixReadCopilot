@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
@@ -42,7 +40,10 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup() { Text = text };
+        var popup = new TipPopup()
+        {
+            Text = text
+        };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);
@@ -66,13 +67,19 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
 
         if (!_isActivated)
         {
-            var isMaximized = SettingsToolkit.ReadLocalSetting(SettingNames.IsGalleryWindowMaximized, false);
+            var isMaximized = SettingsToolkit.ReadLocalSetting(
+                SettingNames.IsGalleryWindowMaximized,
+                false
+            );
             if (isMaximized)
             {
                 (AppWindow.Presenter as OverlappedPresenter).Maximize();
             }
 
-            var localTheme = SettingsToolkit.ReadLocalSetting(SettingNames.AppTheme, ElementTheme.Default);
+            var localTheme = SettingsToolkit.ReadLocalSetting(
+                SettingNames.AppTheme,
+                ElementTheme.Default
+            );
             this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
         }
 
@@ -89,7 +96,10 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
         var previousWidth = SettingsToolkit.ReadLocalSetting(SettingNames.GalleryWindowWidth, 800d);
-        var previousHeight = SettingsToolkit.ReadLocalSetting(SettingNames.GalleryWindowHeight, 600d);
+        var previousHeight = SettingsToolkit.ReadLocalSetting(
+            SettingNames.GalleryWindowHeight,
+            600d
+        );
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -102,20 +112,16 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
         var lastPoint = GetSavedWindowPosition();
         var isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
         var isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
-        var left = isZeroPoint || !isValidPosition
-            ? (workArea.Width - width) / 2d
-            : lastPoint.X;
-        var top = isZeroPoint || !isValidPosition
-            ? (workArea.Height - height) / 2d
-            : lastPoint.Y;
+        var left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
+        var top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
         return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
     }
 
     private void MoveAndResize()
     {
         var lastPoint = GetSavedWindowPosition();
-        var displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
-            ?? DisplayArea.Primary;
+        var displayArea =
+            DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary) ?? DisplayArea.Primary;
 
         var rect = GetRenderRect(displayArea.WorkArea);
         AppWindow.MoveAndResize(rect);
@@ -132,7 +138,10 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
         {
             SettingsToolkit.WriteLocalSetting(SettingNames.GalleryWindowPositionLeft, left);
             SettingsToolkit.WriteLocalSetting(SettingNames.GalleryWindowPositionTop, top);
-            SettingsToolkit.WriteLocalSetting(SettingNames.GalleryWindowHeight, Height < 500 ? 500d : Height);
+            SettingsToolkit.WriteLocalSetting(
+                SettingNames.GalleryWindowHeight,
+                Height < 500 ? 500d : Height
+            );
             SettingsToolkit.WriteLocalSetting(SettingNames.GalleryWindowWidth, Width);
         }
     }

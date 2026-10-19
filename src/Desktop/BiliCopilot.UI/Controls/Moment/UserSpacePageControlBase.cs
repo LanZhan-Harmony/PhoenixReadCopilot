@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -13,6 +11,5 @@ public abstract class UserSpacePageControlBase : LayoutUserControlBase<UserSpace
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePageControlBase"/> class.
     /// </summary>
-    protected UserSpacePageControlBase()
-        => ViewModel = this.Get<UserSpacePageViewModel>();
+    protected UserSpacePageControlBase() => ViewModel = this.Get<UserSpacePageViewModel>();
 }

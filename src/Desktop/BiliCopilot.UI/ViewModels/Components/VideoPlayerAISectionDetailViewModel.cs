@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -12,13 +10,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 视频播放页 AI 区块详情视图模型.
 /// </summary>
-public sealed partial class VideoPlayerAISectionDetailViewModel : ViewModelBase, IPlayerSectionDetailViewModel
+public sealed partial class VideoPlayerAISectionDetailViewModel
+    : ViewModelBase,
+        IPlayerSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerInfoSectionDetailViewModel"/> class.
     /// </summary>
-    public VideoPlayerAISectionDetailViewModel(AIViewModel aiVM)
-        => AI = aiVM;
+    public VideoPlayerAISectionDetailViewModel(AIViewModel aiVM) => AI = aiVM;
 
     /// <summary>
     /// 视频播放页视图模型.

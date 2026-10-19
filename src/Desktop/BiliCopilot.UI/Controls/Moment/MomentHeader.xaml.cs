@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -37,16 +35,17 @@ public sealed partial class MomentHeader : MomentHeaderBase
         Selector.SelectionChanged -= OnSelectorChanged;
     }
 
-    private static string GetSectionName(MomentSectionType type)
-        => type switch
+    private static string GetSectionName(MomentSectionType type) =>
+        type switch
         {
             MomentSectionType.Video => ResourceToolkit.GetLocalizedString(StringNames.Video),
-            MomentSectionType.Comprehensive => ResourceToolkit.GetLocalizedString(StringNames.Comprehensive),
+            MomentSectionType.Comprehensive => ResourceToolkit.GetLocalizedString(
+                StringNames.Comprehensive
+            ),
             _ => throw new ArgumentOutOfRangeException(nameof(type)),
         };
 
-    private void OnViewModelInitialized(object? sender, EventArgs e)
-        => InitializeChildPartitions();
+    private void OnViewModelInitialized(object? sender, EventArgs e) => InitializeChildPartitions();
 
     private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -69,15 +68,19 @@ public sealed partial class MomentHeader : MomentHeaderBase
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = GetSectionName(item.SectionType),
-                    Tag = item,
-                });
+                Selector.Items.Add(
+                    new SelectorBarItem()
+                    {
+                        Text = GetSectionName(item.SectionType),
+                        Tag = item
+                    }
+                );
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        Selector.SelectedItem = Selector.Items.FirstOrDefault(p =>
+            p.Tag == ViewModel.SelectedSection
+        );
     }
 }
 

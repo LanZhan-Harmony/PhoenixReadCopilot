@@ -1,5 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.ComponentModel;
+using System.Windows.Input;
 using BiliCopilot.UI.Controls.Danmaku;
 using BiliCopilot.UI.Controls.Player;
 using BiliCopilot.UI.Toolkits;
@@ -10,8 +10,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Richasy.WinUIKernel.Share.Base;
-using System.ComponentModel;
-using System.Windows.Input;
 using Windows.System;
 
 namespace BiliCopilot.UI.Controls.Core;
@@ -40,20 +38,20 @@ public sealed partial class BiliPlayer
     /// <summary>
     /// 注入弹幕控件创建函数.
     /// </summary>
-    public void InjectDanmakuControlFunc(Func<DanmakuControlBase> createDanmakuControlFunc)
-        => _createDanmakuControlFunc = createDanmakuControlFunc;
+    public void InjectDanmakuControlFunc(Func<DanmakuControlBase> createDanmakuControlFunc) =>
+        _createDanmakuControlFunc = createDanmakuControlFunc;
 
     /// <summary>
     /// 注入控制面板创建函数.
     /// </summary>
-    public void InjectTransportControlFunc(Func<FrameworkElement> createTransportControlFunc)
-        => _createTransportControlFunc = createTransportControlFunc;
+    public void InjectTransportControlFunc(Func<FrameworkElement> createTransportControlFunc) =>
+        _createTransportControlFunc = createTransportControlFunc;
 
     /// <summary>
     /// 注入字幕控件创建函数.
     /// </summary>
-    public void InjectSubtitleControlFunc(Func<SubtitlePresenter> createSubtitleControlFunc)
-        => _createSubtitleControlFunc = createSubtitleControlFunc;
+    public void InjectSubtitleControlFunc(Func<SubtitlePresenter> createSubtitleControlFunc) =>
+        _createSubtitleControlFunc = createSubtitleControlFunc;
 
     private void CreateOverlayContainer()
     {
@@ -81,27 +79,42 @@ public sealed partial class BiliPlayer
             Maximum = ViewModel?.Duration ?? 0,
             Value = ViewModel?.Position ?? 0,
             ShowPaused = ViewModel?.IsPaused ?? false,
-            Visibility = ViewModel?.IsBottomProgressVisible ?? false ? Visibility.Visible : Visibility.Collapsed,
+            Visibility =
+                ViewModel?.IsBottomProgressVisible ?? false
+                    ? Visibility.Visible
+                    : Visibility.Collapsed,
         };
         rootGrid.Children.Add(_progressBar);
 
         if (!ViewModel.IsExternalPlayer)
         {
             var contextFlyout = new MenuFlyout();
-            contextFlyout.Items.Add(new MenuFlyoutItem
-            {
-                Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Screenshot),
-                Command = ViewModel?.TakeScreenshotCommand,
-                MinWidth = 160,
-                Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Screenshot },
-            });
-            contextFlyout.Items.Add(new MenuFlyoutItem
-            {
-                Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Reload),
-                Command = ViewModel?.ReloadCommand,
-                MinWidth = 160,
-                Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.ArrowClockwise },
-            });
+            contextFlyout.Items.Add(
+                new MenuFlyoutItem
+                {
+                    Text = ResourceToolkit.GetLocalizedString(
+                        Models.Constants.StringNames.Screenshot
+                    ),
+                    Command = ViewModel?.TakeScreenshotCommand,
+                    MinWidth = 160,
+                    Icon = new FluentIcons.WinUI.SymbolIcon
+                    {
+                        Symbol = FluentIcons.Common.Symbol.Screenshot,
+                    },
+                }
+            );
+            contextFlyout.Items.Add(
+                new MenuFlyoutItem
+                {
+                    Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Reload),
+                    Command = ViewModel?.ReloadCommand,
+                    MinWidth = 160,
+                    Icon = new FluentIcons.WinUI.SymbolIcon
+                    {
+                        Symbol = FluentIcons.Common.Symbol.ArrowClockwise,
+                    },
+                }
+            );
 
             _contextFlyout = contextFlyout;
             _interactionControl = new Rectangle
@@ -109,7 +122,10 @@ public sealed partial class BiliPlayer
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Fill = new SolidColorBrush(Colors.Transparent),
-                Visibility = ViewModel?.IsExternalPlayer ?? false ? Visibility.Collapsed : Visibility.Visible,
+                Visibility =
+                    ViewModel?.IsExternalPlayer ?? false
+                        ? Visibility.Collapsed
+                        : Visibility.Visible,
             };
             HookInteractionControlEvents();
             rootGrid.Children.Add(_interactionControl);
@@ -157,14 +173,17 @@ public sealed partial class BiliPlayer
             Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoadingAndWait),
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            Visibility = ViewModel?.IsPlayerDataLoading ?? false ? Visibility.Visible : Visibility.Collapsed,
+            Visibility =
+                ViewModel?.IsPlayerDataLoading ?? false ? Visibility.Visible : Visibility.Collapsed,
         };
         rootGrid.Children.Add(_loadingWidget);
 
         _failedHolder = new EmptyHolder
         {
             Title = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.FailedToPlay),
-            Description = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.FailedToPlayDescription),
+            Description = ResourceToolkit.GetLocalizedString(
+                Models.Constants.StringNames.FailedToPlayDescription
+            ),
             Emoji = "😫",
             Visibility = ViewModel?.IsFailed ?? false ? Visibility.Visible : Visibility.Collapsed,
             ActionElement = new Button
@@ -214,7 +233,10 @@ public sealed partial class BiliPlayer
                 _progressBar.Value = ViewModel.Position;
             }
 
-            if (_needRemeasureSize && PlayerPresenter?.TryGetIslandPlayer() is IslandPlayer islandPlayer)
+            if (
+                _needRemeasureSize
+                && PlayerPresenter?.TryGetIslandPlayer() is IslandPlayer islandPlayer
+            )
             {
                 islandPlayer.ResetWindowPosition();
             }
@@ -225,43 +247,57 @@ public sealed partial class BiliPlayer
         {
             if (_progressBar != null)
             {
-                _progressBar.Visibility = ViewModel.IsBottomProgressVisible ? Visibility.Visible : Visibility.Collapsed;
+                _progressBar.Visibility = ViewModel.IsBottomProgressVisible
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
         }
         else if (e.PropertyName == nameof(ViewModel.IsFailed))
         {
             if (_notificationContainer != null)
             {
-                _notificationContainer.Visibility = ViewModel.IsFailed ? Visibility.Collapsed : Visibility.Visible;
+                _notificationContainer.Visibility = ViewModel.IsFailed
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
             }
 
             if (_operationContainer != null)
             {
-                _operationContainer.Visibility = ViewModel.IsFailed ? Visibility.Collapsed : Visibility.Visible;
+                _operationContainer.Visibility = ViewModel.IsFailed
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
             }
 
             if (_failedHolder != null)
             {
-                _failedHolder.Visibility = ViewModel.IsFailed ? Visibility.Visible : Visibility.Collapsed;
+                _failedHolder.Visibility = ViewModel.IsFailed
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
         }
         else if (e.PropertyName == nameof(ViewModel.IsExternalPlayer))
         {
             if (_danmakuControl != null)
             {
-                _danmakuControl.Visibility = ViewModel.IsExternalPlayer ? Visibility.Collapsed : Visibility.Visible;
+                _danmakuControl.Visibility = ViewModel.IsExternalPlayer
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
             }
 
             if (_interactionControl != null)
             {
-                _interactionControl.Visibility = ViewModel.IsExternalPlayer ? Visibility.Collapsed : Visibility.Visible;
+                _interactionControl.Visibility = ViewModel.IsExternalPlayer
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
             }
         }
         else if (e.PropertyName == nameof(ViewModel.IsPlayerDataLoading))
         {
             if (_loadingWidget != null)
             {
-                _loadingWidget.Visibility = ViewModel.IsPlayerDataLoading ? Visibility.Visible : Visibility.Collapsed;
+                _loadingWidget.Visibility = ViewModel.IsPlayerDataLoading
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
 
             if (!ViewModel.IsPlayerDataLoading)
@@ -279,7 +315,10 @@ public sealed partial class BiliPlayer
     {
         var grid = new Grid();
         var increaseVolumeBtn = CreateHiddenButton(VirtualKey.Up, ViewModel.IncreaseVolumeCommand);
-        var decreaseVolumeBtn = CreateHiddenButton(VirtualKey.Down, ViewModel.DecreaseVolumeCommand);
+        var decreaseVolumeBtn = CreateHiddenButton(
+            VirtualKey.Down,
+            ViewModel.DecreaseVolumeCommand
+        );
         var backwardBtn = CreateHiddenButton(VirtualKey.Left, ViewModel.BackwardSkipCommand);
         var miniBtn = CreateHiddenButton(VirtualKey.F9, ViewModel.ToggleCompactOverlayCommand);
         var fullBtn = CreateHiddenButton(VirtualKey.F11, ViewModel.ToggleFullScreenCommand);
@@ -293,7 +332,11 @@ public sealed partial class BiliPlayer
         grid.Children.Add(fullWindowBtn);
         grid.Children.Add(backBtn);
 
-        Button CreateHiddenButton(VirtualKey key, ICommand command, VirtualKeyModifiers modifiers = VirtualKeyModifiers.None)
+        Button CreateHiddenButton(
+            VirtualKey key,
+            ICommand command,
+            VirtualKeyModifiers modifiers = VirtualKeyModifiers.None
+        )
         {
             var accelerator = new KeyboardAccelerator();
             accelerator.Key = key;
@@ -307,9 +350,9 @@ public sealed partial class BiliPlayer
                 Height = 1,
                 BorderThickness = new Thickness(0),
                 IsTabStop = false,
-                TabFocusNavigation = Microsoft.UI.Xaml.Input.KeyboardNavigationMode.Once,
-                TabNavigation = Microsoft.UI.Xaml.Input.KeyboardNavigationMode.Once,
-                XYFocusKeyboardNavigation = Microsoft.UI.Xaml.Input.XYFocusKeyboardNavigationMode.Disabled,
+                TabFocusNavigation = KeyboardNavigationMode.Once,
+                TabNavigation = KeyboardNavigationMode.Once,
+                XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Disabled,
                 Command = command,
             };
 
@@ -329,12 +372,11 @@ public partial class CursorGrid : Grid
     /// <summary>
     /// 隐藏光标.
     /// </summary>
-    public void HideCursor()
-        => ProtectedCursor?.Dispose();
+    public void HideCursor() => ProtectedCursor?.Dispose();
 
     /// <summary>
     /// 显示光标.
     /// </summary>
-    public void ShowCursor()
-        => ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Arrow);
+    public void ShowCursor() =>
+        ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Arrow);
 }

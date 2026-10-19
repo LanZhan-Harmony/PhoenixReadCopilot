@@ -1,11 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.Components;
 
@@ -21,14 +19,11 @@ public sealed partial class NotifyMessageSectionDetailViewModel
     private long _offsetTime;
     private bool _preventLoadMore;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private int _unreadCount;
+    [ObservableProperty] private int _unreadCount;
 
     /// <summary>
     /// 列表已完成更新.

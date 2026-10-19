@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Models.Media;
@@ -12,8 +10,7 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFormatInformation>
 {
-    [ObservableProperty]
-    private bool _isEnabled;
+    [ObservableProperty] private bool _isEnabled;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFormatItemViewModel"/> class.

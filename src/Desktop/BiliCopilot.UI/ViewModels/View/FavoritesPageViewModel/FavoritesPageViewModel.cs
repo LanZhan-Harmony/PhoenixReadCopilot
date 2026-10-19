@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -20,9 +18,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageViewModel"/> class.
     /// </summary>
-    public FavoritesPageViewModel(
-        IFavoriteService service,
-        ILogger<FavoritesPageViewModel> logger)
+    public FavoritesPageViewModel(IFavoriteService service, ILogger<FavoritesPageViewModel> logger)
     {
         _service = service;
         _logger = logger;
@@ -53,11 +49,15 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void Refresh()
     {
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Sections.Clear();
-            await InitializeAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    Sections.Clear();
+                    await InitializeAsync();
+                }
+            );
     }
 
     [RelayCommand]
@@ -82,14 +82,20 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             sectionSettingValue = $"ugc_{ugcVM.Data.Id}";
         }
 
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.LastSelectedFavoriteSection, sectionSettingValue);
+        SettingsToolkit.WriteLocalSetting(
+            Models.Constants.SettingNames.LastSelectedFavoriteSection,
+            sectionSettingValue
+        );
         CurrentSection = vm;
         CurrentSection.TryFirstLoadCommand.Execute(default);
     }
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.LastSelectedFavoriteSection, string.Empty);
+        var lastSelectedSection = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.LastSelectedFavoriteSection,
+            string.Empty
+        );
         if (string.IsNullOrEmpty(lastSelectedSection))
         {
             SelectSection(Sections.First());
@@ -99,10 +105,15 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         var isSelected = false;
         if (lastSelectedSection.StartsWith("pgc"))
         {
-            var isSuccess = Enum.TryParse<PgcFavoriteType>(lastSelectedSection.Replace("pgc_", string.Empty), out var type);
+            var isSuccess = Enum.TryParse<PgcFavoriteType>(
+                lastSelectedSection.Replace("pgc_", string.Empty),
+                out var type
+            );
             if (isSuccess)
             {
-                var section = Sections.OfType<PgcFavoriteSectionDetailViewModel>().FirstOrDefault(p => p.Type == type);
+                var section = Sections
+                    .OfType<PgcFavoriteSectionDetailViewModel>()
+                    .FirstOrDefault(p => p.Type == type);
                 if (section is not null)
                 {
                     isSelected = true;
@@ -113,7 +124,9 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         else if (lastSelectedSection.StartsWith("video"))
         {
             var id = lastSelectedSection.Replace("video_", string.Empty);
-            var section = Sections.OfType<VideoFavoriteSectionDetailViewModel>().FirstOrDefault(p => p.Data.Id == id);
+            var section = Sections
+                .OfType<VideoFavoriteSectionDetailViewModel>()
+                .FirstOrDefault(p => p.Data.Id == id);
             if (section is not null)
             {
                 isSelected = true;
@@ -123,7 +136,9 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         else if (lastSelectedSection.StartsWith("ugc"))
         {
             var id = lastSelectedSection.Replace("ugc_", string.Empty);
-            var section = Sections.OfType<UgcSeasonFavoriteSectionDetailViewModel>().FirstOrDefault(p => p.Data.Id == id);
+            var section = Sections
+                .OfType<UgcSeasonFavoriteSectionDetailViewModel>()
+                .FirstOrDefault(p => p.Data.Id == id);
             if (section is not null)
             {
                 isSelected = true;
@@ -142,7 +157,10 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         try
         {
             var (groups, defaultGroup) = await _service.GetVideoFavoriteGroupsAsync();
-            var defaultGroupVM = new VideoFavoriteSectionDetailViewModel(defaultGroup.Folder, _service);
+            var defaultGroupVM = new VideoFavoriteSectionDetailViewModel(
+                defaultGroup.Folder,
+                _service
+            );
             defaultGroupVM.InjectFirstPageData(defaultGroup);
             Sections.Add(defaultGroupVM);
 
@@ -150,9 +168,11 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             {
                 foreach (var folder in group.Folders)
                 {
-                    var folderVM = folder.IsUgcSeason == true
-                        ? (IFavoriteSectionDetailViewModel)new UgcSeasonFavoriteSectionDetailViewModel(folder, _service)
-                        : new VideoFavoriteSectionDetailViewModel(folder, _service);
+                    var folderVM =
+                        folder.IsUgcSeason == true
+                            ? (IFavoriteSectionDetailViewModel)
+                            new UgcSeasonFavoriteSectionDetailViewModel(folder, _service)
+                            : new VideoFavoriteSectionDetailViewModel(folder, _service);
                     Sections.Add(folderVM);
                 }
             }

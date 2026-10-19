@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Toolkits;
@@ -22,9 +20,7 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePageViewModel"/> class.
     /// </summary>
-    public MessagePageViewModel(
-        IMessageService service,
-        ILogger<MessagePageViewModel> logger)
+    public MessagePageViewModel(IMessageService service, ILogger<MessagePageViewModel> logger)
     {
         _service = service;
         _logger = logger;
@@ -80,7 +76,10 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
             sectionSettingValue = $"chat_{chatVM.Data.User.Id}";
         }
 
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.LastSelectedMessageSection, sectionSettingValue);
+        SettingsToolkit.WriteLocalSetting(
+            Models.Constants.SettingNames.LastSelectedMessageSection,
+            sectionSettingValue
+        );
         CurrentSection = vm;
         await CurrentSection.InitializeCommand.ExecuteAsync(default);
         this.Get<AccountViewModel>().UpdateUnreadCommand.Execute(default);
@@ -125,7 +124,9 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         try
         {
             IsChatSessionLoading = true;
-            var (sessions, offset, hasMore) = await _service.GetChatSessionsAsync(_chatSessionOffset);
+            var (sessions, offset, hasMore) = await _service.GetChatSessionsAsync(
+                _chatSessionOffset
+            );
             _preventLoadMore = !hasMore;
             _chatSessionOffset = offset;
             if (sessions is not null)
@@ -142,7 +143,13 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         {
             _preventLoadMore = true;
             _logger.LogError(ex, "加载聊天会话时失败.");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToLoadChatSessions), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToLoadChatSessions),
+                        InfoType.Error
+                    )
+                );
         }
         finally
         {
@@ -152,7 +159,10 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.LastSelectedMessageSection, string.Empty);
+        var lastSelectedSection = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.LastSelectedMessageSection,
+            string.Empty
+        );
         UpdateUnreadCountCommand.Execute(default);
         if (string.IsNullOrEmpty(lastSelectedSection))
         {
@@ -163,10 +173,15 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         var isSelected = false;
         if (lastSelectedSection.StartsWith("nf"))
         {
-            var isSuccess = Enum.TryParse<NotifyMessageType>(lastSelectedSection.Replace("nf_", string.Empty), out var type);
+            var isSuccess = Enum.TryParse<NotifyMessageType>(
+                lastSelectedSection.Replace("nf_", string.Empty),
+                out var type
+            );
             if (isSuccess)
             {
-                var section = Sections.OfType<NotifyMessageSectionDetailViewModel>().FirstOrDefault(p => p.Type == type);
+                var section = Sections
+                    .OfType<NotifyMessageSectionDetailViewModel>()
+                    .FirstOrDefault(p => p.Type == type);
                 if (section is not null)
                 {
                     isSelected = true;
@@ -177,7 +192,9 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         else if (lastSelectedSection.StartsWith("chat"))
         {
             var id = lastSelectedSection.Replace("chat_", string.Empty);
-            var section = Sections.OfType<ChatMessageSectionDetailViewModel>().FirstOrDefault(p => p.Data.User.Id == id);
+            var section = Sections
+                .OfType<ChatMessageSectionDetailViewModel>()
+                .FirstOrDefault(p => p.Data.User.Id == id);
             if (section is not null)
             {
                 isSelected = true;

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
@@ -14,5 +12,6 @@ internal sealed partial class ColorToBrushConverter : IValueConverter
         return new SolidColorBrush(color);
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

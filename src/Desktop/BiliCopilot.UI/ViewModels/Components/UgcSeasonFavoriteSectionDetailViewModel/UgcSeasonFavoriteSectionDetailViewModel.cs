@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -12,14 +10,17 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// UGC合集详情视图模型.
 /// </summary>
-public sealed partial class UgcSeasonFavoriteSectionDetailViewModel : ViewModelBase<VideoFavoriteFolder>, IFavoriteSectionDetailViewModel
+public sealed partial class UgcSeasonFavoriteSectionDetailViewModel
+    : ViewModelBase<VideoFavoriteFolder>,
+        IFavoriteSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="UgcSeasonFavoriteSectionDetailViewModel"/> class.
     /// </summary>
     public UgcSeasonFavoriteSectionDetailViewModel(
         VideoFavoriteFolder data,
-        IFavoriteService service)
+        IFavoriteService service
+    )
         : base(data)
     {
         _service = service;
@@ -67,7 +68,9 @@ public sealed partial class UgcSeasonFavoriteSectionDetailViewModel : ViewModelB
             {
                 foreach (var item in detail)
                 {
-                    Items.Add(new VideoItemViewModel(item, Models.Constants.VideoCardStyle.Favorite));
+                    Items.Add(
+                        new VideoItemViewModel(item, Models.Constants.VideoCardStyle.Favorite)
+                    );
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);

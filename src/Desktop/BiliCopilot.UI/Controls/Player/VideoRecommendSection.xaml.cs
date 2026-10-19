@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -15,13 +13,11 @@ public sealed partial class VideoRecommendSection : VideoRecommendSectionBase
     /// </summary>
     public VideoRecommendSection() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => VideoRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => VideoRepeater.ItemsSource = null;
 }
 
 /// <summary>
 /// 视频推荐区域基类.
 /// </summary>
-public abstract class VideoRecommendSectionBase : LayoutUserControlBase<VideoPlayerRecommendSectionDetailViewModel>
-{
-}
+public abstract class VideoRecommendSectionBase
+    : LayoutUserControlBase<VideoPlayerRecommendSectionDetailViewModel> { }

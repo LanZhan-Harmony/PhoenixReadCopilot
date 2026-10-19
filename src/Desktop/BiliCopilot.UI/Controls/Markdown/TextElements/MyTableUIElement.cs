@@ -21,12 +21,18 @@ internal partial class MyTableUIElement : Panel
         _borderThickness = borderThickness;
         for (var col = 0; col < columnCount + 1; col++)
         {
-            Children.Add(new Rectangle { Fill = borderBrush });
+            Children.Add(new Rectangle
+            {
+                Fill = borderBrush
+            });
         }
 
         for (var row = 0; row < rowCount + 1; row++)
         {
-            Children.Add(new Rectangle { Fill = borderBrush });
+            Children.Add(new Rectangle
+            {
+                Fill = borderBrush
+            });
         }
     }
 

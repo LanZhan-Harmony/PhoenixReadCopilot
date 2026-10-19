@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -30,7 +28,12 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     /// <summary>
     /// Initializes a new instance of the <see cref="SeasonItemViewModel"/> class.
     /// </summary>
-    public SeasonItemViewModel(SeasonInformation data, SeasonCardStyle style, PgcFavoriteStatus? favStatus = default, Action<SeasonItemViewModel>? removeAction = default)
+    public SeasonItemViewModel(
+        SeasonInformation data,
+        SeasonCardStyle style,
+        PgcFavoriteStatus? favStatus = default,
+        Action<SeasonItemViewModel>? removeAction = default
+    )
         : base(data)
     {
         Title = data.Identifier.Title;
@@ -48,14 +51,20 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
+            SettingNames.DefaultPlayerDisplayMode,
+            PlayerDisplayMode.Default
+        );
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
         if (preferPlayer == PlayerType.Web)
         {
             this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
@@ -67,12 +76,13 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     }
 
     [RelayCommand]
-    private Task OpenInBroswerAsync()
-        => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
+    private Task OpenInBroswerAsync() => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
 
     [RelayCommand]
-    private void OpenInNewWindow()
-        => new PlayerWindow().OpenPgc(new MediaIdentifier("ss_" + Data.Identifier.Id, default, default));
+    private void OpenInNewWindow() =>
+        new PlayerWindow().OpenPgc(
+            new MediaIdentifier("ss_" + Data.Identifier.Id, default, default)
+        );
 
     [RelayCommand]
     private async Task FollowAsync()
@@ -80,12 +90,21 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         try
         {
             await this.Get<IEntertainmentDiscoveryService>().FollowAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success)
+                );
         }
         catch (Exception ex)
         {
             this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "追番/追剧失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowPgc), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowPgc),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
@@ -95,36 +114,46 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         try
         {
             await this.Get<IEntertainmentDiscoveryService>().UnfollowAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success)
+                );
         }
         catch (Exception ex)
         {
             this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "取消追番/追剧失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowPgc), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowPgc),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
     [RelayCommand]
-    private Task MarkWantWatchAsync()
-        => MarkFavoriteStatusAsync(PgcFavoriteStatus.Want);
+    private Task MarkWantWatchAsync() => MarkFavoriteStatusAsync(PgcFavoriteStatus.Want);
 
     [RelayCommand]
-    private Task MarkWatchingAsync()
-        => MarkFavoriteStatusAsync(PgcFavoriteStatus.Watching);
+    private Task MarkWatchingAsync() => MarkFavoriteStatusAsync(PgcFavoriteStatus.Watching);
 
     [RelayCommand]
-    private Task MarkWatchedAsync()
-        => MarkFavoriteStatusAsync(PgcFavoriteStatus.Watched);
+    private Task MarkWatchedAsync() => MarkFavoriteStatusAsync(PgcFavoriteStatus.Watched);
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem($"ss_{Data.Identifier.Id}", Data.Identifier.Title, Data.Identifier.Cover.Uri.ToString(), PinContentType.Pgc);
+        var pinItem = new PinItem(
+            $"ss_{Data.Identifier.Id}",
+            Data.Identifier.Title,
+            Data.Identifier.Cover.Uri.ToString(),
+            PinContentType.Pgc
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
-    private string GetWebUrl()
-        => $"https://www.bilibili.com/bangumi/play/ss{Data.Identifier.Id}";
+    private string GetWebUrl() => $"https://www.bilibili.com/bangumi/play/ss{Data.Identifier.Id}";
 
     private async Task MarkFavoriteStatusAsync(PgcFavoriteStatus status)
     {
@@ -136,7 +165,13 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         catch (Exception ex)
         {
             this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "标记想看失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToMarkPgc), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToMarkPgc),
+                        InfoType.Error
+                    )
+                );
         }
     }
 }

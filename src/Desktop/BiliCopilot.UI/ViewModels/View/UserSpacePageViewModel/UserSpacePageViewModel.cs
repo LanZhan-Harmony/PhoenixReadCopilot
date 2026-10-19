@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -29,7 +27,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         IRelationshipService relationshipService,
         IUserService userService,
         ISearchService searchService,
-        ILogger<UserSpacePageViewModel> logger)
+        ILogger<UserSpacePageViewModel> logger
+    )
     {
         CommentModule = comment;
         _relationshipService = relationshipService;
@@ -69,7 +68,10 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         if (SelectedSection is null)
         {
-            var isLastVideoSection = SettingsToolkit.ReadLocalSetting(SettingNames.LastUserSpaceSectionIsVideo, true);
+            var isLastVideoSection = SettingsToolkit.ReadLocalSetting(
+                SettingNames.LastUserSpaceSectionIsVideo,
+                true
+            );
             var section = isLastVideoSection ? Sections.First() : Sections.Last();
             SelectSection(section);
         }
@@ -114,7 +116,10 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
 
         SelectedSection = section;
-        SettingsToolkit.WriteLocalSetting(SettingNames.LastUserSpaceSectionIsVideo, SelectedSection.IsVideo());
+        SettingsToolkit.WriteLocalSetting(
+            SettingNames.LastUserSpaceSectionIsVideo,
+            SelectedSection.IsVideo()
+        );
         SelectedSection.InitializeCommand.Execute(default);
     }
 
@@ -127,12 +132,24 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             {
                 await _relationshipService.UnfollowUserAsync(_profile.Id);
                 IsFollowed = false;
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (
+                            ResourceToolkit.GetLocalizedString(StringNames.Unfollowed),
+                            InfoType.Success
+                        )
+                    );
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "取消关注用户时失败");
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowUser), InfoType.Error));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (
+                            ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowUser),
+                            InfoType.Error
+                        )
+                    );
             }
         }
         else
@@ -141,12 +158,21 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             {
                 await _relationshipService.FollowUserAsync(_profile.Id);
                 IsFollowed = true;
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success)
+                    );
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "关注用户时失败");
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowUser), InfoType.Error));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (
+                            ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowUser),
+                            InfoType.Error
+                        )
+                    );
             }
         }
     }
@@ -154,7 +180,12 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(_profile.Id, _profile.Name, _profile.Avatar.Uri.ToString(), PinContentType.User);
+        var pinItem = new PinItem(
+            _profile.Id,
+            _profile.Name,
+            _profile.Avatar.Uri.ToString(),
+            PinContentType.User
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
@@ -168,14 +199,25 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "获取用户信息时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserInformation), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserInformation),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
     [RelayCommand]
     private async Task LoadMoreSearchResultAsync()
     {
-        if (_preventLoadMoreSearch || IsSearching || !IsSearchMode || string.IsNullOrEmpty(SearchKeyword))
+        if (
+            _preventLoadMoreSearch
+            || IsSearching
+            || !IsSearchMode
+            || string.IsNullOrEmpty(SearchKeyword)
+        )
         {
             return;
         }
@@ -184,7 +226,12 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             IsSearching = true;
             _searchCancellationTokenSource = new CancellationTokenSource();
-            var (videos, total, hasMore) = await _searchService.SearchUserVideosAsync(_profile.Id, SearchKeyword, _searchPn, _searchCancellationTokenSource.Token);
+            var (videos, total, hasMore) = await _searchService.SearchUserVideosAsync(
+                _profile.Id,
+                SearchKeyword,
+                _searchPn,
+                _searchCancellationTokenSource.Token
+            );
             _preventLoadMoreSearch = !hasMore || videos is null || videos.Count == 0;
             if (videos is not null)
             {
@@ -208,7 +255,13 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "搜索用户视频时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToSearchUserVideos), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToSearchUserVideos),
+                        InfoType.Error
+                    )
+                );
         }
         finally
         {
@@ -234,12 +287,19 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         try
         {
             var state = await _relationshipService.GetRelationshipAsync(_profile.Id);
-            IsFollowed = state != UserRelationStatus.Unknown && state != UserRelationStatus.Unfollow;
+            IsFollowed =
+                state != UserRelationStatus.Unknown && state != UserRelationStatus.Unfollow;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "获取用户关系时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserRelation), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserRelation),
+                        InfoType.Error
+                    )
+                );
         }
     }
 
@@ -252,7 +312,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
 
         IsCommentsOpened = true;
-        CommentModule.Initialize(moment.CommentId, moment.CommentType!.Value, Richasy.BiliKernel.Models.CommentSortType.Hot);
+        CommentModule.Initialize(
+            moment.CommentId,
+            moment.CommentType!.Value,
+            Richasy.BiliKernel.Models.CommentSortType.Hot
+        );
         CommentModule.RefreshCommand.Execute(default);
     }
 

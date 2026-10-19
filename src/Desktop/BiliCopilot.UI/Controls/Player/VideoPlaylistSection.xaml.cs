@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
@@ -18,15 +16,15 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
     public VideoPlaylistSection() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override async void OnControlLoaded()
-        => await CheckSelectedItemAsync();
+    protected override async void OnControlLoaded() => await CheckSelectedItemAsync();
 
-    protected override void OnControlUnloaded()
-        => View.ItemsSource = default;
+    protected override void OnControlUnloaded() => View.ItemsSource = default;
 
     /// <inheritdoc/>
-    protected override async void OnViewModelChanged(VideoPlayerPlaylistSectionDetailViewModel? oldValue, VideoPlayerPlaylistSectionDetailViewModel? newValue)
-        => await CheckSelectedItemAsync();
+    protected override async void OnViewModelChanged(
+        VideoPlayerPlaylistSectionDetailViewModel? oldValue,
+        VideoPlayerPlaylistSectionDetailViewModel? newValue
+    ) => await CheckSelectedItemAsync();
 
     private void OnVideoSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
@@ -48,13 +46,18 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
 
         var index = ViewModel.Items.ToList().IndexOf(ViewModel.SelectedItem);
         View.Select(index);
-        View.StartBringItemIntoView(index, new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 });
+        View.StartBringItemIntoView(
+            index,
+            new BringIntoViewOptions
+            {
+                VerticalAlignmentRatio = 0.5
+            }
+        );
     }
 }
 
 /// <summary>
 /// 视频播放列表基类.
 /// </summary>
-public abstract class VideoPlaylistSectionBase : LayoutUserControlBase<VideoPlayerPlaylistSectionDetailViewModel>
-{
-}
+public abstract class VideoPlaylistSectionBase
+    : LayoutUserControlBase<VideoPlayerPlaylistSectionDetailViewModel> { }

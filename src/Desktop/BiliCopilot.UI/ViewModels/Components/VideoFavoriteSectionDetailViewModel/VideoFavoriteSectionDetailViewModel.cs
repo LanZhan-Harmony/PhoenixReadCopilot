@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -18,14 +16,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 视频收藏分区详情视图模型.
 /// </summary>
-public sealed partial class VideoFavoriteSectionDetailViewModel : ViewModelBase<VideoFavoriteFolder>, IFavoriteSectionDetailViewModel
+public sealed partial class VideoFavoriteSectionDetailViewModel
+    : ViewModelBase<VideoFavoriteFolder>,
+        IFavoriteSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoFavoriteSectionDetailViewModel"/> class.
     /// </summary>
-    public VideoFavoriteSectionDetailViewModel(
-        VideoFavoriteFolder data,
-        IFavoriteService service)
+    public VideoFavoriteSectionDetailViewModel(VideoFavoriteFolder data, IFavoriteService service)
         : base(data)
     {
         _service = service;
@@ -38,7 +36,14 @@ public sealed partial class VideoFavoriteSectionDetailViewModel : ViewModelBase<
         TotalCount = detail.TotalCount;
         foreach (var item in detail.Videos)
         {
-            Items.Add(new VideoItemViewModel(item, Models.Constants.VideoCardStyle.Favorite, removeAction: RemoveVideo, favFolder: Data));
+            Items.Add(
+                new VideoItemViewModel(
+                    item,
+                    Models.Constants.VideoCardStyle.Favorite,
+                    removeAction: RemoveVideo,
+                    favFolder: Data
+                )
+            );
         }
 
         IsEmpty = Items.Count == 0;
@@ -76,7 +81,10 @@ public sealed partial class VideoFavoriteSectionDetailViewModel : ViewModelBase<
         try
         {
             IsLoading = true;
-            var (detail, nextPn) = await _service.GetVideoFavoriteFolderDetailAsync(Data, _pageNumber);
+            var (detail, nextPn) = await _service.GetVideoFavoriteFolderDetailAsync(
+                Data,
+                _pageNumber
+            );
             _preventLoadMore = detail is null || detail.Videos is null || nextPn is null;
             _pageNumber = nextPn ?? 0;
             TotalCount = detail.TotalCount;
@@ -84,7 +92,14 @@ public sealed partial class VideoFavoriteSectionDetailViewModel : ViewModelBase<
             {
                 foreach (var item in detail.Videos)
                 {
-                    Items.Add(new VideoItemViewModel(item, Models.Constants.VideoCardStyle.Favorite, removeAction: RemoveVideo, favFolder: Data));
+                    Items.Add(
+                        new VideoItemViewModel(
+                            item,
+                            Models.Constants.VideoCardStyle.Favorite,
+                            removeAction: RemoveVideo,
+                            favFolder: Data
+                        )
+                    );
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -105,7 +120,10 @@ public sealed partial class VideoFavoriteSectionDetailViewModel : ViewModelBase<
     [RelayCommand]
     private void PlayCurrentList()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
+            SettingNames.DefaultPlayerDisplayMode,
+            PlayerDisplayMode.Default
+        );
 
         if (Items.Count == 1)
         {
@@ -116,7 +134,8 @@ public sealed partial class VideoFavoriteSectionDetailViewModel : ViewModelBase<
                 return;
             }
 
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video.Data));
+            this.Get<NavigationViewModel>()
+                .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video.Data));
         }
         else
         {

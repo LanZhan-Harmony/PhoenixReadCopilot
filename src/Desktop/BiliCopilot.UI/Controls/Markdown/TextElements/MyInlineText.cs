@@ -19,7 +19,5 @@ internal class MyInlineText : IAddChild
         };
     }
 
-    public void AddChild(IAddChild child)
-    {
-    }
+    public void AddChild(IAddChild child) { }
 }

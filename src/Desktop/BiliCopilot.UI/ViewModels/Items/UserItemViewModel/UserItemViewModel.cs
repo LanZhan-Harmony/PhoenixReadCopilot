@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
@@ -30,20 +28,29 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         Id = data.Profile.User.Id;
         Name = data.Profile.User.Name;
         Avatar = data.Profile.User.Avatar.Uri;
-        Description = string.IsNullOrEmpty(data.Profile.Introduce) ? ResourceToolkit.GetLocalizedString(StringNames.NoSelfIntroduce) : data.Profile.Introduce;
-        IsFollowed = data.Community.Relation != UserRelationStatus.Unknown && data.Community.Relation != UserRelationStatus.Unfollow;
+        Description = string.IsNullOrEmpty(data.Profile.Introduce)
+            ? ResourceToolkit.GetLocalizedString(StringNames.NoSelfIntroduce)
+            : data.Profile.Introduce;
+        IsFollowed =
+            data.Community.Relation != UserRelationStatus.Unknown
+            && data.Community.Relation != UserRelationStatus.Unfollow;
         IsVip = data.Profile.IsVip ?? false;
         Level = data.Profile.Level;
     }
 
     [RelayCommand]
-    private void ShowUserSpace()
-        => this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Profile.User);
+    private void ShowUserSpace() =>
+        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Profile.User);
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(Data.Profile.User.Id, Data.Profile.User.Name, Data.Profile.User.Avatar.Uri.ToString(), PinContentType.User);
+        var pinItem = new PinItem(
+            Data.Profile.User.Id,
+            Data.Profile.User.Name,
+            Data.Profile.User.Avatar.Uri.ToString(),
+            PinContentType.User
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
@@ -57,12 +64,24 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
             {
                 await relationService.UnfollowUserAsync(Id);
                 IsFollowed = false;
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (
+                            ResourceToolkit.GetLocalizedString(StringNames.Unfollowed),
+                            InfoType.Success
+                        )
+                    );
             }
             catch (Exception ex)
             {
                 this.Get<ILogger<UserItemViewModel>>().LogError(ex, "取消关注用户时失败");
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowUser), InfoType.Error));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (
+                            ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowUser),
+                            InfoType.Error
+                        )
+                    );
             }
         }
         else
@@ -71,12 +90,21 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
             {
                 await relationService.FollowUserAsync(Id);
                 IsFollowed = true;
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success)
+                    );
             }
             catch (Exception ex)
             {
                 this.Get<ILogger<UserItemViewModel>>().LogError(ex, "关注用户时失败");
-                this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowUser), InfoType.Error));
+                this.Get<AppViewModel>()
+                    .ShowTipCommand.Execute(
+                        (
+                            ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowUser),
+                            InfoType.Error
+                        )
+                    );
             }
         }
     }

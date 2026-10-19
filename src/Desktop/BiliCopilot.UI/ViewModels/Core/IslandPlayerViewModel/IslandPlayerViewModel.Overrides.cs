@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using Microsoft.Extensions.Logging;
 
@@ -11,8 +9,7 @@ namespace BiliCopilot.UI.ViewModels.Core;
 public sealed partial class IslandPlayerViewModel
 {
     /// <inheritdoc/>
-    protected override void BeforeLoadPlayData()
-        => Player.RerunEventLoop();
+    protected override void BeforeLoadPlayData() => Player.RerunEventLoop();
 
     /// <inheritdoc/>
     protected override async Task OnCloseAsync()
@@ -28,12 +25,11 @@ public sealed partial class IslandPlayerViewModel
     }
 
     /// <inheritdoc/>
-    protected override bool IsMediaLoaded()
-        => Player?.IsMediaLoaded() == true;
+    protected override bool IsMediaLoaded() => Player?.IsMediaLoaded() == true;
 
     /// <inheritdoc/>
-    protected override Task OnTogglePlayPauseAsync()
-        => Player.ExecuteAfterMediaLoadedAsync("cycle pause");
+    protected override Task OnTogglePlayPauseAsync() =>
+        Player.ExecuteAfterMediaLoadedAsync("cycle pause");
 
     /// <inheritdoc/>
     protected override Task ForcePlayAsync()
@@ -50,8 +46,7 @@ public sealed partial class IslandPlayerViewModel
     }
 
     /// <inheritdoc/>
-    protected override void OnSetVolume(int value)
-        => Player?.SetVolume(value);
+    protected override void OnSetVolume(int value) => Player?.SetVolume(value);
 
     /// <inheritdoc/>
     protected override void OnSetSpeed(double speed)
@@ -61,8 +56,7 @@ public sealed partial class IslandPlayerViewModel
     }
 
     /// <inheritdoc/>
-    protected override Task OnTakeScreenshotAsync(string path)
-        => Player.TakeScreenshotAsync(path);
+    protected override Task OnTakeScreenshotAsync(string path) => Player.TakeScreenshotAsync(path);
 
     /// <inheritdoc/>
     protected override async Task OnLoadPlayDataAsync()
@@ -95,7 +89,10 @@ public sealed partial class IslandPlayerViewModel
                 commandOptions.Add($"start={Position}.0");
             }
 
-            var speed = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerSpeed, 1d);
+            var speed = SettingsToolkit.ReadLocalSetting(
+                Models.Constants.SettingNames.PlayerSpeed,
+                1d
+            );
             if (Math.Abs(speed - 1) >= 0.1)
             {
                 commandOptions.Add($"speed={Math.Round(speed, 2)}");

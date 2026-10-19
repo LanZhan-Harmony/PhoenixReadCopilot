@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Player;
@@ -14,8 +12,7 @@ public sealed partial class LivePlayerFormatButton : LivePlayerPageControlBase
     /// </summary>
     public LivePlayerFormatButton() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => FormatView.ItemsSource = default;
+    protected override void OnControlUnloaded() => FormatView.ItemsSource = default;
 
     private void OnFlyoutOpened(object sender, object e)
     {

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -12,11 +10,9 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInformation>
 {
-    [ObservableProperty]
-    private List<SeasonItemViewModel>? _items;
+    [ObservableProperty] private List<SeasonItemViewModel>? _items;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TimelineItemViewModel"/> class.
@@ -30,7 +26,13 @@ public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInform
         DayOfWeek = targetDay.ToString("ddd", culture);
         Date = info.Date;
         Count = info.Seasons.Count;
-        Items = info.Seasons.Select(p => new SeasonItemViewModel(p, Models.Constants.SeasonCardStyle.Timeline)).ToList() ?? default;
+        Items =
+            info.Seasons.Select(p => new SeasonItemViewModel(
+                    p,
+                    Models.Constants.SeasonCardStyle.Timeline
+                ))
+                .ToList()
+            ?? default;
         IsEmpty = Items is null || Items.Count == 0;
     }
 

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -27,7 +25,8 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
     public HistoryPageViewModel(
         IViewHistoryService service,
         ISearchService searchService,
-        ILogger<HistoryPageViewModel> logger)
+        ILogger<HistoryPageViewModel> logger
+    )
     {
         _service = service;
         _searchService = searchService;
@@ -47,13 +46,16 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             return;
         }
 
-        var types = Enum.GetValues<ViewHistoryTabType>().Where(p => p != ViewHistoryTabType.All).ToList();
+        var types = Enum.GetValues<ViewHistoryTabType>()
+            .Where(p => p != ViewHistoryTabType.All)
+            .ToList();
         var sections = new List<IHistorySectionDetailViewModel>();
         foreach (var type in types)
         {
             var vm = type switch
             {
-                ViewHistoryTabType.Video => (IHistorySectionDetailViewModel)new VideoHistorySectionDetailViewModel(_service),
+                ViewHistoryTabType.Video => (IHistorySectionDetailViewModel)
+                    new VideoHistorySectionDetailViewModel(_service),
                 ViewHistoryTabType.Article => new ArticleHistorySectionDetailViewModel(_service),
                 ViewHistoryTabType.Live => new LiveHistorySectionDetailViewModel(_service),
                 _ => null,
@@ -120,7 +122,12 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadMoreSearchResultAsync()
     {
-        if (_preventLoadMoreSearch || IsSearching || !IsSearchMode || string.IsNullOrEmpty(SearchKeyword))
+        if (
+            _preventLoadMoreSearch
+            || IsSearching
+            || !IsSearchMode
+            || string.IsNullOrEmpty(SearchKeyword)
+        )
         {
             return;
         }
@@ -130,13 +137,19 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             IsSearching = true;
             CancelSearch();
             _searchCancellationTokenSource = new CancellationTokenSource();
-            var (videos, total, hasMore) = await _searchService.SearchHistoryVideosAsync(SearchKeyword, _searchPn, _searchCancellationTokenSource.Token);
+            var (videos, total, hasMore) = await _searchService.SearchHistoryVideosAsync(
+                SearchKeyword,
+                _searchPn,
+                _searchCancellationTokenSource.Token
+            );
             _preventLoadMoreSearch = !hasMore || videos is null || videos.Count == 0;
             if (videos is not null)
             {
                 foreach (var item in videos)
                 {
-                    SearchVideos.Add(new VideoItemViewModel(item, VideoCardStyle.History, RemoveSearchVideo));
+                    SearchVideos.Add(
+                        new VideoItemViewModel(item, VideoCardStyle.History, RemoveSearchVideo)
+                    );
                 }
 
                 SearchUpdated?.Invoke(this, EventArgs.Empty);
@@ -154,7 +167,13 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "搜索用户视频时失败");
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.FailedToSearchUserVideos), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (
+                        ResourceToolkit.GetLocalizedString(StringNames.FailedToSearchUserVideos),
+                        InfoType.Error
+                    )
+                );
         }
         finally
         {

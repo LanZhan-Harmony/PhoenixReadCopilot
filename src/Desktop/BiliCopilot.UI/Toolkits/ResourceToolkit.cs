@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using Richasy.WinUIKernel.Share.Toolkits;
 
@@ -15,6 +13,8 @@ internal sealed class ResourceToolkit : SharedResourceToolkit
     /// </summary>
     /// <param name="stringName">Resource name corresponding to localized text.</param>
     /// <returns>Localized text.</returns>
-    public static string GetLocalizedString(StringNames stringName)
-        => GlobalDependencies.Kernel.GetRequiredService<IResourceToolkit>().GetLocalizedString(stringName.ToString());
+    public static string GetLocalizedString(StringNames stringName) =>
+        GlobalDependencies
+            .Kernel.GetRequiredService<IResourceToolkit>()
+            .GetLocalizedString(stringName.ToString());
 }

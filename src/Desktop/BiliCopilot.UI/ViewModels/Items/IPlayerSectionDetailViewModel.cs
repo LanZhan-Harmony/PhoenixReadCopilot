@@ -1,7 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace BiliCopilot.UI.ViewModels.Items;
 

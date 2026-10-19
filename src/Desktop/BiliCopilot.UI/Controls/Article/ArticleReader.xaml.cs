@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Text.Json;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -7,7 +6,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.Web.WebView2.Core;
 using Richasy.BiliKernel.Models.Article;
 using Richasy.WinUIKernel.Share.Base;
-using System.Text.Json;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 
@@ -43,10 +41,13 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         ArticleDetail article,
         string fontFamily = "Segoe UI",
         double fontSize = 16,
-        double lineHeight = 1.5)
+        double lineHeight = 1.5
+    )
     {
         var path = Path.Combine(Package.Current.InstalledPath, "Assets/Reader");
-        var theme = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.AppTheme, ElementTheme.Default).ToString();
+        var theme = SettingsToolkit
+            .ReadLocalSetting(Models.Constants.SettingNames.AppTheme, ElementTheme.Default)
+            .ToString();
         if (theme == "Default")
         {
             theme = App.Current.RequestedTheme.ToString();
@@ -54,10 +55,12 @@ public sealed partial class ArticleReader : LayoutUserControlBase
 
         var localHtml = await File.ReadAllTextAsync(Path.Combine(path, "ShowPage.html"));
         var localCss = await File.ReadAllTextAsync(Path.Combine(path, $"{theme}.css"));
-        localCss = localCss.Replace("$FontFamily$", fontFamily)
+        localCss = localCss
+            .Replace("$FontFamily$", fontFamily)
             .Replace("$FontSize$", $"{fontSize}")
             .Replace("$LineHeight$", $"{lineHeight}");
-        var html = localHtml.Replace("$theme$", theme.ToLower())
+        var html = localHtml
+            .Replace("$theme$", theme.ToLower())
             .Replace("$style$", localCss)
             .Replace("$title$", article.Identifier.Title)
             .Replace("$author$", article.Author.Profile.User.Name)
@@ -92,7 +95,10 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         Initialized?.Invoke(this, EventArgs.Empty);
     }
 
-    private void OnContextMenuRequested(CoreWebView2 sender, CoreWebView2ContextMenuRequestedEventArgs args)
+    private void OnContextMenuRequested(
+        CoreWebView2 sender,
+        CoreWebView2ContextMenuRequestedEventArgs args
+    )
     {
         if (args.ContextMenuTarget.HasSelection)
         {
@@ -100,21 +106,30 @@ public sealed partial class ArticleReader : LayoutUserControlBase
             if (!string.IsNullOrEmpty(args.ContextMenuTarget.SelectionText))
             {
                 _selectedText = args.ContextMenuTarget.SelectionText;
-                TextMenuFlyout.ShowAt(MainView, new FlyoutShowOptions { Position = args.Location });
+                TextMenuFlyout.ShowAt(MainView,
+                    new FlyoutShowOptions
+                    {
+                        Position = args.Location
+                    });
             }
         }
         else if (args.ContextMenuTarget.Kind == CoreWebView2ContextMenuTargetKind.Image)
         {
             for (var i = args.MenuItems.Count - 1; i >= 0; i--)
             {
-                if (args.MenuItems[i].Name == "back"
+                if (
+                    args.MenuItems[i].Name == "back"
                     || args.MenuItems[i].Name == "forward"
                     || args.MenuItems[i].Name == "reload"
                     || args.MenuItems[i].Name == "saveAs"
                     || args.MenuItems[i].Name == "share"
                     || args.MenuItems[i].Name == "webCapture"
                     || args.MenuItems[i].Name == "copyImageLocation"
-                    || (args.MenuItems[i].Name == "other" && !string.IsNullOrEmpty(args.MenuItems[i].Label)))
+                    || (
+                        args.MenuItems[i].Name == "other"
+                        && !string.IsNullOrEmpty(args.MenuItems[i].Label)
+                    )
+                )
                 {
                     args.MenuItems.RemoveAt(i);
                 }
@@ -126,7 +141,10 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         }
     }
 
-    private async void OnMessageReceivedAsync(WebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+    private async void OnMessageReceivedAsync(
+        WebView2 sender,
+        CoreWebView2WebMessageReceivedEventArgs args
+    )
     {
         _ = this;
         var json = args.WebMessageAsJson;
@@ -165,6 +183,9 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         var dp = new DataPackage();
         dp.SetText(_selectedText);
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
+            );
     }
 }

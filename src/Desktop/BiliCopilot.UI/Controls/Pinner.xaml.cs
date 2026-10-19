@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.ViewModels.Core;
@@ -22,11 +20,9 @@ public sealed partial class Pinner : PinnerBase
     public Pinner() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(default);
 
-    protected override void OnControlUnloaded()
-        => Repeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => Repeater.ItemsSource = null;
 
     private void OnItemClick(object sender, RoutedEventArgs e)
     {
@@ -44,7 +40,9 @@ public sealed partial class Pinner : PinnerBase
         }
         else if (item.Type == Models.Constants.PinContentType.Video)
         {
-            var snapshot = new VideoSnapshot(new VideoInformation(new MediaIdentifier(item.Id, item.Title, default), default));
+            var snapshot = new VideoSnapshot(
+                new VideoInformation(new MediaIdentifier(item.Id, item.Title, default), default)
+            );
             navVM.NavigateToOver(typeof(VideoPlayerPage), snapshot);
         }
         else if (item.Type == Models.Constants.PinContentType.Live)

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Extensions;
@@ -54,7 +52,9 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
         {
             return SeasonTemplate;
         }
-        else if (item is VideoPlayerInfoSectionDetailViewModel or PgcPlayerInfoSectionDetailViewModel)
+        else if (
+            item is VideoPlayerInfoSectionDetailViewModel or PgcPlayerInfoSectionDetailViewModel
+        )
         {
             return InfoTemplate;
         }

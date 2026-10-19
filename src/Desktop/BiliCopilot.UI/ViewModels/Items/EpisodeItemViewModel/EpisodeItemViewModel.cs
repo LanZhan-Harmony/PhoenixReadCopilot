@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -43,14 +41,20 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
+            SettingNames.DefaultPlayerDisplayMode,
+            PlayerDisplayMode.Default
+        );
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        var preferPlayer = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PlayerType,
+            PlayerType.Island
+        );
         if (preferPlayer == PlayerType.Web)
         {
             this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
@@ -62,20 +66,25 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
     }
 
     [RelayCommand]
-    private Task OpenInBroswerAsync()
-        => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
+    private Task OpenInBroswerAsync() => Launcher.LaunchUriAsync(new Uri(GetWebUrl())).AsTask();
 
     [RelayCommand]
-    private void OpenInNewWindow()
-        => new PlayerWindow().OpenPgc(new MediaIdentifier("ep_" + Data.Identifier.Id, default, default));
+    private void OpenInNewWindow() =>
+        new PlayerWindow().OpenPgc(
+            new MediaIdentifier("ep_" + Data.Identifier.Id, default, default)
+        );
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem($"ep_{Data.Identifier.Id}", Data.Identifier.Title, Data.Identifier.Cover.Uri.ToString(), PinContentType.Pgc);
+        var pinItem = new PinItem(
+            $"ep_{Data.Identifier.Id}",
+            Data.Identifier.Title,
+            Data.Identifier.Cover.Uri.ToString(),
+            PinContentType.Pgc
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
-    private string GetWebUrl()
-        => $"https://www.bilibili.com/bangumi/play/ep{Data.Identifier.Id}";
+    private string GetWebUrl() => $"https://www.bilibili.com/bangumi/play/ep{Data.Identifier.Id}";
 }

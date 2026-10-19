@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Controls.WebDav;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -17,15 +15,14 @@ public sealed partial class WebDavSettingControl : SettingsPageControlBase
     /// </summary>
     public WebDavSettingControl() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => ConfigRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => ConfigRepeater.ItemsSource = null;
 
     private async void OnEditButtonClickAsync(object sender, RoutedEventArgs e)
     {
         var config = (sender as FrameworkElement).DataContext as WebDavConfig;
         var dialog = new WebDavConfigDialog(config)
         {
-            XamlRoot = XamlRoot,
+            XamlRoot = XamlRoot
         };
         await dialog.ShowAsync();
     }
@@ -33,7 +30,9 @@ public sealed partial class WebDavSettingControl : SettingsPageControlBase
     private async void OnDeleteButtonClickAsync(object sender, RoutedEventArgs e)
     {
         var config = (sender as FrameworkElement).DataContext as WebDavConfig;
-        var textTemplate = ResourceToolkit.GetLocalizedString(StringNames.RemoveWebDavConfigWarning);
+        var textTemplate = ResourceToolkit.GetLocalizedString(
+            StringNames.RemoveWebDavConfigWarning
+        );
         var dialog = new ContentDialog
         {
             Title = ResourceToolkit.GetLocalizedString(StringNames.Tip),
@@ -54,7 +53,7 @@ public sealed partial class WebDavSettingControl : SettingsPageControlBase
     {
         var dialog = new WebDavConfigDialog
         {
-            XamlRoot = XamlRoot,
+            XamlRoot = XamlRoot
         };
         await dialog.ShowAsync();
     }

@@ -13,7 +13,5 @@ internal class MyLineBreak : IAddChild
 
     public MyLineBreak() => _lineBreak = new LineBreak();
 
-    public void AddChild(IAddChild child)
-    {
-    }
+    public void AddChild(IAddChild child) { }
 }

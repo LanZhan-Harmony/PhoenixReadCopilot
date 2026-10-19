@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -34,16 +32,27 @@ public sealed partial class IslandPlayer : LayoutControlBase<IslandPlayerViewMod
     /// </summary>
     public void ResetWindowPosition()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
-        {
-            await Task.Delay(300);
-            InitializeLayoutPoints();
-            if (_playerWindow is not null && _playerWindow.GetHandle() != IntPtr.Zero)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            async () =>
             {
-                PInvoke.SetWindowPos(new(_playerWindow.GetHandle()), HWND.Null, (int)_windowLeftTopPoint.X, (int)_windowLeftTopPoint.Y, (int)_lastWidth, (int)_lastHeight, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW);
-                _overlayWindow.MoveAndResize((int)_lastWidth, (int)_lastHeight);
+                await Task.Delay(300);
+                InitializeLayoutPoints();
+                if (_playerWindow is not null && _playerWindow.GetHandle() != IntPtr.Zero)
+                {
+                    PInvoke.SetWindowPos(
+                        new(_playerWindow.GetHandle()),
+                        HWND.Null,
+                        (int)_windowLeftTopPoint.X,
+                        (int)_windowLeftTopPoint.Y,
+                        (int)_lastWidth,
+                        (int)_lastHeight,
+                        SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW
+                    );
+                    _overlayWindow.MoveAndResize((int)_lastWidth, (int)_lastHeight);
+                }
             }
-        });
+        );
     }
 
     /// <inheritdoc/>
@@ -61,7 +70,12 @@ public sealed partial class IslandPlayer : LayoutControlBase<IslandPlayerViewMod
         if (_playerWindow is null)
         {
             _playerWindow = new MpvPlayerWindow();
-            _playerWindow.Create(_parentWindow.GetWindowHandle(), _windowLeftTopPoint, (int)_lastWidth, (int)_lastHeight);
+            _playerWindow.Create(
+                _parentWindow.GetWindowHandle(),
+                _windowLeftTopPoint,
+                (int)_lastWidth,
+                (int)_lastHeight
+            );
         }
 
         if (_overlayWindow is null && _playerWindow.GetHandle() != IntPtr.Zero)
@@ -88,8 +102,8 @@ public sealed partial class IslandPlayer : LayoutControlBase<IslandPlayerViewMod
         _overlayWindow = default;
     }
 
-    private void OnRootGridSizeChanged(object sender, SizeChangedEventArgs e)
-        => ResetWindowPosition();
+    private void OnRootGridSizeChanged(object sender, SizeChangedEventArgs e) =>
+        ResetWindowPosition();
 
     private void InitializeLayoutPoints()
     {

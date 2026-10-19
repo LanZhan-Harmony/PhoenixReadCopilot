@@ -1,10 +1,8 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Comment;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.Components;
 
@@ -21,17 +19,13 @@ public sealed partial class CommentDetailViewModel
     private long _offset;
     private CommentItemViewModel? _replyItem;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private string _replyTarget;
+    [ObservableProperty] private string _replyTarget;
 
-    [ObservableProperty]
-    private bool _isReplying;
+    [ObservableProperty] private bool _isReplying;
 
     /// <summary>
     /// 列表已更新.

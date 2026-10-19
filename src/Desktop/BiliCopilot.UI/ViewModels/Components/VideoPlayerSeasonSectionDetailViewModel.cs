@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -14,24 +12,22 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 视频播放器合集视图模型.
 /// </summary>
-public sealed partial class VideoPlayerSeasonSectionDetailViewModel : ViewModelBase, IPlayerSectionDetailViewModel
+public sealed partial class VideoPlayerSeasonSectionDetailViewModel
+    : ViewModelBase,
+        IPlayerSectionDetailViewModel
 {
     /// <summary>
     /// 当前播放页面正在播放的视频Id.
     /// </summary>
     private readonly string _videoId;
 
-    [ObservableProperty]
-    private List<VideoSeason> _seasons;
+    [ObservableProperty] private List<VideoSeason> _seasons;
 
-    [ObservableProperty]
-    private List<VideoItemViewModel> _items;
+    [ObservableProperty] private List<VideoItemViewModel> _items;
 
-    [ObservableProperty]
-    private VideoSeason _selectedSeason;
+    [ObservableProperty] private VideoSeason _selectedSeason;
 
-    [ObservableProperty]
-    private VideoItemViewModel _selectedItem;
+    [ObservableProperty] private VideoItemViewModel _selectedItem;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerSeasonSectionDetailViewModel"/> class.
@@ -39,12 +35,15 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel : ViewModelB
     public VideoPlayerSeasonSectionDetailViewModel(
         VideoPlayerPageViewModel page,
         IList<VideoSeason> seasons,
-        string videoId)
+        string videoId
+    )
     {
         Page = page;
         Seasons = seasons.ToList();
         _videoId = videoId;
-        var selectedSeason = Seasons.FirstOrDefault(p => p.Videos.Any(q => q.Identifier.Id == _videoId));
+        var selectedSeason = Seasons.FirstOrDefault(p =>
+            p.Videos.Any(q => q.Identifier.Id == _videoId)
+        );
         ChangeSeason(selectedSeason);
     }
 
@@ -57,8 +56,7 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel : ViewModelB
     public VideoPlayerPageViewModel Page { get; }
 
     [RelayCommand]
-    private static Task TryFirstLoadAsync()
-        => Task.CompletedTask;
+    private static Task TryFirstLoadAsync() => Task.CompletedTask;
 
     [RelayCommand]
     private void ChangeSeason(VideoSeason season)
@@ -69,7 +67,12 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel : ViewModelB
         }
 
         SelectedSeason = season;
-        Items = season.Videos.Select(p => new VideoItemViewModel(p, Models.Constants.VideoCardStyle.PlayerSeason)).ToList();
+        Items = season
+            .Videos.Select(p => new VideoItemViewModel(
+                p,
+                Models.Constants.VideoCardStyle.PlayerSeason
+            ))
+            .ToList();
         SelectedItem = Items.FirstOrDefault(p => p.Data.Identifier.Id == _videoId);
     }
 }

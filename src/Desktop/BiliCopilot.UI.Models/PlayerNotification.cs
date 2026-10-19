@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Models;
 
 /// <summary>
@@ -10,10 +8,7 @@ public sealed class PlayerNotification
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerNotification"/> class.
     /// </summary>
-    public PlayerNotification(
-        Action action,
-        string message,
-        int duration)
+    public PlayerNotification(Action action, string message, int duration)
     {
         Action = action;
         Message = message;

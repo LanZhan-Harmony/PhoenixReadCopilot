@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
@@ -27,7 +25,8 @@ public sealed partial class LivePlayerPageViewModel : PlayerPageViewModelBase
         IDanmakuService danmakuService,
         IRelationshipService relationshipService,
         ILogger<LivePlayerPageViewModel> logger,
-        DanmakuViewModel danmaku)
+        DanmakuViewModel danmaku
+    )
     {
         _service = service;
         _danmakuService = danmakuService;
@@ -43,12 +42,10 @@ public sealed partial class LivePlayerPageViewModel : PlayerPageViewModelBase
     }
 
     /// <inheritdoc/>
-    protected override string GetPageKey()
-        => nameof(LivePlayerPage);
+    protected override string GetPageKey() => nameof(LivePlayerPage);
 
     /// <inheritdoc/>
-    protected override double GetDefaultNavColumnWidth()
-        => 300d;
+    protected override double GetDefaultNavColumnWidth() => 300d;
 
     [RelayCommand]
     private async Task InitializePageAsync(MediaIdentifier live)
@@ -65,7 +62,10 @@ public sealed partial class LivePlayerPageViewModel : PlayerPageViewModelBase
             ClearView();
             Danmaku.ResetData();
             _pageLoadCancellationTokenSource = new CancellationTokenSource();
-            var view = await _service.GetLivePageDetailAsync(live, _pageLoadCancellationTokenSource.Token);
+            var view = await _service.GetLivePageDetailAsync(
+                live,
+                _pageLoadCancellationTokenSource.Token
+            );
             InitializeView(view);
             LoadRelationshipCommand.Execute(default);
             ViewInitialized?.Invoke(this, EventArgs.Empty);
@@ -129,27 +129,43 @@ public sealed partial class LivePlayerPageViewModel : PlayerPageViewModelBase
             if (vm is not null)
             {
                 quality = vm.Data.Quality;
-                SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedLiveQuality, vm.Data.Quality);
+                SettingsToolkit.WriteLocalSetting(
+                    SettingNames.LastSelectedLiveQuality,
+                    vm.Data.Quality
+                );
             }
             else
             {
-                quality = SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedLiveQuality, 400);
+                quality = SettingsToolkit.ReadLocalSetting(
+                    SettingNames.LastSelectedLiveQuality,
+                    400
+                );
             }
 
             var isAudioOnly = SettingsToolkit.ReadLocalSetting(SettingNames.IsLiveAudioOnly, false);
-            var info = await _service.GetLivePlayDetailAsync(_view.Information.Identifier, quality, isAudioOnly, _playLoadCancellationTokenSource.Token)
-                ?? throw new Exception("直播播放信息为空");
+            var info =
+                await _service.GetLivePlayDetailAsync(
+                    _view.Information.Identifier,
+                    quality,
+                    isAudioOnly,
+                    _playLoadCancellationTokenSource.Token
+                ) ?? throw new Exception("直播播放信息为空");
             InitializeLiveMedia(info);
 
             // 我们更偏好 http_hls 的直播源，其格式为 m3u8.
-            var preferLine = Lines.FirstOrDefault(p => p.Urls.FirstOrDefault()?.Protocol == "http_hls") ?? Lines.FirstOrDefault();
+            var preferLine =
+                Lines.FirstOrDefault(p => p.Urls.FirstOrDefault()?.Protocol == "http_hls")
+                ?? Lines.FirstOrDefault();
             await ChangeLineAsync(preferLine);
         }
         catch (Exception ex)
         {
             if (ex is not TaskCanceledException)
             {
-                _logger.LogError(ex, $"尝试获取直播 {_view.Information.Identifier.Id} 的播放详情时失败.");
+                _logger.LogError(
+                    ex,
+                    $"尝试获取直播 {_view.Information.Identifier.Id} 的播放详情时失败."
+                );
                 IsMediaLoadFailed = true;
             }
             else
@@ -166,8 +182,12 @@ public sealed partial class LivePlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     private async Task LoadRelationshipAsync()
     {
-        var relationship = await _relationshipService.GetRelationshipAsync(_view.Information.User.Id);
-        IsFollow = relationship != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown && relationship != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow;
+        var relationship = await _relationshipService.GetRelationshipAsync(
+            _view.Information.User.Id
+        );
+        IsFollow =
+            relationship != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown
+            && relationship != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow;
     }
 
     private async Task ChangeLineAsync(LiveLineInformation line)
@@ -187,7 +207,11 @@ public sealed partial class LivePlayerPageViewModel : PlayerPageViewModelBase
         }
 
         await Player.SetPlayDataAsync(url, default, autoPlay);
-        Player.InitializeSmtc(_view.Information.Identifier.Cover.SourceUri.ToString(), Title, UpName);
+        Player.InitializeSmtc(
+            _view.Information.Identifier.Cover.SourceUri.ToString(),
+            Title,
+            UpName
+        );
     }
 
     [RelayCommand]
@@ -198,6 +222,5 @@ public sealed partial class LivePlayerPageViewModel : PlayerPageViewModelBase
         await Player?.CloseAsync();
     }
 
-    partial void OnPlayerWidthChanged(double value)
-        => CalcPlayerHeight();
+    partial void OnPlayerWidthChanged(double value) => CalcPlayerHeight();
 }

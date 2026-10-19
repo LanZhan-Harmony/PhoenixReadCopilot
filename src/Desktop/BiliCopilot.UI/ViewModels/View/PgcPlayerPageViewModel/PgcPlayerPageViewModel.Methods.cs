@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Components;
@@ -18,10 +16,14 @@ public sealed partial class PgcPlayerPageViewModel
     private void InitializeView(PgcPlayerView view)
     {
         _view = view;
-        _type = view.Information.GetExtensionIfNotNull<EntertainmentType>(SeasonExtensionDataId.PgcType);
+        _type = view.Information.GetExtensionIfNotNull<EntertainmentType>(
+            SeasonExtensionDataId.PgcType
+        );
         Cover = view.Information.Identifier.Cover.SourceUri;
         SeasonTitle = view.Information.Identifier.Title;
-        Description = view.Information.GetExtensionIfNotNull<string>(SeasonExtensionDataId.Description);
+        Description = view.Information.GetExtensionIfNotNull<string>(
+            SeasonExtensionDataId.Description
+        );
         Alias = view.Information.GetExtensionIfNotNull<string>(SeasonExtensionDataId.Alias);
         if (string.IsNullOrEmpty(Alias))
         {
@@ -46,12 +48,18 @@ public sealed partial class PgcPlayerPageViewModel
         Downloader.Clear();
         Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
 
-        var preferFormatSetting = SettingsToolkit.ReadLocalSetting(SettingNames.PreferQuality, PreferQualityType.Auto);
+        var preferFormatSetting = SettingsToolkit.ReadLocalSetting(
+            SettingNames.PreferQuality,
+            PreferQualityType.Auto
+        );
         var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
         PlayerFormatItemViewModel? selectedFormat = default;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
-            var lastSelectedFormat = SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedPgcQuality, 0);
+            var lastSelectedFormat = SettingsToolkit.ReadLocalSetting(
+                SettingNames.LastSelectedPgcQuality,
+                0
+            );
             selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
         }
         else if (preferFormatSetting == PreferQualityType.UHD)
@@ -60,7 +68,9 @@ public sealed partial class PgcPlayerPageViewModel
         }
         else if (preferFormatSetting == PreferQualityType.HD)
         {
-            selectedFormat = availableFormats.Find(p => p.Data.Quality == 116 || p.Data.Quality == 80);
+            selectedFormat = availableFormats.Find(p =>
+                p.Data.Quality == 116 || p.Data.Quality == 80
+            );
         }
 
         if (selectedFormat is null)
@@ -75,7 +85,8 @@ public sealed partial class PgcPlayerPageViewModel
             GetSeasonUrl(),
             info.Formats.AsReadOnly(),
             _view.Episodes?.Count > 1 ? _view.Episodes.AsReadOnly() : default,
-            episodeIndex);
+            episodeIndex
+        );
 
         ChangeFormatCommand.Execute(selectedFormat);
     }
@@ -94,12 +105,23 @@ public sealed partial class PgcPlayerPageViewModel
 
         if (_view.Episodes?.Count > 1)
         {
-            sections.Add(new PgcPlayerEpisodeSectionDetailViewModel(_view.Episodes, _episode.Identifier.Id, ChangeEpisode));
+            sections.Add(
+                new PgcPlayerEpisodeSectionDetailViewModel(
+                    _view.Episodes,
+                    _episode.Identifier.Id,
+                    ChangeEpisode
+                )
+            );
         }
 
         if (_view.Seasons?.Count > 1)
         {
-            sections.Add(new PgcPlayerSeasonSectionDetailViewModel(_view.Seasons, _view.Information.Identifier.Id));
+            sections.Add(
+                new PgcPlayerSeasonSectionDetailViewModel(
+                    _view.Seasons,
+                    _view.Information.Identifier.Id
+                )
+            );
         }
 
         sections.Add(_comments);
@@ -151,10 +173,15 @@ public sealed partial class PgcPlayerPageViewModel
         if (playEpisode == null)
         {
             var historyEpisodeId = _view.Progress?.Cid;
-            var autoLoadHistory = SettingsToolkit.ReadLocalSetting(SettingNames.AutoLoadHistory, true);
+            var autoLoadHistory = SettingsToolkit.ReadLocalSetting(
+                SettingNames.AutoLoadHistory,
+                true
+            );
             if (!string.IsNullOrEmpty(historyEpisodeId) && autoLoadHistory)
             {
-                playEpisode = _view.Episodes.FirstOrDefault(p => p.Identifier.Id == historyEpisodeId);
+                playEpisode = _view.Episodes.FirstOrDefault(p =>
+                    p.Identifier.Id == historyEpisodeId
+                );
             }
         }
 
@@ -168,7 +195,10 @@ public sealed partial class PgcPlayerPageViewModel
             return default;
         }
 
-        if (Sections.OfType<PgcPlayerEpisodeSectionDetailViewModel>().FirstOrDefault() is PgcPlayerEpisodeSectionDetailViewModel episodeSection)
+        if (
+            Sections.OfType<PgcPlayerEpisodeSectionDetailViewModel>().FirstOrDefault()
+            is PgcPlayerEpisodeSectionDetailViewModel episodeSection
+        )
         {
             var index = episodeSection.Episodes.Select(p => p.Data).ToList().IndexOf(_episode);
             if (index < episodeSection.Episodes.Count - 1)
@@ -186,11 +216,17 @@ public sealed partial class PgcPlayerPageViewModel
         HasNextEpisode = next is not null;
         if (next is EpisodeInformation part)
         {
-            NextEpisodeTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.PlayNextEpisodeTipTemplate), part.Identifier.Title);
+            NextEpisodeTip = string.Format(
+                ResourceToolkit.GetLocalizedString(StringNames.PlayNextEpisodeTipTemplate),
+                part.Identifier.Title
+            );
         }
         else if (next is VideoInformation video)
         {
-            NextEpisodeTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate), video.Identifier.Title);
+            NextEpisodeTip = string.Format(
+                ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate),
+                video.Identifier.Title
+            );
         }
     }
 
@@ -218,7 +254,9 @@ public sealed partial class PgcPlayerPageViewModel
             return;
         }
 
-        var ratio = _episode.GetExtensionIfNotNull<MediaAspectRatio>(EpisodeExtensionDataId.AspectRatio);
+        var ratio = _episode.GetExtensionIfNotNull<MediaAspectRatio>(
+            EpisodeExtensionDataId.AspectRatio
+        );
         if (ratio.Width == 0)
         {
             ratio = new MediaAspectRatio(16, 9);

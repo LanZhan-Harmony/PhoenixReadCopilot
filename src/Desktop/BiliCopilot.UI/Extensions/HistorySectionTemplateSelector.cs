@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
 
@@ -22,7 +20,7 @@ internal sealed partial class HistorySectionTemplateSelector : DataTemplateSelec
                 ViewHistoryTabType.Video => VideoTemplate,
                 ViewHistoryTabType.Live => LiveTemplate,
                 ViewHistoryTabType.Article => ArticleTemplate,
-                _ => throw new ArgumentOutOfRangeException(nameof(vm.Type), vm.Type, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(vm.Type), vm.Type, null),
             };
         }
 

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -18,14 +16,11 @@ public sealed partial class StartupPageViewModel
 
     private CancellationTokenSource? _cancellationTokenSource;
 
-    [ObservableProperty]
-    private string _version;
+    [ObservableProperty] private string _version;
 
-    [ObservableProperty]
-    private string _errorTip;
+    [ObservableProperty] private string _errorTip;
 
-    [ObservableProperty]
-    private bool _isQRCodeLoading;
+    [ObservableProperty] private bool _isQRCodeLoading;
 
     /// <summary>
     /// 二维码图片控件.

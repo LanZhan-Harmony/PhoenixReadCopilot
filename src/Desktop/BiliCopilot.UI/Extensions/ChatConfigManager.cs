@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics.CodeAnalysis;
 using Connectors.DeepSeek.Models;
 using Richasy.AgentKernel;
 using Richasy.AgentKernel.Connectors.Ali.Models;
@@ -23,7 +22,6 @@ using Richasy.AgentKernel.Connectors.XAI.Models;
 using Richasy.AgentKernel.Connectors.ZhiPu.Models;
 using Richasy.AgentKernel.Models;
 using Richasy.WinUIKernel.Share.Toolkits;
-using System.Diagnostics.CodeAnalysis;
 
 namespace BiliCopilot.UI.Extensions;
 
@@ -38,23 +36,32 @@ public sealed class ChatConfigManager : ChatConfigManagerBase
         return config switch
         {
             OpenAIChatConfig openAIConfig => openAIConfig.ToAIServiceConfig(),
-            AzureOpenAIChatConfig azureOaiConfig => azureOaiConfig.ToAIServiceConfig<AzureOpenAIServiceConfig>(),
-            AzureAIChatConfig azureConfig => azureConfig.ToAIServiceConfig<AzureOpenAIServiceConfig>(),
+            AzureOpenAIChatConfig azureOaiConfig =>
+                azureOaiConfig.ToAIServiceConfig<AzureOpenAIServiceConfig>(),
+            AzureAIChatConfig azureConfig =>
+                azureConfig.ToAIServiceConfig<AzureOpenAIServiceConfig>(),
             XAIChatConfig xaiConfig => xaiConfig.ToAIServiceConfig<XAIServiceConfig>(),
             ZhiPuChatConfig zhiPuConfig => zhiPuConfig.ToAIServiceConfig<ZhiPuServiceConfig>(),
             LingYiChatConfig lingYiConfig => lingYiConfig.ToAIServiceConfig<LingYiServiceConfig>(),
-            AnthropicChatConfig anthropicConfig => anthropicConfig.ToAIServiceConfig<AnthropicServiceConfig>(),
-            MoonshotChatConfig moonshotConfig => moonshotConfig.ToAIServiceConfig<MoonshotServiceConfig>(),
+            AnthropicChatConfig anthropicConfig =>
+                anthropicConfig.ToAIServiceConfig<AnthropicServiceConfig>(),
+            MoonshotChatConfig moonshotConfig =>
+                moonshotConfig.ToAIServiceConfig<MoonshotServiceConfig>(),
             GeminiChatConfig geminiConfig => geminiConfig.ToAIServiceConfig<GeminiServiceConfig>(),
-            DeepSeekChatConfig deepSeekConfig => deepSeekConfig.ToAIServiceConfig<DeepSeekServiceConfig>(),
+            DeepSeekChatConfig deepSeekConfig =>
+                deepSeekConfig.ToAIServiceConfig<DeepSeekServiceConfig>(),
             QwenChatConfig qwenConfig => qwenConfig.ToAIServiceConfig<QwenServiceConfig>(),
             ErnieChatConfig ernieConfig => ernieConfig.ToAIServiceConfig(),
-            HunyuanChatConfig hunyuanConfig => hunyuanConfig.ToAIServiceConfig<HunyuanChatServiceConfig>(),
+            HunyuanChatConfig hunyuanConfig =>
+                hunyuanConfig.ToAIServiceConfig<HunyuanChatServiceConfig>(),
             SparkChatConfig sparkConfig => sparkConfig.ToAIServiceConfig<SparkChatServiceConfig>(),
             DoubaoChatConfig douBaoConfig => douBaoConfig.ToAIServiceConfig<DoubaoServiceConfig>(),
-            SiliconFlowChatConfig siliconFlowConfig => siliconFlowConfig.ToAIServiceConfig<SiliconFlowServiceConfig>(),
-            OpenRouterChatConfig openRouterConfig => openRouterConfig.ToAIServiceConfig<OpenRouterServiceConfig>(),
-            TogetherAIChatConfig togetherAIConfig => togetherAIConfig.ToAIServiceConfig<TogetherAIServiceConfig>(),
+            SiliconFlowChatConfig siliconFlowConfig =>
+                siliconFlowConfig.ToAIServiceConfig<SiliconFlowServiceConfig>(),
+            OpenRouterChatConfig openRouterConfig =>
+                openRouterConfig.ToAIServiceConfig<OpenRouterServiceConfig>(),
+            TogetherAIChatConfig togetherAIConfig =>
+                togetherAIConfig.ToAIServiceConfig<TogetherAIServiceConfig>(),
             GroqChatConfig groqConfig => groqConfig.ToAIServiceConfig<GroqServiceConfig>(),
             MistralChatConfig mistralConfig => mistralConfig.ToAIServiceConfig(),
             OllamaChatConfig ollamaConfig => ollamaConfig.ToAIServiceConfig(),
@@ -65,19 +72,33 @@ public sealed class ChatConfigManager : ChatConfigManagerBase
     /// <inheritdoc/>
     protected override async Task<ChatClientConfiguration> OnInitializeAsync()
     {
-        var config = await this.Get<IFileToolkit>().ReadLocalDataAsync($"{nameof(ChatClientConfiguration)}.json", GlobalSerializeContext.Default.ChatClientConfiguration);
+        var config = await this.Get<IFileToolkit>()
+            .ReadLocalDataAsync(
+                $"{nameof(ChatClientConfiguration)}.json",
+                GlobalSerializeContext.Default.ChatClientConfiguration
+            );
         if (config is null)
         {
             config = new ChatClientConfiguration();
-            await this.Get<IFileToolkit>().WriteLocalDataAsync($"{nameof(ChatClientConfiguration)}.json", config!, GlobalSerializeContext.Default.ChatClientConfiguration);
+            await this.Get<IFileToolkit>()
+                .WriteLocalDataAsync(
+                    $"{nameof(ChatClientConfiguration)}.json",
+                    config!,
+                    GlobalSerializeContext.Default.ChatClientConfiguration
+                );
         }
 
         return config;
     }
 
     /// <inheritdoc/>
-    protected override Task OnSaveAsync(ChatClientConfiguration configuration)
-        => this.Get<IFileToolkit>().WriteLocalDataAsync($"{nameof(ChatClientConfiguration)}.json", configuration, GlobalSerializeContext.Default.ChatClientConfiguration);
+    protected override Task OnSaveAsync(ChatClientConfiguration configuration) =>
+        this.Get<IFileToolkit>()
+            .WriteLocalDataAsync(
+                $"{nameof(ChatClientConfiguration)}.json",
+                configuration,
+                GlobalSerializeContext.Default.ChatClientConfiguration
+            );
 }
 
 internal static partial class ConfigExtensions
@@ -90,27 +111,39 @@ internal static partial class ConfigExtensions
             : new OpenAIServiceConfig(config.Key, string.Empty, endpoint, config.OrganizationId);
     }
 
-    public static AIServiceConfig? ToAIServiceConfig<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TAIServiceConfig>(this ChatEndpointConfigBase? config)
+    public static AIServiceConfig? ToAIServiceConfig<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        TAIServiceConfig
+    >(this ChatEndpointConfigBase? config)
         where TAIServiceConfig : AIServiceConfig
     {
         return config is null || string.IsNullOrWhiteSpace(config.Key)
             ? default
-            : Activator.CreateInstance(typeof(TAIServiceConfig), config.Key, string.Empty, string.IsNullOrEmpty(config.Endpoint) ? default : new Uri(config.Endpoint)) as TAIServiceConfig;
+            : Activator.CreateInstance(
+                typeof(TAIServiceConfig),
+                config.Key,
+                string.Empty,
+                string.IsNullOrEmpty(config.Endpoint) ? default : new Uri(config.Endpoint)
+            ) as TAIServiceConfig;
     }
 
-    public static AIServiceConfig? ToAIServiceConfig<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TAIServiceConfig>(this ChatClientConfigBase? config)
+    public static AIServiceConfig? ToAIServiceConfig<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        TAIServiceConfig
+    >(this ChatClientConfigBase? config)
         where TAIServiceConfig : AIServiceConfig
     {
         return config is null || string.IsNullOrWhiteSpace(config.Key)
             ? default
-            : Activator.CreateInstance(typeof(TAIServiceConfig), config.Key, string.Empty) as TAIServiceConfig;
+            : Activator.CreateInstance(typeof(TAIServiceConfig), config.Key, string.Empty)
+                as TAIServiceConfig;
     }
 
     public static AIServiceConfig? ToAIServiceConfig(this OllamaChatConfig? config)
     {
         return config is null || string.IsNullOrWhiteSpace(config.Endpoint)
-             ? default
-             : new OllamaServiceConfig(string.Empty, new Uri(config.Endpoint));
+            ? default
+            : new OllamaServiceConfig(string.Empty, new Uri(config.Endpoint));
     }
 
     public static AIServiceConfig? ToAIServiceConfig(this ErnieChatConfig? config)
@@ -124,6 +157,10 @@ internal static partial class ConfigExtensions
     {
         return config is null || string.IsNullOrWhiteSpace(config.Key)
             ? default
-            : new MistralServiceConfig(config.UseCodestral ? config.CodestralKey! : config.Key!, string.Empty, config.UseCodestral);
+            : new MistralServiceConfig(
+                config.UseCodestral ? config.CodestralKey! : config.Key!,
+                string.Empty,
+                config.UseCodestral
+            );
     }
 }

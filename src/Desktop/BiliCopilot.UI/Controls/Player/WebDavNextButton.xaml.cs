@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,6 +17,4 @@ public sealed partial class WebDavNextButton : WebDavNextButtonBase
 /// <summary>
 /// WebDAV 下一个按钮基类.
 /// </summary>
-public abstract class WebDavNextButtonBase : LayoutUserControlBase<WebDavPlayerPageViewModel>
-{
-}
+public abstract class WebDavNextButtonBase : LayoutUserControlBase<WebDavPlayerPageViewModel> { }

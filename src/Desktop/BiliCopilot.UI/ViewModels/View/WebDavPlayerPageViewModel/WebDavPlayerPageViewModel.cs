@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
@@ -17,8 +15,7 @@ public sealed partial class WebDavPlayerPageViewModel : PlayerPageViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="WebDavPlayerPageViewModel"/> class.
     /// </summary>
-    public WebDavPlayerPageViewModel(
-        ILogger<WebDavPlayerPageViewModel> logger)
+    public WebDavPlayerPageViewModel(ILogger<WebDavPlayerPageViewModel> logger)
     {
         _logger = logger;
         Player.IsWebDav = true;
@@ -29,16 +26,14 @@ public sealed partial class WebDavPlayerPageViewModel : PlayerPageViewModelBase
     /// <summary>
     /// 注入播放列表.
     /// </summary>
-    public void InjectPlaylist(IList<WebDavResource> items)
-        => Playlist = items.Select(p => new Items.WebDavStorageItemViewModel(p)).ToList();
+    public void InjectPlaylist(IList<WebDavResource> items) =>
+        Playlist = items.Select(p => new Items.WebDavStorageItemViewModel(p)).ToList();
 
     /// <inheritdoc/>
-    protected override string GetPageKey()
-        => nameof(WebDavPlayerPage);
+    protected override string GetPageKey() => nameof(WebDavPlayerPage);
 
     /// <inheritdoc/>
-    protected override double GetDefaultNavColumnWidth()
-        => 360d;
+    protected override double GetDefaultNavColumnWidth() => 360d;
 
     [RelayCommand]
     private async Task InitializeAsync(WebDavResource video)
@@ -75,8 +70,18 @@ public sealed partial class WebDavPlayerPageViewModel : PlayerPageViewModelBase
         var config = this.Get<WebDavPageViewModel>().GetCurrentConfig();
         var url = GetVideoUrl();
         Player.InjectWebDavConfig(config);
-        await Player.SetPlayDataAsync(url, default, true, _initialProgress, Current.Data.ContentType);
-        Player.InitializeSmtc(default, Current.Data.DisplayName, Uri.UnescapeDataString(Current.Data.Uri));
+        await Player.SetPlayDataAsync(
+            url,
+            default,
+            true,
+            _initialProgress,
+            Current.Data.ContentType
+        );
+        Player.InitializeSmtc(
+            default,
+            Current.Data.DisplayName,
+            Uri.UnescapeDataString(Current.Data.Uri)
+        );
         _initialProgress = 0;
     }
 
@@ -86,7 +91,10 @@ public sealed partial class WebDavPlayerPageViewModel : PlayerPageViewModelBase
         HasNextVideo = next is not null;
         if (HasNextVideo)
         {
-            NextVideoTip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate), next.Data.DisplayName);
+            NextVideoTip = string.Format(
+                ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate),
+                next.Data.DisplayName
+            );
         }
     }
 

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -12,14 +10,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 追番分区详情视图模型.
 /// </summary>
-public sealed partial class PgcFavoriteSectionDetailViewModel : ViewModelBase, IFavoriteSectionDetailViewModel
+public sealed partial class PgcFavoriteSectionDetailViewModel
+    : ViewModelBase,
+        IFavoriteSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcFavoriteSectionDetailViewModel"/> class.
     /// </summary>
-    public PgcFavoriteSectionDetailViewModel(
-        PgcFavoriteType type,
-        IFavoriteService service)
+    public PgcFavoriteSectionDetailViewModel(PgcFavoriteType type, IFavoriteService service)
     {
         _service = service;
         _logger = this.Get<ILogger<PgcFavoriteSectionDetailViewModel>>();
@@ -89,14 +87,28 @@ public sealed partial class PgcFavoriteSectionDetailViewModel : ViewModelBase, I
         try
         {
             IsLoading = true;
-            var (seasons, totalCount, nextPage) = await _service.GetPgcFavoritesAsync(Type, CurrentStatus, pn);
-            var isPreventLoadMore = seasons is null || nextPage == 0 || (seasons.Count + Items.Count >= totalCount && totalCount > 0);
+            var (seasons, totalCount, nextPage) = await _service.GetPgcFavoritesAsync(
+                Type,
+                CurrentStatus,
+                pn
+            );
+            var isPreventLoadMore =
+                seasons is null
+                || nextPage == 0
+                || (seasons.Count + Items.Count >= totalCount && totalCount > 0);
             _offsetCache[CurrentStatus] = (nextPage ?? 0, isPreventLoadMore);
             if (seasons is not null)
             {
                 foreach (var item in seasons)
                 {
-                    Items.Add(new SeasonItemViewModel(item, Models.Constants.SeasonCardStyle.Favorite, CurrentStatus, RemoveSeason));
+                    Items.Add(
+                        new SeasonItemViewModel(
+                            item,
+                            Models.Constants.SeasonCardStyle.Favorite,
+                            CurrentStatus,
+                            RemoveSeason
+                        )
+                    );
                 }
             }
 

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Items;
@@ -18,9 +16,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchBoxViewModel"/> class.
     /// </summary>
-    public SearchBoxViewModel(
-        ISearchService searchService,
-        ILogger<SearchBoxViewModel> logger)
+    public SearchBoxViewModel(ISearchService searchService, ILogger<SearchBoxViewModel> logger)
     {
         _searchService = searchService;
         _logger = logger;
@@ -44,7 +40,10 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         {
             if (string.IsNullOrEmpty(_extraRegionId))
             {
-                var isRecommendEnabled = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.ShowSearchRecommend, true);
+                var isRecommendEnabled = SettingsToolkit.ReadLocalSetting(
+                    Models.Constants.SettingNames.ShowSearchRecommend,
+                    true
+                );
                 if (!isRecommendEnabled)
                 {
                     _recommendItems.Clear();
@@ -66,13 +65,27 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 Suggestion.Clear();
                 foreach (var item in _recommendItems)
                 {
-                    Suggestion.Add(new(new Richasy.BiliKernel.Models.Search.SearchSuggestItem(item.Text, item.Keyword)));
+                    Suggestion.Add(
+                        new(
+                            new Richasy.BiliKernel.Models.Search.SearchSuggestItem(
+                                item.Text,
+                                item.Keyword
+                            )
+                        )
+                    );
                 }
             }
             else
             {
                 Suggestion.Clear();
-                Suggestion.Add(new("global", ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.WholePartitions)));
+                Suggestion.Add(
+                    new(
+                        "global",
+                        ResourceToolkit.GetLocalizedString(
+                            Models.Constants.StringNames.WholePartitions
+                        )
+                    )
+                );
                 Suggestion.Add(new(_extraRegionId, _extraRegionName));
             }
         }
@@ -84,7 +97,10 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 {
                     Suggestion.Clear();
                     _cancellationTokenSource = new CancellationTokenSource();
-                    var suggests = await _searchService.GetSearchSuggestsAsync(Keyword, _cancellationTokenSource.Token);
+                    var suggests = await _searchService.GetSearchSuggestsAsync(
+                        Keyword,
+                        _cancellationTokenSource.Token
+                    );
                     if (suggests is not null)
                     {
                         foreach (var item in suggests)

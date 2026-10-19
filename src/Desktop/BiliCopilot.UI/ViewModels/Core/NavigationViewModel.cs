@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages;
@@ -11,7 +10,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Navigation;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -23,26 +21,20 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     private Frame? _navFrame;
     private Frame? _overFrame;
 
-    [ObservableProperty]
-    private bool _isOverlayOpen;
+    [ObservableProperty] private bool _isOverlayOpen;
 
     /// <summary>
     /// 导航条目列表.
     /// </summary>
-    [ObservableProperty]
-    private List<AppNavigationItemViewModel> _menuItems;
+    [ObservableProperty] private List<AppNavigationItemViewModel> _menuItems;
 
-    [ObservableProperty]
-    private bool _isTopNavBarShown;
+    [ObservableProperty] private bool _isTopNavBarShown;
 
-    [ObservableProperty]
-    private bool _isFavoritesPage;
+    [ObservableProperty] private bool _isFavoritesPage;
 
-    [ObservableProperty]
-    private bool _isHistoryPage;
+    [ObservableProperty] private bool _isHistoryPage;
 
-    [ObservableProperty]
-    private bool _isViewLaterPage;
+    [ObservableProperty] private bool _isViewLaterPage;
 
     /// <summary>
     /// 底部条目列表.
@@ -58,7 +50,10 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         ActiveMainWindow();
-        var lastSelectedPage = SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedFeaturePage, string.Empty);
+        var lastSelectedPage = SettingsToolkit.ReadLocalSetting(
+            SettingNames.LastSelectedFeaturePage,
+            string.Empty
+        );
         if (IsOverlayOpen)
         {
             IsOverlayOpen = false;
@@ -72,13 +67,21 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             }
         }
 
-        if (lastSelectedPage == pageType.FullName && _navFrame.Content is not null && _navFrame.Content.GetType().FullName == lastSelectedPage)
+        if (
+            lastSelectedPage == pageType.FullName
+            && _navFrame.Content is not null
+            && _navFrame.Content.GetType().FullName == lastSelectedPage
+        )
         {
             return;
         }
 
         SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedFeaturePage, pageType.FullName);
-        _navFrame.Navigate(pageType, parameter, new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+        _navFrame.Navigate(
+            pageType,
+            parameter,
+            new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
+        );
     }
 
     /// <inheritdoc/>
@@ -101,7 +104,10 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             IsOverlayOpen = true;
             return;
         }
-        else if (pageType == typeof(LivePlayerPage) && _overFrame.Content is LivePlayerPage livePage)
+        else if (
+            pageType == typeof(LivePlayerPage)
+            && _overFrame.Content is LivePlayerPage livePage
+        )
         {
             livePage.ViewModel.InitializePageCommand.Execute(parameter);
             IsOverlayOpen = true;
@@ -113,14 +119,21 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             IsOverlayOpen = true;
             return;
         }
-        else if (pageType == typeof(WebDavPlayerPage) && _overFrame.Content is WebDavPlayerPage webDavPage)
+        else if (
+            pageType == typeof(WebDavPlayerPage)
+            && _overFrame.Content is WebDavPlayerPage webDavPage
+        )
         {
             webDavPage.ViewModel.InitializeCommand.Execute(parameter);
             IsOverlayOpen = true;
             return;
         }
 
-        _overFrame.Navigate(pageType, parameter, new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+        _overFrame.Navigate(
+            pageType,
+            parameter,
+            new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
+        );
         IsOverlayOpen = true;
         CheckSubPageStatus();
     }
@@ -225,7 +238,10 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         var exist = FooterItems.Any(p => p.PageKey == typeof(WebDavPage).FullName);
         if (isWebDavEnabled && !exist)
         {
-            FooterItems.Insert(0, GetItem<WebDavPage>(StringNames.WebDav, FluentIcons.Common.Symbol.CloudDatabase));
+            FooterItems.Insert(
+                0,
+                GetItem<WebDavPage>(StringNames.WebDav, FluentIcons.Common.Symbol.CloudDatabase)
+            );
         }
         else if (!isWebDavEnabled && exist)
         {
@@ -235,7 +251,10 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     private IReadOnlyList<AppNavigationItemViewModel> GetMenuItems()
     {
-        var lastSelectedPage = SettingsToolkit.ReadLocalSetting(SettingNames.LastSelectedFeaturePage, typeof(PopularPage).FullName);
+        var lastSelectedPage = SettingsToolkit.ReadLocalSetting(
+            SettingNames.LastSelectedFeaturePage,
+            typeof(PopularPage).FullName
+        );
         var list = new List<AppNavigationItemViewModel>
         {
             GetItem<PopularPage>(StringNames.PopularSlim, FluentIcons.Common.Symbol.Rocket),
@@ -244,7 +263,10 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             GetItem<LivePartitionPage>(StringNames.Live, FluentIcons.Common.Symbol.VideoChat),
             GetItem<AnimePage>(StringNames.Anime, FluentIcons.Common.Symbol.Dust),
             GetItem<CinemaPage>(StringNames.Cinema, FluentIcons.Common.Symbol.FilmstripPlay),
-            GetItem<ArticlePartitionPage>(StringNames.Article, FluentIcons.Common.Symbol.DocumentBulletList),
+            GetItem<ArticlePartitionPage>(
+                StringNames.Article,
+                FluentIcons.Common.Symbol.DocumentBulletList
+            ),
         };
 
         foreach (var item in list)
@@ -272,32 +294,53 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         var isWebDavEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsWebDavEnabled, false);
         if (isWebDavEnabled)
         {
-            list.Insert(0, GetItem<WebDavPage>(StringNames.WebDav, FluentIcons.Common.Symbol.CloudDatabase));
+            list.Insert(
+                0,
+                GetItem<WebDavPage>(StringNames.WebDav, FluentIcons.Common.Symbol.CloudDatabase)
+            );
         }
 
         return list;
     }
 
-    private AppNavigationItemViewModel GetItem<TPage>(StringNames title, FluentIcons.Common.Symbol symbol, bool isSelected = false)
+    private AppNavigationItemViewModel GetItem<TPage>(
+        StringNames title,
+        FluentIcons.Common.Symbol symbol,
+        bool isSelected = false
+    )
         where TPage : Page
     {
-        var isVisible = this.Get<ISettingsToolkit>().ReadLocalSetting($"Is{typeof(TPage).Name}Visible", true);
-        return new AppNavigationItemViewModel(this, typeof(TPage), ResourceToolkit.GetLocalizedString(title), symbol, isSelected, isVisible: isVisible);
+        var isVisible = this.Get<ISettingsToolkit>()
+            .ReadLocalSetting($"Is{typeof(TPage).Name}Visible", true);
+        return new AppNavigationItemViewModel(
+            this,
+            typeof(TPage),
+            ResourceToolkit.GetLocalizedString(title),
+            symbol,
+            isSelected,
+            isVisible: isVisible
+        );
     }
 
-    private void ActiveMainWindow()
-        => this.Get<AppViewModel>().Windows.Find(p => p is MainWindow)?.Activate();
+    private void ActiveMainWindow() =>
+        this.Get<AppViewModel>().Windows.Find(p => p is MainWindow)?.Activate();
 
     private void OnOverlayNavigated(object sender, NavigationEventArgs e)
     {
         var searchBox = this.Get<SearchBoxViewModel>();
         if (e.SourcePageType == typeof(UserSpacePage))
         {
-            searchBox.SetExtraRegion("space", ResourceToolkit.GetLocalizedString(StringNames.UserSpace));
+            searchBox.SetExtraRegion(
+                "space",
+                ResourceToolkit.GetLocalizedString(StringNames.UserSpace)
+            );
         }
         else if (e.SourcePageType == typeof(HistoryPage))
         {
-            searchBox.SetExtraRegion("history", ResourceToolkit.GetLocalizedString(StringNames.ViewHistory));
+            searchBox.SetExtraRegion(
+                "history",
+                ResourceToolkit.GetLocalizedString(StringNames.ViewHistory)
+            );
         }
         else
         {

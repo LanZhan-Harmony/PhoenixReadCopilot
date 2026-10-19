@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Controls.Message;
@@ -35,7 +33,10 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(ChatMessageSectionDetailViewModel? oldValue, ChatMessageSectionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        ChatMessageSectionDetailViewModel? oldValue,
+        ChatMessageSectionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -52,9 +53,16 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
 
     private void OnRequestScrollToBottom(object? sender, EventArgs e)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            MessageView.ScrollTo(0, MessageView.ExtentHeight + MessageView.ViewportHeight + 100, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
-        });
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
+            {
+                MessageView.ScrollTo(
+                    0,
+                    MessageView.ExtentHeight + MessageView.ViewportHeight + 100,
+                    new ScrollingScrollOptions(ScrollingAnimationMode.Disabled)
+                );
+            }
+        );
     }
 }

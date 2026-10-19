@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Pgc;
@@ -31,8 +29,7 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
         ViewModel.TimelineInitialized -= OnTimelineInitialized;
     }
 
-    private void OnTimelineInitialized(object? sender, EventArgs e)
-        => CheckTimelineSelection();
+    private void OnTimelineInitialized(object? sender, EventArgs e) => CheckTimelineSelection();
 
     private void CheckTimelineSelection()
     {
@@ -45,7 +42,10 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
         TimelineView.Select(index);
     }
 
-    private void OnTimelineSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
+    private void OnTimelineSelectionChanged(
+        ItemsView sender,
+        ItemsViewSelectionChangedEventArgs args
+    )
     {
         if (sender.SelectedItem is not TimelineItemViewModel vm)
         {

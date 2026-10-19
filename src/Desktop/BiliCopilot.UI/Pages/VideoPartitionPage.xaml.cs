@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -16,8 +14,7 @@ public sealed partial class VideoPartitionPage : VideoPartitionPageBase
     public VideoPartitionPage() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded()
-        => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(default);
 }
 
 /// <summary>

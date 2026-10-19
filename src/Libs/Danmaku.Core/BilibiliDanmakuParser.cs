@@ -1,9 +1,7 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using Richasy.BiliKernel.Models.Danmaku;
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
+using Richasy.BiliKernel.Models.Danmaku;
 using Windows.UI;
 
 namespace Danmaku.Core;
@@ -17,7 +15,10 @@ public static class BilibiliDanmakuParser
     /// 从 protobuf 弹幕列表中获取弹幕.
     /// </summary>
     /// <returns>弹幕条目列表.</returns>
-    public static List<DanmakuItem> GetDanmakuList(IEnumerable<DanmakuInformation> danmakuElems, bool mergeDuplicate)
+    public static List<DanmakuItem> GetDanmakuList(
+        IEnumerable<DanmakuInformation> danmakuElems,
+        bool mergeDuplicate
+    )
     {
         var list = new List<DanmakuItem>();
         var duplicatedDanmakuDict = new Dictionary<string, List<DuplicatedDanmakuItem>>();
@@ -28,13 +29,34 @@ public static class BilibiliDanmakuParser
             if (mergeDuplicate)
             {
                 mode = (DanmakuMode)danmakuElem.Mode;
-                if ((mode == DanmakuMode.Rolling || mode == DanmakuMode.Top || mode == DanmakuMode.Bottom) && danmakuElem.StartPosition >= 0)
+                if (
+                    (
+                        mode == DanmakuMode.Rolling
+                        || mode == DanmakuMode.Top
+                        || mode == DanmakuMode.Bottom
+                    )
+                    && danmakuElem.StartPosition >= 0
+                )
                 {
                     var startMs = (uint)(danmakuElem.StartPosition * 1000);
 
-                    if (!duplicatedDanmakuDict.TryGetValue(danmakuElem.Content, out var duplicatedDanmakuList))
+                    if (
+                        !duplicatedDanmakuDict.TryGetValue(
+                            danmakuElem.Content,
+                            out var duplicatedDanmakuList
+                        )
+                    )
                     {
-                        duplicatedDanmakuDict.Add(danmakuElem.Content, [new DuplicatedDanmakuItem() { StartMs = startMs, Count = 1 }]);
+                        duplicatedDanmakuDict.Add(
+                            danmakuElem.Content,
+                            [
+                                new DuplicatedDanmakuItem()
+                                {
+                                    StartMs = startMs,
+                                    Count = 1
+                                }
+                            ]
+                        );
                     }
                     else
                     {
@@ -55,7 +77,13 @@ public static class BilibiliDanmakuParser
                         }
                         else
                         {
-                            duplicatedDanmakuList.Add(new DuplicatedDanmakuItem() { StartMs = startMs, Count = 1 });
+                            duplicatedDanmakuList.Add(
+                                new DuplicatedDanmakuItem()
+                                {
+                                    StartMs = startMs,
+                                    Count = 1
+                                }
+                            );
                         }
                     }
                 }
@@ -76,13 +104,20 @@ public static class BilibiliDanmakuParser
         {
             foreach (var item in list)
             {
-                if (item.Mode == DanmakuMode.Rolling || item.Mode == DanmakuMode.Top || item.Mode == DanmakuMode.Bottom)
+                if (
+                    item.Mode == DanmakuMode.Rolling
+                    || item.Mode == DanmakuMode.Top
+                    || item.Mode == DanmakuMode.Bottom
+                )
                 {
                     if (duplicatedDanmakuDict.TryGetValue(item.Text, out var value))
                     {
                         foreach (var duplicatedDanmaku in value)
                         {
-                            if (duplicatedDanmaku.Count > 1 && item.StartMs == duplicatedDanmaku.StartMs)
+                            if (
+                                duplicatedDanmaku.Count > 1
+                                && item.StartMs == duplicatedDanmaku.StartMs
+                            )
                             {
                                 item.Text = $"{item.Text}\u00D7{duplicatedDanmaku.Count}";
                                 break;
@@ -138,16 +173,16 @@ public static class BilibiliDanmakuParser
                 case DanmakuMode.Bottom:
                 case DanmakuMode.Top:
                 case DanmakuMode.ReverseRolling:
-                    {
-                        fontSize -= fontSize % 2 == 1 ? 3 : 2;
-                        break;
-                    }
+                {
+                    fontSize -= fontSize % 2 == 1 ? 3 : 2;
+                    break;
+                }
 
                 case DanmakuMode.Advanced:
-                    {
-                        fontSize += 4; // Experimental adjustment
-                        break;
-                    }
+                {
+                    fontSize += 4; // Experimental adjustment
+                    break;
+                }
             }
 
             if (fontSize < 2)
@@ -183,20 +218,32 @@ public static class BilibiliDanmakuParser
                         return null;
                     }
 
-                    danmakuItem.Text = WebUtility.HtmlDecode(valueArray[4]).Replace("/n", "\n").Replace("\\n", "\n");
+                    danmakuItem.Text = WebUtility
+                        .HtmlDecode(valueArray[4])
+                        .Replace("/n", "\n")
+                        .Replace("\\n", "\n");
                     if (string.IsNullOrWhiteSpace(danmakuItem.Text))
                     {
                         return null;
                     }
 
-                    danmakuItem.StartX = string.IsNullOrWhiteSpace(valueArray[0]) ? 0f : float.Parse(valueArray[0]);
-                    danmakuItem.StartY = string.IsNullOrWhiteSpace(valueArray[1]) ? 0f : float.Parse(valueArray[1]);
+                    danmakuItem.StartX = string.IsNullOrWhiteSpace(valueArray[0])
+                        ? 0f
+                        : float.Parse(valueArray[0]);
+                    danmakuItem.StartY = string.IsNullOrWhiteSpace(valueArray[1])
+                        ? 0f
+                        : float.Parse(valueArray[1]);
                     danmakuItem.EndX = danmakuItem.StartX;
                     danmakuItem.EndY = danmakuItem.StartY;
 
                     var opacitySplit = valueArray[2].Split('-');
-                    danmakuItem.StartAlpha = (byte)(Math.Max(float.Parse(opacitySplit[0]), 0) * byte.MaxValue);
-                    danmakuItem.EndAlpha = opacitySplit.Length > 1 ? (byte)(Math.Max(float.Parse(opacitySplit[1]), 0) * byte.MaxValue) : danmakuItem.StartAlpha;
+                    danmakuItem.StartAlpha = (byte)(
+                        Math.Max(float.Parse(opacitySplit[0]), 0) * byte.MaxValue
+                    );
+                    danmakuItem.EndAlpha =
+                        opacitySplit.Length > 1
+                            ? (byte)(Math.Max(float.Parse(opacitySplit[1]), 0) * byte.MaxValue)
+                            : danmakuItem.StartAlpha;
 
                     danmakuItem.DurationMs = (ulong)(float.Parse(valueArray[3]) * 1000);
                     danmakuItem.TranslationDurationMs = danmakuItem.DurationMs;
@@ -206,8 +253,12 @@ public static class BilibiliDanmakuParser
 
                     if (valueArray.Length >= 7)
                     {
-                        danmakuItem.RotateZ = string.IsNullOrWhiteSpace(valueArray[5]) ? 0f : float.Parse(valueArray[5]);
-                        danmakuItem.RotateY = string.IsNullOrWhiteSpace(valueArray[6]) ? 0f : float.Parse(valueArray[6]);
+                        danmakuItem.RotateZ = string.IsNullOrWhiteSpace(valueArray[5])
+                            ? 0f
+                            : float.Parse(valueArray[5]);
+                        danmakuItem.RotateY = string.IsNullOrWhiteSpace(valueArray[6])
+                            ? 0f
+                            : float.Parse(valueArray[6]);
                     }
                     else
                     {
@@ -217,8 +268,12 @@ public static class BilibiliDanmakuParser
 
                     if (valueArray.Length >= 11)
                     {
-                        danmakuItem.EndX = string.IsNullOrWhiteSpace(valueArray[7]) ? 0f : float.Parse(valueArray[7]);
-                        danmakuItem.EndY = string.IsNullOrWhiteSpace(valueArray[8]) ? 0f : float.Parse(valueArray[8]);
+                        danmakuItem.EndX = string.IsNullOrWhiteSpace(valueArray[7])
+                            ? 0f
+                            : float.Parse(valueArray[7]);
+                        danmakuItem.EndY = string.IsNullOrWhiteSpace(valueArray[8])
+                            ? 0f
+                            : float.Parse(valueArray[8]);
                         if (!string.IsNullOrWhiteSpace(valueArray[9]))
                         {
                             danmakuItem.TranslationDurationMs = (ulong)float.Parse(valueArray[9]);
@@ -227,8 +282,10 @@ public static class BilibiliDanmakuParser
                         if (!string.IsNullOrWhiteSpace(valueArray[10]))
                         {
                             var translationDelayValue = valueArray[10];
-                            danmakuItem.TranslationDelayMs = translationDelayValue == "０"
-                                ? 0 : (ulong)float.Parse(translationDelayValue);
+                            danmakuItem.TranslationDelayMs =
+                                translationDelayValue == "０"
+                                    ? 0
+                                    : (ulong)float.Parse(translationDelayValue);
                         }
                     }
 
@@ -238,7 +295,9 @@ public static class BilibiliDanmakuParser
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed to parse advanced mode danmaku: {content} Exception: {ex.Message}");
+                    Debug.WriteLine(
+                        $"Failed to parse advanced mode danmaku: {content} Exception: {ex.Message}"
+                    );
                     return null;
                 }
             }
@@ -263,8 +322,7 @@ public static class BilibiliDanmakuParser
 
     private static class BilibiliDanmakuSorter
     {
-        public static void Sort(IList<DanmakuItem> list)
-            => Merge(list, 0, list.Count - 1);
+        public static void Sort(IList<DanmakuItem> list) => Merge(list, 0, list.Count - 1);
 
         private static void Merge(IList<DanmakuItem> list, int p, int r)
         {
@@ -280,8 +338,10 @@ public static class BilibiliDanmakuParser
         private static void MergeArray(IList<DanmakuItem> list, int p, int mid, int r)
         {
             var tmp = new DanmakuItem[r - p + 1];
-            int i = p, j = mid + 1;
-            int m = mid, n = r;
+            int i = p,
+                j = mid + 1;
+            int m = mid,
+                n = r;
             var k = 0;
 
             while (i <= m && j <= n)

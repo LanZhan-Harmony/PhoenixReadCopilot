@@ -45,7 +45,5 @@ internal class MyTaskListCheckBox : IAddChild
         TextElement = inlineUIContainer;
     }
 
-    public void AddChild(IAddChild child)
-    {
-    }
+    public void AddChild(IAddChild child) { }
 }

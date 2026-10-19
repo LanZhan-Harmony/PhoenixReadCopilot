@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -51,10 +49,16 @@ public sealed partial class WebDavConfigDialog : ContentDialog
         var password = PasswordBox.Password;
         var path = PathBox.Text;
 
-        if (string.IsNullOrEmpty(configName) || string.IsNullOrEmpty(host)
-            || (!string.IsNullOrEmpty(userName) && string.IsNullOrEmpty(password)))
+        if (
+            string.IsNullOrEmpty(configName)
+            || string.IsNullOrEmpty(host)
+            || (!string.IsNullOrEmpty(userName) && string.IsNullOrEmpty(password))
+        )
         {
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.InvalidConfig), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (ResourceToolkit.GetLocalizedString(StringNames.InvalidConfig), InfoType.Error)
+                );
             return;
         }
 
@@ -94,7 +98,11 @@ public sealed partial class WebDavConfigDialog : ContentDialog
         {
             PortBox.Value = 443;
         }
-        else if (!HostBox.Text.StartsWith("https") && HostBox.Text.StartsWith("http") && (PortBox.Value == 0 || PortBox.Value == 443))
+        else if (
+            !HostBox.Text.StartsWith("https")
+            && HostBox.Text.StartsWith("http")
+            && (PortBox.Value == 0 || PortBox.Value == 443)
+        )
         {
             PortBox.Value = 80;
         }

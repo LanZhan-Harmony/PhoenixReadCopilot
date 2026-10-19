@@ -1,17 +1,15 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
-#if !DEBUG
-using Microsoft.Extensions.Logging;
-#endif
 using Mpv.Core;
 using Mpv.Core.Args;
 using Mpv.Core.Enums.Client;
 using Richasy.BiliKernel.Bili.Authorization;
 using WinRT;
+#if !DEBUG
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace BiliCopilot.UI.ViewModels.Core;
 
@@ -33,7 +31,10 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
     /// 初始化播放器.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    public async Task InitializeAsync(MpvPlayerWindow playerWindow, MpvPlayerOverlayWindow overlayWindow)
+    public async Task InitializeAsync(
+        MpvPlayerWindow playerWindow,
+        MpvPlayerOverlayWindow overlayWindow
+    )
     {
         Player ??= new Mpv.Core.Player();
         if (!Player.Client.IsInitialized)
@@ -52,7 +53,10 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
 #else
             Player.Client.RequestLogMessage(MpvLogLevel.Error);
 #endif
-            var decodeType = SettingsToolkit.ReadLocalSetting(SettingNames.PreferDecode, PreferDecodeType.Auto);
+            var decodeType = SettingsToolkit.ReadLocalSetting(
+                SettingNames.PreferDecode,
+                PreferDecodeType.Auto
+            );
             string configFilePath = default;
             if (decodeType == PreferDecodeType.Custom)
             {
@@ -96,12 +100,10 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
     /// <summary>
     /// 设置XAML内容.
     /// </summary>
-    public void SetXamlContent(UIElement element)
-        => _overlayWindow.SetContent(element);
+    public void SetXamlContent(UIElement element) => _overlayWindow.SetContent(element);
 
     /// <inheritdoc/>
-    protected override void SetWebDavConfig(WebDavConfig config)
-        => LoadWebDavAuthorization();
+    protected override void SetWebDavConfig(WebDavConfig config) => LoadWebDavAuthorization();
 
     private void OnPositionChanged(object? sender, PlaybackPositionChangedEventArgs e)
     {
@@ -125,7 +127,9 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
     {
         if (e.NewState == Mpv.Core.Enums.Player.PlaybackState.Decoding)
         {
-            OnSetVolume(SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerVolume, 100));
+            OnSetVolume(
+                SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PlayerVolume, 100)
+            );
         }
 
         UpdateState((PlayerState)(int)e.NewState);
@@ -163,7 +167,8 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
             return;
         }
 
-        var auth = $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}";
+        var auth =
+            $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}";
         Player.Client.SetOption("http-header-fields", $"Authorization: {auth}");
     }
 
@@ -172,7 +177,10 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
         var decodeType = PreferDecodeType.Auto;
         try
         {
-            decodeType = SettingsToolkit.ReadLocalSetting(SettingNames.PreferDecode, PreferDecodeType.Auto);
+            decodeType = SettingsToolkit.ReadLocalSetting(
+                SettingNames.PreferDecode,
+                PreferDecodeType.Auto
+            );
         }
         catch (Exception)
         {

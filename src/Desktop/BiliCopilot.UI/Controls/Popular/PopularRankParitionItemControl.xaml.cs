@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,6 +17,5 @@ public sealed partial class PopularRankParitionItemControl : PopularRankParition
 /// <summary>
 /// 流行视频排行榜分区项控件基类.
 /// </summary>
-public abstract class PopularRankParitionItemControlBase : LayoutUserControlBase<PopularRankPartitionViewModel>
-{
-}
+public abstract class PopularRankParitionItemControlBase
+    : LayoutUserControlBase<PopularRankPartitionViewModel> { }

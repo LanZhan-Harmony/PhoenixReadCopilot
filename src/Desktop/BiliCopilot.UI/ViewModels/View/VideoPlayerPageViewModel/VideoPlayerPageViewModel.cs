@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Pages.Overlay;
@@ -32,7 +30,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         SubtitleViewModel subtitle,
         CommentMainViewModel comments,
         DownloadViewModel download,
-        AIViewModel ai)
+        AIViewModel ai
+    )
     {
         _service = service;
         _relationshipService = relationshipService;
@@ -55,16 +54,13 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     /// <summary>
     /// 注入播放列表.
     /// </summary>
-    public void InjectPlaylist(IList<VideoInformation> playlist)
-        => _playlist = playlist;
+    public void InjectPlaylist(IList<VideoInformation> playlist) => _playlist = playlist;
 
     /// <inheritdoc/>
-    protected override string GetPageKey()
-        => nameof(VideoPlayerPage);
+    protected override string GetPageKey() => nameof(VideoPlayerPage);
 
     /// <inheritdoc/>
-    protected override double GetDefaultNavColumnWidth()
-        => 360d;
+    protected override double GetDefaultNavColumnWidth() => 360d;
 
     [RelayCommand]
     private async Task InitializePageAsync(VideoSnapshot snapshot)
@@ -88,18 +84,29 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
             ClearView();
             Player.CancelNotification();
-            if (_playlist is not null && !_playlist.Any(p => p.Identifier.Id == video.Identifier.Id))
+            if (
+                _playlist is not null
+                && !_playlist.Any(p => p.Identifier.Id == video.Identifier.Id)
+            )
             {
                 _playlist = default;
             }
 
             Player.IsSeparatorWindowPlayer = IsSeparatorWindowPlayer;
             _pageLoadCancellationTokenSource = new CancellationTokenSource();
-            var view = await _service.GetVideoPageDetailAsync(video.Identifier, _pageLoadCancellationTokenSource.Token);
+            var view = await _service.GetVideoPageDetailAsync(
+                video.Identifier,
+                _pageLoadCancellationTokenSource.Token
+            );
             InitializeView(view);
-            var initialPart = FindInitialPart(default) ?? throw new Exception("无法找到视频的分集信息.");
+            var initialPart =
+                FindInitialPart(default) ?? throw new Exception("无法找到视频的分集信息.");
             _part = initialPart;
-            _comments.Initialize(AvId, Richasy.BiliKernel.Models.CommentTargetType.Video, Richasy.BiliKernel.Models.CommentSortType.Hot);
+            _comments.Initialize(
+                AvId,
+                Richasy.BiliKernel.Models.CommentTargetType.Video,
+                Richasy.BiliKernel.Models.CommentSortType.Hot
+            );
             LoadInitialProgress();
             InitializeSections();
             InitializeLoops();
@@ -136,14 +143,22 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         try
         {
             _dashLoadCancellationTokenSource = new CancellationTokenSource();
-            var info = await _service.GetVideoPlayDetailAsync(_view.Information.Identifier, Convert.ToInt64(part.Identifier.Id), _dashLoadCancellationTokenSource.Token);
+            var info = await _service.GetVideoPlayDetailAsync(
+                _view.Information.Identifier,
+                Convert.ToInt64(part.Identifier.Id),
+                _dashLoadCancellationTokenSource.Token
+            );
             if (_view is null)
             {
                 return;
             }
 
             InitializeDash(info);
-            var onlineCount = await _service.GetOnlineViewerAsync(_view.Information.Identifier.Id, part.Identifier.Id, _dashLoadCancellationTokenSource.Token);
+            var onlineCount = await _service.GetOnlineViewerAsync(
+                _view.Information.Identifier.Id,
+                part.Identifier.Id,
+                _dashLoadCancellationTokenSource.Token
+            );
             OnlineCountText = onlineCount.Text;
         }
         catch (Exception ex)
@@ -151,7 +166,10 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             if (ex is not TaskCanceledException)
             {
                 IsMediaLoadFailed = true;
-                _logger.LogError(ex, $"尝试获取视频 {_view.Information.Identifier.Id} 的第 {part.Index} 分集时失败.");
+                _logger.LogError(
+                    ex,
+                    $"尝试获取视频 {_view.Information.Identifier.Id} 的第 {part.Index} 分集时失败."
+                );
             }
             else
             {
@@ -201,7 +219,10 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         SelectedFormat = vm;
         var maxAudioQuality = _audioSegments?.Max(p => Convert.ToInt32(p.Id));
         var preferCodec = AppToolkit.GetPreferCodecId();
-        var vSeg = _videoSegments?.FirstOrDefault(p => p.Id == vm.Data.Quality.ToString() && p.Codecs.Contains(preferCodec))
+        var vSeg =
+            _videoSegments?.FirstOrDefault(p =>
+                p.Id == vm.Data.Quality.ToString() && p.Codecs.Contains(preferCodec)
+            )
             ?? _videoSegments?.FirstOrDefault(p => p.Id == vm.Data.Quality.ToString());
         var aSeg = _audioSegments?.FirstOrDefault(p => p.Id == maxAudioQuality.ToString());
 
@@ -242,8 +263,18 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         Danmaku.ClearAll();
-        await Player.SetPlayDataAsync(videoUrl, audioUrl, isAutoPlay, _initialProgress < 0 ? 0 : _initialProgress, extraOptions: _part.Identifier.Id);
-        Player.InitializeSmtc(_view.Information.Identifier.Cover.SourceUri.ToString(), Title, UpName);
+        await Player.SetPlayDataAsync(
+            videoUrl,
+            audioUrl,
+            isAutoPlay,
+            _initialProgress < 0 ? 0 : _initialProgress,
+            extraOptions: _part.Identifier.Id
+        );
+        Player.InitializeSmtc(
+            _view.Information.Identifier.Cover.SourceUri.ToString(),
+            Title,
+            UpName
+        );
 
         // 重置初始进度，避免影响其它视频.
         _initialProgress = 0;
@@ -275,8 +306,18 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
-        var shouldReport = SettingsToolkit.ReadLocalSetting(SettingNames.ShouldReportProgress, true);
-        if (!shouldReport || IsPrivatePlay || _view is null || _view.Information is null || progress == 0 || Player.IsPlayerDataLoading)
+        var shouldReport = SettingsToolkit.ReadLocalSetting(
+            SettingNames.ShouldReportProgress,
+            true
+        );
+        if (
+            !shouldReport
+            || IsPrivatePlay
+            || _view is null
+            || _view.Information is null
+            || progress == 0
+            || Player.IsPlayerDataLoading
+        )
         {
             return;
         }
@@ -284,7 +325,12 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         try
         {
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-            await _service.ReportVideoProgressAsync(AvId, _part.Identifier.Id, progress, cancellationToken.Token);
+            await _service.ReportVideoProgressAsync(
+                AvId,
+                _part.Identifier.Id,
+                progress,
+                cancellationToken.Token
+            );
         }
         catch (Exception ex)
         {
@@ -292,9 +338,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    partial void OnPlayerWidthChanged(double value)
-        => CalcPlayerHeight();
+    partial void OnPlayerWidthChanged(double value) => CalcPlayerHeight();
 
-    partial void OnCurrentLoopChanged(VideoLoopType value)
-        => InitializeNextVideo();
+    partial void OnCurrentLoopChanged(VideoLoopType value) => InitializeNextVideo();
 }

@@ -1,5 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -12,8 +12,6 @@ using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Windows.Storage;
 using Windows.System;
 using WinUIEx;
@@ -28,9 +26,7 @@ public sealed partial class AppViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="AppViewModel"/> class.
     /// </summary>
-    public AppViewModel(
-        ILogger<AppViewModel> logger,
-        IBiliTokenResolver tokenResolver)
+    public AppViewModel(ILogger<AppViewModel> logger, IBiliTokenResolver tokenResolver)
     {
         _logger = logger;
         _tokenResolver = tokenResolver;
@@ -48,14 +44,26 @@ public sealed partial class AppViewModel : ViewModelBase
     {
         var architecture = RuntimeInformation.ProcessArchitecture;
         var identifier = architecture == Architecture.Arm64 ? "arm64" : "x64";
-        var libFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/libmpv/{identifier}/libmpv-2.dll")).AsTask();
+        var libFile = await StorageFile
+            .GetFileFromApplicationUriAsync(
+                new Uri($"ms-appx:///Assets/libmpv/{identifier}/libmpv-2.dll")
+            )
+            .AsTask();
         var libPath = libFile.Path;
         Resolver.SetCustomMpvPath(libPath);
 
-        var bbdownFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/BBDown/{identifier}/BBDown.exe")).AsTask();
+        var bbdownFile = await StorageFile
+            .GetFileFromApplicationUriAsync(
+                new Uri($"ms-appx:///Assets/BBDown/{identifier}/BBDown.exe")
+            )
+            .AsTask();
         BBDownPath = bbdownFile.Path;
 
-        var ffmpegFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/ffmpeg/{identifier}/ffmpeg.exe")).AsTask();
+        var ffmpegFile = await StorageFile
+            .GetFileFromApplicationUriAsync(
+                new Uri($"ms-appx:///Assets/ffmpeg/{identifier}/ffmpeg.exe")
+            )
+            .AsTask();
         FFmpegPath = ffmpegFile.Path;
     }
 
@@ -154,7 +162,8 @@ public sealed partial class AppViewModel : ViewModelBase
         (window as WindowBase).MinHeight = 480;
         (window as WindowBase).MinWidth = 640;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
-        window.AppWindow.TitleBar.PreferredHeightOption = window is MainWindow ? TitleBarHeightOption.Tall : TitleBarHeightOption.Standard;
+        window.AppWindow.TitleBar.PreferredHeightOption =
+            window is MainWindow ? TitleBarHeightOption.Tall : TitleBarHeightOption.Standard;
         if (window is IPlayerHostWindow hostWindow)
         {
             hostWindow.ExitPlayerHostMode();
@@ -195,8 +204,7 @@ public sealed partial class AppViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void HideUpdate()
-        => IsUpdateShown = false;
+    private void HideUpdate() => IsUpdateShown = false;
 
     [RelayCommand]
     private async Task ShowUpdateAsync()
@@ -224,7 +232,10 @@ public sealed partial class AppViewModel : ViewModelBase
                     CreateNoWindow = true,
                 };
 
-                using (var process = new Process { StartInfo = processStartInfo })
+                using (var process = new Process
+                       {
+                           StartInfo = processStartInfo
+                       })
                 {
                     process.Start();
                     var output = process.StandardOutput.ReadToEnd();
@@ -249,19 +260,22 @@ public sealed partial class AppViewModel : ViewModelBase
 
             if (IsAmdGpu == true)
             {
-                this.Get<Microsoft.UI.Dispatching.DispatcherQueue>().TryEnqueue(async () =>
-                {
-                    var dialog = new ContentDialog
+                this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
+                    .TryEnqueue(async () =>
                     {
-                        Title = ResourceToolkit.GetLocalizedString(StringNames.Tip),
-                        Content = ResourceToolkit.GetLocalizedString(StringNames.AmdGpuWarning),
-                        XamlRoot = ActivatedWindow.Content.XamlRoot,
-                        CloseButtonText = ResourceToolkit.GetLocalizedString(StringNames.Confirm),
-                        DefaultButton = ContentDialogButton.Close,
-                    };
+                        var dialog = new ContentDialog
+                        {
+                            Title = ResourceToolkit.GetLocalizedString(StringNames.Tip),
+                            Content = ResourceToolkit.GetLocalizedString(StringNames.AmdGpuWarning),
+                            XamlRoot = ActivatedWindow.Content.XamlRoot,
+                            CloseButtonText = ResourceToolkit.GetLocalizedString(
+                                StringNames.Confirm
+                            ),
+                            DefaultButton = ContentDialogButton.Close,
+                        };
 
-                    await dialog.ShowAsync();
-                });
+                        await dialog.ShowAsync();
+                    });
             }
         }
         catch (Exception ex)

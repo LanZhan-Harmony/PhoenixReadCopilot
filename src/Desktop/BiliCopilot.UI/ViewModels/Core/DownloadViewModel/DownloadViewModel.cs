@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Diagnostics;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
@@ -8,7 +7,6 @@ using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
-using System.Diagnostics;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace BiliCopilot.UI.ViewModels.Core;
@@ -24,23 +22,34 @@ public sealed partial class DownloadViewModel : ViewModelBase
     public DownloadViewModel(
         ILogger<DownloadViewModel> logger,
         IBiliTokenResolver tokenResolver,
-        IBiliCookiesResolver cookiesResolver)
+        IBiliCookiesResolver cookiesResolver
+    )
     {
         _logger = logger;
         _tokenResolver = tokenResolver;
         _cookiesResolver = cookiesResolver;
         _bbdownPath = this.Get<AppViewModel>().BBDownPath;
         _ffmpegPath = this.Get<AppViewModel>().FFmpegPath;
-        var localDownloadFolder = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DownloadFolder, string.Empty);
-        _downloadPath = string.IsNullOrEmpty(localDownloadFolder) || !Directory.Exists(localDownloadFolder)
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Bili Downloads")
-            : localDownloadFolder;
+        var localDownloadFolder = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.DownloadFolder,
+            string.Empty
+        );
+        _downloadPath =
+            string.IsNullOrEmpty(localDownloadFolder) || !Directory.Exists(localDownloadFolder)
+                ? Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
+                    "Bili Downloads"
+                )
+                : localDownloadFolder;
         if (!Directory.Exists(_downloadPath))
         {
             Directory.CreateDirectory(_downloadPath);
         }
 
-        _openFolderAfterDownload = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.OpenFolderAfterDownload, true);
+        _openFolderAfterDownload = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.OpenFolderAfterDownload,
+            true
+        );
     }
 
     /// <summary>
@@ -50,7 +59,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
         string url,
         IReadOnlyCollection<PlayerFormatInformation> formats,
         IReadOnlyCollection<VideoPart>? parts = default,
-        int currentPart = 1)
+        int currentPart = 1
+    )
     {
         _currentUrl = url;
         _currentPartIndex = currentPart;
@@ -67,7 +77,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
         string ssUrl,
         IReadOnlyCollection<PlayerFormatInformation> formats,
         IReadOnlyCollection<EpisodeInformation>? episodes = default,
-        int currentEpisode = 1)
+        int currentEpisode = 1
+    )
     {
         _currentUrl = epUrl;
         _parentUrl = ssUrl;
@@ -90,8 +101,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
         Episodes = null;
     }
 
-    private static bool UseExternal()
-        => SettingsToolkit.ReadLocalSetting(SettingNames.UseExternalBBDown, false);
+    private static bool UseExternal() =>
+        SettingsToolkit.ReadLocalSetting(SettingNames.UseExternalBBDown, false);
 
     /// <summary>
     /// 下载视频.
@@ -127,7 +138,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private void DownloadSubtitle()
     {
-        var isAISubtitleFiltered = SettingsToolkit.ReadLocalSetting(SettingNames.FilterAISubtitle, true);
+        var isAISubtitleFiltered = SettingsToolkit.ReadLocalSetting(
+            SettingNames.FilterAISubtitle,
+            true
+        );
         var subCommand = isAISubtitleFiltered ? "--sub-only" : "--sub-only --skip-ai False";
         var command = $"{GetBasicCommand(false)} {subCommand} \"{_currentUrl}\"";
         LaunchDownloadProcess(command);
@@ -157,7 +171,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
     {
         var token = _tokenResolver.GetToken().AccessToken;
         var cookie = _cookiesResolver.GetCookieString();
-        var preferCodec = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.PreferCodec, PreferCodecType.H264);
+        var preferCodec = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.PreferCodec,
+            PreferCodecType.H264
+        );
         var codec = preferCodec switch
         {
             PreferCodecType.H264 => "avc",
@@ -166,8 +183,14 @@ public sealed partial class DownloadViewModel : ViewModelBase
         };
 
         var cmd = $"-e {codec} --work-dir \"{_downloadPath}\" -ua \"{VideoUserAgent}\"";
-        var copyCommandOnly = SettingsToolkit.ReadLocalSetting(SettingNames.OnlyCopyCommandWhenDownload, false);
-        var withoutCredential = SettingsToolkit.ReadLocalSetting(SettingNames.WithoutCredentialWhenGenDownloadCommand, false);
+        var copyCommandOnly = SettingsToolkit.ReadLocalSetting(
+            SettingNames.OnlyCopyCommandWhenDownload,
+            false
+        );
+        var withoutCredential = SettingsToolkit.ReadLocalSetting(
+            SettingNames.WithoutCredentialWhenGenDownloadCommand,
+            false
+        );
         if (!UseExternal())
         {
             cmd += $" -app --ffmpeg-path \"{_ffmpegPath}\"";
@@ -180,7 +203,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         if (danmakuEnabled)
         {
-            var alsoDownDanmaku = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.DownloadWithDanmaku, false);
+            var alsoDownDanmaku = SettingsToolkit.ReadLocalSetting(
+                Models.Constants.SettingNames.DownloadWithDanmaku,
+                false
+            );
             if (alsoDownDanmaku)
             {
                 cmd += " -dd";
@@ -192,8 +218,14 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
     private void LaunchDownloadProcess(string command)
     {
-        var useExternalBBDown = SettingsToolkit.ReadLocalSetting(SettingNames.UseExternalBBDown, false);
-        var copyCommandOnly = SettingsToolkit.ReadLocalSetting(SettingNames.OnlyCopyCommandWhenDownload, false);
+        var useExternalBBDown = SettingsToolkit.ReadLocalSetting(
+            SettingNames.UseExternalBBDown,
+            false
+        );
+        var copyCommandOnly = SettingsToolkit.ReadLocalSetting(
+            SettingNames.OnlyCopyCommandWhenDownload,
+            false
+        );
         var fileName = useExternalBBDown ? "BBDown" : _bbdownPath;
         if (useExternalBBDown && copyCommandOnly)
         {
@@ -201,7 +233,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
             var dp = new DataPackage();
             dp.SetText(cmd);
             Clipboard.SetContent(dp);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
+                );
             return;
         }
 

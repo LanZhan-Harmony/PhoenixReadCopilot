@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Toolkits;
 
 /// <summary>
@@ -21,7 +19,22 @@ public static class IdToolkit
     /// <returns>BVId.</returns>
     public static string Av2Bv(long aid)
     {
-        var bytes = new char[] { 'B', 'V', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' };
+        var bytes = new char[]
+        {
+            'B',
+            'V',
+            '1',
+            '0',
+            '0',
+            '0',
+            '0',
+            '0',
+            '0',
+            '0',
+            '0',
+            '0',
+            '0'
+        };
         var bvIndex = bytes.Length - 1;
         var tmp = (MAX_AID | aid) ^ XOR_CODE;
 

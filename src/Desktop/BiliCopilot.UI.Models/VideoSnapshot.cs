@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.BiliKernel.Models.Media;
 
 namespace BiliCopilot.UI.Models;
@@ -12,9 +10,7 @@ public sealed class VideoSnapshot
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoSnapshot"/> class.
     /// </summary>
-    public VideoSnapshot(
-        VideoInformation video,
-        bool isPrivate = false)
+    public VideoSnapshot(VideoInformation video, bool isPrivate = false)
     {
         Video = video;
         IsPrivate = isPrivate;

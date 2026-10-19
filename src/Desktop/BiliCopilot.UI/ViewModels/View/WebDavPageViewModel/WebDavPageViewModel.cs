@@ -1,5 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Net;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
-using System.Net;
 using WebDav;
 
 namespace BiliCopilot.UI.ViewModels.View;
@@ -23,8 +21,7 @@ public sealed partial class WebDavPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="WebDavPageViewModel"/> class.
     /// </summary>
-    public WebDavPageViewModel(
-        ILogger<WebDavPageViewModel> logger)
+    public WebDavPageViewModel(ILogger<WebDavPageViewModel> logger)
     {
         _logger = logger;
     }
@@ -33,21 +30,30 @@ public sealed partial class WebDavPageViewModel : ViewModelBase
     /// 获取当前配置.
     /// </summary>
     /// <returns>配置.</returns>
-    public WebDavConfig? GetCurrentConfig()
-        => _config;
+    public WebDavConfig? GetCurrentConfig() => _config;
 
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        var localConfigId = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.SelectedWebDavConfigId, string.Empty);
+        var localConfigId = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.SelectedWebDavConfigId,
+            string.Empty
+        );
         if (string.IsNullOrEmpty(localConfigId))
         {
             IsInvalidConfig = true;
             return;
         }
 
-        var configList = await this.Get<IFileToolkit>().ReadLocalDataAsync<List<WebDavConfig>>("__webdav.json", GlobalSerializeContext.Default.ListWebDavConfig, "[]");
-        var config = configList.FirstOrDefault(p => p.Id.Equals(localConfigId, StringComparison.Ordinal));
+        var configList = await this.Get<IFileToolkit>()
+            .ReadLocalDataAsync<List<WebDavConfig>>(
+                "__webdav.json",
+                GlobalSerializeContext.Default.ListWebDavConfig,
+                "[]"
+            );
+        var config = configList.FirstOrDefault(p =>
+            p.Id.Equals(localConfigId, StringComparison.Ordinal)
+        );
         if (config is null)
         {
             IsInvalidConfig = true;
@@ -63,15 +69,23 @@ public sealed partial class WebDavPageViewModel : ViewModelBase
         _client?.Dispose();
         _config = config;
         _client = !string.IsNullOrEmpty(_config.UserName)
-            ? new WebDavClient(new WebDavClientParams
-            {
-                Credentials = new NetworkCredential(_config.UserName, _config.Password),
-            })
+            ? new WebDavClient(
+                new WebDavClientParams
+                {
+                    Credentials = new NetworkCredential(_config.UserName, _config.Password),
+                }
+            )
             : new WebDavClient();
 
         if (PathSegments.Count == 0)
         {
-            PathSegments.Add(new WebDavPathSegment { Name = ResourceToolkit.GetLocalizedString(StringNames.RootDirectory), Path = "/" });
+            PathSegments.Add(
+                new WebDavPathSegment
+                {
+                    Name = ResourceToolkit.GetLocalizedString(StringNames.RootDirectory),
+                    Path = "/",
+                }
+            );
         }
 
         LoadPathCommand.Execute(PathSegments.Last().Path);
@@ -113,7 +127,13 @@ public sealed partial class WebDavPageViewModel : ViewModelBase
             else
             {
                 var directoryName = path.Split('/', StringSplitOptions.RemoveEmptyEntries).Last();
-                PathSegments.Add(new WebDavPathSegment { Name = Uri.UnescapeDataString(directoryName), Path = path });
+                PathSegments.Add(
+                    new WebDavPathSegment
+                    {
+                        Name = Uri.UnescapeDataString(directoryName),
+                        Path = path,
+                    }
+                );
             }
         }
 
@@ -121,11 +141,18 @@ public sealed partial class WebDavPageViewModel : ViewModelBase
         {
             IsLoading = true;
             Items = default;
-            var reqPath = path == "/" ? _config.ToString() : AppToolkit.GetWebDavServer(_config.GetServer(), path);
+            var reqPath =
+                path == "/"
+                    ? _config.ToString()
+                    : AppToolkit.GetWebDavServer(_config.GetServer(), path);
             var items = (await _client.Propfind(reqPath)).Resources.ToList();
             var rootPath = new Uri(_config.ToString()).PathAndQuery.Split("?").First();
             items = items
-                .Where(p => !p.IsHidden && p.Uri.Trim('/') != path.Trim('/') && p.Uri.Trim('/') != rootPath.Trim('/'))
+                .Where(p =>
+                    !p.IsHidden
+                    && p.Uri.Trim('/') != path.Trim('/')
+                    && p.Uri.Trim('/') != rootPath.Trim('/')
+                )
                 .OrderBy(p => p.IsCollection)
                 .ThenBy(p => Path.GetExtension(p.Uri))
                 .ThenBy(p => p.DisplayName)

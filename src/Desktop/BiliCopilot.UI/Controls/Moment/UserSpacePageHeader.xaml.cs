@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Controls.Moment;
@@ -33,8 +31,7 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
         Selector.SelectionChanged -= OnSelectorChanged;
     }
 
-    private void OnViewModelInitialized(object? sender, EventArgs e)
-        => InitializeChildPartitions();
+    private void OnViewModelInitialized(object? sender, EventArgs e) => InitializeChildPartitions();
 
     private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -60,11 +57,13 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
                 Selector.Items.Add(new SelectorBarItem()
                 {
                     Text = item.Title,
-                    Tag = item,
+                    Tag = item
                 });
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        Selector.SelectedItem = Selector.Items.FirstOrDefault(p =>
+            p.Tag == ViewModel.SelectedSection
+        );
     }
 }

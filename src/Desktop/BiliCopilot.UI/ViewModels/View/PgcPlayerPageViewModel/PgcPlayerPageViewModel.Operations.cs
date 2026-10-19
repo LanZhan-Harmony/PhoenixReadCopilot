@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Forms;
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
@@ -91,7 +89,9 @@ public sealed partial class PgcPlayerPageViewModel
         {
             var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
             var (folders, ids) = await _favoriteService.GetPlayingVideoFavoriteFoldersAsync(aid);
-            FavoriteFolders = folders.Select(p => new PlayerFavoriteFolderViewModel(p, ids.Contains(p.Id))).ToList();
+            FavoriteFolders = folders
+                .Select(p => new PlayerFavoriteFolderViewModel(p, ids.Contains(p.Id)))
+                .ToList();
         }
         catch (Exception ex)
         {
@@ -107,8 +107,14 @@ public sealed partial class PgcPlayerPageViewModel
             return;
         }
 
-        var selectedFolders = FavoriteFolders?.Where(p => p.IsSelected).Select(p => p.Data.Id).ToList();
-        var unselectedFolders = FavoriteFolders?.Where(p => !p.IsSelected).Select(p => p.Data.Id).ToList();
+        var selectedFolders = FavoriteFolders
+            ?.Where(p => p.IsSelected)
+            .Select(p => p.Data.Id)
+            .ToList();
+        var unselectedFolders = FavoriteFolders
+            ?.Where(p => !p.IsSelected)
+            .Select(p => p.Data.Id)
+            .ToList();
         try
         {
             var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
@@ -131,7 +137,10 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
+            );
     }
 
     [RelayCommand]
@@ -142,7 +151,10 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
+            );
     }
 
     [RelayCommand]
@@ -161,7 +173,9 @@ public sealed partial class PgcPlayerPageViewModel
             dp.SetWebLink(new Uri(url));
             dp.Properties.Title = EpisodeTitle;
             dp.Properties.Description = Description;
-            dp.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(_view.Information.Identifier.Cover.Uri);
+            dp.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(
+                _view.Information.Identifier.Cover.Uri
+            );
             args.Request.Data = dp;
             sender.DataRequested -= OnTransferDataRequested;
         }
@@ -187,7 +201,11 @@ public sealed partial class PgcPlayerPageViewModel
             Player.TogglePlayPauseCommand.Execute(default);
         }
 
-        var identifier = new MediaIdentifier("ep_" + _episode.Identifier.Id, _episode.Identifier.Title, _episode.Identifier.Cover);
+        var identifier = new MediaIdentifier(
+            "ep_" + _episode.Identifier.Id,
+            _episode.Identifier.Title,
+            _episode.Identifier.Cover
+        );
         new PlayerWindow().OpenPgc(identifier);
     }
 
@@ -212,7 +230,8 @@ public sealed partial class PgcPlayerPageViewModel
         }
         else if (nextPart is VideoInformation video)
         {
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video));
+            this.Get<NavigationViewModel>()
+                .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video));
         }
         else
         {
@@ -230,7 +249,9 @@ public sealed partial class PgcPlayerPageViewModel
 
         try
         {
-            var operation = await _service.GetEpisodeOperationInformationAsync(_episode.Identifier.Id);
+            var operation = await _service.GetEpisodeOperationInformationAsync(
+                _episode.Identifier.Id
+            );
             IsLiked = operation.IsLiked;
             IsCoined = operation.IsCoined;
             IsFavorited = operation.IsFavorited;
@@ -290,7 +311,11 @@ public sealed partial class PgcPlayerPageViewModel
         Player.Title = EpisodeTitle;
         var aid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
         var cid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid).ToString();
-        _comments.Initialize(aid, Richasy.BiliKernel.Models.CommentTargetType.Video, Richasy.BiliKernel.Models.CommentSortType.Hot);
+        _comments.Initialize(
+            aid,
+            Richasy.BiliKernel.Models.CommentTargetType.Video,
+            Richasy.BiliKernel.Models.CommentSortType.Hot
+        );
         Subtitle?.ResetData(aid, cid);
         CalcPlayerHeight();
         ReloadEpisodeOpeartionCommand.Execute(default);
@@ -302,7 +327,12 @@ public sealed partial class PgcPlayerPageViewModel
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem($"ss_{_view.Information.Identifier.Id}", _view.Information.Identifier.Title, _view.Information.Identifier.Cover.Uri.ToString(), PinContentType.Pgc);
+        var pinItem = new PinItem(
+            $"ss_{_view.Information.Identifier.Id}",
+            _view.Information.Identifier.Title,
+            _view.Information.Identifier.Cover.Uri.ToString(),
+            PinContentType.Pgc
+        );
         this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
     }
 
@@ -353,58 +383,72 @@ public sealed partial class PgcPlayerPageViewModel
 
     private void PlayerMediaEnded()
     {
-        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>().TryEnqueue(() =>
-        {
-            // 清除弹幕.
-            Danmaku.ClearDanmaku();
-            Subtitle.ClearSubtitle();
-
-            ReportProgressCommand.Execute(Player.Duration);
-
-            var autoNext = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNext, true);
-            if ((!autoNext || !HasNextEpisode) && !_isFormatChanging)
+        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
+            .TryEnqueue(() =>
             {
-                Player.BackToDefaultModeCommand.Execute(default);
-                return;
-            }
+                // 清除弹幕.
+                Danmaku.ClearDanmaku();
+                Subtitle.ClearSubtitle();
 
-            if (IsPageLoading || Player.IsPlayerDataLoading)
-            {
-                return;
-            }
+                ReportProgressCommand.Execute(Player.Duration);
 
-            var next = FindNextEpisode();
-            if (next is null)
-            {
-                return;
-            }
-
-            var withoutTip = SettingsToolkit.ReadLocalSetting(SettingNames.PlayNextWithoutTip, false);
-            if (withoutTip)
-            {
-                PlayNextEpisode();
-            }
-            else
-            {
-                string tip = default;
-                if (next is EpisodeInformation episode)
+                var autoNext = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNext, true);
+                if ((!autoNext || !HasNextEpisode) && !_isFormatChanging)
                 {
-                    tip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.NextEpisodeNotificationTemplate), episode.Identifier.Title);
-                }
-                else if (next is VideoInformation video)
-                {
-                    tip = string.Format(ResourceToolkit.GetLocalizedString(StringNames.NextVideoNotificationTemplate), video.Identifier.Title);
+                    Player.BackToDefaultModeCommand.Execute(default);
+                    return;
                 }
 
-                var notification = new PlayerNotification(PlayNextEpisode, tip, 5);
-                Player.ShowNotification(notification);
-            }
-        });
+                if (IsPageLoading || Player.IsPlayerDataLoading)
+                {
+                    return;
+                }
+
+                var next = FindNextEpisode();
+                if (next is null)
+                {
+                    return;
+                }
+
+                var withoutTip = SettingsToolkit.ReadLocalSetting(
+                    SettingNames.PlayNextWithoutTip,
+                    false
+                );
+                if (withoutTip)
+                {
+                    PlayNextEpisode();
+                }
+                else
+                {
+                    string tip = default;
+                    if (next is EpisodeInformation episode)
+                    {
+                        tip = string.Format(
+                            ResourceToolkit.GetLocalizedString(
+                                StringNames.NextEpisodeNotificationTemplate
+                            ),
+                            episode.Identifier.Title
+                        );
+                    }
+                    else if (next is VideoInformation video)
+                    {
+                        tip = string.Format(
+                            ResourceToolkit.GetLocalizedString(
+                                StringNames.NextVideoNotificationTemplate
+                            ),
+                            video.Identifier.Title
+                        );
+                    }
+
+                    var notification = new PlayerNotification(PlayNextEpisode, tip, 5);
+                    Player.ShowNotification(notification);
+                }
+            });
     }
 
-    private string GetSeasonUrl()
-        => $"https://www.bilibili.com/bangumi/play/ss{_view.Information.Identifier.Id}";
+    private string GetSeasonUrl() =>
+        $"https://www.bilibili.com/bangumi/play/ss{_view.Information.Identifier.Id}";
 
-    private string GetEpisodeUrl()
-        => $"https://www.bilibili.com/bangumi/play/ep{_episode.Identifier.Id}";
+    private string GetEpisodeUrl() =>
+        $"https://www.bilibili.com/bangumi/play/ep{_episode.Identifier.Id}";
 }

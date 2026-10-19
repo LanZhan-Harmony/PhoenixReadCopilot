@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -22,7 +20,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     /// </summary>
     public VideoPartitionDetailViewModel(
         PartitionViewModel partition,
-        IVideoDiscoveryService service)
+        IVideoDiscoveryService service
+    )
         : base(partition)
     {
         _service = service;
@@ -40,7 +39,10 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         if (Data.Children is not null)
         {
             var children = Data.Children.ToList();
-            var rcmdPartition = new Partition(Data.Data.Id, ResourceToolkit.GetLocalizedString(StringNames.Recommend));
+            var rcmdPartition = new Partition(
+                Data.Data.Id,
+                ResourceToolkit.GetLocalizedString(StringNames.Recommend)
+            );
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
         }
@@ -158,7 +160,10 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     {
         try
         {
-            var (videos, offset) = await _service.GetPartitionRecommendVideoListAsync(Data.Data, _recommendOffset);
+            var (videos, offset) = await _service.GetPartitionRecommendVideoListAsync(
+                Data.Data,
+                _recommendOffset
+            );
             _recommendOffset = offset;
             TryAddVideos(videos, VideoCardStyle.Partition);
         }
@@ -174,19 +179,32 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         {
             var offset = 0L;
             var pn = 0;
-            if (_childPartitionOffsetCache.TryGetValue(CurrentPartition.Data.Id, out var offsetCache))
+            if (
+                _childPartitionOffsetCache.TryGetValue(
+                    CurrentPartition.Data.Id,
+                    out var offsetCache
+                )
+            )
             {
                 offset = offsetCache.Offset;
                 pn = offsetCache.PageNumber;
             }
 
-            var (videos, nextOffset, nextPn) = await _service.GetChildPartitionVideoListAsync(CurrentPartition.Data, offset, pn, SelectedSortType);
+            var (videos, nextOffset, nextPn) = await _service.GetChildPartitionVideoListAsync(
+                CurrentPartition.Data,
+                offset,
+                pn,
+                SelectedSortType
+            );
             _childPartitionOffsetCache[CurrentPartition.Data.Id] = (nextOffset, nextPn);
             TryAddVideos(videos, VideoCardStyle.Partition);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"尝试加载 {Data.Data.Name}/{CurrentPartition.Data.Name} 分区视频时出错.");
+            _logger.LogError(
+                ex,
+                $"尝试加载 {Data.Data.Name}/{CurrentPartition.Data.Name} 分区视频时出错."
+            );
         }
     }
 

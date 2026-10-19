@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.LivePartition;
@@ -28,10 +26,12 @@ public sealed partial class LivePartitionSubSideBody : LivePartitionPageControlB
         ViewModel.MainSectionChanged -= OnSectionChanged;
     }
 
-    private void OnSectionChanged(object? sender, EventArgs e)
-        => CheckPartitionSelection();
+    private void OnSectionChanged(object? sender, EventArgs e) => CheckPartitionSelection();
 
-    private void OnPartitionSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
+    private void OnPartitionSelectionChanged(
+        ItemsView sender,
+        ItemsViewSelectionChangedEventArgs args
+    )
     {
         var partition = sender.SelectedItem as PartitionViewModel;
         if (partition is not null)
@@ -44,7 +44,9 @@ public sealed partial class LivePartitionSubSideBody : LivePartitionPageControlB
     {
         if (ViewModel.SelectedSubSection is not null && ViewModel.SubPartitions is not null)
         {
-            var partition = ViewModel.SubPartitions.FirstOrDefault(p => p.Equals(ViewModel.SelectedSubSection));
+            var partition = ViewModel.SubPartitions.FirstOrDefault(p =>
+                p.Equals(ViewModel.SelectedSubSection)
+            );
             var index = ViewModel.SubPartitions.ToList().IndexOf(partition);
             PartitionView.Select(index);
         }

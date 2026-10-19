@@ -70,7 +70,108 @@ public static class Extensions
             "posh" or "pwsh" or "ps1" or "psd1" or "psm1" => Languages.PowerShell,
             "sql" or "cql" or "ddl" or "mysql" or "prc" or "tab" or "udf" or "viw" => Languages.Sql,
             "vb" or "vbhtml" or "visual basic" or "vbnet" or "vb .net" or "vb.net" => Languages.VbDotNet,
-            "rss" or "xsd" or "wsdl" or "xml" or "adml" or "admx" or "ant" or "axaml" or "axml" or "builds" or "ccproj" or "ccxml" or "clixml" or "cproject" or "cscfg" or "csdef" or "csl" or "csproj" or "ct" or "depproj" or "dita" or "ditamap" or "ditaval" or "dll.config" or "dotsettings" or "filters" or "fsproj" or "fxml" or "glade" or "gml" or "gmx" or "grxml" or "gst" or "hzp" or "iml" or "ivy" or "jelly" or "jsproj" or "kml" or "launch" or "mdpolicy" or "mjml" or "mm" or "mod" or "mxml" or "natvis" or "ncl" or "ndproj" or "nproj" or "nuspec" or "odd" or "osm" or "pkgproj" or "pluginspec" or "proj" or "props" or "ps1xml" or "psc1" or "pt" or "qhelp" or "rdf" or "res" or "resx" or "rs" or "sch" or "scxml" or "sfproj" or "shproj" or "srdf" or "storyboard" or "sublime-snippet" or "sw" or "targets" or "tml" or "ui" or "urdf" or "ux" or "vbproj" or "vcxproj" or "vsixmanifest" or "vssettings" or "vstemplate" or "vxml" or "wixproj" or "workflow" or "wsf" or "wxi" or "wxl" or "wxs" or "x3d" or "xacro" or "xaml" or "xib" or "xlf" or "xliff" or "xmi" or "xml.dist" or "xmp" or "xproj" or "xspec" or "xul" or "zcml" => Languages.Xml,
+            "rss"
+                or "xsd"
+                or "wsdl"
+                or "xml"
+                or "adml"
+                or "admx"
+                or "ant"
+                or "axaml"
+                or "axml"
+                or "builds"
+                or "ccproj"
+                or "ccxml"
+                or "clixml"
+                or "cproject"
+                or "cscfg"
+                or "csdef"
+                or "csl"
+                or "csproj"
+                or "ct"
+                or "depproj"
+                or "dita"
+                or "ditamap"
+                or "ditaval"
+                or "dll.config"
+                or "dotsettings"
+                or "filters"
+                or "fsproj"
+                or "fxml"
+                or "glade"
+                or "gml"
+                or "gmx"
+                or "grxml"
+                or "gst"
+                or "hzp"
+                or "iml"
+                or "ivy"
+                or "jelly"
+                or "jsproj"
+                or "kml"
+                or "launch"
+                or "mdpolicy"
+                or "mjml"
+                or "mm"
+                or "mod"
+                or "mxml"
+                or "natvis"
+                or "ncl"
+                or "ndproj"
+                or "nproj"
+                or "nuspec"
+                or "odd"
+                or "osm"
+                or "pkgproj"
+                or "pluginspec"
+                or "proj"
+                or "props"
+                or "ps1xml"
+                or "psc1"
+                or "pt"
+                or "qhelp"
+                or "rdf"
+                or "res"
+                or "resx"
+                or "rs"
+                or "sch"
+                or "scxml"
+                or "sfproj"
+                or "shproj"
+                or "srdf"
+                or "storyboard"
+                or "sublime-snippet"
+                or "sw"
+                or "targets"
+                or "tml"
+                or "ui"
+                or "urdf"
+                or "ux"
+                or "vbproj"
+                or "vcxproj"
+                or "vsixmanifest"
+                or "vssettings"
+                or "vstemplate"
+                or "vxml"
+                or "wixproj"
+                or "workflow"
+                or "wsf"
+                or "wxi"
+                or "wxl"
+                or "wxs"
+                or "x3d"
+                or "xacro"
+                or "xaml"
+                or "xib"
+                or "xlf"
+                or "xliff"
+                or "xmi"
+                or "xml.dist"
+                or "xmp"
+                or "xproj"
+                or "xspec"
+                or "xul"
+                or "zcml" => Languages.Xml,
             "php" or "aw" or "ctp" or "fcgi" or "php3" or "php4" or "php5" or "phps" or "phpt" => Languages.Php,
             "css" or "scss" or "less" => Languages.Css,
             "cpp" or "c++" or "cc" or "cp" or "cxx" or "h" or "h++" or "hh" or "hpp" or "hxx" or "inl" or "ino" or "ipp" or "ixx" or "re" or "tcc" or "tpp" => Languages.Cpp,
@@ -206,154 +307,154 @@ public static class Extensions
     public static StyleDictionary GetOneDarkProStyle()
     {
         return new StyleDictionary
-                {
-                    new ColorCode.Styling.Style(ScopeName.PlainText)
-                    {
-                        Foreground = OneDarkPlainText,
-                        Background = OneDarkBackground,
-                        ReferenceName = "plainText",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.HtmlServerSideScript)
-                    {
-                        Background = Yellow,
-                        ReferenceName = "htmlServerSideScript",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.HtmlComment)
-                    {
-                        Foreground = OneDarkComment,
-                        ReferenceName = "htmlComment",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.HtmlTagDelimiter)
-                    {
-                        Foreground = OneDarkKeyword,
-                        ReferenceName = "htmlTagDelimiter",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.HtmlElementName)
-                    {
-                        Foreground = DullRed,
-                        ReferenceName = "htmlElementName",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.HtmlAttributeName)
-                    {
-                        Foreground = Red,
-                        ReferenceName = "htmlAttributeName",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.HtmlAttributeValue)
-                    {
-                        Foreground = OneDarkKeyword,
-                        ReferenceName = "htmlAttributeValue",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.HtmlOperator)
-                    {
-                        Foreground = OneDarkKeyword,
-                        ReferenceName = "htmlOperator",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.Comment)
-                    {
-                        Foreground = OneDarkComment,
-                        ReferenceName = "comment",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.XmlDocTag)
-                    {
-                        Foreground = OneDarkXMLComment,
-                        ReferenceName = "xmlDocTag",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.XmlDocComment)
-                    {
-                        Foreground = OneDarkXMLComment,
-                        ReferenceName = "xmlDocComment",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.String)
-                    {
-                        Foreground = OneDarkString,
-                        ReferenceName = "string",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.StringCSharpVerbatim)
-                    {
-                        Foreground = OneDarkString,
-                        ReferenceName = "stringCSharpVerbatim",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.Keyword)
-                    {
-                        Foreground = OneDarkKeyword,
-                        ReferenceName = "keyword",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.PreprocessorKeyword)
-                    {
-                        Foreground = OneDarkKeyword,
-                        ReferenceName = "preprocessorKeyword",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.Number)
-                     {
-                         Foreground = OneDarkNumber,
-                         ReferenceName = "number",
-                     },
+        {
+            new ColorCode.Styling.Style(ScopeName.PlainText)
+            {
+                Foreground = OneDarkPlainText,
+                Background = OneDarkBackground,
+                ReferenceName = "plainText",
+            },
+            new ColorCode.Styling.Style(ScopeName.HtmlServerSideScript)
+            {
+                Background = Yellow,
+                ReferenceName = "htmlServerSideScript",
+            },
+            new ColorCode.Styling.Style(ScopeName.HtmlComment)
+            {
+                Foreground = OneDarkComment,
+                ReferenceName = "htmlComment",
+            },
+            new ColorCode.Styling.Style(ScopeName.HtmlTagDelimiter)
+            {
+                Foreground = OneDarkKeyword,
+                ReferenceName = "htmlTagDelimiter",
+            },
+            new ColorCode.Styling.Style(ScopeName.HtmlElementName)
+            {
+                Foreground = DullRed,
+                ReferenceName = "htmlElementName",
+            },
+            new ColorCode.Styling.Style(ScopeName.HtmlAttributeName)
+            {
+                Foreground = Red,
+                ReferenceName = "htmlAttributeName",
+            },
+            new ColorCode.Styling.Style(ScopeName.HtmlAttributeValue)
+            {
+                Foreground = OneDarkKeyword,
+                ReferenceName = "htmlAttributeValue",
+            },
+            new ColorCode.Styling.Style(ScopeName.HtmlOperator)
+            {
+                Foreground = OneDarkKeyword,
+                ReferenceName = "htmlOperator",
+            },
+            new ColorCode.Styling.Style(ScopeName.Comment)
+            {
+                Foreground = OneDarkComment,
+                ReferenceName = "comment",
+            },
+            new ColorCode.Styling.Style(ScopeName.XmlDocTag)
+            {
+                Foreground = OneDarkXMLComment,
+                ReferenceName = "xmlDocTag",
+            },
+            new ColorCode.Styling.Style(ScopeName.XmlDocComment)
+            {
+                Foreground = OneDarkXMLComment,
+                ReferenceName = "xmlDocComment",
+            },
+            new ColorCode.Styling.Style(ScopeName.String)
+            {
+                Foreground = OneDarkString,
+                ReferenceName = "string",
+            },
+            new ColorCode.Styling.Style(ScopeName.StringCSharpVerbatim)
+            {
+                Foreground = OneDarkString,
+                ReferenceName = "stringCSharpVerbatim",
+            },
+            new ColorCode.Styling.Style(ScopeName.Keyword)
+            {
+                Foreground = OneDarkKeyword,
+                ReferenceName = "keyword",
+            },
+            new ColorCode.Styling.Style(ScopeName.PreprocessorKeyword)
+            {
+                Foreground = OneDarkKeyword,
+                ReferenceName = "preprocessorKeyword",
+            },
+            new ColorCode.Styling.Style(ScopeName.Number)
+            {
+                Foreground = OneDarkNumber,
+                ReferenceName = "number",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.CssPropertyName)
-                     {
-                         Foreground = OneDarkClass,
-                         ReferenceName = "cssPropertyName",
-                     },
+            new ColorCode.Styling.Style(ScopeName.CssPropertyName)
+            {
+                Foreground = OneDarkClass,
+                ReferenceName = "cssPropertyName",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.CssPropertyValue)
-                     {
-                         Foreground = OneDarkString,
-                         ReferenceName = "cssPropertyValue",
-                     },
+            new ColorCode.Styling.Style(ScopeName.CssPropertyValue)
+            {
+                Foreground = OneDarkString,
+                ReferenceName = "cssPropertyValue",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.CssSelector)
-                     {
-                         Foreground = OneDarkKeyword,
-                         ReferenceName = "cssSelector",
-                     },
+            new ColorCode.Styling.Style(ScopeName.CssSelector)
+            {
+                Foreground = OneDarkKeyword,
+                ReferenceName = "cssSelector",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.SqlSystemFunction)
-                     {
-                         Foreground = OneDarkClass,
-                         ReferenceName = "sqlSystemFunction",
-                     },
+            new ColorCode.Styling.Style(ScopeName.SqlSystemFunction)
+            {
+                Foreground = OneDarkClass,
+                ReferenceName = "sqlSystemFunction",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.XmlAttribute)
-                    {
-                        Foreground = OneDarkXMLAttribute,
-                        ReferenceName = "xmlAttribute",
-                    },
+            new ColorCode.Styling.Style(ScopeName.XmlAttribute)
+            {
+                Foreground = OneDarkXMLAttribute,
+                ReferenceName = "xmlAttribute",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.XmlAttributeQuotes)
-                    {
-                        Foreground = OneDarkXMLDelimiter,
-                        ReferenceName = "xmlAttributeQuotes",
-                    },
+            new ColorCode.Styling.Style(ScopeName.XmlAttributeQuotes)
+            {
+                Foreground = OneDarkXMLDelimiter,
+                ReferenceName = "xmlAttributeQuotes",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.XmlAttributeValue)
-                    {
-                        Foreground = OneDarkString,
-                        ReferenceName = "xmlAttributeValue",
-                    },
+            new ColorCode.Styling.Style(ScopeName.XmlAttributeValue)
+            {
+                Foreground = OneDarkString,
+                ReferenceName = "xmlAttributeValue",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.XmlCDataSection)
-                    {
-                        Foreground = OneDarkXAMLCData,
-                        ReferenceName = "xmlCDataSection",
-                    },
+            new ColorCode.Styling.Style(ScopeName.XmlCDataSection)
+            {
+                Foreground = OneDarkXAMLCData,
+                ReferenceName = "xmlCDataSection",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.XmlComment)
-                    {
-                        Foreground = OneDarkXMLComment,
-                        ReferenceName = "xmlComment",
-                    },
+            new ColorCode.Styling.Style(ScopeName.XmlComment)
+            {
+                Foreground = OneDarkXMLComment,
+                ReferenceName = "xmlComment",
+            },
 
-                    new ColorCode.Styling.Style(ScopeName.XmlDelimiter)
-                    {
-                        Foreground = OneDarkXMLDelimiter,
-                        ReferenceName = "xmlDelimiter",
-                    },
-                    new ColorCode.Styling.Style(ScopeName.XmlName)
+            new ColorCode.Styling.Style(ScopeName.XmlDelimiter)
+            {
+                Foreground = OneDarkXMLDelimiter,
+                ReferenceName = "xmlDelimiter",
+            },
+            new ColorCode.Styling.Style(ScopeName.XmlName)
             {
                 Foreground = OneDarkXMLName,
                 ReferenceName = "xmlName",
             },
-                };
+        };
     }
 
     public static HtmlElementType TagToType(this string tag)
@@ -367,7 +468,15 @@ public static class Extensions
 
     public static bool IsHeading(this string tag)
     {
-        var headings = new List<string>() { "h1", "h2", "h3", "h4", "h5", "h6" };
+        var headings = new List<string>()
+        {
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6"
+        };
         return headings.Contains(tag.ToLower());
     }
 

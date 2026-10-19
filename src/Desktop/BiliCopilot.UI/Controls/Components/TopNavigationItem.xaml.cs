@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.WinUIKernel.Share.Base;
 
 namespace BiliCopilot.UI.Controls.Components;
@@ -12,14 +10,22 @@ public sealed partial class TopNavigationItem : LayoutUserControlBase
     /// <summary>
     /// 标识 <see cref="IsSelected"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsSelectedProperty =
-        DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(TopNavigationItem), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register(
+        nameof(IsSelected),
+        typeof(bool),
+        typeof(TopNavigationItem),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// 标识 <see cref="Symbol"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SymbolProperty =
-        DependencyProperty.Register(nameof(Symbol), typeof(FluentIcons.Common.Symbol), typeof(TopNavigationItem), new PropertyMetadata(default));
+    public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
+        nameof(Symbol),
+        typeof(FluentIcons.Common.Symbol),
+        typeof(TopNavigationItem),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TopNavigationItem"/> class.

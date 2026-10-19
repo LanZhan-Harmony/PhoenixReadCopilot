@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
@@ -39,7 +37,10 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(VideoPlayerPartSectionDetailViewModel? oldValue, VideoPlayerPartSectionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        VideoPlayerPartSectionDetailViewModel? oldValue,
+        VideoPlayerPartSectionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -64,8 +65,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
         }
     }
 
-    private void OnPartChanged(object? sender, EventArgs e)
-        => UpdateSelection();
+    private void OnPartChanged(object? sender, EventArgs e) => UpdateSelection();
 
     private async void OnIndexToggledAsync(object sender, RoutedEventArgs e)
     {
@@ -95,13 +95,18 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
         }
 
         await Task.Delay(100);
-        View.StartBringItemIntoView(ViewModel.Parts.ToList().IndexOf(ViewModel.SelectedPart), new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 });
+        View.StartBringItemIntoView(
+            ViewModel.Parts.ToList().IndexOf(ViewModel.SelectedPart),
+            new BringIntoViewOptions
+            {
+                VerticalAlignmentRatio = 0.5
+            }
+        );
     }
 }
 
 /// <summary>
 /// 视频播放器分P部分.
 /// </summary>
-public abstract class VideoPartsSectionBase : LayoutUserControlBase<VideoPlayerPartSectionDetailViewModel>
-{
-}
+public abstract class VideoPartsSectionBase
+    : LayoutUserControlBase<VideoPlayerPartSectionDetailViewModel> { }

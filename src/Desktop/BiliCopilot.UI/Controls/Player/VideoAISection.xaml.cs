@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Controls.AI;
 
 namespace BiliCopilot.UI.Controls.Player;

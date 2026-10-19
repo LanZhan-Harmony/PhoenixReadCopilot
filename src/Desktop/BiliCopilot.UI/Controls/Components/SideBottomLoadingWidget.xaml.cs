@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.Components;
 
 /// <summary>
@@ -10,8 +8,12 @@ public sealed partial class SideBottomLoadingWidget : UserControl
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(SideBottomLoadingWidget), new PropertyMetadata(default));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(SideBottomLoadingWidget),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SideBottomLoadingWidget"/> class.

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using Humanizer;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -26,7 +24,10 @@ public sealed partial class ChatMessageItemViewModel : ViewModelBase<ChatMessage
         IsWithdrawn = data.Type == Richasy.BiliKernel.Models.ChatMessageType.Withdrawn;
         if (data.Type == Richasy.BiliKernel.Models.ChatMessageType.Unknown)
         {
-            Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NotSupportContent), default);
+            Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
+                ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NotSupportContent),
+                default
+            );
         }
     }
 }

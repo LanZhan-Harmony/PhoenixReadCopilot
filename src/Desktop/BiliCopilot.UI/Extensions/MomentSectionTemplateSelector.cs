@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using BiliCopilot.UI.ViewModels.Items;
 
@@ -24,6 +22,8 @@ internal sealed partial class MomentSectionTemplateSelector : DataTemplateSelect
         }
 
         var vm = (IMomentSectionDetailViewModel)item;
-        return vm.SectionType == Models.Constants.MomentSectionType.Video ? VideoTemplate : ComprehensiveTemplate;
+        return vm.SectionType == Models.Constants.MomentSectionType.Video
+            ? VideoTemplate
+            : ComprehensiveTemplate;
     }
 }

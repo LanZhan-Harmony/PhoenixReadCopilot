@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -35,7 +33,10 @@ public sealed partial class LiveSubPartitionMainBody : LiveSubPartitionControlBa
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(LivePartitionDetailViewModel? oldValue, LivePartitionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        LivePartitionDetailViewModel? oldValue,
+        LivePartitionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -58,13 +59,21 @@ public sealed partial class LiveSubPartitionMainBody : LiveSubPartitionControlBa
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (LiveScrollView.ExtentHeight - LiveScrollView.ViewportHeight - LiveScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadRoomsCommand.Execute(default);
+                if (
+                    LiveScrollView.ExtentHeight
+                    - LiveScrollView.ViewportHeight
+                    - LiveScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadRoomsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -77,19 +86,21 @@ public sealed partial class LiveSubPartitionMainBody : LiveSubPartitionControlBa
 
     private void CheckRoomCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (LiveScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadRoomsCommand.Execute(default);
+                if (LiveScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadRoomsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }
 
 /// <summary>
 /// 直播子分区详情基类.
 /// </summary>
-public abstract class LiveSubPartitionControlBase : LayoutUserControlBase<LivePartitionDetailViewModel>
-{
-}
+public abstract class LiveSubPartitionControlBase
+    : LayoutUserControlBase<LivePartitionDetailViewModel> { }

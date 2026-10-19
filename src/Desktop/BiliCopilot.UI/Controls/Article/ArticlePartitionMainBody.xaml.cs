@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 
 namespace BiliCopilot.UI.Controls.Article;
@@ -41,7 +39,10 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(ArticlePartitionDetailViewModel? oldValue, ArticlePartitionDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        ArticlePartitionDetailViewModel? oldValue,
+        ArticlePartitionDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -64,14 +65,23 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (ArticleScrollView.ExtentHeight - ArticleScrollView.ViewportHeight - ArticleScrollView.VerticalOffset <= 240)
+        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+            !args.IsIntermediate;
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadArticlesCommand.Execute(default);
+                if (
+                    ArticleScrollView.ExtentHeight
+                    - ArticleScrollView.ViewportHeight
+                    - ArticleScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadArticlesCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -84,12 +94,15 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
 
     private void CheckArticleCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (ArticleScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadArticlesCommand.Execute(default);
+                if (ArticleScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadArticlesCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

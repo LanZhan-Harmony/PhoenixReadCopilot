@@ -1,11 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.ComponentModel;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
 using BiliCopilot.UI.ViewModels.Items;
 using Microsoft.UI.Xaml.Input;
-using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Core;
 
@@ -47,8 +45,10 @@ public sealed partial class BiliPlayer : PlayerControlBase
     /// 获取当前是否有文本框获得焦点.
     /// </summary>
     /// <returns>结果.</returns>
-    public bool IsTextBoxFocused()
-        => _overlayContainer is not null ? FocusManager.GetFocusedElement(_overlayContainer.XamlRoot) is TextBox : false;
+    public bool IsTextBoxFocused() =>
+        _overlayContainer is not null
+            ? FocusManager.GetFocusedElement(_overlayContainer.XamlRoot) is TextBox
+            : false;
 
     /// <summary>
     /// 标记右箭头按下时间.
@@ -72,7 +72,10 @@ public sealed partial class BiliPlayer : PlayerControlBase
         {
             ToggleTripleSpeed(false);
         }
-        else if (_lastPressedTime == null || DateTimeOffset.Now - _lastPressedTime < TimeSpan.FromSeconds(1))
+        else if (
+            _lastPressedTime == null
+            || DateTimeOffset.Now - _lastPressedTime < TimeSpan.FromSeconds(1)
+        )
         {
             ViewModel.ForwardSkipCommand.Execute(default);
         }
@@ -100,12 +103,15 @@ public sealed partial class BiliPlayer : PlayerControlBase
         SizeChanged += OnSizeChanged;
 
         SetTransportVisibility(true);
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            ArrangeSubtitleSize();
-            MeasureTransportTriggerRect();
-            SetTransportVisibility(false);
-        });
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
+            {
+                ArrangeSubtitleSize();
+                MeasureTransportTriggerRect();
+                SetTransportVisibility(false);
+            }
+        );
 
         _cursorTimer?.Start();
     }
@@ -127,7 +133,10 @@ public sealed partial class BiliPlayer : PlayerControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(PlayerViewModelBase? oldValue, PlayerViewModelBase? newValue)
+    protected override void OnViewModelChanged(
+        PlayerViewModelBase? oldValue,
+        PlayerViewModelBase? newValue
+    )
     {
         if (newValue is null)
         {
@@ -149,10 +158,13 @@ public sealed partial class BiliPlayer : PlayerControlBase
         newValue.RequestCancelNotification += OnRequestCancelNotification;
         newValue.Initialized += OnViewModelInitialized;
 
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            ArrangeSubtitleSize();
-        });
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
+            {
+                ArrangeSubtitleSize();
+            }
+        );
     }
 
     private void HookRootPointerEvents()
@@ -198,7 +210,8 @@ public sealed partial class BiliPlayer : PlayerControlBase
     private void HookInteractionControlEvents()
     {
         _interactionControl.DoubleTapped += OnCoreDoubleTapped;
-        _interactionControl.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+        _interactionControl.ManipulationMode =
+            ManipulationModes.TranslateX | ManipulationModes.TranslateY;
         _interactionControl.ManipulationStarted += OnInteractionControlManipulationStarted;
         _interactionControl.ManipulationDelta += OnInteractionControlManipulationDelta;
         _interactionControl.ManipulationCompleted += OnInteractionControlManipulationCompleted;
@@ -230,10 +243,15 @@ public sealed partial class BiliPlayer : PlayerControlBase
         UnhookRootPointerEvents();
     }
 
-    private void HandlePointerEvent(PointerRoutedEventArgs e, bool forceHideTransportControls = false)
+    private void HandlePointerEvent(
+        PointerRoutedEventArgs e,
+        bool forceHideTransportControls = false
+    )
     {
         RestoreCursor();
-        var isManual = SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic) == MTCBehavior.Manual;
+        var isManual =
+            SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
+            == MTCBehavior.Manual;
         if (!isManual)
         {
             if (forceHideTransportControls)
@@ -260,7 +278,10 @@ public sealed partial class BiliPlayer : PlayerControlBase
 
     private void OnRequestCancelNotification(object? sender, EventArgs e)
     {
-        if (_notificationContainer is not null && _notificationContainer.Children.FirstOrDefault() is PlayerNotificationControl control)
+        if (
+            _notificationContainer is not null
+            && _notificationContainer.Children.FirstOrDefault() is PlayerNotificationControl control
+        )
         {
             control.ViewModel.CancelCommand.Execute(default);
             _notificationContainer.Children.Clear();
@@ -293,7 +314,9 @@ public sealed partial class BiliPlayer : PlayerControlBase
         }
 
         _isDoubleTapped = true;
-        var isManual = SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic) == MTCBehavior.Manual;
+        var isManual =
+            SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
+            == MTCBehavior.Manual;
         if (isManual)
         {
             ViewModel.TogglePlayPauseCommand.Execute(default);
@@ -316,7 +339,12 @@ public sealed partial class BiliPlayer : PlayerControlBase
             HandleViewModelPropertyChanged(e);
         }
 
-        if (ViewModel != null && e.PropertyName == "IsPaused" && _transportControl is not null && !ViewModel.IsExternalPlayer)
+        if (
+            ViewModel != null
+            && e.PropertyName == "IsPaused"
+            && _transportControl is not null
+            && !ViewModel.IsExternalPlayer
+        )
         {
             SetTransportVisibility(ViewModel.IsPaused);
         }

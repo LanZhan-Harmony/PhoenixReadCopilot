@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -20,7 +18,8 @@ public sealed partial class NotificationViewModel : ViewModelBase
     /// </summary>
     public NotificationViewModel(
         IMomentDiscoveryService momentService,
-        ILogger<NotificationViewModel> logger)
+        ILogger<NotificationViewModel> logger
+    )
     {
         _momentService = momentService;
         _logger = logger;
@@ -29,7 +28,10 @@ public sealed partial class NotificationViewModel : ViewModelBase
     [RelayCommand]
     private async Task TryStartAsync()
     {
-        var isNotifyEnabled = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.IsNotificationEnabled, true);
+        var isNotifyEnabled = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.IsNotificationEnabled,
+            true
+        );
         if (!isNotifyEnabled)
         {
             return;
@@ -63,6 +65,6 @@ public sealed partial class NotificationViewModel : ViewModelBase
         }
     }
 
-    private void OnTimerTick(object? sender, object e)
-        => TrySendVideoMomentNotificationsCommand.Execute(default);
+    private void OnTimerTick(object? sender, object e) =>
+        TrySendVideoMomentNotificationsCommand.Execute(default);
 }

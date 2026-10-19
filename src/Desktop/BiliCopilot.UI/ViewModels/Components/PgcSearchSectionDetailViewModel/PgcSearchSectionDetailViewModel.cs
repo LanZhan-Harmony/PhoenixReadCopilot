@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
@@ -14,13 +12,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// PGC搜索分区详情视图模型.
 /// </summary>
-public sealed partial class PgcSearchSectionDetailViewModel : ViewModelBase, ISearchSectionDetailViewModel
+public sealed partial class PgcSearchSectionDetailViewModel
+    : ViewModelBase,
+        ISearchSectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcSearchSectionDetailViewModel"/> class.
     /// </summary>
-    public PgcSearchSectionDetailViewModel(
-        ISearchService service)
+    public PgcSearchSectionDetailViewModel(ISearchService service)
     {
         _service = service;
         _logger = this.Get<ILogger<PgcSearchSectionDetailViewModel>>();
@@ -48,8 +47,7 @@ public sealed partial class PgcSearchSectionDetailViewModel : ViewModelBase, ISe
     }
 
     [RelayCommand]
-    private Task TryFirstLoadAsync()
-        => Items.Count > 0 ? Task.CompletedTask : LoadItemsAsync();
+    private Task TryFirstLoadAsync() => Items.Count > 0 ? Task.CompletedTask : LoadItemsAsync();
 
     [RelayCommand]
     private async Task LoadItemsAsync()
@@ -62,7 +60,11 @@ public sealed partial class PgcSearchSectionDetailViewModel : ViewModelBase, ISe
         try
         {
             IsLoading = true;
-            var (result, nextOffset) = await _service.GetPartitionSearchResultAsync(_keyword, _partition, _offset);
+            var (result, nextOffset) = await _service.GetPartitionSearchResultAsync(
+                _keyword,
+                _partition,
+                _offset
+            );
             _offset = nextOffset;
             _canRequest = !string.IsNullOrEmpty(_offset);
             foreach (var item in result)

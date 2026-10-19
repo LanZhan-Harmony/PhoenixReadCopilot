@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,6 +17,4 @@ public sealed partial class PartitionItemControl : PartitionItemControlBase
 /// <summary>
 /// 分区控件基类.
 /// </summary>
-public abstract class PartitionItemControlBase : LayoutUserControlBase<PartitionViewModel>
-{
-}
+public abstract class PartitionItemControlBase : LayoutUserControlBase<PartitionViewModel> { }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.UI.Xaml.Data;
@@ -21,5 +19,6 @@ internal sealed partial class NotifyMessageTextConverter : IValueConverter
         };
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.Search;
 
 /// <summary>

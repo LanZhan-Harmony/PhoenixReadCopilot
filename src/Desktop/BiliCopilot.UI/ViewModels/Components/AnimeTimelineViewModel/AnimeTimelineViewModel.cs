@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -17,8 +15,7 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
     /// <summary>
     /// Initializes a new instance of the <see cref="AnimeTimelineViewModel"/> class.
     /// </summary>
-    public AnimeTimelineViewModel(
-        IEntertainmentDiscoveryService discoveryService)
+    public AnimeTimelineViewModel(IEntertainmentDiscoveryService discoveryService)
     {
         _service = discoveryService;
         _logger = this.Get<ILogger<AnimeTimelineViewModel>>();
@@ -60,7 +57,9 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
             }
 
             var combinedTimelines = new List<TimelineItemViewModel>();
-            var todayIndex = bangumiTimelines.ToList().IndexOf(bangumiTimelines.FirstOrDefault(p => p.IsToday));
+            var todayIndex = bangumiTimelines
+                .ToList()
+                .IndexOf(bangumiTimelines.FirstOrDefault(p => p.IsToday));
             for (var i = 0; i < bangumiTimelines.Count; i++)
             {
                 var domestic = domesticTimelines[i];
@@ -76,13 +75,18 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
                     seasons = seasons.Concat(bangumi.Seasons).ToList();
                 }
 
-                seasons = seasons.OrderBy(p => p.GetExtensionIfNotNull<DateTimeOffset>(SeasonExtensionDataId.PublishTime)).ToList();
+                seasons = seasons
+                    .OrderBy(p =>
+                        p.GetExtensionIfNotNull<DateTimeOffset>(SeasonExtensionDataId.PublishTime)
+                    )
+                    .ToList();
                 var combined = new TimelineInformation(
                     bangumi.Date,
                     bangumi.DayOfWeek,
                     bangumi.TimeStamp,
                     bangumi.IsToday,
-                    seasons);
+                    seasons
+                );
                 combinedTimelines.Add(new TimelineItemViewModel(combined));
             }
 
@@ -114,7 +118,8 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
             SelectedTimeline.Items = default;
         }
 
-        Timelines = new System.Collections.ObjectModel.ObservableCollection<TimelineItemViewModel>();
+        Timelines =
+            new System.Collections.ObjectModel.ObservableCollection<TimelineItemViewModel>();
         SelectedTimeline = default;
         await InitializeAsync();
     }
@@ -130,6 +135,5 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
         SelectedTimeline = vm;
     }
 
-    private void CheckEmpty()
-        => IsEmpty = Timelines.Count == 0 && !IsTimelineLoading;
+    private void CheckEmpty() => IsEmpty = Timelines.Count == 0 && !IsTimelineLoading;
 }

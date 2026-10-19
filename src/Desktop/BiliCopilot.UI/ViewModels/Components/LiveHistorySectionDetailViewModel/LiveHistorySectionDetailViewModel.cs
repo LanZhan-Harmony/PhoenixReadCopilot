@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -12,13 +10,14 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// 直播历史记录分区详情视图模型.
 /// </summary>
-public sealed partial class LiveHistorySectionDetailViewModel : ViewModelBase, IHistorySectionDetailViewModel
+public sealed partial class LiveHistorySectionDetailViewModel
+    : ViewModelBase,
+        IHistorySectionDetailViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="LiveHistorySectionDetailViewModel"/> class.
     /// </summary>
-    public LiveHistorySectionDetailViewModel(
-        IViewHistoryService service)
+    public LiveHistorySectionDetailViewModel(IViewHistoryService service)
     {
         _service = service;
         _logger = this.Get<ILogger<LiveHistorySectionDetailViewModel>>();
@@ -40,12 +39,16 @@ public sealed partial class LiveHistorySectionDetailViewModel : ViewModelBase, I
     {
         IsEmpty = false;
         _isPreventLoadMore = false;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Items.Clear();
-            _offset = 0;
-            await LoadItemsAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    Items.Clear();
+                    _offset = 0;
+                    await LoadItemsAsync();
+                }
+            );
 
         return Task.CompletedTask;
     }
@@ -68,7 +71,13 @@ public sealed partial class LiveHistorySectionDetailViewModel : ViewModelBase, I
             {
                 foreach (var live in group.Lives)
                 {
-                    Items.Add(new LiveItemViewModel(live, Models.Constants.LiveCardStyle.History, removeAction: RemoveHistory));
+                    Items.Add(
+                        new LiveItemViewModel(
+                            live,
+                            Models.Constants.LiveCardStyle.History,
+                            removeAction: RemoveHistory
+                        )
+                    );
                 }
             }
 

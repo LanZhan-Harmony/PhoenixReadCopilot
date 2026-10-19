@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -17,9 +15,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPageViewModel"/> class.
     /// </summary>
-    public FansPageViewModel(
-        IRelationshipService service,
-        ILogger<FansPageViewModel> logger)
+    public FansPageViewModel(IRelationshipService service, ILogger<FansPageViewModel> logger)
     {
         _service = service;
         _logger = logger;
@@ -42,11 +38,15 @@ public sealed partial class FansPageViewModel : ViewModelBase
         IsEmpty = false;
         _pageNumber = 0;
         TotalCount = 0;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Users.Clear();
-            await InitializeAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    Users.Clear();
+                    await InitializeAsync();
+                }
+            );
     }
 
     [RelayCommand]

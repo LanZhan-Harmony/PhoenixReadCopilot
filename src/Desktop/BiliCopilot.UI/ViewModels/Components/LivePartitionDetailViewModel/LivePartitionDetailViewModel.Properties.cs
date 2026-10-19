@@ -1,11 +1,9 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models.Media;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.Components;
 
@@ -21,14 +19,11 @@ public sealed partial class LivePartitionDetailViewModel
 
     private bool _preventLoadMore;
 
-    [ObservableProperty]
-    private List<LiveTag>? _children;
+    [ObservableProperty] private List<LiveTag>? _children;
 
-    [ObservableProperty]
-    private bool _isLiveLoading;
+    [ObservableProperty] private bool _isLiveLoading;
 
-    [ObservableProperty]
-    private LiveTag _currentTag;
+    [ObservableProperty] private LiveTag _currentTag;
 
     /// <summary>
     /// 初始化完成.

@@ -1,7 +1,5 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
-using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 using Windows.Foundation.Diagnostics;
 
 namespace Danmaku.Core;
@@ -15,14 +13,21 @@ internal static class Logger
         _logger = logger;
     }
 
-    public static void Log(string message, LoggingLevel level = LoggingLevel.Information, [CallerMemberName] string memberName = null, [CallerFilePath] string filePath = null, [CallerLineNumber] int lineNumber = 0)
+    public static void Log(
+        string message,
+        LoggingLevel level = LoggingLevel.Information,
+        [CallerMemberName] string memberName = null,
+        [CallerFilePath] string filePath = null,
+        [CallerLineNumber] int lineNumber = 0
+    )
     {
         if (!string.IsNullOrWhiteSpace(filePath))
         {
             filePath = Path.GetFileName(filePath);
         }
 
-        message = $"{filePath ?? string.Empty}({lineNumber})->{memberName ?? string.Empty}(): {message ?? string.Empty}";
+        message =
+            $"{filePath ?? string.Empty}({lineNumber})->{memberName ?? string.Empty}(): {message ?? string.Empty}";
 
         if (level == LoggingLevel.Error)
         {

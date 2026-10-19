@@ -1,10 +1,8 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.ComponentModel;
 using BiliCopilot.UI.Toolkits;
 using Richasy.WinUIKernel.AI.ViewModels;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
-using System.ComponentModel;
 
 namespace BiliCopilot.UI.Controls.Components;
 
@@ -54,7 +52,10 @@ public sealed partial class ChatModelCardControl : LayoutControlBase<ChatModelIt
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(ChatModelItemViewModel? oldValue, ChatModelItemViewModel? newValue)
+    protected override void OnViewModelChanged(
+        ChatModelItemViewModel? oldValue,
+        ChatModelItemViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -107,23 +108,35 @@ public sealed partial class ChatModelCardControl : LayoutControlBase<ChatModelIt
     private MenuFlyout CreateMoreFlyout()
     {
         var flyout = new MenuFlyout();
-        flyout.Items.Add(new MenuFlyoutItem
-        {
-            Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Modify),
-            MinWidth = 160,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Edit },
-            Tag = nameof(ViewModel.ModifyCommand),
-            Command = ViewModel.ModifyCommand,
-        });
+        flyout.Items.Add(
+            new MenuFlyoutItem
+            {
+                Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Modify),
+                MinWidth = 160,
+                Icon = new FluentIcons.WinUI.SymbolIcon
+                {
+                    Symbol = FluentIcons.Common.Symbol.Edit
+                },
+                Tag = nameof(ViewModel.ModifyCommand),
+                Command = ViewModel.ModifyCommand,
+            }
+        );
 
-        flyout.Items.Add(new MenuFlyoutItem
-        {
-            Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Delete),
-            MinWidth = 160,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Delete, Foreground = this.Get<IResourceToolkit>().GetThemeBrush("SystemFillColorCriticalBrush") },
-            Tag = nameof(ViewModel.DeleteCommand),
-            Command = ViewModel.DeleteCommand,
-        });
+        flyout.Items.Add(
+            new MenuFlyoutItem
+            {
+                Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Delete),
+                MinWidth = 160,
+                Icon = new FluentIcons.WinUI.SymbolIcon
+                {
+                    Symbol = FluentIcons.Common.Symbol.Delete,
+                    Foreground = this.Get<IResourceToolkit>()
+                        .GetThemeBrush("SystemFillColorCriticalBrush"),
+                },
+                Tag = nameof(ViewModel.DeleteCommand),
+                Command = ViewModel.DeleteCommand,
+            }
+        );
 
         return flyout;
     }

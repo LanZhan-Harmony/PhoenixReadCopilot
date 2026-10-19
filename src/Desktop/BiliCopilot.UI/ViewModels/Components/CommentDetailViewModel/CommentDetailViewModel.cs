@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -17,7 +15,11 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentDetailViewModel"/> class.
     /// </summary>
-    public CommentDetailViewModel(CommentItemViewModel data, Action<CommentDetailViewModel> showMoreAction, ICommentService service)
+    public CommentDetailViewModel(
+        CommentItemViewModel data,
+        Action<CommentDetailViewModel> showMoreAction,
+        ICommentService service
+    )
         : base(data)
     {
         _service = service;
@@ -49,7 +51,13 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             IsLoading = true;
             var targetId = Data.Data.CommentId;
             var targetType = Data.Data.CommentType;
-            var view = await _service.GetDetailCommentsAsync(targetId, targetType, Richasy.BiliKernel.Models.CommentSortType.Time, Data.Data.Id, _offset);
+            var view = await _service.GetDetailCommentsAsync(
+                targetId,
+                targetType,
+                Richasy.BiliKernel.Models.CommentSortType.Time,
+                Data.Data.Id,
+                _offset
+            );
             _offset = view.NextOffset;
             _preventLoadMore = view.NextOffset == 0 || view.Comments is null;
             foreach (var item in view.Comments)
@@ -80,7 +88,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void Refresh()
     {
         Clear();
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () => await LoadItemsAsync());
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(DispatcherQueuePriority.Low, async () => await LoadItemsAsync());
     }
 
     [RelayCommand]
@@ -115,7 +124,13 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         var replyCommentId = _replyItem is null ? rootId : _replyItem.Data.Id;
         try
         {
-            await _service.SendTextCommentAsync(content, targetId, Data.Data.CommentType, rootId, replyCommentId);
+            await _service.SendTextCommentAsync(
+                content,
+                targetId,
+                Data.Data.CommentType,
+                rootId,
+                replyCommentId
+            );
             await Task.Delay(500);
             Refresh();
         }

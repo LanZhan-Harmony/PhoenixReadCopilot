@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -42,14 +40,23 @@ public sealed partial class LiveSectionDetailControl : LiveSectionDetailControlB
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (LiveScrollView.ExtentHeight - LiveScrollView.ViewportHeight - LiveScrollView.VerticalOffset <= 240)
+        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+            !args.IsIntermediate;
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (
+                    LiveScrollView.ExtentHeight
+                    - LiveScrollView.ViewportHeight
+                    - LiveScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -62,19 +69,21 @@ public sealed partial class LiveSectionDetailControl : LiveSectionDetailControlB
 
     private void CheckLiveCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (LiveScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (LiveScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }
 
 /// <summary>
 /// 直播搜索分区详情控件基类.
 /// </summary>
-public abstract class LiveSectionDetailControlBase : LayoutUserControlBase<LiveSearchSectionDetailViewModel>
-{
-}
+public abstract class LiveSectionDetailControlBase
+    : LayoutUserControlBase<LiveSearchSectionDetailViewModel> { }

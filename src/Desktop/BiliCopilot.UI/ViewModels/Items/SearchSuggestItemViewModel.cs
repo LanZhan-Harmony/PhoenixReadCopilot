@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Models.Search;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -11,11 +9,9 @@ namespace BiliCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class SearchSuggestItemViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private string _searchContent;
+    [ObservableProperty] private string _searchContent;
 
-    [ObservableProperty]
-    private string? _regionName;
+    [ObservableProperty] private string? _regionName;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSuggestItemViewModel"/> class.
@@ -46,7 +42,10 @@ public sealed partial class SearchSuggestItemViewModel : ViewModelBase
     public string? RegionId { get; set; }
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is SearchSuggestItemViewModel model && Keyword == model.Keyword && RegionId == model.RegionId;
+    public override bool Equals(object? obj) =>
+        obj is SearchSuggestItemViewModel model
+        && Keyword == model.Keyword
+        && RegionId == model.RegionId;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Keyword, RegionId);

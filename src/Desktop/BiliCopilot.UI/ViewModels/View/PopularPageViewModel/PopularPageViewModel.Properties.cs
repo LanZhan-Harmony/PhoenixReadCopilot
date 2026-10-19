@@ -1,10 +1,8 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
+using System.Collections.ObjectModel;
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
-using System.Collections.ObjectModel;
 
 namespace BiliCopilot.UI.ViewModels.View;
 
@@ -15,19 +13,19 @@ public sealed partial class PopularPageViewModel
 {
     private readonly IVideoDiscoveryService _service;
     private readonly ILogger<PopularPageViewModel> _logger;
-    private readonly Dictionary<IPopularSectionItemViewModel, List<VideoItemViewModel>> _videoCache = new();
+    private readonly Dictionary<
+        IPopularSectionItemViewModel,
+        List<VideoItemViewModel>
+    > _videoCache = new();
 
     private long _recommendOffset;
     private long _hotOffset;
 
-    [ObservableProperty]
-    private bool _isPartitionLoading;
+    [ObservableProperty] private bool _isPartitionLoading;
 
-    [ObservableProperty]
-    private bool _isVideoLoading;
+    [ObservableProperty] private bool _isVideoLoading;
 
-    [ObservableProperty]
-    private IPopularSectionItemViewModel _selectedSection;
+    [ObservableProperty] private IPopularSectionItemViewModel _selectedSection;
 
     /// <summary>
     /// 区块加载完成.

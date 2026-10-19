@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Richasy.BiliKernel.Models.Appearance;
 
 namespace BiliCopilot.UI.ViewModels.Items;

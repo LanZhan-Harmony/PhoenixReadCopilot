@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
@@ -25,7 +23,9 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     {
         _logger = this.Get<ILogger<PlayerViewModelBase>>();
         _dispatcherQueue = this.Get<DispatcherQueue>();
-        IsExternalPlayer = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island) == PlayerType.External;
+        IsExternalPlayer =
+            SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island)
+            == PlayerType.External;
     }
 
     /// <summary>
@@ -69,7 +69,14 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// 设置播放数据.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    public virtual async Task SetPlayDataAsync(string? videoUrl, string? audioUrl, bool isAutoPlay, int position = 0, string? contentType = default, string? extraOptions = default)
+    public virtual async Task SetPlayDataAsync(
+        string? videoUrl,
+        string? audioUrl,
+        bool isAutoPlay,
+        int position = 0,
+        string? contentType = default,
+        string? extraOptions = default
+    )
     {
         _isClosed = false;
         if (_smtc is null)
@@ -84,7 +91,10 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             // 独立窗口播放时默认全窗口播放. 外置播放器播放时除外.
             if (!IsExternalPlayer)
             {
-                var defaultDisplay = SettingsToolkit.ReadLocalSetting(SettingNames.DefaultPlayerDisplayMode, PlayerDisplayMode.Default);
+                var defaultDisplay = SettingsToolkit.ReadLocalSetting(
+                    SettingNames.DefaultPlayerDisplayMode,
+                    PlayerDisplayMode.Default
+                );
                 if (!IsFullScreen && defaultDisplay == PlayerDisplayMode.FullScreen)
                 {
                     ToggleFullScreenCommand.Execute(default);
@@ -118,7 +128,10 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         var localSpeed = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerSpeed, 1.0);
         Volume = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerVolume, 100);
         Speed = isSpeedShare ? localSpeed : 1.0;
-        var isSpeedEnhancement = SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerSpeedEnhancement, false);
+        var isSpeedEnhancement = SettingsToolkit.ReadLocalSetting(
+            SettingNames.IsPlayerSpeedEnhancement,
+            false
+        );
         MaxSpeed = isSpeedEnhancement ? 6.0 : 3.0;
         SpeedStep = isSpeedEnhancement ? 0.1 : 0.25;
 
@@ -132,44 +145,37 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <summary>
     /// 注入进度改变时的回调.
     /// </summary>
-    public void SetProgressAction(Action<int, int> action)
-        => _progressAction = action;
+    public void SetProgressAction(Action<int, int> action) => _progressAction = action;
 
     /// <summary>
     /// 注入窗口状态改变时的回调.
     /// </summary>
-    public void SetWindowStateChangeAction(Action action)
-        => _windowStateChangeAction = action;
+    public void SetWindowStateChangeAction(Action action) => _windowStateChangeAction = action;
 
     /// <summary>
     /// 注入状态改变时的回调.
     /// </summary>
-    public void SetStateAction(Action<PlayerState> action)
-        => _stateAction = action;
+    public void SetStateAction(Action<PlayerState> action) => _stateAction = action;
 
     /// <summary>
     /// 注入速度改变时的回调.
     /// </summary>
-    public void SetSpeedAction(Action<double> action)
-        => _speedAction = action;
+    public void SetSpeedAction(Action<double> action) => _speedAction = action;
 
     /// <summary>
     /// 注入播放结束时的回调.
     /// </summary>
-    public void SetEndAction(Action action)
-        => _endAction = action;
+    public void SetEndAction(Action action) => _endAction = action;
 
     /// <summary>
     /// 注入重新加载时的回调.
     /// </summary>
-    public void SetReloadAction(Action action)
-        => _reloadAction = action;
+    public void SetReloadAction(Action action) => _reloadAction = action;
 
     /// <summary>
     /// 注入检查输入框是否聚焦的回调.
     /// </summary>
-    public void SetIsTextBoxFocusedFunc(Func<bool> func)
-        => _isTextBoxFocusedFunc = func;
+    public void SetIsTextBoxFocusedFunc(Func<bool> func) => _isTextBoxFocusedFunc = func;
 
     /// <summary>
     /// 关闭播放器.
@@ -203,8 +209,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <summary>
     /// 取消通知.
     /// </summary>
-    public void CancelNotification()
-        => RequestCancelNotification?.Invoke(this, EventArgs.Empty);
+    public void CancelNotification() => RequestCancelNotification?.Invoke(this, EventArgs.Empty);
 
     /// <summary>
     /// 检查底部进度条是否可见.
@@ -212,23 +217,23 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <param name="shouldShow">是否需要显示.</param>
     public void CheckBottomProgressVisibility(bool shouldShow)
     {
-        var isEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsBottomProgressVisible, true);
+        var isEnabled = SettingsToolkit.ReadLocalSetting(
+            SettingNames.IsBottomProgressVisible,
+            true
+        );
         IsBottomProgressVisible = isEnabled && shouldShow && !IsLive;
     }
 
     /// <summary>
     /// 在加载播放数据之前.
     /// </summary>
-    protected virtual void BeforeLoadPlayData()
-    {
-    }
+    protected virtual void BeforeLoadPlayData() { }
 
     /// <summary>
     /// 准备关闭.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    protected virtual Task OnCloseAsync()
-        => Task.CompletedTask;
+    protected virtual Task OnCloseAsync() => Task.CompletedTask;
 
     /// <summary>
     /// 尝试加载播放数据.

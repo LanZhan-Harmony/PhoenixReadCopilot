@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Controls.Core;
 using BiliCopilot.UI.Controls.Danmaku;
 using BiliCopilot.UI.ViewModels.View;
@@ -27,14 +25,13 @@ public sealed partial class LivePlayerPage : LivePlayerPageBase
     /// <summary>
     /// 进入播放器主持模式.
     /// </summary>
-    public void EnterPlayerHostMode()
-        => VisualStateManager.GoToState(this, "PlayerHostState", false);
+    public void EnterPlayerHostMode() =>
+        VisualStateManager.GoToState(this, "PlayerHostState", false);
 
     /// <summary>
     /// 退出播放器主持模式.
     /// </summary>
-    public void ExitPlayerHostMode()
-        => VisualStateManager.GoToState(this, "DefaultState", false);
+    public void ExitPlayerHostMode() => VisualStateManager.GoToState(this, "DefaultState", false);
 
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -51,14 +48,24 @@ public sealed partial class LivePlayerPage : LivePlayerPageBase
     }
 
     /// <inheritdoc/>
-    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        => ViewModel.CleanCommand.Execute(default);
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
+        ViewModel.CleanCommand.Execute(default);
 
-    private DanmakuControlBase CreateDanmakuControl()
-        => new LiveDanmakuPanel { ViewModel = ViewModel.Danmaku };
+    private DanmakuControlBase CreateDanmakuControl() =>
+        new LiveDanmakuPanel
+        {
+            ViewModel = ViewModel.Danmaku
+        };
 
-    private FrameworkElement CreateTransportControl()
-        => new LiveTransportControl { MaxWidth = 640, Margin = new Thickness(12), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Bottom, ViewModel = ViewModel };
+    private FrameworkElement CreateTransportControl() =>
+        new LiveTransportControl
+        {
+            MaxWidth = 640,
+            Margin = new Thickness(12),
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            ViewModel = ViewModel,
+        };
 }
 
 /// <summary>

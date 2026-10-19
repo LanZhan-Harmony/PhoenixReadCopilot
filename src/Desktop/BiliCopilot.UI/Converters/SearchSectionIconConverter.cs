@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using Microsoft.UI.Xaml.Data;
 
@@ -18,9 +16,10 @@ internal sealed partial class SearchSectionIconConverter : IValueConverter
             SearchSectionType.User => FluentIcons.Common.Symbol.People,
             SearchSectionType.Cinema => FluentIcons.Common.Symbol.MoviesAndTv,
             SearchSectionType.Article => FluentIcons.Common.Symbol.DocumentBulletList,
-            _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

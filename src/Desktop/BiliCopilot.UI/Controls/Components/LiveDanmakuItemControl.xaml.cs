@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -19,6 +17,5 @@ public sealed partial class LiveDanmakuItemControl : LiveDanmakuItemControlBase
 /// <summary>
 /// 直播弹幕项控件基类.
 /// </summary>
-public abstract class LiveDanmakuItemControlBase : LayoutUserControlBase<LiveDanmakuItemViewModel>
-{
-}
+public abstract class LiveDanmakuItemControlBase
+    : LayoutUserControlBase<LiveDanmakuItemViewModel> { }

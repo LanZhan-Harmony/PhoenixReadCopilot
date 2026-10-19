@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
 
@@ -37,7 +35,10 @@ public sealed partial class WebDavPlayerSideBody : WebDavPlayerPageControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(WebDavPlayerPageViewModel? oldValue, WebDavPlayerPageViewModel? newValue)
+    protected override void OnViewModelChanged(
+        WebDavPlayerPageViewModel? oldValue,
+        WebDavPlayerPageViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -52,8 +53,8 @@ public sealed partial class WebDavPlayerSideBody : WebDavPlayerPageControlBase
         newValue.VideoSelectionChanged += OnViewModelVideoSelectionChangedAsync;
     }
 
-    private async void OnViewModelVideoSelectionChangedAsync(object? sender, EventArgs e)
-        => await CheckSelectedItemAsync();
+    private async void OnViewModelVideoSelectionChangedAsync(object? sender, EventArgs e) =>
+        await CheckSelectedItemAsync();
 
     private void OnVideoSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
@@ -74,7 +75,13 @@ public sealed partial class WebDavPlayerSideBody : WebDavPlayerPageControlBase
 
         var index = ViewModel.Playlist.ToList().IndexOf(ViewModel.Current);
         View.Select(index);
-        View.StartBringItemIntoView(index, new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 });
+        View.StartBringItemIntoView(
+            index,
+            new BringIntoViewOptions
+            {
+                VerticalAlignmentRatio = 0.5
+            }
+        );
     }
 
     private async void OnSizeChangedAsync(object sender, SizeChangedEventArgs e)

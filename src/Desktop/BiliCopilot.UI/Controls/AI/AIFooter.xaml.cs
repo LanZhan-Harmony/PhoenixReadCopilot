@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.System;
@@ -17,18 +15,24 @@ public sealed partial class AIFooter : AIControlBase
     /// </summary>
     public AIFooter() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => PromptRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => PromptRepeater.ItemsSource = null;
 
-    private void OnMorePromptButtonClick(object sender, RoutedEventArgs e)
-        => FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+    private void OnMorePromptButtonClick(object sender, RoutedEventArgs e) =>
+        FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
 
-    private void OnInputBoxPreviewKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+    private void OnInputBoxPreviewKeyDown(
+        object sender,
+        Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e
+    )
     {
         if (e.Key == VirtualKey.Enter)
         {
-            var shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(Windows.System.VirtualKey.Shift);
-            var isShiftDown = shiftState == CoreVirtualKeyStates.Down || shiftState == (CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked);
+            var shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(
+                Windows.System.VirtualKey.Shift
+            );
+            var isShiftDown =
+                shiftState == CoreVirtualKeyStates.Down
+                || shiftState == (CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked);
 
             if (!isShiftDown)
             {
@@ -39,6 +43,5 @@ public sealed partial class AIFooter : AIControlBase
         }
     }
 
-    private void OnQuickItemClick(object sender, RoutedEventArgs e)
-        => MorePromptFlyout.Hide();
+    private void OnQuickItemClick(object sender, RoutedEventArgs e) => MorePromptFlyout.Hide();
 }

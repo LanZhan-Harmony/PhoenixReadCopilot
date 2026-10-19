@@ -1,5 +1,3 @@
-// Copyright (c) Bili Copilot. All rights reserved.
-
 using System.Text.RegularExpressions;
 using BiliCopilot.UI.Forms;
 using Microsoft.UI.Xaml.Documents;
@@ -140,25 +138,37 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
                             VerticalAlignment = VerticalAlignment.Center,
                             Margin = new Thickness(2, 0, 2, -4),
                         };
-                        var bitmap = new BitmapImage(emoji.Uri) { DecodePixelWidth = 40 };
+                        var bitmap = new BitmapImage(emoji.Uri)
+                        {
+                            DecodePixelWidth = 40
+                        };
                         img.Source = bitmap;
                         inlineCon.Child = img;
                         para.Inlines.Add(inlineCon);
                     }
                     else
                     {
-                        para.Inlines.Add(new Run { Text = content });
+                        para.Inlines.Add(new Run
+                        {
+                            Text = content
+                        });
                     }
                 }
                 else
                 {
-                    para.Inlines.Add(new Run { Text = content });
+                    para.Inlines.Add(new Run
+                    {
+                        Text = content
+                    });
                 }
             }
         }
         else
         {
-            para.Inlines.Add(new Run { Text = text });
+            para.Inlines.Add(new Run
+            {
+                Text = text
+            });
         }
 
         return para;

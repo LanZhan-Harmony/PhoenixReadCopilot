@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Pages;
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.Toolkits;
@@ -25,7 +23,8 @@ public sealed partial class AccountViewModel : ViewModelBase
         IMyProfileService myProfileService,
         IMessageService messageService,
         NavigationViewModel navService,
-        ILogger<AccountViewModel> logger)
+        ILogger<AccountViewModel> logger
+    )
     {
         _navService = navService;
         _messageService = messageService;
@@ -59,10 +58,18 @@ public sealed partial class AccountViewModel : ViewModelBase
             // 用户可能更改了密码，提醒用户是否需要重新登录.
             var dialog = new ContentDialog()
             {
-                Title = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoginExpiredTitle),
-                Content = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoginExpiredDescription),
-                PrimaryButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.ReSignIn),
-                CloseButtonText = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Exit),
+                Title = ResourceToolkit.GetLocalizedString(
+                    Models.Constants.StringNames.LoginExpiredTitle
+                ),
+                Content = ResourceToolkit.GetLocalizedString(
+                    Models.Constants.StringNames.LoginExpiredDescription
+                ),
+                PrimaryButtonText = ResourceToolkit.GetLocalizedString(
+                    Models.Constants.StringNames.ReSignIn
+                ),
+                CloseButtonText = ResourceToolkit.GetLocalizedString(
+                    Models.Constants.StringNames.Exit
+                ),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
             };
@@ -123,28 +130,23 @@ public sealed partial class AccountViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowFans()
-        => _navService.NavigateToOver(typeof(FansPage), MyProfile.User.Id);
+    private void ShowFans() => _navService.NavigateToOver(typeof(FansPage), MyProfile.User.Id);
 
     [RelayCommand]
-    private void ShowFollows()
-        => _navService.NavigateToOver(typeof(FollowsPage), MyProfile.User.Id);
+    private void ShowFollows() =>
+        _navService.NavigateToOver(typeof(FollowsPage), MyProfile.User.Id);
 
     [RelayCommand]
-    private void ShowMoments()
-        => _navService.NavigateToOver(typeof(UserSpacePage), MyProfile.User);
+    private void ShowMoments() => _navService.NavigateToOver(typeof(UserSpacePage), MyProfile.User);
 
     [RelayCommand]
-    private void ShowViewLater()
-        => _navService.NavigateToOver(typeof(ViewLaterPage));
+    private void ShowViewLater() => _navService.NavigateToOver(typeof(ViewLaterPage));
 
     [RelayCommand]
-    private void ShowHistory()
-        => _navService.NavigateToOver(typeof(HistoryPage));
+    private void ShowHistory() => _navService.NavigateToOver(typeof(HistoryPage));
 
     [RelayCommand]
-    private void ShowFavorites()
-        => _navService.NavigateToOver(typeof(FavoritesPage));
+    private void ShowFavorites() => _navService.NavigateToOver(typeof(FavoritesPage));
 
     [RelayCommand]
     private async Task UpdateUnreadAsync()
@@ -152,7 +154,9 @@ public sealed partial class AccountViewModel : ViewModelBase
         try
         {
             var unreadInfo = await _messageService.GetUnreadInformationAsync();
-            _navService.FooterItems.First(p => p.PageKey == typeof(MessagePage).FullName).ShowUnread = unreadInfo.Total > 0;
+            _navService
+                .FooterItems.First(p => p.PageKey == typeof(MessagePage).FullName)
+                .ShowUnread = unreadInfo.Total > 0;
         }
         catch (Exception ex)
         {

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;

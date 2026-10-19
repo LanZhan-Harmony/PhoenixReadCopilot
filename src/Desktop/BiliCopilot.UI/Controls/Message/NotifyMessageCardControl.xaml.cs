@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -22,4 +20,5 @@ public sealed partial class NotifyMessageCardControl : NotifyMessageCardControlB
 /// <summary>
 /// 通知消息卡片控件.
 /// </summary>
-public abstract class NotifyMessageCardControlBase : LayoutUserControlBase<NotifyMessageItemViewModel>;
+public abstract class NotifyMessageCardControlBase
+    : LayoutUserControlBase<NotifyMessageItemViewModel>;

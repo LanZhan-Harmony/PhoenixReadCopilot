@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Core;
@@ -25,12 +23,13 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPageViewModel"/> class.
     /// </summary>
-    public GalleryPageViewModel(
-        BiliImage image,
-        List<BiliImage>? images = default)
+    public GalleryPageViewModel(BiliImage image, List<BiliImage>? images = default)
     {
         SelectedImage = image;
-        Images = images ?? new List<BiliImage> { image };
+        Images = images ?? new List<BiliImage>
+        {
+            image
+        };
         IsGroup = Images?.Count > 1;
         IsMenuHide = false;
     }
@@ -84,7 +83,13 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         dp.SetWebLink(SelectedImage.SourceUri);
         dp.SetBitmap(RandomAccessStreamReference.CreateFromUri(SelectedImage.SourceUri));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Copied), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (
+                    ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Copied),
+                    InfoType.Success
+                )
+            );
     }
 
     [RelayCommand]
@@ -104,7 +109,10 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         };
 
         savePicker.FileTypeChoices.Add($"{extension.TrimStart('.').ToUpper()} 图片", [extension]);
-        InitializeWithWindow.Initialize(savePicker, this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle());
+        InitializeWithWindow.Initialize(
+            savePicker,
+            this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle()
+        );
         var file = await savePicker.PickSaveFileAsync();
         if (file is null)
         {
@@ -115,7 +123,10 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         using var client = new HttpClient();
         using var response = await client.GetAsync(SelectedImage.SourceUri);
         await response.Content.CopyToAsync(stream);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.Saved), InfoType.Success));
+        this.Get<AppViewModel>()
+            .ShowTipCommand.Execute(
+                (ResourceToolkit.GetLocalizedString(StringNames.Saved), InfoType.Success)
+            );
     }
 
     [RelayCommand]
@@ -128,7 +139,10 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         var profileSettings = UserProfilePersonalizationSettings.Current;
         var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
-        var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("TempImages", CreationCollisionOption.OpenIfExists);
+        var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(
+            "TempImages",
+            CreationCollisionOption.OpenIfExists
+        );
         var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
         using var stream = await file.OpenStreamForWriteAsync();
         using var client = new HttpClient();
@@ -139,11 +153,17 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
             : await profileSettings.TrySetLockScreenImageAsync(file);
         if (result)
         {
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.SetSuccess), InfoType.Success));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (ResourceToolkit.GetLocalizedString(StringNames.SetSuccess), InfoType.Success)
+                );
         }
         else
         {
-            this.Get<AppViewModel>().ShowTipCommand.Execute((ResourceToolkit.GetLocalizedString(StringNames.SetFailed), InfoType.Error));
+            this.Get<AppViewModel>()
+                .ShowTipCommand.Execute(
+                    (ResourceToolkit.GetLocalizedString(StringNames.SetFailed), InfoType.Error)
+                );
         }
     }
 }

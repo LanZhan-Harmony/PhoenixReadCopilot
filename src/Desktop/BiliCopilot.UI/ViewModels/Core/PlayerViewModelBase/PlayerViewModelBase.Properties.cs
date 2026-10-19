@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models;
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.ViewModels.Items;
@@ -22,7 +20,8 @@ public abstract partial class PlayerViewModelBase
     /// <summary>
     /// 视频用户代理.
     /// </summary>
-    protected const string VideoUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69";
+    protected const string VideoUserAgent =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69";
 
     /// <summary>
     /// 直播用户代理.
@@ -62,65 +61,45 @@ public abstract partial class PlayerViewModelBase
     protected bool _isInitialized;
     protected bool _isClosed;
 
-    [ObservableProperty]
-    private bool _isPlayerInitializing;
+    [ObservableProperty] private bool _isPlayerInitializing;
 
-    [ObservableProperty]
-    private bool _isPlayerDataLoading;
+    [ObservableProperty] private bool _isPlayerDataLoading;
 
-    [ObservableProperty]
-    private bool _isPaused = true;
+    [ObservableProperty] private bool _isPaused = true;
 
-    [ObservableProperty]
-    private bool _isFailed;
+    [ObservableProperty] private bool _isFailed;
 
-    [ObservableProperty]
-    private int _position;
+    [ObservableProperty] private int _position;
 
-    [ObservableProperty]
-    private int _duration;
+    [ObservableProperty] private int _duration;
 
-    [ObservableProperty]
-    private int _volume;
+    [ObservableProperty] private int _volume;
 
-    [ObservableProperty]
-    private double _speed;
+    [ObservableProperty] private double _speed;
 
-    [ObservableProperty]
-    private double _maxSpeed;
+    [ObservableProperty] private double _maxSpeed;
 
-    [ObservableProperty]
-    private double _speedStep;
+    [ObservableProperty] private double _speedStep;
 
-    [ObservableProperty]
-    private bool _isFullScreen;
+    [ObservableProperty] private bool _isFullScreen;
 
-    [ObservableProperty]
-    private bool _isCompactOverlay;
+    [ObservableProperty] private bool _isCompactOverlay;
 
-    [ObservableProperty]
-    private bool _isFullWindow;
+    [ObservableProperty] private bool _isFullWindow;
 
-    [ObservableProperty]
-    private bool _isBuffering;
+    [ObservableProperty] private bool _isBuffering;
 
-    [ObservableProperty]
-    private bool _isBottomProgressVisible;
+    [ObservableProperty] private bool _isBottomProgressVisible;
 
-    [ObservableProperty]
-    private bool _isSeparatorWindowPlayer;
+    [ObservableProperty] private bool _isSeparatorWindowPlayer;
 
-    [ObservableProperty]
-    private bool _isExternalPlayer;
+    [ObservableProperty] private bool _isExternalPlayer;
 
-    [ObservableProperty]
-    private bool _isAmdMpvWarningShown;
+    [ObservableProperty] private bool _isAmdMpvWarningShown;
 
-    [ObservableProperty]
-    private Uri? _cover;
+    [ObservableProperty] private Uri? _cover;
 
-    [ObservableProperty]
-    private bool _isDanmakuInputFocused;
+    [ObservableProperty] private bool _isDanmakuInputFocused;
 
     /// <summary>
     /// 播放数据加载完成.

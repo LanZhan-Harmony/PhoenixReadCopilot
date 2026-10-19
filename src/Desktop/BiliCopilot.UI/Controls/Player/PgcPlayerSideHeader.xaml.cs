@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using BiliCopilot.UI.ViewModels.View;
 
@@ -39,7 +37,10 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(PgcPlayerPageViewModel? oldValue, PgcPlayerPageViewModel? newValue)
+    protected override void OnViewModelChanged(
+        PgcPlayerPageViewModel? oldValue,
+        PgcPlayerPageViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -55,8 +56,8 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
         InitializeChildPartitions();
     }
 
-    private void OnViewModelSectionInitialized(object? sender, EventArgs e)
-        => InitializeChildPartitions();
+    private void OnViewModelSectionInitialized(object? sender, EventArgs e) =>
+        InitializeChildPartitions();
 
     private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -76,14 +77,18 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = item.Title ?? default,
-                    Tag = item,
-                });
+                Selector.Items.Add(
+                    new SelectorBarItem()
+                    {
+                        Text = item.Title ?? default,
+                        Tag = item
+                    }
+                );
             }
         }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p => p.Tag == ViewModel.SelectedSection);
+        Selector.SelectedItem = Selector.Items.FirstOrDefault(p =>
+            p.Tag == ViewModel.SelectedSection
+        );
     }
 }

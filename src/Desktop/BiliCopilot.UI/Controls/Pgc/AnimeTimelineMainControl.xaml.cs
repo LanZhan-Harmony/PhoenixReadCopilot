@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.Pgc;
 
 /// <summary>
@@ -12,6 +10,5 @@ public sealed partial class AnimeTimelineMainControl : AnimeTimelineControlBase
     /// </summary>
     public AnimeTimelineMainControl() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => SeasonRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => SeasonRepeater.ItemsSource = default;
 }

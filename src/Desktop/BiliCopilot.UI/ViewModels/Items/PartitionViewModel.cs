@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Models;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -14,8 +12,7 @@ public sealed partial class PartitionViewModel : ViewModelBase<Partition>
     /// <summary>
     /// 子分区.
     /// </summary>
-    [ObservableProperty]
-    private List<PartitionViewModel>? _children;
+    [ObservableProperty] private List<PartitionViewModel>? _children;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularRankPartitionViewModel"/> class.

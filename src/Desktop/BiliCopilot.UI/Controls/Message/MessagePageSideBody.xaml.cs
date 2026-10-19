@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 
 namespace BiliCopilot.UI.Controls.Message;
@@ -34,10 +32,12 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
         SectionView.ScrollView.ViewChanged -= OnViewChanged;
     }
 
-    private void OnSectionInitialized(object? sender, EventArgs e)
-        => CheckSectionSelection();
+    private void OnSectionInitialized(object? sender, EventArgs e) => CheckSectionSelection();
 
-    private void OnSectionSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
+    private void OnSectionSelectionChanged(
+        ItemsView sender,
+        ItemsViewSelectionChangedEventArgs args
+    )
     {
         var item = sender.SelectedItem as IMessageSectionDetailViewModel;
         ViewModel.SelectSectionCommand.Execute(item);
@@ -45,13 +45,21 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
 
     private void OnViewChanged(ScrollView sender, object args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (SectionView.ScrollView.ExtentHeight - SectionView.ScrollView.ViewportHeight - SectionView.ScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadChatSessionsCommand.Execute(default);
+                if (
+                    SectionView.ScrollView.ExtentHeight
+                    - SectionView.ScrollView.ViewportHeight
+                    - SectionView.ScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadChatSessionsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private async void OnChatSessionsUpdatedAsync(object? sender, EventArgs e)
@@ -70,12 +78,15 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
 
     private void CheckChatSessionCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (SectionView.ScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadChatSessionsCommand.Execute(default);
+                if (SectionView.ScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadChatSessionsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }

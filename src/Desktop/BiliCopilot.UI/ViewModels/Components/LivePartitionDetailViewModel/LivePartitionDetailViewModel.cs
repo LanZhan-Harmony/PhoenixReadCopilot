@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -18,9 +16,7 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
     /// <summary>
     /// Initializes a new instance of the <see cref="LivePartitionDetailViewModel"/> class.
     /// </summary>
-    public LivePartitionDetailViewModel(
-        PartitionViewModel partition,
-        ILiveDiscoveryService service)
+    public LivePartitionDetailViewModel(PartitionViewModel partition, ILiveDiscoveryService service)
         : base(partition)
     {
         _service = service;
@@ -54,12 +50,16 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
     {
         _childPartitionRoomCache.Remove(CurrentTag);
         _childPartitionOffsetCache.Remove(CurrentTag);
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Rooms.Clear();
-            _preventLoadMore = false;
-            await LoadRoomsAsync();
-        });
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    Rooms.Clear();
+                    _preventLoadMore = false;
+                    await LoadRoomsAsync();
+                }
+            );
     }
 
     [RelayCommand]
@@ -77,26 +77,30 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
         }
 
         CurrentTag = tag;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Rooms.Clear();
-            if (_childPartitionRoomCache.TryGetValue(CurrentTag, out var cache))
-            {
-                foreach (var item in cache)
+        this.Get<DispatcherQueue>()
+            .TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
                 {
-                    Rooms.Add(item);
-                }
-            }
+                    Rooms.Clear();
+                    if (_childPartitionRoomCache.TryGetValue(CurrentTag, out var cache))
+                    {
+                        foreach (var item in cache)
+                        {
+                            Rooms.Add(item);
+                        }
+                    }
 
-            if (Rooms.Count == 0)
-            {
-                await LoadRoomsAsync();
-            }
-            else
-            {
-                LiveListUpdated?.Invoke(this, EventArgs.Empty);
-            }
-        });
+                    if (Rooms.Count == 0)
+                    {
+                        await LoadRoomsAsync();
+                    }
+                    else
+                    {
+                        LiveListUpdated?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            );
     }
 
     [RelayCommand]
@@ -128,7 +132,11 @@ public sealed partial class LivePartitionDetailViewModel : ViewModelBase<Partiti
                 pn = cachePN;
             }
 
-            var (rooms, _, nextPn) = await _service.GetPartitionLiveListAsync(Data.Data, CurrentTag, pn);
+            var (rooms, _, nextPn) = await _service.GetPartitionLiveListAsync(
+                Data.Data,
+                CurrentTag,
+                pn
+            );
             _childPartitionOffsetCache[CurrentTag] = nextPn;
             TryAddRooms(rooms);
         }

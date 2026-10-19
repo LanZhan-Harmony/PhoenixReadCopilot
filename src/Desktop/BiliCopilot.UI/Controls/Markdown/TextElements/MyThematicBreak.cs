@@ -34,7 +34,5 @@ internal class MyThematicBreak : IAddChild
         _paragraph.Inlines.Add(inlineUIContainer);
     }
 
-    public void AddChild(IAddChild child)
-    {
-    }
+    public void AddChild(IAddChild child) { }
 }

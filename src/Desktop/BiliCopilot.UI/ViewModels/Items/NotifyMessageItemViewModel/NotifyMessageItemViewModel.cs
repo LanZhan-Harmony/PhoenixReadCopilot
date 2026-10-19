@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
@@ -22,7 +20,10 @@ public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMes
     public NotifyMessageItemViewModel(NotifyMessage data)
         : base(data)
     {
-        PublishRelativeTime = data.PublishTime.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
+        PublishRelativeTime = data.PublishTime.Humanize(
+            default,
+            new System.Globalization.CultureInfo("zh-CN")
+        );
         FirstUserAvatar = data.Users?.First().Avatar.Uri;
         FirstUserName = data.Users?.First().Name;
         IsMultipleUsers = data.Users.Count > 1;
@@ -33,15 +34,21 @@ public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMes
             var count = data.Properties["Count"];
             Subtitle = IsMultipleUsers
                 ? string.Format(
-                    ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LikeMessageMultipleDescription),
+                    ResourceToolkit.GetLocalizedString(
+                        Models.Constants.StringNames.LikeMessageMultipleDescription
+                    ),
                     FirstUserName,
                     data.Users[1].Name,
                     count,
-                    data.Business)
+                    data.Business
+                )
                 : string.Format(
-                    ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LikeMessageSingleDescription),
+                    ResourceToolkit.GetLocalizedString(
+                        Models.Constants.StringNames.LikeMessageSingleDescription
+                    ),
                     FirstUserName,
-                    data.Business);
+                    data.Business
+                );
         }
     }
 

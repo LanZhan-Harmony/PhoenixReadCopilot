@@ -7,6 +7,4 @@ using Markdig.Syntax;
 namespace BiliCopilot.UI.Controls.Markdown.Renderers;
 
 public abstract class WinUIObjectRenderer<TObject> : MarkdownObjectRenderer<WinUIRenderer, TObject>
-where TObject : MarkdownObject
-{
-}
+    where TObject : MarkdownObject { }

@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
@@ -20,8 +18,12 @@ public sealed partial class ChatMessageBox : ChatMessageControlBase
     {
         if (e.Key == Windows.System.VirtualKey.Enter)
         {
-            var shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(Windows.System.VirtualKey.Shift);
-            var isShiftDown = shiftState == CoreVirtualKeyStates.Down || shiftState == (CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked);
+            var shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(
+                Windows.System.VirtualKey.Shift
+            );
+            var isShiftDown =
+                shiftState == CoreVirtualKeyStates.Down
+                || shiftState == (CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked);
             if (!isShiftDown)
             {
                 e.Handled = true;
@@ -30,9 +32,7 @@ public sealed partial class ChatMessageBox : ChatMessageControlBase
         }
     }
 
-    private void OnItemClick(object sender, string e)
-        => ViewModel.InputText += e;
+    private void OnItemClick(object sender, string e) => ViewModel.InputText += e;
 
-    private void OnFlyoutClosed(object sender, object e)
-        => InputBox.Focus(FocusState.Programmatic);
+    private void OnFlyoutClosed(object sender, object e) => InputBox.Focus(FocusState.Programmatic);
 }

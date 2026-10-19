@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -18,7 +16,7 @@ public sealed partial class NativePlayer : LayoutControlBase<NativePlayerViewMod
     public NativePlayer() => DefaultStyleKey = typeof(NativePlayer);
 
     /// <inheritdoc/>
-    protected async override void OnControlLoaded()
+    protected override async void OnControlLoaded()
     {
         if (ViewModel is null)
         {
@@ -40,7 +38,10 @@ public sealed partial class NativePlayer : LayoutControlBase<NativePlayerViewMod
     }
 
     /// <inheritdoc/>
-    protected override async void OnViewModelChanged(NativePlayerViewModel? oldValue, NativePlayerViewModel? newValue)
+    protected override async void OnViewModelChanged(
+        NativePlayerViewModel? oldValue,
+        NativePlayerViewModel? newValue
+    )
     {
         if (_playerElement is null)
         {

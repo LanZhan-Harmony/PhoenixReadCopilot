@@ -20,14 +20,12 @@ internal class MyInlineCode : IAddChild
         _codeInline = codeInline;
         _config = config;
         _inlineContainer = new Run();
-        _inlineContainer.Text=codeInline.Content.ToString();
+        _inlineContainer.Text = codeInline.Content.ToString();
         _inlineContainer.FontStyle = Windows.UI.Text.FontStyle.Italic;
         _inlineContainer.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Code");
         _inlineContainer.FontSize = config.Themes.InlineCodeFontSize;
         _inlineContainer.FontWeight = config.Themes.InlineCodeFontWeight;
     }
 
-    public void AddChild(IAddChild child)
-    {
-    }
+    public void AddChild(IAddChild child) { }
 }

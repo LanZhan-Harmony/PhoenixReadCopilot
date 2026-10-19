@@ -1,4 +1,4 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
+// Copyright (c) Bili Copilot. All rights reserved.
 
 using BiliCopilot.UI.Pages.Overlay;
 using BiliCopilot.UI.ViewModels.Components;
@@ -24,7 +24,8 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         IArticleOperationService operation,
         ILogger<ArticleReaderPageViewModel> logger,
         CommentMainViewModel comment,
-        AIViewModel ai)
+        AIViewModel ai
+    )
     {
         _discoveryService = discovery;
         _operationService = operation;
@@ -42,7 +43,11 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         Article = article;
         IsCommentsOpened = false;
         IsAIOverlayOpened = false;
-        CommentModule.Initialize(article.Id, Richasy.BiliKernel.Models.CommentTargetType.Article, Richasy.BiliKernel.Models.CommentSortType.Hot);
+        CommentModule.Initialize(
+            article.Id,
+            Richasy.BiliKernel.Models.CommentTargetType.Article,
+            Richasy.BiliKernel.Models.CommentSortType.Hot
+        );
         try
         {
             Content = await _discoveryService.GetArticleContentAsync(article);
@@ -127,8 +132,9 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowUserSpace()
-        => this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Content.Author.Profile.User);
+    private void ShowUserSpace() =>
+        this.Get<NavigationViewModel>()
+            .NavigateToOver(typeof(UserSpacePage), Content.Author.Profile.User);
 
     [RelayCommand]
     private void ToggleAIOverlayVisibility()
@@ -154,7 +160,9 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         Author = Content.Author.Profile.User.Name;
         Avatar = Content.Author.Profile.User.Avatar.Uri;
         IsVip = Content.Author.Profile.IsVip ?? false;
-        IsFollowed = Content.Author.Community.Relation == Richasy.BiliKernel.Models.User.UserRelationStatus.Following;
+        IsFollowed =
+            Content.Author.Community.Relation
+            == Richasy.BiliKernel.Models.User.UserRelationStatus.Following;
     }
 
     private void InitializeStats()

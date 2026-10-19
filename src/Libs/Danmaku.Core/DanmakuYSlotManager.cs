@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace Danmaku.Core;
 
 internal sealed class DanmakuYSlotManager

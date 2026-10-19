@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -41,7 +39,10 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(CommentDetailViewModel? oldValue, CommentDetailViewModel? newValue)
+    protected override void OnViewModelChanged(
+        CommentDetailViewModel? oldValue,
+        CommentDetailViewModel? newValue
+    )
     {
         if (oldValue is not null)
         {
@@ -64,13 +65,21 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (CommentScrollView.ExtentHeight - CommentScrollView.ViewportHeight - CommentScrollView.VerticalOffset <= 240)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (
+                    CommentScrollView.ExtentHeight
+                    - CommentScrollView.ViewportHeight
+                    - CommentScrollView.VerticalOffset
+                    <= 240
+                )
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -83,19 +92,20 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
 
     private void CheckCommentCount()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                ViewModel.LoadItemsCommand.Execute(default);
+                if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                {
+                    ViewModel.LoadItemsCommand.Execute(default);
+                }
             }
-        });
+        );
     }
 }
 
 /// <summary>
 /// 评论详情面板基类.
 /// </summary>
-public abstract class CommentDetailPanelBase : LayoutUserControlBase<CommentDetailViewModel>
-{
-}
+public abstract class CommentDetailPanelBase : LayoutUserControlBase<CommentDetailViewModel> { }

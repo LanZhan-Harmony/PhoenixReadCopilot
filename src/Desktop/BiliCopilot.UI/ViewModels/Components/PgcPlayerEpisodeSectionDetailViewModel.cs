@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using BiliCopilot.UI.ViewModels.Items;
@@ -13,18 +11,17 @@ namespace BiliCopilot.UI.ViewModels.Components;
 /// <summary>
 /// PGC 播放器分集详情视图模型.
 /// </summary>
-public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBase, IPlayerSectionDetailViewModel
+public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
+    : ViewModelBase,
+        IPlayerSectionDetailViewModel
 {
     private readonly Action<EpisodeInformation> _episodeSelectedAction;
 
-    [ObservableProperty]
-    private List<EpisodeItemViewModel>? _episodes;
+    [ObservableProperty] private List<EpisodeItemViewModel>? _episodes;
 
-    [ObservableProperty]
-    private EpisodeItemViewModel? _selectedEpisode;
+    [ObservableProperty] private EpisodeItemViewModel? _selectedEpisode;
 
-    [ObservableProperty]
-    private bool _onlyIndex;
+    [ObservableProperty] private bool _onlyIndex;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerEpisodeSectionDetailViewModel"/> class.
@@ -32,20 +29,25 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBa
     public PgcPlayerEpisodeSectionDetailViewModel(
         IList<EpisodeInformation> episodes,
         string epid,
-        Action<EpisodeInformation> action)
+        Action<EpisodeInformation> action
+    )
     {
         _episodeSelectedAction = action;
-        Episodes = episodes.Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Player)).ToList();
+        Episodes = episodes
+            .Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Player))
+            .ToList();
         SelectedEpisode = Episodes.FirstOrDefault(p => p.Data.Identifier.Id == epid);
-        OnlyIndex = SettingsToolkit.ReadLocalSetting(Models.Constants.SettingNames.IsPgcPlayerPartsOnlyIndex, false);
+        OnlyIndex = SettingsToolkit.ReadLocalSetting(
+            Models.Constants.SettingNames.IsPgcPlayerPartsOnlyIndex,
+            false
+        );
     }
 
     /// <inheritdoc/>
     public string Title { get; } = ResourceToolkit.GetLocalizedString(StringNames.Episodes);
 
     [RelayCommand]
-    private static Task TryFirstLoadAsync()
-        => Task.CompletedTask;
+    private static Task TryFirstLoadAsync() => Task.CompletedTask;
 
     [RelayCommand]
     private void SelectEpisode(EpisodeItemViewModel episode)
@@ -54,6 +56,6 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel : ViewModelBa
         _episodeSelectedAction?.Invoke(episode.Data);
     }
 
-    partial void OnOnlyIndexChanged(bool value)
-        => SettingsToolkit.WriteLocalSetting(SettingNames.IsPgcPlayerPartsOnlyIndex, value);
+    partial void OnOnlyIndexChanged(bool value) =>
+        SettingsToolkit.WriteLocalSetting(SettingNames.IsPgcPlayerPartsOnlyIndex, value);
 }

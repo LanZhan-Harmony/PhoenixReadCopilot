@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.ViewModels.Core;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -22,7 +20,8 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     public StartupPageViewModel(
         IAuthenticationService authenticationService,
         ILogger<StartupPageViewModel> logger,
-        DispatcherQueue dispatcherQueue)
+        DispatcherQueue dispatcherQueue
+    )
     {
         _authenticationService = authenticationService;
         _logger = logger;
@@ -55,7 +54,9 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         try
         {
             IsQRCodeLoading = true;
-            await _authenticationService.SignInAsync(cancellationToken: _cancellationTokenSource.Token);
+            await _authenticationService.SignInAsync(
+                cancellationToken: _cancellationTokenSource.Token
+            );
             var isSignedIn = await CheckAuthorizeStatusAsync();
             if (isSignedIn)
             {
@@ -113,7 +114,9 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         var tokenResolver = this.Get<IAuthenticationService>();
         try
         {
-            await tokenResolver.EnsureTokenAsync(_cancellationTokenSource?.Token ?? default).ConfigureAwait(false);
+            await tokenResolver
+                .EnsureTokenAsync(_cancellationTokenSource?.Token ?? default)
+                .ConfigureAwait(false);
             return true;
         }
         catch (Exception ex)

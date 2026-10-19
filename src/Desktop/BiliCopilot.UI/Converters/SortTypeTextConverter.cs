@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 using BiliCopilot.UI.Models.Constants;
 using BiliCopilot.UI.Toolkits;
 using Microsoft.UI.Xaml.Data;
@@ -72,10 +70,18 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
         {
             result = chst switch
             {
-                ComprehensiveSearchSortType.Default => ResourceToolkit.GetLocalizedString(StringNames.SortByDefault),
-                ComprehensiveSearchSortType.Danmaku => ResourceToolkit.GetLocalizedString(StringNames.SortByDanmaku),
-                ComprehensiveSearchSortType.Play => ResourceToolkit.GetLocalizedString(StringNames.SortByPlay),
-                ComprehensiveSearchSortType.Newest => ResourceToolkit.GetLocalizedString(StringNames.SortByNewest),
+                ComprehensiveSearchSortType.Default => ResourceToolkit.GetLocalizedString(
+                    StringNames.SortByDefault
+                ),
+                ComprehensiveSearchSortType.Danmaku => ResourceToolkit.GetLocalizedString(
+                    StringNames.SortByDanmaku
+                ),
+                ComprehensiveSearchSortType.Play => ResourceToolkit.GetLocalizedString(
+                    StringNames.SortByPlay
+                ),
+                ComprehensiveSearchSortType.Newest => ResourceToolkit.GetLocalizedString(
+                    StringNames.SortByNewest
+                ),
                 _ => string.Empty,
             };
         }
@@ -95,5 +101,6 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
     }
 
     /// <inheritdoc/>
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

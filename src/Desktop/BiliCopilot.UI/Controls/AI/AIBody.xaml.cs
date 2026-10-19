@@ -1,5 +1,3 @@
-﻿// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace BiliCopilot.UI.Controls.AI;
 
 /// <summary>
@@ -12,6 +10,5 @@ public sealed partial class AIBody : AIControlBase
     /// </summary>
     public AIBody() => InitializeComponent();
 
-    protected override void OnControlUnloaded()
-        => QuickItemsRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => QuickItemsRepeater.ItemsSource = null;
 }
