@@ -21,17 +21,13 @@ public sealed partial class VideoSearchSectionDetailViewModel
     private string _keyword;
     private bool _isPreventLoadMore;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private ComprehensiveSearchSortType _sort;
+    [ObservableProperty] private ComprehensiveSearchSortType _sort;
 
-    [ObservableProperty]
-    private List<ComprehensiveSearchSortType> _sorts;
+    [ObservableProperty] private List<ComprehensiveSearchSortType> _sorts;
 
     /// <summary>
     /// 列表已完成更新.

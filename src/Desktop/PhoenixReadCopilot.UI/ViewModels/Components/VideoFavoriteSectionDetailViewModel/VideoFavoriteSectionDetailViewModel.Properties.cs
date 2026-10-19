@@ -17,14 +17,11 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     private int _pageNumber;
     private bool _preventLoadMore;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private int _totalCount;
+    [ObservableProperty] private int _totalCount;
 
     /// <summary>
     /// 列表已完成更新.

@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Message;
 /// 聊天消息控件基类.
 /// </summary>
 public abstract class ChatMessageControlBase
-    : LayoutUserControlBase<ChatMessageSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<ChatMessageSectionDetailViewModel> { }

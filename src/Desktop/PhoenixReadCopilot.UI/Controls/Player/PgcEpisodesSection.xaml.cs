@@ -83,5 +83,4 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
 /// PGC 播放器页面剧集控件基类.
 /// </summary>
 public abstract class PgcEpisodesSectionBase
-    : LayoutUserControlBase<PgcPlayerEpisodeSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<PgcPlayerEpisodeSectionDetailViewModel> { }

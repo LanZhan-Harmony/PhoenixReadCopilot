@@ -40,7 +40,10 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup() { Text = text };
+        var popup = new TipPopup()
+        {
+            Text = text
+        };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);

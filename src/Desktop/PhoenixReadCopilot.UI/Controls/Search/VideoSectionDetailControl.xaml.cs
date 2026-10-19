@@ -86,5 +86,4 @@ public sealed partial class VideoSectionDetailControl : VideoSectionDetailContro
 /// 视频搜索分区详情基类.
 /// </summary>
 public abstract class VideoSectionDetailControlBase
-    : LayoutUserControlBase<VideoSearchSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoSearchSectionDetailViewModel> { }

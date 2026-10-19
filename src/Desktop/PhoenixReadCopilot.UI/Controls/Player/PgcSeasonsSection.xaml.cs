@@ -42,5 +42,4 @@ public sealed partial class PgcSeasonsSection : PgcSeasonsSectionBase
 /// PGC 播放器页面剧集区域基类.
 /// </summary>
 public abstract class PgcSeasonsSectionBase
-    : LayoutUserControlBase<PgcPlayerSeasonSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<PgcPlayerSeasonSectionDetailViewModel> { }

@@ -19,14 +19,11 @@ public sealed partial class NotifyMessageSectionDetailViewModel
     private long _offsetTime;
     private bool _preventLoadMore;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private int _unreadCount;
+    [ObservableProperty] private int _unreadCount;
 
     /// <summary>
     /// 列表已完成更新.

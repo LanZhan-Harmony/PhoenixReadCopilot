@@ -26,7 +26,10 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
     public GalleryPageViewModel(BiliImage image, List<BiliImage>? images = default)
     {
         SelectedImage = image;
-        Images = images ?? new List<BiliImage> { image };
+        Images = images ?? new List<BiliImage>
+        {
+            image
+        };
         IsGroup = Images?.Count > 1;
         IsMenuHide = false;
     }

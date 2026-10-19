@@ -232,7 +232,10 @@ public sealed partial class AppViewModel : ViewModelBase
                     CreateNoWindow = true,
                 };
 
-                using (var process = new Process { StartInfo = processStartInfo })
+                using (var process = new Process
+                       {
+                           StartInfo = processStartInfo
+                       })
                 {
                     process.Start();
                     var output = process.StandardOutput.ReadToEnd();

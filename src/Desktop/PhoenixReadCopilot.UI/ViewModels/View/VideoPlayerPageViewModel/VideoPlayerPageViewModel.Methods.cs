@@ -41,9 +41,9 @@ public sealed partial class VideoPlayerPageViewModel
         );
         IsFollow =
             view.OwnerCommunity.Relation
-                != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow
+            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow
             && view.OwnerCommunity.Relation
-                != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown;
+            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown;
         IsInteractionVideo = view.IsInteractiveVideo;
         Tags = view.Tags.ToList();
         InitializeCommunityInformation(view.Information.CommunityInformation);
@@ -181,7 +181,6 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         sections.Add(_comments);
-        sections.Add(new VideoPlayerAISectionDetailViewModel(AI));
 
         Sections = sections;
         SelectSection(Sections.First());
@@ -410,7 +409,11 @@ public sealed partial class VideoPlayerPageViewModel
     private void InitializeLoops()
     {
         var currentType = CurrentLoop;
-        var loops = new List<VideoLoopType> { VideoLoopType.None, VideoLoopType.Single };
+        var loops = new List<VideoLoopType>
+        {
+            VideoLoopType.None,
+            VideoLoopType.Single
+        };
         if (
             Sections.OfType<VideoPlayerPartSectionDetailViewModel>().Any()
             || _playlist is not null

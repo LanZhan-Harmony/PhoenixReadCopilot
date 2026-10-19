@@ -6,9 +6,7 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using Richasy.AgentKernel;
 using Richasy.BiliKernel;
-using Richasy.WinUIKernel.AI;
 using Richasy.WinUIKernel.Share;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -37,7 +35,6 @@ internal static class GlobalDependencies
             .AddSerilog()
             .AddDispatcherQueue()
             .AddShareToolkits()
-            .AddConfigManager()
             .AddXamlRootProvider()
             .AddBiliClient()
             .AddBiliAuthenticator()
@@ -63,28 +60,6 @@ internal static class GlobalDependencies
             .AddDanmakuService()
             .AddSubtitleService()
             .AddPlayerService()
-            .AddOpenAIChatService()
-            .AddAzureOpenAIChatService()
-            .AddAzureAIChatService()
-            .AddXAIChatService()
-            .AddZhiPuChatService()
-            .AddLingYiChatService()
-            .AddAnthropicChatService()
-            .AddMoonshotChatService()
-            .AddGeminiChatService()
-            .AddDeepSeekChatService()
-            .AddQwenChatService()
-            .AddErnieChatService()
-            .AddHunyuanChatService()
-            .AddSparkChatService()
-            .AddDoubaoChatService()
-            .AddSiliconFlowChatService()
-            .AddOpenRouterChatService()
-            .AddTogetherAIChatService()
-            .AddGroqChatService()
-            .AddOllamaChatService()
-            .AddMistralChatService()
-            .AddPerplexityChatService()
             .AddTransient<CommentMainViewModel>()
             .AddSingleton<PinnerViewModel>()
             .AddSingleton<AppViewModel>()
@@ -112,7 +87,6 @@ internal static class GlobalDependencies
             .AddSingleton<NotificationViewModel>()
             .AddTransient<DanmakuViewModel>()
             .AddTransient<SubtitleViewModel>()
-            .AddTransient<AIViewModel>()
             .AddTransient<VideoPlayerPageViewModel>()
             .AddTransient<PgcPlayerPageViewModel>()
             .AddTransient<UserMomentDetailViewModel>()
@@ -121,7 +95,6 @@ internal static class GlobalDependencies
             .Build();
 
         Kernel.InitializeShareKernel();
-        Kernel.InitializeAIKernel();
     }
 
     public static IKernelBuilder AddDispatcherQueue(this IKernelBuilder builder)
@@ -154,14 +127,9 @@ internal static class GlobalDependencies
         return builder;
     }
 
-    public static IKernelBuilder AddConfigManager(this IKernelBuilder builder)
-    {
-        builder.Services.AddSingleton<IChatConfigManager, ChatConfigManager>();
-        return builder;
-    }
-
     public static IKernelBuilder AddSingleton<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        T
     >(this IKernelBuilder kernelBuilder)
         where T : class
     {
@@ -170,7 +138,8 @@ internal static class GlobalDependencies
     }
 
     public static IKernelBuilder AddTransient<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        T
     >(this IKernelBuilder kernelBuilder)
         where T : class
     {

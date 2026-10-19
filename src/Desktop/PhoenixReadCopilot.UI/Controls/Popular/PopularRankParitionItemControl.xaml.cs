@@ -18,5 +18,4 @@ public sealed partial class PopularRankParitionItemControl : PopularRankParition
 /// 流行视频排行榜分区项控件基类.
 /// </summary>
 public abstract class PopularRankParitionItemControlBase
-    : LayoutUserControlBase<PopularRankPartitionViewModel>
-{ }
+    : LayoutUserControlBase<PopularRankPartitionViewModel> { }

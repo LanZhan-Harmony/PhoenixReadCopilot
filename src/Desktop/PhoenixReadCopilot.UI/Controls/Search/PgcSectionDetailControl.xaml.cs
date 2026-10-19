@@ -86,5 +86,4 @@ public sealed partial class PgcSectionDetailControl : PgcSectionDetailControlBas
 /// PGC搜索分区详情控件基类.
 /// </summary>
 public abstract class PgcSectionDetailControlBase
-    : LayoutUserControlBase<PgcSearchSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<PgcSearchSectionDetailViewModel> { }

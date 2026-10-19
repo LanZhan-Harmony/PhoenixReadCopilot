@@ -21,11 +21,9 @@ public sealed partial class ArticleSearchSectionDetailViewModel
     private string _keyword;
     private SearchPartition _partition;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
     /// <summary>
     /// 列表已完成更新.

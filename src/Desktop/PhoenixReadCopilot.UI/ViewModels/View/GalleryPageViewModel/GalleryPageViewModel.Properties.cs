@@ -1,5 +1,3 @@
-// Copyright (c) Bili Copilot. All rights reserved.
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Models.Appearance;
 

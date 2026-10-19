@@ -13,11 +13,9 @@ public sealed partial class CinemaPageViewModel
     private readonly IEntertainmentDiscoveryService _service;
     private readonly ILogger<CinemaPageViewModel> _logger;
 
-    [ObservableProperty]
-    private List<EntertainmentIndexViewModel>? _sections;
+    [ObservableProperty] private List<EntertainmentIndexViewModel>? _sections;
 
-    [ObservableProperty]
-    private EntertainmentIndexViewModel? _selectedSection;
+    [ObservableProperty] private EntertainmentIndexViewModel? _selectedSection;
 
     /// <summary>
     /// 区块加载完成.

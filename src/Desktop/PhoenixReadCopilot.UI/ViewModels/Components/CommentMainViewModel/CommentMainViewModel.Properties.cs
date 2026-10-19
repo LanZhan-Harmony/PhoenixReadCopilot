@@ -22,29 +22,21 @@ public sealed partial class CommentMainViewModel
     private long _offset;
     private CommentItemViewModel? _replyItem;
 
-    [ObservableProperty]
-    private CommentDetailViewModel? _topItem;
+    [ObservableProperty] private CommentDetailViewModel? _topItem;
 
-    [ObservableProperty]
-    private CommentDetailViewModel? _selectedItem;
+    [ObservableProperty] private CommentDetailViewModel? _selectedItem;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private List<CommentSortType> _sorts;
+    [ObservableProperty] private List<CommentSortType> _sorts;
 
-    [ObservableProperty]
-    private CommentSortType _sortType;
+    [ObservableProperty] private CommentSortType _sortType;
 
-    [ObservableProperty]
-    private string _replyTarget;
+    [ObservableProperty] private string _replyTarget;
 
-    [ObservableProperty]
-    private bool _isReplying;
+    [ObservableProperty] private bool _isReplying;
 
     /// <summary>
     /// 已初始化.

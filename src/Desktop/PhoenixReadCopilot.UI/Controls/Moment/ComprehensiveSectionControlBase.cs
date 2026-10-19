@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Moment;
 /// 综合动态分区控件基类.
 /// </summary>
 public abstract class ComprehensiveSectionControlBase
-    : LayoutUserControlBase<ComprehensiveMomentSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<ComprehensiveMomentSectionDetailViewModel> { }

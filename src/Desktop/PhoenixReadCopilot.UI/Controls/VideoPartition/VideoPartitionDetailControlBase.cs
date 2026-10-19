@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.VideoPartition;
 /// 视频分区详情控件基类.
 /// </summary>
 public abstract class VideoPartitionDetailControlBase
-    : LayoutUserControlBase<VideoPartitionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoPartitionDetailViewModel> { }

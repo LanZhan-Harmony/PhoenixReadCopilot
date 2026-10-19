@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Favorites;
 /// PGC收藏控件基类.
 /// </summary>
 public abstract class PgcFavoriteControlBase
-    : LayoutUserControlBase<PgcFavoriteSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<PgcFavoriteSectionDetailViewModel> { }

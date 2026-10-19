@@ -214,7 +214,10 @@ public sealed partial class NotificationViewModel
             xml.LoadXml(xmlContent);
             TileUpdateManager
                 .CreateTileUpdaterForApplication()
-                .Update(new TileNotification(xml) { Tag = d.Id });
+                .Update(new TileNotification(xml)
+                {
+                    Tag = d.Id
+                });
         }
     }
 }

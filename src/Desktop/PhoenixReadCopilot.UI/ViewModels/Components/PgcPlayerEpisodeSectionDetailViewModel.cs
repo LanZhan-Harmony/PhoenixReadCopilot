@@ -17,14 +17,11 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
 {
     private readonly Action<EpisodeInformation> _episodeSelectedAction;
 
-    [ObservableProperty]
-    private List<EpisodeItemViewModel>? _episodes;
+    [ObservableProperty] private List<EpisodeItemViewModel>? _episodes;
 
-    [ObservableProperty]
-    private EpisodeItemViewModel? _selectedEpisode;
+    [ObservableProperty] private EpisodeItemViewModel? _selectedEpisode;
 
-    [ObservableProperty]
-    private bool _onlyIndex;
+    [ObservableProperty] private bool _onlyIndex;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerEpisodeSectionDetailViewModel"/> class.

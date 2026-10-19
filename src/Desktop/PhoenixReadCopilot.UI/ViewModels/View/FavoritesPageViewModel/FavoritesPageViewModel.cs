@@ -171,7 +171,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
                     var folderVM =
                         folder.IsUgcSeason == true
                             ? (IFavoriteSectionDetailViewModel)
-                                new UgcSeasonFavoriteSectionDetailViewModel(folder, _service)
+                            new UgcSeasonFavoriteSectionDetailViewModel(folder, _service)
                             : new VideoFavoriteSectionDetailViewModel(folder, _service);
                     Sections.Add(folderVM);
                 }

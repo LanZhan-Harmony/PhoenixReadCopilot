@@ -29,8 +29,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         DanmakuViewModel danmaku,
         SubtitleViewModel subtitle,
         CommentMainViewModel comments,
-        DownloadViewModel download,
-        AIViewModel ai
+        DownloadViewModel download
     )
     {
         _service = service;
@@ -41,7 +40,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         Danmaku = danmaku;
         Subtitle = subtitle;
         Downloader = download;
-        AI = ai;
         CurrentLoop = VideoLoopType.None;
         Subtitle.SetInitializedCallback(SyncDownloadAndSubtitle);
         Player.SetProgressAction(PlayerProgressChanged);
@@ -70,7 +68,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             CancelPageLoad();
         }
 
-        IsAIOverlayOpened = false;
         IsPageLoading = true;
         var video = snapshot.Video;
         IsPrivatePlay = snapshot.IsPrivate;

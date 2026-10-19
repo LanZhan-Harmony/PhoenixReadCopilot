@@ -39,5 +39,4 @@ public sealed partial class ChatMessageItemControl : ChatMessageItemControlBase
 /// 聊天消息项控件基类.
 /// </summary>
 public abstract class ChatMessageItemControlBase
-    : LayoutUserControlBase<ChatMessageItemViewModel>
-{ }
+    : LayoutUserControlBase<ChatMessageItemViewModel> { }
