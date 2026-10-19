@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using PhoenixReadCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.UI.Models.Constants;
 using Richasy.BiliKernel.Models.Search;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;

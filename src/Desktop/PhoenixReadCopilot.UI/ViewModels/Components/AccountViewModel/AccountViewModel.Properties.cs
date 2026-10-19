@@ -1,6 +1,6 @@
-using PhoenixReadCopilot.UI.ViewModels.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
 
@@ -16,15 +16,21 @@ public sealed partial class AccountViewModel
     private readonly NavigationViewModel _navService;
     private readonly ILogger<AccountViewModel> _logger;
 
-    [ObservableProperty] private UserDetailProfile _myProfile;
+    [ObservableProperty]
+    private UserDetailProfile _myProfile;
 
-    [ObservableProperty] private bool _isInitializing;
+    [ObservableProperty]
+    private bool _isInitializing;
 
-    [ObservableProperty] private int _momentCount;
+    [ObservableProperty]
+    private int _momentCount;
 
-    [ObservableProperty] private int _followCount;
+    [ObservableProperty]
+    private int _followCount;
 
-    [ObservableProperty] private int _fansCount;
+    [ObservableProperty]
+    private int _fansCount;
 
-    [ObservableProperty] private string _introduce;
+    [ObservableProperty]
+    private string _introduce;
 }

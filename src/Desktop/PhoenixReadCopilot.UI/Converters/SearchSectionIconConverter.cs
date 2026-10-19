@@ -1,5 +1,5 @@
-using PhoenixReadCopilot.UI.Models.Constants;
 using Microsoft.UI.Xaml.Data;
+using PhoenixReadCopilot.UI.Models.Constants;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -12,7 +12,6 @@ internal sealed partial class SearchSectionIconConverter : IValueConverter
         {
             SearchSectionType.Video => FluentIcons.Common.Symbol.VideoClip,
             SearchSectionType.Anime => FluentIcons.Common.Symbol.Dust,
-            SearchSectionType.Live => FluentIcons.Common.Symbol.Live,
             SearchSectionType.User => FluentIcons.Common.Symbol.People,
             SearchSectionType.Cinema => FluentIcons.Common.Symbol.MoviesAndTv,
             SearchSectionType.Article => FluentIcons.Common.Symbol.DocumentBulletList,

@@ -1,5 +1,5 @@
-using PhoenixReadCopilot.UI.ViewModels.Core;
 using CommunityToolkit.WinUI;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;

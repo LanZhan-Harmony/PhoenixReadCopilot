@@ -45,11 +45,6 @@ public sealed partial class Pinner : PinnerBase
             );
             navVM.NavigateToOver(typeof(VideoPlayerPage), snapshot);
         }
-        else if (item.Type == Models.Constants.PinContentType.Live)
-        {
-            var identifier = new MediaIdentifier(item.Id, item.Title, default);
-            navVM.NavigateToOver(typeof(LivePlayerPage), identifier);
-        }
         else if (item.Type == Models.Constants.PinContentType.Article)
         {
             var identifier = new ArticleIdentifier(item.Id, item.Title, default, default);

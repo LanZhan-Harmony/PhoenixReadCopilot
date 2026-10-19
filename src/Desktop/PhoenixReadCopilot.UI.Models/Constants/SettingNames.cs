@@ -34,8 +34,6 @@ public enum SettingNames
     PreferQuality,
     LastSelectedVideoQuality,
     ShouldAutoPlay,
-    LastSelectedLiveQuality,
-    IsLiveAudioOnly,
     LastSelectedPgcQuality,
     IsVideoPlayerPartsOnlyIndex,
     PlayerVolume,
@@ -100,6 +98,5 @@ public enum SettingNames
     IsTopNavBarShown,
     MTCBehavior,
     IsAIStreamingResponse,
-    UseWebPlayerWhenLive,
     ShowSearchRecommend,
 }

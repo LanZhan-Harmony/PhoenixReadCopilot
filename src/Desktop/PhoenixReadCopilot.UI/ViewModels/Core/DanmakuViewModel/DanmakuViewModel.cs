@@ -1,6 +1,6 @@
-using PhoenixReadCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Danmaku;

@@ -1,10 +1,10 @@
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Media.Animation;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Media.Animation;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
 using WinUIEx;

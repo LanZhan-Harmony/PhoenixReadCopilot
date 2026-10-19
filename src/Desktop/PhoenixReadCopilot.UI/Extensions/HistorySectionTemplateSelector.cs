@@ -7,8 +7,6 @@ internal sealed partial class HistorySectionTemplateSelector : DataTemplateSelec
 {
     public DataTemplate VideoTemplate { get; set; }
 
-    public DataTemplate LiveTemplate { get; set; }
-
     public DataTemplate ArticleTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
@@ -18,7 +16,6 @@ internal sealed partial class HistorySectionTemplateSelector : DataTemplateSelec
             return vm.Type switch
             {
                 ViewHistoryTabType.Video => VideoTemplate,
-                ViewHistoryTabType.Live => LiveTemplate,
                 ViewHistoryTabType.Article => ArticleTemplate,
                 _ => throw new ArgumentOutOfRangeException(nameof(vm.Type), vm.Type, null),
             };

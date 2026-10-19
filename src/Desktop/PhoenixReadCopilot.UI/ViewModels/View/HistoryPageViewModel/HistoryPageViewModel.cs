@@ -1,11 +1,11 @@
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
@@ -57,7 +57,6 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
                 ViewHistoryTabType.Video => (IHistorySectionDetailViewModel)
                     new VideoHistorySectionDetailViewModel(_service),
                 ViewHistoryTabType.Article => new ArticleHistorySectionDetailViewModel(_service),
-                ViewHistoryTabType.Live => new LiveHistorySectionDetailViewModel(_service),
                 _ => null,
             };
 

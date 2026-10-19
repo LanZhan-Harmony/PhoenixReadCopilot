@@ -1,8 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -15,7 +15,8 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {
-    [ObservableProperty] private List<VideoItemViewModel> _items;
+    [ObservableProperty]
+    private List<VideoItemViewModel> _items;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerRecommendSectionDetailViewModel"/> class.

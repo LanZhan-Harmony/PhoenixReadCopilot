@@ -1,14 +1,14 @@
 using System.ComponentModel;
 using System.Windows.Input;
-using PhoenixReadCopilot.UI.Controls.Danmaku;
-using PhoenixReadCopilot.UI.Controls.Player;
-using PhoenixReadCopilot.UI.Toolkits;
-using PhoenixReadCopilot.UI.ViewModels.Core;
 using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using PhoenixReadCopilot.UI.Controls.Danmaku;
+using PhoenixReadCopilot.UI.Controls.Player;
+using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.System;
 

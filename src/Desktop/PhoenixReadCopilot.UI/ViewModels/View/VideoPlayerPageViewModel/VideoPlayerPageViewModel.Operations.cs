@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -6,8 +8,6 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
@@ -325,7 +325,7 @@ public sealed partial class VideoPlayerPageViewModel
         InitializeNextVideo();
         var partSection =
             Sections.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
-                as VideoPlayerPartSectionDetailViewModel;
+            as VideoPlayerPartSectionDetailViewModel;
         partSection?.UpdateSelectedPartCommand.Execute(part);
     }
 

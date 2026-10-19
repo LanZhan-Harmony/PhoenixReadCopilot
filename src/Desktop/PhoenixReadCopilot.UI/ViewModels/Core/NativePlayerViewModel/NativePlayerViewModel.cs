@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Media;
@@ -188,10 +187,7 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
                 return;
             }
 
-            if (!IsLive)
-            {
-                UpdatePosition(Convert.ToInt32(position), Convert.ToInt32(duration));
-            }
+            UpdatePosition(Convert.ToInt32(position), Convert.ToInt32(duration));
         });
     }
 }

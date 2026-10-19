@@ -16,11 +16,6 @@ public enum SearchSectionType
     Anime = 7,
 
     /// <summary>
-    /// 直播.
-    /// </summary>
-    Live = 4,
-
-    /// <summary>
     /// 用户.
     /// </summary>
     User = 2,

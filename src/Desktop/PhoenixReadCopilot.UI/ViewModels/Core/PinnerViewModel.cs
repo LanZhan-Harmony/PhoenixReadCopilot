@@ -1,10 +1,10 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.Models;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -21,9 +21,11 @@ public sealed partial class PinnerViewModel : ViewModelBase
     private const string PinFolderName = "Fixed";
     private readonly ILogger<PinnerViewModel> _logger;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.

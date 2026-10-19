@@ -1,10 +1,10 @@
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
 
@@ -171,7 +171,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
                     var folderVM =
                         folder.IsUgcSeason == true
                             ? (IFavoriteSectionDetailViewModel)
-                            new UgcSeasonFavoriteSectionDetailViewModel(folder, _service)
+                                new UgcSeasonFavoriteSectionDetailViewModel(folder, _service)
                             : new VideoFavoriteSectionDetailViewModel(folder, _service);
                     Sections.Add(folderVM);
                 }

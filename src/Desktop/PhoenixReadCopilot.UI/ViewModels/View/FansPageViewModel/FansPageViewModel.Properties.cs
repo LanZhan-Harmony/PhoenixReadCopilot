@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -16,11 +16,14 @@ public sealed partial class FansPageViewModel
 
     private int _pageNumber;
 
-    [ObservableProperty] private bool _isUserLoading;
+    [ObservableProperty]
+    private bool _isUserLoading;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private int _totalCount;
+    [ObservableProperty]
+    private int _totalCount;
 
     /// <summary>
     /// 用户列表已完成更新.

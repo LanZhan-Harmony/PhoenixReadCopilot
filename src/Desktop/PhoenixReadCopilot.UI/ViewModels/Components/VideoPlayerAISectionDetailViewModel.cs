@@ -1,8 +1,8 @@
+using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.Input;
 using Richasy.WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;

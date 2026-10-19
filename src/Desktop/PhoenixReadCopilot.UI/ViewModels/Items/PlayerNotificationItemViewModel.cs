@@ -1,6 +1,6 @@
-using PhoenixReadCopilot.UI.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.UI.Models;
 using Richasy.WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
@@ -15,13 +15,17 @@ public sealed partial class PlayerNotificationItemViewModel : ViewModelBase<Play
     private DateTimeOffset _startTime;
     private bool _isCancelled;
 
-    [ObservableProperty] private int _durationInMilliseconds;
+    [ObservableProperty]
+    private int _durationInMilliseconds;
 
-    [ObservableProperty] private int _progressInMilliseconds;
+    [ObservableProperty]
+    private int _progressInMilliseconds;
 
-    [ObservableProperty] private bool _isProgressVisible;
+    [ObservableProperty]
+    private bool _isProgressVisible;
 
-    [ObservableProperty] private bool _isNotificationVisible;
+    [ObservableProperty]
+    private bool _isNotificationVisible;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerNotificationItemViewModel"/> class.

@@ -1,10 +1,10 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models.Article;
 using Richasy.WinUIKernel.Share.ViewModels;

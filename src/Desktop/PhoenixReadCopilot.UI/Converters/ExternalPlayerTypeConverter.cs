@@ -1,5 +1,5 @@
-using PhoenixReadCopilot.UI.Models.Constants;
 using Microsoft.UI.Xaml.Data;
+using PhoenixReadCopilot.UI.Models.Constants;
 
 namespace PhoenixReadCopilot.UI.Converters;
 

@@ -1,7 +1,7 @@
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Microsoft.UI.Xaml.Input;
 using Richasy.WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;
@@ -45,10 +45,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -58,10 +55,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -74,10 +68,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
             args.TryGetPosition(this, out var point);
             ContextFlyout.ShowAt(
                 this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
-                {
-                    Position = point
-                }
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
             );
         }
 

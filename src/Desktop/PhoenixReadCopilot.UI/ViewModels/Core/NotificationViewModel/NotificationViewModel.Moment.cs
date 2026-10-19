@@ -1,11 +1,11 @@
 using System.Security;
 using System.Text.Json;
-using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
+using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
 using Windows.Data.Xml.Dom;
@@ -214,10 +214,7 @@ public sealed partial class NotificationViewModel
             xml.LoadXml(xmlContent);
             TileUpdateManager
                 .CreateTileUpdaterForApplication()
-                .Update(new TileNotification(xml)
-                {
-                    Tag = d.Id
-                });
+                .Update(new TileNotification(xml) { Tag = d.Id });
         }
     }
 }

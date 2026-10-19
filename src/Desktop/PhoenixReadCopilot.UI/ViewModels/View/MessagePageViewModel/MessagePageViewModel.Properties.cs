@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -17,11 +17,14 @@ public sealed partial class MessagePageViewModel
     private bool _preventLoadMore;
     private long? _chatSessionOffset;
 
-    [ObservableProperty] private IMessageSectionDetailViewModel _currentSection;
+    [ObservableProperty]
+    private IMessageSectionDetailViewModel _currentSection;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
-    [ObservableProperty] private bool _isChatSessionLoading;
+    [ObservableProperty]
+    private bool _isChatSessionLoading;
 
     /// <summary>
     /// 分区初始化完成.

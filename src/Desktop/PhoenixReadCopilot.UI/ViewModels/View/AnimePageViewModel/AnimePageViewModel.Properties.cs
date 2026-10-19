@@ -1,6 +1,6 @@
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -13,9 +13,11 @@ public sealed partial class AnimePageViewModel
     private readonly IEntertainmentDiscoveryService _service;
     private readonly ILogger<AnimePageViewModel> _logger;
 
-    [ObservableProperty] private List<IPgcSectionDetailViewModel>? _sections;
+    [ObservableProperty]
+    private List<IPgcSectionDetailViewModel>? _sections;
 
-    [ObservableProperty] private IPgcSectionDetailViewModel? _selectedSection;
+    [ObservableProperty]
+    private IPgcSectionDetailViewModel? _selectedSection;
 
     /// <summary>
     /// 区块加载完成.

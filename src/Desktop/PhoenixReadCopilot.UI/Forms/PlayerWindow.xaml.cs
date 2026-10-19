@@ -107,29 +107,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         MainFrame.Navigate(typeof(PgcPlayerPage), pgc);
     }
 
-    /// <summary>
-    /// 打开直播内容.
-    /// </summary>
-    public void OpenLive(MediaIdentifier room)
-    {
-        Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PlayerType,
-            PlayerType.Island
-        );
-        var useWebPlayer = SettingsToolkit.ReadLocalSetting(
-            SettingNames.UseWebPlayerWhenLive,
-            false
-        );
-        if (preferPlayer == PlayerType.Web || useWebPlayer)
-        {
-            MainFrame.Navigate(typeof(WebPlayerPage), $"https://live.bilibili.com/{room.Id}");
-            return;
-        }
-
-        MainFrame.Navigate(typeof(LivePlayerPage), room);
-    }
-
     /// <inheritdoc/>
     public void EnterPlayerHostMode(PlayerDisplayMode mode)
     {
@@ -149,11 +126,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
             TitleBar.Title = pPage.ViewModel.EpisodeTitle;
             pPage.EnterPlayerHostMode();
         }
-        else if (MainFrame.Content is LivePlayerPage lPage)
-        {
-            TitleBar.Title = lPage.ViewModel.Title;
-            lPage.EnterPlayerHostMode();
-        }
 
         TitleBar.DelayUpdateAsync(100);
     }
@@ -171,10 +143,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         else if (MainFrame.Content is PgcPlayerPage pPage)
         {
             pPage.ExitPlayerHostMode();
-        }
-        else if (MainFrame.Content is LivePlayerPage lPage)
-        {
-            lPage.ExitPlayerHostMode();
         }
 
         TitleBar.DelayUpdateAsync(100);
@@ -272,11 +240,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
             pPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
             return true;
         }
-        else if (MainFrame.Content is LivePlayerPage lPage)
-        {
-            lPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
-            return true;
-        }
 
         return false;
     }
@@ -290,10 +253,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         else if (MainFrame.Content is PgcPlayerPage pPage)
         {
             return pPage.ViewModel.Player.TryTogglePlayPause();
-        }
-        else if (MainFrame.Content is LivePlayerPage lPage)
-        {
-            return lPage.ViewModel.Player.TryTogglePlayPause();
         }
 
         return false;
@@ -336,10 +295,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         else if (MainFrame.Content is PgcPlayerPage pPage)
         {
             pPage.ViewModel.CleanCommand.Execute(default);
-        }
-        else if (MainFrame.Content is LivePlayerPage lPage)
-        {
-            lPage.ViewModel.CleanCommand.Execute(default);
         }
     }
 

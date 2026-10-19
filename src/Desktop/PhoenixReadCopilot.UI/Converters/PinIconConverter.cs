@@ -1,5 +1,5 @@
-using PhoenixReadCopilot.UI.Models.Constants;
 using Microsoft.UI.Xaml.Data;
+using PhoenixReadCopilot.UI.Models.Constants;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -13,7 +13,6 @@ internal sealed partial class PinIconConverter : IValueConverter
                 PinContentType.Pgc => FluentIcons.Common.Symbol.Dust,
                 PinContentType.User => FluentIcons.Common.Symbol.Person,
                 PinContentType.Video => FluentIcons.Common.Symbol.VideoClip,
-                PinContentType.Live => FluentIcons.Common.Symbol.VideoChat,
                 _ => FluentIcons.Common.Symbol.DocumentBulletList,
             }
             : (object)FluentIcons.Common.Symbol.Question;

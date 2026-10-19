@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Components;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Components;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models;
 
@@ -17,9 +17,11 @@ public sealed partial class VideoPartitionPageViewModel
     private readonly ILogger<VideoPartitionPageViewModel> _logger;
     private readonly Dictionary<Partition, VideoPartitionDetailViewModel> _partitionCache = new();
 
-    [ObservableProperty] private bool _isPartitionLoading;
+    [ObservableProperty]
+    private bool _isPartitionLoading;
 
-    [ObservableProperty] private VideoPartitionDetailViewModel? _selectedPartition;
+    [ObservableProperty]
+    private VideoPartitionDetailViewModel? _selectedPartition;
 
     /// <summary>
     /// 区块加载完成.

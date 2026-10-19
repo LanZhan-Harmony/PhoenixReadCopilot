@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Moment;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
@@ -19,9 +19,11 @@ public sealed partial class VideoMomentSectionDetailViewModel
     private string? _offset;
     private string? _baseline;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
     /// <summary>
     /// 列表已完成更新.

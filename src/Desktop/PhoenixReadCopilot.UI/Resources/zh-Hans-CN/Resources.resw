@@ -759,9 +759,6 @@
   <data name="FixPublisher" xml:space="preserve">
     <value>固定UP</value>
   </data>
-  <data name="FlvNotSupported" xml:space="preserve">
-    <value>目前红果不能播放 flv 格式的直播，请在网页中打开该直播间</value>
-  </data>
   <data name="Follow" xml:space="preserve">
     <value>关注</value>
   </data>
@@ -773,12 +770,6 @@
   </data>
   <data name="Followed" xml:space="preserve">
     <value>已关注</value>
-  </data>
-  <data name="FollowLiveRoom" xml:space="preserve">
-    <value>关注的直播间</value>
-  </data>
-  <data name="FollowRoom" xml:space="preserve">
-    <value>关注直播间</value>
   </data>
   <data name="FollowsSuffix" xml:space="preserve">
     <value>关注的人</value>
@@ -1026,21 +1017,6 @@
   <data name="ListLayout" xml:space="preserve">
     <value>列表布局</value>
   </data>
-  <data name="Live" xml:space="preserve">
-    <value>直播</value>
-  </data>
-  <data name="LiveInformation" xml:space="preserve">
-    <value>直播信息</value>
-  </data>
-  <data name="LiveInitializing" xml:space="preserve">
-    <value>正在加载直播</value>
-  </data>
-  <data name="LiveSourceUrl" xml:space="preserve">
-    <value>直播源地址</value>
-  </data>
-  <data name="Living" xml:space="preserve">
-    <value>直播中</value>
-  </data>
   <data name="LoadingAndWait" xml:space="preserve">
     <value>加载中，请稍候</value>
   </data>
@@ -1209,14 +1185,8 @@
   <data name="NoHistoryArticles" xml:space="preserve">
     <value>没有最近的文章历史记录</value>
   </data>
-  <data name="NoHistoryLives" xml:space="preserve">
-    <value>没有最近的直播历史记录</value>
-  </data>
   <data name="NoHistoryVideos" xml:space="preserve">
     <value>没有最近的视频历史记录</value>
-  </data>
-  <data name="NoLiveRooms" xml:space="preserve">
-    <value>没有找到符合要求的直播间</value>
   </data>
   <data name="NoMessage" xml:space="preserve">
     <value>正在等待发言</value>
@@ -1232,9 +1202,6 @@
   </data>
   <data name="NormalUser" xml:space="preserve">
     <value>普通用户</value>
-  </data>
-  <data name="NoRoomDescription" xml:space="preserve">
-    <value>暂无直播间文本介绍</value>
   </data>
   <data name="NoSelfIntroduce" xml:space="preserve">
     <value>TA还没有自我介绍哟~</value>
@@ -1590,9 +1557,6 @@
   <data name="RecommendArticle" xml:space="preserve">
     <value>推荐文章</value>
   </data>
-  <data name="RecommendLive" xml:space="preserve">
-    <value>推荐的直播间</value>
-  </data>
   <data name="Red" xml:space="preserve">
     <value>红色</value>
   </data>
@@ -1682,15 +1646,6 @@
   </data>
   <data name="RequestIndexResultFailed" xml:space="preserve">
     <value>请求索引结果失败</value>
-  </data>
-  <data name="RequestLiveFailed" xml:space="preserve">
-    <value>直播数据请求失败</value>
-  </data>
-  <data name="RequestLivePlayInformationFailed" xml:space="preserve">
-    <value>请求直播播放信息失败</value>
-  </data>
-  <data name="RequestLiveTagsFailed" xml:space="preserve">
-    <value>请求直播标签失败</value>
   </data>
   <data name="RequestMessageFailed" xml:space="preserve">
     <value>请求消息失败</value>
@@ -1892,9 +1847,6 @@
   </data>
   <data name="SoftwareDecode" xml:space="preserve">
     <value>软件解码</value>
-  </data>
-  <data name="SomeoneLiveRoom" xml:space="preserve">
-    <value>{0}的直播间</value>
   </data>
   <data name="SortByDanmaku" xml:space="preserve">
     <value>弹幕最多</value>
@@ -2247,12 +2199,6 @@
   <data name="CopySeasonUrl" xml:space="preserve">
     <value>复制剧集地址</value>
   </data>
-  <data name="CopyLiveUrl" xml:space="preserve">
-    <value>复制直播间地址</value>
-  </data>
-  <data name="LiveStartTimeTemplate" xml:space="preserve">
-    <value>{0}开始直播</value>
-  </data>
   <data name="NoP2P" xml:space="preserve">
     <value>不使用 P2P 节点</value>
   </data>
@@ -2386,9 +2332,6 @@
   </data>
   <data name="Path" xml:space="preserve">
     <value>路径</value>
-  </data>
-  <data name="RecommendLivePartition" xml:space="preserve">
-    <value>推荐的直播分区</value>
   </data>
   <data name="ExternalPlayer" xml:space="preserve">
     <value>外部播放器</value>
@@ -2710,12 +2653,6 @@
   </data>
   <data name="CustomMpvConfigDescription" xml:space="preserve">
     <value>MPV 用户请参考 mpv.io 的说明进行自定义配置</value>
-  </data>
-  <data name="UseWebPlayerWhenLive" xml:space="preserve">
-    <value>使用网页播放器观看直播</value>
-  </data>
-  <data name="UseWebPlayerWhenLiveDescription" xml:space="preserve">
-    <value>如果本机观看直播体验不佳，请打开此选项在网页中观看</value>
   </data>
   <data name="ShowSearchRecommend" xml:space="preserve">
     <value>显示搜索推荐</value>

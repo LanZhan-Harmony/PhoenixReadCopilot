@@ -113,7 +113,7 @@ internal static partial class ConfigExtensions
 
     public static AIServiceConfig? ToAIServiceConfig<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TAIServiceConfig
+            TAIServiceConfig
     >(this ChatEndpointConfigBase? config)
         where TAIServiceConfig : AIServiceConfig
     {
@@ -129,7 +129,7 @@ internal static partial class ConfigExtensions
 
     public static AIServiceConfig? ToAIServiceConfig<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TAIServiceConfig
+            TAIServiceConfig
     >(this ChatClientConfigBase? config)
         where TAIServiceConfig : AIServiceConfig
     {

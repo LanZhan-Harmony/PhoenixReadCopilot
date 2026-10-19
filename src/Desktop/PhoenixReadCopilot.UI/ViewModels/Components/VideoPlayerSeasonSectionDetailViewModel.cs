@@ -1,9 +1,9 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -21,13 +21,17 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel
     /// </summary>
     private readonly string _videoId;
 
-    [ObservableProperty] private List<VideoSeason> _seasons;
+    [ObservableProperty]
+    private List<VideoSeason> _seasons;
 
-    [ObservableProperty] private List<VideoItemViewModel> _items;
+    [ObservableProperty]
+    private List<VideoItemViewModel> _items;
 
-    [ObservableProperty] private VideoSeason _selectedSeason;
+    [ObservableProperty]
+    private VideoSeason _selectedSeason;
 
-    [ObservableProperty] private VideoItemViewModel _selectedItem;
+    [ObservableProperty]
+    private VideoItemViewModel _selectedItem;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerSeasonSectionDetailViewModel"/> class.

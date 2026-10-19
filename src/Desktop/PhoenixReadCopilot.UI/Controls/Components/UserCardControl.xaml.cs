@@ -1,8 +1,8 @@
 using System.ComponentModel;
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Microsoft.UI.Xaml.Input;
 using Richasy.WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;
@@ -65,10 +65,7 @@ public sealed partial class UserCardControl : UserCardControlBase
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -105,10 +102,7 @@ public sealed partial class UserCardControl : UserCardControlBase
             args.TryGetPosition(this, out var point);
             ContextFlyout.ShowAt(
                 this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
-                {
-                    Position = point
-                }
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
             );
         }
 
@@ -118,10 +112,7 @@ public sealed partial class UserCardControl : UserCardControlBase
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout()
-        {
-            ShouldConstrainToRootBounds = false
-        };
+        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePinItem());
         ContextFlyout = menuFlyout;
     }

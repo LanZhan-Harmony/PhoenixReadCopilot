@@ -1,12 +1,12 @@
 using System.Diagnostics;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Search;
@@ -92,7 +92,6 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
                 CreateVideoSection(videos, nextVideoOffset),
                 CreateSection(SearchSectionType.Anime),
                 CreateSection(SearchSectionType.Cinema),
-                CreateSection(SearchSectionType.Live),
                 CreateSection(SearchSectionType.User),
                 CreateSection(SearchSectionType.Article),
             };
@@ -145,7 +144,6 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         {
             SearchSectionType.Anime or SearchSectionType.Cinema => (ISearchSectionDetailViewModel)
                 new PgcSearchSectionDetailViewModel(_service),
-            SearchSectionType.Live => new LiveSearchSectionDetailViewModel(_service),
             SearchSectionType.User => new UserSearchSectionDetailViewModel(_service),
             SearchSectionType.Article => new ArticleSearchSectionDetailViewModel(_service),
             _ => default,
@@ -160,10 +158,6 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             SearchSectionType.Cinema => new SearchPartition(
                 8,
                 ResourceToolkit.GetLocalizedString(StringNames.Cinema)
-            ),
-            SearchSectionType.Live => new SearchPartition(
-                4,
-                ResourceToolkit.GetLocalizedString(StringNames.Live)
             ),
             SearchSectionType.User => new SearchPartition(
                 2,

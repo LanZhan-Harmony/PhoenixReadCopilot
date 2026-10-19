@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -21,11 +21,14 @@ public sealed partial class PopularPageViewModel
     private long _recommendOffset;
     private long _hotOffset;
 
-    [ObservableProperty] private bool _isPartitionLoading;
+    [ObservableProperty]
+    private bool _isPartitionLoading;
 
-    [ObservableProperty] private bool _isVideoLoading;
+    [ObservableProperty]
+    private bool _isVideoLoading;
 
-    [ObservableProperty] private IPopularSectionItemViewModel _selectedSection;
+    [ObservableProperty]
+    private IPopularSectionItemViewModel _selectedSection;
 
     /// <summary>
     /// 区块加载完成.

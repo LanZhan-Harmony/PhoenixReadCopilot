@@ -101,17 +101,14 @@ public sealed partial class IslandPlayerViewModel
             commandArgs.Add(string.Join(',', commandOptions));
             await Player.Client.ExecuteAsync([.. commandArgs]);
 
-            if (!IsLive)
+            await Task.Delay(500);
+            Player.ResetDuration();
+            if (!_autoPlay)
             {
-                await Task.Delay(500);
-                Player.ResetDuration();
-                if (!_autoPlay)
-                {
-                    IsPaused = true;
-                }
-
-                Duration = Convert.ToInt32(Player.Duration!.Value.TotalSeconds);
+                IsPaused = true;
             }
+
+            Duration = Convert.ToInt32(Player.Duration!.Value.TotalSeconds);
         }
         catch (Exception ex)
         {

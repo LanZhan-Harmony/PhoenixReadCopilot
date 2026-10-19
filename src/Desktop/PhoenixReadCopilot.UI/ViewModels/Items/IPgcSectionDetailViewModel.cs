@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using PhoenixReadCopilot.UI.Models.Constants;
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.UI.Models.Constants;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

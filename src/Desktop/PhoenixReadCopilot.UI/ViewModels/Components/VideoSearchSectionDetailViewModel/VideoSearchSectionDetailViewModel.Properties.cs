@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Models;
 
@@ -21,13 +21,17 @@ public sealed partial class VideoSearchSectionDetailViewModel
     private string _keyword;
     private bool _isPreventLoadMore;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
-    [ObservableProperty] private ComprehensiveSearchSortType _sort;
+    [ObservableProperty]
+    private ComprehensiveSearchSortType _sort;
 
-    [ObservableProperty] private List<ComprehensiveSearchSortType> _sorts;
+    [ObservableProperty]
+    private List<ComprehensiveSearchSortType> _sorts;
 
     /// <summary>
     /// 列表已完成更新.

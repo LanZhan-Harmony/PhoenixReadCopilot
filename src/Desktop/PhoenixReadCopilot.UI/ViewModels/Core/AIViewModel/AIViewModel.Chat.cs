@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Logging;
 using Richasy.AgentKernel;
 using Richasy.AgentKernel.Chat;
 using Richasy.BiliKernel.Bili.Comment;
@@ -415,10 +415,7 @@ public sealed partial class AIViewModel
     )
     {
         var messages = new List<ChatMessage>();
-        var options = new ChatOptions
-        {
-            ModelId = SelectedModel.Id
-        };
+        var options = new ChatOptions { ModelId = SelectedModel.Id };
         var config = await this.Get<IChatConfigManager>()
             .GetServiceConfigAsync(type, SelectedModel.Data);
         var service = GlobalDependencies.Kernel.GetRequiredService<IChatService>(type.ToString());

@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
@@ -16,11 +16,14 @@ public sealed partial class EntertainmentIndexViewModel
     private readonly ILogger<EntertainmentIndexViewModel> _logger;
     private int _pageNumer;
 
-    [ObservableProperty] private List<IndexFilterViewModel>? _filters;
+    [ObservableProperty]
+    private List<IndexFilterViewModel>? _filters;
 
-    [ObservableProperty] private bool _isFilterLoading;
+    [ObservableProperty]
+    private bool _isFilterLoading;
 
-    [ObservableProperty] private bool _isSeasonLoading;
+    [ObservableProperty]
+    private bool _isSeasonLoading;
 
     /// <summary>
     /// 条目已更新.

@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using Microsoft.UI.Input;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Input;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.Graphics;
 using Windows.System;
@@ -56,10 +56,7 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup()
-        {
-            Text = text
-        };
+        var popup = new TipPopup() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);
