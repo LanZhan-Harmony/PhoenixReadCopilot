@@ -112,5 +112,4 @@ public sealed partial class ArticleHistorySection : ArticleHistorySectionBase
 /// 文章历史记录区域基类.
 /// </summary>
 public abstract class ArticleHistorySectionBase
-    : LayoutUserControlBase<ArticleHistorySectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<ArticleHistorySectionDetailViewModel> { }

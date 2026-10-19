@@ -15,11 +15,9 @@ public sealed partial class PgcPlayerSeasonSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {
-    [ObservableProperty]
-    private List<SeasonItemViewModel>? _items;
+    [ObservableProperty] private List<SeasonItemViewModel>? _items;
 
-    [ObservableProperty]
-    private SeasonItemViewModel? _selectedItem;
+    [ObservableProperty] private SeasonItemViewModel? _selectedItem;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerSeasonSectionDetailViewModel"/> class.

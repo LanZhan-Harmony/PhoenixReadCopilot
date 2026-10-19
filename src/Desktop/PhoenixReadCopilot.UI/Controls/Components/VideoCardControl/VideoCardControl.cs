@@ -80,7 +80,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.PlayInPrivate),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.EyeOff
+            },
             Tag = nameof(ViewModel.PlayInPrivateCommand),
         };
     }
@@ -90,7 +93,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.EnterUserSpace),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Person
+            },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -158,7 +164,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Globe
+            },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -168,7 +177,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.CopyVideoUrl),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Copy
+            },
             Tag = nameof(ViewModel.CopyUriCommand),
         };
     }
@@ -178,7 +190,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Pin
+            },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -191,7 +206,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             args.TryGetPosition(this, out var point);
             ContextFlyout.ShowAt(
                 this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
+                {
+                    Position = point
+                }
             );
         }
 
@@ -201,7 +219,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
+        var menuFlyout = new MenuFlyout()
+        {
+            ShouldConstrainToRootBounds = false
+        };
         menuFlyout.Items.Add(CreatePrivatePlayItem());
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
         if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.IsUserValid)

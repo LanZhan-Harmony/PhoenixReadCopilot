@@ -18,11 +18,9 @@ public sealed partial class VideoHistorySectionDetailViewModel
     private bool _isPreventLoadMore;
     private long _offset;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
     /// <summary>
     /// 列表已完成更新.

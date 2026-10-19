@@ -22,20 +22,15 @@ public sealed partial class SubtitleViewModel : ViewModelBase
     private List<SubtitleInformation> _subtitles;
     private Action? _initializedAction;
 
-    [ObservableProperty]
-    private bool _isAvailable;
+    [ObservableProperty] private bool _isAvailable;
 
-    [ObservableProperty]
-    private bool _isEnabled;
+    [ObservableProperty] private bool _isEnabled;
 
-    [ObservableProperty]
-    private List<SubtitleMeta>? _metas;
+    [ObservableProperty] private List<SubtitleMeta>? _metas;
 
-    [ObservableProperty]
-    private SubtitleMeta? _selectedMeta;
+    [ObservableProperty] private SubtitleMeta? _selectedMeta;
 
-    [ObservableProperty]
-    private string? _currentSubtitle;
+    [ObservableProperty] private string? _currentSubtitle;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SubtitleViewModel"/> class.

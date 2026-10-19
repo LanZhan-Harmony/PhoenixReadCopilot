@@ -86,5 +86,4 @@ public sealed partial class ArticleSectionDetailControl : ArticleSectionDetailCo
 /// 文章搜索分区详情控件基类.
 /// </summary>
 public abstract class ArticleSectionDetailControlBase
-    : LayoutUserControlBase<ArticleSearchSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<ArticleSearchSectionDetailViewModel> { }

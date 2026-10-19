@@ -21,23 +21,17 @@ public sealed partial class VideoPartitionDetailViewModel
     private List<VideoItemViewModel> _recommendVideoCache;
     private long _recommendOffset;
 
-    [ObservableProperty]
-    private List<PartitionVideoSortType> _sortTypes;
+    [ObservableProperty] private List<PartitionVideoSortType> _sortTypes;
 
-    [ObservableProperty]
-    private List<PartitionViewModel> _children;
+    [ObservableProperty] private List<PartitionViewModel> _children;
 
-    [ObservableProperty]
-    private PartitionVideoSortType _selectedSortType;
+    [ObservableProperty] private PartitionVideoSortType _selectedSortType;
 
-    [ObservableProperty]
-    private bool _isRecommend;
+    [ObservableProperty] private bool _isRecommend;
 
-    [ObservableProperty]
-    private bool _isVideoLoading;
+    [ObservableProperty] private bool _isVideoLoading;
 
-    [ObservableProperty]
-    private PartitionViewModel _currentPartition;
+    [ObservableProperty] private PartitionViewModel _currentPartition;
 
     /// <summary>
     /// 初始化完成.

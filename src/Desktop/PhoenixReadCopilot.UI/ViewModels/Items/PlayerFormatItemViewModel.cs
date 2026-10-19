@@ -10,8 +10,7 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFormatInformation>
 {
-    [ObservableProperty]
-    private bool _isEnabled;
+    [ObservableProperty] private bool _isEnabled;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFormatItemViewModel"/> class.

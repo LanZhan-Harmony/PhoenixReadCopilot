@@ -24,23 +24,17 @@ public sealed partial class ArticlePartitionDetailViewModel
     private int _recommendOffset;
     private bool _preventLoadMore;
 
-    [ObservableProperty]
-    private List<ArticleSortType> _sortTypes;
+    [ObservableProperty] private List<ArticleSortType> _sortTypes;
 
-    [ObservableProperty]
-    private List<PartitionViewModel> _children;
+    [ObservableProperty] private List<PartitionViewModel> _children;
 
-    [ObservableProperty]
-    private ArticleSortType _selectedSortType;
+    [ObservableProperty] private ArticleSortType _selectedSortType;
 
-    [ObservableProperty]
-    private bool _isRecommend;
+    [ObservableProperty] private bool _isRecommend;
 
-    [ObservableProperty]
-    private bool _isArticleLoading;
+    [ObservableProperty] private bool _isArticleLoading;
 
-    [ObservableProperty]
-    private PartitionViewModel _currentPartition;
+    [ObservableProperty] private PartitionViewModel _currentPartition;
 
     /// <summary>
     /// 初始化完成.

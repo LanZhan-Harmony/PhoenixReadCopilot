@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Pgc;
 /// 娱乐索引控件基类.
 /// </summary>
 public abstract class EntertainmentIndexControlBase
-    : LayoutUserControlBase<EntertainmentIndexViewModel>
-{ }
+    : LayoutUserControlBase<EntertainmentIndexViewModel> { }

@@ -109,5 +109,4 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
 /// 视频播放器分P部分.
 /// </summary>
 public abstract class VideoPartsSectionBase
-    : LayoutUserControlBase<VideoPlayerPartSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoPlayerPartSectionDetailViewModel> { }

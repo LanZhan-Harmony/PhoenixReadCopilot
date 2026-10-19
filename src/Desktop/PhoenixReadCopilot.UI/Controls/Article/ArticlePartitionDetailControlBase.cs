@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Article;
 /// 文章分区详情控件基类.
 /// </summary>
 public abstract class ArticlePartitionDetailControlBase
-    : LayoutUserControlBase<ArticlePartitionDetailViewModel>
-{ }
+    : LayoutUserControlBase<ArticlePartitionDetailViewModel> { }

@@ -20,59 +20,41 @@ public sealed partial class DanmakuViewModel
     private int _position;
     private int _duration;
 
-    [ObservableProperty]
-    private bool _isShowDanmaku;
+    [ObservableProperty] private bool _isShowDanmaku;
 
-    [ObservableProperty]
-    private bool _canShowDanmaku;
+    [ObservableProperty] private bool _canShowDanmaku;
 
-    [ObservableProperty]
-    private double _danmakuOpacity;
+    [ObservableProperty] private double _danmakuOpacity;
 
-    [ObservableProperty]
-    private double _danmakuFontSize;
+    [ObservableProperty] private double _danmakuFontSize;
 
-    [ObservableProperty]
-    private string _danmakuFontFamily;
+    [ObservableProperty] private string _danmakuFontFamily;
 
-    [ObservableProperty]
-    private double _danmakuArea;
+    [ObservableProperty] private double _danmakuArea;
 
-    [ObservableProperty]
-    private double _danmakuSpeed;
+    [ObservableProperty] private double _danmakuSpeed;
 
-    [ObservableProperty]
-    private double _extraSpeed = 1;
+    [ObservableProperty] private double _extraSpeed = 1;
 
-    [ObservableProperty]
-    private bool _isDanmakuLimit;
+    [ObservableProperty] private bool _isDanmakuLimit;
 
-    [ObservableProperty]
-    private bool _isDanmakuBold;
+    [ObservableProperty] private bool _isDanmakuBold;
 
-    [ObservableProperty]
-    private bool _isStandardSize;
+    [ObservableProperty] private bool _isStandardSize;
 
-    [ObservableProperty]
-    private DanmakuLocation _location;
+    [ObservableProperty] private DanmakuLocation _location;
 
-    [ObservableProperty]
-    private Color _color;
+    [ObservableProperty] private Color _color;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private List<DanmakuLocation> _locations;
+    [ObservableProperty] private List<DanmakuLocation> _locations;
 
-    [ObservableProperty]
-    private List<Color> _colors;
+    [ObservableProperty] private List<Color> _colors;
 
-    [ObservableProperty]
-    private List<string> _fonts;
+    [ObservableProperty] private List<string> _fonts;
 
-    [ObservableProperty]
-    private bool _isPaused;
+    [ObservableProperty] private bool _isPaused;
 
     /// <summary>
     /// 当弹幕列表添加时触发的事件.

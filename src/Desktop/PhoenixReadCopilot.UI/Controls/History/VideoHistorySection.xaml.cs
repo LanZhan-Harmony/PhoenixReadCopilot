@@ -112,5 +112,4 @@ public sealed partial class VideoHistorySection : VideoHistorySectionBase
 /// 视频历史记录区域基类.
 /// </summary>
 public abstract class VideoHistorySectionBase
-    : LayoutUserControlBase<VideoHistorySectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoHistorySectionDetailViewModel> { }

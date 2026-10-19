@@ -20,5 +20,4 @@ public sealed partial class VideoRecommendSection : VideoRecommendSectionBase
 /// 视频推荐区域基类.
 /// </summary>
 public abstract class VideoRecommendSectionBase
-    : LayoutUserControlBase<VideoPlayerRecommendSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoPlayerRecommendSectionDetailViewModel> { }

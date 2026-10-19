@@ -86,5 +86,4 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
 /// 用户搜索分区详情控件基类.
 /// </summary>
 public abstract class UserSectionDetailControlBase
-    : LayoutUserControlBase<UserSearchSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<UserSearchSectionDetailViewModel> { }

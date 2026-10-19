@@ -60,5 +60,4 @@ public sealed partial class VideoSeasonSection : VideoSeasonSectionBase
 /// 视频播放器合集部分基类.
 /// </summary>
 public abstract class VideoSeasonSectionBase
-    : LayoutUserControlBase<VideoPlayerSeasonSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoPlayerSeasonSectionDetailViewModel> { }

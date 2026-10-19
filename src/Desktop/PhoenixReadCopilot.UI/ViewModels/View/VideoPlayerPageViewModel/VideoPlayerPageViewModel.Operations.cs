@@ -316,7 +316,6 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         _part = part;
-        AI.InjectVideoAsync(_view, part);
         Player.CancelNotification();
         Danmaku?.ResetData(_view.Information.Identifier.Id, part.Identifier.Id);
         Subtitle?.ResetData(_view.Information.Identifier.Id, part.Identifier.Id);
@@ -325,7 +324,7 @@ public sealed partial class VideoPlayerPageViewModel
         InitializeNextVideo();
         var partSection =
             Sections.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
-            as VideoPlayerPartSectionDetailViewModel;
+                as VideoPlayerPartSectionDetailViewModel;
         partSection?.UpdateSelectedPartCommand.Execute(part);
     }
 

@@ -16,44 +16,29 @@ public sealed partial class ArticleReaderPageViewModel
     private readonly IArticleOperationService _operationService;
     private readonly ILogger<ArticleReaderPageViewModel> _logger;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private string _title;
+    [ObservableProperty] private string _title;
 
-    [ObservableProperty]
-    private string? _author;
+    [ObservableProperty] private string? _author;
 
-    [ObservableProperty]
-    private Uri? _avatar;
+    [ObservableProperty] private Uri? _avatar;
 
-    [ObservableProperty]
-    private bool _isVip;
+    [ObservableProperty] private bool _isVip;
 
-    [ObservableProperty]
-    private bool _isFollowed;
+    [ObservableProperty] private bool _isFollowed;
 
-    [ObservableProperty]
-    private bool? _isLiked;
+    [ObservableProperty] private bool? _isLiked;
 
-    [ObservableProperty]
-    private bool? _isFavorited;
+    [ObservableProperty] private bool? _isFavorited;
 
-    [ObservableProperty]
-    private int _likeCount;
+    [ObservableProperty] private int _likeCount;
 
-    [ObservableProperty]
-    private int _commentCount;
+    [ObservableProperty] private int _commentCount;
 
-    [ObservableProperty]
-    private int _favoriteCount;
+    [ObservableProperty] private int _favoriteCount;
 
-    [ObservableProperty]
-    private bool _isCommentsOpened;
-
-    [ObservableProperty]
-    private bool _isAIOverlayOpened;
+    [ObservableProperty] private bool _isCommentsOpened;
 
     /// <summary>
     /// 文章已加载.
@@ -74,9 +59,4 @@ public sealed partial class ArticleReaderPageViewModel
     /// 评论模块.
     /// </summary>
     public CommentMainViewModel CommentModule { get; }
-
-    /// <summary>
-    /// AI 模块.
-    /// </summary>
-    public AIViewModel AI { get; }
 }

@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Player;
 /// 视频播放器页面控件基类.
 /// </summary>
 public abstract class VideoPlayerPageControlBase
-    : LayoutUserControlBase<VideoPlayerPageViewModel>
-{ }
+    : LayoutUserControlBase<VideoPlayerPageViewModel> { }

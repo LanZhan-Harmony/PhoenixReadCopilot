@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Moment;
 /// 用户动态详情控件基类.
 /// </summary>
 public abstract class UserMomentDetailControlBase
-    : LayoutUserControlBase<UserMomentDetailViewModel>
-{ }
+    : LayoutUserControlBase<UserMomentDetailViewModel> { }

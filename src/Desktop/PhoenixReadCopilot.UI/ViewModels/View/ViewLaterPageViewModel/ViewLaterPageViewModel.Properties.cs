@@ -16,14 +16,11 @@ public sealed partial class ViewLaterPageViewModel
 
     private int _pageNumber;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private int _totalCount;
+    [ObservableProperty] private int _totalCount;
 
     /// <summary>
     /// 视频列表已完成更新.

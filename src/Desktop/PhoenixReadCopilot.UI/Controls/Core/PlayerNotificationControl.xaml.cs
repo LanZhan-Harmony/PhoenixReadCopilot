@@ -24,5 +24,4 @@ public sealed partial class PlayerNotificationControl : PlayerNotificationContro
 /// 播放器通知控件基类.
 /// </summary>
 public abstract class PlayerNotificationControlBase
-    : LayoutUserControlBase<PlayerNotificationItemViewModel>
-{ }
+    : LayoutUserControlBase<PlayerNotificationItemViewModel> { }

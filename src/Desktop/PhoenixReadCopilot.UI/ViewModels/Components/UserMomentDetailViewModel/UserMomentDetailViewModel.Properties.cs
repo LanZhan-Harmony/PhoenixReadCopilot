@@ -20,17 +20,13 @@ public sealed partial class UserMomentDetailViewModel
     private UserProfile _user;
     private Action<MomentItemViewModel> _showCommentAction;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private string _title;
+    [ObservableProperty] private string _title;
 
-    [ObservableProperty]
-    private ObservableCollection<MomentItemViewModel> _items = new();
+    [ObservableProperty] private ObservableCollection<MomentItemViewModel> _items = new();
 
     /// <summary>
     /// 列表已完成更新.

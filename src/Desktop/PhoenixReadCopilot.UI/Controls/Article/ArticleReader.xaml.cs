@@ -106,7 +106,11 @@ public sealed partial class ArticleReader : LayoutUserControlBase
             if (!string.IsNullOrEmpty(args.ContextMenuTarget.SelectionText))
             {
                 _selectedText = args.ContextMenuTarget.SelectionText;
-                TextMenuFlyout.ShowAt(MainView, new FlyoutShowOptions { Position = args.Location });
+                TextMenuFlyout.ShowAt(MainView,
+                    new FlyoutShowOptions
+                    {
+                        Position = args.Location
+                    });
             }
         }
         else if (args.ContextMenuTarget.Kind == CoreWebView2ContextMenuTargetKind.Image)

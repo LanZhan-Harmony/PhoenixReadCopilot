@@ -18,5 +18,4 @@ public sealed partial class PopularSectionItemControl : PopularSectionItemContro
 /// 流行视频区块项控件基类.
 /// </summary>
 public abstract class PopularSectionItemControlBase
-    : LayoutUserControlBase<PopularSectionItemViewModel>
-{ }
+    : LayoutUserControlBase<PopularSectionItemViewModel> { }

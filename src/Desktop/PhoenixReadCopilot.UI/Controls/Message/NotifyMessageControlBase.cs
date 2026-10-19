@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Message;
 /// 通知消息区块控件基类.
 /// </summary>
 public abstract class NotifyMessageControlBase
-    : LayoutUserControlBase<NotifyMessageSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<NotifyMessageSectionDetailViewModel> { }

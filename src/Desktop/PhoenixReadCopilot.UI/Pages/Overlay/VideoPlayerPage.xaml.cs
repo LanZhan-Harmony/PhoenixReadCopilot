@@ -90,15 +90,33 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
         ViewModel.CleanCommand.Execute(default);
 
     private DanmakuControlBase CreateDanmakuPanel() =>
-        new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };
+        new VideoDanmakuPanel()
+        {
+            ViewModel = ViewModel.Danmaku
+        };
 
     private FrameworkElement CreateTransportControl()
     {
-        var leftPanel = new VideoPlayerTransportLeftPanel() { ViewModel = ViewModel };
-        var danmakuBox = new DanmakuBox() { ViewModel = ViewModel.Danmaku };
-        var rightPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-        var formatButton = new VideoPlayerFormatButton() { ViewModel = ViewModel };
-        var subtitleButton = new SubtitleButton() { ViewModel = ViewModel.Subtitle };
+        var leftPanel = new VideoPlayerTransportLeftPanel()
+        {
+            ViewModel = ViewModel
+        };
+        var danmakuBox = new DanmakuBox()
+        {
+            ViewModel = ViewModel.Danmaku
+        };
+        var rightPanel = new StackPanel()
+        {
+            Orientation = Orientation.Horizontal
+        };
+        var formatButton = new VideoPlayerFormatButton()
+        {
+            ViewModel = ViewModel
+        };
+        var subtitleButton = new SubtitleButton()
+        {
+            ViewModel = ViewModel.Subtitle
+        };
         rightPanel.Children.Add(formatButton);
         rightPanel.Children.Add(subtitleButton);
         danmakuBox.InputGotFocus += OnDanmakuInputGotFocus;

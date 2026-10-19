@@ -110,7 +110,10 @@ public sealed partial class BlurCanvasEffect : CanvasEffect
             BorderMode = EffectBorderMode.Hard,
         };
         TintEffect tintEffect = new();
-        BlendEffect blendEffect = new() { Mode = BlendEffectMode.Luminosity };
+        BlendEffect blendEffect = new()
+        {
+            Mode = BlendEffectMode.Luminosity
+        };
         PremultiplyEffect noisePremultiplyEffect = new();
         PremultiplyEffect finalPremultiplyEffect = new();
         UnPremultiplyEffect unPremultiplyEffect1 = new();

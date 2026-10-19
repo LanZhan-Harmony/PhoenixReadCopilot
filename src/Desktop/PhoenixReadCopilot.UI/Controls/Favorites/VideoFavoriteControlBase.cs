@@ -7,5 +7,4 @@ namespace PhoenixReadCopilot.UI.Controls.Favorites;
 /// 视频收藏控件基类.
 /// </summary>
 public abstract class VideoFavoriteControlBase
-    : LayoutUserControlBase<VideoFavoriteSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoFavoriteSectionDetailViewModel> { }

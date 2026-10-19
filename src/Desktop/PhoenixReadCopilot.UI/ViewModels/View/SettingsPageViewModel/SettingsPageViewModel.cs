@@ -1,11 +1,10 @@
 using CommunityToolkit.Mvvm.Input;
-using PhoenixReadCopilot.UI.Controls.AI;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.WinUIKernel.AI.ViewModels;
 using Richasy.WinUIKernel.Share.Toolkits;
+using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.Storage;
 using Windows.System;
 
@@ -14,7 +13,7 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// <summary>
 /// 设置页面视图模型.
 /// </summary>
-public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
+public sealed partial class SettingsPageViewModel : ViewModelBase
 {
     [RelayCommand]
     private static async Task OpenMpvConfigAsync()
@@ -159,10 +158,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         IsExternalPlayerType = PlayerType == PlayerType.External;
         IsIslandPlayerType = PlayerType == PlayerType.Island;
         FilterAISubtitle = SettingsToolkit.ReadLocalSetting(SettingNames.FilterAISubtitle, true);
-        IsAIStreamingResponse = SettingsToolkit.ReadLocalSetting(
-            SettingNames.IsAIStreamingResponse,
-            true
-        );
         IsMpvCustomOptionVisible =
             PreferDecode == PreferDecodeType.Custom && PlayerType == PlayerType.Island;
         if (string.IsNullOrEmpty(DefaultDownloadPath))
@@ -213,98 +208,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         }
 
         await Launcher.LaunchFolderPathAsync(DefaultDownloadPath);
-    }
-
-    [RelayCommand]
-    private async Task EditVideoSummarizeAsync()
-    {
-        if (!FileToolkit.IsLocalDataExist("video_summarize.txt", "Prompt"))
-        {
-            await this.Get<IFileToolkit>()
-                .WriteLocalDataAsync(
-                    "video_summarize.txt",
-                    PromptConstants.VideoSummaryPrompt,
-                    default,
-                    "Prompt"
-                );
-        }
-
-        await new CustomPromptDialog(
-            "video_summarize",
-            ResourceToolkit.GetLocalizedString(StringNames.VideoSummarize)
-        )
-        {
-            XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
-        }.ShowAsync();
-    }
-
-    [RelayCommand]
-    private async Task EditVideoEvaluationAsync()
-    {
-        if (!FileToolkit.IsLocalDataExist("video_evaluation.txt", "Prompt"))
-        {
-            await this.Get<IFileToolkit>()
-                .WriteLocalDataAsync(
-                    "video_evaluation.txt",
-                    PromptConstants.VideoEvaluationPrompt,
-                    default,
-                    "Prompt"
-                );
-        }
-
-        await new CustomPromptDialog(
-            "video_evaluation",
-            ResourceToolkit.GetLocalizedString(StringNames.VideoEvaluation)
-        )
-        {
-            XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
-        }.ShowAsync();
-    }
-
-    [RelayCommand]
-    private async Task EditArticleSummarizeAsync()
-    {
-        if (!FileToolkit.IsLocalDataExist("article_summarize.txt", "Prompt"))
-        {
-            await this.Get<IFileToolkit>()
-                .WriteLocalDataAsync(
-                    "article_summarize.txt",
-                    PromptConstants.ArticleSummaryPrompt,
-                    default,
-                    "Prompt"
-                );
-        }
-
-        await new CustomPromptDialog(
-            "article_summarize",
-            ResourceToolkit.GetLocalizedString(StringNames.ArticleSummarize)
-        )
-        {
-            XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
-        }.ShowAsync();
-    }
-
-    [RelayCommand]
-    private async Task EditArticleEvaluationAsync()
-    {
-        if (!FileToolkit.IsLocalDataExist("article_evaluation.txt", "Prompt"))
-        {
-            await this.Get<IFileToolkit>()
-                .WriteLocalDataAsync(
-                    "article_evaluation.txt",
-                    PromptConstants.ArticleEvaluationPrompt,
-                    default,
-                    "Prompt"
-                );
-        }
-
-        await new CustomPromptDialog(
-            "article_evaluation",
-            ResourceToolkit.GetLocalizedString(StringNames.ArticleEvaluation)
-        )
-        {
-            XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
-        }.ShowAsync();
     }
 
     private void CheckTheme()
@@ -440,9 +343,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
     partial void OnMTCBehaviorChanged(MTCBehavior value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.MTCBehavior, value);
-
-    partial void OnIsAIStreamingResponseChanged(bool value) =>
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsAIStreamingResponse, value);
 
     partial void OnShowSearchRecommendChanged(bool value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.ShowSearchRecommend, value);

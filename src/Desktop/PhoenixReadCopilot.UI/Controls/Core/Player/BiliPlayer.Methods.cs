@@ -322,7 +322,10 @@ public sealed partial class BiliPlayer
         var point = e.GetCurrentPoint((UIElement)sender);
         if (point.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
         {
-            var options = new FlyoutShowOptions { Position = point.Position };
+            var options = new FlyoutShowOptions
+            {
+                Position = point.Position
+            };
             _contextFlyout.ShowAt(_interactionControl, options);
             return;
         }
@@ -387,7 +390,7 @@ public sealed partial class BiliPlayer
         if (
             _isPointerHasPressed != true
             || e.GetCurrentPoint((UIElement)sender).Properties.PointerUpdateKind
-                == PointerUpdateKind.RightButtonReleased
+            == PointerUpdateKind.RightButtonReleased
         )
         {
             return;

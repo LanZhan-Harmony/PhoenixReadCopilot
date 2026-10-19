@@ -21,11 +21,9 @@ public sealed partial class PinnerViewModel : ViewModelBase
     private const string PinFolderName = "Fixed";
     private readonly ILogger<PinnerViewModel> _logger;
 
-    [ObservableProperty]
-    private bool _isEmpty;
+    [ObservableProperty] private bool _isEmpty;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.

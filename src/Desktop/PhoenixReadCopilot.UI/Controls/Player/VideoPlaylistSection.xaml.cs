@@ -60,5 +60,4 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
 /// 视频播放列表基类.
 /// </summary>
 public abstract class VideoPlaylistSectionBase
-    : LayoutUserControlBase<VideoPlayerPlaylistSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoPlayerPlaylistSectionDetailViewModel> { }

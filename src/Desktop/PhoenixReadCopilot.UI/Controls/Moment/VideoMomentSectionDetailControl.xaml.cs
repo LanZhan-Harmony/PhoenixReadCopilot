@@ -86,5 +86,4 @@ public sealed partial class VideoMomentSectionDetailControl : VideoMomentSection
 /// 视频动态详情控件基类.
 /// </summary>
 public abstract class VideoMomentSectionDetailControlBase
-    : LayoutUserControlBase<VideoMomentSectionDetailViewModel>
-{ }
+    : LayoutUserControlBase<VideoMomentSectionDetailViewModel> { }
