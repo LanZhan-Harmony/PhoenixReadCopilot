@@ -1,13 +1,13 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml.Navigation;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -21,20 +21,26 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     private Frame? _navFrame;
     private Frame? _overFrame;
 
-    [ObservableProperty] private bool _isOverlayOpen;
+    [ObservableProperty]
+    private bool _isOverlayOpen;
 
     /// <summary>
     /// 导航条目列表.
     /// </summary>
-    [ObservableProperty] private List<AppNavigationItemViewModel> _menuItems;
+    [ObservableProperty]
+    private List<AppNavigationItemViewModel> _menuItems;
 
-    [ObservableProperty] private bool _isTopNavBarShown;
+    [ObservableProperty]
+    private bool _isTopNavBarShown;
 
-    [ObservableProperty] private bool _isFavoritesPage;
+    [ObservableProperty]
+    private bool _isFavoritesPage;
 
-    [ObservableProperty] private bool _isHistoryPage;
+    [ObservableProperty]
+    private bool _isHistoryPage;
 
-    [ObservableProperty] private bool _isViewLaterPage;
+    [ObservableProperty]
+    private bool _isViewLaterPage;
 
     /// <summary>
     /// 底部条目列表.
@@ -116,15 +122,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         else if (pageType == typeof(PgcPlayerPage) && _overFrame.Content is PgcPlayerPage pgcPage)
         {
             pgcPage.ViewModel.InitializePageCommand.Execute(parameter);
-            IsOverlayOpen = true;
-            return;
-        }
-        else if (
-            pageType == typeof(WebDavPlayerPage)
-            && _overFrame.Content is WebDavPlayerPage webDavPage
-        )
-        {
-            webDavPage.ViewModel.InitializeCommand.Execute(parameter);
             IsOverlayOpen = true;
             return;
         }
@@ -231,24 +228,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
     }
 
-    [RelayCommand]
-    private void CheckWebDavItem()
-    {
-        var isWebDavEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsWebDavEnabled, false);
-        var exist = FooterItems.Any(p => p.PageKey == typeof(WebDavPage).FullName);
-        if (isWebDavEnabled && !exist)
-        {
-            FooterItems.Insert(
-                0,
-                GetItem<WebDavPage>(StringNames.WebDav, FluentIcons.Common.Symbol.CloudDatabase)
-            );
-        }
-        else if (!isWebDavEnabled && exist)
-        {
-            FooterItems.Remove(FooterItems.First(p => p.PageKey == typeof(WebDavPage).FullName));
-        }
-    }
-
     private IReadOnlyList<AppNavigationItemViewModel> GetMenuItems()
     {
         var lastSelectedPage = SettingsToolkit.ReadLocalSetting(
@@ -290,16 +269,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             GetItem<MessagePage>(StringNames.Message, FluentIcons.Common.Symbol.Chat),
             GetItem<SettingsPage>(StringNames.Settings, FluentIcons.Common.Symbol.Settings),
         };
-
-        var isWebDavEnabled = SettingsToolkit.ReadLocalSetting(SettingNames.IsWebDavEnabled, false);
-        if (isWebDavEnabled)
-        {
-            list.Insert(
-                0,
-                GetItem<WebDavPage>(StringNames.WebDav, FluentIcons.Common.Symbol.CloudDatabase)
-            );
-        }
-
         return list;
     }
 

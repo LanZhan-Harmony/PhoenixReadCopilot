@@ -1,11 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Extensions;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Dispatching;
 using Richasy.AgentKernel;
 using Richasy.BiliKernel;
 using Richasy.WinUIKernel.AI;
@@ -111,7 +111,6 @@ internal static class GlobalDependencies
             .AddSingleton<MessagePageViewModel>()
             .AddSingleton<SettingsPageViewModel>()
             .AddSingleton<UserSpacePageViewModel>()
-            .AddSingleton<WebDavPageViewModel>()
             .AddSingleton<NotificationViewModel>()
             .AddTransient<DanmakuViewModel>()
             .AddTransient<SubtitleViewModel>()
@@ -119,7 +118,6 @@ internal static class GlobalDependencies
             .AddTransient<VideoPlayerPageViewModel>()
             .AddTransient<LivePlayerPageViewModel>()
             .AddTransient<PgcPlayerPageViewModel>()
-            .AddTransient<WebDavPlayerPageViewModel>()
             .AddTransient<LiveChatSectionDetailViewModel>()
             .AddTransient<UserMomentDetailViewModel>()
             .AddTransient<DownloadViewModel>()
@@ -167,8 +165,7 @@ internal static class GlobalDependencies
     }
 
     public static IKernelBuilder AddSingleton<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    T
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
     >(this IKernelBuilder kernelBuilder)
         where T : class
     {
@@ -177,8 +174,7 @@ internal static class GlobalDependencies
     }
 
     public static IKernelBuilder AddTransient<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    T
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
     >(this IKernelBuilder kernelBuilder)
         where T : class
     {

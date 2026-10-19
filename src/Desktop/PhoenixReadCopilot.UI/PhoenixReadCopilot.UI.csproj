@@ -141,7 +141,6 @@
     <PackageReference Include="Serilog.Sinks.File" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libs\Beta\Connectors.WebDav\Connectors.WebDav.csproj" />
     <ProjectReference Include="..\..\Libs\Danmaku.Core\Danmaku.Core.csproj" />
     <ProjectReference Include="..\..\Libs\mpv-winui\src\Mpv.Core\Mpv.Core.csproj" />
     <ProjectReference Include="..\PhoenixReadCopilot.UI.Models\PhoenixReadCopilot.UI.Models.csproj" />

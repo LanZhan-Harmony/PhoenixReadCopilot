@@ -1,5 +1,5 @@
-using PhoenixReadCopilot.UI.Toolkits;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Toolkits;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 
@@ -61,11 +61,6 @@ public sealed partial class IslandPlayerViewModel
     /// <inheritdoc/>
     protected override async Task OnLoadPlayDataAsync()
     {
-        if (IsWebDav)
-        {
-            LoadWebDavAuthorization();
-        }
-
         UpdateState(Models.Constants.PlayerState.None);
 
         try
@@ -106,7 +101,7 @@ public sealed partial class IslandPlayerViewModel
             commandArgs.Add(string.Join(',', commandOptions));
             await Player.Client.ExecuteAsync([.. commandArgs]);
 
-            if (!IsLive && !IsWebDav)
+            if (!IsLive)
             {
                 await Task.Delay(500);
                 Player.ResetDuration();

@@ -1,7 +1,7 @@
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Media.Playback;
 using WinRT;
@@ -52,9 +52,6 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
         _audioSegment = audio;
         UpdateState(PlayerState.None);
     }
-
-    /// <inheritdoc/>
-    protected override void SetWebDavConfig(WebDavConfig config) { }
 
     private MediaPlayer CreatePlayer()
     {

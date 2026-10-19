@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
-using PhoenixReadCopilot.UI.Toolkits;
 using Microsoft.Graphics.Canvas;
+using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.Media.Core;
@@ -135,10 +135,6 @@ public sealed partial class NativePlayerViewModel
         {
             LoadLiveSource(_videoUrl);
         }
-        else if (IsWebDav)
-        {
-            await LoadWebDavAsync();
-        }
         else
         {
             await LoadDashVideoSourceAsync();
@@ -172,15 +168,6 @@ public sealed partial class NativePlayerViewModel
         return httpClient;
     }
 
-    private HttpClient GetWebDavClient()
-    {
-        var httpClient = new HttpClient();
-        var auth =
-            $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_webDavConfig.UserName}:{_webDavConfig.Password}"))}";
-        httpClient.DefaultRequestHeaders.Add("Authorization", auth);
-        return httpClient;
-    }
-
     private async Task LoadDashVideoSourceAsync()
     {
         var httpClient = GetVideoClient();
@@ -194,25 +181,25 @@ public sealed partial class NativePlayerViewModel
         var mpdStr = await FileIO.ReadTextAsync(file);
 
         var videoStr = $"""
-                        <Representation bandwidth="{_videoSegment.Bandwidth}" codecs="{_videoSegment.Codecs}" height="{_videoSegment.Height}" mimeType="{_videoSegment.MimeType}" id="{_videoSegment.Id}" width="{_videoSegment.Width}" startWithSap="1">
-                            <BaseURL>{SecurityElement.Escape(_videoUrl)}</BaseURL>
-                            <SegmentBase indexRange="{_videoSegment.IndexRange}">
-                                <Initialization range="{_videoSegment.Initialization}" />
-                            </SegmentBase>
-                        </Representation>
-                        """;
+            <Representation bandwidth="{_videoSegment.Bandwidth}" codecs="{_videoSegment.Codecs}" height="{_videoSegment.Height}" mimeType="{_videoSegment.MimeType}" id="{_videoSegment.Id}" width="{_videoSegment.Width}" startWithSap="1">
+                <BaseURL>{SecurityElement.Escape(_videoUrl)}</BaseURL>
+                <SegmentBase indexRange="{_videoSegment.IndexRange}">
+                    <Initialization range="{_videoSegment.Initialization}" />
+                </SegmentBase>
+            </Representation>
+            """;
 
         var audioStr = string.Empty;
         if (!string.IsNullOrEmpty(_audioUrl))
         {
             audioStr = $"""
-                        <Representation bandwidth="{_audioSegment.Bandwidth}" codecs="{_audioSegment.Codecs}" mimeType="{_audioSegment.MimeType}" id="{_audioSegment.Id}">
-                            <BaseURL>{SecurityElement.Escape(_audioUrl)}</BaseURL>
-                            <SegmentBase indexRange="{_audioSegment.IndexRange}">
-                                <Initialization range="{_audioSegment.Initialization}" />
-                            </SegmentBase>
-                        </Representation>
-                        """;
+                <Representation bandwidth="{_audioSegment.Bandwidth}" codecs="{_audioSegment.Codecs}" mimeType="{_audioSegment.MimeType}" id="{_audioSegment.Id}">
+                    <BaseURL>{SecurityElement.Escape(_audioUrl)}</BaseURL>
+                    <SegmentBase indexRange="{_audioSegment.IndexRange}">
+                        <Initialization range="{_audioSegment.Initialization}" />
+                    </SegmentBase>
+                </Representation>
+                """;
         }
 
         videoStr = videoStr.Trim();
@@ -234,16 +221,6 @@ public sealed partial class NativePlayerViewModel
         Debug.Assert(source.Status == AdaptiveMediaSourceCreationStatus.Success, "解析MPD失败");
         var videoSource = MediaSource.CreateFromAdaptiveMediaSource(source.MediaSource);
         Player.Source = new MediaPlaybackItem(videoSource);
-    }
-
-    private async Task LoadWebDavAsync()
-    {
-        var stream = await HttpRandomAccessStream.CreateAsync(
-            GetWebDavClient(),
-            new Uri(_videoUrl)
-        );
-        var source = MediaSource.CreateFromStream(stream, _contentType);
-        Player.Source = new MediaPlaybackItem(source);
     }
 
     private void LoadLiveSource(string url)
