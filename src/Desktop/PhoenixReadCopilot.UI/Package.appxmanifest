@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -10,15 +10,15 @@
   IgnorableNamespaces="uap rescap desktop com">
 
   <Identity
-    Name="Richasy.PhoenixReadCopilot.Dev"
-    Publisher="CN=Richasy"
+    Name="C19A3696.PhoenixReadCopilot"
+    Publisher="CN=D8BFD4E9-94E2-482B-A987-F96C72D65FDF"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="db73c7b4-f2cf-4fdc-96e5-a386308a42e9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="630ba68b-54cf-4cab-b9f2-ed542a7f244c" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>ms-resource:AppName</DisplayName>
-    <PublisherDisplayName>Richasy</PublisherDisplayName>
+    <PublisherDisplayName>LanZhan</PublisherDisplayName>
     <Logo>Assets\Logo\StoreLogo.png</Logo>
   </Properties>
 
