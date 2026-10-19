@@ -1,11 +1,11 @@
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Appearance;
@@ -149,14 +149,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                 }
             }
         }
-        else if (
-            FindInnerContent<LiveInformation>() is LiveInformation linfo
-            && !TryOpenInNewWindowIfPreferred()
-        )
-        {
-            this.Get<NavigationViewModel>()
-                .NavigateToOver(typeof(LivePlayerPage), linfo.Identifier);
-        }
         else if (FindInnerContent<IEnumerable<BiliImage>>() is not IEnumerable<BiliImage>)
         {
             OpenInBroswerCommand.Execute(default);
@@ -292,10 +284,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                     new MediaIdentifier($"ep_{einfo.Identifier.Id}", default, default)
                 );
             }
-        }
-        else if (FindInnerContent<LiveInformation>() is LiveInformation linfo)
-        {
-            new PlayerWindow().OpenLive(linfo.Identifier);
         }
     }
 

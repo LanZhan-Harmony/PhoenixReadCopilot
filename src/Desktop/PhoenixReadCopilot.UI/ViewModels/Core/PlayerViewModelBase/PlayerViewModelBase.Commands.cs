@@ -1,7 +1,7 @@
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
@@ -146,7 +146,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void SetSpeed(double speed)
     {
-        if (speed > MaxSpeed || IsLive)
+        if (speed > MaxSpeed)
         {
             return;
         }
@@ -217,11 +217,6 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void IncreaseSpeed()
     {
-        if (IsLive)
-        {
-            return;
-        }
-
         var speed = Speed + 0.5;
         if (speed > MaxSpeed)
         {
@@ -234,11 +229,6 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void DecreaseSpeed()
     {
-        if (IsLive)
-        {
-            return;
-        }
-
         var speed = Speed - 0.5;
         if (speed < 0.5)
         {

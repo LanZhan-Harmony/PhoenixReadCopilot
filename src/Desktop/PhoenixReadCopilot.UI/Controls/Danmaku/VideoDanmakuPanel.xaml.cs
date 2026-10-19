@@ -1,7 +1,7 @@
-using PhoenixReadCopilot.UI.ViewModels.Core;
 using Danmaku.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Danmaku;
 
 namespace PhoenixReadCopilot.UI.Controls.Danmaku;

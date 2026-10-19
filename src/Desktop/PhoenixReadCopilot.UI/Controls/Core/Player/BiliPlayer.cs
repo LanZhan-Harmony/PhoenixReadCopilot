@@ -1,9 +1,9 @@
 using System.ComponentModel;
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Microsoft.UI.Xaml.Input;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;
 

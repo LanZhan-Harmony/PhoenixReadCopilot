@@ -49,13 +49,7 @@ public static class BilibiliDanmakuParser
                     {
                         duplicatedDanmakuDict.Add(
                             danmakuElem.Content,
-                            [
-                                new DuplicatedDanmakuItem()
-                                {
-                                    StartMs = startMs,
-                                    Count = 1
-                                }
-                            ]
+                            [new DuplicatedDanmakuItem() { StartMs = startMs, Count = 1 }]
                         );
                     }
                     else
@@ -78,11 +72,7 @@ public static class BilibiliDanmakuParser
                         else
                         {
                             duplicatedDanmakuList.Add(
-                                new DuplicatedDanmakuItem()
-                                {
-                                    StartMs = startMs,
-                                    Count = 1
-                                }
+                                new DuplicatedDanmakuItem() { StartMs = startMs, Count = 1 }
                             );
                         }
                     }

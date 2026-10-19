@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Media;
@@ -24,19 +23,9 @@ public abstract partial class PlayerViewModelBase
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69";
 
     /// <summary>
-    /// 直播用户代理.
-    /// </summary>
-    protected const string LiveUserAgent = "Mozilla/5.0 BiliDroid/1.12.0 (bbcallen@gmail.com)";
-
-    /// <summary>
     /// 视频来源.
     /// </summary>
     protected const string VideoReferer = "https://www.bilibili.com";
-
-    /// <summary>
-    /// 直播来源.
-    /// </summary>
-    protected const string LiveReferer = "https://live.bilibili.com";
 
     protected readonly ILogger<PlayerViewModelBase> _logger;
     protected readonly DispatcherQueue _dispatcherQueue;
@@ -139,11 +128,6 @@ public abstract partial class PlayerViewModelBase
     /// 初始化已完成.
     /// </summary>
     public event EventHandler Initialized;
-
-    /// <summary>
-    /// 是否为直播准备.
-    /// </summary>
-    public bool IsLive { get; set; }
 
     /// <summary>
     /// 是否为 PGC 播放.

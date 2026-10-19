@@ -131,14 +131,7 @@ public sealed partial class NativePlayerViewModel
         Player = CreatePlayer();
         Player.AutoPlay = _autoPlay;
 
-        if (IsLive)
-        {
-            LoadLiveSource(_videoUrl);
-        }
-        else
-        {
-            await LoadDashVideoSourceAsync();
-        }
+        await LoadDashVideoSourceAsync();
 
         _element?.SetMediaPlayer(Player);
     }
@@ -221,12 +214,6 @@ public sealed partial class NativePlayerViewModel
         Debug.Assert(source.Status == AdaptiveMediaSourceCreationStatus.Success, "解析MPD失败");
         var videoSource = MediaSource.CreateFromAdaptiveMediaSource(source.MediaSource);
         Player.Source = new MediaPlaybackItem(videoSource);
-    }
-
-    private void LoadLiveSource(string url)
-    {
-        var source = MediaSource.CreateFromUri(new Uri(url));
-        Player.Source = new MediaPlaybackItem(source);
     }
 
     internal sealed partial class HttpRandomAccessStream : IRandomAccessStreamWithContentType

@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Controls.AI;
-using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Toolkits;
@@ -103,8 +102,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
             .ReadLocalSetting($"Is{typeof(MomentPage).Name}Visible", true);
         IsVideoNavVisible = this.Get<ISettingsToolkit>()
             .ReadLocalSetting($"Is{typeof(VideoPartitionPage).Name}Visible", true);
-        IsLiveNavVisible = this.Get<ISettingsToolkit>()
-            .ReadLocalSetting($"Is{typeof(LivePartitionPage).Name}Visible", true);
         IsAnimeNavVisible = this.Get<ISettingsToolkit>()
             .ReadLocalSetting($"Is{typeof(AnimePage).Name}Visible", true);
         IsCinemaNavVisible = this.Get<ISettingsToolkit>()
@@ -182,10 +179,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
         );
         DownloadWithDanmaku = SettingsToolkit.ReadLocalSetting(
             SettingNames.DownloadWithDanmaku,
-            false
-        );
-        UseWebPlayerWhenLive = SettingsToolkit.ReadLocalSetting(
-            SettingNames.UseWebPlayerWhenLive,
             false
         );
         ShowSearchRecommend = SettingsToolkit.ReadLocalSetting(
@@ -451,9 +444,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
     partial void OnIsAIStreamingResponseChanged(bool value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.IsAIStreamingResponse, value);
 
-    partial void OnUseWebPlayerWhenLiveChanged(bool value) =>
-        SettingsToolkit.WriteLocalSetting(SettingNames.UseWebPlayerWhenLive, value);
-
     partial void OnShowSearchRecommendChanged(bool value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.ShowSearchRecommend, value);
 
@@ -465,9 +455,6 @@ public sealed partial class SettingsPageViewModel : AISettingsViewModelBase
 
     partial void OnIsVideoNavVisibleChanged(bool value) =>
         WriteNavVisibleSetting(typeof(VideoPartitionPage), value);
-
-    partial void OnIsLiveNavVisibleChanged(bool value) =>
-        WriteNavVisibleSetting(typeof(LivePartitionPage), value);
 
     partial void OnIsAnimeNavVisibleChanged(bool value) =>
         WriteNavVisibleSetting(typeof(AnimePage), value);

@@ -21,11 +21,6 @@ public enum PinContentType
     Video,
 
     /// <summary>
-    /// 直播间.
-    /// </summary>
-    Live,
-
-    /// <summary>
     /// 文章.
     /// </summary>
     Article,

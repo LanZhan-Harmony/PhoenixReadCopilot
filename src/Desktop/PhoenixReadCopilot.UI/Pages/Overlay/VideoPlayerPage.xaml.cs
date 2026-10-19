@@ -1,9 +1,9 @@
+using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.Controls.Core;
 using PhoenixReadCopilot.UI.Controls.Danmaku;
 using PhoenixReadCopilot.UI.Controls.Player;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using Microsoft.UI.Xaml.Navigation;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -90,33 +90,15 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
         ViewModel.CleanCommand.Execute(default);
 
     private DanmakuControlBase CreateDanmakuPanel() =>
-        new VideoDanmakuPanel()
-        {
-            ViewModel = ViewModel.Danmaku
-        };
+        new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };
 
     private FrameworkElement CreateTransportControl()
     {
-        var leftPanel = new VideoPlayerTransportLeftPanel()
-        {
-            ViewModel = ViewModel
-        };
-        var danmakuBox = new DanmakuBox()
-        {
-            ViewModel = ViewModel.Danmaku
-        };
-        var rightPanel = new StackPanel()
-        {
-            Orientation = Orientation.Horizontal
-        };
-        var formatButton = new VideoPlayerFormatButton()
-        {
-            ViewModel = ViewModel
-        };
-        var subtitleButton = new SubtitleButton()
-        {
-            ViewModel = ViewModel.Subtitle
-        };
+        var leftPanel = new VideoPlayerTransportLeftPanel() { ViewModel = ViewModel };
+        var danmakuBox = new DanmakuBox() { ViewModel = ViewModel.Danmaku };
+        var rightPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+        var formatButton = new VideoPlayerFormatButton() { ViewModel = ViewModel };
+        var subtitleButton = new SubtitleButton() { ViewModel = ViewModel.Subtitle };
         rightPanel.Children.Add(formatButton);
         rightPanel.Children.Add(subtitleButton);
         danmakuBox.InputGotFocus += OnDanmakuInputGotFocus;

@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Models.Search;
 
@@ -21,9 +21,11 @@ public sealed partial class PgcSearchSectionDetailViewModel
     private string _keyword;
     private SearchPartition _partition;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
     /// <summary>
     /// 列表已完成更新.

@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using PhoenixReadCopilot.UI.Forms;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Windowing;
 using Microsoft.Windows.BadgeNotifications;
 using Mpv.Core;
+using PhoenixReadCopilot.UI.Forms;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -232,10 +232,7 @@ public sealed partial class AppViewModel : ViewModelBase
                     CreateNoWindow = true,
                 };
 
-                using (var process = new Process
-                {
-                    StartInfo = processStartInfo
-                })
+                using (var process = new Process { StartInfo = processStartInfo })
                 {
                     process.Start();
                     var output = process.StandardOutput.ReadToEnd();

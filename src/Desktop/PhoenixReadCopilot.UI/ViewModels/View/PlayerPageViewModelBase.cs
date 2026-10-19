@@ -1,7 +1,7 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -10,9 +10,11 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 {
-    [ObservableProperty] private PlayerViewModelBase _player;
+    [ObservableProperty]
+    private PlayerViewModelBase _player;
 
-    [ObservableProperty] private bool _isSeparatorWindowPlayer;
+    [ObservableProperty]
+    private bool _isSeparatorWindowPlayer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPageViewModelBase"/> class.

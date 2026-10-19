@@ -1,6 +1,6 @@
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 

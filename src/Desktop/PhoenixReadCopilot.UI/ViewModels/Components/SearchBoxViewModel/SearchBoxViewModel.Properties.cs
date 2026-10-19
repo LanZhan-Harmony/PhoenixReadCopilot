@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Models.Search;
 
@@ -19,9 +19,11 @@ public sealed partial class SearchBoxViewModel
     private string _extraRegionId = string.Empty;
     private string _extraRegionName = string.Empty;
 
-    [ObservableProperty] private string _keyword = string.Empty;
+    [ObservableProperty]
+    private string _keyword = string.Empty;
 
-    [ObservableProperty] private bool _isHotSearchLoading;
+    [ObservableProperty]
+    private bool _isHotSearchLoading;
 
     /// <summary>
     /// 搜索建议.

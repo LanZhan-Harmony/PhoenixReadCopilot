@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.User;
 
@@ -20,13 +20,17 @@ public sealed partial class UserMomentDetailViewModel
     private UserProfile _user;
     private Action<MomentItemViewModel> _showCommentAction;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
-    [ObservableProperty] private string _title;
+    [ObservableProperty]
+    private string _title;
 
-    [ObservableProperty] private ObservableCollection<MomentItemViewModel> _items = new();
+    [ObservableProperty]
+    private ObservableCollection<MomentItemViewModel> _items = new();
 
     /// <summary>
     /// 列表已完成更新.

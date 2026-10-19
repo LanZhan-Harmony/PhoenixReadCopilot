@@ -212,7 +212,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             SettingNames.IsBottomProgressVisible,
             true
         );
-        IsBottomProgressVisible = isEnabled && shouldShow && !IsLive;
+        IsBottomProgressVisible = isEnabled && shouldShow;
     }
 
     /// <summary>

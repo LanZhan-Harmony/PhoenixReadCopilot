@@ -1,6 +1,6 @@
+using Microsoft.UI.Xaml.Markup;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
-using Microsoft.UI.Xaml.Markup;
 
 namespace PhoenixReadCopilot.UI.Extensions;
 

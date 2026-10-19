@@ -1,9 +1,9 @@
 // Copyright (c) Bili Copilot. All rights reserved.
 
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Models;
 using Richasy.WinUIKernel.Share.ViewModels;

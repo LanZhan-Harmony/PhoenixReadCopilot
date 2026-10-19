@@ -1,9 +1,9 @@
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Article;

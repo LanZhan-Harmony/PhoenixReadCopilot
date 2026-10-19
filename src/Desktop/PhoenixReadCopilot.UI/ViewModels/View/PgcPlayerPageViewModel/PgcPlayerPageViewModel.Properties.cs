@@ -1,8 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
@@ -33,71 +33,104 @@ public sealed partial class PgcPlayerPageViewModel
     private EntertainmentType _type;
     private bool _isFormatChanging;
 
-    [ObservableProperty] private bool _isPageLoading;
+    [ObservableProperty]
+    private bool _isPageLoading;
 
-    [ObservableProperty] private bool _isPageLoadFailed;
+    [ObservableProperty]
+    private bool _isPageLoadFailed;
 
-    [ObservableProperty] private bool _isMediaLoading;
+    [ObservableProperty]
+    private bool _isMediaLoading;
 
-    [ObservableProperty] private bool _isMediaLoadFailed;
+    [ObservableProperty]
+    private bool _isMediaLoadFailed;
 
-    [ObservableProperty] private Uri? _cover;
+    [ObservableProperty]
+    private Uri? _cover;
 
-    [ObservableProperty] private string _seasonTitle;
+    [ObservableProperty]
+    private string _seasonTitle;
 
-    [ObservableProperty] private string _episodeTitle;
+    [ObservableProperty]
+    private string _episodeTitle;
 
-    [ObservableProperty] private string _description;
+    [ObservableProperty]
+    private string _description;
 
-    [ObservableProperty] private string _alias;
+    [ObservableProperty]
+    private string _alias;
 
-    [ObservableProperty] private bool _isFollow;
+    [ObservableProperty]
+    private bool _isFollow;
 
-    [ObservableProperty] private double _playerWidth;
+    [ObservableProperty]
+    private double _playerWidth;
 
-    [ObservableProperty] private double _playerHeight;
+    [ObservableProperty]
+    private double _playerHeight;
 
-    [ObservableProperty] private double _playCount;
+    [ObservableProperty]
+    private double _playCount;
 
-    [ObservableProperty] private double _danmakuCount;
+    [ObservableProperty]
+    private double _danmakuCount;
 
-    [ObservableProperty] private double _commentCount;
+    [ObservableProperty]
+    private double _commentCount;
 
-    [ObservableProperty] private double _likeCount;
+    [ObservableProperty]
+    private double _likeCount;
 
-    [ObservableProperty] private double _coinCount;
+    [ObservableProperty]
+    private double _coinCount;
 
-    [ObservableProperty] private double _favoriteCount;
+    [ObservableProperty]
+    private double _favoriteCount;
 
-    [ObservableProperty] private double _followCount;
+    [ObservableProperty]
+    private double _followCount;
 
-    [ObservableProperty] private string _onlineCountText;
+    [ObservableProperty]
+    private string _onlineCountText;
 
-    [ObservableProperty] private string _seasonId;
+    [ObservableProperty]
+    private string _seasonId;
 
-    [ObservableProperty] private string _episodeId;
+    [ObservableProperty]
+    private string _episodeId;
 
-    [ObservableProperty] private bool _isLiked;
+    [ObservableProperty]
+    private bool _isLiked;
 
-    [ObservableProperty] private bool _isCoined;
+    [ObservableProperty]
+    private bool _isCoined;
 
-    [ObservableProperty] private bool _isFavorited;
+    [ObservableProperty]
+    private bool _isFavorited;
 
-    [ObservableProperty] private bool _isCoinAlsoLike;
+    [ObservableProperty]
+    private bool _isCoinAlsoLike;
 
-    [ObservableProperty] private bool _hasNextEpisode;
+    [ObservableProperty]
+    private bool _hasNextEpisode;
 
-    [ObservableProperty] private string _nextEpisodeTip;
+    [ObservableProperty]
+    private string _nextEpisodeTip;
 
-    [ObservableProperty] private PlayerFormatItemViewModel? _selectedFormat;
+    [ObservableProperty]
+    private PlayerFormatItemViewModel? _selectedFormat;
 
-    [ObservableProperty] private IPlayerSectionDetailViewModel? _selectedSection;
+    [ObservableProperty]
+    private IPlayerSectionDetailViewModel? _selectedSection;
 
-    [ObservableProperty] private List<PlayerFormatItemViewModel>? _formats;
+    [ObservableProperty]
+    private List<PlayerFormatItemViewModel>? _formats;
 
-    [ObservableProperty] private List<PlayerFavoriteFolderViewModel>? _favoriteFolders;
+    [ObservableProperty]
+    private List<PlayerFavoriteFolderViewModel>? _favoriteFolders;
 
-    [ObservableProperty] private List<IPlayerSectionDetailViewModel>? _sections;
+    [ObservableProperty]
+    private List<IPlayerSectionDetailViewModel>? _sections;
 
     /// <summary>
     /// 视图数据加载完成.

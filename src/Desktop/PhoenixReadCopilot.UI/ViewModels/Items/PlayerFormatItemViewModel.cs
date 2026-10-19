@@ -1,5 +1,5 @@
-using PhoenixReadCopilot.UI.ViewModels.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
+using PhoenixReadCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -10,7 +10,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFormatInformation>
 {
-    [ObservableProperty] private bool _isEnabled;
+    [ObservableProperty]
+    private bool _isEnabled;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerFormatItemViewModel"/> class.

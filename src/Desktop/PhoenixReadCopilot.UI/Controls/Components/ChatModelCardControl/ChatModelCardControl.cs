@@ -113,10 +113,7 @@ public sealed partial class ChatModelCardControl : LayoutControlBase<ChatModelIt
             {
                 Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Modify),
                 MinWidth = 160,
-                Icon = new FluentIcons.WinUI.SymbolIcon
-                {
-                    Symbol = FluentIcons.Common.Symbol.Edit
-                },
+                Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Edit },
                 Tag = nameof(ViewModel.ModifyCommand),
                 Command = ViewModel.ModifyCommand,
             }

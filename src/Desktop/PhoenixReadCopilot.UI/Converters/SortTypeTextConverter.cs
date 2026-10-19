@@ -1,6 +1,6 @@
+using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
-using Microsoft.UI.Xaml.Data;
 using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.UI.Converters;

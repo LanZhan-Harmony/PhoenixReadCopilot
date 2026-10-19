@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -107,15 +106,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         if (pageType == typeof(VideoPlayerPage) && _overFrame.Content is VideoPlayerPage page)
         {
             page.ViewModel.InitializePageCommand.Execute(parameter);
-            IsOverlayOpen = true;
-            return;
-        }
-        else if (
-            pageType == typeof(LivePlayerPage)
-            && _overFrame.Content is LivePlayerPage livePage
-        )
-        {
-            livePage.ViewModel.InitializePageCommand.Execute(parameter);
             IsOverlayOpen = true;
             return;
         }
@@ -239,7 +229,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             GetItem<PopularPage>(StringNames.PopularSlim, FluentIcons.Common.Symbol.Rocket),
             GetItem<MomentPage>(StringNames.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
             GetItem<VideoPartitionPage>(StringNames.Video, FluentIcons.Common.Symbol.VideoClip),
-            GetItem<LivePartitionPage>(StringNames.Live, FluentIcons.Common.Symbol.VideoChat),
             GetItem<AnimePage>(StringNames.Anime, FluentIcons.Common.Symbol.Dust),
             GetItem<CinemaPage>(StringNames.Cinema, FluentIcons.Common.Symbol.FilmstripPlay),
             GetItem<ArticlePartitionPage>(

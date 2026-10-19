@@ -40,7 +40,6 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
         {
             ViewHistoryTabType.Video => ResourceToolkit.GetLocalizedString(StringNames.Video),
             ViewHistoryTabType.Article => ResourceToolkit.GetLocalizedString(StringNames.Article),
-            ViewHistoryTabType.Live => ResourceToolkit.GetLocalizedString(StringNames.Live),
             _ => string.Empty,
         };
     }
@@ -70,11 +69,7 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
             foreach (var item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = GetSectionName(item.Type),
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = GetSectionName(item.Type), Tag = item }
                 );
             }
         }

@@ -2,7 +2,6 @@ using Mpv.Core;
 using Mpv.Core.Args;
 using Mpv.Core.Enums.Client;
 using PhoenixReadCopilot.UI.Controls.Core;
-using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -72,20 +71,14 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
         }
 
         var cookies = this.Get<IBiliCookiesResolver>().GetCookieString();
-        var referer = IsLive ? LiveReferer : VideoReferer;
-        var userAgent = IsLive ? LiveUserAgent : VideoUserAgent;
+        var referer = VideoReferer;
+        var userAgent = VideoUserAgent;
         var cookieStr = $"Cookie: {cookies}";
         var refererStr = $"Referer: {referer}";
 
         Player.Client.SetOption("cookies", "yes");
         Player.Client.SetOption("user-agent", userAgent);
         Player.Client.SetOption("http-header-fields", $"{cookieStr}\n{refererStr}");
-
-        if (IsLive)
-        {
-            Player.Client.SetOption("ytdl", "no");
-            Player.IsLoggingEnabled = false;
-        }
 
         IsPlayerInitializing = false;
         _isInitialized = true;
@@ -103,7 +96,7 @@ public sealed partial class IslandPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            if (e.Duration == 0 && !IsLive)
+            if (e.Duration == 0)
             {
                 Player.ResetDuration();
             }

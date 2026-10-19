@@ -1,6 +1,6 @@
-using PhoenixReadCopilot.UI.ViewModels.View;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
+using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Pages;

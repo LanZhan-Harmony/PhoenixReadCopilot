@@ -1,6 +1,6 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Bili.Moment;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -12,11 +12,14 @@ public sealed partial class MomentPageViewModel
 {
     private readonly IMomentDiscoveryService _momentDiscoveryService;
 
-    [ObservableProperty] private List<IMomentSectionDetailViewModel> _sections;
+    [ObservableProperty]
+    private List<IMomentSectionDetailViewModel> _sections;
 
-    [ObservableProperty] private IMomentSectionDetailViewModel _selectedSection;
+    [ObservableProperty]
+    private IMomentSectionDetailViewModel _selectedSection;
 
-    [ObservableProperty] private bool _isCommentsOpened;
+    [ObservableProperty]
+    private bool _isCommentsOpened;
 
     /// <summary>
     /// 区块初始化完成.

@@ -1,7 +1,7 @@
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Models.Search;
 using Richasy.WinUIKernel.Share.ViewModels;

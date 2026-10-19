@@ -63,11 +63,6 @@ public sealed partial class RootLayout : RootLayoutBase
             SecondaryTitleBar.Title = pPage.ViewModel.EpisodeTitle;
             pPage.EnterPlayerHostMode();
         }
-        else if (OverlayFrame.Content is LivePlayerPage lPage)
-        {
-            SecondaryTitleBar.Title = lPage.ViewModel.Title;
-            lPage.EnterPlayerHostMode();
-        }
 
         MainTitleBar.DelayUpdateAsync(100);
         SecondaryTitleBar.DelayUpdateAsync(500);
@@ -100,10 +95,6 @@ public sealed partial class RootLayout : RootLayoutBase
         {
             pPage.ExitPlayerHostMode();
         }
-        else if (OverlayFrame.Content is LivePlayerPage lPage)
-        {
-            lPage.ExitPlayerHostMode();
-        }
 
         MainTitleBar.DelayUpdateAsync(500);
         SecondaryTitleBar.DelayUpdateAsync(100);
@@ -131,11 +122,6 @@ public sealed partial class RootLayout : RootLayoutBase
             pPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
             isHandled = true;
         }
-        else if (OverlayFrame.Content is LivePlayerPage lPage)
-        {
-            lPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
-            isHandled = true;
-        }
 
         return isHandled;
     }
@@ -158,10 +144,6 @@ public sealed partial class RootLayout : RootLayoutBase
         else if (OverlayFrame.Content is PgcPlayerPage pPage)
         {
             return pPage.ViewModel.Player.TryTogglePlayPause();
-        }
-        else if (OverlayFrame.Content is LivePlayerPage lPage)
-        {
-            return lPage.ViewModel.Player.TryTogglePlayPause();
         }
 
         return false;

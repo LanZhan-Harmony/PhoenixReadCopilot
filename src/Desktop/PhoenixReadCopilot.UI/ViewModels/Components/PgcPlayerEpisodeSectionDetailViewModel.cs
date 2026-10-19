@@ -1,8 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
 
@@ -17,11 +17,14 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
 {
     private readonly Action<EpisodeInformation> _episodeSelectedAction;
 
-    [ObservableProperty] private List<EpisodeItemViewModel>? _episodes;
+    [ObservableProperty]
+    private List<EpisodeItemViewModel>? _episodes;
 
-    [ObservableProperty] private EpisodeItemViewModel? _selectedEpisode;
+    [ObservableProperty]
+    private EpisodeItemViewModel? _selectedEpisode;
 
-    [ObservableProperty] private bool _onlyIndex;
+    [ObservableProperty]
+    private bool _onlyIndex;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerEpisodeSectionDetailViewModel"/> class.

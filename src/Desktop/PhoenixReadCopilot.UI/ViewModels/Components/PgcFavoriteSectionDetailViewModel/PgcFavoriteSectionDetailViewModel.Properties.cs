@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
 
@@ -17,13 +17,17 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
     private readonly Dictionary<PgcFavoriteStatus, List<SeasonItemViewModel>> _cache = new();
     private readonly Dictionary<PgcFavoriteStatus, (int, bool)> _offsetCache = new();
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
-    [ObservableProperty] private PgcFavoriteStatus _currentStatus;
+    [ObservableProperty]
+    private PgcFavoriteStatus _currentStatus;
 
-    [ObservableProperty] private List<PgcFavoriteStatus> _statusList;
+    [ObservableProperty]
+    private List<PgcFavoriteStatus> _statusList;
 
     /// <summary>
     /// 列表已完成更新.

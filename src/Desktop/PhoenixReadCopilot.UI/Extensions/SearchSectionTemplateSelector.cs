@@ -9,8 +9,6 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
 
     public DataTemplate PgcTemplate { get; set; }
 
-    public DataTemplate LiveTemplate { get; set; }
-
     public DataTemplate UserTemplate { get; set; }
 
     public DataTemplate ArticleTemplate { get; set; }
@@ -23,7 +21,6 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
             {
                 SearchSectionType.Video => VideoTemplate,
                 SearchSectionType.Anime or SearchSectionType.Cinema => PgcTemplate,
-                SearchSectionType.Live => LiveTemplate,
                 SearchSectionType.User => UserTemplate,
                 SearchSectionType.Article => ArticleTemplate,
                 _ => throw new ArgumentOutOfRangeException(

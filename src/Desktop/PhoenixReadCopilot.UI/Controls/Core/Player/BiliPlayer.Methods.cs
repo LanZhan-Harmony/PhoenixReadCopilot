@@ -1,10 +1,10 @@
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;
 
@@ -322,10 +322,7 @@ public sealed partial class BiliPlayer
         var point = e.GetCurrentPoint((UIElement)sender);
         if (point.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
         {
-            var options = new FlyoutShowOptions
-            {
-                Position = point.Position
-            };
+            var options = new FlyoutShowOptions { Position = point.Position };
             _contextFlyout.ShowAt(_interactionControl, options);
             return;
         }
@@ -390,7 +387,7 @@ public sealed partial class BiliPlayer
         if (
             _isPointerHasPressed != true
             || e.GetCurrentPoint((UIElement)sender).Properties.PointerUpdateKind
-            == PointerUpdateKind.RightButtonReleased
+                == PointerUpdateKind.RightButtonReleased
         )
         {
             return;

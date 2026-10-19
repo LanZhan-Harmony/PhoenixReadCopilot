@@ -1,6 +1,4 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -151,9 +149,6 @@ public sealed partial class SettingsPageViewModel
     private List<MTCBehavior> _mTCBehaviorCollection;
 
     [ObservableProperty]
-    private bool _useWebPlayerWhenLive;
-
-    [ObservableProperty]
     private bool _showSearchRecommend;
 
     [ObservableProperty]
@@ -164,9 +159,6 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     private bool _isVideoNavVisible;
-
-    [ObservableProperty]
-    private bool _isLiveNavVisible;
 
     [ObservableProperty]
     private bool _isAnimeNavVisible;

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using PhoenixReadCopilot.UI.Models;
 using Richasy.BiliKernel.Bili.Authorization;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
@@ -65,9 +64,8 @@ public abstract partial class PlayerViewModelBase
 
     private void OpenWithMpvOrMpvNet(bool isMpv)
     {
-        var httpParams = IsLive
-            ? $"--cookies --no-ytdl --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{LiveReferer}\\\" --user-agent \\\"{LiveUserAgent}\\\""
-            : $"--cookies --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{VideoReferer}\\\" --user-agent=\\\"{VideoUserAgent}\\\"";
+        var httpParams =
+            $"--cookies --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{VideoReferer}\\\" --user-agent=\\\"{VideoUserAgent}\\\"";
         var exeName = isMpv ? "mpv" : "mpvnet";
         if (!string.IsNullOrEmpty(_extraOptions))
         {

@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -14,9 +14,11 @@ public sealed partial class FavoritesPageViewModel
     private readonly IFavoriteService _service;
     private readonly ILogger<FavoritesPageViewModel> _logger;
 
-    [ObservableProperty] private IFavoriteSectionDetailViewModel _currentSection;
+    [ObservableProperty]
+    private IFavoriteSectionDetailViewModel _currentSection;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
     /// <summary>
     /// 分区初始化完成.

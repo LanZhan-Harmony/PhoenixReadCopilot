@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -49,11 +48,9 @@ public sealed partial class ExternalPlayerViewModel
     {
         UpdateState(PlayerState.None);
         var cookies = this.Get<IBiliCookiesResolver>().GetCookieString();
-        var referer = IsLive ? LiveReferer : VideoReferer;
         var token = this.Get<IBiliTokenResolver>().GetToken().AccessToken;
-        var httpParams = IsLive
-            ? $"--cookies --no-ytdl --user-agent=\"{LiveUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {LiveReferer}\""
-            : $"--cookies --user-agent=\"{VideoUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {VideoReferer}\"";
+        var httpParams =
+            $"--cookies --user-agent=\"{VideoUserAgent}\" --http-header-fields=\"Cookie: {cookies}\" --http-header-fields=\"Referer: {VideoReferer}\"";
         var externalPlayerType = SettingsToolkit.ReadLocalSetting(
             SettingNames.ExternalPlayer,
             ExternalPlayerType.Mpv
@@ -75,7 +72,7 @@ public sealed partial class ExternalPlayerViewModel
             command += $" --script-opts=\"cid={_extraOptions}\"";
         }
 
-        if (Position > 0 && !IsLive)
+        if (Position > 0)
         {
             command += $" --start={Position}";
         }

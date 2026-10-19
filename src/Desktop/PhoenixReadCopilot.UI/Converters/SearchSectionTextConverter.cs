@@ -1,6 +1,6 @@
+using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
-using Microsoft.UI.Xaml.Data;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -13,7 +13,6 @@ internal sealed partial class SearchSectionTextConverter : IValueConverter
         {
             SearchSectionType.Video => StringNames.Video,
             SearchSectionType.Anime => StringNames.Anime,
-            SearchSectionType.Live => StringNames.Live,
             SearchSectionType.Cinema => StringNames.Cinema,
             SearchSectionType.User => StringNames.User,
             SearchSectionType.Article => StringNames.Article,
