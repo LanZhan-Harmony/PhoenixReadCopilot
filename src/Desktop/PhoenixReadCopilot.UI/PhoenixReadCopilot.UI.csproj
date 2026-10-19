@@ -1,0 +1,188 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RootNamespace>PhoenixReadCopilot.UI</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <Nullable>enable</Nullable>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <NoWarn>$(NoWarn);CS1591;NU1903;NU1902;IL2059;NU1900;MVVMTK0046;MVVMTK0045;MVVMTK0047;MVVMTK0048;AD0001;IL3000;IL2072;IL2075;IL2091;IL3050;IL2026</NoWarn>
+    <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
+    <AllowUnsafe>True</AllowUnsafe>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="$(UserProfile)\.nuget\packages\richasy.winuikernel.ai\*\contentFiles\any\net10.0-windows10.0.26100\Assets\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\qq_group_dark.jpg" />
+    <None Remove="Assets\qq_group_light.jpg" />
+    <None Remove="Assets\Reader\Dark.css" />
+    <None Remove="Assets\Reader\Light.css" />
+    <None Remove="Assets\Reader\ShowPage.html" />
+    <Content Include="Assets\StoreLogo.png" />
+    <None Update="Assets\BewlyBewly.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\DashAudioWithoutVideoTemplate.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\DashVideoTemplate.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\DashVideoWithoutAudioTemplate.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\WebPlayer.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Platform)' == 'x64'">
+    <None Update="Assets\libmpv\x64\libmpv-2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\ffmpeg\x64\ffmpeg.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BBDown\x64\BBDown.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Platform)' == 'ARM64'">
+    <None Update="Assets\libmpv\arm64\libmpv-2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\ffmpeg\arm64\ffmpeg.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BBDown\arm64\BBDown.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <!--
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ColorCode.WinUI" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" />
+    <PackageReference Include="ComputeSharp.D2D1.WinUI" />
+    <PackageReference Include="FluentIcons.WinUI" />
+    <PackageReference Include="H.NotifyIcon.WinUI" />
+    <PackageReference Include="HtmlAgilityPack" />
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Windows.CsWin32">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Graphics.Win2D" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Ali" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Anthropic" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Azure" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Baidu" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.DeepSeek" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Google" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Groq" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.IFlyTek" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.LingYi" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Mistral" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Moonshot" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Ollama" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.OpenAI" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.OpenRouter" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Perplexity" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.SiliconFlow" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Tencent" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.TogetherAI" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Volcano" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Windows" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.XAI" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.Youdao" />
+    <PackageReference Include="Richasy.AgentKernel.Connectors.ZhiPu" />
+    <PackageReference Include="Richasy.BiliKernel.Authorizers.TV" />
+    <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUICookies" />
+    <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUIQRCode" />
+    <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUIToken" />
+    <PackageReference Include="Richasy.BiliKernel.Services.Article" />
+    <PackageReference Include="Richasy.BiliKernel.Services.Comment" />
+    <PackageReference Include="Richasy.BiliKernel.Services.Media" />
+    <PackageReference Include="Richasy.BiliKernel.Services.Moment" />
+    <PackageReference Include="Richasy.BiliKernel.Services.Search" />
+    <PackageReference Include="Richasy.BiliKernel.Services.User" />
+    <PackageReference Include="Richasy.WinUIKernel.AI" />
+    <PackageReference Include="RichasyKernel.Core" />
+    <PackageReference Include="Roman-Numerals" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Extensions.Logging" />
+    <PackageReference Include="Serilog.Sinks.File" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libs\Beta\Connectors.WebDav\Connectors.WebDav.csproj" />
+    <ProjectReference Include="..\..\Libs\Danmaku.Core\Danmaku.Core.csproj" />
+    <ProjectReference Include="..\..\Libs\mpv-winui\src\Mpv.Core\Mpv.Core.csproj" />
+    <ProjectReference Include="..\PhoenixReadCopilot.UI.Models\PhoenixReadCopilot.UI.Models.csproj" />
+  </ItemGroup>
+
+  <!--
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>$(DefineConstants);LOCAL_DEV</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>$(DefineConstants);LOCAL_DEV</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'x86'">
+    <DefineConstants>$(DefineConstants);ARCH_X86</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'x64'">
+    <DefineConstants>$(DefineConstants);ARCH_X64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
+    <DefineConstants>$(DefineConstants);ARCH_ARM64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x86'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|ARM64'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <!-- Publish Properties -->
+  <PropertyGroup>
+    <PublishAot>True</PublishAot>
+    <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
+  </PropertyGroup>
+</Project>
