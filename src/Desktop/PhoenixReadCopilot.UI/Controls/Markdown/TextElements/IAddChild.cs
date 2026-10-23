@@ -1,9 +1,0 @@
-﻿using Microsoft.UI.Xaml.Documents;
-
-namespace PhoenixReadCopilot.UI.Controls.Markdown.TextElements;
-
-public interface IAddChild
-{
-    TextElement TextElement { get; }
-    void AddChild(IAddChild child);
-}
