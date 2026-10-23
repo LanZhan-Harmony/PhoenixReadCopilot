@@ -83,13 +83,10 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ColorCode.WinUI" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
     <PackageReference Include="ComputeSharp.D2D1.WinUI" />
     <PackageReference Include="H.NotifyIcon.WinUI" />
-    <PackageReference Include="HtmlAgilityPack" />
-    <PackageReference Include="Markdig" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.Windows.CsWin32">
       <PrivateAssets>all</PrivateAssets>
@@ -109,7 +106,6 @@
     <PackageReference Include="Richasy.BiliKernel.Services.User" />
     <PackageReference Include="Richasy.WinUIKernel.Share" />
     <PackageReference Include="RichasyKernel.Core" />
-    <PackageReference Include="Roman-Numerals" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.File" />
