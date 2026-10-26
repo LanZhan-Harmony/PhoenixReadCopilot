@@ -39,9 +39,9 @@ public sealed partial class VideoPlayerPageViewModel
         );
         IsFollow =
             view.OwnerCommunity.Relation
-            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow
+                != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow
             && view.OwnerCommunity.Relation
-            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown;
+                != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown;
         IsInteractionVideo = view.IsInteractiveVideo;
         Tags = view.Tags.ToList();
         InitializeCommunityInformation(view.Information.CommunityInformation);
@@ -68,13 +68,8 @@ public sealed partial class VideoPlayerPageViewModel
         _videoSegments = info.Videos;
         _audioSegments = info.Audios;
 
-        // 这里针对 MPV 额外过滤掉杜比视界画质，目前使用 libmpv 暂时还不能正确处理色域映射.
         Downloader.Clear();
-        var isMpvPlayer =
-            SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island)
-            == PlayerType.Mpv;
-        var formats = isMpvPlayer ? info.Formats.Where(p => p.Quality != 126) : info.Formats;
-        Formats = formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
+        Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
 
         // 用户个人视频无需会员即可观看最高画质.
         if (IsMyVideo)
@@ -404,11 +399,7 @@ public sealed partial class VideoPlayerPageViewModel
     private void InitializeLoops()
     {
         var currentType = CurrentLoop;
-        var loops = new List<VideoLoopType>
-        {
-            VideoLoopType.None,
-            VideoLoopType.Single
-        };
+        var loops = new List<VideoLoopType> { VideoLoopType.None, VideoLoopType.Single };
         if (
             Sections.OfType<VideoPlayerPartSectionDetailViewModel>().Any()
             || _playlist is not null

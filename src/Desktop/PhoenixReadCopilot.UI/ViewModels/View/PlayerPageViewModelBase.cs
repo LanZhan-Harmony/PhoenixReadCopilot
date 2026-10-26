@@ -25,11 +25,6 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
             SettingNames.PlayerType,
             PlayerType.Island
         );
-        if (playerType == PlayerType.Mpv)
-        {
-            playerType = PlayerType.Island;
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerType, playerType);
-        }
 
         Player = playerType switch
         {
