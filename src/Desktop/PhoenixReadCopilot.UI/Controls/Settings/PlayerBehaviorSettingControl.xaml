@@ -14,7 +14,6 @@
     <UserControl.Resources>
         <converters:PreferQualityTypeConverter x:Key="PreferQualityConverter"/>
         <converters:PlayerTypeConverter x:Key="PlayerTypeConverter"/>
-        <converters:ExternalPlayerTypeConverter x:Key="ExternalPlayerTypeConverter"/>
         <converters:DisplayModeConverter x:Key="DisplayModeConverter"/>
         <converters:PreferDecodeTypeConverter x:Key="PreferDecodeConverter"/>
     </UserControl.Resources>
@@ -54,19 +53,6 @@
                 <Button MinWidth="120"
                         Command="{x:Bind ViewModel.OpenMpvConfigCommand, Mode=OneWay}"
                         Content="{x:Bind strings:Resources.OpenConfig}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Description="{x:Bind strings:Resources.ExternalPlayerTypeDescription}"
-                               Header="{x:Bind strings:Resources.ExternalPlayerType}"
-                               Visibility="{x:Bind ViewModel.IsExternalPlayerType, Mode=OneWay}">
-                <ComboBox MinWidth="120"
-                          ItemsSource="{x:Bind ViewModel.ExternalPlayerTypeCollection, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.ExternalPlayerType, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="constants:ExternalPlayerType">
-                            <TextBlock Text="{x:Bind Converter={StaticResource ExternalPlayerTypeConverter}}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
             </base:SettingsCard>
             <base:SettingsCard Header="{x:Bind strings:Resources.PreferQuality}">
                 <ComboBox MinWidth="120"

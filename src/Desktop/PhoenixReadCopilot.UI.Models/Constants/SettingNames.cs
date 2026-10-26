@@ -84,7 +84,6 @@ public enum SettingNames
     PlayerWindowWidth,
     LastMomentSectionIsVideo,
     LastUserSpaceSectionIsVideo,
-    ExternalPlayer,
     AppVersion,
     FilterAISubtitle,
     BewlyExtensionVersion,

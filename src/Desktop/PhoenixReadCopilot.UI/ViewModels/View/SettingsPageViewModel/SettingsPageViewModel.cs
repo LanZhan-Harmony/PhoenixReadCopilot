@@ -79,7 +79,6 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             .Where(p => p != PlayerType.Mpv)
             .ToList();
         MTCBehaviorCollection = Enum.GetValues<MTCBehavior>().ToList();
-        ExternalPlayerTypeCollection = Enum.GetValues<ExternalPlayerType>().ToList();
         DefaultPlayerDisplayMode = SettingsToolkit.ReadLocalSetting(
             SettingNames.DefaultPlayerDisplayMode,
             PlayerDisplayMode.Default
@@ -131,10 +130,6 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             SettingNames.MTCBehavior,
             MTCBehavior.Automatic
         );
-        ExternalPlayerType = SettingsToolkit.ReadLocalSetting(
-            SettingNames.ExternalPlayer,
-            ExternalPlayerType.Mpv
-        );
         BottomProgressVisible = SettingsToolkit.ReadLocalSetting(
             SettingNames.IsBottomProgressVisible,
             true
@@ -152,7 +147,6 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             SettingNames.WithoutCredentialWhenGenDownloadCommand,
             false
         );
-        IsExternalPlayerType = PlayerType == PlayerType.External;
         IsIslandPlayerType = PlayerType == PlayerType.Island;
         FilterAISubtitle = SettingsToolkit.ReadLocalSetting(SettingNames.FilterAISubtitle, true);
         IsMpvCustomOptionVisible =
@@ -254,13 +248,9 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
 
     partial void OnPlayerTypeChanged(PlayerType value)
     {
-        IsExternalPlayerType = value == PlayerType.External;
         IsIslandPlayerType = value == PlayerType.Island;
         SettingsToolkit.WriteLocalSetting(SettingNames.PlayerType, value);
     }
-
-    partial void OnExternalPlayerTypeChanged(ExternalPlayerType value) =>
-        SettingsToolkit.WriteLocalSetting(SettingNames.ExternalPlayer, value);
 
     partial void OnSingleFastForwardAndRewindSpanChanged(double value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.SingleFastForwardAndRewindSpan, value);

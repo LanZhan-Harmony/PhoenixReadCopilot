@@ -23,9 +23,6 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     {
         _logger = this.Get<ILogger<PlayerViewModelBase>>();
         _dispatcherQueue = this.Get<DispatcherQueue>();
-        IsExternalPlayer =
-            SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island)
-            == PlayerType.External;
     }
 
     /// <summary>
@@ -79,25 +76,22 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             _smtc.IsPauseEnabled = true;
             _smtc.ButtonPressed += OnSystemControlsButtonPressedAsync;
 
-            // 独立窗口播放时默认全窗口播放. 外置播放器播放时除外.
-            if (!IsExternalPlayer)
+            // 独立窗口播放时默认全窗口播放.
+            var defaultDisplay = SettingsToolkit.ReadLocalSetting(
+                SettingNames.DefaultPlayerDisplayMode,
+                PlayerDisplayMode.Default
+            );
+            if (!IsFullScreen && defaultDisplay == PlayerDisplayMode.FullScreen)
             {
-                var defaultDisplay = SettingsToolkit.ReadLocalSetting(
-                    SettingNames.DefaultPlayerDisplayMode,
-                    PlayerDisplayMode.Default
-                );
-                if (!IsFullScreen && defaultDisplay == PlayerDisplayMode.FullScreen)
-                {
-                    ToggleFullScreenCommand.Execute(default);
-                }
-                else if (!IsCompactOverlay && defaultDisplay == PlayerDisplayMode.CompactOverlay)
-                {
-                    ToggleCompactOverlayCommand.Execute(default);
-                }
-                else if (!IsFullWindow && defaultDisplay == PlayerDisplayMode.FullWindow)
-                {
-                    ToggleFullWindowCommand.Execute(default);
-                }
+                ToggleFullScreenCommand.Execute(default);
+            }
+            else if (!IsCompactOverlay && defaultDisplay == PlayerDisplayMode.CompactOverlay)
+            {
+                ToggleCompactOverlayCommand.Execute(default);
+            }
+            else if (!IsFullWindow && defaultDisplay == PlayerDisplayMode.FullWindow)
+            {
+                ToggleFullWindowCommand.Execute(default);
             }
         }
 

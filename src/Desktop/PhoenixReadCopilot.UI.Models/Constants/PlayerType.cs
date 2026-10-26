@@ -16,11 +16,6 @@ public enum PlayerType
     Mpv,
 
     /// <summary>
-    /// 外部播放器.
-    /// </summary>
-    External,
-
-    /// <summary>
     /// 网页播放器.
     /// </summary>
     Web,

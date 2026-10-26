@@ -8,8 +8,6 @@ internal sealed partial class PlayerTemplateSelector : DataTemplateSelector
 
     public DataTemplate NativeTemplate { get; set; }
 
-    public DataTemplate ExternalTemplate { get; set; }
-
     public DataTemplate IslandTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
@@ -17,10 +15,6 @@ internal sealed partial class PlayerTemplateSelector : DataTemplateSelector
         if (item is NativePlayerViewModel)
         {
             return NativeTemplate;
-        }
-        else if (item is ExternalPlayerViewModel)
-        {
-            return ExternalTemplate;
         }
         else if (item is IslandPlayerViewModel)
         {
