@@ -11,11 +11,6 @@ public enum PlayerType
     Native,
 
     /// <summary>
-    /// MPV 播放器.
-    /// </summary>
-    Mpv,
-
-    /// <summary>
     /// 网页播放器.
     /// </summary>
     Web,
