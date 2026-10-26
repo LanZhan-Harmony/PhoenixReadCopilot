@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -130,10 +131,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     )
     {
         var newSection = new VideoSearchSectionDetailViewModel(_service);
-        newSection.Initialize(
-            Keyword,
-            new SearchPartition(0, ResourceToolkit.GetLocalizedString(StringNames.Video))
-        );
+        newSection.Initialize(Keyword, new SearchPartition(0, Resources.Video));
         newSection.SetFirstPageData(videos, page);
         return newSection;
     }
@@ -151,22 +149,10 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 
         var partition = type switch
         {
-            SearchSectionType.Anime => new SearchPartition(
-                7,
-                ResourceToolkit.GetLocalizedString(StringNames.Anime)
-            ),
-            SearchSectionType.Cinema => new SearchPartition(
-                8,
-                ResourceToolkit.GetLocalizedString(StringNames.Cinema)
-            ),
-            SearchSectionType.User => new SearchPartition(
-                2,
-                ResourceToolkit.GetLocalizedString(StringNames.User)
-            ),
-            SearchSectionType.Article => new SearchPartition(
-                6,
-                ResourceToolkit.GetLocalizedString(StringNames.Article)
-            ),
+            SearchSectionType.Anime => new SearchPartition(7, Resources.Anime),
+            SearchSectionType.Cinema => new SearchPartition(8, Resources.Cinema),
+            SearchSectionType.User => new SearchPartition(2, Resources.User),
+            SearchSectionType.Article => new SearchPartition(6, Resources.Article),
             _ => default,
         };
 

@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.VideoPartition"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -14,7 +14,7 @@
         <TextBlock
             VerticalAlignment="Center"
             Style="{StaticResource BodyStrongTextBlockStyle}"
-            Text="{ext:Locale Name=VideoPartition}"/>
+            Text="{x:Bind strings:Resources.VideoPartition}"/>
         <animations:Implicit.ShowAnimations>
             <animations:TranslationAnimation
                 From="-20,0"

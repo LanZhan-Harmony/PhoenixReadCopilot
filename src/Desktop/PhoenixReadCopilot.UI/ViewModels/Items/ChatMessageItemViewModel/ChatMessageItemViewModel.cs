@@ -1,5 +1,5 @@
 using Humanizer;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -25,7 +25,7 @@ public sealed partial class ChatMessageItemViewModel : ViewModelBase<ChatMessage
         if (data.Type == Richasy.BiliKernel.Models.ChatMessageType.Unknown)
         {
             Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
-                ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NotSupportContent),
+                Resources.NotSupportContent,
                 default
             );
         }

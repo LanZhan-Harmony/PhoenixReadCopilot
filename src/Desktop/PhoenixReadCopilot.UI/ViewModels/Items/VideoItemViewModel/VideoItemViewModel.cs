@@ -6,6 +6,7 @@ using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
@@ -114,23 +115,13 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             await this.Get<IViewLaterService>().AddAsync(Data.Identifier.Id);
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterSucceed),
-                        InfoType.Success
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
         }
         catch (Exception ex)
         {
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "添加稍后再看失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterFailed),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
 
@@ -147,12 +138,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除稍后再看视频失败");
             this.Get<AppViewModel>()
                 .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(
-                            StringNames.FailedToRemoveVideoFromViewLater
-                        ),
-                        InfoType.Error
-                    )
+                    (Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
                 );
         }
     }
@@ -169,14 +155,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除历史记录视频失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(
-                            StringNames.FailedToRemoveVideoFromHistory
-                        ),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToRemoveVideoFromHistory, InfoType.Error));
         }
     }
 
@@ -193,12 +172,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除收藏视频失败");
             this.Get<AppViewModel>()
                 .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(
-                            StringNames.FailedToRemoveVideoFromFavorite
-                        ),
-                        InfoType.Error
-                    )
+                    (Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
                 );
         }
     }
@@ -217,10 +191,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         dp.SetText(GetWebUri().ToString());
         dp.SetWebLink(GetWebUri());
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-            );
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]

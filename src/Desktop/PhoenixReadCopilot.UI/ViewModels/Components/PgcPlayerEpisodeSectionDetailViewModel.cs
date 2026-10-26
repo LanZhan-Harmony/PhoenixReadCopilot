@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
@@ -44,7 +45,7 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
     }
 
     /// <inheritdoc/>
-    public string Title { get; } = ResourceToolkit.GetLocalizedString(StringNames.Episodes);
+    public string Title { get; } = Resources.Episodes;
 
     [RelayCommand]
     private static Task TryFirstLoadAsync() => Task.CompletedTask;

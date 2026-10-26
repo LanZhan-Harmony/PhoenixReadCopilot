@@ -7,6 +7,7 @@ using Microsoft.Windows.BadgeNotifications;
 using Mpv.Core;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
@@ -232,10 +233,7 @@ public sealed partial class AppViewModel : ViewModelBase
                     CreateNoWindow = true,
                 };
 
-                using (var process = new Process
-                       {
-                           StartInfo = processStartInfo
-                       })
+                using (var process = new Process { StartInfo = processStartInfo })
                 {
                     process.Start();
                     var output = process.StandardOutput.ReadToEnd();
@@ -265,12 +263,10 @@ public sealed partial class AppViewModel : ViewModelBase
                     {
                         var dialog = new ContentDialog
                         {
-                            Title = ResourceToolkit.GetLocalizedString(StringNames.Tip),
-                            Content = ResourceToolkit.GetLocalizedString(StringNames.AmdGpuWarning),
+                            Title = Resources.Tip,
+                            Content = Resources.AmdGpuWarning,
                             XamlRoot = ActivatedWindow.Content.XamlRoot,
-                            CloseButtonText = ResourceToolkit.GetLocalizedString(
-                                StringNames.Confirm
-                            ),
+                            CloseButtonText = Resources.Confirm,
                             DefaultButton = ContentDialogButton.Close,
                         };
 

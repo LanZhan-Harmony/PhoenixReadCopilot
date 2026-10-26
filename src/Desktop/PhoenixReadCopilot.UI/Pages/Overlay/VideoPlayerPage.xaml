@@ -9,7 +9,7 @@
     xmlns:core="using:PhoenixReadCopilot.UI.Controls.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:danmaku="using:PhoenixReadCopilot.UI.Controls.Danmaku"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:local="using:PhoenixReadCopilot.UI.Pages.Overlay"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:player="using:PhoenixReadCopilot.UI.Controls.Player"
@@ -97,11 +97,11 @@
                     VerticalAlignment="Top"
                     IsIconVisible="True"
                     IsOpen="{x:Bind ViewModel.IsInteractionVideo, Mode=OneWay}"
-                    Message="{ext:Locale Name=InteractionNotSupportTip}"
+                    Message="{x:Bind strings:Resources.InteractionNotSupportTip}"
                     Severity="Warning">
                     <InfoBar.ActionButton>
                         <HyperlinkButton Command="{x:Bind ViewModel.OpenInBroswerCommand, Mode=OneWay}"
-                                Content="{ext:Locale Name=OpenInBrowser}"/>
+                                Content="{x:Bind strings:Resources.OpenInBrowser}"/>
                     </InfoBar.ActionButton>
                 </InfoBar>
 
@@ -128,17 +128,17 @@
                     Grid.RowSpan="3"
                     Grid.Column="1"
                     ColumnWidth="{x:Bind ViewModel.NavColumnWidth, Mode=TwoWay}"
-                    HideTip="{ext:Locale Name=Show}"
+                    HideTip="{x:Bind strings:Resources.Show}"
                     IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay}"
                     IsHideButtonEnabled="False"
                     IsInvertDirection="True"
                     MaxColumnWidth="500"
                     MinColumnWidth="300"
-                    ShowTip="{ext:Locale Name=Hide}"/>
+                    ShowTip="{x:Bind strings:Resources.Hide}"/>
             </Grid>
         </Grid>
         <base:EmptyHolder
-            Description="{ext:Locale Name=RequestVideoFailed}"
+            Description="{x:Bind strings:Resources.RequestVideoFailed}"
             Emoji="&#x1F635;"
             Visibility="{x:Bind ViewModel.IsPageLoadFailed, Mode=OneWay}"/>
         <VisualStateManager.VisualStateGroups>

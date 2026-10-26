@@ -116,7 +116,6 @@ internal static class GlobalDependencies
             .Services.AddSingleton<IAppToolkit, AppToolkit>()
             .AddSingleton<ISettingsToolkit, SettingsToolkit>()
             .AddSingleton<IFileToolkit, FileToolkit>()
-            .AddSingleton<IResourceToolkit, ResourceToolkit>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>();
         return builder;
     }
@@ -128,8 +127,7 @@ internal static class GlobalDependencies
     }
 
     public static IKernelBuilder AddSingleton<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-        T
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
     >(this IKernelBuilder kernelBuilder)
         where T : class
     {
@@ -138,8 +136,7 @@ internal static class GlobalDependencies
     }
 
     public static IKernelBuilder AddTransient<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-        T
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
     >(this IKernelBuilder kernelBuilder)
         where T : class
     {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Article;
@@ -84,14 +84,7 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
         {
             this.Get<ILogger<ArticleItemViewModel>>().LogError(ex, "移除历史记录时失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(
-                            StringNames.FailedToRemoveVideoFromHistory
-                        ),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToRemoveVideoFromHistory, InfoType.Error));
         }
     }
 

@@ -17,11 +17,6 @@
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <AllowUnsafe>True</AllowUnsafe>
   </PropertyGroup>
-  <ItemGroup>
-    <None Update="$(UserProfile)\.nuget\packages\richasy.winuikernel.ai\*\contentFiles\any\net10.0-windows10.0.26100\Assets\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Assets\qq_group_dark.jpg" />
@@ -86,7 +81,6 @@
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
     <PackageReference Include="ComputeSharp.D2D1.WinUI" />
-    <PackageReference Include="H.NotifyIcon.WinUI" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.Windows.CsWin32">
       <PrivateAssets>all</PrivateAssets>
@@ -94,6 +88,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="ReswPlus" />
     <PackageReference Include="Richasy.BiliKernel.Authorizers.TV" />
     <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUICookies" />
     <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUIQRCode" />

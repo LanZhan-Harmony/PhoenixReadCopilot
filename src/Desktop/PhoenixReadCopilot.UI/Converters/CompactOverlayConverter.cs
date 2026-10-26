@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -21,9 +20,7 @@ internal sealed partial class CompactOverlayConverter : IValueConverter
         }
         else
         {
-            return isCompact
-                ? ResourceToolkit.GetLocalizedString(StringNames.ExitCompactOverlay)
-                : ResourceToolkit.GetLocalizedString(StringNames.EnterCompactOverlay);
+            return isCompact ? Resources.ExitCompactOverlay : Resources.EnterCompactOverlay;
         }
     }
 

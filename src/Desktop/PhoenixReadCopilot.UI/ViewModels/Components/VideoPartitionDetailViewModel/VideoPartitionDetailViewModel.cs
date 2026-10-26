@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models;
@@ -39,10 +39,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         if (Data.Children is not null)
         {
             var children = Data.Children.ToList();
-            var rcmdPartition = new Partition(
-                Data.Data.Id,
-                ResourceToolkit.GetLocalizedString(StringNames.Recommend)
-            );
+            var rcmdPartition = new Partition(Data.Data.Id, Resources.Recommend);
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
         }

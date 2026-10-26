@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -167,12 +167,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         {
             _logger.LogError(ex, "搜索用户视频时失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToSearchUserVideos),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToSearchUserVideos, InfoType.Error));
         }
         finally
         {

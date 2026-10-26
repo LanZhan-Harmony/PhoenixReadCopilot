@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -59,7 +58,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
+            Text = Strings.Resources.OpenInBrowser,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Globe
@@ -72,7 +71,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.EnterUserSpace),
+            Text = Strings.Resources.EnterUserSpace,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Person
@@ -85,7 +84,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
+            Text = Strings.Resources.FixContent,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Pin
@@ -98,7 +97,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Remove),
+            Text = Strings.Resources.Remove,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,

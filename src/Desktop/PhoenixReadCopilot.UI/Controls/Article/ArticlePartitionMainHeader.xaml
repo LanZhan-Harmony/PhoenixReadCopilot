@@ -6,7 +6,7 @@
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Article"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -78,7 +78,7 @@
             <Button
                 Grid.Column="1"
                 VerticalAlignment="Center"
-                AutomationProperties.Name="{ext:Locale Name=Refresh}"
+                AutomationProperties.Name="{x:Bind strings:Resources.Refresh}"
                 Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}"
                 Visibility="{x:Bind ViewModel.IsRecommend, Mode=OneWay}">
                 <StackPanel Orientation="Horizontal"
@@ -89,7 +89,7 @@
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                         Symbol="ArrowSync"/>
                     <TextBlock VerticalAlignment="Center"
-                            Text="{ext:Locale Name=Refresh}"/>
+                            Text="{x:Bind strings:Resources.Refresh}"/>
                 </StackPanel>
                 <animations:Implicit.ShowAnimations>
                     <animations:OpacityAnimation
@@ -112,9 +112,9 @@
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
-                AutomationProperties.Name="{ext:Locale Name=Refresh}"
+                AutomationProperties.Name="{x:Bind strings:Resources.Refresh}"
                 Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}"
-                ToolTipService.ToolTip="{ext:Locale Name=Refresh}"
+                ToolTipService.ToolTip="{x:Bind strings:Resources.Refresh}"
                 Visibility="{x:Bind ViewModel.IsRecommend, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
                 <ic:SymbolIcon
                     VerticalAlignment="Center"

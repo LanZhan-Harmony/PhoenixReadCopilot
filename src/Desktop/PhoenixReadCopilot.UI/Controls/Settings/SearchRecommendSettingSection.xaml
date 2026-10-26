@@ -5,14 +5,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <base:SettingsCard Description="{ext:Locale Name=ShowSearchRecommendDescription}"
-            Header="{ext:Locale Name=ShowSearchRecommend}">
+    <base:SettingsCard Description="{x:Bind strings:Resources.ShowSearchRecommendDescription}"
+            Header="{x:Bind strings:Resources.ShowSearchRecommend}">
         <base:SettingsCard.HeaderIcon>
             <ic:SymbolIcon Symbol="Search"/>
         </base:SettingsCard.HeaderIcon>

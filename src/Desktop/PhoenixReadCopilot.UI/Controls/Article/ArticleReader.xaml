@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Article"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,13 +16,13 @@
             <MenuFlyoutItem
                 Click="OnCopyItemClick"
                 KeyboardAcceleratorTextOverride="Ctrl + C"
-                Text="{ext:Locale Name=CopyToClipboard}">
+                Text="{x:Bind strings:Resources.CopyToClipboard}">
                 <MenuFlyoutItem.Icon>
                     <ic:SymbolIcon Symbol="Copy"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem Click="OnSearchItemClickAsync"
-                    Text="{ext:Locale Name=SearchInWeb}">
+                    Text="{x:Bind strings:Resources.SearchInWeb}">
                 <MenuFlyoutItem.Icon>
                     <ic:SymbolIcon Symbol="GlobeSearch"/>
                 </MenuFlyoutItem.Icon>

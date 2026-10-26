@@ -1,6 +1,4 @@
 using Microsoft.UI.Windowing;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -27,7 +25,7 @@ public sealed partial class WebSignInWindow : WindowBase
         Width = 1200;
         Height = 632;
 
-        Title = ResourceToolkit.GetLocalizedString(StringNames.AppName);
+        Title = Strings.Resources.AppName;
 
         this.CenterOnScreen();
         this.SetIcon("Assets/logo.ico");

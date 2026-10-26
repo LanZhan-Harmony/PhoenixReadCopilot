@@ -5,20 +5,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <base:SettingsExpander Description="{ext:Locale Name=NotificationSettingDescription}"
-            Header="{ext:Locale Name=NotificationSetting}">
+    <base:SettingsExpander Description="{x:Bind strings:Resources.NotificationSettingDescription}"
+            Header="{x:Bind strings:Resources.NotificationSetting}">
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="AlertOn"/>
         </base:SettingsExpander.HeaderIcon>
         <ToggleSwitch IsOn="{x:Bind ViewModel.IsNotificationEnabled, Mode=TwoWay}"/>
         <base:SettingsExpander.Items>
-            <base:SettingsCard Header="{ext:Locale Name=VideoDynamicNotification}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.VideoDynamicNotification}">
                 <ToggleSwitch IsEnabled="{x:Bind ViewModel.IsNotificationEnabled, Mode=OneWay}"
                         IsOn="{x:Bind ViewModel.IsVideoMomentNotificationEnabled, Mode=TwoWay}"/>
             </base:SettingsCard>

@@ -6,7 +6,7 @@
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Pgc"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -34,11 +34,11 @@
         </ItemsView>
 
         <base:EmptyHolder
-            Description="{ext:Locale Name=RequestPgcTimeLineFailed}"
+            Description="{x:Bind strings:Resources.RequestPgcTimeLineFailed}"
             Emoji="&#x1F6F8;"
             Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}"/>
 
-        <components:SideBottomLoadingWidget Text="{ext:Locale Name=LoadingAndWait}"
+        <components:SideBottomLoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}"
                 Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}"/>
 
         <animations:Implicit.ShowAnimations>

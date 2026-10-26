@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.ApplicationModel.DataTransfer;
@@ -359,12 +360,7 @@ public abstract partial class PlayerViewModelBase
                     );
                     Clipboard.SetContent(dp);
                     this.Get<AppViewModel>()
-                        .ShowTipCommand.Execute(
-                            (
-                                ResourceToolkit.GetLocalizedString(StringNames.Copied),
-                                InfoType.Success
-                            )
-                        );
+                        .ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
                 }
 
                 var shouldOpenFile = SettingsToolkit.ReadLocalSetting(

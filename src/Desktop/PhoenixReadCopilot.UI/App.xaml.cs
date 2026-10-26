@@ -1,5 +1,4 @@
 using System.Text.Json;
-using H.NotifyIcon;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Input;
@@ -10,7 +9,6 @@ using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
-using Serilog;
 using Windows.Storage;
 
 namespace PhoenixReadCopilot.UI;
@@ -43,13 +41,11 @@ public partial class App : Application
     /// </summary>
     public static string LoggerFolder { get; private set; }
 
-    private TaskbarIcon TrayIcon { get; set; }
-
     /// <summary>
     /// Invoked when the application is launched.
     /// </summary>
     /// <param name="args">Details about the launch request and process.</param>
-    protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         var instance = Microsoft.Windows.AppLifecycle.AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
@@ -90,23 +86,7 @@ public partial class App : Application
 
     private void OnMainWindowClosed(object sender, WindowEventArgs args)
     {
-        var hideWhenClose = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.HideWhenCloseWindow,
-            false
-        );
-        if (hideWhenClose)
-        {
-            if (TrayIcon is null)
-            {
-                InitializeTrayIcon();
-            }
-
-            GetMainWindow()?.Hide();
-        }
-        else
-        {
-            ExitApp();
-        }
+        ExitApp();
     }
 
     private void OnInstanceActivated(object? sender, AppActivationArguments e)
@@ -117,35 +97,8 @@ public partial class App : Application
         });
     }
 
-    private void InitializeTrayIcon()
-    {
-        if (TrayIcon != null)
-        {
-            return;
-        }
-
-        var showHideWindowCommand = (XamlUICommand)Resources["ShowHideWindowCommand"];
-        showHideWindowCommand.ExecuteRequested += OnShowHideWindowCommandExecuteRequested;
-
-        var exitApplicationCommand = (XamlUICommand)Resources["QuitCommand"];
-        exitApplicationCommand.ExecuteRequested += OnQuitCommandExecuteRequested;
-
-        try
-        {
-            TrayIcon = (TaskbarIcon)Resources["TrayIcon"];
-            TrayIcon.ForceCreate();
-        }
-        catch (Exception)
-        {
-            var logger = Log.Logger.ForContext<App>();
-            logger.Error("初始化任务栏图标失败");
-        }
-    }
-
     private void ExitApp()
     {
-        TrayIcon?.Dispose();
-        TrayIcon = null;
         _notificationManager?.Unregister();
         _notificationManager = null;
         Exit();

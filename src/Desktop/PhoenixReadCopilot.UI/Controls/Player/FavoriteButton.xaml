@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
@@ -27,7 +27,7 @@
                 CornerRadius="24"
                 IsChecked="{x:Bind IsFavorited, Mode=OneWay}"
                 IsEnabled="True"
-                ToolTipService.ToolTip="{ext:Locale Name=Favorite}"
+                ToolTipService.ToolTip="{x:Bind strings:Resources.Favorite}"
                 Unchecked="OnUnchecked">
                 <ic:SymbolIcon
                     FontSize="16"
@@ -42,11 +42,11 @@
         <TeachingTip
             x:Name="FavoriteTip"
             ActionButtonClick="OnConfirmButtonClick"
-            ActionButtonContent="{ext:Locale Name=Confirm}"
+            ActionButtonContent="{x:Bind strings:Resources.Confirm}"
             IsLightDismissEnabled="True"
             PreferredPlacement="Left"
             ShouldConstrainToRootBounds="False"
-            Subtitle="{ext:Locale Name=FavoriteTip}"
+            Subtitle="{x:Bind strings:Resources.FavoriteTip}"
             Target="{x:Bind Btn}">
             <ScrollViewer
                 MaxHeight="360"
@@ -75,7 +75,7 @@
                                         Grid.Column="1"
                                         Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{x:Bind Data.TotalCount}"
-                                        ToolTipService.ToolTip="{ext:Locale Name=Total}"/>
+                                        ToolTipService.ToolTip="{x:Bind strings:Resources.Total}"/>
                                 </Grid>
                             </ToggleButton>
                         </DataTemplate>

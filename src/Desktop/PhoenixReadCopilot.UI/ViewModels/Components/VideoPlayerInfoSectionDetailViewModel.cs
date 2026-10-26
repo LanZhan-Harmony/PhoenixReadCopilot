@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -25,7 +24,7 @@ public sealed partial class VideoPlayerInfoSectionDetailViewModel
     public VideoPlayerPageViewModel Page { get; }
 
     /// <inheritdoc/>
-    public string Title { get; } = ResourceToolkit.GetLocalizedString(StringNames.Information);
+    public string Title { get; } = Resources.Information;
 
     [RelayCommand]
     private static Task TryFirstLoadAsync() => Task.CompletedTask;

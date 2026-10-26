@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -23,7 +23,7 @@
             FontSize="14"
             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
             Symbol="EyeOff"
-            ToolTipService.ToolTip="{ext:Locale Name=PlayInPrivateTip}"
+            ToolTipService.ToolTip="{x:Bind strings:Resources.PlayInPrivateTip}"
             Visibility="{x:Bind ViewModel.IsPrivatePlay, Mode=OneWay}"/>
         <base:TrimTextBlock
             Grid.Column="1"
@@ -48,35 +48,35 @@
                         <MenuFlyoutItem
                             MinWidth="200"
                             Command="{x:Bind ViewModel.AddToViewLaterCommand, Mode=OneWay}"
-                            Text="{ext:Locale Name=AddToViewLater}"/>
+                            Text="{x:Bind strings:Resources.AddToViewLater}"/>
                         <MenuFlyoutItem
                             MinWidth="200"
                             Command="{x:Bind ViewModel.PinCommand, Mode=OneWay}"
-                            Text="{ext:Locale Name=FixContent}"/>
+                            Text="{x:Bind strings:Resources.FixContent}"/>
                         <MenuFlyoutItem
                             MinWidth="200"
                             Command="{x:Bind ViewModel.CopyTitleCommand, Mode=OneWay}"
-                            Text="{ext:Locale Name=CopyTitle}"/>
+                            Text="{x:Bind strings:Resources.CopyTitle}"/>
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}"
-                                Tag="{ext:Locale Name=Link}"/>
+                                Tag="{x:Bind strings:Resources.Link}"/>
                         <MenuFlyoutItem
                             MinWidth="200"
                             Command="{x:Bind ViewModel.CopyVideoUrlCommand, Mode=OneWay}"
-                            Text="{ext:Locale Name=CopyVideoUrl}"/>
+                            Text="{x:Bind strings:Resources.CopyVideoUrl}"/>
                         <MenuFlyoutItem Command="{x:Bind ViewModel.ShareVideoUrlCommand, Mode=OneWay}"
-                                Text="{ext:Locale Name=ShareLink}"/>
+                                Text="{x:Bind strings:Resources.ShareLink}"/>
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}"
-                                Tag="{ext:Locale Name=OpenWith}"/>
+                                Tag="{x:Bind strings:Resources.OpenWith}"/>
                         <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInNewWindowCommand, Mode=OneWay}"
-                                Text="{ext:Locale Name=OpenInNewWindow}"/>
+                                Text="{x:Bind strings:Resources.OpenInNewWindow}"/>
                         <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInBroswerCommand, Mode=OneWay}"
-                                Text="{ext:Locale Name=OpenInBrowser}"/>
+                                Text="{x:Bind strings:Resources.OpenInBrowser}"/>
                         <MenuFlyoutItem Command="{x:Bind ViewModel.Player.OpenWithMpvCommand, Mode=OneWay}"
-                                Text="{ext:Locale Name=OpenWithMpv}"/>
+                                Text="{x:Bind strings:Resources.OpenWithMpv}"/>
                         <MenuFlyoutItem Command="{x:Bind ViewModel.Player.OpenWithMpvNetCommand, Mode=OneWay}"
-                                Text="{ext:Locale Name=OpenWithMpvNet}"/>
+                                Text="{x:Bind strings:Resources.OpenWithMpvNet}"/>
                     </MenuFlyout>
                 </Button.Flyout>
             </Button>

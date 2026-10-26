@@ -1,4 +1,5 @@
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -217,14 +218,14 @@ public sealed partial class PgcPlayerPageViewModel
         if (next is EpisodeInformation part)
         {
             NextEpisodeTip = string.Format(
-                ResourceToolkit.GetLocalizedString(StringNames.PlayNextEpisodeTipTemplate),
+                Resources.PlayNextEpisodeTipTemplate,
                 part.Identifier.Title
             );
         }
         else if (next is VideoInformation video)
         {
             NextEpisodeTip = string.Format(
-                ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate),
+                Resources.PlayNextVideoTipTemplate,
                 video.Identifier.Title
             );
         }

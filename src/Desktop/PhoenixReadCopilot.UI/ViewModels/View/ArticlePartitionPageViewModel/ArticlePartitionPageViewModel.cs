@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -40,10 +41,7 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
         }
 
         IsPartitionLoading = true;
-        var hotPartition = new Partition(
-            "-",
-            ResourceToolkit.GetLocalizedString(StringNames.HotArticle)
-        );
+        var hotPartition = new Partition("-", Resources.HotArticle);
         Partitions.Add(new PartitionViewModel(hotPartition));
         var partitions = await _service.GetPartitionsAsync();
         if (partitions != null)

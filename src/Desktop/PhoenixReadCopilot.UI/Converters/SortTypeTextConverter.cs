@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.UI.Converters;
@@ -19,22 +18,22 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
             switch (vst)
             {
                 case PartitionVideoSortType.Default:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByDefault);
+                    result = Resources.SortByDefault;
                     break;
                 case PartitionVideoSortType.Newest:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByNewest);
+                    result = Resources.SortByNewest;
                     break;
                 case PartitionVideoSortType.Play:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByPlay);
+                    result = Resources.SortByPlay;
                     break;
                 case PartitionVideoSortType.Reply:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByReply);
+                    result = Resources.SortByReply;
                     break;
                 case PartitionVideoSortType.Danmaku:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByDanmaku);
+                    result = Resources.SortByDanmaku;
                     break;
                 case PartitionVideoSortType.Favorite:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByFavorite);
+                    result = Resources.SortByFavorite;
                     break;
                 default:
                     break;
@@ -45,22 +44,22 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
             switch (ast)
             {
                 case ArticleSortType.Default:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByDefault);
+                    result = Resources.SortByDefault;
                     break;
                 case ArticleSortType.Newest:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByNewest);
+                    result = Resources.SortByNewest;
                     break;
                 case ArticleSortType.Read:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByRead);
+                    result = Resources.SortByRead;
                     break;
                 case ArticleSortType.Reply:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByReply);
+                    result = Resources.SortByReply;
                     break;
                 case ArticleSortType.Like:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByLike);
+                    result = Resources.SortByLike;
                     break;
                 case ArticleSortType.Favorite:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.SortByFavorite);
+                    result = Resources.SortByFavorite;
                     break;
                 default:
                     break;
@@ -70,31 +69,21 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
         {
             result = chst switch
             {
-                ComprehensiveSearchSortType.Default => ResourceToolkit.GetLocalizedString(
-                    StringNames.SortByDefault
-                ),
-                ComprehensiveSearchSortType.Danmaku => ResourceToolkit.GetLocalizedString(
-                    StringNames.SortByDanmaku
-                ),
-                ComprehensiveSearchSortType.Play => ResourceToolkit.GetLocalizedString(
-                    StringNames.SortByPlay
-                ),
-                ComprehensiveSearchSortType.Newest => ResourceToolkit.GetLocalizedString(
-                    StringNames.SortByNewest
-                ),
+                ComprehensiveSearchSortType.Default => Resources.SortByDefault,
+                ComprehensiveSearchSortType.Danmaku => Resources.SortByDanmaku,
+                ComprehensiveSearchSortType.Play => Resources.SortByPlay,
+                ComprehensiveSearchSortType.Newest => Resources.SortByNewest,
                 _ => string.Empty,
             };
         }
         else if (value is CommentSortType cst)
         {
-            var name = cst switch
+            result = cst switch
             {
-                CommentSortType.Hot => StringNames.HotReply,
-                CommentSortType.Time => StringNames.LatestReply,
+                CommentSortType.Hot => Resources.HotReply,
+                CommentSortType.Time => Resources.LatestReply,
                 _ => throw new ArgumentOutOfRangeException(nameof(value)),
             };
-
-            result = ResourceToolkit.GetLocalizedString(name);
         }
 
         return result;

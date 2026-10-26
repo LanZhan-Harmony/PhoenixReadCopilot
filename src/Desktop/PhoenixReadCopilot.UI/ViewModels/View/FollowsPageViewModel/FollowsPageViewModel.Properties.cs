@@ -17,13 +17,17 @@ public sealed partial class FollowsPageViewModel
     private readonly Dictionary<UserGroup, List<UserItemViewModel>> _userCache = new();
     private readonly Dictionary<UserGroup, int> _offsetCache = new();
 
-    [ObservableProperty] private bool _isGroupLoading;
+    [ObservableProperty]
+    private bool _isGroupLoading;
 
-    [ObservableProperty] private bool _isUserLoading;
+    [ObservableProperty]
+    private bool _isUserLoading;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private UserGroup _selectedGroup;
+    [ObservableProperty]
+    private UserGroup _selectedGroup;
 
     /// <summary>
     /// 分组加载完成.

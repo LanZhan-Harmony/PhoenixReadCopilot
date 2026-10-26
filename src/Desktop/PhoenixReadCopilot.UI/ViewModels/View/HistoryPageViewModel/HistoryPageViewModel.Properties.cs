@@ -19,17 +19,23 @@ public sealed partial class HistoryPageViewModel
     private bool _preventLoadMoreSearch;
     private CancellationTokenSource _searchCancellationTokenSource;
 
-    [ObservableProperty] private IHistorySectionDetailViewModel _selectedSection;
+    [ObservableProperty]
+    private IHistorySectionDetailViewModel _selectedSection;
 
-    [ObservableProperty] private List<IHistorySectionDetailViewModel> _sections;
+    [ObservableProperty]
+    private List<IHistorySectionDetailViewModel> _sections;
 
-    [ObservableProperty] private bool _isSearching;
+    [ObservableProperty]
+    private bool _isSearching;
 
-    [ObservableProperty] private bool _isSearchMode;
+    [ObservableProperty]
+    private bool _isSearchMode;
 
-    [ObservableProperty] private string _searchKeyword;
+    [ObservableProperty]
+    private string _searchKeyword;
 
-    [ObservableProperty] private bool _isSearchEmpty;
+    [ObservableProperty]
+    private bool _isSearchEmpty;
 
     /// <summary>
     /// 初始化完成.

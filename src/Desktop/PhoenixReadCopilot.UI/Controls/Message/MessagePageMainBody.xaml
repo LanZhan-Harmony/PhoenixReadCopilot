@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:PhoenixReadCopilot.UI.ViewModels.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Message"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">

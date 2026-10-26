@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.WinUIKernel.Share.Base;
@@ -83,13 +82,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         dp.SetWebLink(SelectedImage.SourceUri);
         dp.SetBitmap(RandomAccessStreamReference.CreateFromUri(SelectedImage.SourceUri));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (
-                    ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Copied),
-                    InfoType.Success
-                )
-            );
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -123,10 +116,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         using var client = new HttpClient();
         using var response = await client.GetAsync(SelectedImage.SourceUri);
         await response.Content.CopyToAsync(stream);
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Saved), InfoType.Success)
-            );
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Saved, InfoType.Success));
     }
 
     [RelayCommand]
@@ -154,16 +144,11 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         if (result)
         {
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (ResourceToolkit.GetLocalizedString(StringNames.SetSuccess), InfoType.Success)
-                );
+                .ShowTipCommand.Execute((Resources.SetSuccess, InfoType.Success));
         }
         else
         {
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (ResourceToolkit.GetLocalizedString(StringNames.SetFailed), InfoType.Error)
-                );
+            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.SetFailed, InfoType.Error));
         }
     }
 }

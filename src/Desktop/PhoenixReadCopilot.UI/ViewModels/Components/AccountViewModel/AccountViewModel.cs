@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.User;
@@ -45,7 +45,7 @@ public sealed partial class AccountViewModel : ViewModelBase
         {
             MyProfile = await _myProfileService.GetMyProfileAsync();
             Introduce = string.IsNullOrEmpty(MyProfile.Introduce)
-                ? ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.NoSelfIntroduce)
+                ? Resources.NoSelfIntroduce
                 : MyProfile.Introduce;
             this.Get<AppViewModel>().IsInitialLoading = false;
             this.Get<AppViewModel>().CheckUpateCommand.Execute(default);
@@ -58,18 +58,10 @@ public sealed partial class AccountViewModel : ViewModelBase
             // 用户可能更改了密码，提醒用户是否需要重新登录.
             var dialog = new ContentDialog()
             {
-                Title = ResourceToolkit.GetLocalizedString(
-                    Models.Constants.StringNames.LoginExpiredTitle
-                ),
-                Content = ResourceToolkit.GetLocalizedString(
-                    Models.Constants.StringNames.LoginExpiredDescription
-                ),
-                PrimaryButtonText = ResourceToolkit.GetLocalizedString(
-                    Models.Constants.StringNames.ReSignIn
-                ),
-                CloseButtonText = ResourceToolkit.GetLocalizedString(
-                    Models.Constants.StringNames.Exit
-                ),
+                Title = Resources.LoginExpiredTitle,
+                Content = Resources.LoginExpiredDescription,
+                PrimaryButtonText = Resources.ReSignIn,
+                CloseButtonText = Resources.Exit,
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
             };

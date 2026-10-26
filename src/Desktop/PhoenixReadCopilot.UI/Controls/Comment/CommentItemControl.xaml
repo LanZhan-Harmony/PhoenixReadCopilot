@@ -6,7 +6,7 @@
     xmlns:comp="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:converters="using:PhoenixReadCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Comment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -63,7 +63,7 @@
                     HorizontalAlignment="Center"
                     FontSize="10"
                     Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                    Text="{ext:Locale Name=Top}"/>
+                    Text="{x:Bind strings:Resources.Top}"/>
             </Border>
         </StackPanel>
         <Grid Grid.Column="1"
@@ -132,7 +132,7 @@
                     VerticalAlignment="Center"
                     Command="{x:Bind ViewModel.MarkReplyTargetCommand, Mode=OneWay}"
                     Style="{StaticResource SmallIconButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=Reply}"
+                    ToolTipService.ToolTip="{x:Bind strings:Resources.Reply}"
                     Visibility="{x:Bind IsMoreEnabled, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ic:SymbolIcon FontSize="12"
                             Symbol="CommentMention"/>

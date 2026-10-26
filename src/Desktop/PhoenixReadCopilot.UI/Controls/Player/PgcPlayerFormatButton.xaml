@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
@@ -13,7 +13,7 @@
 
     <Grid>
         <Button Style="{StaticResource CircleIconButtonStyle}"
-                ToolTipService.ToolTip="{ext:Locale Name=Quality}">
+                ToolTipService.ToolTip="{x:Bind strings:Resources.Quality}">
             <ic:SymbolIcon FontSize="14"
                     Symbol="Hd"/>
             <Button.Flyout>
@@ -27,7 +27,7 @@
                             HorizontalAlignment="Left"
                             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                             Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{ext:Locale Name=Quality}"/>
+                            Text="{x:Bind strings:Resources.Quality}"/>
                         <ItemsView
                             x:Name="FormatView"
                             Width="220"

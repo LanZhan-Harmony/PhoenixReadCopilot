@@ -6,7 +6,7 @@
     xmlns:app="using:Richasy.BiliKernel.Models"
     xmlns:converters="using:PhoenixReadCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Danmaku"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -20,7 +20,7 @@
         Padding="8,4"
         Spacing="12">
         <StackPanel Spacing="4">
-            <TextBlock Text="{ext:Locale Name=FontSize}"/>
+            <TextBlock Text="{x:Bind strings:Resources.FontSize}"/>
             <StackPanel
                 HorizontalAlignment="Left"
                 Orientation="Horizontal"
@@ -29,14 +29,14 @@
                     x:Name="StandardItem"
                     MinWidth="0"
                     Click="OnSizeItemClick"
-                    Content="{ext:Locale Name=Standard}"
+                    Content="{x:Bind strings:Resources.Standard}"
                     IsChecked="{x:Bind ViewModel.IsStandardSize, Mode=OneWay}"
                     Tag="Standard"/>
                 <RadioButton
                     x:Name="SmallItem"
                     MinWidth="0"
                     Click="OnSizeItemClick"
-                    Content="{ext:Locale Name=Small}"
+                    Content="{x:Bind strings:Resources.Small}"
                     IsChecked="{x:Bind ViewModel.IsStandardSize, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
                     Tag="Small"/>
             </StackPanel>
@@ -44,7 +44,7 @@
         <ComboBox
             x:Name="DanmakuLocationComboBox"
             HorizontalAlignment="Stretch"
-            Header="{ext:Locale Name=Location}"
+            Header="{x:Bind strings:Resources.Location}"
             ItemsSource="{x:Bind ViewModel.Locations, Mode=OneWay}"
             SelectedItem="{x:Bind ViewModel.Location, Mode=TwoWay}">
             <ComboBox.ItemTemplate>
@@ -54,7 +54,7 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <StackPanel Spacing="12">
-            <TextBlock Text="{ext:Locale Name=Color}"/>
+            <TextBlock Text="{x:Bind strings:Resources.Color}"/>
             <Grid Margin="0,-4,0,0"
                     ColumnSpacing="8">
                 <Grid.ColumnDefinitions>

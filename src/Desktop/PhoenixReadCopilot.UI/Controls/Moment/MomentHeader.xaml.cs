@@ -1,5 +1,4 @@
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.WinUIKernel.Share.Base;
@@ -38,10 +37,8 @@ public sealed partial class MomentHeader : MomentHeaderBase
     private static string GetSectionName(MomentSectionType type) =>
         type switch
         {
-            MomentSectionType.Video => ResourceToolkit.GetLocalizedString(StringNames.Video),
-            MomentSectionType.Comprehensive => ResourceToolkit.GetLocalizedString(
-                StringNames.Comprehensive
-            ),
+            MomentSectionType.Video => Strings.Resources.Video,
+            MomentSectionType.Comprehensive => Strings.Resources.Comprehensive,
             _ => throw new ArgumentOutOfRangeException(nameof(type)),
         };
 

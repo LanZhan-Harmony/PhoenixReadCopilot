@@ -17,9 +17,11 @@ public sealed partial class ArticlePartitionPageViewModel
     private readonly ILogger<ArticlePartitionPageViewModel> _logger;
     private readonly Dictionary<Partition, ArticlePartitionDetailViewModel> _partitionCache = new();
 
-    [ObservableProperty] private bool _isPartitionLoading;
+    [ObservableProperty]
+    private bool _isPartitionLoading;
 
-    [ObservableProperty] private ArticlePartitionDetailViewModel? _selectedPartition;
+    [ObservableProperty]
+    private ArticlePartitionDetailViewModel? _selectedPartition;
 
     /// <summary>
     /// 区块加载完成.

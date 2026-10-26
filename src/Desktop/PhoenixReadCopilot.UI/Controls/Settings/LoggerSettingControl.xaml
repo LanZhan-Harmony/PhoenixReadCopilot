@@ -5,29 +5,29 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <base:SettingsExpander Description="{ext:Locale Name=LoggerModuleDescription}"
-            Header="{ext:Locale Name=LoggerModule}">
+    <base:SettingsExpander Description="{x:Bind strings:Resources.LoggerModuleDescription}"
+            Header="{x:Bind strings:Resources.LoggerModule}">
         <Button
             x:Name="OpenLoggerFolderButton"
             MinWidth="120"
             Click="OnOpenLoggerFolderButtonClickAsync"
-            Content="{ext:Locale Name=OpenFolder}"/>
+            Content="{x:Bind strings:Resources.OpenFolder}"/>
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Channel"/>
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
-            <base:SettingsCard Header="{ext:Locale Name=CleanLogger}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.CleanLogger}">
                 <Button
                     x:Name="CleanLoggerButton"
                     MinWidth="120"
                     Click="OnCleanLoggerButtonClickAsync"
-                    Content="{ext:Locale Name=Clean}"/>
+                    Content="{x:Bind strings:Resources.Clean}"/>
             </base:SettingsCard>
         </base:SettingsExpander.Items>
     </base:SettingsExpander>

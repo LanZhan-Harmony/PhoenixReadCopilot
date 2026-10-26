@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models;
@@ -42,10 +42,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         if (Data.Children is not null)
         {
             var children = Data.Children.ToList();
-            var rcmdPartition = new Partition(
-                Data.Data.Id,
-                ResourceToolkit.GetLocalizedString(StringNames.RecommendArticle)
-            );
+            var rcmdPartition = new Partition(Data.Data.Id, Resources.RecommendArticle);
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
         }

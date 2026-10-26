@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.UI.Converters;
@@ -17,13 +16,13 @@ internal sealed partial class DanmakuLocationConverter : IValueConverter
         switch ((DanmakuLocation)value)
         {
             case DanmakuLocation.Scroll:
-                result = ResourceToolkit.GetLocalizedString(StringNames.ScrollDanmaku);
+                result = Resources.ScrollDanmaku;
                 break;
             case DanmakuLocation.Top:
-                result = ResourceToolkit.GetLocalizedString(StringNames.TopDanmaku);
+                result = Resources.TopDanmaku;
                 break;
             case DanmakuLocation.Bottom:
-                result = ResourceToolkit.GetLocalizedString(StringNames.BottomDanmaku);
+                result = Resources.BottomDanmaku;
                 break;
         }
 

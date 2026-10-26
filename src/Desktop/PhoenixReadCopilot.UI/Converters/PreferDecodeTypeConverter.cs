@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -11,12 +11,12 @@ internal sealed partial class PreferDecodeTypeConverter : IValueConverter
         var decode = (PreferDecodeType)value;
         return decode switch
         {
-            PreferDecodeType.Auto => ResourceToolkit.GetLocalizedString(StringNames.Automatic),
-            PreferDecodeType.D3D11 => ResourceToolkit.GetLocalizedString(StringNames.D3D11Decode),
-            PreferDecodeType.NVDEC => ResourceToolkit.GetLocalizedString(StringNames.NVDECDecode),
-            PreferDecodeType.Vulkan => ResourceToolkit.GetLocalizedString(StringNames.VulkanDecode),
-            PreferDecodeType.DXVA2 => ResourceToolkit.GetLocalizedString(StringNames.DXVA2Decode),
-            PreferDecodeType.Custom => ResourceToolkit.GetLocalizedString(StringNames.Custom),
+            PreferDecodeType.Auto => Resources.Automatic,
+            PreferDecodeType.D3D11 => Resources.D3D11Decode,
+            PreferDecodeType.NVDEC => Resources.NVDECDecode,
+            PreferDecodeType.Vulkan => Resources.VulkanDecode,
+            PreferDecodeType.DXVA2 => Resources.DXVA2Decode,
+            PreferDecodeType.Custom => Resources.Custom,
             _ => string.Empty,
         };
     }

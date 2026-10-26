@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -108,7 +108,7 @@
                     <Button
                         Margin="0,0,8,0"
                         Style="{StaticResource CircleIconButtonStyle}"
-                        ToolTipService.ToolTip="{ext:Locale Name=CurrentVolume}">
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.CurrentVolume}">
                         <ic:SymbolIcon FontSize="14"
                                 Symbol="Speaker2"/>
                         <Button.Flyout>
@@ -121,7 +121,7 @@
                                         HorizontalAlignment="Left"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{ext:Locale Name=CurrentVolume}"/>
+                                        Text="{x:Bind strings:Resources.CurrentVolume}"/>
                                     <Slider
                                         x:Name="VolumeSlider"
                                         Width="200"
@@ -140,7 +140,7 @@
                     <Button
                         Margin="0,0,8,0"
                         Style="{StaticResource CircleIconButtonStyle}"
-                        ToolTipService.ToolTip="{ext:Locale Name=PlaybackRate}">
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.PlaybackRate}">
                         <TextBlock FontSize="14">
                             <Run Text="{x:Bind ViewModel.Speed, Mode=OneWay}"/><Run Text="x"/>
                         </TextBlock>
@@ -154,7 +154,7 @@
                                         HorizontalAlignment="Left"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{ext:Locale Name=PlaybackRate}"/>
+                                        Text="{x:Bind strings:Resources.PlaybackRate}"/>
                                     <Slider
                                         x:Name="SpeedSlider"
                                         Width="360"

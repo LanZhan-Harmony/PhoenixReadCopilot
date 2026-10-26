@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Media.Playback;
@@ -88,16 +89,16 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
             switch (args.Error)
             {
                 case MediaPlayerError.Aborted:
-                    message = ResourceToolkit.GetLocalizedString(StringNames.Aborted);
+                    message = Resources.Aborted;
                     break;
                 case MediaPlayerError.NetworkError:
-                    message = ResourceToolkit.GetLocalizedString(StringNames.NetworkError);
+                    message = Resources.NetworkError;
                     break;
                 case MediaPlayerError.DecodingError:
-                    message = ResourceToolkit.GetLocalizedString(StringNames.DecodingError);
+                    message = Resources.DecodingError;
                     break;
                 case MediaPlayerError.SourceNotSupported:
-                    message = ResourceToolkit.GetLocalizedString(StringNames.SourceNotSupported);
+                    message = Resources.SourceNotSupported;
                     break;
                 default:
                     break;

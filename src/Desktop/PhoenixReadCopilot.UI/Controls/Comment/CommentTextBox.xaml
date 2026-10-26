@@ -6,7 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Comment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -37,7 +37,7 @@
                 HorizontalAlignment="Left"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 Style="{StaticResource CaptionTextBlockStyle}">
-                <Run Text="{ext:Locale Name=Reply}"/>
+                <Run Text="{x:Bind strings:Resources.Reply}"/>
                 <Run Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                         Text="{x:Bind ReplyTip, Mode=OneWay}"/>
             </TextBlock>
@@ -65,7 +65,7 @@
             AllowFocusOnInteraction="True"
             Background="Transparent"
             BorderThickness="0"
-            PlaceholderText="{ext:Locale Name=ReplyPlaceholderText}"
+            PlaceholderText="{x:Bind strings:Resources.ReplyPlaceholderText}"
             QuerySubmitted="OnReplySubmittedAsync"
             Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <AutoSuggestBox.TextBoxStyle>
@@ -92,7 +92,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Style="{StaticResource SmallIconButtonStyle}"
-            ToolTipService.ToolTip="{ext:Locale Name=Emote}">
+            ToolTipService.ToolTip="{x:Bind strings:Resources.Emote}">
             <ic:SymbolIcon FontSize="14"
                     Symbol="Emoji"/>
             <Button.Flyout>

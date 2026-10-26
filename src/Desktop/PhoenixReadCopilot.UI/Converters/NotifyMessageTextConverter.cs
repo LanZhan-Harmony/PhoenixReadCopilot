@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models.User;
 
 namespace PhoenixReadCopilot.UI.Converters;
@@ -12,9 +11,9 @@ internal sealed partial class NotifyMessageTextConverter : IValueConverter
         var type = (NotifyMessageType)value;
         return type switch
         {
-            NotifyMessageType.Reply => ResourceToolkit.GetLocalizedString(StringNames.ReplyMe),
-            NotifyMessageType.At => ResourceToolkit.GetLocalizedString(StringNames.AtMe),
-            NotifyMessageType.Like => ResourceToolkit.GetLocalizedString(StringNames.LikeMe),
+            NotifyMessageType.Reply => Resources.ReplyMe,
+            NotifyMessageType.At => Resources.AtMe,
+            NotifyMessageType.Like => Resources.LikeMe,
             _ => throw new Exception("Unknown type."),
         };
     }

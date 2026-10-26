@@ -4,6 +4,7 @@ using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Media;
@@ -90,21 +91,13 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         try
         {
             await this.Get<IEntertainmentDiscoveryService>().FollowAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success)
-                );
+            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
         }
         catch (Exception ex)
         {
             this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "追番/追剧失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowPgc),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToFollowPgc, InfoType.Error));
         }
     }
 
@@ -115,20 +108,13 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         {
             await this.Get<IEntertainmentDiscoveryService>().UnfollowAsync(Data.Identifier.Id);
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (ResourceToolkit.GetLocalizedString(StringNames.Unfollowed), InfoType.Success)
-                );
+                .ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
         }
         catch (Exception ex)
         {
             this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "取消追番/追剧失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowPgc),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToUnfollowPgc, InfoType.Error));
         }
     }
 
@@ -166,12 +152,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         {
             this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "标记想看失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToMarkPgc),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToMarkPgc, InfoType.Error));
         }
     }
 }

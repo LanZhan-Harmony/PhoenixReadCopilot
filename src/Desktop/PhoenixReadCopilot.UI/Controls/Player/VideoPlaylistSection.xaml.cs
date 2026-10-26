@@ -48,10 +48,7 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
         View.Select(index);
         View.StartBringItemIntoView(
             index,
-            new BringIntoViewOptions
-            {
-                VerticalAlignmentRatio = 0.5
-            }
+            new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 }
         );
     }
 }

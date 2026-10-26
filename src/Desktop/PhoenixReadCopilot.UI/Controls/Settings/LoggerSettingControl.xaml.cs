@@ -1,5 +1,3 @@
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.Storage;
@@ -31,8 +29,6 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
             .Current.LocalFolder.CreateFolderAsync("Logger", CreationCollisionOption.OpenIfExists)
             .AsTask();
         this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.LogEmptied), InfoType.Success)
-            );
+            .ShowTipCommand.Execute((Strings.Resources.LogEmptied, InfoType.Success));
     }
 }

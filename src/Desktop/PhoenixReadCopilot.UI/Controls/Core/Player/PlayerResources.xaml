@@ -4,9 +4,9 @@
                     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
                     xmlns:converters="using:PhoenixReadCopilot.UI.Converters"
                     xmlns:core="using:PhoenixReadCopilot.UI.ViewModels.Core"
-                    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
                     xmlns:ic="using:FluentIcons.WinUI"
-                    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Core">
+                    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Core"
+                    xmlns:strings="using:PhoenixReadCopilot.UI.Strings">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="TransportBackground"
@@ -67,7 +67,7 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        Style="{StaticResource BodyStrongTextBlockStyle}"
-                                       Text="{ext:Locale Name=WatchOnExternalPlayer}"
+                                       Text="{strings:Resources Key=WatchOnExternalPlayer}"
                                        TextAlignment="Center"/>
                             <TextBlock x:Name="MessageBlock"
                                        LineHeight="24"

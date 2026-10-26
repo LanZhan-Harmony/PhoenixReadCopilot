@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -14,19 +14,19 @@ internal sealed partial class DisplayModeConverter : IValueConverter
             switch (mode)
             {
                 case PlayerDisplayMode.Default:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.Default);
+                    result = Resources.Default;
                     break;
                 case PlayerDisplayMode.FullScreen:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.FullScreenMode);
+                    result = Resources.FullScreenMode;
                     break;
                 case PlayerDisplayMode.FullWindow:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.FullWindowMode);
+                    result = Resources.FullWindowMode;
                     break;
                 case PlayerDisplayMode.CompactOverlay:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.CompactOverlayMode);
+                    result = Resources.CompactOverlayMode;
                     break;
                 case PlayerDisplayMode.NewWindow:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.NewWindow);
+                    result = Resources.NewWindow;
                     break;
             }
         }

@@ -1,9 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -91,12 +90,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
         {
             _logger.LogError(ex, "发送消息时失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToSendMessage),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToSendMessage, InfoType.Error));
         }
         finally
         {
@@ -144,12 +138,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
             _preventLoadMore = true;
             _logger.LogError(ex, "加载聊天消息时失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToLoadChatMessages),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToLoadChatMessages, InfoType.Error));
         }
         finally
         {

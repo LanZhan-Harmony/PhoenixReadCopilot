@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.System;
@@ -34,18 +34,14 @@ public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMes
             var count = data.Properties["Count"];
             Subtitle = IsMultipleUsers
                 ? string.Format(
-                    ResourceToolkit.GetLocalizedString(
-                        Models.Constants.StringNames.LikeMessageMultipleDescription
-                    ),
+                    Resources.LikeMessageMultipleDescription,
                     FirstUserName,
                     data.Users[1].Name,
                     count,
                     data.Business
                 )
                 : string.Format(
-                    ResourceToolkit.GetLocalizedString(
-                        Models.Constants.StringNames.LikeMessageSingleDescription
-                    ),
+                    Resources.LikeMessageSingleDescription,
                     FirstUserName,
                     data.Business
                 );

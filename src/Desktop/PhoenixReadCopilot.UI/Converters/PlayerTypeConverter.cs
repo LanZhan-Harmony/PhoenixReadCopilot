@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -15,16 +15,16 @@ internal sealed partial class PlayerTypeConverter : IValueConverter
             switch (type)
             {
                 case PlayerType.Native:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.Native);
+                    result = Resources.Native;
                     break;
                 case PlayerType.External:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.ExternalPlayer);
+                    result = Resources.ExternalPlayer;
                     break;
                 case PlayerType.Web:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.Web);
+                    result = Resources.Web;
                     break;
                 case PlayerType.Island:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.IslandPlayer);
+                    result = Resources.IslandPlayer;
                     break;
                 default:
                     result = "MPV（已弃用）";

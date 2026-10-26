@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -144,12 +144,7 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
             _preventLoadMore = true;
             _logger.LogError(ex, "加载聊天会话时失败.");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToLoadChatSessions),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToLoadChatSessions, InfoType.Error));
         }
         finally
         {

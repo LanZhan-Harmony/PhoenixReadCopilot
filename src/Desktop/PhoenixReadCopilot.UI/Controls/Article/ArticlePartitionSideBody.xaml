@@ -6,7 +6,7 @@
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Article"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -39,7 +39,7 @@
         </ItemsView>
         <components:SideBottomLoadingWidget
             VerticalAlignment="Bottom"
-            Text="{ext:Locale Name=GettingPartitions}"
+            Text="{x:Bind strings:Resources.GettingPartitions}"
             Visibility="{x:Bind ViewModel.IsPartitionLoading, Mode=OneWay}"/>
         <animations:Implicit.ShowAnimations>
             <animations:TranslationAnimation

@@ -9,7 +9,6 @@
   </Configurations>
   <Folder Name="/Desktop/">
     <Project Path="src/Desktop/PhoenixReadCopilot.UI.Models/PhoenixReadCopilot.UI.Models.csproj" />
-    <Project Path="src/Desktop/PhoenixReadCopilot.UI.ResourceGenerator/PhoenixReadCopilot.UI.ResourceGenerator.csproj" />
     <Project Path="src/Desktop/PhoenixReadCopilot.UI/PhoenixReadCopilot.UI.csproj">
       <Platform Solution="*|ARM64" Project="ARM64" />
       <Platform Solution="*|x64" Project="x64" />

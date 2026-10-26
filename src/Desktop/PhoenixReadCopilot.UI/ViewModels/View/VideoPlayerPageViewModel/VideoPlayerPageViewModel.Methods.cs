@@ -1,5 +1,6 @@
 using Humanizer;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -32,10 +33,7 @@ public sealed partial class VideoPlayerPageViewModel
                     default,
                     new System.Globalization.CultureInfo("zh-CN")
                 );
-        PublishRelativeTime = string.Format(
-            ResourceToolkit.GetLocalizedString(StringNames.AuthorPublishTime),
-            relativeTime
-        );
+        PublishRelativeTime = string.Format(Resources.AuthorPublishTime, relativeTime);
         Description = view.Information.GetExtensionIfNotNull<string>(
             VideoExtensionDataId.Description
         );
@@ -366,15 +364,12 @@ public sealed partial class VideoPlayerPageViewModel
         HasNextVideo = next is not null;
         if (next is VideoPart part)
         {
-            NextVideoTip = string.Format(
-                ResourceToolkit.GetLocalizedString(StringNames.PlayNextPartTipTemplate),
-                part.Identifier.Title
-            );
+            NextVideoTip = string.Format(Resources.PlayNextPartTipTemplate, part.Identifier.Title);
         }
         else if (next is VideoInformation video)
         {
             NextVideoTip = string.Format(
-                ResourceToolkit.GetLocalizedString(StringNames.PlayNextVideoTipTemplate),
+                Resources.PlayNextVideoTipTemplate,
                 video.Identifier.Title
             );
         }

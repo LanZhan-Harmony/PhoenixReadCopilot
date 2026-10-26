@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,7 +17,7 @@
         <Button
             VerticalAlignment="Center"
             Style="{StaticResource CircleIconButtonStyle}"
-            ToolTipService.ToolTip="{ext:Locale Name=Subtitle}">
+            ToolTipService.ToolTip="{x:Bind strings:Resources.Subtitle}">
             <ic:SymbolIcon FontSize="14"
                     Symbol="ClosedCaption"/>
             <Button.Flyout>
@@ -31,7 +31,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock VerticalAlignment="Center"
-                                    Text="{ext:Locale Name=ShowSubtitle}"/>
+                                    Text="{x:Bind strings:Resources.ShowSubtitle}"/>
                             <ToggleSwitch
                                 Grid.Column="1"
                                 MinWidth="0"

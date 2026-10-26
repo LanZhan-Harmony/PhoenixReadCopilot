@@ -6,6 +6,7 @@
     xmlns:components="using:PhoenixReadCopilot.UI.ViewModels.Components"
     xmlns:converters="using:PhoenixReadCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Pgc"
@@ -41,7 +42,7 @@
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{ext:Locale Name=Index}"/>
+                    Text="{x:Bind strings:Resources.Index}"/>
             </StackPanel>
         </DataTemplate>
         <ext:AnimePageControlTemplateSelector
@@ -68,7 +69,7 @@
             Grid.Column="1"
             Padding="12,8"
             VerticalAlignment="Center"
-            AutomationProperties.Name="{ext:Locale Name=MyFavoriteAnime}"
+            AutomationProperties.Name="{x:Bind strings:Resources.MyFavoriteAnime}"
             Command="{x:Bind ViewModel.ShowMyFavoriteAnimeCommand}">
             <StackPanel Orientation="Horizontal"
                     Spacing="8">
@@ -79,7 +80,7 @@
                     Symbol="Dust"/>
                 <TextBlock
                     VerticalAlignment="Center"
-                    Text="{ext:Locale Name=MyFavoriteAnime}"
+                    Text="{x:Bind strings:Resources.MyFavoriteAnime}"
                     TextLineBounds="Tight"/>
             </StackPanel>
         </Button>
@@ -87,9 +88,9 @@
             Grid.Column="2"
             Padding="12,8"
             VerticalAlignment="Center"
-            AutomationProperties.Name="{ext:Locale Name=Refresh}"
+            AutomationProperties.Name="{x:Bind strings:Resources.Refresh}"
             Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay}"
-            ToolTipService.ToolTip="{ext:Locale Name=Refresh}">
+            ToolTipService.ToolTip="{x:Bind strings:Resources.Refresh}">
             <ic:SymbolIcon
                 FontSize="14"
                 Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"

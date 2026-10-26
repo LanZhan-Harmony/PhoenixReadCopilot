@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -9,17 +9,15 @@ internal sealed partial class PgcSectionTextConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         var sectionType = (PgcSectionType)value;
-        var lanName = sectionType switch
+        return sectionType switch
         {
-            PgcSectionType.Timeline => StringNames.TimeChart,
-            PgcSectionType.Anime => StringNames.Anime,
-            PgcSectionType.Movie => StringNames.Movie,
-            PgcSectionType.TV => StringNames.TV,
-            PgcSectionType.Documentary => StringNames.Documentary,
+            PgcSectionType.Timeline => Resources.TimeChart,
+            PgcSectionType.Anime => Resources.Anime,
+            PgcSectionType.Movie => Resources.Movie,
+            PgcSectionType.TV => Resources.TV,
+            PgcSectionType.Documentary => Resources.Documentary,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };
-
-        return ResourceToolkit.GetLocalizedString(lanName);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>

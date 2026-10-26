@@ -4,48 +4,48 @@
                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                xmlns:base="using:Richasy.WinUIKernel.Share.Base"
                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                               xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+                               xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
                                xmlns:ic="using:FluentIcons.WinUI"
                                xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                mc:Ignorable="d">
 
-    <base:SettingsExpander Description="{ext:Locale Name=SideNavigationSettingDescription}" Header="{ext:Locale Name=SideNavigationSetting}">
+    <base:SettingsExpander Description="{x:Bind strings:Resources.SideNavigationSettingDescription}" Header="{x:Bind strings:Resources.SideNavigationSetting}">
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Navigation"/>
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
-            <base:SettingsCard Header="{ext:Locale Name=Popular}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.Popular}">
                 <base:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Rocket"/>
                 </base:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsPopularNavVisible, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=DynamicFeed}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.DynamicFeed}">
                 <base:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="DesignIdeas"/>
                 </base:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsMomentNavVisible, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=Video}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.Video}">
                 <base:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="VideoClip"/>
                 </base:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsVideoNavVisible, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=Anime}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.Anime}">
                 <base:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Dust"/>
                 </base:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsAnimeNavVisible, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=Cinema}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.Cinema}">
                 <base:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="FilmstripPlay"/>
                 </base:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsCinemaNavVisible, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=Article}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.Article}">
                 <base:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="DocumentBulletList"/>
                 </base:SettingsCard.HeaderIcon>

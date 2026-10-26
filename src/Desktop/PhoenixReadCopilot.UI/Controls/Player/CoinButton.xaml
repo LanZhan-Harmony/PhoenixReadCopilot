@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -26,7 +26,7 @@
                 CornerRadius="24"
                 IsChecked="{x:Bind IsCoined, Mode=OneWay}"
                 IsEnabled="True"
-                ToolTipService.ToolTip="{ext:Locale Name=Coin}"
+                ToolTipService.ToolTip="{x:Bind strings:Resources.Coin}"
                 Unchecked="OnUnchecked">
                 <ic:SymbolIcon
                     FontSize="16"
@@ -41,16 +41,16 @@
         <TeachingTip
             x:Name="CoinTip"
             ActionButtonClick="OnOneCoinButtonClick"
-            ActionButtonContent="{ext:Locale Name=OneCoin}"
+            ActionButtonContent="{x:Bind strings:Resources.OneCoin}"
             CloseButtonClick="OnTwoCoinButtonClick"
-            CloseButtonContent="{ext:Locale Name=TwoCoin}"
+            CloseButtonContent="{x:Bind strings:Resources.TwoCoin}"
             IsLightDismissEnabled="True"
             PreferredPlacement="Top"
             ShouldConstrainToRootBounds="False"
-            Subtitle="{ext:Locale Name=CoinTip}"
+            Subtitle="{x:Bind strings:Resources.CoinTip}"
             Target="{x:Bind Btn}">
             <TeachingTip.Content>
-                <CheckBox Content="{ext:Locale Name=AlsoLike}"
+                <CheckBox Content="{x:Bind strings:Resources.AlsoLike}"
                         IsChecked="{x:Bind AlsoLike, Mode=TwoWay}"/>
             </TeachingTip.Content>
         </TeachingTip>

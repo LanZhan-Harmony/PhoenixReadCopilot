@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -11,14 +11,12 @@ internal sealed partial class LoopTypeConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var key = (VideoLoopType)value switch
+        return (VideoLoopType)value switch
         {
-            VideoLoopType.Single => StringNames.SingleLoop,
-            VideoLoopType.List => StringNames.ListLoop,
-            _ => StringNames.NoLoop,
+            VideoLoopType.Single => Resources.SingleLoop,
+            VideoLoopType.List => Resources.ListLoop,
+            _ => Resources.NoLoop,
         };
-
-        return ResourceToolkit.GetLocalizedString(key);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>

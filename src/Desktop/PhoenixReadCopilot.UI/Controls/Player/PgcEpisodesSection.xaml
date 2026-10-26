@@ -6,7 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -54,8 +54,8 @@
         <ToggleSwitch
             Margin="12,8,12,0"
             IsOn="{x:Bind ViewModel.OnlyIndex, Mode=TwoWay}"
-            OffContent="{ext:Locale Name=OnlyIndex}"
-            OnContent="{ext:Locale Name=OnlyIndex}"
+            OffContent="{x:Bind strings:Resources.OnlyIndex}"
+            OnContent="{x:Bind strings:Resources.OnlyIndex}"
             Toggled="OnIndexToggledAsync"/>
 
         <Grid Grid.Row="1">
