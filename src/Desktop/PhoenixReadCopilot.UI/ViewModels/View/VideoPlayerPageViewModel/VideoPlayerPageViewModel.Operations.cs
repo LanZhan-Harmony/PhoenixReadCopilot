@@ -4,6 +4,7 @@ using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -157,10 +158,7 @@ public sealed partial class VideoPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-            );
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -170,23 +168,13 @@ public sealed partial class VideoPlayerPageViewModel
         {
             await this.Get<IViewLaterService>().AddAsync(_view.Information.Identifier.Id);
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterSucceed),
-                        InfoType.Success
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
         }
         catch (Exception ex)
         {
             this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "添加稍后再看失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterFailed),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
 
@@ -299,10 +287,7 @@ public sealed partial class VideoPlayerPageViewModel
         var dp = new DataPackage();
         dp.SetText(Title);
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-            );
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     private string GetWebLink() =>
@@ -421,18 +406,14 @@ public sealed partial class VideoPlayerPageViewModel
                     if (next is VideoPart part)
                     {
                         tip = string.Format(
-                            ResourceToolkit.GetLocalizedString(
-                                StringNames.NextVideoNotificationTemplate
-                            ),
+                            Resources.NextVideoNotificationTemplate,
                             part.Identifier.Title
                         );
                     }
                     else if (next is VideoInformation video)
                     {
                         tip = string.Format(
-                            ResourceToolkit.GetLocalizedString(
-                                StringNames.NextVideoNotificationTemplate
-                            ),
+                            Resources.NextVideoNotificationTemplate,
                             video.Identifier.Title
                         );
                     }

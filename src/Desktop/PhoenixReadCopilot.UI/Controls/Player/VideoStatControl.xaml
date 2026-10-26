@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:comp="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:base="using:Richasy.WinUIKernel.Share.Base"
@@ -19,21 +19,21 @@
             IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
             Symbol="PlayCircle"
             Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{ext:Locale Name=PlayCount}"/>
+            ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"/>
         <base:IconTextBlock
             VerticalAlignment="Center"
             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
             IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
             Symbol="Comment"
             Text="{x:Bind ViewModel.CommentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{ext:Locale Name=ReplyCount}"/>
+            ToolTipService.ToolTip="{x:Bind strings:Resources.ReplyCount}"/>
         <base:IconTextBlock
             VerticalAlignment="Center"
             Foreground="{ThemeResource TextFillColorTertiaryBrush}"
             IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
             Symbol="TextBulletList"
             Text="{x:Bind ViewModel.DanmakuCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{ext:Locale Name=DanmakuCount}"/>
+            ToolTipService.ToolTip="{x:Bind strings:Resources.DanmakuCount}"/>
         <base:IconTextBlock
             VerticalAlignment="Center"
             Foreground="{ThemeResource TextFillColorTertiaryBrush}"

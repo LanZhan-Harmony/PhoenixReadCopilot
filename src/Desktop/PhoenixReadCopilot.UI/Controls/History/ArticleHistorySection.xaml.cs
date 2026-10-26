@@ -74,8 +74,8 @@ public sealed partial class ArticleHistorySection : ArticleHistorySectionBase
             {
                 if (
                     ArticleScrollView.ExtentHeight
-                    - ArticleScrollView.ViewportHeight
-                    - ArticleScrollView.VerticalOffset
+                        - ArticleScrollView.ViewportHeight
+                        - ArticleScrollView.VerticalOffset
                     <= 240
                 )
                 {

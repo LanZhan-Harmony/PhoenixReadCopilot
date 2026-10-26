@@ -7,7 +7,7 @@
     xmlns:constants="using:PhoenixReadCopilot.UI.Models.Constants"
     xmlns:converters="using:PhoenixReadCopilot.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,14 +18,14 @@
         <converters:MTCBehaviorConverter x:Key="MTCConverter"/>
     </UserControl.Resources>
 
-    <base:SettingsExpander Description="{ext:Locale Name=PlayerControlDescription}"
-            Header="{ext:Locale Name=PlayerControl}">
+    <base:SettingsExpander Description="{x:Bind strings:Resources.PlayerControlDescription}"
+            Header="{x:Bind strings:Resources.PlayerControl}">
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="VideoPlayPause"/>
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
-            <base:SettingsCard Description="{ext:Locale Name=MTCBehaviorDescription}"
-                    Header="{ext:Locale Name=MTCBehavior}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.MTCBehaviorDescription}"
+                    Header="{x:Bind strings:Resources.MTCBehavior}">
                 <ComboBox
                     MinWidth="120"
                     ItemsSource="{x:Bind ViewModel.MTCBehaviorCollection, Mode=OneWay}"
@@ -37,8 +37,8 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=PreferCodecDescription}"
-                    Header="{ext:Locale Name=PreferCodec}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.PreferCodecDescription}"
+                    Header="{x:Bind strings:Resources.PreferCodec}">
                 <ComboBox
                     MinWidth="120"
                     ItemsSource="{x:Bind ViewModel.PreferCodecCollection, Mode=OneWay}"
@@ -50,8 +50,8 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=SingleFastForwardAndRewindSpanDescription}"
-                    Header="{ext:Locale Name=SingleFastForwardAndRewindSpan}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.SingleFastForwardAndRewindSpanDescription}"
+                    Header="{x:Bind strings:Resources.SingleFastForwardAndRewindSpan}">
                 <NumberBox
                     MinWidth="120"
                     LargeChange="50"
@@ -61,16 +61,16 @@
                     SpinButtonPlacementMode="Compact"
                     Value="{x:Bind ViewModel.SingleFastForwardAndRewindSpan, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=GlobalPlaybackRateDescription}"
-                    Header="{ext:Locale Name=GlobalPlaybackRate}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.GlobalPlaybackRateDescription}"
+                    Header="{x:Bind strings:Resources.GlobalPlaybackRate}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.GlobalPlayerSpeed, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=PlaybackRateEnhancementDescription}"
-                    Header="{ext:Locale Name=PlaybackRateEnhancement}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.PlaybackRateEnhancementDescription}"
+                    Header="{x:Bind strings:Resources.PlaybackRateEnhancement}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.PlayerSpeedEnhancement, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=BottomProgressVisibleDescription}"
-                    Header="{ext:Locale Name=BottomProgressVisible}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.BottomProgressVisibleDescription}"
+                    Header="{x:Bind strings:Resources.BottomProgressVisible}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.BottomProgressVisible, Mode=TwoWay}"/>
             </base:SettingsCard>
         </base:SettingsExpander.Items>

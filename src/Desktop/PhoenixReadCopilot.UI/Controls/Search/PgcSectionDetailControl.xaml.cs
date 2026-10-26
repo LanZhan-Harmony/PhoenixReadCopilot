@@ -48,8 +48,8 @@ public sealed partial class PgcSectionDetailControl : PgcSectionDetailControlBas
             {
                 if (
                     PgcScrollView.ExtentHeight
-                    - PgcScrollView.ViewportHeight
-                    - PgcScrollView.VerticalOffset
+                        - PgcScrollView.ViewportHeight
+                        - PgcScrollView.VerticalOffset
                     <= 240
                 )
                 {

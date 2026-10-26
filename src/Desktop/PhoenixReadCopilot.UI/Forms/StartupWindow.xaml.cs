@@ -1,8 +1,6 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
-using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -32,7 +30,7 @@ public sealed partial class StartupWindow : WindowBase
         Width = 720;
         Height = 460;
 
-        Title = ResourceToolkit.GetLocalizedString(StringNames.AppName);
+        Title = Strings.Resources.AppName;
 
         this.CenterOnScreen();
         this.SetIcon("Assets/logo.ico");

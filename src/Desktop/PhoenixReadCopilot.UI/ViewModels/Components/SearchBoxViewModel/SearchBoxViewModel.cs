@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -78,14 +79,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
             else
             {
                 Suggestion.Clear();
-                Suggestion.Add(
-                    new(
-                        "global",
-                        ResourceToolkit.GetLocalizedString(
-                            Models.Constants.StringNames.WholePartitions
-                        )
-                    )
-                );
+                Suggestion.Add(new("global", Resources.WholePartitions));
                 Suggestion.Add(new(_extraRegionId, _extraRegionName));
             }
         }

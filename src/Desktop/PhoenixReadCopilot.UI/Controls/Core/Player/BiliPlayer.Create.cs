@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PhoenixReadCopilot.UI.Controls.Danmaku;
 using PhoenixReadCopilot.UI.Controls.Player;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.System;
@@ -92,9 +91,7 @@ public sealed partial class BiliPlayer
             contextFlyout.Items.Add(
                 new MenuFlyoutItem
                 {
-                    Text = ResourceToolkit.GetLocalizedString(
-                        Models.Constants.StringNames.Screenshot
-                    ),
+                    Text = Strings.Resources.Screenshot,
                     Command = ViewModel?.TakeScreenshotCommand,
                     MinWidth = 160,
                     Icon = new FluentIcons.WinUI.SymbolIcon
@@ -106,7 +103,7 @@ public sealed partial class BiliPlayer
             contextFlyout.Items.Add(
                 new MenuFlyoutItem
                 {
-                    Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Reload),
+                    Text = Strings.Resources.Reload,
                     Command = ViewModel?.ReloadCommand,
                     MinWidth = 160,
                     Icon = new FluentIcons.WinUI.SymbolIcon
@@ -170,7 +167,7 @@ public sealed partial class BiliPlayer
         _loadingWidget = new LoadingWidget
         {
             Margin = new Thickness(8),
-            Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.LoadingAndWait),
+            Text = Strings.Resources.LoadingAndWait,
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             Visibility =
@@ -180,17 +177,15 @@ public sealed partial class BiliPlayer
 
         _failedHolder = new EmptyHolder
         {
-            Title = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.FailedToPlay),
-            Description = ResourceToolkit.GetLocalizedString(
-                Models.Constants.StringNames.FailedToPlayDescription
-            ),
+            Title = Strings.Resources.FailedToPlay,
+            Description = Strings.Resources.FailedToPlayDescription,
             Emoji = "😫",
             Visibility = ViewModel?.IsFailed ?? false ? Visibility.Visible : Visibility.Collapsed,
             ActionElement = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Command = ViewModel?.ReloadCommand,
-                Content = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Reload),
+                Content = Strings.Resources.Reload,
             },
         };
         rootGrid.Children.Add(_failedHolder);

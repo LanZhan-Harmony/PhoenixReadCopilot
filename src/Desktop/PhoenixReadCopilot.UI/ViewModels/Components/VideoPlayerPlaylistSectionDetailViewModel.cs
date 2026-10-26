@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Models.Media;
@@ -38,7 +38,7 @@ public sealed partial class VideoPlayerPlaylistSectionDetailViewModel
     }
 
     /// <inheritdoc/>
-    public string Title => ResourceToolkit.GetLocalizedString(StringNames.Playlist);
+    public string Title => Resources.Playlist;
 
     /// <summary>
     /// 页面视图模型.

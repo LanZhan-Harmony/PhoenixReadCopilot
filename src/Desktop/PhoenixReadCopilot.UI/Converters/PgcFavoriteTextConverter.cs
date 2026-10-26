@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -11,12 +10,8 @@ internal sealed partial class PgcFavoriteTextConverter : IValueConverter
         var type = (Richasy.BiliKernel.Models.PgcFavoriteType)value;
         return type switch
         {
-            Richasy.BiliKernel.Models.PgcFavoriteType.Anime => ResourceToolkit.GetLocalizedString(
-                StringNames.MyFavoriteAnime
-            ),
-            Richasy.BiliKernel.Models.PgcFavoriteType.Cinema => ResourceToolkit.GetLocalizedString(
-                StringNames.MyFavoriteFilm
-            ),
+            Richasy.BiliKernel.Models.PgcFavoriteType.Anime => Resources.MyFavoriteAnime,
+            Richasy.BiliKernel.Models.PgcFavoriteType.Cinema => Resources.MyFavoriteFilm,
             _ => throw new Exception("Unknown type."),
         };
     }

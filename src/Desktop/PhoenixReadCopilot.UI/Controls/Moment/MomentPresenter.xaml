@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:component="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Moment"
@@ -42,7 +43,7 @@
                 <TextBlock
                     HorizontalAlignment="Left"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                    Text="{ext:Locale Name=NotSupportContent}"/>
+                    Text="{x:Bind strings:Resources.NotSupportContent}"/>
             </Grid>
         </DataTemplate>
 

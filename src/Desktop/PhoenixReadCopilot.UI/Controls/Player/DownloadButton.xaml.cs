@@ -1,4 +1,3 @@
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -53,7 +52,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
         }
 
         var formatHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
-        formatHeader.Tag = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Quality);
+        formatHeader.Tag = Strings.Resources.Quality;
         DownloadFlyout.Items.Add(formatHeader);
         foreach (var item in ViewModel.Formats)
         {
@@ -71,23 +70,17 @@ public sealed partial class DownloadButton : DownloadButtonBase
         {
             DownloadFlyout.Items.Add(new MenuFlyoutSeparator());
             var partHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
-            partHeader.Tag = ResourceToolkit.GetLocalizedString(
-                Models.Constants.StringNames.BatchDownload
-            );
+            partHeader.Tag = Strings.Resources.BatchDownload;
             var allPartsItem = new MenuFlyoutItem
             {
                 MinWidth = this.ActualWidth,
                 Command = ViewModel.BatchDownloadAllPartsCommand,
-                Text = ResourceToolkit.GetLocalizedString(
-                    Models.Constants.StringNames.DownloadAllParts
-                ),
+                Text = Strings.Resources.DownloadAllParts,
             };
             var selectPartsItem = new MenuFlyoutItem
             {
                 MinWidth = this.ActualWidth,
-                Text = ResourceToolkit.GetLocalizedString(
-                    Models.Constants.StringNames.SelectPartsDownload
-                ),
+                Text = Strings.Resources.SelectPartsDownload,
             };
             selectPartsItem.Click += (_, _) => ShowPartsSelectionTip();
             DownloadFlyout.Items.Add(partHeader);
@@ -97,18 +90,18 @@ public sealed partial class DownloadButton : DownloadButtonBase
 
         DownloadFlyout.Items.Add(new MenuFlyoutSeparator());
         var extraHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
-        extraHeader.Tag = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.Extra);
+        extraHeader.Tag = Strings.Resources.Extra;
         DownloadFlyout.Items.Add(extraHeader);
         var downloadCoverItem = new MenuFlyoutItem
         {
             MinWidth = this.ActualWidth,
-            Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.DownloadCover),
+            Text = Strings.Resources.DownloadCover,
             Command = ViewModel.DownloadCoverCommand,
         };
         var downloadDanmakuItem = new MenuFlyoutItem
         {
             MinWidth = this.ActualWidth,
-            Text = ResourceToolkit.GetLocalizedString(Models.Constants.StringNames.DownloadDanmaku),
+            Text = Strings.Resources.DownloadDanmaku,
             Command = ViewModel.DownloadDanmakuCommand,
         };
 
@@ -120,9 +113,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
             var downloadSubtitleItem = new MenuFlyoutItem
             {
                 MinWidth = this.ActualWidth,
-                Text = ResourceToolkit.GetLocalizedString(
-                    Models.Constants.StringNames.DownloadSubtitle
-                ),
+                Text = Strings.Resources.DownloadSubtitle,
                 Command = ViewModel.DownloadSubtitleCommand,
             };
 

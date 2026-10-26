@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -18,9 +17,7 @@ internal sealed partial class FullWindowConverter : IValueConverter
         }
         else
         {
-            return isFullWindow
-                ? ResourceToolkit.GetLocalizedString(StringNames.ExitFullWindow)
-                : ResourceToolkit.GetLocalizedString(StringNames.EnterFullWindow);
+            return isFullWindow ? Resources.ExitFullWindow : Resources.EnterFullWindow;
         }
     }
 

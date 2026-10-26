@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -41,7 +41,7 @@
                     <MenuFlyoutItem
                         Command="{x:Bind ViewModel.ShowMomentsCommand}"
                         KeyboardAcceleratorTextOverride="{x:Bind ViewModel.MomentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-                        Text="{ext:Locale Name=MyDynamic}">
+                        Text="{x:Bind strings:Resources.MyDynamic}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="DesignIdeas"/>
                         </MenuFlyoutItem.Icon>
@@ -49,7 +49,7 @@
                     <MenuFlyoutItem
                         Command="{x:Bind ViewModel.ShowFollowsCommand}"
                         KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FollowCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-                        Text="{ext:Locale Name=MyFollow}">
+                        Text="{x:Bind strings:Resources.MyFollow}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="PeopleEye"/>
                         </MenuFlyoutItem.Icon>
@@ -57,32 +57,32 @@
                     <MenuFlyoutItem
                         Command="{x:Bind ViewModel.ShowFansCommand}"
                         KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FansCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-                        Text="{ext:Locale Name=MyFans}">
+                        Text="{x:Bind strings:Resources.MyFans}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="PeopleCommunity"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutSeparator/>
                     <MenuFlyoutItem Command="{x:Bind ViewModel.OpenPersonalWebsiteCommand}"
-                            Text="{ext:Locale Name=Personal}">
+                            Text="{x:Bind strings:Resources.Personal}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="Person"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFavoritesCommand}"
-                            Text="{ext:Locale Name=MyFavorite}">
+                            Text="{x:Bind strings:Resources.MyFavorite}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="StarLineHorizontal3"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem Command="{x:Bind ViewModel.ShowViewLaterCommand}"
-                            Text="{ext:Locale Name=ViewLater}">
+                            Text="{x:Bind strings:Resources.ViewLater}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="CalendarClock"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
                     <MenuFlyoutItem Command="{x:Bind ViewModel.ShowHistoryCommand}"
-                            Text="{ext:Locale Name=ViewHistory}">
+                            Text="{x:Bind strings:Resources.ViewHistory}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="History"/>
                         </MenuFlyoutItem.Icon>

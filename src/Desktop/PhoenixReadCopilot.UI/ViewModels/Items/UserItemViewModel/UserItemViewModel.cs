@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
@@ -29,7 +29,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         Name = data.Profile.User.Name;
         Avatar = data.Profile.User.Avatar.Uri;
         Description = string.IsNullOrEmpty(data.Profile.Introduce)
-            ? ResourceToolkit.GetLocalizedString(StringNames.NoSelfIntroduce)
+            ? Resources.NoSelfIntroduce
             : data.Profile.Introduce;
         IsFollowed =
             data.Community.Relation != UserRelationStatus.Unknown
@@ -65,23 +65,13 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
                 await relationService.UnfollowUserAsync(Id);
                 IsFollowed = false;
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (
-                            ResourceToolkit.GetLocalizedString(StringNames.Unfollowed),
-                            InfoType.Success
-                        )
-                    );
+                    .ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
             }
             catch (Exception ex)
             {
                 this.Get<ILogger<UserItemViewModel>>().LogError(ex, "取消关注用户时失败");
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (
-                            ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowUser),
-                            InfoType.Error
-                        )
-                    );
+                    .ShowTipCommand.Execute((Resources.FailedToUnfollowUser, InfoType.Error));
             }
         }
         else
@@ -91,20 +81,13 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
                 await relationService.FollowUserAsync(Id);
                 IsFollowed = true;
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success)
-                    );
+                    .ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
             }
             catch (Exception ex)
             {
                 this.Get<ILogger<UserItemViewModel>>().LogError(ex, "关注用户时失败");
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (
-                            ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowUser),
-                            InfoType.Error
-                        )
-                    );
+                    .ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
             }
         }
     }

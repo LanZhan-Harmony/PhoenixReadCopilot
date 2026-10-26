@@ -60,8 +60,6 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty] private bool _isOpenScreenshotFile;
 
-    [ObservableProperty] private bool _hideWhenCloseWindow;
-
     [ObservableProperty] private bool _autoLoadHistory;
 
     [ObservableProperty] private bool _isNotificationEnabled;

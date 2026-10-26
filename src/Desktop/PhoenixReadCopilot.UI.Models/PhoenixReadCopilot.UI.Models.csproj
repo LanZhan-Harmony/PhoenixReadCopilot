@@ -9,14 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="$(SolutionDir)src\Desktop\PhoenixReadCopilot.UI\Resources\zh-Hans-CN\Resources.resw" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Richasy.BiliKernel.Abstractions" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\PhoenixReadCopilot.UI.ResourceGenerator\PhoenixReadCopilot.UI.ResourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

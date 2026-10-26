@@ -8,7 +8,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -78,9 +78,9 @@
                 <AppBarButton
                     x:Name="ZoomInButton"
                     Click="OnZoomInButtonClick"
-                    Label="{ext:Locale Name=ZoomIn}"
+                    Label="{x:Bind strings:Resources.ZoomIn}"
                     Style="{StaticResource CustomButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=ZoomIn}">
+                    ToolTipService.ToolTip="{x:Bind strings:Resources.ZoomIn}">
                     <AppBarButton.Icon>
                         <ic:SymbolIcon Symbol="ZoomIn"/>
                     </AppBarButton.Icon>
@@ -101,9 +101,9 @@
                 <AppBarButton
                     x:Name="ZoomOutButton"
                     Click="OnZoomOutButtonClick"
-                    Label="{ext:Locale Name=ZoomOut}"
+                    Label="{x:Bind strings:Resources.ZoomOut}"
                     Style="{StaticResource CustomButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=ZoomOut}">
+                    ToolTipService.ToolTip="{x:Bind strings:Resources.ZoomOut}">
                     <AppBarButton.Icon>
                         <ic:SymbolIcon Symbol="ZoomOut"/>
                     </AppBarButton.Icon>
@@ -117,9 +117,9 @@
                 <AppBarSeparator/>
                 <AppBarButton
                     Command="{x:Bind ViewModel.CopyImageCommand, Mode=OneWay}"
-                    Label="{ext:Locale Name=CopyToClipboard}"
+                    Label="{x:Bind strings:Resources.CopyToClipboard}"
                     Style="{StaticResource CustomButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=CopyToClipboard}">
+                    ToolTipService.ToolTip="{x:Bind strings:Resources.CopyToClipboard}">
                     <AppBarButton.Icon>
                         <ic:SymbolIcon Symbol="Copy"/>
                     </AppBarButton.Icon>
@@ -132,9 +132,9 @@
                 </AppBarButton>
                 <AppBarButton
                     Command="{x:Bind ViewModel.SaveImageCommand, Mode=OneWay}"
-                    Label="{ext:Locale Name=SaveTo}"
+                    Label="{x:Bind strings:Resources.SaveTo}"
                     Style="{StaticResource CustomButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=SaveTo}">
+                    ToolTipService.ToolTip="{x:Bind strings:Resources.SaveTo}">
                     <AppBarButton.Icon>
                         <ic:SymbolIcon Symbol="Save"/>
                     </AppBarButton.Icon>
@@ -147,17 +147,17 @@
                 </AppBarButton>
 
                 <CommandBar.SecondaryCommands>
-                    <AppBarButton Label="{ext:Locale Name=SettingTo}">
+                    <AppBarButton Label="{x:Bind strings:Resources.SettingTo}">
                         <AppBarButton.Flyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Click="OnSettingToBackgroundClickAsync"
-                                        Text="{ext:Locale Name=SettingToBackground}">
+                                        Text="{x:Bind strings:Resources.SettingToBackground}">
                                     <MenuFlyoutItem.Icon>
                                         <ic:SymbolIcon Symbol="VideoBackgroundEffect"/>
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem Click="OnSettingToLockScreenClickAsync"
-                                        Text="{ext:Locale Name=SettingToLockScreen}">
+                                        Text="{x:Bind strings:Resources.SettingToLockScreen}">
                                     <MenuFlyoutItem.Icon>
                                         <ic:SymbolIcon Symbol="LockClosed"/>
                                     </MenuFlyoutItem.Icon>

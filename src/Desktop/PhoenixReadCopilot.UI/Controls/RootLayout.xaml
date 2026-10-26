@@ -7,7 +7,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -37,7 +37,7 @@
 
         <base:AppTitleBar
             x:Name="MainTitleBar"
-            Title="{ext:Locale Name=AppName}"
+            Title="{x:Bind strings:Resources.AppName}"
             BackRequested="OnBackRequested"
             IsBackButtonVisible="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}"
             IsBackEnabled="True">
@@ -59,17 +59,17 @@
                         Click="OnFavoriteButtonClick"
                         IsSelected="{x:Bind ViewModel.IsFavoritesPage, Mode=OneWay}"
                         Symbol="StarLineHorizontal3"
-                        ToolTipService.ToolTip="{ext:Locale Name=MyFavorite}"/>
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.MyFavorite}"/>
                     <components:TopNavigationItem
                         Click="OnViewLaterButtonClick"
                         IsSelected="{x:Bind ViewModel.IsViewLaterPage, Mode=OneWay}"
                         Symbol="CalendarClock"
-                        ToolTipService.ToolTip="{ext:Locale Name=ViewLater}"/>
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.ViewLater}"/>
                     <components:TopNavigationItem
                         Click="OnHistoryButtonClick"
                         IsSelected="{x:Bind ViewModel.IsHistoryPage, Mode=OneWay}"
                         Symbol="History"
-                        ToolTipService.ToolTip="{ext:Locale Name=ViewHistory}"/>
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.ViewHistory}"/>
                 </StackPanel>
             </base:AppTitleBar.Header>
 
@@ -92,7 +92,7 @@
 
         <base:AppTitleBar
             x:Name="SecondaryTitleBar"
-            Title="{ext:Locale Name=AppName}"
+            Title="{x:Bind strings:Resources.AppName}"
             BackRequested="OnVideoBackRequested"
             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
             BorderThickness="0,0,0,1"
@@ -145,17 +145,17 @@
         </NavigationView>
 
         <TeachingTip
-            Title="{ext:Locale Name=HasUpdate}"
+            Title="{x:Bind strings:Resources.HasUpdate}"
             Grid.Row="1"
             MinWidth="320"
             ActionButtonClick="OnUpdateActionButtonClick"
-            ActionButtonContent="{ext:Locale Name=OpenUpdate}"
+            ActionButtonContent="{x:Bind strings:Resources.OpenUpdate}"
             CloseButtonClick="OnUpdateCloseButtonClick"
             IsLightDismissEnabled="False"
             IsOpen="{x:Bind _appViewModel.IsUpdateShown, Mode=OneWay}"
             PlacementMargin="0,20,0,0"
             PreferredPlacement="RightTop"
-            Subtitle="{ext:Locale Name=HasUpdateDescription}">
+            Subtitle="{x:Bind strings:Resources.HasUpdateDescription}">
             <TeachingTip.IconSource>
                 <ic:SymbolIconSource
                     Foreground="{ThemeResource SystemFillColorSuccessBrush}"

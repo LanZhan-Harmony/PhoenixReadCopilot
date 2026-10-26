@@ -48,8 +48,8 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
             {
                 if (
                     UserScrollView.ExtentHeight
-                    - UserScrollView.ViewportHeight
-                    - UserScrollView.VerticalOffset
+                        - UserScrollView.ViewportHeight
+                        - UserScrollView.VerticalOffset
                     <= 240
                 )
                 {

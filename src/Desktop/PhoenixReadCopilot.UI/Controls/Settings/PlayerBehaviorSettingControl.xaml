@@ -6,7 +6,7 @@
                                xmlns:constants="using:PhoenixReadCopilot.UI.Models.Constants"
                                xmlns:converters="using:PhoenixReadCopilot.UI.Converters"
                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                               xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+                               xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
                                xmlns:ic="using:FluentIcons.WinUI"
                                xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,12 +19,12 @@
         <converters:PreferDecodeTypeConverter x:Key="PreferDecodeConverter"/>
     </UserControl.Resources>
 
-    <base:SettingsExpander Description="{ext:Locale Name=PlayerBehaviorDescription}" Header="{ext:Locale Name=PlayerBehavior}">
+    <base:SettingsExpander Description="{x:Bind strings:Resources.PlayerBehaviorDescription}" Header="{x:Bind strings:Resources.PlayerBehavior}">
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Replay"/>
         </base:SettingsExpander.HeaderIcon>
         <base:SettingsExpander.Items>
-            <base:SettingsCard Description="{ext:Locale Name=PlayerTypeDescription}" Header="{ext:Locale Name=PlayerType}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.PlayerTypeDescription}" Header="{x:Bind strings:Resources.PlayerType}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PlayerTypeCollection, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.PlayerType, Mode=TwoWay}">
@@ -35,8 +35,8 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=PreferDecodeDescription}"
-                               Header="{ext:Locale Name=PreferDecode}"
+            <base:SettingsCard Description="{x:Bind strings:Resources.PreferDecodeDescription}"
+                               Header="{x:Bind strings:Resources.PreferDecode}"
                                Visibility="{x:Bind ViewModel.IsIslandPlayerType, Mode=OneWay}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PreferDecodeCollection, Mode=OneWay}"
@@ -48,15 +48,15 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=CustomMpvConfigDescription}"
-                               Header="{ext:Locale Name=CustomMpvConfig}"
+            <base:SettingsCard Description="{x:Bind strings:Resources.CustomMpvConfigDescription}"
+                               Header="{x:Bind strings:Resources.CustomMpvConfig}"
                                Visibility="{x:Bind ViewModel.IsMpvCustomOptionVisible, Mode=OneWay}">
                 <Button MinWidth="120"
                         Command="{x:Bind ViewModel.OpenMpvConfigCommand, Mode=OneWay}"
-                        Content="{ext:Locale Name=OpenConfig}"/>
+                        Content="{x:Bind strings:Resources.OpenConfig}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=ExternalPlayerTypeDescription}"
-                               Header="{ext:Locale Name=ExternalPlayerType}"
+            <base:SettingsCard Description="{x:Bind strings:Resources.ExternalPlayerTypeDescription}"
+                               Header="{x:Bind strings:Resources.ExternalPlayerType}"
                                Visibility="{x:Bind ViewModel.IsExternalPlayerType, Mode=OneWay}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.ExternalPlayerTypeCollection, Mode=OneWay}"
@@ -68,7 +68,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=PreferQuality}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.PreferQuality}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PreferQualityCollection, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.PreferQuality, Mode=TwoWay}">
@@ -79,7 +79,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=DefaultPlayerDisplayMode}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.DefaultPlayerDisplayMode}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PlayerDisplayModeCollection, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.DefaultPlayerDisplayMode, Mode=TwoWay}">
@@ -90,29 +90,29 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=AutoPlayWhenLoaded}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.AutoPlayWhenLoaded}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsAutoPlayWhenLoaded, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Header="{ext:Locale Name=AutoLoadHistoryWhenLoaded}">
+            <base:SettingsCard Header="{x:Bind strings:Resources.AutoLoadHistoryWhenLoaded}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.AutoLoadHistory, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=AutoNextRelatedVideoDescription}" Header="{ext:Locale Name=AutoNextRelatedVideo}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.AutoNextRelatedVideoDescription}" Header="{x:Bind strings:Resources.AutoNextRelatedVideo}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsAutoPlayNextRecommendVideo, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=ContinuousPlayDescription}" Header="{ext:Locale Name=ContinuousPlay}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.ContinuousPlayDescription}" Header="{x:Bind strings:Resources.ContinuousPlay}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.AutoPlayNext, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=PlayNextWithoutTipDescription}"
-                               Header="{ext:Locale Name=PlayNextWithoutTip}"
+            <base:SettingsCard Description="{x:Bind strings:Resources.PlayNextWithoutTipDescription}"
+                               Header="{x:Bind strings:Resources.PlayNextWithoutTip}"
                                Visibility="{x:Bind ViewModel.AutoPlayNext, Mode=OneWay}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.PlayNextWithoutTip, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=StopWhenEndOfPlaylistDescription}"
-                               Header="{ext:Locale Name=StopWhenEndOfPlaylist}"
+            <base:SettingsCard Description="{x:Bind strings:Resources.StopWhenEndOfPlaylistDescription}"
+                               Header="{x:Bind strings:Resources.StopWhenEndOfPlaylist}"
                                Visibility="{x:Bind ViewModel.AutoPlayNext, Mode=OneWay}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.EndWithPlaylist, Mode=TwoWay}"/>
             </base:SettingsCard>
-            <base:SettingsCard Description="{ext:Locale Name=NoP2PDescription}" Header="{ext:Locale Name=NoP2P}">
+            <base:SettingsCard Description="{x:Bind strings:Resources.NoP2PDescription}" Header="{x:Bind strings:Resources.NoP2P}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.NoP2P, Mode=TwoWay}"/>
             </base:SettingsCard>
         </base:SettingsExpander.Items>

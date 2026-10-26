@@ -33,12 +33,12 @@ internal sealed partial class AppToolkit : SharedAppToolkit
 
         if (count >= 100_000_000)
         {
-            var unit = ResourceToolkit.GetLocalizedString(StringNames.Billion);
+            var unit = Strings.Resources.Billion;
             return Math.Round(count / 100_000_000d, 2) + unit;
         }
         else if (count >= 10_000)
         {
-            var unit = ResourceToolkit.GetLocalizedString(StringNames.TenThousands);
+            var unit = Strings.Resources.TenThousands;
             return Math.Round(count / 10_000d, 2) + unit;
         }
 

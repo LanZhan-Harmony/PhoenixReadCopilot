@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.UI.Converters;
@@ -12,9 +11,9 @@ internal sealed partial class PgcFavoriteStatusConverter : IValueConverter
         var status = (PgcFavoriteStatus)value;
         return status switch
         {
-            PgcFavoriteStatus.Want => ResourceToolkit.GetLocalizedString(StringNames.WantWatch),
-            PgcFavoriteStatus.Watching => ResourceToolkit.GetLocalizedString(StringNames.Watching),
-            PgcFavoriteStatus.Watched => ResourceToolkit.GetLocalizedString(StringNames.Watched),
+            PgcFavoriteStatus.Want => Resources.WantWatch,
+            PgcFavoriteStatus.Watching => Resources.Watching,
+            PgcFavoriteStatus.Watched => Resources.Watched,
             _ => throw new Exception("Unknown status."),
         };
     }

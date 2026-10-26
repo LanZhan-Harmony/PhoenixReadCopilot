@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Visibility="{x:Bind ViewModel.IsNotificationVisible, Mode=OneWay}"
@@ -24,7 +24,7 @@
             Severity="Informational">
             <InfoBar.ActionButton>
                 <HyperlinkButton Command="{x:Bind ViewModel.ActiveCommand, Mode=OneWay}"
-                        Content="{ext:Locale Name=Play}"/>
+                        Content="{x:Bind strings:Resources.Play}"/>
             </InfoBar.ActionButton>
         </InfoBar>
         <ProgressBar

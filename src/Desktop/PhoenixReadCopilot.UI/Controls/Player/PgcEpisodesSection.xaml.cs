@@ -60,20 +60,14 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
         {
             IndexView.StartBringItemIntoView(
                 ViewModel.Episodes.ToList().IndexOf(ViewModel.SelectedEpisode),
-                new BringIntoViewOptions
-                {
-                    VerticalAlignmentRatio = 0.5
-                }
+                new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 }
             );
         }
         else
         {
             DefaultView.StartBringItemIntoView(
                 ViewModel.Episodes.ToList().IndexOf(ViewModel.SelectedEpisode),
-                new BringIntoViewOptions
-                {
-                    VerticalAlignmentRatio = 0.5
-                }
+                new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 }
             );
         }
     }

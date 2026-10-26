@@ -33,7 +33,7 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
     {
         InitializeComponent();
         SetTitleBar(RootLayout.GetMainTitleBar());
-        Title = ResourceToolkit.GetLocalizedString(StringNames.AppName);
+        Title = Strings.Resources.AppName;
         this.SetIcon("Assets/logo.ico");
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         MinWidth = WindowMinWidth;
@@ -55,10 +55,7 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup()
-        {
-            Text = text
-        };
+        var popup = new TipPopup() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);

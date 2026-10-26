@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.Web.WebView2.Core;
-using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Article;
@@ -106,11 +105,7 @@ public sealed partial class ArticleReader : LayoutUserControlBase
             if (!string.IsNullOrEmpty(args.ContextMenuTarget.SelectionText))
             {
                 _selectedText = args.ContextMenuTarget.SelectionText;
-                TextMenuFlyout.ShowAt(MainView,
-                    new FlyoutShowOptions
-                    {
-                        Position = args.Location
-                    });
+                TextMenuFlyout.ShowAt(MainView, new FlyoutShowOptions { Position = args.Location });
             }
         }
         else if (args.ContextMenuTarget.Kind == CoreWebView2ContextMenuTargetKind.Image)
@@ -184,8 +179,6 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         dp.SetText(_selectedText);
         Clipboard.SetContent(dp);
         this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-            );
+            .ShowTipCommand.Execute((Strings.Resources.Copied, InfoType.Success));
     }
 }

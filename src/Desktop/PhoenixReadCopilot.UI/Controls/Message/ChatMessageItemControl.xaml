@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Message"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -47,7 +47,7 @@
             <TextBlock
                 Foreground="{ThemeResource TextFillColorDisabledBrush}"
                 Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{ext:Locale Name=MessageWithdrawn}"/>
+                Text="{x:Bind strings:Resources.MessageWithdrawn}"/>
         </Border>
 
 

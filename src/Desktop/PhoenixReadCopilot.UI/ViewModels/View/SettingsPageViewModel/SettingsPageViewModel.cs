@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -60,10 +61,6 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             false
         );
         GlobalPlayerSpeed = SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerSpeedShare, true);
-        HideWhenCloseWindow = SettingsToolkit.ReadLocalSetting(
-            SettingNames.HideWhenCloseWindow,
-            false
-        );
         AutoLoadHistory = SettingsToolkit.ReadLocalSetting(SettingNames.AutoLoadHistory, true);
         IsNotificationEnabled = SettingsToolkit.ReadLocalSetting(
             SettingNames.IsNotificationEnabled,
@@ -181,7 +178,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             false
         );
 
-        var copyrightTemplate = ResourceToolkit.GetLocalizedString(StringNames.Copyright);
+        var copyrightTemplate = Resources.Copyright;
         Copyright = string.Format(copyrightTemplate, 2024);
         PackageVersion = this.Get<IAppToolkit>().GetPackageVersion();
 
@@ -214,9 +211,9 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     {
         AppThemeText = AppTheme switch
         {
-            ElementTheme.Light => ResourceToolkit.GetLocalizedString(StringNames.LightTheme),
-            ElementTheme.Dark => ResourceToolkit.GetLocalizedString(StringNames.DarkTheme),
-            _ => ResourceToolkit.GetLocalizedString(StringNames.SystemDefault),
+            ElementTheme.Light => Resources.LightTheme,
+            ElementTheme.Dark => Resources.DarkTheme,
+            _ => Resources.SystemDefault,
         };
     }
 
@@ -292,9 +289,6 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
 
     partial void OnPreferQualityChanged(PreferQualityType value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.PreferQuality, value);
-
-    partial void OnHideWhenCloseWindowChanged(bool value) =>
-        SettingsToolkit.WriteLocalSetting(SettingNames.HideWhenCloseWindow, value);
 
     partial void OnIsNotificationEnabledChanged(bool value) =>
         SettingsToolkit.WriteLocalSetting(SettingNames.IsNotificationEnabled, value);

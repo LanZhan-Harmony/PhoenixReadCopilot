@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -58,7 +57,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInNewWindow),
+            Text = Strings.Resources.OpenInNewWindow,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.WindowPlay,
@@ -71,7 +70,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.PlayInPrivate),
+            Text = Strings.Resources.PlayInPrivate,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.EyeOff
@@ -84,7 +83,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.EnterUserSpace),
+            Text = Strings.Resources.EnterUserSpace,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Person
@@ -97,7 +96,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.AddToViewLater),
+            Text = Strings.Resources.AddToViewLater,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.CalendarAdd,
@@ -110,7 +109,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
+            Text = Strings.Resources.OpenInBrowser,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Globe
@@ -123,7 +122,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.CopyVideoUrl),
+            Text = Strings.Resources.CopyVideoUrl,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Copy
@@ -136,7 +135,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
+            Text = Strings.Resources.FixContent,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Pin

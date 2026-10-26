@@ -18,11 +18,14 @@ public sealed partial class ArticleHistorySectionDetailViewModel
     private bool _isPreventLoadMore;
     private long _offset;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
-    [ObservableProperty] private ObservableCollection<ArticleItemViewModel> _items = new();
+    [ObservableProperty]
+    private ObservableCollection<ArticleItemViewModel> _items = new();
 
     /// <summary>
     /// 列表已完成更新.

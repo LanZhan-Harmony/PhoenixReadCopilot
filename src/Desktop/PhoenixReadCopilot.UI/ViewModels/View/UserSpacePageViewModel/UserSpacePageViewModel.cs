@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -133,23 +134,13 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 await _relationshipService.UnfollowUserAsync(_profile.Id);
                 IsFollowed = false;
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (
-                            ResourceToolkit.GetLocalizedString(StringNames.Unfollowed),
-                            InfoType.Success
-                        )
-                    );
+                    .ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "取消关注用户时失败");
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (
-                            ResourceToolkit.GetLocalizedString(StringNames.FailedToUnfollowUser),
-                            InfoType.Error
-                        )
-                    );
+                    .ShowTipCommand.Execute((Resources.FailedToUnfollowUser, InfoType.Error));
             }
         }
         else
@@ -159,20 +150,13 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 await _relationshipService.FollowUserAsync(_profile.Id);
                 IsFollowed = true;
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (ResourceToolkit.GetLocalizedString(StringNames.Followed), InfoType.Success)
-                    );
+                    .ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "关注用户时失败");
                 this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute(
-                        (
-                            ResourceToolkit.GetLocalizedString(StringNames.FailedToFollowUser),
-                            InfoType.Error
-                        )
-                    );
+                    .ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
             }
         }
     }
@@ -200,12 +184,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             _logger.LogError(ex, "获取用户信息时失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserInformation),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToGetUserInformation, InfoType.Error));
         }
     }
 
@@ -256,12 +235,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             _logger.LogError(ex, "搜索用户视频时失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToSearchUserVideos),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToSearchUserVideos, InfoType.Error));
         }
         finally
         {
@@ -294,12 +268,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             _logger.LogError(ex, "获取用户关系时失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.FailedToGetUserRelation),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.FailedToGetUserRelation, InfoType.Error));
         }
     }
 

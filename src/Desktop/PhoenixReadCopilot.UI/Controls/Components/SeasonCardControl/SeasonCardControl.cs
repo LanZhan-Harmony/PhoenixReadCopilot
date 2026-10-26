@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -59,7 +58,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInNewWindow),
+            Text = Strings.Resources.OpenInNewWindow,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.WindowPlay,
@@ -72,7 +71,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
+            Text = Strings.Resources.OpenInBrowser,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Globe
@@ -85,7 +84,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Follow),
+            Text = Strings.Resources.Follow,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Heart
@@ -98,7 +97,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
+            Text = Strings.Resources.FixContent,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Pin
@@ -111,7 +110,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWantWatch),
+            Text = Strings.Resources.MarkWantWatch,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Thinking
@@ -124,7 +123,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWatching),
+            Text = Strings.Resources.MarkWatching,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Eye
@@ -137,7 +136,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.MarkWatched),
+            Text = Strings.Resources.MarkWatched,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Checkmark,
@@ -150,7 +149,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Unfollow),
+            Text = Strings.Resources.Unfollow,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.HeartBroken,

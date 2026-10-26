@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,7 +14,7 @@
     <base:SettingsExpander
         x:Name="AboutCard"
         Description="{x:Bind ViewModel.Copyright, Mode=OneWay}"
-        Header="{ext:Locale Name=AppName}">
+        Header="{x:Bind strings:Resources.AppName}">
         <base:SettingsExpander.HeaderIcon>
             <BitmapIcon ShowAsMonochrome="False"
                     UriSource="ms-appx:///Assets/StoreLogo.png"/>
@@ -28,9 +28,9 @@
                     ContentAlignment="Left">
                 <StackPanel x:Name="LinkContainer"
                         Margin="-12,0,0,0">
-                    <HyperlinkButton Content="{ext:Locale Name=BiliHomePage}"
+                    <HyperlinkButton Content="{x:Bind strings:Resources.BiliHomePage}"
                             NavigateUri="https://space.bilibili.com/5992670"/>
-                    <HyperlinkButton Content="{ext:Locale Name=ProjectHomePage}"
+                    <HyperlinkButton Content="{x:Bind strings:Resources.ProjectHomePage}"
                             NavigateUri="https://github.com/Richasy/Bili.Copilot"/>
                 </StackPanel>
             </base:SettingsCard>

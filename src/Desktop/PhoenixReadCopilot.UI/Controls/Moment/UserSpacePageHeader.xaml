@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Moment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -33,7 +33,7 @@
                 <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}">
                     <Run Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                             Text="{x:Bind ViewModel.UserName, Mode=OneWay}"/>
-                    <Run Text="{ext:Locale Name=UserSpaceTitle}"/>
+                    <Run Text="{x:Bind strings:Resources.UserSpaceTitle}"/>
                 </TextBlock>
                 <Button.Flyout>
                     <Flyout Placement="Bottom"
@@ -76,7 +76,7 @@
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                Text="{ext:Locale Name=FansCount}"/>
+                                                Text="{x:Bind strings:Resources.FansCount}"/>
                                         </StackPanel>
                                         <StackPanel
                                             Grid.Column="1"
@@ -89,7 +89,7 @@
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                Text="{ext:Locale Name=FollowCount}"/>
+                                                Text="{x:Bind strings:Resources.FollowCount}"/>
                                         </StackPanel>
                                         <StackPanel
                                             Grid.Column="2"
@@ -102,7 +102,7 @@
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                Text="{ext:Locale Name=LikeCount}"/>
+                                                Text="{x:Bind strings:Resources.LikeCount}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Grid>
@@ -178,7 +178,7 @@
                 Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
                 CornerRadius="16"
                 IsChecked="{x:Bind ViewModel.IsFollowed, Mode=OneWay}"
-                ToolTipService.ToolTip="{ext:Locale Name=Follow}">
+                ToolTipService.ToolTip="{x:Bind strings:Resources.Follow}">
                 <ic:SymbolIcon
                     FontSize="14"
                     IconVariant="{x:Bind ViewModel.IsFollowed, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
@@ -203,7 +203,7 @@
             Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}">
             <TextBlock VerticalAlignment="Center">
                 <Run Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                        Text="{ext:Locale Name=Search}"/>
+                        Text="{x:Bind strings:Resources.Search}"/>
                 <Run
                     FontWeight="Bold"
                     Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
@@ -213,7 +213,7 @@
                 VerticalAlignment="Center"
                 Command="{x:Bind ViewModel.ExitSearchCommand}"
                 Style="{StaticResource IconButtonStyle}"
-                ToolTipService.ToolTip="{ext:Locale Name=ExitSearch}">
+                ToolTipService.ToolTip="{x:Bind strings:Resources.ExitSearch}">
                 <ic:SymbolIcon FontSize="14"
                         Symbol="Dismiss"/>
             </Button>
@@ -229,13 +229,13 @@
                 VerticalAlignment="Center"
                 Command="{x:Bind ViewModel.PinCommand, Mode=OneWay}"
                 Style="{StaticResource IconButtonStyle}"
-                ToolTipService.ToolTip="{ext:Locale Name=FixedContent}">
+                ToolTipService.ToolTip="{x:Bind strings:Resources.FixedContent}">
                 <ic:SymbolIcon FontSize="14"
                         Symbol="Pin"/>
             </Button>
             <Button
                 VerticalAlignment="Center"
-                AutomationProperties.Name="{ext:Locale Name=Refresh}"
+                AutomationProperties.Name="{x:Bind strings:Resources.Refresh}"
                 Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}">
                 <StackPanel Orientation="Horizontal"
                         Spacing="8">
@@ -245,7 +245,7 @@
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                         Symbol="ArrowSync"/>
                     <TextBlock VerticalAlignment="Center"
-                            Text="{ext:Locale Name=Refresh}"/>
+                            Text="{x:Bind strings:Resources.Refresh}"/>
                 </StackPanel>
             </Button>
         </StackPanel>

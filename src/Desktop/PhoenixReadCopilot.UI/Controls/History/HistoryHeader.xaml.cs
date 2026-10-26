@@ -1,5 +1,3 @@
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
 
@@ -38,8 +36,8 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
     {
         return type switch
         {
-            ViewHistoryTabType.Video => ResourceToolkit.GetLocalizedString(StringNames.Video),
-            ViewHistoryTabType.Article => ResourceToolkit.GetLocalizedString(StringNames.Article),
+            ViewHistoryTabType.Video => Strings.Resources.Video,
+            ViewHistoryTabType.Article => Strings.Resources.Article,
             _ => string.Empty,
         };
     }

@@ -6,7 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Pgc"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,7 +29,7 @@
                 </ItemsRepeater>
             </Grid>
         </ScrollViewer>
-        <base:LoadingWidget Text="{ext:Locale Name=LoadingAndWait}"
+        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}"
                 Visibility="{x:Bind ViewModel.IsSeasonLoading, Mode=OneWay}"/>
     </Grid>
 </local:EntertainmentIndexControlBase>

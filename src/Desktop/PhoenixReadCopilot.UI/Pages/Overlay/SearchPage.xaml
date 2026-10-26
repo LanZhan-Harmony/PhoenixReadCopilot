@@ -10,6 +10,7 @@
                       xmlns:local="using:PhoenixReadCopilot.UI.Pages.Overlay"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:search="using:PhoenixReadCopilot.UI.Controls.Search"
+                      xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
                       mc:Ignorable="d">
 
     <Page.Resources>
@@ -75,8 +76,8 @@
                              Grid.RowSpan="2"
                              Grid.Column="1"
                              ColumnWidth="{x:Bind ViewModel.NavColumnWidth, Mode=TwoWay}"
-                             HideTip="{ext:Locale Name=Show}"
+                             HideTip="{x:Bind strings:Resources.Show}"
                              IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=TwoWay}"
-                             ShowTip="{ext:Locale Name=Hide}"/>
+                             ShowTip="{x:Bind strings:Resources.Hide}"/>
     </Grid>
 </local:SearchPageBase>

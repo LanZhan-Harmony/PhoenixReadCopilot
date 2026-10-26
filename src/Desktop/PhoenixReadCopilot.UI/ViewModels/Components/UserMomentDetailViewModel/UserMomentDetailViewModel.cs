@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.User;
@@ -32,9 +32,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     public void SetIsVideo(bool isVideo)
     {
         _isVideo = isVideo;
-        Title = isVideo
-            ? ResourceToolkit.GetLocalizedString(StringNames.Video)
-            : ResourceToolkit.GetLocalizedString(StringNames.Comprehensive);
+        Title = isVideo ? Resources.Video : Resources.Comprehensive;
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -14,12 +14,10 @@ internal sealed partial class PreferQualityTypeConverter : IValueConverter
         return value is PreferQualityType quality
             ? quality switch
             {
-                PreferQualityType.HD => ResourceToolkit.GetLocalizedString(StringNames.HDFirst),
-                PreferQualityType.High => ResourceToolkit.GetLocalizedString(
-                    StringNames.PreferHighQuality
-                ),
-                PreferQualityType.UHD => ResourceToolkit.GetLocalizedString(StringNames.UHDFirst),
-                _ => ResourceToolkit.GetLocalizedString(StringNames.Automatic),
+                PreferQualityType.HD => Resources.HDFirst,
+                PreferQualityType.High => Resources.PreferHighQuality,
+                PreferQualityType.UHD => Resources.UHDFirst,
+                _ => Resources.Automatic,
             }
             : string.Empty;
     }

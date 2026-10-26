@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
@@ -29,7 +29,7 @@ public sealed partial class PgcPlayerSeasonSectionDetailViewModel
     }
 
     /// <inheritdoc/>
-    public string Title { get; } = ResourceToolkit.GetLocalizedString(StringNames.Seasons);
+    public string Title { get; } = Resources.Seasons;
 
     [RelayCommand]
     private static Task TryFirstLoadAsync() => Task.CompletedTask;

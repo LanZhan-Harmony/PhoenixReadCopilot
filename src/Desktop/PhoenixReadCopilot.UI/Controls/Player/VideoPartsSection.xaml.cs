@@ -97,10 +97,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
         await Task.Delay(100);
         View.StartBringItemIntoView(
             ViewModel.Parts.ToList().IndexOf(ViewModel.SelectedPart),
-            new BringIntoViewOptions
-            {
-                VerticalAlignmentRatio = 0.5
-            }
+            new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 }
         );
     }
 }

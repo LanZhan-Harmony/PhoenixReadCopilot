@@ -5,6 +5,7 @@ using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -43,21 +44,21 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.Balloon,
-                ResourceToolkit.GetLocalizedString(StringNames.Recommend),
+                Resources.Recommend,
                 PopularSectionType.Recommend
             )
         );
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.Fire,
-                ResourceToolkit.GetLocalizedString(StringNames.Hot),
+                Resources.Hot,
                 PopularSectionType.Hot
             )
         );
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.RibbonStar,
-                ResourceToolkit.GetLocalizedString(StringNames.Rank),
+                Resources.Rank,
                 PopularSectionType.Rank
             )
         );

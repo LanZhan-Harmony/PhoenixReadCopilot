@@ -31,7 +31,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     {
         InitializeComponent();
         SetTitleBar(TitleBar);
-        Title = ResourceToolkit.GetLocalizedString(StringNames.AppName);
+        Title = Strings.Resources.AppName;
         this.SetIcon("Assets/logo.ico");
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
         MinWidth = WindowMinWidth;
@@ -134,7 +134,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     public void ExitPlayerHostMode()
     {
         TitleBar.Visibility = Visibility.Visible;
-        TitleBar.Title = ResourceToolkit.GetLocalizedString(StringNames.AppName);
+        TitleBar.Title = Strings.Resources.AppName;
         TitleBar.IsBackButtonVisible = false;
         if (MainFrame.Content is VideoPlayerPage vPage)
         {

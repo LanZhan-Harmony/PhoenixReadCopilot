@@ -6,7 +6,7 @@
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Moment"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -35,8 +35,8 @@
         <base:ColumnSplitter
             Grid.Column="1"
             ColumnWidth="{x:Bind ViewModel.NavColumnWidth, Mode=TwoWay}"
-            HideTip="{ext:Locale Name=Show}"
+            HideTip="{x:Bind strings:Resources.Show}"
             IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=TwoWay}"
-            ShowTip="{ext:Locale Name=Hide}"/>
+            ShowTip="{x:Bind strings:Resources.Hide}"/>
     </Grid>
 </local:ComprehensiveSectionControlBase>

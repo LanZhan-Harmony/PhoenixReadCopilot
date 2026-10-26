@@ -4,6 +4,7 @@ using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Moment;
@@ -69,9 +70,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
             if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
             {
-                VideoTitle =
-                    vinfo.Identifier.Title
-                    ?? ResourceToolkit.GetLocalizedString(StringNames.NoTitleVideo);
+                VideoTitle = vinfo.Identifier.Title ?? Resources.NoTitleVideo;
                 VideoCover = vinfo.Identifier.Cover.Uri;
                 VideoDuration = AppToolkit.FormatDuration(
                     TimeSpan.FromSeconds(vinfo.Duration!.Value)
@@ -231,23 +230,13 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             await this.Get<IViewLaterService>().AddAsync(aid);
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterSucceed),
-                        InfoType.Success
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "添加稍后再看失败");
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.AddViewLaterFailed),
-                        InfoType.Error
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
 
@@ -297,10 +286,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             dataPackage.SetText(url);
             dataPackage.SetWebLink(new Uri(url));
             Clipboard.SetContent(dataPackage);
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-                );
+            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
         }
     }
 

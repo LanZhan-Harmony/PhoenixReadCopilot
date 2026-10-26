@@ -4,6 +4,7 @@
                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                              xmlns:components="using:PhoenixReadCopilot.UI.ViewModels.Components"
                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                             xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
                              xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
                              xmlns:ic="using:FluentIcons.WinUI"
                              xmlns:local="using:PhoenixReadCopilot.UI.Controls.Search"
@@ -34,7 +35,7 @@
                    MaxLines="1"
                    Style="{StaticResource BodyStrongTextBlockStyle}"
                    TextTrimming="CharacterEllipsis">
-            <Run Text="{ext:Locale Name=Search}"/>
+            <Run Text="{x:Bind strings:Resources.Search}"/>
             <Run Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Text="{x:Bind ViewModel.Keyword, Mode=OneWay}"/>
         </TextBlock>
         <ContentControl Grid.Column="1"
@@ -43,16 +44,16 @@
                         Style="{StaticResource AppContentControlStyle}"/>
         <Button Grid.Column="2"
                 VerticalAlignment="Center"
-                AutomationProperties.Name="{ext:Locale Name=Refresh}"
+                AutomationProperties.Name="{x:Bind strings:Resources.Refresh}"
                 Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay}"
                 IsEnabled="{x:Bind ViewModel.SelectedSection.IsEmpty, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
-                ToolTipService.ToolTip="{ext:Locale Name=Refresh}">
+                ToolTipService.ToolTip="{x:Bind strings:Resources.Refresh}">
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <ic:SymbolIcon VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                Symbol="ArrowSync"/>
-                <TextBlock VerticalAlignment="Center" Text="{ext:Locale Name=Refresh}"/>
+                <TextBlock VerticalAlignment="Center" Text="{x:Bind strings:Resources.Refresh}"/>
             </StackPanel>
         </Button>
     </Grid>

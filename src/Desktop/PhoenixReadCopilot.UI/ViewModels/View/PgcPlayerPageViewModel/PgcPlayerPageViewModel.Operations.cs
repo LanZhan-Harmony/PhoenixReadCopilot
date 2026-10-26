@@ -4,6 +4,7 @@ using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -138,9 +139,7 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
         this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-            );
+            .ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -152,9 +151,7 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
         this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-            );
+            .ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -424,18 +421,14 @@ public sealed partial class PgcPlayerPageViewModel
                     if (next is EpisodeInformation episode)
                     {
                         tip = string.Format(
-                            ResourceToolkit.GetLocalizedString(
-                                StringNames.NextEpisodeNotificationTemplate
-                            ),
+                            Resources.NextEpisodeNotificationTemplate,
                             episode.Identifier.Title
                         );
                     }
                     else if (next is VideoInformation video)
                     {
                         tip = string.Format(
-                            ResourceToolkit.GetLocalizedString(
-                                StringNames.NextVideoNotificationTemplate
-                            ),
+                            Resources.NextVideoNotificationTemplate,
                             video.Identifier.Title
                         );
                     }

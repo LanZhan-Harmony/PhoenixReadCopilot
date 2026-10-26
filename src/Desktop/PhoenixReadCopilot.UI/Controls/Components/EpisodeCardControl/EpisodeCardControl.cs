@@ -1,6 +1,4 @@
 using Microsoft.UI.Xaml.Input;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 
@@ -31,7 +29,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInNewWindow),
+            Text = Strings.Resources.OpenInNewWindow,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.WindowPlay,
@@ -44,7 +42,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
+            Text = Strings.Resources.OpenInBrowser,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Globe
@@ -57,7 +55,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
+            Text = Strings.Resources.FixContent,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Pin

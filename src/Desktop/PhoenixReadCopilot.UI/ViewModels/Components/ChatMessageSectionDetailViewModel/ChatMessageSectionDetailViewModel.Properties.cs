@@ -16,24 +16,32 @@ public sealed partial class ChatMessageSectionDetailViewModel
 
     private bool _preventLoadMore;
 
-    [ObservableProperty] private string _lastMessage;
+    [ObservableProperty]
+    private string _lastMessage;
 
-    [ObservableProperty] private string _lastMessageTime;
+    [ObservableProperty]
+    private string _lastMessageTime;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private int _unreadCount;
+    [ObservableProperty]
+    private int _unreadCount;
 
-    [ObservableProperty] private bool _isSending;
+    [ObservableProperty]
+    private bool _isSending;
 
-    [ObservableProperty] private string _inputText;
+    [ObservableProperty]
+    private string _inputText;
 
     /// <summary>
     /// 消息列表.
     /// </summary>
-    [ObservableProperty] private ObservableCollection<ChatMessageItemViewModel> _messages;
+    [ObservableProperty]
+    private ObservableCollection<ChatMessageItemViewModel> _messages;
 
     /// <summary>
     /// 请求滚动到底部.

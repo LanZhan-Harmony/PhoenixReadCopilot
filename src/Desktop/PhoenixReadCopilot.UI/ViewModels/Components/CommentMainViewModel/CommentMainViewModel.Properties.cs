@@ -1,8 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Models;
@@ -22,21 +21,29 @@ public sealed partial class CommentMainViewModel
     private long _offset;
     private CommentItemViewModel? _replyItem;
 
-    [ObservableProperty] private CommentDetailViewModel? _topItem;
+    [ObservableProperty]
+    private CommentDetailViewModel? _topItem;
 
-    [ObservableProperty] private CommentDetailViewModel? _selectedItem;
+    [ObservableProperty]
+    private CommentDetailViewModel? _selectedItem;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
-    [ObservableProperty] private List<CommentSortType> _sorts;
+    [ObservableProperty]
+    private List<CommentSortType> _sorts;
 
-    [ObservableProperty] private CommentSortType _sortType;
+    [ObservableProperty]
+    private CommentSortType _sortType;
 
-    [ObservableProperty] private string _replyTarget;
+    [ObservableProperty]
+    private string _replyTarget;
 
-    [ObservableProperty] private bool _isReplying;
+    [ObservableProperty]
+    private bool _isReplying;
 
     /// <summary>
     /// 已初始化.
@@ -59,5 +66,5 @@ public sealed partial class CommentMainViewModel
     public string Id { get; private set; }
 
     /// <inheritdoc/>
-    public string Title { get; } = ResourceToolkit.GetLocalizedString(StringNames.Comments);
+    public string Title { get; } = Resources.Comments;
 }

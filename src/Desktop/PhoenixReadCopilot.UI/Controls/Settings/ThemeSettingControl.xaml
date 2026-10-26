@@ -5,14 +5,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <base:SettingsExpander Description="{ext:Locale Name=AppThemeDescription}"
-            Header="{ext:Locale Name=AppTheme}">
+    <base:SettingsExpander Description="{x:Bind strings:Resources.AppThemeDescription}"
+            Header="{x:Bind strings:Resources.AppTheme}">
         <base:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Color"/>
         </base:SettingsExpander.HeaderIcon>
@@ -24,9 +24,9 @@
                     x:Name="ThemePicker"
                     Margin="0,0,0,8"
                     SelectionChanged="OnThemeSelectionChanged">
-                    <RadioButton Content="{ext:Locale Name=LightTheme}"/>
-                    <RadioButton Content="{ext:Locale Name=DarkTheme}"/>
-                    <RadioButton Content="{ext:Locale Name=SystemDefault}"/>
+                    <RadioButton Content="{x:Bind strings:Resources.LightTheme}"/>
+                    <RadioButton Content="{x:Bind strings:Resources.DarkTheme}"/>
+                    <RadioButton Content="{x:Bind strings:Resources.SystemDefault}"/>
                 </RadioButtons>
             </base:SettingsCard>
         </base:SettingsExpander.Items>

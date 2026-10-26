@@ -2,6 +2,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.Media;
@@ -233,10 +234,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             var dp = new DataPackage();
             dp.SetText(cmd);
             Clipboard.SetContent(dp);
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (ResourceToolkit.GetLocalizedString(StringNames.Copied), InfoType.Success)
-                );
+            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
             return;
         }
 

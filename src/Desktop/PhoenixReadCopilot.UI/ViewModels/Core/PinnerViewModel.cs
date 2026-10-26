@@ -3,8 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
-using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -21,9 +20,11 @@ public sealed partial class PinnerViewModel : ViewModelBase
     private const string PinFolderName = "Fixed";
     private readonly ILogger<PinnerViewModel> _logger;
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    private bool _isEmpty;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    private bool _isLoading;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.
@@ -61,21 +62,13 @@ public sealed partial class PinnerViewModel : ViewModelBase
         if (Items.Contains(item))
         {
             this.Get<AppViewModel>()
-                .ShowTipCommand.Execute(
-                    (
-                        ResourceToolkit.GetLocalizedString(StringNames.AlreadyPinned),
-                        InfoType.Warning
-                    )
-                );
+                .ShowTipCommand.Execute((Resources.AlreadyPinned, InfoType.Warning));
             return;
         }
 
         Items.Add(item);
         await SaveDataAsync();
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute(
-                (ResourceToolkit.GetLocalizedString(StringNames.Fixed), InfoType.Success)
-            );
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Fixed, InfoType.Success));
     }
 
     [RelayCommand]

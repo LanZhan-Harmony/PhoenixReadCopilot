@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -10,7 +9,7 @@ namespace PhoenixReadCopilot.UI.Controls.Components;
 /// <summary>
 /// 视频卡片控件.
 /// </summary>
-public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewModel>
+public sealed partial class VideoCardControl : VideoCardControlBase
 {
     private CardControl _rootCard;
     private Button _userButton;
@@ -18,7 +17,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoCardControl"/> class.
     /// </summary>
-    public VideoCardControl() => DefaultStyleKey = typeof(VideoCardControl);
+    public VideoCardControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
@@ -66,7 +68,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInNewWindow),
+            Text = Strings.Resources.OpenInNewWindow,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.WindowPlay,
@@ -79,7 +81,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.PlayInPrivate),
+            Text = Strings.Resources.PlayInPrivate,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.EyeOff
@@ -92,7 +94,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.EnterUserSpace),
+            Text = Strings.Resources.EnterUserSpace,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Person
@@ -105,7 +107,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.AddToViewLater),
+            Text = Strings.Resources.AddToViewLater,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.CalendarAdd,
@@ -118,7 +120,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Remove),
+            Text = Strings.Resources.Remove,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,
@@ -133,7 +135,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Remove),
+            Text = Strings.Resources.Remove,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,
@@ -148,7 +150,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.Remove),
+            Text = Strings.Resources.Remove,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,
@@ -163,7 +165,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.OpenInBrowser),
+            Text = Strings.Resources.OpenInBrowser,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Globe
@@ -176,7 +178,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.CopyVideoUrl),
+            Text = Strings.Resources.CopyVideoUrl,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Copy
@@ -189,7 +191,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     {
         return new MenuFlyoutItem()
         {
-            Text = ResourceToolkit.GetLocalizedString(StringNames.FixContent),
+            Text = Strings.Resources.FixContent,
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Pin
@@ -301,3 +303,5 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         }
     }
 }
+
+public abstract class VideoCardControlBase : LayoutControlBase<VideoItemViewModel>;

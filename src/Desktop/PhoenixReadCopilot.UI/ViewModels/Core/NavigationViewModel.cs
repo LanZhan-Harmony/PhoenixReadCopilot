@@ -5,6 +5,7 @@ using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using Richasy.WinUIKernel.Share.Toolkits;
@@ -20,20 +21,26 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     private Frame? _navFrame;
     private Frame? _overFrame;
 
-    [ObservableProperty] private bool _isOverlayOpen;
+    [ObservableProperty]
+    private bool _isOverlayOpen;
 
     /// <summary>
     /// 导航条目列表.
     /// </summary>
-    [ObservableProperty] private List<AppNavigationItemViewModel> _menuItems;
+    [ObservableProperty]
+    private List<AppNavigationItemViewModel> _menuItems;
 
-    [ObservableProperty] private bool _isTopNavBarShown;
+    [ObservableProperty]
+    private bool _isTopNavBarShown;
 
-    [ObservableProperty] private bool _isFavoritesPage;
+    [ObservableProperty]
+    private bool _isFavoritesPage;
 
-    [ObservableProperty] private bool _isHistoryPage;
+    [ObservableProperty]
+    private bool _isHistoryPage;
 
-    [ObservableProperty] private bool _isViewLaterPage;
+    [ObservableProperty]
+    private bool _isViewLaterPage;
 
     /// <summary>
     /// 底部条目列表.
@@ -220,13 +227,13 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         );
         var list = new List<AppNavigationItemViewModel>
         {
-            GetItem<PopularPage>(StringNames.PopularSlim, FluentIcons.Common.Symbol.Rocket),
-            GetItem<MomentPage>(StringNames.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
-            GetItem<VideoPartitionPage>(StringNames.Video, FluentIcons.Common.Symbol.VideoClip),
-            GetItem<AnimePage>(StringNames.Anime, FluentIcons.Common.Symbol.Dust),
-            GetItem<CinemaPage>(StringNames.Cinema, FluentIcons.Common.Symbol.FilmstripPlay),
+            GetItem<PopularPage>(Resources.PopularSlim, FluentIcons.Common.Symbol.Rocket),
+            GetItem<MomentPage>(Resources.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
+            GetItem<VideoPartitionPage>(Resources.Video, FluentIcons.Common.Symbol.VideoClip),
+            GetItem<AnimePage>(Resources.Anime, FluentIcons.Common.Symbol.Dust),
+            GetItem<CinemaPage>(Resources.Cinema, FluentIcons.Common.Symbol.FilmstripPlay),
             GetItem<ArticlePartitionPage>(
-                StringNames.Article,
+                Resources.Article,
                 FluentIcons.Common.Symbol.DocumentBulletList
             ),
         };
@@ -248,15 +255,15 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     {
         var list = new List<AppNavigationItemViewModel>
         {
-            // GetItem<DownloadPage>(StringNames.Download, FluentIcons.Common.Symbol.CloudArrowDown),
-            GetItem<MessagePage>(StringNames.Message, FluentIcons.Common.Symbol.Chat),
-            GetItem<SettingsPage>(StringNames.Settings, FluentIcons.Common.Symbol.Settings),
+            // GetItem<DownloadPage>(Resources.Download, FluentIcons.Common.Symbol.CloudArrowDown),
+            GetItem<MessagePage>(Resources.Message, FluentIcons.Common.Symbol.Chat),
+            GetItem<SettingsPage>(Resources.Settings, FluentIcons.Common.Symbol.Settings),
         };
         return list;
     }
 
     private AppNavigationItemViewModel GetItem<TPage>(
-        StringNames title,
+        string title,
         FluentIcons.Common.Symbol symbol,
         bool isSelected = false
     )
@@ -267,7 +274,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         return new AppNavigationItemViewModel(
             this,
             typeof(TPage),
-            ResourceToolkit.GetLocalizedString(title),
+            title,
             symbol,
             isSelected,
             isVisible: isVisible
@@ -282,17 +289,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         var searchBox = this.Get<SearchBoxViewModel>();
         if (e.SourcePageType == typeof(UserSpacePage))
         {
-            searchBox.SetExtraRegion(
-                "space",
-                ResourceToolkit.GetLocalizedString(StringNames.UserSpace)
-            );
+            searchBox.SetExtraRegion("space", Resources.UserSpace);
         }
         else if (e.SourcePageType == typeof(HistoryPage))
         {
-            searchBox.SetExtraRegion(
-                "history",
-                ResourceToolkit.GetLocalizedString(StringNames.ViewHistory)
-            );
+            searchBox.SetExtraRegion("history", Resources.ViewHistory);
         }
         else
         {

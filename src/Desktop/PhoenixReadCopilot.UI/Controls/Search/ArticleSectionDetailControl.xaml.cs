@@ -48,8 +48,8 @@ public sealed partial class ArticleSectionDetailControl : ArticleSectionDetailCo
             {
                 if (
                     ArticleScrollView.ExtentHeight
-                    - ArticleScrollView.ViewportHeight
-                    - ArticleScrollView.VerticalOffset
+                        - ArticleScrollView.ViewportHeight
+                        - ArticleScrollView.VerticalOffset
                     <= 240
                 )
                 {

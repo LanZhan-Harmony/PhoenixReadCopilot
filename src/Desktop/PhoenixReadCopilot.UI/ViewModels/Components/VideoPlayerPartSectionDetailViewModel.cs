@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
@@ -47,7 +47,7 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     public event EventHandler PartChanged;
 
     /// <inheritdoc/>
-    public string Title { get; } = ResourceToolkit.GetLocalizedString(StringNames.Parts);
+    public string Title { get; } = Resources.Parts;
 
     [RelayCommand]
     private static Task TryFirstLoadAsync() => Task.CompletedTask;

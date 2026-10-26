@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.Moment;
@@ -25,7 +25,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _logger = this.Get<ILogger<MomentUperSectionViewModel>>();
         IsTotal = data is null;
         Avatar = data?.User?.Avatar.Uri;
-        Name = data?.User?.Name ?? ResourceToolkit.GetLocalizedString(StringNames.AllDynamic);
+        Name = data?.User?.Name ?? Resources.AllDynamic;
         HasUnread = data?.IsUnread ?? false;
     }
 

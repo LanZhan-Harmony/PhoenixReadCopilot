@@ -26,7 +26,7 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
         MainFrame.Tag = this;
         Activated += OnActivated;
         Closed += OnClosed;
-        Title = ResourceToolkit.GetLocalizedString(StringNames.ImageGallery);
+        Title = Strings.Resources.ImageGallery;
         MinWidth = 500;
         MinHeight = 500;
         SetTitleBar(TitleBar);

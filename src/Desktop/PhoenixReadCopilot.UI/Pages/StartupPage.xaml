@@ -6,7 +6,7 @@
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:base="using:Richasy.WinUIKernel.Share.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
+    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.UI.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -32,17 +32,17 @@
                     HorizontalAlignment="Center"
                     FontSize="20"
                     Style="{StaticResource BodyStrongTextBlockStyle}"
-                    Text="{ext:Locale Name=AppName}"/>
+                    Text="{x:Bind strings:Resources.AppName}"/>
                 <TextBlock
                     HorizontalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{ext:Locale Name=AppDescription}"
+                    Text="{x:Bind strings:Resources.AppDescription}"
                     TextWrapping="Wrap"/>
                 <HyperlinkButton
                     HorizontalAlignment="Center"
                     Click="OnWebSignInButtonClick"
-                    Content="{ext:Locale Name=WebSignIn}"/>
+                    Content="{x:Bind strings:Resources.WebSignIn}"/>
             </StackPanel>
             <Border
                 Grid.Column="1"
@@ -57,7 +57,7 @@
                     HorizontalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorDisabledBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{ext:Locale Name=QRLoginTip}"
+                    Text="{x:Bind strings:Resources.QRLoginTip}"
                     TextWrapping="Wrap"/>
                 <Grid
                     x:Name="QRLoginContainer"
@@ -131,7 +131,7 @@
                         Grid.Row="1"
                         HorizontalAlignment="Stretch"
                         Click="OnRefreshQRButtonClick"
-                        Content="{ext:Locale Name=Refresh}"
+                        Content="{x:Bind strings:Resources.Refresh}"
                         IsEnabled="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
                 </Grid>
             </StackPanel>
@@ -152,7 +152,7 @@
                 VerticalAlignment="Center"
                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                 Style="{StaticResource CaptionTextBlockStyle}">
-                <Run Text="{ext:Locale Name=Version}"/>
+                <Run Text="{x:Bind strings:Resources.Version}"/>
                 <Run Text=":"/>
                 <Run Text="{x:Bind ViewModel.Version, Mode=OneWay}"/>
             </TextBlock>
@@ -169,7 +169,7 @@
                     BorderThickness="1"
                     Click="OnRepoButtonClickAsync"
                     Style="{StaticResource IconButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=ProjectHomePage}">
+                    ToolTipService.ToolTip="{x:Bind strings:Resources.ProjectHomePage}">
                     <ic:SymbolIcon
                         FontSize="14"
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
@@ -179,7 +179,7 @@
                     BorderThickness="1"
                     Click="OnBiliButtonClickAsync"
                     Style="{StaticResource IconButtonStyle}"
-                    ToolTipService.ToolTip="{ext:Locale Name=BiliHomePage}">
+                    ToolTipService.ToolTip="{x:Bind strings:Resources.BiliHomePage}">
                     <ic:SymbolIcon
                         FontSize="14"
                         Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
@@ -200,7 +200,7 @@
                     <TextBlock
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Text="{ext:Locale Name=ReadDocument}"/>
+                        Text="{x:Bind strings:Resources.ReadDocument}"/>
                 </StackPanel>
             </HyperlinkButton>
         </Grid>

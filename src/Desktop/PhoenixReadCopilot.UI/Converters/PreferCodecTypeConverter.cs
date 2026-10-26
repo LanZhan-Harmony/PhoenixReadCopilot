@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -18,13 +18,13 @@ internal sealed partial class PreferCodecTypeConverter : IValueConverter
             switch (codec)
             {
                 case PreferCodecType.H265:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.H265);
+                    result = Resources.H265;
                     break;
                 case PreferCodecType.H264:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.H264);
+                    result = Resources.H264;
                     break;
                 case PreferCodecType.Av1:
-                    result = ResourceToolkit.GetLocalizedString(StringNames.Av1);
+                    result = Resources.Av1;
                     break;
             }
         }
