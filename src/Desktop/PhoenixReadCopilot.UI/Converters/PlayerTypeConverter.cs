@@ -17,9 +17,6 @@ internal sealed partial class PlayerTypeConverter : IValueConverter
                 case PlayerType.Native:
                     result = Resources.Native;
                     break;
-                case PlayerType.External:
-                    result = Resources.ExternalPlayer;
-                    break;
                 case PlayerType.Web:
                     result = Resources.Web;
                     break;

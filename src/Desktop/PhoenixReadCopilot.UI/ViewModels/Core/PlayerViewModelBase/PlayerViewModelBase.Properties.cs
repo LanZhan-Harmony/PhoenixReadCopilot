@@ -49,45 +49,62 @@ public abstract partial class PlayerViewModelBase
     protected bool _isInitialized;
     protected bool _isClosed;
 
-    [ObservableProperty] private bool _isPlayerInitializing;
+    [ObservableProperty]
+    private bool _isPlayerInitializing;
 
-    [ObservableProperty] private bool _isPlayerDataLoading;
+    [ObservableProperty]
+    private bool _isPlayerDataLoading;
 
-    [ObservableProperty] private bool _isPaused = true;
+    [ObservableProperty]
+    private bool _isPaused = true;
 
-    [ObservableProperty] private bool _isFailed;
+    [ObservableProperty]
+    private bool _isFailed;
 
-    [ObservableProperty] private int _position;
+    [ObservableProperty]
+    private int _position;
 
-    [ObservableProperty] private int _duration;
+    [ObservableProperty]
+    private int _duration;
 
-    [ObservableProperty] private int _volume;
+    [ObservableProperty]
+    private int _volume;
 
-    [ObservableProperty] private double _speed;
+    [ObservableProperty]
+    private double _speed;
 
-    [ObservableProperty] private double _maxSpeed;
+    [ObservableProperty]
+    private double _maxSpeed;
 
-    [ObservableProperty] private double _speedStep;
+    [ObservableProperty]
+    private double _speedStep;
 
-    [ObservableProperty] private bool _isFullScreen;
+    [ObservableProperty]
+    private bool _isFullScreen;
 
-    [ObservableProperty] private bool _isCompactOverlay;
+    [ObservableProperty]
+    private bool _isCompactOverlay;
 
-    [ObservableProperty] private bool _isFullWindow;
+    [ObservableProperty]
+    private bool _isFullWindow;
 
-    [ObservableProperty] private bool _isBuffering;
+    [ObservableProperty]
+    private bool _isBuffering;
 
-    [ObservableProperty] private bool _isBottomProgressVisible;
+    [ObservableProperty]
+    private bool _isBottomProgressVisible;
 
-    [ObservableProperty] private bool _isSeparatorWindowPlayer;
+    [ObservableProperty]
+    private bool _isSeparatorWindowPlayer;
 
-    [ObservableProperty] private bool _isExternalPlayer;
+    [ObservableProperty]
+    private bool _isAmdMpvWarningShown;
 
-    [ObservableProperty] private bool _isAmdMpvWarningShown;
+    [ObservableProperty]
+    private Uri? _cover;
 
-    [ObservableProperty] private Uri? _cover;
-
-    [ObservableProperty] private bool _isDanmakuInputFocused;
+    [ObservableProperty]
+    private bool _isDanmakuInputFocused;
 
     /// <summary>
     /// 播放数据加载完成.

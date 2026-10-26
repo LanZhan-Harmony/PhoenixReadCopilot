@@ -56,10 +56,7 @@ public sealed partial class BiliPlayer
     {
         var rootGrid = new CursorGrid();
 
-        if (!ViewModel.IsExternalPlayer)
-        {
-            _danmakuControl = _createDanmakuControlFunc?.Invoke() ?? default;
-        }
+        _danmakuControl = _createDanmakuControlFunc?.Invoke() ?? default;
 
         if (_danmakuControl is not null)
         {
@@ -85,48 +82,42 @@ public sealed partial class BiliPlayer
         };
         rootGrid.Children.Add(_progressBar);
 
-        if (!ViewModel.IsExternalPlayer)
-        {
-            var contextFlyout = new MenuFlyout();
-            contextFlyout.Items.Add(
-                new MenuFlyoutItem
-                {
-                    Text = Strings.Resources.Screenshot,
-                    Command = ViewModel?.TakeScreenshotCommand,
-                    MinWidth = 160,
-                    Icon = new FluentIcons.WinUI.SymbolIcon
-                    {
-                        Symbol = FluentIcons.Common.Symbol.Screenshot,
-                    },
-                }
-            );
-            contextFlyout.Items.Add(
-                new MenuFlyoutItem
-                {
-                    Text = Strings.Resources.Reload,
-                    Command = ViewModel?.ReloadCommand,
-                    MinWidth = 160,
-                    Icon = new FluentIcons.WinUI.SymbolIcon
-                    {
-                        Symbol = FluentIcons.Common.Symbol.ArrowClockwise,
-                    },
-                }
-            );
-
-            _contextFlyout = contextFlyout;
-            _interactionControl = new Rectangle
+        var contextFlyout = new MenuFlyout();
+        contextFlyout.Items.Add(
+            new MenuFlyoutItem
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Fill = new SolidColorBrush(Colors.Transparent),
-                Visibility =
-                    ViewModel?.IsExternalPlayer ?? false
-                        ? Visibility.Collapsed
-                        : Visibility.Visible,
-            };
-            HookInteractionControlEvents();
-            rootGrid.Children.Add(_interactionControl);
-        }
+                Text = Strings.Resources.Screenshot,
+                Command = ViewModel?.TakeScreenshotCommand,
+                MinWidth = 160,
+                Icon = new FluentIcons.WinUI.SymbolIcon
+                {
+                    Symbol = FluentIcons.Common.Symbol.Screenshot,
+                },
+            }
+        );
+        contextFlyout.Items.Add(
+            new MenuFlyoutItem
+            {
+                Text = Strings.Resources.Reload,
+                Command = ViewModel?.ReloadCommand,
+                MinWidth = 160,
+                Icon = new FluentIcons.WinUI.SymbolIcon
+                {
+                    Symbol = FluentIcons.Common.Symbol.ArrowClockwise,
+                },
+            }
+        );
+
+        _contextFlyout = contextFlyout;
+        _interactionControl = new Rectangle
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            Fill = new SolidColorBrush(Colors.Transparent),
+            Visibility = Visibility.Visible,
+        };
+        HookInteractionControlEvents();
+        rootGrid.Children.Add(_interactionControl);
 
         _notificationContainer = new StackPanel
         {
@@ -136,33 +127,30 @@ public sealed partial class BiliPlayer
         };
         rootGrid.Children.Add(_notificationContainer);
 
-        if (!ViewModel.IsExternalPlayer)
+        _operationContainer = new StackPanel
         {
-            _operationContainer = new StackPanel
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Bottom,
-            };
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Bottom,
+        };
 
-            _subtitlePresenter = _createSubtitleControlFunc?.Invoke() ?? default;
-            if (_subtitlePresenter is not null)
-            {
-                _subtitlePresenter.HorizontalAlignment = HorizontalAlignment.Stretch;
-                _operationContainer.Children.Add(_subtitlePresenter);
-            }
-
-            _transportControl = _createTransportControlFunc?.Invoke() ?? default;
-            if (_transportControl is not null)
-            {
-                _transportControl.MinHeight = 16;
-                _transportControl.HorizontalAlignment = HorizontalAlignment.Stretch;
-                _transportControl.VerticalAlignment = VerticalAlignment.Bottom;
-                _transportControl.SizeChanged += (_, _) => MeasureTransportTriggerRect();
-                _operationContainer.Children.Add(_transportControl);
-            }
-
-            rootGrid.Children.Add(_operationContainer);
+        _subtitlePresenter = _createSubtitleControlFunc?.Invoke() ?? default;
+        if (_subtitlePresenter is not null)
+        {
+            _subtitlePresenter.HorizontalAlignment = HorizontalAlignment.Stretch;
+            _operationContainer.Children.Add(_subtitlePresenter);
         }
+
+        _transportControl = _createTransportControlFunc?.Invoke() ?? default;
+        if (_transportControl is not null)
+        {
+            _transportControl.MinHeight = 16;
+            _transportControl.HorizontalAlignment = HorizontalAlignment.Stretch;
+            _transportControl.VerticalAlignment = VerticalAlignment.Bottom;
+            _transportControl.SizeChanged += (_, _) => MeasureTransportTriggerRect();
+            _operationContainer.Children.Add(_transportControl);
+        }
+
+        rootGrid.Children.Add(_operationContainer);
 
         _loadingWidget = new LoadingWidget
         {
@@ -268,22 +256,6 @@ public sealed partial class BiliPlayer
                 _failedHolder.Visibility = ViewModel.IsFailed
                     ? Visibility.Visible
                     : Visibility.Collapsed;
-            }
-        }
-        else if (e.PropertyName == nameof(ViewModel.IsExternalPlayer))
-        {
-            if (_danmakuControl != null)
-            {
-                _danmakuControl.Visibility = ViewModel.IsExternalPlayer
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
-            }
-
-            if (_interactionControl != null)
-            {
-                _interactionControl.Visibility = ViewModel.IsExternalPlayer
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
             }
         }
         else if (e.PropertyName == nameof(ViewModel.IsPlayerDataLoading))
