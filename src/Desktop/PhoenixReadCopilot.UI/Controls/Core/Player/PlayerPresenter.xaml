@@ -13,11 +13,11 @@
         <DataTemplate x:Key="NativeTemplate" x:DataType="core:NativePlayerViewModel">
             <local:NativePlayer ViewModel="{x:Bind Mode=OneWay}"/>
         </DataTemplate>
-        <DataTemplate x:Key="IslandTemplate" x:DataType="core:IslandPlayerViewModel">
-            <local:IslandPlayer ViewModel="{x:Bind Mode=OneWay}"/>
+        <DataTemplate x:Key="FFmpegTemplate" x:DataType="core:FFmpegPlayerViewModel">
+            <local:FFmpegPlayer ViewModel="{x:Bind Mode=OneWay}"/>
         </DataTemplate>
         <ext:PlayerTemplateSelector x:Key="PlayerTemplateSelector"
-                                    IslandTemplate="{StaticResource IslandTemplate}"
+                                    FFmpegTemplate="{StaticResource FFmpegTemplate}"
                                     NativeTemplate="{StaticResource NativeTemplate}"/>
     </UserControl.Resources>
 

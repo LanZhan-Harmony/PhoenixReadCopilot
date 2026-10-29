@@ -73,10 +73,6 @@
                                 Text="{x:Bind strings:Resources.OpenInNewWindow}"/>
                         <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInBroswerCommand, Mode=OneWay}"
                                 Text="{x:Bind strings:Resources.OpenInBrowser}"/>
-                        <MenuFlyoutItem Command="{x:Bind ViewModel.Player.OpenWithMpvCommand, Mode=OneWay}"
-                                Text="{x:Bind strings:Resources.OpenWithMpv}"/>
-                        <MenuFlyoutItem Command="{x:Bind ViewModel.Player.OpenWithMpvNetCommand, Mode=OneWay}"
-                                Text="{x:Bind strings:Resources.OpenWithMpvNet}"/>
                     </MenuFlyout>
                 </Button.Flyout>
             </Button>

@@ -51,7 +51,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         Activate();
         var preferPlayer = SettingsToolkit.ReadLocalSetting(
             SettingNames.PlayerType,
-            PlayerType.Island
+            PlayerType.Native
         );
         if (preferPlayer == PlayerType.Web)
         {
@@ -73,7 +73,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         Activate();
         var preferPlayer = SettingsToolkit.ReadLocalSetting(
             SettingNames.PlayerType,
-            PlayerType.Island
+            PlayerType.Native
         );
         if (preferPlayer == PlayerType.Web)
         {
@@ -95,7 +95,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         Activate();
         var preferPlayer = SettingsToolkit.ReadLocalSetting(
             SettingNames.PlayerType,
-            PlayerType.Island
+            PlayerType.Native
         );
         if (preferPlayer == PlayerType.Web)
         {
@@ -151,10 +151,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup()
-        {
-            Text = text
-        };
+        var popup = new TipPopup() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);

@@ -4,11 +4,9 @@ namespace PhoenixReadCopilot.UI.Extensions;
 
 internal sealed partial class PlayerTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate MpvTemplate { get; set; }
-
     public DataTemplate NativeTemplate { get; set; }
 
-    public DataTemplate IslandTemplate { get; set; }
+    public DataTemplate FFmpegTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
@@ -16,9 +14,9 @@ internal sealed partial class PlayerTemplateSelector : DataTemplateSelector
         {
             return NativeTemplate;
         }
-        else if (item is IslandPlayerViewModel)
+        else if (item is FFmpegPlayerViewModel)
         {
-            return IslandTemplate;
+            return FFmpegTemplate;
         }
 
         return default;

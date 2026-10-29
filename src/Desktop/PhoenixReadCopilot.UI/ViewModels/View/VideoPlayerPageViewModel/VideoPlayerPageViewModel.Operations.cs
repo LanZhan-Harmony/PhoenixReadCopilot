@@ -221,16 +221,6 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         _initialProgress = 0;
-        if (Player is IslandPlayerViewModel)
-        {
-            if (!Player.IsPaused)
-            {
-                Player.TogglePlayPauseCommand.Execute(default);
-            }
-
-            // 留出时间给 MPV 清理资源.
-            await Task.Delay(1500);
-        }
 
         if (nextPart is VideoPart part)
         {
@@ -309,7 +299,7 @@ public sealed partial class VideoPlayerPageViewModel
         InitializeNextVideo();
         var partSection =
             Sections.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
-                as VideoPlayerPartSectionDetailViewModel;
+            as VideoPlayerPartSectionDetailViewModel;
         partSection?.UpdateSelectedPartCommand.Execute(part);
     }
 

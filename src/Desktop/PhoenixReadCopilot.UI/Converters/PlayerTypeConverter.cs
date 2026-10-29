@@ -20,11 +20,11 @@ internal sealed partial class PlayerTypeConverter : IValueConverter
                 case PlayerType.Web:
                     result = Resources.Web;
                     break;
-                case PlayerType.Island:
-                    result = Resources.IslandPlayer;
+                case PlayerType.FFmpeg:
+                    result = Resources.FFmpegPlayer;
                     break;
                 default:
-                    result = "MPV（已弃用）";
+                    result = Resources.Native;
                     break;
             }
         }

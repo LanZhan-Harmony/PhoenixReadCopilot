@@ -172,7 +172,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             var preferPlayer = SettingsToolkit.ReadLocalSetting(
                 SettingNames.PlayerType,
-                PlayerType.Island
+                PlayerType.Native
             );
             if (preferPlayer == PlayerType.Web)
             {

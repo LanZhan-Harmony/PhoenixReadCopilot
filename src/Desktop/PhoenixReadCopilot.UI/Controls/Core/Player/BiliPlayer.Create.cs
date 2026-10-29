@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PhoenixReadCopilot.UI.Controls.Danmaku;
 using PhoenixReadCopilot.UI.Controls.Player;
-using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Base;
 using Windows.System;
 
@@ -177,11 +176,6 @@ public sealed partial class BiliPlayer
             },
         };
         rootGrid.Children.Add(_failedHolder);
-        if (ViewModel is IslandPlayerViewModel)
-        {
-            rootGrid.Children.Insert(0, CreateHiddenControlsContainer());
-        }
-
         _overlayContainer = rootGrid;
         HookRootPointerEvents();
     }
@@ -214,14 +208,6 @@ public sealed partial class BiliPlayer
             if (_progressBar != null)
             {
                 _progressBar.Value = ViewModel.Position;
-            }
-
-            if (
-                _needRemeasureSize
-                && PlayerPresenter?.TryGetIslandPlayer() is IslandPlayer islandPlayer
-            )
-            {
-                islandPlayer.ResetWindowPosition();
             }
 
             _needRemeasureSize = false;

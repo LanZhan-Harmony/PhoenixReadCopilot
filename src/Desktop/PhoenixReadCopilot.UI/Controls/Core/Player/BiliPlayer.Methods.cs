@@ -1,10 +1,8 @@
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
-using PhoenixReadCopilot.UI.ViewModels.Core;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;
 
@@ -20,7 +18,7 @@ public sealed partial class BiliPlayer
             var width = frameEle.ActualWidth;
             var height = frameEle.ActualHeight;
 
-            // 测量 frameEle 相对于 MpvPlayer 的位置.
+            // 测量 frameEle 相对于 Player 的位置.
             var transform = frameEle
                 .TransformToVisual(_overlayContainer)
                 .TransformPoint(new Point(0, 0));
@@ -333,33 +331,6 @@ public sealed partial class BiliPlayer
         )
         {
             _lastPressedTime = DateTimeOffset.Now;
-        }
-
-        if (ViewModel is IslandPlayerViewModel)
-        {
-            if (point.Properties.IsXButton1Pressed || point.Properties.IsXButton2Pressed)
-            {
-                if (ViewModel.IsFullScreen || ViewModel.IsFullWindow || ViewModel.IsCompactOverlay)
-                {
-                    e.Handled = true;
-                    if (ViewModel.IsFullWindow)
-                    {
-                        ViewModel.ToggleFullWindowCommand.Execute(default);
-                    }
-                    else if (ViewModel.IsCompactOverlay)
-                    {
-                        ViewModel.ToggleCompactOverlayCommand.Execute(default);
-                    }
-                    else
-                    {
-                        ViewModel.ToggleFullScreenCommand.Execute(default);
-                    }
-                }
-                else if (this.Get<AppViewModel>().ActivatedWindow is MainWindow)
-                {
-                    this.Get<NavigationViewModel>().Back();
-                }
-            }
         }
     }
 

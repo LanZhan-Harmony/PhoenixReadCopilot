@@ -53,7 +53,7 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
 
         var preferPlayer = SettingsToolkit.ReadLocalSetting(
             SettingNames.PlayerType,
-            PlayerType.Island
+            PlayerType.Native
         );
         if (preferPlayer == PlayerType.Web)
         {

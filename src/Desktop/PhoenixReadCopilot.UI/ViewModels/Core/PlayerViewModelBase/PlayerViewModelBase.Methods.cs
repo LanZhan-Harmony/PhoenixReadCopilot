@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using Richasy.BiliKernel.Bili.Authorization;
-
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 
 /// <summary>
@@ -59,29 +56,6 @@ public abstract partial class PlayerViewModelBase
         {
             _displayRequest?.RequestRelease();
             _displayRequest = null;
-        });
-    }
-
-    private void OpenWithMpvOrMpvNet(bool isMpv)
-    {
-        var httpParams =
-            $"--cookies --http-header-fields=\\\"Cookie:{this.Get<IBiliCookiesResolver>().GetCookieString()}\\\" --http-header-fields=\\\"Referer:{VideoReferer}\\\" --user-agent=\\\"{VideoUserAgent}\\\"";
-        var exeName = isMpv ? "mpv" : "mpvnet";
-        if (!string.IsNullOrEmpty(_extraOptions))
-        {
-            httpParams += $" --script-opts=\\\"cid={_extraOptions}\\\"";
-        }
-
-        var command = $"{exeName} {httpParams} --title=\\\"{Title}\\\" \\\"{_videoUrl}\\\"";
-        if (!string.IsNullOrEmpty(_audioUrl))
-        {
-            command += $" --audio-file=\\\"{_audioUrl}\\\"";
-        }
-
-        _ = Task.Run(() =>
-        {
-            var startInfo = new ProcessStartInfo("powershell.exe", $"-Command \"{command}\"");
-            var process = Process.Start(startInfo);
         });
     }
 }

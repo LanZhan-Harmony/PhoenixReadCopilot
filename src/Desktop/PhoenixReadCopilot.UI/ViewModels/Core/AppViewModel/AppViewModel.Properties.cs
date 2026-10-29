@@ -13,11 +13,14 @@ public sealed partial class AppViewModel : ViewModelBase
     private readonly ILogger<AppViewModel> _logger;
     private readonly IBiliTokenResolver _tokenResolver;
 
-    [ObservableProperty] private Window _activatedWindow;
+    [ObservableProperty]
+    private Window _activatedWindow;
 
-    [ObservableProperty] private bool _isInitialLoading;
+    [ObservableProperty]
+    private bool _isInitialLoading;
 
-    [ObservableProperty] private bool _isUpdateShown;
+    [ObservableProperty]
+    private bool _isUpdateShown;
 
     /// <summary>
     /// 已创建的窗口列表.
@@ -33,11 +36,6 @@ public sealed partial class AppViewModel : ViewModelBase
     /// FFmpeg 路径.
     /// </summary>
     public string FFmpegPath { get; private set; }
-
-    /// <summary>
-    /// 是否为 AMD 显卡.
-    /// </summary>
-    public bool? IsAmdGpu { get; private set; }
 
     /// <summary>
     /// 是否已关闭.

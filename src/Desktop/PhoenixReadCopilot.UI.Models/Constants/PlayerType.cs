@@ -16,7 +16,7 @@ public enum PlayerType
     Web,
 
     /// <summary>
-    /// 岛播放器.
+    /// FFmpeg 播放器.
     /// </summary>
-    Island,
+    FFmpeg,
 }
