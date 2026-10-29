@@ -258,6 +258,10 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         {
             npvm.InjectSegments(vSeg, aSeg);
         }
+        else if (Player is FFmpegPlayerViewModel fpvm)
+        {
+            fpvm.InjectSegments(vSeg, aSeg);
+        }
 
         Danmaku.ClearAll();
         await Player.SetPlayDataAsync(

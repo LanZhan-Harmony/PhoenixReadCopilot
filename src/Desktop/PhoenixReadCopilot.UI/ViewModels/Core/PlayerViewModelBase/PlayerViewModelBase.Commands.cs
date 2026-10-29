@@ -389,10 +389,4 @@ public abstract partial class PlayerViewModelBase
 
         _reloadAction?.Invoke();
     }
-
-    [RelayCommand]
-    private void OpenWithMpv() => OpenWithMpvOrMpvNet(true);
-
-    [RelayCommand]
-    private void OpenWithMpvNet() => OpenWithMpvOrMpvNet(false);
 }

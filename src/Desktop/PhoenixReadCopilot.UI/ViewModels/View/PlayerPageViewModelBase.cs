@@ -23,12 +23,13 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
     {
         var playerType = SettingsToolkit.ReadLocalSetting(
             SettingNames.PlayerType,
-            PlayerType.Island
+            PlayerType.Native
         );
 
         Player = playerType switch
         {
-            PlayerType.Island => new IslandPlayerViewModel(),
+            PlayerType.Native => new NativePlayerViewModel(),
+            PlayerType.FFmpeg => new FFmpegPlayerViewModel(),
             _ => new NativePlayerViewModel(),
         };
 

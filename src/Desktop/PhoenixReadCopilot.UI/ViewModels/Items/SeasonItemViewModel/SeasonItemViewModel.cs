@@ -64,7 +64,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
 
         var preferPlayer = SettingsToolkit.ReadLocalSetting(
             SettingNames.PlayerType,
-            PlayerType.Island
+            PlayerType.Native
         );
         if (preferPlayer == PlayerType.Web)
         {

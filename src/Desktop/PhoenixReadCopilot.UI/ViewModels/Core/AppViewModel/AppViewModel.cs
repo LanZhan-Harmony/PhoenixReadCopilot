@@ -1,13 +1,10 @@
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Windowing;
 using Microsoft.Windows.BadgeNotifications;
-using Mpv.Core;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.WinUIKernel.Share.Base;
@@ -45,13 +42,6 @@ public sealed partial class AppViewModel : ViewModelBase
     {
         var architecture = RuntimeInformation.ProcessArchitecture;
         var identifier = architecture == Architecture.Arm64 ? "arm64" : "x64";
-        var libFile = await StorageFile
-            .GetFileFromApplicationUriAsync(
-                new Uri($"ms-appx:///Assets/libmpv/{identifier}/libmpv-2.dll")
-            )
-            .AsTask();
-        var libPath = libFile.Path;
-        Resolver.SetCustomMpvPath(libPath);
 
         var bbdownFile = await StorageFile
             .GetFileFromApplicationUriAsync(
@@ -214,70 +204,6 @@ public sealed partial class AppViewModel : ViewModelBase
         var url = $"https://github.com/Richasy/Bili.Copilot/releases/tag/v{packVersion}";
         await Launcher.LaunchUriAsync(new Uri(url));
         HideUpdate();
-    }
-
-    [RelayCommand]
-    private async Task CheckGpuIsAmdAsync()
-    {
-        try
-        {
-            await Task.Run(() =>
-            {
-                // Initialize the process with required settings
-                var processStartInfo = new ProcessStartInfo
-                {
-                    FileName = "wmic",
-                    Arguments = "path win32_videocontroller get name",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                };
-
-                using (var process = new Process { StartInfo = processStartInfo })
-                {
-                    process.Start();
-                    var output = process.StandardOutput.ReadToEnd();
-                    process.WaitForExit();
-
-                    // Process the output to check for AMD GPU
-                    var lines = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var line in lines)
-                    {
-                        if (line.Contains("amd", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            IsAmdGpu = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Write local setting
-                IsAmdGpu ??= false;
-                SettingsToolkit.WriteLocalSetting(SettingNames.IsGpuChecked, true);
-            });
-
-            if (IsAmdGpu == true)
-            {
-                this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
-                    .TryEnqueue(async () =>
-                    {
-                        var dialog = new ContentDialog
-                        {
-                            Title = Resources.Tip,
-                            Content = Resources.AmdGpuWarning,
-                            XamlRoot = ActivatedWindow.Content.XamlRoot,
-                            CloseButtonText = Resources.Confirm,
-                            DefaultButton = ContentDialogButton.Close,
-                        };
-
-                        await dialog.ShowAsync();
-                    });
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "检查GPU类型时失败");
-        }
     }
 
     partial void OnIsInitialLoadingChanged(bool value)

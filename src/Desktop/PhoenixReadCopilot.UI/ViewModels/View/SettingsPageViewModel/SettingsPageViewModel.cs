@@ -6,7 +6,6 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.WinUIKernel.Share.Toolkits;
 using Richasy.WinUIKernel.Share.ViewModels;
-using Windows.Storage;
 using Windows.System;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -16,15 +15,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SettingsPageViewModel : ViewModelBase
 {
-    [RelayCommand]
-    private static async Task OpenMpvConfigAsync()
-    {
-        var mpvConfig = await ApplicationData
-            .Current.LocalFolder.CreateFileAsync("mpv.conf", CreationCollisionOption.OpenIfExists)
-            .AsTask();
-        await Launcher.LaunchFileAsync(mpvConfig);
-    }
-
     [RelayCommand]
     private void Initialize()
     {
@@ -114,7 +104,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             PreferDecode = PreferDecodeType.Auto;
         }
 
-        PlayerType = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Island);
+        PlayerType = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerType, PlayerType.Native);
         MTCBehavior = SettingsToolkit.ReadLocalSetting(
             SettingNames.MTCBehavior,
             MTCBehavior.Automatic
@@ -136,10 +126,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             SettingNames.WithoutCredentialWhenGenDownloadCommand,
             false
         );
-        IsIslandPlayerType = PlayerType == PlayerType.Island;
         FilterAISubtitle = SettingsToolkit.ReadLocalSetting(SettingNames.FilterAISubtitle, true);
-        IsMpvCustomOptionVisible =
-            PreferDecode == PreferDecodeType.Custom && PlayerType == PlayerType.Island;
         if (string.IsNullOrEmpty(DefaultDownloadPath))
         {
             DefaultDownloadPath = Path.Combine(
@@ -231,13 +218,10 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     partial void OnPreferDecodeChanged(PreferDecodeType value)
     {
         SettingsToolkit.WriteLocalSetting(SettingNames.PreferDecode, value);
-        IsMpvCustomOptionVisible =
-            PreferDecode == PreferDecodeType.Custom && PlayerType == PlayerType.Island;
     }
 
     partial void OnPlayerTypeChanged(PlayerType value)
     {
-        IsIslandPlayerType = value == PlayerType.Island;
         SettingsToolkit.WriteLocalSetting(SettingNames.PlayerType, value);
     }
 

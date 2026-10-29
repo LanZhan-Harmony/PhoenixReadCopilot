@@ -98,9 +98,6 @@ public abstract partial class PlayerViewModelBase
     private bool _isSeparatorWindowPlayer;
 
     [ObservableProperty]
-    private bool _isAmdMpvWarningShown;
-
-    [ObservableProperty]
     private Uri? _cover;
 
     [ObservableProperty]

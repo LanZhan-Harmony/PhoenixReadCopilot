@@ -44,20 +44,20 @@
         <Setter Property="Padding" Value="12,10"/>
     </Style>
 
-    <Style TargetType="local:IslandPlayer">
+    <Style TargetType="local:NativePlayer">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:IslandPlayer">
-                    <Grid x:Name="RootGrid"/>
+                <ControlTemplate TargetType="local:NativePlayer">
+                    <Grid x:Name="RootGrid" Background="Black"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style TargetType="local:NativePlayer">
+    <Style TargetType="local:FFmpegPlayer">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:NativePlayer">
+                <ControlTemplate TargetType="local:FFmpegPlayer">
                     <Grid x:Name="RootGrid" Background="Black"/>
                 </ControlTemplate>
             </Setter.Value>

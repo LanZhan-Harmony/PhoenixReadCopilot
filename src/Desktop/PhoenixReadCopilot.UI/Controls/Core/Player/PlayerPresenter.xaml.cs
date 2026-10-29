@@ -15,10 +15,10 @@ public sealed partial class PlayerPresenter : PlayerPresenterBase
     public PlayerPresenter() => InitializeComponent();
 
     /// <summary>
-    /// 尝试获取岛屿播放器.
+    /// 尝试获取 FFmpeg 播放器.
     /// </summary>
     /// <returns>实例.</returns>
-    public IslandPlayer? TryGetIslandPlayer() => this.FindDescendant<IslandPlayer>();
+    public FFmpegPlayer? TryGetFFmpegPlayer() => this.FindDescendant<FFmpegPlayer>();
 }
 
 /// <summary>

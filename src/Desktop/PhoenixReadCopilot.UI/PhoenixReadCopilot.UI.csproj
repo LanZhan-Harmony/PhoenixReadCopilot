@@ -43,9 +43,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Platform)' == 'x64'">
-    <None Update="Assets\libmpv\x64\libmpv-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Assets\ffmpeg\x64\ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -54,9 +51,6 @@
     </None>
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)' == 'ARM64'">
-    <None Update="Assets\libmpv\arm64\libmpv-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Assets\ffmpeg\arm64\ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -108,7 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\Danmaku.Core\Danmaku.Core.csproj" />
-    <ProjectReference Include="..\..\Libs\mpv-winui\src\Mpv.Core\Mpv.Core.csproj" />
     <ProjectReference Include="..\PhoenixReadCopilot.UI.Models\PhoenixReadCopilot.UI.Models.csproj" />
   </ItemGroup>
 

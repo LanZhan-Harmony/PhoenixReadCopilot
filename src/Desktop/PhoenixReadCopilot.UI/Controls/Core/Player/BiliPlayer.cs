@@ -7,9 +7,6 @@ using PhoenixReadCopilot.UI.ViewModels.Items;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;
 
-/// <summary>
-/// MPV 播放器.
-/// </summary>
 public sealed partial class BiliPlayer : PlayerControlBase
 {
     private Rect _transportControlTriggerRect;
@@ -296,14 +293,8 @@ public sealed partial class BiliPlayer : PlayerControlBase
         }
 
         CreateOverlayContainer();
-        if (ViewModel is IslandPlayerViewModel vm)
-        {
-            vm.SetXamlContent(_overlayContainer);
-        }
-        else
-        {
-            RootGrid.Children.Add(_overlayContainer);
-        }
+
+        RootGrid.Children.Add(_overlayContainer);
     }
 
     private void OnCoreDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)

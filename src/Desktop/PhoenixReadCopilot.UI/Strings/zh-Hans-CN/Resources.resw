@@ -1302,12 +1302,6 @@
   <data name="OpenWith" xml:space="preserve">
     <value>在其它应用中打开</value>
   </data>
-  <data name="OpenWithMpv" xml:space="preserve">
-    <value>使用 MPV 播放</value>
-  </data>
-  <data name="OpenWithMpvNet" xml:space="preserve">
-    <value>使用 MPV.Net 播放</value>
-  </data>
   <data name="Orange" xml:space="preserve">
     <value>橘黄色</value>
   </data>
@@ -2399,9 +2393,6 @@
   <data name="PlayerTypeDescription" xml:space="preserve">
     <value>如果其它类型闪退严重，请使用网页播放器</value>
   </data>
-  <data name="AmdGpuWarning" xml:space="preserve">
-    <value>应用检测到您当前的设备中存在 AMD GPU。目前内置的 MPV 播放器在 AMD 平台无法正常工作，请尝试切换到原生播放器，或者使用其它的播放器类型</value>
-  </data>
   <data name="ReadDocument" xml:space="preserve">
     <value>阅读文档</value>
   </data>
@@ -2429,17 +2420,11 @@
   <data name="VulkanDecode" xml:space="preserve">
     <value>Vulkan 硬解</value>
   </data>
-  <data name="IslandPlayer" xml:space="preserve">
-    <value>岛（MPV）</value>
+  <data name="FFmpegPlayer" xml:space="preserve">
+    <value>FFmpeg</value>
   </data>
   <data name="Custom" xml:space="preserve">
     <value>自定义</value>
-  </data>
-  <data name="CustomMpvConfig" xml:space="preserve">
-    <value>自定义 MPV 配置</value>
-  </data>
-  <data name="CustomMpvConfigDescription" xml:space="preserve">
-    <value>MPV 用户请参考 mpv.io 的说明进行自定义配置</value>
   </data>
   <data name="ShowSearchRecommend" xml:space="preserve">
     <value>显示搜索推荐</value>

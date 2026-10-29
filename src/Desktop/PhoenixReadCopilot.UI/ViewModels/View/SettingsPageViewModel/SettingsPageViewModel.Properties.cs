@@ -38,9 +38,6 @@ public sealed partial class SettingsPageViewModel
     private bool _endWithPlaylist;
 
     [ObservableProperty]
-    private bool _isMpvCustomOptionVisible;
-
-    [ObservableProperty]
     private PreferCodecType _preferCodec;
 
     [ObservableProperty]
@@ -54,9 +51,6 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     private MTCBehavior _mTCBehavior;
-
-    [ObservableProperty]
-    private bool _isIslandPlayerType;
 
     [ObservableProperty]
     private double _singleFastForwardAndRewindSpan;

@@ -20,8 +20,5 @@
     <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj">
       <BuildType Solution="Publish|*" Project="Release" />
     </Project>
-    <Project Path="src/Libs/mpv-winui/src/Mpv.Core/Mpv.Core.csproj">
-      <BuildType Solution="Publish|*" Project="Release" />
-    </Project>
   </Folder>
 </Solution>
