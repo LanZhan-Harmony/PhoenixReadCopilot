@@ -17,13 +17,13 @@ public sealed partial class EntertainmentIndexViewModel
     private int _pageNumer;
 
     [ObservableProperty]
-    private List<IndexFilterViewModel>? _filters;
+    public partial List<IndexFilterViewModel>? Filters { get; set; }
 
     [ObservableProperty]
-    private bool _isFilterLoading;
+    public partial bool IsFilterLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isSeasonLoading;
+    public partial bool IsSeasonLoading { get; set; }
 
     /// <summary>
     /// 条目已更新.

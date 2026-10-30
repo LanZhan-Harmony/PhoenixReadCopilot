@@ -4,14 +4,12 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Media.Playback;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 
 /// <summary>
 /// 本地播放器视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class NativePlayerViewModel : PlayerViewModelBase
 {
     private MediaPlayerElement? _element;

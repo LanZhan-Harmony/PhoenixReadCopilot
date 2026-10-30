@@ -1,8 +1,5 @@
 <Solution>
   <Configurations>
-    <BuildType Name="Debug" />
-    <BuildType Name="Publish" />
-    <BuildType Name="Release" />
     <Platform Name="ARM64" />
     <Platform Name="x64" />
     <Platform Name="x86" />
@@ -17,8 +14,6 @@
     </Project>
   </Folder>
   <Folder Name="/Libs/">
-    <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj">
-      <BuildType Solution="Publish|*" Project="Release" />
-    </Project>
+    <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj" />
   </Folder>
 </Solution>

@@ -12,7 +12,8 @@ public sealed partial class PartitionViewModel : ViewModelBase<Partition>
     /// <summary>
     /// 子分区.
     /// </summary>
-    [ObservableProperty] private List<PartitionViewModel>? _children;
+    [ObservableProperty]
+    public partial List<PartitionViewModel>? Children { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularRankPartitionViewModel"/> class.

@@ -20,16 +20,16 @@ public sealed partial class CommentDetailViewModel
     private CommentItemViewModel? _replyItem;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string _replyTarget;
+    public partial string ReplyTarget { get; set; }
 
     [ObservableProperty]
-    private bool _isReplying;
+    public partial bool IsReplying { get; set; }
 
     /// <summary>
     /// 列表已更新.

@@ -15,10 +15,10 @@ public sealed partial class FavoritesPageViewModel
     private readonly ILogger<FavoritesPageViewModel> _logger;
 
     [ObservableProperty]
-    private IFavoriteSectionDetailViewModel _currentSection;
+    public partial IFavoriteSectionDetailViewModel CurrentSection { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     /// <summary>
     /// 分区初始化完成.

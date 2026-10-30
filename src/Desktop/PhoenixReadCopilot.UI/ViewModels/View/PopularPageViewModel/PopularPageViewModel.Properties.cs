@@ -22,13 +22,13 @@ public sealed partial class PopularPageViewModel
     private long _hotOffset;
 
     [ObservableProperty]
-    private bool _isPartitionLoading;
+    public partial bool IsPartitionLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isVideoLoading;
+    public partial bool IsVideoLoading { get; set; }
 
     [ObservableProperty]
-    private IPopularSectionItemViewModel _selectedSection;
+    public partial IPopularSectionItemViewModel SelectedSection { get; set; }
 
     /// <summary>
     /// 区块加载完成.

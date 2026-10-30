@@ -8,11 +8,15 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class GalleryPageViewModel
 {
-    [ObservableProperty] private List<BiliImage>? _images;
+    [ObservableProperty]
+    public partial List<BiliImage>? Images { get; set; }
 
-    [ObservableProperty] private bool _isGroup;
+    [ObservableProperty]
+    public partial bool IsGroup { get; set; }
 
-    [ObservableProperty] private bool _isMenuHide;
+    [ObservableProperty]
+    public partial bool IsMenuHide { get; set; }
 
-    [ObservableProperty] private BiliImage _selectedImage;
+    [ObservableProperty]
+    public partial BiliImage SelectedImage { get; set; }
 }

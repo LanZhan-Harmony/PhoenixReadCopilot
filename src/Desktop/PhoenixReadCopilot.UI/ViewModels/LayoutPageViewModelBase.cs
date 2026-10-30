@@ -9,9 +9,11 @@ namespace PhoenixReadCopilot.UI.ViewModels;
 /// </summary>
 public abstract partial class LayoutPageViewModelBase : ViewModelBase
 {
-    [ObservableProperty] private double _navColumnWidth;
+    [ObservableProperty]
+    public partial double NavColumnWidth { get; set; }
 
-    [ObservableProperty] private bool _isNavColumnManualHide;
+    [ObservableProperty]
+    public partial bool IsNavColumnManualHide { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LayoutPageViewModelBase"/> class.

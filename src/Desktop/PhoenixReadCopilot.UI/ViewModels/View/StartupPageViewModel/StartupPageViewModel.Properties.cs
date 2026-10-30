@@ -16,11 +16,14 @@ public sealed partial class StartupPageViewModel
 
     private CancellationTokenSource? _cancellationTokenSource;
 
-    [ObservableProperty] private string _version;
+    [ObservableProperty]
+    public partial string Version { get; set; }
 
-    [ObservableProperty] private string _errorTip;
+    [ObservableProperty]
+    public partial string ErrorTip { get; set; }
 
-    [ObservableProperty] private bool _isQRCodeLoading;
+    [ObservableProperty]
+    public partial bool IsQRCodeLoading { get; set; }
 
     /// <summary>
     /// 二维码图片控件.

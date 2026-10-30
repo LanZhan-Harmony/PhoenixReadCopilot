@@ -20,22 +20,22 @@ public sealed partial class HistoryPageViewModel
     private CancellationTokenSource _searchCancellationTokenSource;
 
     [ObservableProperty]
-    private IHistorySectionDetailViewModel _selectedSection;
+    public partial IHistorySectionDetailViewModel SelectedSection { get; set; }
 
     [ObservableProperty]
-    private List<IHistorySectionDetailViewModel> _sections;
+    public partial List<IHistorySectionDetailViewModel> Sections { get; set; }
 
     [ObservableProperty]
-    private bool _isSearching;
+    public partial bool IsSearching { get; set; }
 
     [ObservableProperty]
-    private bool _isSearchMode;
+    public partial bool IsSearchMode { get; set; }
 
     [ObservableProperty]
-    private string _searchKeyword;
+    public partial string SearchKeyword { get; set; }
 
     [ObservableProperty]
-    private bool _isSearchEmpty;
+    public partial bool IsSearchEmpty { get; set; }
 
     /// <summary>
     /// 初始化完成.

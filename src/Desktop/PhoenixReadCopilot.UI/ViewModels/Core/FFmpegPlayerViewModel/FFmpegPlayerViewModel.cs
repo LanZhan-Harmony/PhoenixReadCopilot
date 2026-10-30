@@ -4,22 +4,21 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Media.Playback;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 
 /// <summary>
 /// FFmpeg 播放器视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 {
     private MediaPlayerElement? _element;
     private DashSegmentInformation? _videoSegment;
     private DashSegmentInformation? _audioSegment;
+    private int _customDuration;
     private FFmpegInteropX.FFmpegMediaSource? _ffmpegSource;
     private System.Net.Sockets.TcpListener? _manifestListener;
-    private System.Threading.CancellationTokenSource? _manifestServerCts;
+    private CancellationTokenSource? _manifestServerCts;
     private bool _isDisposed;
 
     /// <summary>
@@ -49,10 +48,20 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     /// <summary>
     /// 注入播放片段.
     /// </summary>
-    public void InjectSegments(DashSegmentInformation? video, DashSegmentInformation? audio)
+    public void InjectSegments(
+        DashSegmentInformation? video,
+        DashSegmentInformation? audio,
+        int duration = 0
+    )
     {
         _videoSegment = video;
         _audioSegment = audio;
+        _customDuration = duration;
+        if (duration > 0)
+        {
+            Duration = duration;
+        }
+
         UpdateState(PlayerState.None);
     }
 
@@ -131,7 +140,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            if (!IsMediaLoaded())
+            if (_isDisposed || Player is null)
             {
                 return;
             }
@@ -170,6 +179,22 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
             );
             _speedAction?.Invoke(sender.PlaybackSession.PlaybackRate);
 
+            var duration = session.NaturalDuration.TotalSeconds;
+            if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
+            {
+                duration = _ffmpegSource.Duration.TotalSeconds;
+            }
+
+            if (duration <= 0 && _customDuration > 0)
+            {
+                duration = _customDuration;
+            }
+
+            if (duration > 0)
+            {
+                UpdatePosition(Position, Convert.ToInt32(duration));
+            }
+
             if (Position > 0)
             {
                 session.Position = TimeSpan.FromSeconds(Position);
@@ -177,6 +202,30 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 
             session.PositionChanged -= OnMediaPositionChanged;
             session.PositionChanged += OnMediaPositionChanged;
+            session.NaturalDurationChanged -= OnMediaNaturalDurationChanged;
+            session.NaturalDurationChanged += OnMediaNaturalDurationChanged;
+        });
+    }
+
+    private void OnMediaNaturalDurationChanged(MediaPlaybackSession sender, object args)
+    {
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            var duration = sender.NaturalDuration.TotalSeconds;
+            if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
+            {
+                duration = _ffmpegSource.Duration.TotalSeconds;
+            }
+
+            if (duration <= 0 && _customDuration > 0)
+            {
+                duration = _customDuration;
+            }
+
+            if (duration > 0)
+            {
+                UpdatePosition(Position, Convert.ToInt32(duration));
+            }
         });
     }
 
@@ -184,19 +233,37 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            if (!IsMediaLoaded())
+            if (_isDisposed || Player is null)
             {
                 return;
             }
 
             var duration = sender.NaturalDuration.TotalSeconds;
+            if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
+            {
+                duration = _ffmpegSource.Duration.TotalSeconds;
+            }
+
+            if (duration <= 0 && _customDuration > 0)
+            {
+                duration = _customDuration;
+            }
+
+            if (duration <= 0 && Duration > 0)
+            {
+                duration = Duration;
+            }
+
             var position = sender.Position.TotalSeconds;
-            if (position > duration)
+            if (duration > 0 && position > duration)
             {
                 return;
             }
 
-            UpdatePosition(Convert.ToInt32(position), Convert.ToInt32(duration));
+            UpdatePosition(
+                Convert.ToInt32(position),
+                duration > 0 ? Convert.ToInt32(duration) : default
+            );
         });
     }
 }

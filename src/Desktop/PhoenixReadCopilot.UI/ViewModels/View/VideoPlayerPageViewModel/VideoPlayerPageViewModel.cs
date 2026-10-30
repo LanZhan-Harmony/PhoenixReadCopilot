@@ -260,7 +260,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
         else if (Player is FFmpegPlayerViewModel fpvm)
         {
-            fpvm.InjectSegments(vSeg, aSeg);
+            fpvm.InjectSegments(vSeg, aSeg, _part?.Duration ?? 0);
         }
 
         Danmaku.ClearAll();

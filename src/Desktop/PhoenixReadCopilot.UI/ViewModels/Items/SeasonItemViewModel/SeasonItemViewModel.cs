@@ -14,14 +14,12 @@ using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.System;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
 /// <summary>
 /// 剧集条目视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformation>
 {
     private readonly Action<SeasonItemViewModel>? _removeAction;

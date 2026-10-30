@@ -20,41 +20,59 @@ public sealed partial class DanmakuViewModel
     private int _position;
     private int _duration;
 
-    [ObservableProperty] private bool _isShowDanmaku;
+    [ObservableProperty]
+    public partial bool IsShowDanmaku { get; set; }
 
-    [ObservableProperty] private bool _canShowDanmaku;
+    [ObservableProperty]
+    public partial bool CanShowDanmaku { get; set; }
 
-    [ObservableProperty] private double _danmakuOpacity;
+    [ObservableProperty]
+    public partial double DanmakuOpacity { get; set; }
 
-    [ObservableProperty] private double _danmakuFontSize;
+    [ObservableProperty]
+    public partial double DanmakuFontSize { get; set; }
 
-    [ObservableProperty] private string _danmakuFontFamily;
+    [ObservableProperty]
+    public partial string DanmakuFontFamily { get; set; }
 
-    [ObservableProperty] private double _danmakuArea;
+    [ObservableProperty]
+    public partial double DanmakuArea { get; set; }
 
-    [ObservableProperty] private double _danmakuSpeed;
+    [ObservableProperty]
+    public partial double DanmakuSpeed { get; set; }
 
-    [ObservableProperty] private double _extraSpeed = 1;
+    [ObservableProperty]
+    public partial double ExtraSpeed { get; set; } = 1;
 
-    [ObservableProperty] private bool _isDanmakuLimit;
+    [ObservableProperty]
+    public partial bool IsDanmakuLimit { get; set; }
 
-    [ObservableProperty] private bool _isDanmakuBold;
+    [ObservableProperty]
+    public partial bool IsDanmakuBold { get; set; }
 
-    [ObservableProperty] private bool _isStandardSize;
+    [ObservableProperty]
+    public partial bool IsStandardSize { get; set; }
 
-    [ObservableProperty] private DanmakuLocation _location;
+    [ObservableProperty]
+    public partial DanmakuLocation Location { get; set; }
 
-    [ObservableProperty] private Color _color;
+    [ObservableProperty]
+    public partial Color Color { get; set; }
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    public partial bool IsLoading { get; set; }
 
-    [ObservableProperty] private List<DanmakuLocation> _locations;
+    [ObservableProperty]
+    public partial List<DanmakuLocation> Locations { get; set; }
 
-    [ObservableProperty] private List<Color> _colors;
+    [ObservableProperty]
+    public partial List<Color> Colors { get; set; }
 
-    [ObservableProperty] private List<string> _fonts;
+    [ObservableProperty]
+    public partial List<string> Fonts { get; set; }
 
-    [ObservableProperty] private bool _isPaused;
+    [ObservableProperty]
+    public partial bool IsPaused { get; set; }
 
     /// <summary>
     /// 当弹幕列表添加时触发的事件.

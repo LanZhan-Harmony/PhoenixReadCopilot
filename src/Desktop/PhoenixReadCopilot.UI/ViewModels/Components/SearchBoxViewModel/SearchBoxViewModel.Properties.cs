@@ -20,10 +20,10 @@ public sealed partial class SearchBoxViewModel
     private string _extraRegionName = string.Empty;
 
     [ObservableProperty]
-    private string _keyword = string.Empty;
+    public partial string Keyword { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private bool _isHotSearchLoading;
+    public partial bool IsHotSearchLoading { get; set; }
 
     /// <summary>
     /// 搜索建议.

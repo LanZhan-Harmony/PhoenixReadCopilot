@@ -10,9 +10,11 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInformation>
 {
-    [ObservableProperty] private List<SeasonItemViewModel>? _items;
+    [ObservableProperty]
+    public partial List<SeasonItemViewModel>? Items { get; set; }
 
-    [ObservableProperty] private bool _isEmpty;
+    [ObservableProperty]
+    public partial bool IsEmpty { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TimelineItemViewModel"/> class.

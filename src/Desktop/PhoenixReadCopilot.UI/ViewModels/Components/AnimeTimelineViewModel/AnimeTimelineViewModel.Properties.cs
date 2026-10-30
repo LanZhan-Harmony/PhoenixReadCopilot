@@ -16,16 +16,16 @@ public sealed partial class AnimeTimelineViewModel
     private readonly ILogger<AnimeTimelineViewModel> _logger;
 
     [ObservableProperty]
-    private bool _isTimelineLoading;
+    public partial bool IsTimelineLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private TimelineItemViewModel _selectedTimeline;
+    public partial TimelineItemViewModel SelectedTimeline { get; set; }
 
     [ObservableProperty]
-    private ObservableCollection<TimelineItemViewModel> _timelines = new();
+    public partial ObservableCollection<TimelineItemViewModel> Timelines { get; set; } = new();
 
     /// <summary>
     /// 时间线加载完成.

@@ -7,7 +7,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class UserItemViewModel
 {
-    [ObservableProperty] private bool _isFollowed;
+    [ObservableProperty]
+    public partial bool IsFollowed { get; set; }
 
     /// <summary>
     /// 用户名.

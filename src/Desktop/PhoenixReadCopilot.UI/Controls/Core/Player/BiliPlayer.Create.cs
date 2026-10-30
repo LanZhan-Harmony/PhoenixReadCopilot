@@ -209,8 +209,6 @@ public sealed partial class BiliPlayer
             {
                 _progressBar.Value = ViewModel.Position;
             }
-
-            _needRemeasureSize = false;
         }
         else if (e.PropertyName == nameof(ViewModel.IsBottomProgressVisible))
         {

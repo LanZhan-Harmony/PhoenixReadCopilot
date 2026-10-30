@@ -20,13 +20,13 @@ public sealed partial class NotifyMessageSectionDetailViewModel
     private bool _preventLoadMore;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private int _unreadCount;
+    public partial int UnreadCount { get; set; }
 
     /// <summary>
     /// 列表已完成更新.

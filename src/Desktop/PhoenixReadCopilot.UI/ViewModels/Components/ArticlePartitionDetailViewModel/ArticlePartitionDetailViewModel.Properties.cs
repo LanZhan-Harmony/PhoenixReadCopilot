@@ -25,22 +25,22 @@ public sealed partial class ArticlePartitionDetailViewModel
     private bool _preventLoadMore;
 
     [ObservableProperty]
-    private List<ArticleSortType> _sortTypes;
+    public partial List<ArticleSortType> SortTypes { get; set; }
 
     [ObservableProperty]
-    private List<PartitionViewModel> _children;
+    public partial List<PartitionViewModel> Children { get; set; }
 
     [ObservableProperty]
-    private ArticleSortType _selectedSortType;
+    public partial ArticleSortType SelectedSortType { get; set; }
 
     [ObservableProperty]
-    private bool _isRecommend;
+    public partial bool IsRecommend { get; set; }
 
     [ObservableProperty]
-    private bool _isArticleLoading;
+    public partial bool IsArticleLoading { get; set; }
 
     [ObservableProperty]
-    private PartitionViewModel _currentPartition;
+    public partial PartitionViewModel CurrentPartition { get; set; }
 
     /// <summary>
     /// 初始化完成.

@@ -6,14 +6,12 @@ using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Models.Comment;
 using Richasy.WinUIKernel.Share.ViewModels;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
 /// <summary>
 /// 评论项视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformation>
 {
     /// <summary>

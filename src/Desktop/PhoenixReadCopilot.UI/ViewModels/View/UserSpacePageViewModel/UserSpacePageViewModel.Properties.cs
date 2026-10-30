@@ -24,34 +24,34 @@ public sealed partial class UserSpacePageViewModel
     private CancellationTokenSource _searchCancellationTokenSource;
 
     [ObservableProperty]
-    private List<UserMomentDetailViewModel> _sections;
+    public partial List<UserMomentDetailViewModel> Sections { get; set; }
 
     [ObservableProperty]
-    private UserMomentDetailViewModel _selectedSection;
+    public partial UserMomentDetailViewModel SelectedSection { get; set; }
 
     [ObservableProperty]
-    private bool _isCommentsOpened;
+    public partial bool IsCommentsOpened { get; set; }
 
     [ObservableProperty]
-    private string _userName;
+    public partial string UserName { get; set; }
 
     [ObservableProperty]
-    private bool _isFollowed;
+    public partial bool IsFollowed { get; set; }
 
     [ObservableProperty]
-    private bool _isSearching;
+    public partial bool IsSearching { get; set; }
 
     [ObservableProperty]
-    private bool _isSearchMode;
+    public partial bool IsSearchMode { get; set; }
 
     [ObservableProperty]
-    private string _searchKeyword;
+    public partial string SearchKeyword { get; set; }
 
     [ObservableProperty]
-    private bool _isSearchEmpty;
+    public partial bool IsSearchEmpty { get; set; }
 
     [ObservableProperty]
-    private UserCard _card;
+    public partial UserCard Card { get; set; }
 
     /// <summary>
     /// 区块初始化完成.

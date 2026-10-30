@@ -18,16 +18,16 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
     private readonly Dictionary<PgcFavoriteStatus, (int, bool)> _offsetCache = new();
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private PgcFavoriteStatus _currentStatus;
+    public partial PgcFavoriteStatus CurrentStatus { get; set; }
 
     [ObservableProperty]
-    private List<PgcFavoriteStatus> _statusList;
+    public partial List<PgcFavoriteStatus> StatusList { get; set; }
 
     /// <summary>
     /// 列表已完成更新.

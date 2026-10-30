@@ -32,6 +32,7 @@ public sealed partial class FFmpegPlayerViewModel
         if (Player?.PlaybackSession != null)
         {
             Player.PlaybackSession.PositionChanged -= OnMediaPositionChanged;
+            Player.PlaybackSession.NaturalDurationChanged -= OnMediaNaturalDurationChanged;
         }
 
         if (Player is not null)
@@ -56,14 +57,13 @@ public sealed partial class FFmpegPlayerViewModel
     /// <inheritdoc/>
     protected override bool IsMediaLoaded() =>
         !_isDisposed
-        && (
-            Player?.PlaybackSession?.NaturalDuration.Ticks > 0 || _ffmpegSource?.Duration.Ticks > 0
-        );
+        && Player is not null
+        && (_ffmpegSource is not null || Player.PlaybackSession is not null);
 
     /// <inheritdoc/>
     protected override Task OnTogglePlayPauseAsync()
     {
-        if (!IsMediaLoaded())
+        if (!IsMediaLoaded() || Player?.PlaybackSession is null)
         {
             return Task.CompletedTask;
         }
@@ -85,7 +85,7 @@ public sealed partial class FFmpegPlayerViewModel
     {
         if (IsMediaLoaded())
         {
-            Player.Play();
+            Player?.Play();
         }
 
         return Task.CompletedTask;
@@ -94,7 +94,12 @@ public sealed partial class FFmpegPlayerViewModel
     /// <inheritdoc/>
     protected override Task OnSeekAsync(TimeSpan position)
     {
-        if (!Player?.CanSeek ?? false)
+        if (Player is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (Player.PlaybackSession?.CanSeek == false && !Player.CanSeek)
         {
             this.Get<AppViewModel>()
                 .ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
@@ -245,6 +250,15 @@ public sealed partial class FFmpegPlayerViewModel
                 .Replace("{audio}", audioStr)
                 .Replace("{bufferTime}", "PT4S");
 
+            var durationSeconds = _customDuration > 0 ? _customDuration : Duration;
+            if (durationSeconds > 0)
+            {
+                mpdStr = mpdStr.Replace(
+                    "<MPD ",
+                    $"<MPD mediaPresentationDuration=\"PT{durationSeconds}S\" "
+                );
+            }
+
             var port = StartManifestServer(mpdStr);
             var manifestUrl = $"http://127.0.0.1:{port}/manifest.mpd";
 
@@ -277,6 +291,15 @@ public sealed partial class FFmpegPlayerViewModel
 
         if (_ffmpegSource is not null)
         {
+            if (_ffmpegSource.Duration > TimeSpan.Zero)
+            {
+                Duration = Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
+            }
+            else if (_customDuration > 0)
+            {
+                Duration = _customDuration;
+            }
+
             var playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
             Player.Source = playbackItem;
         }
