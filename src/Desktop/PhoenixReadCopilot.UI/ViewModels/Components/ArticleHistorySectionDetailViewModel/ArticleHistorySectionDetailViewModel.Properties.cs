@@ -19,13 +19,13 @@ public sealed partial class ArticleHistorySectionDetailViewModel
     private long _offset;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private ObservableCollection<ArticleItemViewModel> _items = new();
+    public partial ObservableCollection<ArticleItemViewModel> Items { get; set; } = new();
 
     /// <summary>
     /// 列表已完成更新.

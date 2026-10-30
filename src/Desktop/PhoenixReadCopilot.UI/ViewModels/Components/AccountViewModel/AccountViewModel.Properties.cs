@@ -16,15 +16,21 @@ public sealed partial class AccountViewModel
     private readonly NavigationViewModel _navService;
     private readonly ILogger<AccountViewModel> _logger;
 
-    [ObservableProperty] private UserDetailProfile _myProfile;
+    [ObservableProperty]
+    public partial UserDetailProfile MyProfile { get; set; }
 
-    [ObservableProperty] private bool _isInitializing;
+    [ObservableProperty]
+    public partial bool IsInitializing { get; set; }
 
-    [ObservableProperty] private int _momentCount;
+    [ObservableProperty]
+    public partial int MomentCount { get; set; }
 
-    [ObservableProperty] private int _followCount;
+    [ObservableProperty]
+    public partial int FollowCount { get; set; }
 
-    [ObservableProperty] private int _fansCount;
+    [ObservableProperty]
+    public partial int FansCount { get; set; }
 
-    [ObservableProperty] private string _introduce;
+    [ObservableProperty]
+    public partial string Introduce { get; set; }
 }

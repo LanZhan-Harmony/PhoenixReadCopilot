@@ -18,16 +18,16 @@ public sealed partial class UgcSeasonFavoriteSectionDetailViewModel
     private bool _preventLoadMore;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private int _totalCount;
+    public partial int TotalCount { get; set; }
 
     [ObservableProperty]
-    private Uri? _cover;
+    public partial Uri? Cover { get; set; }
 
     /// <summary>
     /// 列表已完成更新.

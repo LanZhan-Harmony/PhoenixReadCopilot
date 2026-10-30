@@ -15,13 +15,17 @@ public sealed partial class MomentItemViewModel
     private readonly ILogger<MomentItemViewModel> _logger;
     private readonly Action<MomentItemViewModel> _showMomentAction;
 
-    [ObservableProperty] private double? _likeCount;
+    [ObservableProperty]
+    public partial double? LikeCount { get; set; }
 
-    [ObservableProperty] private double? _commentCount;
+    [ObservableProperty]
+    public partial double? CommentCount { get; set; }
 
-    [ObservableProperty] private bool _isLiked;
+    [ObservableProperty]
+    public partial bool IsLiked { get; set; }
 
-    [ObservableProperty] private bool _isPgc;
+    [ObservableProperty]
+    public partial bool IsPgc { get; set; }
 
     /// <summary>
     /// 作者.

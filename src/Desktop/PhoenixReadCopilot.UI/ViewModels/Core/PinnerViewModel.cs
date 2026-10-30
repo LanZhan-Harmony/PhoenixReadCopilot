@@ -21,10 +21,10 @@ public sealed partial class PinnerViewModel : ViewModelBase
     private readonly ILogger<PinnerViewModel> _logger;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.

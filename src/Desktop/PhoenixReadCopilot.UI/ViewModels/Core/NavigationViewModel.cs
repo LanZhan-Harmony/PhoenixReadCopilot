@@ -22,25 +22,25 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     private Frame? _overFrame;
 
     [ObservableProperty]
-    private bool _isOverlayOpen;
+    public partial bool IsOverlayOpen { get; set; }
 
     /// <summary>
     /// 导航条目列表.
     /// </summary>
     [ObservableProperty]
-    private List<AppNavigationItemViewModel> _menuItems;
+    public partial List<AppNavigationItemViewModel> MenuItems { get; set; }
 
     [ObservableProperty]
-    private bool _isTopNavBarShown;
+    public partial bool IsTopNavBarShown { get; set; }
 
     [ObservableProperty]
-    private bool _isFavoritesPage;
+    public partial bool IsFavoritesPage { get; set; }
 
     [ObservableProperty]
-    private bool _isHistoryPage;
+    public partial bool IsHistoryPage { get; set; }
 
     [ObservableProperty]
-    private bool _isViewLaterPage;
+    public partial bool IsViewLaterPage { get; set; }
 
     /// <summary>
     /// 底部条目列表.

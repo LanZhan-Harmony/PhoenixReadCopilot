@@ -17,11 +17,14 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
 {
     private readonly Action<VideoPart> _partSelectedAction;
 
-    [ObservableProperty] private List<VideoPart> _parts;
+    [ObservableProperty]
+    public partial List<VideoPart> Parts { get; set; }
 
-    [ObservableProperty] private VideoPart _selectedPart;
+    [ObservableProperty]
+    public partial VideoPart SelectedPart { get; set; }
 
-    [ObservableProperty] private bool _onlyIndex;
+    [ObservableProperty]
+    public partial bool OnlyIndex { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPartSectionDetailViewModel"/> class.

@@ -18,10 +18,10 @@ public sealed partial class ArticlePartitionPageViewModel
     private readonly Dictionary<Partition, ArticlePartitionDetailViewModel> _partitionCache = new();
 
     [ObservableProperty]
-    private bool _isPartitionLoading;
+    public partial bool IsPartitionLoading { get; set; }
 
     [ObservableProperty]
-    private ArticlePartitionDetailViewModel? _selectedPartition;
+    public partial ArticlePartitionDetailViewModel? SelectedPartition { get; set; }
 
     /// <summary>
     /// 区块加载完成.

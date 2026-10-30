@@ -11,10 +11,10 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 {
     [ObservableProperty]
-    private PlayerViewModelBase _player;
+    public partial PlayerViewModelBase Player { get; set; }
 
     [ObservableProperty]
-    private bool _isSeparatorWindowPlayer;
+    public partial bool IsSeparatorWindowPlayer { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPageViewModelBase"/> class.

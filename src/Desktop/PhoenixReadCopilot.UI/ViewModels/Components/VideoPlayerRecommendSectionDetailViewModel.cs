@@ -15,7 +15,8 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {
-    [ObservableProperty] private List<VideoItemViewModel> _items;
+    [ObservableProperty]
+    public partial List<VideoItemViewModel> Items { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerRecommendSectionDetailViewModel"/> class.

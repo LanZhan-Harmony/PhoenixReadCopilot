@@ -18,13 +18,13 @@ public sealed partial class MessagePageViewModel
     private long? _chatSessionOffset;
 
     [ObservableProperty]
-    private IMessageSectionDetailViewModel _currentSection;
+    public partial IMessageSectionDetailViewModel CurrentSection { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isChatSessionLoading;
+    public partial bool IsChatSessionLoading { get; set; }
 
     /// <summary>
     /// 分区初始化完成.

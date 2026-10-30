@@ -12,14 +12,12 @@ using Richasy.BiliKernel.Models.Article;
 using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.Globalization;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
 /// <summary>
 /// 文章项视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformation>
 {
     private readonly Action<ArticleItemViewModel>? _removeAction;

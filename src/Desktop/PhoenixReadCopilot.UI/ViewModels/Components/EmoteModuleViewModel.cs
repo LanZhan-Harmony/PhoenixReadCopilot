@@ -15,9 +15,11 @@ public sealed partial class EmoteModuleViewModel : ViewModelBase
     private readonly ICommentService _service;
     private readonly ILogger<EmoteModuleViewModel> _logger;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    public partial bool IsLoading { get; set; }
 
-    [ObservableProperty] private List<EmotePackage>? _packages;
+    [ObservableProperty]
+    public partial List<EmotePackage>? Packages { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteModuleViewModel"/> class.

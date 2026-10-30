@@ -12,9 +12,11 @@ public sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
 {
     private readonly Action? _reloadAction;
 
-    [ObservableProperty] private List<Condition>? _conditions;
+    [ObservableProperty]
+    public partial List<Condition>? Conditions { get; set; }
 
-    [ObservableProperty] private Condition? _currentCondition;
+    [ObservableProperty]
+    public partial Condition? CurrentCondition { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IndexFilterViewModel"/> class.

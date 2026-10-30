@@ -16,13 +16,13 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     private readonly ILogger<VideoMomentSectionDetailViewModel> _logger;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private MomentUperSectionViewModel? _selectedUper;
+    public partial MomentUperSectionViewModel? SelectedUper { get; set; }
 
     /// <summary>
     /// 已经初始化完成.

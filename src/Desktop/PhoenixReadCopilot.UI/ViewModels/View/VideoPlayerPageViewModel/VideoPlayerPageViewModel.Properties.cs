@@ -33,83 +33,122 @@ public sealed partial class VideoPlayerPageViewModel
     private int _initialProgress;
     private bool _isFormatChanging;
 
-    [ObservableProperty] private bool _isPageLoading;
+    [ObservableProperty]
+    public partial bool IsPageLoading { get; set; }
 
-    [ObservableProperty] private bool _isPageLoadFailed;
+    [ObservableProperty]
+    public partial bool IsPageLoadFailed { get; set; }
 
-    [ObservableProperty] private bool _isMediaLoading;
+    [ObservableProperty]
+    public partial bool IsMediaLoading { get; set; }
 
-    [ObservableProperty] private bool _isMediaLoadFailed;
+    [ObservableProperty]
+    public partial bool IsMediaLoadFailed { get; set; }
 
-    [ObservableProperty] private Uri? _cover;
+    [ObservableProperty]
+    public partial Uri? Cover { get; set; }
 
-    [ObservableProperty] private string _title;
+    [ObservableProperty]
+    public partial string Title { get; set; }
 
-    [ObservableProperty] private string _description;
+    [ObservableProperty]
+    public partial string Description { get; set; }
 
-    [ObservableProperty] private string _upName;
+    [ObservableProperty]
+    public partial string UpName { get; set; }
 
-    [ObservableProperty] private Uri? _upAvatar;
+    [ObservableProperty]
+    public partial Uri? UpAvatar { get; set; }
 
-    [ObservableProperty] private string _publishRelativeTime;
+    [ObservableProperty]
+    public partial string PublishRelativeTime { get; set; }
 
-    [ObservableProperty] private bool _isFollow;
+    [ObservableProperty]
+    public partial bool IsFollow { get; set; }
 
-    [ObservableProperty] private bool _isMyVideo;
+    [ObservableProperty]
+    public partial bool IsMyVideo { get; set; }
 
-    [ObservableProperty] private double _playerWidth;
+    [ObservableProperty]
+    public partial double PlayerWidth { get; set; }
 
-    [ObservableProperty] private double _playerHeight;
+    [ObservableProperty]
+    public partial double PlayerHeight { get; set; }
 
-    [ObservableProperty] private double _playCount;
+    [ObservableProperty]
+    public partial double PlayCount { get; set; }
 
-    [ObservableProperty] private double _danmakuCount;
+    [ObservableProperty]
+    public partial double DanmakuCount { get; set; }
 
-    [ObservableProperty] private double _commentCount;
+    [ObservableProperty]
+    public partial double CommentCount { get; set; }
 
-    [ObservableProperty] private double _likeCount;
+    [ObservableProperty]
+    public partial double LikeCount { get; set; }
 
-    [ObservableProperty] private double _coinCount;
+    [ObservableProperty]
+    public partial double CoinCount { get; set; }
 
-    [ObservableProperty] private double _favoriteCount;
+    [ObservableProperty]
+    public partial double FavoriteCount { get; set; }
 
-    [ObservableProperty] private string _onlineCountText;
+    [ObservableProperty]
+    public partial string OnlineCountText { get; set; }
 
-    [ObservableProperty] private string _avId;
+    [ObservableProperty]
+    public partial string AvId { get; set; }
 
-    [ObservableProperty] private string _bvId;
+    [ObservableProperty]
+    public partial string BvId { get; set; }
 
-    [ObservableProperty] private bool _isLiked;
+    [ObservableProperty]
+    public partial bool IsLiked { get; set; }
 
-    [ObservableProperty] private bool _isCoined;
+    [ObservableProperty]
+    public partial bool IsCoined { get; set; }
 
-    [ObservableProperty] private bool _isFavorited;
+    [ObservableProperty]
+    public partial bool IsFavorited { get; set; }
 
-    [ObservableProperty] private bool _isCoinAlsoLike;
+    [ObservableProperty]
+    public partial bool IsCoinAlsoLike { get; set; }
 
-    [ObservableProperty] private bool _hasNextVideo;
+    [ObservableProperty]
+    public partial bool HasNextVideo { get; set; }
 
-    [ObservableProperty] private string _nextVideoTip;
+    [ObservableProperty]
+    public partial string NextVideoTip { get; set; }
 
-    [ObservableProperty] private bool _isPrivatePlay;
+    [ObservableProperty]
+    public partial bool IsPrivatePlay { get; set; }
 
-    [ObservableProperty] private bool _isInteractionVideo;
+    [ObservableProperty]
+    public partial bool IsInteractionVideo { get; set; }
 
-    [ObservableProperty] private VideoLoopType _currentLoop;
+    [ObservableProperty]
+    public partial VideoLoopType CurrentLoop { get; set; }
 
-    [ObservableProperty] private PlayerFormatItemViewModel? _selectedFormat;
+    [ObservableProperty]
+    public partial PlayerFormatItemViewModel? SelectedFormat { get; set; }
 
-    [ObservableProperty] private IPlayerSectionDetailViewModel? _selectedSection;
+    [ObservableProperty]
+    public partial IPlayerSectionDetailViewModel? SelectedSection { get; set; }
 
-    [ObservableProperty] private List<PlayerFormatItemViewModel>? _formats;
+    [ObservableProperty]
+    public partial List<PlayerFormatItemViewModel>? Formats { get; set; }
 
-    [ObservableProperty] private List<BiliTag>? _tags;
+    [ObservableProperty]
+    public partial List<BiliTag>? Tags { get; set; }
 
-    [ObservableProperty] private List<PlayerFavoriteFolderViewModel>? _favoriteFolders;
+    [ObservableProperty]
+    public partial List<PlayerFavoriteFolderViewModel>? FavoriteFolders { get; set; }
 
-    [ObservableProperty] private List<VideoLoopType> _loopTypes;
+    [ObservableProperty]
+    public partial List<VideoLoopType> LoopTypes { get; set; }
 
-    [ObservableProperty] private List<IPlayerSectionDetailViewModel>? _sections;
+    [ObservableProperty]
+    public partial List<IPlayerSectionDetailViewModel>? Sections { get; set; }
 
     /// <summary>
     /// 视图数据加载完成.

@@ -4,14 +4,12 @@ using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models.User;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.System;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
 /// <summary>
 /// 通知消息项视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMessage>
 {
     /// <summary>

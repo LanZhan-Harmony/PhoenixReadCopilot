@@ -18,10 +18,10 @@ public sealed partial class VideoPartitionPageViewModel
     private readonly Dictionary<Partition, VideoPartitionDetailViewModel> _partitionCache = new();
 
     [ObservableProperty]
-    private bool _isPartitionLoading;
+    public partial bool IsPartitionLoading { get; set; }
 
     [ObservableProperty]
-    private VideoPartitionDetailViewModel? _selectedPartition;
+    public partial VideoPartitionDetailViewModel? SelectedPartition { get; set; }
 
     /// <summary>
     /// 区块加载完成.

@@ -17,13 +17,13 @@ public sealed partial class FansPageViewModel
     private int _pageNumber;
 
     [ObservableProperty]
-    private bool _isUserLoading;
+    public partial bool IsUserLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private int _totalCount;
+    public partial int TotalCount { get; set; }
 
     /// <summary>
     /// 用户列表已完成更新.

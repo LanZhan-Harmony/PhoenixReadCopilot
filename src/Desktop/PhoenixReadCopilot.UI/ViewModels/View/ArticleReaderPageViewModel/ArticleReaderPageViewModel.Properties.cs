@@ -15,29 +15,41 @@ public sealed partial class ArticleReaderPageViewModel
     private readonly IArticleOperationService _operationService;
     private readonly ILogger<ArticleReaderPageViewModel> _logger;
 
-    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty]
+    public partial bool IsLoading { get; set; }
 
-    [ObservableProperty] private string _title;
+    [ObservableProperty]
+    public partial string Title { get; set; }
 
-    [ObservableProperty] private string? _author;
+    [ObservableProperty]
+    public partial string? Author { get; set; }
 
-    [ObservableProperty] private Uri? _avatar;
+    [ObservableProperty]
+    public partial Uri? Avatar { get; set; }
 
-    [ObservableProperty] private bool _isVip;
+    [ObservableProperty]
+    public partial bool IsVip { get; set; }
 
-    [ObservableProperty] private bool _isFollowed;
+    [ObservableProperty]
+    public partial bool IsFollowed { get; set; }
 
-    [ObservableProperty] private bool? _isLiked;
+    [ObservableProperty]
+    public partial bool? IsLiked { get; set; }
 
-    [ObservableProperty] private bool? _isFavorited;
+    [ObservableProperty]
+    public partial bool? IsFavorited { get; set; }
 
-    [ObservableProperty] private int _likeCount;
+    [ObservableProperty]
+    public partial int LikeCount { get; set; }
 
-    [ObservableProperty] private int _commentCount;
+    [ObservableProperty]
+    public partial int CommentCount { get; set; }
 
-    [ObservableProperty] private int _favoriteCount;
+    [ObservableProperty]
+    public partial int FavoriteCount { get; set; }
 
-    [ObservableProperty] private bool _isCommentsOpened;
+    [ObservableProperty]
+    public partial bool IsCommentsOpened { get; set; }
 
     /// <summary>
     /// 文章已加载.

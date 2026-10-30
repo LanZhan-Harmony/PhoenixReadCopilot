@@ -22,22 +22,22 @@ public sealed partial class VideoPartitionDetailViewModel
     private long _recommendOffset;
 
     [ObservableProperty]
-    private List<PartitionVideoSortType> _sortTypes;
+    public partial List<PartitionVideoSortType> SortTypes { get; set; }
 
     [ObservableProperty]
-    private List<PartitionViewModel> _children;
+    public partial List<PartitionViewModel> Children { get; set; }
 
     [ObservableProperty]
-    private PartitionVideoSortType _selectedSortType;
+    public partial PartitionVideoSortType SelectedSortType { get; set; }
 
     [ObservableProperty]
-    private bool _isRecommend;
+    public partial bool IsRecommend { get; set; }
 
     [ObservableProperty]
-    private bool _isVideoLoading;
+    public partial bool IsVideoLoading { get; set; }
 
     [ObservableProperty]
-    private PartitionViewModel _currentPartition;
+    public partial PartitionViewModel CurrentPartition { get; set; }
 
     /// <summary>
     /// 初始化完成.

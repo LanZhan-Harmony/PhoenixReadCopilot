@@ -22,28 +22,28 @@ public sealed partial class CommentMainViewModel
     private CommentItemViewModel? _replyItem;
 
     [ObservableProperty]
-    private CommentDetailViewModel? _topItem;
+    public partial CommentDetailViewModel? TopItem { get; set; }
 
     [ObservableProperty]
-    private CommentDetailViewModel? _selectedItem;
+    public partial CommentDetailViewModel? SelectedItem { get; set; }
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private List<CommentSortType> _sorts;
+    public partial List<CommentSortType> Sorts { get; set; }
 
     [ObservableProperty]
-    private CommentSortType _sortType;
+    public partial CommentSortType SortType { get; set; }
 
     [ObservableProperty]
-    private string _replyTarget;
+    public partial string ReplyTarget { get; set; }
 
     [ObservableProperty]
-    private bool _isReplying;
+    public partial bool IsReplying { get; set; }
 
     /// <summary>
     /// 已初始化.

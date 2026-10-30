@@ -50,58 +50,58 @@ public abstract partial class PlayerViewModelBase
     protected bool _isClosed;
 
     [ObservableProperty]
-    private bool _isPlayerInitializing;
+    public partial bool IsPlayerInitializing { get; set; }
 
     [ObservableProperty]
-    private bool _isPlayerDataLoading;
+    public partial bool IsPlayerDataLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isPaused = true;
+    public partial bool IsPaused { get; set; } = true;
 
     [ObservableProperty]
-    private bool _isFailed;
+    public partial bool IsFailed { get; set; }
 
     [ObservableProperty]
-    private int _position;
+    public partial int Position { get; set; }
 
     [ObservableProperty]
-    private int _duration;
+    public partial int Duration { get; set; }
 
     [ObservableProperty]
-    private int _volume;
+    public partial int Volume { get; set; }
 
     [ObservableProperty]
-    private double _speed;
+    public partial double Speed { get; set; }
 
     [ObservableProperty]
-    private double _maxSpeed;
+    public partial double MaxSpeed { get; set; }
 
     [ObservableProperty]
-    private double _speedStep;
+    public partial double SpeedStep { get; set; }
 
     [ObservableProperty]
-    private bool _isFullScreen;
+    public partial bool IsFullScreen { get; set; }
 
     [ObservableProperty]
-    private bool _isCompactOverlay;
+    public partial bool IsCompactOverlay { get; set; }
 
     [ObservableProperty]
-    private bool _isFullWindow;
+    public partial bool IsFullWindow { get; set; }
 
     [ObservableProperty]
-    private bool _isBuffering;
+    public partial bool IsBuffering { get; set; }
 
     [ObservableProperty]
-    private bool _isBottomProgressVisible;
+    public partial bool IsBottomProgressVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isSeparatorWindowPlayer;
+    public partial bool IsSeparatorWindowPlayer { get; set; }
 
     [ObservableProperty]
-    private Uri? _cover;
+    public partial Uri? Cover { get; set; }
 
     [ObservableProperty]
-    private bool _isDanmakuInputFocused;
+    public partial bool IsDanmakuInputFocused { get; set; }
 
     /// <summary>
     /// 播放数据加载完成.

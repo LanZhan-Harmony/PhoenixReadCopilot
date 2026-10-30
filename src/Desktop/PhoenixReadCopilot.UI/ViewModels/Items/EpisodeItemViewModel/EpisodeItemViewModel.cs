@@ -8,14 +8,12 @@ using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.System;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
 /// <summary>
 /// 单集条目视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformation>
 {
     /// <summary>

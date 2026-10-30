@@ -213,7 +213,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         }
         else if (Player is FFmpegPlayerViewModel fpvm)
         {
-            fpvm.InjectSegments(vSeg, aSeg);
+            fpvm.InjectSegments(vSeg, aSeg, Convert.ToInt32(_episode?.Duration ?? 0));
         }
 
         Danmaku.ClearAll();

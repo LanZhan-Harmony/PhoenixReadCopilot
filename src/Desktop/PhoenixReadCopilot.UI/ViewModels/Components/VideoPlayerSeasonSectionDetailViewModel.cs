@@ -20,13 +20,17 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel
     /// </summary>
     private readonly string _videoId;
 
-    [ObservableProperty] private List<VideoSeason> _seasons;
+    [ObservableProperty]
+    public partial List<VideoSeason> Seasons { get; set; }
 
-    [ObservableProperty] private List<VideoItemViewModel> _items;
+    [ObservableProperty]
+    public partial List<VideoItemViewModel> Items { get; set; }
 
-    [ObservableProperty] private VideoSeason _selectedSeason;
+    [ObservableProperty]
+    public partial VideoSeason SelectedSeason { get; set; }
 
-    [ObservableProperty] private VideoItemViewModel _selectedItem;
+    [ObservableProperty]
+    public partial VideoItemViewModel SelectedItem { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerSeasonSectionDetailViewModel"/> class.

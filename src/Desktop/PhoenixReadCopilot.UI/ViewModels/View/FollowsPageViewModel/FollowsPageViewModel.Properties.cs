@@ -18,16 +18,16 @@ public sealed partial class FollowsPageViewModel
     private readonly Dictionary<UserGroup, int> _offsetCache = new();
 
     [ObservableProperty]
-    private bool _isGroupLoading;
+    public partial bool IsGroupLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isUserLoading;
+    public partial bool IsUserLoading { get; set; }
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private UserGroup _selectedGroup;
+    public partial UserGroup SelectedGroup { get; set; }
 
     /// <summary>
     /// 分组加载完成.

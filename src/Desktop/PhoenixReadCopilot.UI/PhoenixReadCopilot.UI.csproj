@@ -11,11 +11,12 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
-    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <ImplicitUsings>enable</ImplicitUsings>
     <DefaultLanguage>zh-CN</DefaultLanguage>
-    <NoWarn>$(NoWarn);CS1591;NU1903;NU1902;IL2059;NU1900;MVVMTK0046;MVVMTK0045;MVVMTK0047;MVVMTK0048;AD0001;IL3000;IL2072;IL2075;IL2091;IL3050;IL2026</NoWarn>
-    <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <AllowUnsafe>True</AllowUnsafe>
+    <IsAotCompatible>true</IsAotCompatible>
+    <LangVersion>preview</LangVersion>
+    <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
   </PropertyGroup>
 
   <ItemGroup>
@@ -112,30 +113,6 @@
   -->
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>$(DefineConstants);LOCAL_DEV</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DefineConstants>$(DefineConstants);LOCAL_DEV</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x86'">
-    <DefineConstants>$(DefineConstants);ARCH_X86</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x64'">
-    <DefineConstants>$(DefineConstants);ARCH_X64</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
-    <DefineConstants>$(DefineConstants);ARCH_ARM64</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x86'">
-    <Optimize>True</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
-    <Optimize>True</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|ARM64'">
-    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <!-- Publish Properties -->

@@ -16,14 +16,12 @@ using Richasy.WinUIKernel.Share.Base;
 using Richasy.WinUIKernel.Share.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
 /// <summary>
 /// 动态条目视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformation>
 {
     /// <summary>

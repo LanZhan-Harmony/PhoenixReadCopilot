@@ -22,16 +22,16 @@ public sealed partial class VideoSearchSectionDetailViewModel
     private bool _isPreventLoadMore;
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private ComprehensiveSearchSortType _sort;
+    public partial ComprehensiveSearchSortType Sort { get; set; }
 
     [ObservableProperty]
-    private List<ComprehensiveSearchSortType> _sorts;
+    public partial List<ComprehensiveSearchSortType> Sorts { get; set; }
 
     /// <summary>
     /// 列表已完成更新.
