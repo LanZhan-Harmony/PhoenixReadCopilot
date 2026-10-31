@@ -51,13 +51,14 @@
                                    FontSize="10"
                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                    Symbol="Tag"/>
-                    <base:TrimTextBlock Grid.Column="1"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        FontSize="12"
-                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                        MaxLines="1"
-                                        Text="{x:Bind ViewModel.TagName}"/>
+                    <TextBlock Grid.Column="1"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                               MaxLines="1"
+                               Text="{x:Bind ViewModel.TagName}"
+                               TextTrimming="CharacterEllipsis"/>
                 </Grid>
 
                 <base:IconTextBlock Grid.Column="1"

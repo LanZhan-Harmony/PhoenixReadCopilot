@@ -2,8 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -11,6 +9,8 @@ using Windows.Storage.Streams;
 using Windows.System.UserProfile;
 using WinRT.Interop;
 using WinUIEx;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -25,10 +25,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
     public GalleryPageViewModel(BiliImage image, List<BiliImage>? images = default)
     {
         SelectedImage = image;
-        Images = images ?? new List<BiliImage>
-        {
-            image
-        };
+        Images = images ?? new List<BiliImage> { image };
         IsGroup = Images?.Count > 1;
         IsMenuHide = false;
     }

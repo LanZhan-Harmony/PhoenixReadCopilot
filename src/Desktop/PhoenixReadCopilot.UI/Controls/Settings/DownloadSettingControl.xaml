@@ -1,66 +1,56 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:SettingsPageControlBase
-    x:Class="PhoenixReadCopilot.UI.Controls.Settings.DownloadSettingControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:WinUIKernel.Share.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
-    xmlns:ic="using:FluentIcons.WinUI"
-    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<local:SettingsPageControlBase x:Class="PhoenixReadCopilot.UI.Controls.Settings.DownloadSettingControl"
+                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                               xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                               xmlns:ic="using:FluentIcons.WinUI"
+                               xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
+                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                               xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
+                               mc:Ignorable="d">
 
-    <base:SettingsExpander Description="{x:Bind strings:Resources.DownloadSettingDescription}"
-            Header="{x:Bind strings:Resources.DownloadSetting}">
-        <base:SettingsExpander.HeaderIcon>
+    <community:SettingsExpander Description="{x:Bind strings:Resources.DownloadSettingDescription}" Header="{x:Bind strings:Resources.DownloadSetting}">
+        <community:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="ArrowDownload"/>
-        </base:SettingsExpander.HeaderIcon>
-        <base:SettingsExpander.Items>
-            <base:SettingsCard Description="{x:Bind ViewModel.DefaultDownloadPath, Mode=OneWay}"
-                    Header="{x:Bind strings:Resources.DefaultDownloadFolder}">
-                <StackPanel Orientation="Horizontal"
-                        Spacing="8">
-                    <Button
-                        MinWidth="120"
-                        VerticalAlignment="Center"
-                        Command="{x:Bind ViewModel.ChooseDownloadFolderCommand, Mode=OneWay}"
-                        Content="{x:Bind strings:Resources.ChooseDownloadFolder}"/>
-                    <Button
-                        VerticalAlignment="Center"
-                        Command="{x:Bind ViewModel.OpenDownloadFolderCommand}"
-                        Style="{StaticResource IconButtonStyle}"
-                        ToolTipService.ToolTip="{x:Bind strings:Resources.OpenFolder}">
-                        <ic:SymbolIcon FontSize="14"
-                                Symbol="FolderOpen"/>
+        </community:SettingsExpander.HeaderIcon>
+        <community:SettingsExpander.Items>
+            <community:SettingsCard Description="{x:Bind ViewModel.DefaultDownloadPath, Mode=OneWay}" Header="{x:Bind strings:Resources.DefaultDownloadFolder}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button MinWidth="120"
+                            VerticalAlignment="Center"
+                            Command="{x:Bind ViewModel.ChooseDownloadFolderCommand, Mode=OneWay}"
+                            Content="{x:Bind strings:Resources.ChooseDownloadFolder}"/>
+                    <Button VerticalAlignment="Center"
+                            Command="{x:Bind ViewModel.OpenDownloadFolderCommand}"
+                            Style="{StaticResource IconButtonStyle}"
+                            ToolTipService.ToolTip="{x:Bind strings:Resources.OpenFolder}">
+                        <ic:SymbolIcon FontSize="14" Symbol="FolderOpen"/>
                     </Button>
                 </StackPanel>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.DownloadWithDanmaku}">
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.DownloadWithDanmaku}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.DownloadWithDanmaku, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.SkipAISubtitle}">
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.SkipAISubtitle}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.FilterAISubtitle, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.OpenFolderWhenDownloaded}">
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.OpenFolderWhenDownloaded}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.OpenFolderAfterDownload, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Description="{x:Bind strings:Resources.UseExternalBBDownDescription}"
-                    Header="{x:Bind strings:Resources.UseExternalBBDown}">
+            </community:SettingsCard>
+            <community:SettingsCard Description="{x:Bind strings:Resources.UseExternalBBDownDescription}" Header="{x:Bind strings:Resources.UseExternalBBDown}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.UseExternalBBDown, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard
-                Description="{x:Bind strings:Resources.CopyCommandWhenDownloadDescription}"
-                Header="{x:Bind strings:Resources.CopyCommandWhenDownload}"
-                IsEnabled="{x:Bind ViewModel.UseExternalBBDown, Mode=OneWay}">
+            </community:SettingsCard>
+            <community:SettingsCard Description="{x:Bind strings:Resources.CopyCommandWhenDownloadDescription}"
+                                    Header="{x:Bind strings:Resources.CopyCommandWhenDownload}"
+                                    IsEnabled="{x:Bind ViewModel.UseExternalBBDown, Mode=OneWay}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.OnlyCopyCommandWhenDownload, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard
-                Description="{x:Bind strings:Resources.GenCommandWithoutCredentialDescription}"
-                Header="{x:Bind strings:Resources.GenCommandWithoutCredential}"
-                IsEnabled="{x:Bind ViewModel.UseExternalBBDown, Mode=OneWay}">
+            </community:SettingsCard>
+            <community:SettingsCard Description="{x:Bind strings:Resources.GenCommandWithoutCredentialDescription}"
+                                    Header="{x:Bind strings:Resources.GenCommandWithoutCredential}"
+                                    IsEnabled="{x:Bind ViewModel.UseExternalBBDown, Mode=OneWay}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.WithoutCredentialWhenGenDownloadCommand, Mode=TwoWay}"/>
-            </base:SettingsCard>
-        </base:SettingsExpander.Items>
-    </base:SettingsExpander>
+            </community:SettingsCard>
+        </community:SettingsExpander.Items>
+    </community:SettingsExpander>
 </local:SettingsPageControlBase>

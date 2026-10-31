@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models.Constants;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;

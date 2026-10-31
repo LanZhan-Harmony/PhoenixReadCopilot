@@ -16,9 +16,12 @@ public sealed partial class BoolToIconVariantConverter : IValueConverter
         }
 
         var isFilled = (bool)value;
-        return isFilled ? FluentIcons.Common.IconVariant.Filled : FluentIcons.Common.IconVariant.Regular;
+        return isFilled
+            ? FluentIcons.Common.IconVariant.Filled
+            : FluentIcons.Common.IconVariant.Regular;
     }
 
     /// <inheritdoc/>
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

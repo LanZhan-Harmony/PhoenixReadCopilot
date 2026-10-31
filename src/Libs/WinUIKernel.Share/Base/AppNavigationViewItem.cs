@@ -12,14 +12,22 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
     /// <summary>
     /// <see cref="Symbol"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SymbolProperty =
-        DependencyProperty.Register(nameof(Symbol), typeof(FluentIcons.Common.Symbol), typeof(AppNavigationViewItem), new PropertyMetadata(default));
+    public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
+        nameof(Symbol),
+        typeof(FluentIcons.Common.Symbol),
+        typeof(AppNavigationViewItem),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="ShowUnread"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ShowUnreadProperty =
-        DependencyProperty.Register(nameof(ShowUnread), typeof(bool), typeof(AppNavigationViewItem), new PropertyMetadata(default));
+    public static readonly DependencyProperty ShowUnreadProperty = DependencyProperty.Register(
+        nameof(ShowUnread),
+        typeof(bool),
+        typeof(AppNavigationViewItem),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppNavigationViewItem"/> class.
@@ -56,8 +64,12 @@ public sealed partial class AppNavigationViewItemPresenter : NavigationViewItemP
     /// <summary>
     /// <see cref="Symbol"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SymbolProperty =
-        DependencyProperty.Register(nameof(Symbol), typeof(FluentIcons.Common.Symbol), typeof(AppNavigationViewItemPresenter), new PropertyMetadata(default));
+    public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
+        nameof(Symbol),
+        typeof(FluentIcons.Common.Symbol),
+        typeof(AppNavigationViewItemPresenter),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppNavigationViewItemPresenter"/> class.

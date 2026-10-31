@@ -1,8 +1,8 @@
+using System.Collections;
+using System.Collections.Specialized;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
-using System.Collections;
-using System.Collections.Specialized;
 using Windows.Foundation;
 
 namespace WinUIKernel.Share.Extensions;
@@ -12,7 +12,10 @@ namespace WinUIKernel.Share.Extensions;
 /// </summary>
 public static partial class ItemsRepeaterExtension
 {
-    private sealed partial class CollectionConnector : IReadOnlyList<object?>, INotifyCollectionChanged, ISupportIncrementalLoading
+    private sealed partial class CollectionConnector
+        : IReadOnlyList<object?>,
+            INotifyCollectionChanged,
+            ISupportIncrementalLoading
     {
         private readonly WeakReference<ItemsRepeater> _itemsRepeaterReference;
 
@@ -55,7 +58,10 @@ public static partial class ItemsRepeaterExtension
         /// <summary>
         /// The target ItemsRepeater.
         /// </summary>
-        public ItemsRepeater? ItemsRepeater => _itemsRepeaterReference?.TryGetTarget(out var itemsRepeater) is true ? itemsRepeater : null;
+        public ItemsRepeater? ItemsRepeater =>
+            _itemsRepeaterReference?.TryGetTarget(out var itemsRepeater) is true
+                ? itemsRepeater
+                : null;
 
         /// <inheritdoc/>
         public int Count => Source?.Count ?? 0;
@@ -89,7 +95,10 @@ public static partial class ItemsRepeaterExtension
         /// </summary>
         public void ConnectSource()
         {
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            CollectionChanged?.Invoke(
+                this,
+                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset)
+            );
             if (Source is INotifyCollectionChanged notifyCollection)
             {
                 notifyCollection.CollectionChanged -= OnSourceCollectionChanged;
@@ -109,12 +118,12 @@ public static partial class ItemsRepeaterExtension
         }
 
         /// <inheritdoc/>
-        public IEnumerator<object> GetEnumerator()
-            => (Source as IEnumerable<object> ?? []).GetEnumerator();
+        public IEnumerator<object> GetEnumerator() =>
+            (Source as IEnumerable<object> ?? []).GetEnumerator();
 
         /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator()
-            => (Source ?? Enumerable.Empty<object>() as IEnumerable).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() =>
+            (Source ?? Enumerable.Empty<object>() as IEnumerable).GetEnumerator();
 
         /// <inheritdoc/>
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
@@ -136,16 +145,16 @@ public static partial class ItemsRepeaterExtension
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    public static IList? GetSafeItemsSource(ItemsRepeater obj)
-        => (IList?)obj.GetValue(SafeItemsSourceProperty);
+    public static IList? GetSafeItemsSource(ItemsRepeater obj) =>
+        (IList?)obj.GetValue(SafeItemsSourceProperty);
 
     /// <summary>
     /// Sets the SafeItemsSource property. SafeItemsSource is used to replace ItemsSource to avoid a memory leak issue in ItemRepeater.
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="value"></param>
-    public static void SetSafeItemsSource(ItemsRepeater obj, IList? value)
-        => obj.SetValue(SafeItemsSourceProperty, value);
+    public static void SetSafeItemsSource(ItemsRepeater obj, IList? value) =>
+        obj.SetValue(SafeItemsSourceProperty, value);
 
     /// <summary>
     /// SafeItemsSource is used to replace ItemsSource to avoid a memory leak issue in ItemRepeater.
@@ -155,9 +164,13 @@ public static partial class ItemsRepeaterExtension
             "SafeItemsSource",
             typeof(IList),
             typeof(ItemsRepeaterExtension),
-            new PropertyMetadata(null, OnSafeItemsSourceChanged));
+            new PropertyMetadata(null, OnSafeItemsSourceChanged)
+        );
 
-    private static void OnSafeItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnSafeItemsSourceChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var itemsRepeater = (ItemsRepeater)d;
         // If the ItemsRepeater's ItemsSource is already a CollectionConnector, we can reuse it.

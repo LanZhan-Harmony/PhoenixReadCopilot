@@ -44,5 +44,6 @@ public sealed partial class ItemContentPresenterData : ObservableObject
     /// <summary>
     /// Returns the template to use for the specified content.
     /// </summary>
-    public DataTemplate SelectTemplate(object content) => ContentTemplateSelector?.SelectTemplate(content) ?? ContentTemplate;
+    public DataTemplate SelectTemplate(object content) =>
+        ContentTemplateSelector?.SelectTemplate(content) ?? ContentTemplate;
 }

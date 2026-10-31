@@ -20,7 +20,8 @@ public partial class ImageExBase
 
         return await Task.Run(() =>
         {
-            return Directory.GetFiles(cacheFolder.Path, "*.*", SearchOption.TopDirectoryOnly)
+            return Directory
+                .GetFiles(cacheFolder.Path, "*.*", SearchOption.TopDirectoryOnly)
                 .Sum(file => new FileInfo(file).Length);
         });
     }
@@ -90,7 +91,12 @@ public partial class ImageExBase
     /// <param name="cacheSubFolder">缓存子文件夹名称（可选，用于线程安全传递）.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task WriteCacheAsync(string key, byte[] data, string? cacheSubFolder = null, CancellationToken cancellationToken = default)
+    public async Task WriteCacheAsync(
+        string key,
+        byte[] data,
+        string? cacheSubFolder = null,
+        CancellationToken cancellationToken = default
+    )
     {
         if (string.IsNullOrEmpty(key) || data == null || data.Length == 0)
         {
@@ -100,7 +106,7 @@ public partial class ImageExBase
         var cacheFolder = await GetCacheFolderAsync(cacheSubFolder);
         var cacheFileName = GetCacheFileName(key);
         var cacheFilePath = Path.Combine(cacheFolder.Path, cacheFileName);
-        
+
         // Write the data to the file
         await File.WriteAllBytesAsync(cacheFilePath, data, cancellationToken);
     }
@@ -109,7 +115,9 @@ public partial class ImageExBase
     {
         key = NormalizeKey(key);
         using var md5 = System.Security.Cryptography.MD5.Create();
-        var hash = Convert.ToHexStringLower(md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(key)));
+        var hash = Convert.ToHexStringLower(
+            md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(key))
+        );
         return hash;
     }
 
@@ -129,8 +137,10 @@ public partial class ImageExBase
             if (!string.IsNullOrEmpty(uri.Query))
             {
                 var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                var sortedQuery = string.Join("&", queryParams.AllKeys.OrderBy(k => k)
-                    .Select(k => $"{k}={queryParams[k]}"));
+                var sortedQuery = string.Join(
+                    "&",
+                    queryParams.AllKeys.OrderBy(k => k).Select(k => $"{k}={queryParams[k]}")
+                );
                 normalizedUrl = $"{uri.GetLeftPart(UriPartial.Path)}?{sortedQuery}";
             }
 
@@ -142,13 +152,21 @@ public partial class ImageExBase
 
     private async Task<StorageFolder> GetCacheFolderAsync(string? cacheSubFolder = null)
     {
-        var cacheFolder = await Microsoft.Windows.Storage.ApplicationData.GetDefault().LocalCacheFolder.CreateFolderAsync(CacheFolderName, CreationCollisionOption.OpenIfExists);
+        var cacheFolder = await Microsoft
+            .Windows.Storage.ApplicationData.GetDefault()
+            .LocalCacheFolder.CreateFolderAsync(
+                CacheFolderName,
+                CreationCollisionOption.OpenIfExists
+            );
 
         // 优先使用传入的参数，如果没有则调用虚方法（仅在 UI 线程安全）
         var subFolder = cacheSubFolder ?? GetCacheSubFolder();
         if (!string.IsNullOrEmpty(subFolder))
         {
-            cacheFolder = await cacheFolder.CreateFolderAsync(subFolder, CreationCollisionOption.OpenIfExists);
+            cacheFolder = await cacheFolder.CreateFolderAsync(
+                subFolder,
+                CreationCollisionOption.OpenIfExists
+            );
         }
 
         return cacheFolder;

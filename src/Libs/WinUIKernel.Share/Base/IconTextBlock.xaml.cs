@@ -11,20 +11,32 @@ public sealed partial class IconTextBlock : LayoutUserControlBase
     /// <summary>
     /// <see cref="Symbol"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SymbolProperty =
-        DependencyProperty.Register(nameof(Symbol), typeof(FluentIcons.Common.Symbol), typeof(IconTextBlock), new PropertyMetadata(default));
+    public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
+        nameof(Symbol),
+        typeof(FluentIcons.Common.Symbol),
+        typeof(IconTextBlock),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(IconTextBlock), new PropertyMetadata(default));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(IconTextBlock),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="IconBrush"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IconBrushProperty =
-        DependencyProperty.Register(nameof(IconBrush), typeof(Brush), typeof(IconTextBlock), new PropertyMetadata(default));
+    public static readonly DependencyProperty IconBrushProperty = DependencyProperty.Register(
+        nameof(IconBrush),
+        typeof(Brush),
+        typeof(IconTextBlock),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IconTextBlock"/> class.

@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
@@ -93,11 +94,7 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
             foreach (var item in ViewModel.Children)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = item.Title ?? default,
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = item.Title ?? default, Tag = item }
                 );
             }
         }

@@ -1,8 +1,8 @@
+using System.Runtime.CompilerServices;
 using Microsoft.Graphics.Canvas;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using System.Runtime.CompilerServices;
 using Windows.Foundation;
 
 namespace WinUIKernel.Share.Base;
@@ -12,7 +12,7 @@ namespace WinUIKernel.Share.Base;
 /// </summary>
 public abstract partial class ImageExBase : LayoutControlBase, IDisposable
 {
-    private static readonly System.Net.Http.HttpClient _httpClient = CreateHttpClientIgnoringCertificateErrors();
+    private static readonly HttpClient _httpClient = CreateHttpClientIgnoringCertificateErrors();
     private static readonly ConditionalWeakTable<ImageExBase, object?> _allInstances = new();
     private Uri? _lastUri;
     private static readonly ConditionalWeakTable<CanvasDevice, StrongBox<int>> LostDevicesMap = [];
@@ -55,12 +55,19 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         var sourceAspectRatio = sourceRect.Width / sourceRect.Height;
 
         double scaleFactor;
-        double scaledWidth, scaledHeight;
+        double scaledWidth,
+            scaledHeight;
 
-        if (targetRect.Width - sourceRect.Width > 0.1 && targetRect.Height - sourceRect.Height > 0.1)
+        if (
+            targetRect.Width - sourceRect.Width > 0.1
+            && targetRect.Height - sourceRect.Height > 0.1
+        )
         {
             // targetRect is larger than sourceRect in both dimensions
-            scaleFactor = Math.Max(targetRect.Width / sourceRect.Width, targetRect.Height / sourceRect.Height);
+            scaleFactor = Math.Max(
+                targetRect.Width / sourceRect.Width,
+                targetRect.Height / sourceRect.Height
+            );
             scaledWidth = sourceRect.Width * scaleFactor;
             scaledHeight = sourceRect.Height * scaleFactor;
 
@@ -117,9 +124,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
     /// <summary>
     /// 更新占位符图片.
     /// </summary>
-    protected virtual void UpdateHolderImage()
-    {
-    }
+    protected virtual void UpdateHolderImage() { }
 
     /// <summary>
     /// 获取 <see cref="HttpClient"/> 实例.
@@ -142,7 +147,9 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
-        var rootBorder = GetTemplateChild("Root") as Panel ?? throw new InvalidOperationException("TemplateRoot not found.");
+        var rootBorder =
+            GetTemplateChild("Root") as Panel
+            ?? throw new InvalidOperationException("TemplateRoot not found.");
         if (rootBorder.Background is ImageBrush brush)
         {
             _backgroundBrush = brush;
@@ -201,7 +208,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
             // AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate, // 如需压缩
         };
 
-        return new System.Net.Http.HttpClient(clientHandler)
+        return new HttpClient(clientHandler)
         {
             Timeout = TimeSpan.FromSeconds(30), // 设置超时时间
             // 🚀 设置默认请求头，避免每次请求都设置
@@ -209,7 +216,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
             {
                 { "User-Agent", "WinUIKernel/1.0" },
                 { "Accept", "image/*" },
-            }
+            },
         };
     }
 
@@ -233,8 +240,8 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         return (_currentRequestId, _cancellationTokenSource!.Token);
     }
 
-    private bool IsCurrentRequest(long requestId)
-        => Interlocked.Read(ref _currentRequestId) == requestId;
+    private bool IsCurrentRequest(long requestId) =>
+        Interlocked.Read(ref _currentRequestId) == requestId;
 
     /// <summary>
     /// 全局取消所有 ImageExBase 实例的图片加载请求.
@@ -261,7 +268,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         foreach (var kvp in _allInstances)
         {
             var instance = kvp.Key;
-            
+
             // 应用筛选条件
             if (predicate is not null && !predicate(instance))
             {
@@ -286,7 +293,9 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         }
 
 #if DEBUG
-        System.Diagnostics.Debug.WriteLine($"[ImageEx] 全局取消了 {count} 个实例的图片加载，其中 {markedCount} 个被标记为待恢复");
+        System.Diagnostics.Debug.WriteLine(
+            $"[ImageEx] 全局取消了 {count} 个实例的图片加载，其中 {markedCount} 个被标记为待恢复"
+        );
 #endif
     }
 
@@ -338,17 +347,15 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         System.Diagnostics.Debug.WriteLine($"[ImageEx] 恢复了 {count} 个实例的图片加载");
         if (totalCancelled > count)
         {
-            System.Diagnostics.Debug.WriteLine($"[ImageEx] 跳过 {totalCancelled - count} 个实例：未加载={notLoaded}, 无Source={noSource}");
+            System.Diagnostics.Debug.WriteLine(
+                $"[ImageEx] 跳过 {totalCancelled - count} 个实例：未加载={notLoaded}, 无Source={noSource}"
+            );
         }
 #endif
     }
 
     /// <inheritdoc/>
-#pragma warning disable CA1063 // Implement IDisposable Correctly
-#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
     public void Dispose()
-#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
-#pragma warning restore CA1063 // Implement IDisposable Correctly
     {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();

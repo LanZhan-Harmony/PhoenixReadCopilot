@@ -14,20 +14,36 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
     /// <summary>
     /// <see cref="Direction"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty DirectionProperty =
-        DependencyProperty.Register(nameof(Direction), typeof(VisibilityToggleButtonDirection), typeof(VisibilityToggleButton), new PropertyMetadata(VisibilityToggleButtonDirection.LeftToRightVisible, new PropertyChangedCallback(OnDirectionChanged)));
+    public static readonly DependencyProperty DirectionProperty = DependencyProperty.Register(
+        nameof(Direction),
+        typeof(VisibilityToggleButtonDirection),
+        typeof(VisibilityToggleButton),
+        new PropertyMetadata(
+            VisibilityToggleButtonDirection.LeftToRightVisible,
+            new PropertyChangedCallback(OnDirectionChanged)
+        )
+    );
 
     /// <summary>
     /// <see cref="IsHide"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsHideProperty =
-        DependencyProperty.Register(nameof(IsHide), typeof(bool), typeof(VisibilityToggleButton), new PropertyMetadata(default, new PropertyChangedCallback(OnIsHideChanged)));
+    public static readonly DependencyProperty IsHideProperty = DependencyProperty.Register(
+        nameof(IsHide),
+        typeof(bool),
+        typeof(VisibilityToggleButton),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnIsHideChanged))
+    );
 
     /// <summary>
     /// <see cref="AlwaysShowWhenCollapsed"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty AlwaysShowWhenCollapsedProperty =
-        DependencyProperty.Register(nameof(AlwaysShowWhenCollapsed), typeof(bool), typeof(VisibilityToggleButton), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(AlwaysShowWhenCollapsed),
+            typeof(bool),
+            typeof(VisibilityToggleButton),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VisibilityToggleButton"/> class.
@@ -77,24 +93,19 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
     public string HideTip { get; set; }
 
     /// <inheritdoc/>
-    protected override void OnPointerEntered(PointerRoutedEventArgs e)
-        => ShowButton();
+    protected override void OnPointerEntered(PointerRoutedEventArgs e) => ShowButton();
 
     /// <inheritdoc/>
-    protected override void OnPointerMoved(PointerRoutedEventArgs e)
-        => ShowButton();
+    protected override void OnPointerMoved(PointerRoutedEventArgs e) => ShowButton();
 
     /// <inheritdoc/>
-    protected override void OnPointerExited(PointerRoutedEventArgs e)
-        => HideButton();
+    protected override void OnPointerExited(PointerRoutedEventArgs e) => HideButton();
 
     /// <inheritdoc/>
-    protected override void OnPointerCanceled(PointerRoutedEventArgs e)
-        => HideButton();
+    protected override void OnPointerCanceled(PointerRoutedEventArgs e) => HideButton();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => CheckButtonStates();
+    protected override void OnControlLoaded() => CheckButtonStates();
 
     private static void OnIsHideChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -111,8 +122,12 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
     private void CheckButtonStates()
     {
         Icon.Symbol = IsHide
-            ? Direction == VisibilityToggleButtonDirection.LeftToRightVisible ? FluentIcons.Common.Symbol.ChevronRight : FluentIcons.Common.Symbol.ChevronLeft
-            : Direction == VisibilityToggleButtonDirection.LeftToRightVisible ? FluentIcons.Common.Symbol.ChevronLeft : FluentIcons.Common.Symbol.ChevronRight;
+            ? Direction == VisibilityToggleButtonDirection.LeftToRightVisible
+                ? FluentIcons.Common.Symbol.ChevronRight
+                : FluentIcons.Common.Symbol.ChevronLeft
+            : Direction == VisibilityToggleButtonDirection.LeftToRightVisible
+                ? FluentIcons.Common.Symbol.ChevronLeft
+                : FluentIcons.Common.Symbol.ChevronRight;
         var tip = IsHide ? HideTip : ShowTip;
         ToolTipService.SetToolTip(Btn, tip);
         AutomationProperties.SetName(Btn, tip);
@@ -121,8 +136,10 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
         if (container is not null)
         {
             container.Margin = IsHide
-            ? Direction == VisibilityToggleButtonDirection.LeftToRightVisible ? new Thickness(-4, 0, 0, 0) : new Thickness(0, 0, -4, 0)
-            : new Thickness(0);
+                ? Direction == VisibilityToggleButtonDirection.LeftToRightVisible
+                    ? new Thickness(-4, 0, 0, 0)
+                    : new Thickness(0, 0, -4, 0)
+                : new Thickness(0);
 
             HideButton();
         }

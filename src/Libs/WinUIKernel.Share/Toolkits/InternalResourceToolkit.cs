@@ -16,13 +16,16 @@ internal sealed class InternalResourceToolkit : IResourceToolkit
     {
         if (_resourceLoader == null)
         {
-            _resourceLoader = new ResourceLoader(ResourceLoader.GetDefaultResourceFilePath(), "WinUIKernel.Share");
+            _resourceLoader = new ResourceLoader(
+                ResourceLoader.GetDefaultResourceFilePath(),
+                "WinUIKernel.Share"
+            );
         }
 
         return _resourceLoader.GetString($"Resources/{stringName}");
     }
 
     /// <inheritdoc/>
-    public Brush GetThemeBrush(string brushName)
-        => (Application.Current.Resources[brushName] as Brush)!;
+    public Brush GetThemeBrush(string brushName) =>
+        (Application.Current.Resources[brushName] as Brush)!;
 }

@@ -67,7 +67,14 @@ public sealed partial class AppTitleBar
 
     private void UpdateHeight()
     {
-        var stateName = CenterContent is null && Content is null && LeftEdgeElement is null && Header is null && Footer is null ? CompactHeightVisualStateName : ExpandedHeightVisualStateName;
+        var stateName =
+            CenterContent is null
+            && Content is null
+            && LeftEdgeElement is null
+            && Header is null
+            && Footer is null
+                ? CompactHeightVisualStateName
+                : ExpandedHeightVisualStateName;
         VisualStateManager.GoToState(this, stateName, false);
     }
 
@@ -83,9 +90,17 @@ public sealed partial class AppTitleBar
             var appWindow = AppWindow.GetFromWindowId(appWindowId);
             var titleBar = appWindow.TitleBar;
             var scale = XamlRoot!.RasterizationScale;
-            System.Diagnostics.Debug.WriteLine($"TitleBar LeftInset: {titleBar.LeftInset}, RightInset: {titleBar.RightInset}, Scale: {scale}");
-            _leftPaddingColumn?.Width = new GridLength(titleBar.LeftInset / scale, GridUnitType.Pixel);
-            _rightPaddingColumn?.Width = new GridLength(titleBar.RightInset / scale, GridUnitType.Pixel);
+            System.Diagnostics.Debug.WriteLine(
+                $"TitleBar LeftInset: {titleBar.LeftInset}, RightInset: {titleBar.RightInset}, Scale: {scale}"
+            );
+            _leftPaddingColumn?.Width = new GridLength(
+                titleBar.LeftInset / scale,
+                GridUnitType.Pixel
+            );
+            _rightPaddingColumn?.Width = new GridLength(
+                titleBar.RightInset / scale,
+                GridUnitType.Pixel
+            );
         }
     }
 
@@ -101,11 +116,16 @@ public sealed partial class AppTitleBar
             titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
             if (ActualTheme != ElementTheme.Default)
             {
-                titleBar.ButtonHoverBackgroundColor = ActualTheme == ElementTheme.Light ? Colors.LightGray : Colors.Black;
-                titleBar.ButtonForegroundColor = ActualTheme == ElementTheme.Light ? Colors.Black : Colors.White;
-                titleBar.ButtonHoverForegroundColor = ActualTheme == ElementTheme.Light ? Colors.Black : Colors.White;
-                titleBar.ButtonPressedForegroundColor = ActualTheme == ElementTheme.Light ? Colors.Black : Colors.White;
-                titleBar.ButtonInactiveForegroundColor = ActualTheme == ElementTheme.Light ? Colors.Gray : Colors.LightGray;
+                titleBar.ButtonHoverBackgroundColor =
+                    ActualTheme == ElementTheme.Light ? Colors.LightGray : Colors.Black;
+                titleBar.ButtonForegroundColor =
+                    ActualTheme == ElementTheme.Light ? Colors.Black : Colors.White;
+                titleBar.ButtonHoverForegroundColor =
+                    ActualTheme == ElementTheme.Light ? Colors.Black : Colors.White;
+                titleBar.ButtonPressedForegroundColor =
+                    ActualTheme == ElementTheme.Light ? Colors.Black : Colors.White;
+                titleBar.ButtonInactiveForegroundColor =
+                    ActualTheme == ElementTheme.Light ? Colors.Gray : Colors.LightGray;
             }
             else
             {
@@ -166,7 +186,8 @@ public sealed partial class AppTitleBar
         }
         else
         {
-            _leftEdgeArea ??= GetTemplateChild(LeftEdgeContentPresenterPartName) as FrameworkElement;
+            _leftEdgeArea ??=
+                GetTemplateChild(LeftEdgeContentPresenterPartName) as FrameworkElement;
             VisualStateManager.GoToState(this, LeftEdgeVisibleVisualStateName, false);
         }
 
@@ -242,7 +263,10 @@ public sealed partial class AppTitleBar
             nonClientPointerSource.ClearRegionRects(NonClientRegionKind.Passthrough);
             if (Visibility == Visibility.Collapsed)
             {
-                nonClientPointerSource.SetRegionRects(NonClientRegionKind.Passthrough, [new(0, 0, (int)ActualWidth, (int)ActualHeight)]);
+                nonClientPointerSource.SetRegionRects(
+                    NonClientRegionKind.Passthrough,
+                    [new(0, 0, (int)ActualWidth, (int)ActualHeight)]
+                );
             }
             else if (_interactableElementList.Count > 0)
             {
@@ -250,7 +274,8 @@ public sealed partial class AppTitleBar
                 foreach (var element in _interactableElementList)
                 {
                     var transformBounds = element.TransformToVisual(this);
-                    var width = element.Visibility == Visibility.Collapsed ? 0d : element.ActualWidth;
+                    var width =
+                        element.Visibility == Visibility.Collapsed ? 0d : element.ActualWidth;
                     var height = element.ActualHeight;
                     var bounds = transformBounds.TransformBounds(new Rect(0, 0, width, height));
 
@@ -264,11 +289,15 @@ public sealed partial class AppTitleBar
                         Convert.ToInt32(bounds.X * scale),
                         Convert.ToInt32(bounds.Y * scale),
                         Convert.ToInt32(bounds.Width * scale),
-                        Convert.ToInt32(bounds.Height * scale));
+                        Convert.ToInt32(bounds.Height * scale)
+                    );
                     passthroughRects.Add(transparentRect);
                 }
 
-                nonClientPointerSource.SetRegionRects(NonClientRegionKind.Passthrough, passthroughRects.ToArray());
+                nonClientPointerSource.SetRegionRects(
+                    NonClientRegionKind.Passthrough,
+                    passthroughRects.ToArray()
+                );
             }
         }
     }

@@ -6,9 +6,9 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.Media;
+using Windows.ApplicationModel.DataTransfer;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
-using Windows.ApplicationModel.DataTransfer;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 

@@ -1,8 +1,9 @@
+using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using WinUIKernel.Share.Base;
 using Windows.System;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Pages;
 

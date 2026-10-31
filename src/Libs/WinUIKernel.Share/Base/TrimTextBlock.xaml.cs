@@ -11,26 +11,43 @@ public sealed partial class TrimTextBlock : UserControl
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(TrimTextBlock), new PropertyMetadata(default));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(TrimTextBlock),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="MaxLines"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty MaxLinesProperty =
-        DependencyProperty.Register(nameof(MaxLines), typeof(int), typeof(TrimTextBlock), new PropertyMetadata(99, OnMaxLinesChanged));
+    public static readonly DependencyProperty MaxLinesProperty = DependencyProperty.Register(
+        nameof(MaxLines),
+        typeof(int),
+        typeof(TrimTextBlock),
+        new PropertyMetadata(99, OnMaxLinesChanged)
+    );
 
     /// <summary>
     /// <see cref="IsTextSelectionEnabled"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsTextSelectionEnabledProperty =
-        DependencyProperty.Register(nameof(IsTextSelectionEnabled), typeof(bool), typeof(TrimTextBlock), new PropertyMetadata(false));
+        DependencyProperty.Register(
+            nameof(IsTextSelectionEnabled),
+            typeof(bool),
+            typeof(TrimTextBlock),
+            new PropertyMetadata(false)
+        );
 
     /// <summary>
     /// <see cref="TextAlignment"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextAlignmentProperty =
-        DependencyProperty.Register(nameof(TextAlignment), typeof(TextAlignment), typeof(TrimTextBlock), new PropertyMetadata(TextAlignment.Start));
+    public static readonly DependencyProperty TextAlignmentProperty = DependencyProperty.Register(
+        nameof(TextAlignment),
+        typeof(TextAlignment),
+        typeof(TrimTextBlock),
+        new PropertyMetadata(TextAlignment.Start)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TrimTextBlock"/> class.

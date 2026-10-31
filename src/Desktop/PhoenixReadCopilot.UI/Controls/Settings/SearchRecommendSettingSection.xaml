@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:SettingsPageControlBase
-    x:Class="PhoenixReadCopilot.UI.Controls.Settings.SearchRecommendSettingSection"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:WinUIKernel.Share.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
-    xmlns:ic="using:FluentIcons.WinUI"
-    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<local:SettingsPageControlBase x:Class="PhoenixReadCopilot.UI.Controls.Settings.SearchRecommendSettingSection"
+                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                               xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                               xmlns:ic="using:FluentIcons.WinUI"
+                               xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
+                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                               xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
+                               mc:Ignorable="d">
 
-    <base:SettingsCard Description="{x:Bind strings:Resources.ShowSearchRecommendDescription}"
-            Header="{x:Bind strings:Resources.ShowSearchRecommend}">
-        <base:SettingsCard.HeaderIcon>
+    <community:SettingsCard Description="{x:Bind strings:Resources.ShowSearchRecommendDescription}" Header="{x:Bind strings:Resources.ShowSearchRecommend}">
+        <community:SettingsCard.HeaderIcon>
             <ic:SymbolIcon Symbol="Search"/>
-        </base:SettingsCard.HeaderIcon>
+        </community:SettingsCard.HeaderIcon>
         <ToggleSwitch IsOn="{x:Bind ViewModel.ShowSearchRecommend, Mode=TwoWay}"/>
-    </base:SettingsCard>
+    </community:SettingsCard>
 </local:SettingsPageControlBase>

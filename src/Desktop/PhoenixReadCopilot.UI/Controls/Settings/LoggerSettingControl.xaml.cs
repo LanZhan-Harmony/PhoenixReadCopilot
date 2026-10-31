@@ -1,7 +1,8 @@
+using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using WinUIKernel.Share.Base;
 using Windows.Storage;
 using Windows.System;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Settings;
 

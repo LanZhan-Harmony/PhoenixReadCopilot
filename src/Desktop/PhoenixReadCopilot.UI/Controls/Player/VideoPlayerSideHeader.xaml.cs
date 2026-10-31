@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -78,11 +79,7 @@ public sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
             foreach (var item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = item.Title ?? default,
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = item.Title ?? default, Tag = item }
                 );
             }
         }

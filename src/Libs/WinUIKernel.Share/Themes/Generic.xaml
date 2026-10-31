@@ -7,8 +7,6 @@
         <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/ImageExBase/ImageExBase.xaml" />
         <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/CardControl/CardControl.xaml" />
         <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/DraggableCardControl/DraggableCardControl.xaml" />
-        <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/SettingsControls/SettingsCard/SettingsCard.xaml" />
-        <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/SettingsControls/SettingsExpander/SettingsExpander.xaml" />
         <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/AppToggleCard/AppToggleCard.xaml" />
         <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/CustomNavigationViewResources.xaml" />
     </ResourceDictionary.MergedDictionaries>

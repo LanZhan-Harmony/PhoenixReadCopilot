@@ -1,5 +1,5 @@
-using Microsoft.UI.Xaml.Media;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Media;
 
 namespace WinUIKernel.Share.Base;
 
@@ -18,8 +18,8 @@ internal static class CompositionTargetMonitor
     /// </summary>
     private static volatile int _sequenceNumber;
 
-    static CompositionTargetMonitor()
-        => CompositionTarget.SurfaceContentsLost += CompositionTarget_SurfaceContentsLost;
+    static CompositionTargetMonitor() =>
+        CompositionTarget.SurfaceContentsLost += CompositionTarget_SurfaceContentsLost;
 
     /// <summary>
     /// Gets the current sequence number for <see cref="CompositionTarget.SurfaceContentsLost"/>.
@@ -31,6 +31,6 @@ internal static class CompositionTargetMonitor
     }
 
     // Increments the global sequence number when the composition surfaces are lost
-    private static void CompositionTarget_SurfaceContentsLost(object? sender, object e)
-        => Interlocked.Increment(ref _sequenceNumber);
+    private static void CompositionTarget_SurfaceContentsLost(object? sender, object e) =>
+        Interlocked.Increment(ref _sequenceNumber);
 }

@@ -10,14 +10,23 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
     /// <summary>
     /// <see cref="IsHide"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsHideProperty =
-        DependencyProperty.Register(nameof(IsHide), typeof(bool), typeof(SideSplitButton), new PropertyMetadata(default, new PropertyChangedCallback(OnIsHideChanged)));
+    public static readonly DependencyProperty IsHideProperty = DependencyProperty.Register(
+        nameof(IsHide),
+        typeof(bool),
+        typeof(SideSplitButton),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnIsHideChanged))
+    );
 
     /// <summary>
     /// <see cref="IsInvertDirection"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsInvertDirectionProperty =
-        DependencyProperty.Register(nameof(IsInvertDirection), typeof(bool), typeof(SideSplitButton), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(IsInvertDirection),
+            typeof(bool),
+            typeof(SideSplitButton),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SideSplitButton"/> class.
@@ -43,8 +52,7 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => SymbolControl.Symbol = GetSymbol();
+    protected override void OnControlLoaded() => SymbolControl.Symbol = GetSymbol();
 
     private static void OnIsHideChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -58,10 +66,13 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
     private FluentIcons.Common.Symbol GetSymbol()
     {
         return IsHide
-            ? IsInvertDirection ? FluentIcons.Common.Symbol.PanelRightExpand : FluentIcons.Common.Symbol.PanelLeftExpand
-            : IsInvertDirection ? FluentIcons.Common.Symbol.PanelRightContract : FluentIcons.Common.Symbol.PanelLeftContract;
+            ? IsInvertDirection
+                ? FluentIcons.Common.Symbol.PanelRightExpand
+                : FluentIcons.Common.Symbol.PanelLeftExpand
+            : IsInvertDirection
+                ? FluentIcons.Common.Symbol.PanelRightContract
+                : FluentIcons.Common.Symbol.PanelLeftContract;
     }
 
-    private void OnBtnClick(object sender, RoutedEventArgs e)
-        => IsHide = !IsHide;
+    private void OnBtnClick(object sender, RoutedEventArgs e) => IsHide = !IsHide;
 }

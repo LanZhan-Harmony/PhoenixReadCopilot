@@ -1,3 +1,5 @@
+using System.Numerics;
+using System.Windows.Input;
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Animations;
 using Microsoft.UI.Composition;
@@ -5,8 +7,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
-using System.Numerics;
-using System.Windows.Input;
 
 namespace WinUIKernel.Share.Base;
 
@@ -19,26 +19,42 @@ public sealed partial class DraggableCardControl : LayoutControlBase
     /// <summary>
     /// 是否鼠标悬停在控件上.
     /// </summary>
-    public static readonly DependencyProperty IsPointerOverProperty =
-        DependencyProperty.Register(nameof(IsPointerOver), typeof(bool), typeof(DraggableCardControl), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsPointerOverProperty = DependencyProperty.Register(
+        nameof(IsPointerOver),
+        typeof(bool),
+        typeof(DraggableCardControl),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// 是否按下.
     /// </summary>
-    public static readonly DependencyProperty IsPressedProperty =
-        DependencyProperty.Register(nameof(IsPressed), typeof(bool), typeof(DraggableCardControl), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsPressedProperty = DependencyProperty.Register(
+        nameof(IsPressed),
+        typeof(bool),
+        typeof(DraggableCardControl),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// 命令依赖属性.
     /// </summary>
-    public static readonly DependencyProperty CommandProperty =
-        DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(DraggableCardControl), new PropertyMetadata(default));
+    public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+        nameof(Command),
+        typeof(ICommand),
+        typeof(DraggableCardControl),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// 内容依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ContentProperty =
-        DependencyProperty.Register(nameof(Content), typeof(object), typeof(DraggableCardControl), new PropertyMetadata(default));
+    public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
+        nameof(Content),
+        typeof(object),
+        typeof(DraggableCardControl),
+        new PropertyMetadata(default)
+    );
 
     private const float PointerOverOffsetY = -4f;
 
@@ -126,7 +142,10 @@ public sealed partial class DraggableCardControl : LayoutControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        _pointerOverToken = RegisterPropertyChangedCallback(IsPointerOverProperty, OnButtonStateChanged);
+        _pointerOverToken = RegisterPropertyChangedCallback(
+            IsPointerOverProperty,
+            OnButtonStateChanged
+        );
         _pressedToken = RegisterPropertyChangedCallback(IsPressedProperty, OnButtonStateChanged);
         _loaded = true;
 
@@ -134,8 +153,7 @@ public sealed partial class DraggableCardControl : LayoutControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnPointerEntered(PointerRoutedEventArgs e)
-        => IsPointerOver = true;
+    protected override void OnPointerEntered(PointerRoutedEventArgs e) => IsPointerOver = true;
 
     /// <inheritdoc/>
     protected override void OnPointerExited(PointerRoutedEventArgs e)
@@ -145,8 +163,7 @@ public sealed partial class DraggableCardControl : LayoutControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnPointerMoved(PointerRoutedEventArgs e)
-        => IsPointerOver = true;
+    protected override void OnPointerMoved(PointerRoutedEventArgs e) => IsPointerOver = true;
 
     /// <inheritdoc/>
     protected override void OnPointerPressed(PointerRoutedEventArgs e)
@@ -162,8 +179,7 @@ public sealed partial class DraggableCardControl : LayoutControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnPointerReleased(PointerRoutedEventArgs e)
-        => IsPressed = false;
+    protected override void OnPointerReleased(PointerRoutedEventArgs e) => IsPressed = false;
 
     /// <inheritdoc/>
     protected override void OnPointerCanceled(PointerRoutedEventArgs e)
@@ -173,11 +189,10 @@ public sealed partial class DraggableCardControl : LayoutControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnTapped(TappedRoutedEventArgs e)
-        => Command?.Execute(default);
+    protected override void OnTapped(TappedRoutedEventArgs e) => Command?.Execute(default);
 
-    private void OnButtonStateChanged(DependencyObject sender, DependencyProperty dp)
-        => ApplyShadowAnimation();
+    private void OnButtonStateChanged(DependencyObject sender, DependencyProperty dp) =>
+        ApplyShadowAnimation();
 
     private void CreateShadow()
     {
@@ -219,10 +234,24 @@ public sealed partial class DraggableCardControl : LayoutControlBase
             return;
         }
 
-        var duration = IsPressed ? _pressedShadowDuration : IsPointerOver ? _pointerOverShadowDuration : _restShadowDuration;
-        var offset = IsPressed ? -2f : IsPointerOver ? PointerOverOffsetY : 0f;
+        var duration =
+            IsPressed ? _pressedShadowDuration
+            : IsPointerOver ? _pointerOverShadowDuration
+            : _restShadowDuration;
+        var offset =
+            IsPressed ? -2f
+            : IsPointerOver ? PointerOverOffsetY
+            : 0f;
 #pragma warning disable VSTHRD103 // Call async methods when in an async method
-        AnimationBuilder.Create().Translation(Axis.Y, offset, duration: duration, easingMode: Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseInOut).Start(this);
+        AnimationBuilder
+            .Create()
+            .Translation(
+                Axis.Y,
+                offset,
+                duration: duration,
+                easingMode: Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseInOut
+            )
+            .Start(this);
 #pragma warning restore VSTHRD103 // Call async methods when in an async method
         var shadowOpacity = GetShadowOpacity();
         var shadowRadius = GetShadowRadius();
@@ -239,9 +268,27 @@ public sealed partial class DraggableCardControl : LayoutControlBase
         {
             using var batch = _compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
             var shadowAnimationGroup = _compositor.CreateAnimationGroup();
-            shadowAnimationGroup.Add(_compositor.CreateScalarKeyFrameAnimation(nameof(DropShadow.BlurRadius), shadowRadius, duration: duration));
-            shadowAnimationGroup.Add(_compositor.CreateVector3KeyFrameAnimation(nameof(DropShadow.Offset), shadowOffset, duration: duration));
-            shadowAnimationGroup.Add(_compositor.CreateScalarKeyFrameAnimation(nameof(DropShadow.Opacity), shadowOpacity, duration: duration));
+            shadowAnimationGroup.Add(
+                _compositor.CreateScalarKeyFrameAnimation(
+                    nameof(DropShadow.BlurRadius),
+                    shadowRadius,
+                    duration: duration
+                )
+            );
+            shadowAnimationGroup.Add(
+                _compositor.CreateVector3KeyFrameAnimation(
+                    nameof(DropShadow.Offset),
+                    shadowOffset,
+                    duration: duration
+                )
+            );
+            shadowAnimationGroup.Add(
+                _compositor.CreateScalarKeyFrameAnimation(
+                    nameof(DropShadow.Opacity),
+                    shadowOpacity,
+                    duration: duration
+                )
+            );
             dropShadow.StartAnimationGroup(shadowAnimationGroup);
 
             if (_shouldDestroyShadow)
@@ -251,14 +298,24 @@ public sealed partial class DraggableCardControl : LayoutControlBase
         }
     }
 
-    private float GetShadowRadius()
-        => IsPointerOver ? 12f : IsPressed ? 2f : 6f;
+    private float GetShadowRadius() =>
+        IsPointerOver ? 12f
+        : IsPressed ? 2f
+        : 6f;
 
-    private float GetShadowOpacity()
-        => IsPointerOver ? 0.14f : IsPressed ? 0.09f : 0.02f;
+    private float GetShadowOpacity() =>
+        IsPointerOver ? 0.14f
+        : IsPressed ? 0.09f
+        : 0.02f;
 
-    private Vector3 GetShadowOffset()
-        => new Vector3(0, IsPointerOver ? 4f : IsPressed ? 0f : 2f, 0);
+    private Vector3 GetShadowOffset() =>
+        new Vector3(
+            0,
+            IsPointerOver ? 4f
+                : IsPressed ? 0f
+                : 2f,
+            0
+        );
 
     private void ChangeState()
     {

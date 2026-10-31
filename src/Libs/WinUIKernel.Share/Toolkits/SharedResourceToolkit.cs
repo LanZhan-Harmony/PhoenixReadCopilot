@@ -20,6 +20,6 @@ public class SharedResourceToolkit : IResourceToolkit
     }
 
     /// <inheritdoc/>
-    public Brush GetThemeBrush(string brushName)
-        => (Application.Current.Resources[brushName] as Brush)!;
+    public Brush GetThemeBrush(string brushName) =>
+        (Application.Current.Resources[brushName] as Brush)!;
 }

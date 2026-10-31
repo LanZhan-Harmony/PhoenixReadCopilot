@@ -10,56 +10,95 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
     /// <summary>
     /// <see cref="IsHide"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsHideProperty =
-        DependencyProperty.Register(nameof(IsHide), typeof(bool), typeof(ColumnSplitter), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsHideProperty = DependencyProperty.Register(
+        nameof(IsHide),
+        typeof(bool),
+        typeof(ColumnSplitter),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="ColumnWidth"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ColumnWidthProperty =
-        DependencyProperty.Register(nameof(ColumnWidth), typeof(double), typeof(ColumnSplitter), new PropertyMetadata(default));
+    public static readonly DependencyProperty ColumnWidthProperty = DependencyProperty.Register(
+        nameof(ColumnWidth),
+        typeof(double),
+        typeof(ColumnSplitter),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="MinColumnWidth"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty MinColumnWidthProperty =
-        DependencyProperty.Register(nameof(MinColumnWidth), typeof(double), typeof(ColumnSplitter), new PropertyMetadata(220d));
+    public static readonly DependencyProperty MinColumnWidthProperty = DependencyProperty.Register(
+        nameof(MinColumnWidth),
+        typeof(double),
+        typeof(ColumnSplitter),
+        new PropertyMetadata(220d)
+    );
 
     /// <summary>
     /// <see cref="MaxColumnWidth"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty MaxColumnWidthProperty =
-        DependencyProperty.Register(nameof(MaxColumnWidth), typeof(double), typeof(ColumnSplitter), new PropertyMetadata(300d));
+    public static readonly DependencyProperty MaxColumnWidthProperty = DependencyProperty.Register(
+        nameof(MaxColumnWidth),
+        typeof(double),
+        typeof(ColumnSplitter),
+        new PropertyMetadata(300d)
+    );
 
     /// <summary>
     /// <see cref="IsHideButtonEnabled"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsHideButtonEnabledProperty =
-        DependencyProperty.Register(nameof(IsHideButtonEnabled), typeof(bool), typeof(ColumnSplitter), new PropertyMetadata(true));
+        DependencyProperty.Register(
+            nameof(IsHideButtonEnabled),
+            typeof(bool),
+            typeof(ColumnSplitter),
+            new PropertyMetadata(true)
+        );
 
     /// <summary>
     /// <see cref="IsInvertDirection"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsInvertDirectionProperty =
-        DependencyProperty.Register(nameof(IsInvertDirection), typeof(bool), typeof(ColumnSplitter), new PropertyMetadata(default, new PropertyChangedCallback(OnInvertDirectionChanged)));
+        DependencyProperty.Register(
+            nameof(IsInvertDirection),
+            typeof(bool),
+            typeof(ColumnSplitter),
+            new PropertyMetadata(default, new PropertyChangedCallback(OnInvertDirectionChanged))
+        );
 
     /// <summary>
     /// <see cref="HideTip"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty HideTipProperty =
-        DependencyProperty.Register(nameof(HideTip), typeof(string), typeof(ColumnSplitter), new PropertyMetadata("Show"));
+    public static readonly DependencyProperty HideTipProperty = DependencyProperty.Register(
+        nameof(HideTip),
+        typeof(string),
+        typeof(ColumnSplitter),
+        new PropertyMetadata("Show")
+    );
 
     /// <summary>
     /// <see cref="ShowTip"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ShowTipProperty =
-        DependencyProperty.Register(nameof(ShowTip), typeof(string), typeof(ColumnSplitter), new PropertyMetadata("Hide"));
+    public static readonly DependencyProperty ShowTipProperty = DependencyProperty.Register(
+        nameof(ShowTip),
+        typeof(string),
+        typeof(ColumnSplitter),
+        new PropertyMetadata("Hide")
+    );
 
     /// <summary>
     /// <see cref="AlwaysShowButtonWhenCollapsed"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty AlwaysShowButtonWhenCollapsedProperty =
-        DependencyProperty.Register(nameof(AlwaysShowButtonWhenCollapsed), typeof(bool), typeof(ColumnSplitter), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(AlwaysShowButtonWhenCollapsed),
+            typeof(bool),
+            typeof(ColumnSplitter),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ColumnSplitter"/> class.
@@ -150,19 +189,25 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-        {
-            if (IsInvertDirection)
+        DispatcherQueue.TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
             {
-                Sizer.IsDragInverted = true;
-                ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;
-                ToggleBtn.Margin = new Thickness(-32, 0, 0, 0);
-                ToggleBtn.CornerRadius = new CornerRadius(6, 0, 0, 6);
+                if (IsInvertDirection)
+                {
+                    Sizer.IsDragInverted = true;
+                    ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;
+                    ToggleBtn.Margin = new Thickness(-32, 0, 0, 0);
+                    ToggleBtn.CornerRadius = new CornerRadius(6, 0, 0, 6);
+                }
             }
-        });
+        );
     }
 
-    private static void OnInvertDirectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnInvertDirectionChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as ColumnSplitter;
         instance.OnControlLoaded();

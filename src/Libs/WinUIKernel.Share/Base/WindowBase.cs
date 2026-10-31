@@ -1,19 +1,21 @@
-using WinUIEx;
-
 namespace WinUIKernel.Share.Base;
 
 /// <summary>
 /// 窗口基类.
 /// </summary>
-public abstract class WindowBase : WindowEx
+public abstract class WindowEx : WinUIEx.WindowEx
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="WindowBase"/> class.
+    /// Initializes a new instance of the <see cref="WindowEx"/> class.
     /// </summary>
-    protected WindowBase()
+    protected WindowEx()
     {
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-        AppWindow.TitleBar.IconShowOptions = Microsoft.UI.Windowing.IconShowOptions.HideIconAndSystemMenu;
+        AppWindow.TitleBar.IconShowOptions = Microsoft
+            .UI
+            .Windowing
+            .IconShowOptions
+            .HideIconAndSystemMenu;
         SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
     }
 }

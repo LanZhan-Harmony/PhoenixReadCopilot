@@ -22,7 +22,10 @@ public interface IFileToolkit
     /// <param name="extension">扩展名.</param>
     /// <param name="windowInstance">窗口对象.</param>
     /// <returns>文件对象（可能为空）.</returns>
-    Task<IReadOnlyList<StorageFile>?> PickMultipleFileAsync(string extension, object windowInstance);
+    Task<IReadOnlyList<StorageFile>?> PickMultipleFileAsync(
+        string extension,
+        object windowInstance
+    );
 
     /// <summary>
     /// 选择文件夹.
@@ -48,7 +51,12 @@ public interface IFileToolkit
     /// <param name="defaultValue">The default value when the file does not exist or has no content.</param>
     /// <param name="folderName">The folder to which the file belongs.</param>
     /// <returns>Converted result.</returns>
-    Task<T> ReadLocalDataAsync<T>(string fileName, JsonTypeInfo<T> typeInfo, string defaultValue = "{}", string folderName = "");
+    Task<T> ReadLocalDataAsync<T>(
+        string fileName,
+        JsonTypeInfo<T> typeInfo,
+        string defaultValue = "{}",
+        string folderName = ""
+    );
 
     /// <summary>
     /// Write data to local file.
@@ -59,7 +67,12 @@ public interface IFileToolkit
     /// <param name="typeInfo">Type info for serialize.</param>
     /// <param name="folderName">The folder to which the file belongs.</param>
     /// <returns><see cref="Task"/>.</returns>
-    Task WriteLocalDataAsync<T>(string fileName, T data, JsonTypeInfo<T> typeInfo, string folderName = "");
+    Task WriteLocalDataAsync<T>(
+        string fileName,
+        T data,
+        JsonTypeInfo<T> typeInfo,
+        string folderName = ""
+    );
 
     /// <summary>
     /// Delete local data file.

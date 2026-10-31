@@ -1,15 +1,17 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
+using System.Text;
 using Microsoft.Graphics.Canvas;
 using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Bili.Authorization;
-using WinUIKernel.Share.Base;
+using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.Streaming.Adaptive;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using WinUIKernel.Share.Base;
 using HttpClient = Windows.Web.Http.HttpClient;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;

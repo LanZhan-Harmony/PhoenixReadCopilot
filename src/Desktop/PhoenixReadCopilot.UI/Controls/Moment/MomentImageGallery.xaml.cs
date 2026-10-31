@@ -1,3 +1,5 @@
+using System.Drawing;
+using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Forms;
 using Richasy.BiliKernel.Models.Appearance;
 using WinUIKernel.Share.Base;

@@ -1,19 +1,22 @@
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
-using WinUIKernel.Share.Base;
 using Windows.Graphics;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 using WinUIEx;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Forms;
 
 /// <summary>
 /// 图片浏览窗口.
 /// </summary>
-public sealed partial class GalleryWindow : WindowBase, ITipWindow
+public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 {
     private bool _isActivated;
 
@@ -23,6 +26,7 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
     public GalleryWindow(BiliImage image, List<BiliImage> list = default)
     {
         InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
         MainFrame.Tag = this;
         Activated += OnActivated;
         Closed += OnClosed;
@@ -40,10 +44,7 @@ public sealed partial class GalleryWindow : WindowBase, ITipWindow
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup()
-        {
-            Text = text
-        };
+        var popup = new TipPopup() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);

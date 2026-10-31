@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -72,10 +74,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -85,10 +84,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.Follow,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Heart
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Heart },
             Tag = nameof(ViewModel.FollowCommand),
         };
     }
@@ -98,10 +94,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -111,10 +104,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.MarkWantWatch,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Thinking
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Thinking },
             Tag = nameof(ViewModel.MarkWantWatchCommand),
         };
     }
@@ -124,10 +114,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.MarkWatching,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Eye
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Eye },
             Tag = nameof(ViewModel.MarkWatchingCommand),
         };
     }
@@ -168,10 +155,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
             args.TryGetPosition(this, out var point);
             ContextFlyout.ShowAt(
                 this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
-                {
-                    Position = point
-                }
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
             );
         }
 
@@ -181,10 +165,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout()
-        {
-            ShouldConstrainToRootBounds = false
-        };
+        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
         menuFlyout.Items.Add(CreateOpenInBroswerItem());
         if (ViewModel.Style != SeasonCardStyle.Favorite)

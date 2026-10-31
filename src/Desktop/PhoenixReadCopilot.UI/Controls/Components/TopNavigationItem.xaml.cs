@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;

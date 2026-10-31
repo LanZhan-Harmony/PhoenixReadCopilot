@@ -12,92 +12,159 @@ public sealed partial class AppTitleBar
     /// <summary>
     /// <see cref="Header"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty HeaderProperty =
-        DependencyProperty.Register(nameof(Header), typeof(object), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnHeaderChanged)));
+    public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(
+        nameof(Header),
+        typeof(object),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnHeaderChanged))
+    );
 
     /// <summary>
     /// <see cref="LeftEdgeElement"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty LeftEdgeElementProperty =
-        DependencyProperty.Register(nameof(LeftEdgeElement), typeof(object), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnLeftEdgeElementChanged)));
+    public static readonly DependencyProperty LeftEdgeElementProperty = DependencyProperty.Register(
+        nameof(LeftEdgeElement),
+        typeof(object),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnLeftEdgeElementChanged))
+    );
 
     /// <summary>
     /// <see cref="IconElement"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IconElementProperty =
-        DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnIconElementChanged)));
+    public static readonly DependencyProperty IconElementProperty = DependencyProperty.Register(
+        nameof(IconElement),
+        typeof(IconElement),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnIconElementChanged))
+    );
 
     /// <summary>
     /// <see cref="Title"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TitleProperty =
-        DependencyProperty.Register(nameof(Title), typeof(string), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnTitleChanged)));
+    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
+        nameof(Title),
+        typeof(string),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnTitleChanged))
+    );
 
     /// <summary>
     /// <see cref="Subtitle"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SubtitleProperty =
-        DependencyProperty.Register(nameof(Subtitle), typeof(string), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnSubtitleChanged)));
+    public static readonly DependencyProperty SubtitleProperty = DependencyProperty.Register(
+        nameof(Subtitle),
+        typeof(string),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnSubtitleChanged))
+    );
 
     /// <summary>
     /// <see cref="Content"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ContentProperty =
-        DependencyProperty.Register(nameof(Content), typeof(object), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnContentChanged)));
+    public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
+        nameof(Content),
+        typeof(object),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnContentChanged))
+    );
 
     /// <summary>
     /// <see cref="Footer"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty FooterProperty =
-        DependencyProperty.Register(nameof(Footer), typeof(object), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnFooterChanged)));
+    public static readonly DependencyProperty FooterProperty = DependencyProperty.Register(
+        nameof(Footer),
+        typeof(object),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnFooterChanged))
+    );
 
     /// <summary>
     /// <see cref="IsBackButtonVisible"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsBackButtonVisibleProperty =
-        DependencyProperty.Register(nameof(IsBackButtonVisible), typeof(bool), typeof(AppTitleBar), new PropertyMetadata(false, new PropertyChangedCallback(OnBackButtonVisibleChanged)));
+        DependencyProperty.Register(
+            nameof(IsBackButtonVisible),
+            typeof(bool),
+            typeof(AppTitleBar),
+            new PropertyMetadata(false, new PropertyChangedCallback(OnBackButtonVisibleChanged))
+        );
 
     /// <summary>
     /// <see cref="IsBackEnabled"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsBackEnabledProperty =
-        DependencyProperty.Register(nameof(IsBackButtonVisible), typeof(bool), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnIsBackEnabledChanged)));
+    public static readonly DependencyProperty IsBackEnabledProperty = DependencyProperty.Register(
+        nameof(IsBackButtonVisible),
+        typeof(bool),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnIsBackEnabledChanged))
+    );
 
     /// <summary>
     /// <see cref="IsPaneToggleButtonVisible"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsPaneToggleButtonVisibleProperty =
-        DependencyProperty.Register(nameof(IsBackButtonVisible), typeof(bool), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnIsPaneToggleButtonVisibleChanged)));
+        DependencyProperty.Register(
+            nameof(IsBackButtonVisible),
+            typeof(bool),
+            typeof(AppTitleBar),
+            new PropertyMetadata(
+                default,
+                new PropertyChangedCallback(OnIsPaneToggleButtonVisibleChanged)
+            )
+        );
 
     /// <summary>
     /// <see cref="TemplateSettings"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty TemplateSettingsProperty =
-        DependencyProperty.Register(nameof(TemplateSettings), typeof(AppTitleBarTemplateSettings), typeof(AppTitleBar), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(TemplateSettings),
+            typeof(AppTitleBarTemplateSettings),
+            typeof(AppTitleBar),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// <see cref="TitleMaxWidth"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TitleMaxWidthProperty =
-        DependencyProperty.Register(nameof(TitleMaxWidth), typeof(double), typeof(AppTitleBar), new PropertyMetadata(999));
+    public static readonly DependencyProperty TitleMaxWidthProperty = DependencyProperty.Register(
+        nameof(TitleMaxWidth),
+        typeof(double),
+        typeof(AppTitleBar),
+        new PropertyMetadata(999)
+    );
 
     /// <summary>
     /// <see cref="CenterContent"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty CenterContentProperty =
-        DependencyProperty.Register(nameof(CenterContent), typeof(object), typeof(AppTitleBar), new PropertyMetadata(default, new PropertyChangedCallback(OnCenterContentChanged)));
+    public static readonly DependencyProperty CenterContentProperty = DependencyProperty.Register(
+        nameof(CenterContent),
+        typeof(object),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnCenterContentChanged))
+    );
 
     /// <summary>
     /// <see cref="TitleForeground"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TitleForegroundProperty =
-        DependencyProperty.Register(nameof(TitleForeground), typeof(Brush), typeof(AppTitleBar), new PropertyMetadata(default));
+    public static readonly DependencyProperty TitleForegroundProperty = DependencyProperty.Register(
+        nameof(TitleForeground),
+        typeof(Brush),
+        typeof(AppTitleBar),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="AutoUpdateTitleBarButtonColor"/> 的依赖属性.
     /// </summary>
     public static readonly DependencyProperty AutoUpdateTitleBarButtonColorProperty =
-        DependencyProperty.Register(nameof(AutoUpdateTitleBarButtonColor), typeof(bool), typeof(AppTitleBar), new PropertyMetadata(true));
+        DependencyProperty.Register(
+            nameof(AutoUpdateTitleBarButtonColor),
+            typeof(bool),
+            typeof(AppTitleBar),
+            new PropertyMetadata(true)
+        );
 
     /// <summary>
     /// 头部内容.
@@ -221,8 +288,8 @@ public sealed partial class AppTitleBar
     /// </summary>
     public Brush TitleForeground
     {
-        get { return (Brush)GetValue(TitleForegroundProperty); }
-        set { SetValue(TitleForegroundProperty, value); }
+        get => (Brush)GetValue(TitleForegroundProperty);
+        set => SetValue(TitleForegroundProperty, value);
     }
 
     /// <summary>

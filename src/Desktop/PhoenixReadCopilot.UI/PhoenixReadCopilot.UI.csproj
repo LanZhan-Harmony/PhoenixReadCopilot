@@ -75,6 +75,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
     <PackageReference Include="ComputeSharp.D2D1.WinUI" />
     <PackageReference Include="FFmpegInteropX" />
     <PackageReference Include="Microsoft.Extensions.Logging" />

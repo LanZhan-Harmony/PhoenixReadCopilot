@@ -11,9 +11,9 @@ using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
+using Windows.System;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
-using Windows.System;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

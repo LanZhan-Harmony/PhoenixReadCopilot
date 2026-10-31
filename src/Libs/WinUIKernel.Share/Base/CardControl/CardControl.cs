@@ -1,3 +1,4 @@
+using System.Numerics;
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Animations;
 using CommunityToolkit.WinUI.Media;
@@ -5,7 +6,6 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
-using System.Numerics;
 
 namespace WinUIKernel.Share.Base;
 
@@ -142,7 +142,7 @@ public sealed partial class CardControl : Button
                 BlurRadius = 8d,
                 CornerRadius = 8d,
                 InnerContentClipMode = InnerContentClipMode.CompositionMaskBrush,
-                Opacity = 0.02f
+                Opacity = 0.02f,
             };
             Effects.SetShadow(_shadowContainer, _initialShadow);
         }
@@ -184,15 +184,18 @@ public sealed partial class CardControl : Button
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        _pointerOverToken = RegisterPropertyChangedCallback(IsPointerOverProperty, OnButtonStateChanged);
+        _pointerOverToken = RegisterPropertyChangedCallback(
+            IsPointerOverProperty,
+            OnButtonStateChanged
+        );
         _pressedToken = RegisterPropertyChangedCallback(IsPressedProperty, OnButtonStateChanged);
         _loaded = true;
 
         ApplyShadowAnimation();
     }
 
-    private void OnButtonStateChanged(DependencyObject sender, DependencyProperty dp)
-        => ApplyShadowAnimation();
+    private void OnButtonStateChanged(DependencyObject sender, DependencyProperty dp) =>
+        ApplyShadowAnimation();
 
     private void CreateShadow()
     {
@@ -234,15 +237,34 @@ public sealed partial class CardControl : Button
 
     private void ApplyShadowAnimation()
     {
-        if (!_templateApplied || !WinUIKernelShareExtensions.IsCardAnimationEnabled || _compositor == null || _shadowContainer == null)
+        if (
+            !_templateApplied
+            || !WinUIKernelShareExtensions.IsCardAnimationEnabled
+            || _compositor == null
+            || _shadowContainer == null
+        )
         {
             return;
         }
 
-        var duration = IsPressed ? _pressedShadowDuration : IsPointerOver ? _pointerOverShadowDuration : _restShadowDuration;
-        var offset = IsPressed ? -2f : IsPointerOver ? PointerOverOffsetY : 0f;
+        var duration =
+            IsPressed ? _pressedShadowDuration
+            : IsPointerOver ? _pointerOverShadowDuration
+            : _restShadowDuration;
+        var offset =
+            IsPressed ? -2f
+            : IsPointerOver ? PointerOverOffsetY
+            : 0f;
 #pragma warning disable VSTHRD103 // Call async methods when in an async method
-        AnimationBuilder.Create().Translation(Axis.Y, offset, duration: duration, easingMode: Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseInOut).Start(this);
+        AnimationBuilder
+            .Create()
+            .Translation(
+                Axis.Y,
+                offset,
+                duration: duration,
+                easingMode: Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseInOut
+            )
+            .Start(this);
 #pragma warning restore VSTHRD103 // Call async methods when in an async method
 
         // 如果未启用阴影，跳过阴影动画
@@ -252,9 +274,10 @@ public sealed partial class CardControl : Button
         }
 
         var sharedResources = GetOrCreateSharedResources();
-        var config = IsPressed ? sharedResources.PressedConfig :
-                     IsPointerOver ? sharedResources.PointerOverConfig :
-                     sharedResources.RestConfig;
+        var config =
+            IsPressed ? sharedResources.PressedConfig
+            : IsPointerOver ? sharedResources.PointerOverConfig
+            : sharedResources.RestConfig;
 
         var shadowOpacity = config.Opacity;
         var shadowRadius = config.BlurRadius;
@@ -271,9 +294,27 @@ public sealed partial class CardControl : Button
         {
             using var batch = _compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
             var shadowAnimationGroup = _compositor.CreateAnimationGroup();
-            shadowAnimationGroup.Add(_compositor.CreateScalarKeyFrameAnimation(nameof(DropShadow.BlurRadius), shadowRadius, duration: duration));
-            shadowAnimationGroup.Add(_compositor.CreateVector3KeyFrameAnimation(nameof(DropShadow.Offset), shadowOffset, duration: duration));
-            shadowAnimationGroup.Add(_compositor.CreateScalarKeyFrameAnimation(nameof(DropShadow.Opacity), shadowOpacity, duration: duration));
+            shadowAnimationGroup.Add(
+                _compositor.CreateScalarKeyFrameAnimation(
+                    nameof(DropShadow.BlurRadius),
+                    shadowRadius,
+                    duration: duration
+                )
+            );
+            shadowAnimationGroup.Add(
+                _compositor.CreateVector3KeyFrameAnimation(
+                    nameof(DropShadow.Offset),
+                    shadowOffset,
+                    duration: duration
+                )
+            );
+            shadowAnimationGroup.Add(
+                _compositor.CreateScalarKeyFrameAnimation(
+                    nameof(DropShadow.Opacity),
+                    shadowOpacity,
+                    duration: duration
+                )
+            );
             dropShadow.StartAnimationGroup(shadowAnimationGroup);
 
             if (_shouldDestroyShadow)

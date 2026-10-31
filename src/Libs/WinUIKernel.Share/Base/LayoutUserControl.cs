@@ -28,16 +28,12 @@ public abstract class LayoutUserControlBase : UserControl
     /// <summary>
     /// 控件加载完成.
     /// </summary>
-    protected virtual void OnControlLoaded()
-    {
-    }
+    protected virtual void OnControlLoaded() { }
 
     /// <summary>
     /// 控件卸载完成.
     /// </summary>
-    protected virtual void OnControlUnloaded()
-    {
-    }
+    protected virtual void OnControlUnloaded() { }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -75,8 +71,12 @@ public abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
     /// <summary>
     /// <see cref="ViewModel"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ViewModelProperty =
-        DependencyProperty.Register(nameof(ViewModel), typeof(TViewModel), typeof(LayoutUserControlBase), new PropertyMetadata(default, new PropertyChangedCallback(OnViewModelChangedInternal)));
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(TViewModel),
+        typeof(LayoutUserControlBase),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnViewModelChangedInternal))
+    );
 
     /// <summary>
     /// 视图模型.
@@ -90,11 +90,12 @@ public abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
     /// <summary>
     /// 当视图模型发生变化时.
     /// </summary>
-    protected virtual void OnViewModelChanged(TViewModel? oldValue, TViewModel? newValue)
-    {
-    }
+    protected virtual void OnViewModelChanged(TViewModel? oldValue, TViewModel? newValue) { }
 
-    private static void OnViewModelChangedInternal(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnViewModelChangedInternal(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as LayoutUserControlBase<TViewModel>;
         instance?.OnViewModelChanged((TViewModel?)e.OldValue, (TViewModel?)e.NewValue);

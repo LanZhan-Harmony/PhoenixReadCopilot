@@ -13,50 +13,83 @@ public abstract partial class ImageExBase
     /// <summary>
     /// <see cref="Source"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SourceProperty =
-        DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(ImageExBase), new PropertyMetadata(default, new PropertyChangedCallback(OnSourceChanged)));
+    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+        nameof(Source),
+        typeof(Uri),
+        typeof(ImageExBase),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnSourceChanged))
+    );
 
     /// <summary>
     /// <see cref="IsShimmerEnabled"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsShimmerEnabledProperty =
-        DependencyProperty.Register(nameof(IsShimmerEnabled), typeof(bool), typeof(ImageExBase), new PropertyMetadata(true));
+        DependencyProperty.Register(
+            nameof(IsShimmerEnabled),
+            typeof(bool),
+            typeof(ImageExBase),
+            new PropertyMetadata(true)
+        );
 
     /// <summary>
     /// <see cref="IsImageLoading"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsImageLoadingProperty =
-        DependencyProperty.Register(nameof(IsImageLoading), typeof(bool), typeof(ImageExBase), new PropertyMetadata(default));
+    public static readonly DependencyProperty IsImageLoadingProperty = DependencyProperty.Register(
+        nameof(IsImageLoading),
+        typeof(bool),
+        typeof(ImageExBase),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="DecodeWidth"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty DecodeWidthProperty =
-        DependencyProperty.Register(nameof(DecodeWidth), typeof(double), typeof(ImageExBase), new PropertyMetadata(1d));
+    public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(
+        nameof(DecodeWidth),
+        typeof(double),
+        typeof(ImageExBase),
+        new PropertyMetadata(1d)
+    );
 
     /// <summary>
     /// <see cref="DecodeHeight"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty DecodeHeightProperty =
-        DependencyProperty.Register(nameof(DecodeHeight), typeof(double), typeof(ImageExBase), new PropertyMetadata(1d));
+    public static readonly DependencyProperty DecodeHeightProperty = DependencyProperty.Register(
+        nameof(DecodeHeight),
+        typeof(double),
+        typeof(ImageExBase),
+        new PropertyMetadata(1d)
+    );
 
     /// <summary>
     /// <see cref="ClearColor"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ClearColorProperty =
-        DependencyProperty.Register(nameof(ClearColor), typeof(Color), typeof(ImageExBase), new PropertyMetadata(Colors.Black));
+    public static readonly DependencyProperty ClearColorProperty = DependencyProperty.Register(
+        nameof(ClearColor),
+        typeof(Color),
+        typeof(ImageExBase),
+        new PropertyMetadata(Colors.Black)
+    );
 
     /// <summary>
     /// <see cref="HolderImage"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty HolderImageProperty =
-        DependencyProperty.Register(nameof(HolderImage), typeof(Uri), typeof(ImageExBase), new PropertyMetadata(default));
+    public static readonly DependencyProperty HolderImageProperty = DependencyProperty.Register(
+        nameof(HolderImage),
+        typeof(Uri),
+        typeof(ImageExBase),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="EnableDiskCache"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty EnableDiskCacheProperty =
-        DependencyProperty.Register(nameof(EnableDiskCache), typeof(bool), typeof(ImageExBase), new PropertyMetadata(true));
+    public static readonly DependencyProperty EnableDiskCacheProperty = DependencyProperty.Register(
+        nameof(EnableDiskCache),
+        typeof(bool),
+        typeof(ImageExBase),
+        new PropertyMetadata(true)
+    );
 
     /// <summary>
     /// 图片源.

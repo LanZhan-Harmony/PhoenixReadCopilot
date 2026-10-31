@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 
 namespace PhoenixReadCopilot.UI.Controls.Favorites;
@@ -65,16 +67,15 @@ public sealed partial class PgcFavoriteBody : PgcFavoriteControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
-            !args.IsIntermediate;
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
             Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     SeasonScrollView.ExtentHeight
-                    - SeasonScrollView.ViewportHeight
-                    - SeasonScrollView.VerticalOffset
+                        - SeasonScrollView.ViewportHeight
+                        - SeasonScrollView.VerticalOffset
                     <= 240
                 )
                 {

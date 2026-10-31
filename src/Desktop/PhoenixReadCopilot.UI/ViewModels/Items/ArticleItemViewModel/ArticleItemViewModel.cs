@@ -9,9 +9,9 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Article;
+using Windows.Globalization;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
-using Windows.Globalization;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

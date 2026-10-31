@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 
 namespace PhoenixReadCopilot.UI.Controls.Moment;
@@ -54,11 +55,7 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = item.Title,
-                    Tag = item
-                });
+                Selector.Items.Add(new SelectorBarItem() { Text = item.Title, Tag = item });
             }
         }
 
