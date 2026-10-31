@@ -67,7 +67,7 @@
                           IsBackButtonVisible="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}"
                           IsBackEnabled="True">
             <base:AppTitleBar.IconElement>
-                <BitmapIcon ShowAsMonochrome="False" UriSource="Assets/StoreLogo.png"/>
+                <BitmapIcon ShowAsMonochrome="False" UriSource="/Assets/StoreLogo.png"/>
             </base:AppTitleBar.IconElement>
 
             <base:AppTitleBar.Header>
@@ -108,17 +108,17 @@
             </base:AppTitleBar.Footer>
         </base:AppTitleBar>
 
-        <base:AppTitleBar x:Name="SecondaryTitleBar"
-                          Title="{x:Bind strings:Resources.AppName}"
-                          BackRequested="OnVideoBackRequested"
-                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                          BorderThickness="0,0,0,1"
-                          IsBackButtonVisible="False"
-                          Visibility="Collapsed">
-            <base:AppTitleBar.IconElement>
-                <BitmapIcon ShowAsMonochrome="False" UriSource="Assets/StoreLogo.png"/>
-            </base:AppTitleBar.IconElement>
-        </base:AppTitleBar>
+        <TitleBar x:Name="SecondaryTitleBar"
+                  Title="{x:Bind strings:Resources.AppName}"
+                  BackRequested="OnVideoBackRequested"
+                  BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                  BorderThickness="0,0,0,1"
+                  IsBackButtonVisible="False"
+                  Visibility="Collapsed">
+            <TitleBar.IconSource>
+                <BitmapIconSource ShowAsMonochrome="False" UriSource="/Assets/StoreLogo.png"/>
+            </TitleBar.IconSource>
+        </TitleBar>
 
         <NavigationView x:Name="NavView"
                         Grid.Row="1"

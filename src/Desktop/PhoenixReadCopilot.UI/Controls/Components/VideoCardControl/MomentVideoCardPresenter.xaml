@@ -28,10 +28,11 @@
                 <RowDefinition/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <base:TrimTextBlock HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                FontWeight="Bold"
-                                Text="{x:Bind ViewModel.Title}"/>
+            <TextBlock HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontWeight="Bold"
+                       Text="{x:Bind ViewModel.Title}"
+                       TextTrimming="CharacterEllipsis"/>
             <StackPanel Grid.Row="1"
                         Orientation="Horizontal"
                         Spacing="12">

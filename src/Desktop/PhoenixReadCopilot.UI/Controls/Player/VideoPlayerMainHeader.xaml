@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:VideoPlayerPageControlBase
-    x:Class="PhoenixReadCopilot.UI.Controls.Player.VideoPlayerMainHeader"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:WinUIKernel.Share.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
-    xmlns:ic="using:FluentIcons.WinUI"
-    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<local:VideoPlayerPageControlBase x:Class="PhoenixReadCopilot.UI.Controls.Player.VideoPlayerMainHeader"
+                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                  xmlns:base="using:WinUIKernel.Share.Base"
+                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                  xmlns:ic="using:FluentIcons.WinUI"
+                                  xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
+                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                  xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
+                                  mc:Ignorable="d">
 
     <Grid Padding="16,0">
         <Grid.ColumnDefinitions>
@@ -17,67 +16,53 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ic:SymbolIcon
-            Margin="0,0,12,0"
-            VerticalAlignment="Center"
-            FontSize="14"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            Symbol="EyeOff"
-            ToolTipService.ToolTip="{x:Bind strings:Resources.PlayInPrivateTip}"
-            Visibility="{x:Bind ViewModel.IsPrivatePlay, Mode=OneWay}"/>
-        <base:TrimTextBlock
-            Grid.Column="1"
-            Margin="0,0,12,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            FontWeight="Bold"
-            IsTextSelectionEnabled="True"
-            MaxLines="1"
-            Text="{x:Bind ViewModel.Title, Mode=OneWay}"/>
-        <StackPanel
-            Grid.Column="2"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Spacing="4">
-            <Button VerticalAlignment="Center"
-                    Style="{StaticResource IconButtonStyle}">
-                <ic:SymbolIcon FontSize="14"
-                        Symbol="Share"/>
+        <ic:SymbolIcon Margin="0,0,12,0"
+                       VerticalAlignment="Center"
+                       FontSize="14"
+                       Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                       Symbol="EyeOff"
+                       ToolTipService.ToolTip="{x:Bind strings:Resources.PlayInPrivateTip}"
+                       Visibility="{x:Bind ViewModel.IsPrivatePlay, Mode=OneWay}"/>
+        <TextBlock Grid.Column="1"
+                   Margin="0,0,12,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   FontWeight="Bold"
+                   IsTextSelectionEnabled="True"
+                   MaxLines="1"
+                   Text="{x:Bind ViewModel.Title, Mode=OneWay}"
+                   TextTrimming="CharacterEllipsis"/>
+        <StackPanel Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="4">
+            <Button VerticalAlignment="Center" Style="{StaticResource IconButtonStyle}">
+                <ic:SymbolIcon FontSize="14" Symbol="Share"/>
                 <Button.Flyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem
-                            MinWidth="200"
-                            Command="{x:Bind ViewModel.AddToViewLaterCommand, Mode=OneWay}"
-                            Text="{x:Bind strings:Resources.AddToViewLater}"/>
-                        <MenuFlyoutItem
-                            MinWidth="200"
-                            Command="{x:Bind ViewModel.PinCommand, Mode=OneWay}"
-                            Text="{x:Bind strings:Resources.FixContent}"/>
-                        <MenuFlyoutItem
-                            MinWidth="200"
-                            Command="{x:Bind ViewModel.CopyTitleCommand, Mode=OneWay}"
-                            Text="{x:Bind strings:Resources.CopyTitle}"/>
+                        <MenuFlyoutItem MinWidth="200"
+                                        Command="{x:Bind ViewModel.AddToViewLaterCommand, Mode=OneWay}"
+                                        Text="{x:Bind strings:Resources.AddToViewLater}"/>
+                        <MenuFlyoutItem MinWidth="200"
+                                        Command="{x:Bind ViewModel.PinCommand, Mode=OneWay}"
+                                        Text="{x:Bind strings:Resources.FixContent}"/>
+                        <MenuFlyoutItem MinWidth="200"
+                                        Command="{x:Bind ViewModel.CopyTitleCommand, Mode=OneWay}"
+                                        Text="{x:Bind strings:Resources.CopyTitle}"/>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}"
-                                Tag="{x:Bind strings:Resources.Link}"/>
-                        <MenuFlyoutItem
-                            MinWidth="200"
-                            Command="{x:Bind ViewModel.CopyVideoUrlCommand, Mode=OneWay}"
-                            Text="{x:Bind strings:Resources.CopyVideoUrl}"/>
-                        <MenuFlyoutItem Command="{x:Bind ViewModel.ShareVideoUrlCommand, Mode=OneWay}"
-                                Text="{x:Bind strings:Resources.ShareLink}"/>
+                        <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}" Tag="{x:Bind strings:Resources.Link}"/>
+                        <MenuFlyoutItem MinWidth="200"
+                                        Command="{x:Bind ViewModel.CopyVideoUrlCommand, Mode=OneWay}"
+                                        Text="{x:Bind strings:Resources.CopyVideoUrl}"/>
+                        <MenuFlyoutItem Command="{x:Bind ViewModel.ShareVideoUrlCommand, Mode=OneWay}" Text="{x:Bind strings:Resources.ShareLink}"/>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}"
-                                Tag="{x:Bind strings:Resources.OpenWith}"/>
-                        <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInNewWindowCommand, Mode=OneWay}"
-                                Text="{x:Bind strings:Resources.OpenInNewWindow}"/>
-                        <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInBroswerCommand, Mode=OneWay}"
-                                Text="{x:Bind strings:Resources.OpenInBrowser}"/>
+                        <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}" Tag="{x:Bind strings:Resources.OpenWith}"/>
+                        <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInNewWindowCommand, Mode=OneWay}" Text="{x:Bind strings:Resources.OpenInNewWindow}"/>
+                        <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInBroswerCommand, Mode=OneWay}" Text="{x:Bind strings:Resources.OpenInBrowser}"/>
                     </MenuFlyout>
                 </Button.Flyout>
             </Button>
-            <base:SideSplitButton IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=TwoWay}"
-                    IsInvertDirection="True"/>
+            <base:SideSplitButton IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=TwoWay}" IsInvertDirection="True"/>
         </StackPanel>
     </Grid>
 </local:VideoPlayerPageControlBase>

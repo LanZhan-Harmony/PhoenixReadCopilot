@@ -1,41 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:MomentUperSectionControlBase
-    x:Class="PhoenixReadCopilot.UI.Controls.Moment.ComprehensiveMainBody"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:WinUIKernel.Share.Base"
-    xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
-    xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
-    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Moment"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<local:MomentUperSectionControlBase x:Class="PhoenixReadCopilot.UI.Controls.Moment.ComprehensiveMainBody"
+                                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                    xmlns:base="using:WinUIKernel.Share.Base"
+                                    xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
+                                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                    xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
+                                    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Moment"
+                                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
+                                    mc:Ignorable="d">
 
     <Grid>
-        <ScrollViewer x:Name="MomentScrollView"
-                Style="{StaticResource PageScrollViewerStyle}">
+        <ScrollViewer x:Name="MomentScrollView" Style="{StaticResource PageScrollViewerStyle}">
             <Grid Margin="16,12">
-                <ItemsControl MaxWidth="1200"
-                        ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
+                <ItemsControl MaxWidth="1200" ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="items:MomentItemViewModel">
-                            <components:MomentCardControl
-                                Margin="0,6"
-                                Style="{StaticResource FullMomentCardStyle}"
-                                ViewModel="{x:Bind}"/>
+                            <components:MomentCardControl Margin="0,6"
+                                                          Style="{StaticResource FullMomentCardStyle}"
+                                                          ViewModel="{x:Bind}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </ScrollViewer>
 
-        <base:EmptyHolder
-            Description="{x:Bind strings:Resources.NoSpecificData}"
-            Emoji="&#x1F440;"
-            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <base:EmptyHolder Description="{x:Bind strings:Resources.NoSpecificData}"
+                          Emoji="&#x1F440;"
+                          Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}"/>
 
-        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}"
-                Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
+        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
     </Grid>
 </local:MomentUperSectionControlBase>

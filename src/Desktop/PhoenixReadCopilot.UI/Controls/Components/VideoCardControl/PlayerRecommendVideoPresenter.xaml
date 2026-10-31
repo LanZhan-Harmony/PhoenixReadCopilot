@@ -37,10 +37,11 @@
                        TextWrapping="NoWrap"
                        Visibility="{x:Bind ViewModel.Author, Converter={StaticResource ObjectToVisibilityConverter}}"/>
 
-            <base:TrimTextBlock Grid.Row="1"
-                                HorizontalAlignment="Left"
-                                MaxLines="2"
-                                Text="{x:Bind ViewModel.Title}"/>
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Left"
+                       MaxLines="2"
+                       Text="{x:Bind ViewModel.Title}"
+                       TextTrimming="CharacterEllipsis"/>
             <StackPanel Grid.Row="2"
                         Orientation="Horizontal"
                         Spacing="12">

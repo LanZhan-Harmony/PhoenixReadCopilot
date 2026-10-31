@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:NotifyMessageControlBase
-    x:Class="PhoenixReadCopilot.UI.Controls.Message.NotifyMessageBody"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:WinUIKernel.Share.Base"
-    xmlns:community="using:CommunityToolkit.WinUI.Controls"
-    xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
-    xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
-    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Message"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<local:NotifyMessageControlBase x:Class="PhoenixReadCopilot.UI.Controls.Message.NotifyMessageBody"
+                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                xmlns:base="using:WinUIKernel.Share.Base"
+                                xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                                xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
+                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
+                                xmlns:local="using:PhoenixReadCopilot.UI.Controls.Message"
+                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
+                                mc:Ignorable="d">
 
     <Grid>
-        <ScrollViewer x:Name="MessageScrollView"
-                Style="{StaticResource PageScrollViewerStyle}">
+        <ScrollViewer x:Name="MessageScrollView" Style="{StaticResource PageScrollViewerStyle}">
             <Grid Margin="16,12">
-                <ItemsRepeater
-                    x:Name="MessageRepeater"
-                    MaxWidth="1000"
-                    ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
+                <ItemsRepeater x:Name="MessageRepeater"
+                               MaxWidth="1000"
+                               ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="items:NotifyMessageItemViewModel">
                             <local:NotifyMessageCardControl ViewModel="{x:Bind}"/>
@@ -33,12 +30,10 @@
             </Grid>
         </ScrollViewer>
 
-        <base:EmptyHolder
-            Description="{x:Bind strings:Resources.NoMessage}"
-            Emoji="&#x1F92A;"
-            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <base:EmptyHolder Description="{x:Bind strings:Resources.NoMessage}"
+                          Emoji="&#x1F92A;"
+                          Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}"/>
 
-        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}"
-                Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
+        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
     </Grid>
 </local:NotifyMessageControlBase>

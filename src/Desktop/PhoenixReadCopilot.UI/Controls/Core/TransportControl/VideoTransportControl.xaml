@@ -67,7 +67,7 @@
                             <ic:SymbolIcon FontSize="14"
                                            IconVariant="Filled"
                                            Symbol="Play"
-                                           Visibility="{x:Bind ViewModel.IsPaused, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+                                           Visibility="{x:Bind ViewModel.IsPaused, Mode=OneWay}"/>
                             <ic:SymbolIcon FontSize="14"
                                            IconVariant="Filled"
                                            Symbol="Pause"

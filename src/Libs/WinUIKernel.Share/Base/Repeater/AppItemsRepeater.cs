@@ -49,14 +49,14 @@ public partial class AppItemsRepeater : ItemsRepeater
             );
         }
 
-        if (availableSize.Width.IsValidSizeDimension())
+        if (availableSize.Width >= 0 && !double.IsInfinity(availableSize.Width))
         {
             returnSize.Width = Stretch
                 ? Math.Max(Math.Max(availableSize.Width - 1, 0), returnSize.Width)
                 : Math.Min(Math.Max(availableSize.Width - 1, 0), returnSize.Width);
         }
 
-        if (availableSize.Height.IsValidSizeDimension())
+        if (availableSize.Height >= 0 && !double.IsInfinity(availableSize.Height))
         {
             returnSize.Height = Math.Min(availableSize.Height, returnSize.Height);
         }

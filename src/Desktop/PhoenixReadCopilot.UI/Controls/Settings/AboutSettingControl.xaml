@@ -22,8 +22,8 @@
         <community:SettingsExpander.Items>
             <community:SettingsCard HorizontalContentAlignment="Stretch" ContentAlignment="Left">
                 <StackPanel x:Name="LinkContainer" Margin="-12,0,0,0">
-                    <HyperlinkButton Content="{x:Bind strings:Resources.BiliHomePage}" NavigateUri="https://space.bilibili.com/5992670"/>
-                    <HyperlinkButton Content="{x:Bind strings:Resources.ProjectHomePage}" NavigateUri="https://github.com/Richasy/Bili.Copilot"/>
+                    <HyperlinkButton Content="{x:Bind strings:Resources.ProjectHomePage}" NavigateUri="https://github.com/LanZhan-Harmony/PhoenixReadCopilot"/>
+                    <HyperlinkButton Content="{x:Bind strings:Resources.SendFeedback}" NavigateUri="https://github.com/LanZhan-Harmony/PhoenixReadCopilot/issues/new/choose"/>
                 </StackPanel>
             </community:SettingsCard>
         </community:SettingsExpander.Items>

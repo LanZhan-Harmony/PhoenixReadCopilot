@@ -36,11 +36,12 @@
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="NoWrap"/>
 
-            <base:TrimTextBlock Grid.Row="1"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                MaxLines="2"
-                                Text="{x:Bind ViewModel.Title}"/>
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       MaxLines="2"
+                       Text="{x:Bind ViewModel.Title}"
+                       TextTrimming="CharacterEllipsis"/>
             <StackPanel Grid.Row="2"
                         Orientation="Horizontal"
                         Spacing="12">

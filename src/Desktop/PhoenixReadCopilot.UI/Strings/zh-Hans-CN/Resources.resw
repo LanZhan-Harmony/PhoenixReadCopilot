@@ -454,7 +454,7 @@
     <value>复制 DASH 内容</value>
   </data>
   <data name="Copyright" xml:space="preserve">
-    <value>© {0} Richasy。GPL 开源许可。</value>
+    <value>© {0} LanZhan。GPL 开源许可。</value>
   </data>
   <data name="CopyToClipboard" xml:space="preserve">
     <value>复制到剪切板</value>
@@ -962,9 +962,6 @@
   </data>
   <data name="IsNeedFeedbackDescription" xml:space="preserve">
     <value>需要反馈应用使用过程中的问题？</value>
-  </data>
-  <data name="JoinQQGroup" xml:space="preserve">
-    <value>加入 QQ 群</value>
   </data>
   <data name="Khaki" xml:space="preserve">
     <value>土黄色</value>

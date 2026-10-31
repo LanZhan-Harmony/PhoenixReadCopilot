@@ -25,7 +25,7 @@
                   BorderThickness="0,0,0,1"
                   IsBackButtonVisible="False">
             <TitleBar.IconSource>
-                <ImageIconSource ImageSource="/Assets/StoreLogo.png"/>
+                <BitmapIconSource ShowAsMonochrome="False" UriSource="/Assets/StoreLogo.png"/>
             </TitleBar.IconSource>
         </TitleBar>
         <Frame x:Name="MainFrame"
