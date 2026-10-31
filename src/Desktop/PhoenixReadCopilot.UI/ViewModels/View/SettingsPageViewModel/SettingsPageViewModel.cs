@@ -150,7 +150,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         );
 
         var copyrightTemplate = Resources.Copyright;
-        Copyright = string.Format(copyrightTemplate, 2024);
+        Copyright = string.Format(copyrightTemplate, 2026);
         PackageVersion = this.Get<IAppToolkit>().GetPackageVersion();
 
         _isInitialized = true;

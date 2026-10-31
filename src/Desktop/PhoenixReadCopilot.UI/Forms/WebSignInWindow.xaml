@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
         <TitleBar x:Name="TitleBar" Title="{x:Bind strings:Resources.AppName}">
             <TitleBar.IconSource>
-                <ImageIconSource ImageSource="/Assets/StoreLogo.png"/>
+                <BitmapIconSource ShowAsMonochrome="False" UriSource="/Assets/StoreLogo.png"/>
             </TitleBar.IconSource>
         </TitleBar>
         <WebView2 x:Name="MainView"

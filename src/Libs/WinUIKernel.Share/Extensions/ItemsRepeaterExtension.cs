@@ -76,9 +76,7 @@ public static partial class ItemsRepeaterExtension
                     return Source![index];
                 }
 
-#pragma warning disable CA2201 // 不要引发保留的异常类型
                 throw new IndexOutOfRangeException();
-#pragma warning restore CA2201 // 不要引发保留的异常类型
             }
         }
 

@@ -1,57 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:SubtitleControlBase
-    x:Class="PhoenixReadCopilot.UI.Controls.Player.SubtitleButton"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:WinUIKernel.Share.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
-    xmlns:ic="using:FluentIcons.WinUI"
-    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:subtitle="using:Richasy.BiliKernel.Models.Subtitle"
-    mc:Ignorable="d">
+<local:SubtitleControlBase x:Class="PhoenixReadCopilot.UI.Controls.Player.SubtitleButton"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:base="using:WinUIKernel.Share.Base"
+                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:ic="using:FluentIcons.WinUI"
+                           xmlns:local="using:PhoenixReadCopilot.UI.Controls.Player"
+                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
+                           xmlns:subtitle="using:Richasy.BiliKernel.Models.Subtitle"
+                           mc:Ignorable="d">
 
-    <Grid Margin="8,0,0,0"
-            Visibility="{x:Bind ViewModel.IsAvailable, Mode=OneWay}">
-        <Button
-            VerticalAlignment="Center"
-            Style="{StaticResource CircleIconButtonStyle}"
-            ToolTipService.ToolTip="{x:Bind strings:Resources.Subtitle}">
-            <ic:SymbolIcon FontSize="14"
-                    Symbol="ClosedCaption"/>
+    <Grid Margin="8,0,0,0" Visibility="{x:Bind ViewModel.IsAvailable, Mode=OneWay}">
+        <Button VerticalAlignment="Center"
+                Style="{StaticResource CircleIconButtonStyle}"
+                ToolTipService.ToolTip="{x:Bind strings:Resources.Subtitle}">
+            <ic:SymbolIcon FontSize="14" Symbol="ClosedCaption"/>
             <Button.Flyout>
-                <Flyout FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}"
-                        Opened="OnFlyoutOpened">
-                    <StackPanel Width="200"
-                            Spacing="4">
+                <Flyout FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}" Opened="OnFlyoutOpened">
+                    <StackPanel Width="200" Spacing="4">
                         <Grid ColumnSpacing="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center"
-                                    Text="{x:Bind strings:Resources.ShowSubtitle}"/>
-                            <ToggleSwitch
-                                Grid.Column="1"
-                                MinWidth="0"
-                                MinHeight="0"
-                                VerticalAlignment="Center"
-                                IsOn="{x:Bind ViewModel.IsEnabled, Mode=TwoWay}"
-                                OffContent=""
-                                OnContent=""/>
+                            <TextBlock VerticalAlignment="Center" Text="{x:Bind strings:Resources.ShowSubtitle}"/>
+                            <ToggleSwitch Grid.Column="1"
+                                          MinWidth="0"
+                                          MinHeight="0"
+                                          VerticalAlignment="Center"
+                                          IsOn="{x:Bind ViewModel.IsEnabled, Mode=TwoWay}"
+                                          OffContent=""
+                                          OnContent=""/>
                         </Grid>
-                        <ItemsView
-                            x:Name="SubtitleView"
-                            ItemsSource="{x:Bind ViewModel.Metas, Mode=OneWay}"
-                            SelectionChanged="OnMetaChanged">
+                        <ItemsView x:Name="SubtitleView"
+                                   ItemsSource="{x:Bind ViewModel.Metas, Mode=OneWay}"
+                                   SelectionChanged="OnMetaChanged">
                             <ItemsView.ItemTemplate>
                                 <DataTemplate x:DataType="subtitle:SubtitleMeta">
                                     <ItemContainer Style="{StaticResource AppItemContainerStyle}">
-                                        <Grid Padding="12,8"
-                                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
-                                            <base:TrimTextBlock MaxLines="1"
-                                                    Text="{x:Bind LanguageName}"/>
+                                        <Grid Padding="12,8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                                            <TextBlock MaxLines="1"
+                                                       Text="{x:Bind LanguageName}"
+                                                       TextTrimming="CharacterEllipsis"/>
                                         </Grid>
                                     </ItemContainer>
                                 </DataTemplate>

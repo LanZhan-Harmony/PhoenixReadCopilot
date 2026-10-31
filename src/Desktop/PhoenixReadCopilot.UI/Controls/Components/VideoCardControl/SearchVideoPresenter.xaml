@@ -33,9 +33,10 @@
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="NoWrap"/>
 
-            <base:TrimTextBlock Grid.Row="1"
-                                HorizontalAlignment="Left"
-                                Text="{x:Bind ViewModel.Title}"/>
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Left"
+                       Text="{x:Bind ViewModel.Title}"
+                       TextTrimming="CharacterEllipsis"/>
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>

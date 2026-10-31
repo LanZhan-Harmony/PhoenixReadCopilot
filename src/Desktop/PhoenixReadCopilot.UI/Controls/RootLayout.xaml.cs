@@ -47,7 +47,7 @@ public sealed partial class RootLayout : RootLayoutBase
                 : Visibility.Collapsed;
         SecondaryTitleBar.IsBackButtonVisible =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
-        SecondaryTitleBar.IsBackEnabled =
+        SecondaryTitleBar.IsBackButtonEnabled =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
         this.Get<AppViewModel>().ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
             Microsoft.UI.Windowing.TitleBarHeightOption.Standard;
@@ -67,7 +67,6 @@ public sealed partial class RootLayout : RootLayoutBase
         }
 
         MainTitleBar.DelayUpdateAsync(100);
-        SecondaryTitleBar.DelayUpdateAsync(500);
     }
 
     /// <summary>
@@ -99,7 +98,6 @@ public sealed partial class RootLayout : RootLayoutBase
         }
 
         MainTitleBar.DelayUpdateAsync(500);
-        SecondaryTitleBar.DelayUpdateAsync(100);
     }
 
     /// <summary>
@@ -242,7 +240,7 @@ public sealed partial class RootLayout : RootLayoutBase
     private void OnHistoryButtonClick(object sender, EventArgs e) =>
         ViewModel.NavigateToOver(typeof(HistoryPage), default);
 
-    private void OnVideoBackRequested(object sender, EventArgs e) =>
+    private void OnVideoBackRequested(TitleBar sender, object args) =>
         TryBackToDefaultIfPlayerHostMode();
 }
 
