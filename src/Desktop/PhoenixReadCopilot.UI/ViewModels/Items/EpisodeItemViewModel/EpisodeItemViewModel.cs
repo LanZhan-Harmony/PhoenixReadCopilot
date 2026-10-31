@@ -6,7 +6,7 @@ using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 using Windows.System;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;

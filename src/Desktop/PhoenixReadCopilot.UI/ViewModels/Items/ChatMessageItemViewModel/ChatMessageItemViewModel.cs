@@ -2,7 +2,7 @@ using Humanizer;
 using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.User;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

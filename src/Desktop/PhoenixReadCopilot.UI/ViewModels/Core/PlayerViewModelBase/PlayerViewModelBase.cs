@@ -4,7 +4,7 @@ using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 using Windows.Media;
 using Windows.Storage.Streams;
 using WinUIEx;

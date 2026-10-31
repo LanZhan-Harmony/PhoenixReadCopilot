@@ -10,7 +10,7 @@
     xmlns:items="using:PhoenixReadCopilot.UI.ViewModels.Items"
     xmlns:local="using:PhoenixReadCopilot.UI.Controls.Pgc"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+        xmlns:base="using:WinUIKernel.Share.Base"
     VerticalAlignment="Stretch"
     mc:Ignorable="d">
 

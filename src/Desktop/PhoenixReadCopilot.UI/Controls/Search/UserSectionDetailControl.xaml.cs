@@ -1,5 +1,5 @@
 using PhoenixReadCopilot.UI.ViewModels.Components;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Search;
 
@@ -40,7 +40,7 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
             !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
             Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,

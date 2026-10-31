@@ -4,8 +4,8 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.WinUIKernel.Share.Toolkits;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 

@@ -1,6 +1,6 @@
+using Microsoft.Windows.Storage;
 using PhoenixReadCopilot.UI.Models.Constants;
-using Richasy.WinUIKernel.Share.Toolkits;
-using Windows.Storage;
+using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Toolkits;
 
@@ -52,8 +52,7 @@ internal sealed class SettingsToolkit : SharedSettingsToolkit
             .IsSettingKeyExist(settingName.ToString());
 
     protected override ApplicationDataContainer GetSettingContainer() =>
-        ApplicationData.Current.LocalSettings.CreateContainer(
-            "v1",
-            ApplicationDataCreateDisposition.Always
-        );
+        ApplicationData
+            .GetDefault()
+            .LocalSettings.CreateContainer("v1", ApplicationDataCreateDisposition.Always);
 }

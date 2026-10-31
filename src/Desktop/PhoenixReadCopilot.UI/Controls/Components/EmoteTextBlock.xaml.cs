@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadCopilot.UI.Forms;
 using Richasy.BiliKernel.Models.Appearance;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;
 

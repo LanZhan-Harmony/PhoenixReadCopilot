@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models.Subtitle;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 

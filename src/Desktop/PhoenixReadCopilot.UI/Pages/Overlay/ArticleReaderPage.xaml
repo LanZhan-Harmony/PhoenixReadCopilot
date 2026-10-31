@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
     xmlns:article="using:PhoenixReadCopilot.UI.Controls.Article"
-    xmlns:base="using:Richasy.WinUIKernel.Share.Base"
+    xmlns:base="using:WinUIKernel.Share.Base"
     xmlns:comment="using:PhoenixReadCopilot.UI.Controls.Comment"
     xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

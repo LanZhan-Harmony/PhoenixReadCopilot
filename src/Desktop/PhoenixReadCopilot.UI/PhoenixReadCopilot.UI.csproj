@@ -95,14 +95,13 @@
     <PackageReference Include="Richasy.BiliKernel.Services.Moment" />
     <PackageReference Include="Richasy.BiliKernel.Services.Search" />
     <PackageReference Include="Richasy.BiliKernel.Services.User" />
-    <PackageReference Include="Richasy.WinUIKernel.Share" />
-    <PackageReference Include="RichasyKernel.Core" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.File" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\Danmaku.Core\Danmaku.Core.csproj" />
+    <ProjectReference Include="..\..\Libs\WinUIKernel.Share\WinUIKernel.Share.csproj" />
     <ProjectReference Include="..\PhoenixReadCopilot.UI.Models\PhoenixReadCopilot.UI.Models.csproj" />
   </ItemGroup>
 

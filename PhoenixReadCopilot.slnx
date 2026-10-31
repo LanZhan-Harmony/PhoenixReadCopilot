@@ -14,6 +14,15 @@
     </Project>
   </Folder>
   <Folder Name="/Libs/">
-    <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj" />
+    <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj">
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Libs/WinUIKernel.Share/WinUIKernel.Share.csproj">
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x86" Project="x86" />
+      <Platform Solution="Debug|x64" Project="x64" />
+    </Project>
   </Folder>
 </Solution>

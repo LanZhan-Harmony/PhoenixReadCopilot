@@ -39,7 +39,7 @@ public sealed partial class PopularMainBody : PopularPageControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
             !args.IsIntermediate;
         if (
             (

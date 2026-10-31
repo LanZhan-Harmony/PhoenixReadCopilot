@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Media;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

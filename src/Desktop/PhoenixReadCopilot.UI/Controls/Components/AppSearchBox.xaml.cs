@@ -1,7 +1,7 @@
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Search;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;
 

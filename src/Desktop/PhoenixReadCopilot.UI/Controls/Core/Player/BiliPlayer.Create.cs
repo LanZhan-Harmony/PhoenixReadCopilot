@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PhoenixReadCopilot.UI.Controls.Danmaku;
 using PhoenixReadCopilot.UI.Controls.Player;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.System;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;

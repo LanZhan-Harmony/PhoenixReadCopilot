@@ -1,6 +1,6 @@
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Comment;
 

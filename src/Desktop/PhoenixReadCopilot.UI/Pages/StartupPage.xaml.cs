@@ -1,7 +1,7 @@
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.System;
 
 namespace PhoenixReadCopilot.UI.Pages;

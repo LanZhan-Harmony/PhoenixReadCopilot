@@ -9,7 +9,7 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using Windows.System;

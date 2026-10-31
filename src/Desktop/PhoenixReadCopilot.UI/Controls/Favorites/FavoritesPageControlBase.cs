@@ -1,5 +1,5 @@
 using PhoenixReadCopilot.UI.ViewModels.View;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Favorites;
 

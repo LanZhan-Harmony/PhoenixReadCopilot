@@ -4,7 +4,7 @@ using PhoenixReadCopilot.UI.Controls.Danmaku;
 using PhoenixReadCopilot.UI.Controls.Player;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Models.Media;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Pages.Overlay;
 

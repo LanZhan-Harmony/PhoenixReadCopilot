@@ -1,8 +1,8 @@
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.Controls;
 

@@ -11,18 +11,16 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
-using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Globalization;
-using WinRT;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
 /// <summary>
 /// 视频项视图模型.
 /// </summary>
-[GeneratedBindableCustomProperty]
 public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 {
     private readonly Action<VideoItemViewModel>? _removeAction;
@@ -47,13 +45,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         Cover = info.Identifier.Cover?.Uri;
         Author = info.Publisher?.User?.Name;
         Avatar = info.Publisher?.User?.Avatar?.Uri;
-        Duration = AppToolkit.FormatDuration(TimeSpan.FromSeconds(info.Duration ?? 0));
         PublishRelativeTime = info.PublishTime?.Humanize(culture: new CultureInfo(primaryLan));
         PlayCount = info.CommunityInformation?.PlayCount;
         DanmakuCount = info.CommunityInformation?.DanmakuCount;
         LikeCount = info.CommunityInformation?.LikeCount;
         TagName = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.TagName);
-        RecommendReason = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.RecommendReason);
         Subtitle = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.Subtitle);
         CollectTime = info.GetExtensionIfNotNull<DateTimeOffset>(VideoExtensionDataId.CollectTime)
             .Humanize(default, new CultureInfo("zh-CN"));
