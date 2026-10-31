@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using Richasy.BiliKernel.Models.Subtitle;
 
 namespace PhoenixReadCopilot.UI.Controls.Player;

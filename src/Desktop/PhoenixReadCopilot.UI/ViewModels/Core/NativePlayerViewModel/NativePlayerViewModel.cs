@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;

@@ -10,14 +10,22 @@ public sealed partial class StatusTip : LayoutUserControlBase
     /// <summary>
     /// <see cref="Text"/>的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(StatusTip), new PropertyMetadata(string.Empty));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(StatusTip),
+        new PropertyMetadata(string.Empty)
+    );
 
     /// <summary>
     /// <see cref="Status"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty StatusProperty =
-        DependencyProperty.Register(nameof(Status), typeof(InfoType), typeof(StatusTip), new PropertyMetadata(default, new PropertyChangedCallback(OnStatusChanged)));
+    public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
+        nameof(Status),
+        typeof(InfoType),
+        typeof(StatusTip),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnStatusChanged))
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="StatusTip"/> class.
@@ -43,8 +51,7 @@ public sealed partial class StatusTip : LayoutUserControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded()
-        => ChangeStatus();
+    protected override void OnControlLoaded() => ChangeStatus();
 
     private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {

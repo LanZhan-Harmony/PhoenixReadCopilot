@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="using:WinUIKernel.Share.Converters"
-    xmlns:local="using:WinUIKernel.Share.Base">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="using:WinUIKernel.Share.Converters"
+                    xmlns:local="using:WinUIKernel.Share.Base">
 
-    <converters:BoolToVisibilityConverter x:Key="ImageBoolToVisibilityConverter" />
+    <converters:BoolToVisibilityConverter x:Key="ImageBoolToVisibilityConverter"/>
 
-    <Style BasedOn="{StaticResource DefaultImageExBaseStyle}" TargetType="local:ImageExBase" />
+    <Style BasedOn="{StaticResource DefaultImageExBaseStyle}" TargetType="local:ImageExBase"/>
 
     <Style x:Key="DefaultImageExBaseStyle" TargetType="local:ImageExBase">
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ImageExBase">
-                    <Grid
-                        x:Name="Root"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        FlowDirection="LeftToRight">
-                        <local:Shimmer
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            IsActive="{TemplateBinding IsImageLoading}"
-                            Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsImageLoading, Mode=OneWay, Converter={StaticResource ImageBoolToVisibilityConverter}}" />
+                    <Grid x:Name="Root"
+                          CornerRadius="{TemplateBinding CornerRadius}"
+                          FlowDirection="LeftToRight">
+                        <local:Shimmer HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       CornerRadius="{TemplateBinding CornerRadius}"
+                                       IsActive="{TemplateBinding IsImageLoading}"
+                                       Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsImageLoading, Mode=OneWay, Converter={StaticResource ImageBoolToVisibilityConverter}}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
     </Style>
 </ResourceDictionary>

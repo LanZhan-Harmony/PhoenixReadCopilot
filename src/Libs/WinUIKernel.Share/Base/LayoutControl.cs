@@ -27,19 +27,14 @@ public abstract class LayoutControlBase : Control
     /// <summary>
     /// 控件加载完成.
     /// </summary>
-    protected virtual void OnControlLoaded()
-    {
-    }
+    protected virtual void OnControlLoaded() { }
 
     /// <summary>
     /// 控件卸载完成.
     /// </summary>
-    protected virtual void OnControlUnloaded()
-    {
-    }
+    protected virtual void OnControlUnloaded() { }
 
-    private void OnLoaded(object sender, RoutedEventArgs e)
-        => OnControlLoaded();
+    private void OnLoaded(object sender, RoutedEventArgs e) => OnControlLoaded();
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
@@ -60,8 +55,12 @@ public abstract class LayoutControlBase<TViewModel> : LayoutControlBase
     /// <summary>
     /// <see cref="ViewModel"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ViewModelProperty =
-        DependencyProperty.Register(nameof(ViewModel), typeof(TViewModel), typeof(LayoutControlBase), new PropertyMetadata(default, new PropertyChangedCallback(OnViewModelChangedInternal)));
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(TViewModel),
+        typeof(LayoutControlBase),
+        new PropertyMetadata(default, new PropertyChangedCallback(OnViewModelChangedInternal))
+    );
 
     /// <summary>
     /// 视图模型.
@@ -75,16 +74,12 @@ public abstract class LayoutControlBase<TViewModel> : LayoutControlBase
     /// <summary>
     /// 当视图模型发生变化时.
     /// </summary>
-    protected virtual void OnViewModelChanged(TViewModel? oldValue, TViewModel? newValue)
-    {
-    }
+    protected virtual void OnViewModelChanged(TViewModel? oldValue, TViewModel? newValue) { }
 
     /// <summary>
     /// 当视图模型发生变化时，分配值（用于 AOT 赋值）.
     /// </summary>
-    protected virtual void AssignValuesWhenViewModelChanged()
-    {
-    }
+    protected virtual void AssignValuesWhenViewModelChanged() { }
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
@@ -102,7 +97,10 @@ public abstract class LayoutControlBase<TViewModel> : LayoutControlBase
         }
     }
 
-    private static void OnViewModelChangedInternal(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnViewModelChangedInternal(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as LayoutControlBase<TViewModel>;
         instance?.OnViewModelChanged((TViewModel?)e.OldValue, (TViewModel?)e.NewValue);

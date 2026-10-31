@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Models.Appearance;

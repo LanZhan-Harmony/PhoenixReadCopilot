@@ -13,7 +13,9 @@ public abstract class AppDialog : ContentDialog
     /// </summary>
     protected AppDialog()
     {
-        XamlRoot = WinUIKernelShareExtensions.Kernel.GetRequiredService<IXamlRootProvider>().XamlRoot;
+        XamlRoot = WinUIKernelShareExtensions
+            .Kernel.GetRequiredService<IXamlRootProvider>()
+            .XamlRoot;
         WinUIKernelShareExtensions.Kernel.GetRequiredService<IAppToolkit>().ResetControlTheme(this);
     }
 }

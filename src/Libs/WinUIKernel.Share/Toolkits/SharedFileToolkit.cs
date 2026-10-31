@@ -26,7 +26,10 @@ public class SharedFileToolkit : IFileToolkit
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<StorageFile>?> PickMultipleFileAsync(string extension, object windowInstance)
+    public async Task<IReadOnlyList<StorageFile>?> PickMultipleFileAsync(
+        string extension,
+        object windowInstance
+    )
     {
         try
         {
@@ -79,11 +82,16 @@ public class SharedFileToolkit : IFileToolkit
     }
 
     /// <inheritdoc/>
-    public async Task<T> ReadLocalDataAsync<T>(string fileName, JsonTypeInfo<T> typeInfo, string defaultValue = "{}", string folderName = "")
+    public async Task<T> ReadLocalDataAsync<T>(
+        string fileName,
+        JsonTypeInfo<T> typeInfo,
+        string defaultValue = "{}",
+        string folderName = ""
+    )
     {
-        var path = string.IsNullOrEmpty(folderName) ?
-                        $"ms-appdata:///local/{fileName}" :
-                        $"ms-appdata:///local/{folderName}/{fileName}";
+        var path = string.IsNullOrEmpty(folderName)
+            ? $"ms-appdata:///local/{fileName}"
+            : $"ms-appdata:///local/{folderName}/{fileName}";
         var content = defaultValue;
         try
         {
@@ -95,25 +103,37 @@ public class SharedFileToolkit : IFileToolkit
                 content = fileContent;
             }
         }
-        catch (FileNotFoundException)
-        {
-        }
+        catch (FileNotFoundException) { }
 
-        return (typeof(T) == typeof(string) ? (T)content.Clone() : JsonSerializer.Deserialize<T>(content, typeInfo))!;
+        return (
+            typeof(T) == typeof(string)
+                ? (T)content.Clone()
+                : JsonSerializer.Deserialize<T>(content, typeInfo)
+        )!;
     }
 
     /// <inheritdoc/>
-    public async Task WriteLocalDataAsync<T>(string fileName, T data, JsonTypeInfo<T> typeInfo, string folderName = "")
+    public async Task WriteLocalDataAsync<T>(
+        string fileName,
+        T data,
+        JsonTypeInfo<T> typeInfo,
+        string folderName = ""
+    )
     {
         var folder = Microsoft.Windows.Storage.ApplicationData.GetDefault().LocalFolder;
 
         if (!string.IsNullOrEmpty(folderName))
         {
-            folder = await folder.CreateFolderAsync(folderName, CreationCollisionOption.OpenIfExists).AsTask();
+            folder = await folder
+                .CreateFolderAsync(folderName, CreationCollisionOption.OpenIfExists)
+                .AsTask();
         }
 
-        var writeContent = data is string ? data.ToString() : JsonSerializer.Serialize(data, typeInfo);
-        var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists).AsTask();
+        var writeContent =
+            data is string ? data.ToString() : JsonSerializer.Serialize(data, typeInfo);
+        var file = await folder
+            .CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists)
+            .AsTask();
         await FileIO.WriteTextAsync(file, writeContent).AsTask();
     }
 
@@ -127,7 +147,9 @@ public class SharedFileToolkit : IFileToolkit
             folder = await folder.CreateFolderAsync(folderName).AsTask();
         }
 
-        var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists).AsTask();
+        var file = await folder
+            .CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists)
+            .AsTask();
         await file.DeleteAsync().AsTask();
     }
 }

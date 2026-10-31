@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using WinUIKernel.Share.Extensions;
 using Windows.Foundation;
+using WinUIKernel.Share.Extensions;
 
 namespace WinUIKernel.Share.Base.Repeater;
 
@@ -14,8 +14,12 @@ public partial class AppItemsRepeater : ItemsRepeater
     /// <summary>
     /// <see cref="Stretch"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty StretchProperty =
-        DependencyProperty.Register(nameof(Stretch), typeof(bool), typeof(AppItemsRepeater), new PropertyMetadata(default));
+    public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(
+        nameof(Stretch),
+        typeof(bool),
+        typeof(AppItemsRepeater),
+        new PropertyMetadata(default)
+    );
 
     private Size _measureSize;
 
@@ -39,12 +43,17 @@ public partial class AppItemsRepeater : ItemsRepeater
         }
         catch (Exception e)
         {
-            WinUIKernelShareExtensions.Logger?.LogError(e, "An error occurred when measuring AppItemsRepeater.");
+            WinUIKernelShareExtensions.Logger?.LogError(
+                e,
+                "An error occurred when measuring AppItemsRepeater."
+            );
         }
 
         if (availableSize.Width.IsValidSizeDimension())
         {
-            returnSize.Width = Stretch ? Math.Max(Math.Max(availableSize.Width - 1, 0), returnSize.Width) : Math.Min(Math.Max(availableSize.Width - 1, 0), returnSize.Width);
+            returnSize.Width = Stretch
+                ? Math.Max(Math.Max(availableSize.Width - 1, 0), returnSize.Width)
+                : Math.Min(Math.Max(availableSize.Width - 1, 0), returnSize.Width);
         }
 
         if (availableSize.Height.IsValidSizeDimension())

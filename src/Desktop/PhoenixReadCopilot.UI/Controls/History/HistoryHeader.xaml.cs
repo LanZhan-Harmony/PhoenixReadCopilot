@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
 
@@ -67,11 +69,7 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
             foreach (var item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = GetSectionName(item.Type),
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = GetSectionName(item.Type), Tag = item }
                 );
             }
         }

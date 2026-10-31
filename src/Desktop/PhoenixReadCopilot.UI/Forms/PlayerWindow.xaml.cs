@@ -1,5 +1,7 @@
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -7,17 +9,19 @@ using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
-using WinUIKernel.Share.Base;
 using Windows.Graphics;
 using Windows.System;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 using WinUIEx;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Forms;
 
 /// <summary>
 /// 播放器窗口.
 /// </summary>
-public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWindow
+public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, ITipWindow
 {
     private const int WindowMinWidth = 640;
     private const int WindowMinHeight = 480;
@@ -30,9 +34,10 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
     public PlayerWindow()
     {
         InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
         SetTitleBar(TitleBar);
         Title = Strings.Resources.AppName;
-        this.SetIcon("Assets/logo.ico");
+        AppWindow.SetIcon("Assets/logo.ico");
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
         MinWidth = WindowMinWidth;
         MinHeight = WindowMinHeight;
@@ -114,7 +119,7 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
             mode == PlayerDisplayMode.FullScreen ? Visibility.Collapsed : Visibility.Visible;
         TitleBar.IsBackButtonVisible =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
-        TitleBar.IsBackEnabled =
+        TitleBar.IsBackButtonEnabled =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
         if (MainFrame.Content is VideoPlayerPage vPage)
         {
@@ -126,8 +131,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
             TitleBar.Title = pPage.ViewModel.EpisodeTitle;
             pPage.EnterPlayerHostMode();
         }
-
-        TitleBar.DelayUpdateAsync(100);
     }
 
     /// <inheritdoc/>
@@ -144,8 +147,6 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         {
             pPage.ExitPlayerHostMode();
         }
-
-        TitleBar.DelayUpdateAsync(100);
     }
 
     /// <inheritdoc/>
@@ -391,5 +392,8 @@ public sealed partial class PlayerWindow : WindowBase, IPlayerHostWindow, ITipWi
         }
     }
 
-    private void OnBackRequested(object sender, EventArgs e) => TryBackToDefaultMode();
+    private void OnBackRequested(Microsoft.UI.Xaml.Controls.TitleBar sender, object args)
+    {
+        TryBackToDefaultMode();
+    }
 }

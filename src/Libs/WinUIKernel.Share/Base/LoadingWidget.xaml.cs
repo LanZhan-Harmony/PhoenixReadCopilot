@@ -10,8 +10,12 @@ public sealed partial class LoadingWidget : LayoutUserControlBase
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(LoadingWidget), new PropertyMetadata(default));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(LoadingWidget),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LoadingWidget"/> class.

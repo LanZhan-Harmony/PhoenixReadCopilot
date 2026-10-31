@@ -1,10 +1,12 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Moment;
-using WinUIKernel.Share.ViewModels;
+using Windows.ApplicationModel;
 using Windows.UI.Notifications;
 using Windows.UI.StartScreen;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 

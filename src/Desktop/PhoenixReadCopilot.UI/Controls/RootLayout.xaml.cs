@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.ViewModels.Core;

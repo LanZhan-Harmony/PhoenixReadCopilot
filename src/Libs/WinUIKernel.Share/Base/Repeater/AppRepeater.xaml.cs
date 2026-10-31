@@ -17,37 +17,61 @@ public sealed partial class AppRepeater : UserControl
         nameof(ItemsSource),
         typeof(object),
         typeof(AppRepeater),
-        new PropertyMetadata(null, OnItemsSourceChanged));
+        new PropertyMetadata(null, OnItemsSourceChanged)
+    );
 
     /// <summary>
     /// <see cref="RepeaterTabFocusNavigation"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty RepeaterTabFocusNavigationProperty =
-        DependencyProperty.Register(nameof(RepeaterTabFocusNavigation), typeof(KeyboardNavigationMode), typeof(AppRepeater), new PropertyMetadata(KeyboardNavigationMode.Once));
+        DependencyProperty.Register(
+            nameof(RepeaterTabFocusNavigation),
+            typeof(KeyboardNavigationMode),
+            typeof(AppRepeater),
+            new PropertyMetadata(KeyboardNavigationMode.Once)
+        );
 
     /// <summary>
     /// <see cref="ItemTemplateSelector"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty ItemTemplateSelectorProperty =
-        DependencyProperty.Register(nameof(ItemTemplateSelector), typeof(DataTemplateSelector), typeof(AppRepeater), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(ItemTemplateSelector),
+            typeof(DataTemplateSelector),
+            typeof(AppRepeater),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// <see cref="ItemTemplate"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty ItemTemplateProperty =
-        DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(AppRepeater), new PropertyMetadata(default));
+    public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(
+        nameof(ItemTemplate),
+        typeof(DataTemplate),
+        typeof(AppRepeater),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// <see cref="ItemContainerTemplate"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty ItemContainerTemplateProperty =
-        DependencyProperty.Register(nameof(ItemContainerTemplate), typeof(DataTemplate), typeof(AppRepeater), new PropertyMetadata(default));
+        DependencyProperty.Register(
+            nameof(ItemContainerTemplate),
+            typeof(DataTemplate),
+            typeof(AppRepeater),
+            new PropertyMetadata(default)
+        );
 
     /// <summary>
     /// <see cref="Layout"/> 依赖属性.
     /// </summary>
-    public static readonly DependencyProperty LayoutProperty =
-        DependencyProperty.Register(nameof(Layout), typeof(VirtualizingLayout), typeof(AppRepeater), new PropertyMetadata(default));
+    public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register(
+        nameof(Layout),
+        typeof(VirtualizingLayout),
+        typeof(AppRepeater),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// 获取或设置 Tab 键导航模式.
@@ -110,7 +134,10 @@ public sealed partial class AppRepeater : UserControl
     /// </summary>
     public AppRepeater() => InitializeComponent();
 
-    private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnItemsSourceChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var list = (AppRepeater)d;
 
@@ -133,6 +160,6 @@ public sealed partial class AppRepeater : UserControl
         PresenterCollection.Source = ItemsSource as IEnumerable<object>;
     }
 
-    private DataTemplate GetItemTemplate(DataTemplate? itemContainerTemplate)
-        => itemContainerTemplate ?? ContentPresenterTemplate;
+    private DataTemplate GetItemTemplate(DataTemplate? itemContainerTemplate) =>
+        itemContainerTemplate ?? ContentPresenterTemplate;
 }

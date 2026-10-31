@@ -9,11 +9,11 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
-using WinUIKernel.Share.Base;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using Windows.System;
 using WinUIEx;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -138,8 +138,7 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -150,8 +149,7 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>()
-            .ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]

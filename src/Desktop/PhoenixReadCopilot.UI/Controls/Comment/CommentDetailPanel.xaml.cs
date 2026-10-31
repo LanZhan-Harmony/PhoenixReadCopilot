@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using WinUIKernel.Share.Base;
 
@@ -71,8 +73,8 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
             {
                 if (
                     CommentScrollView.ExtentHeight
-                    - CommentScrollView.ViewportHeight
-                    - CommentScrollView.VerticalOffset
+                        - CommentScrollView.ViewportHeight
+                        - CommentScrollView.VerticalOffset
                     <= 240
                 )
                 {

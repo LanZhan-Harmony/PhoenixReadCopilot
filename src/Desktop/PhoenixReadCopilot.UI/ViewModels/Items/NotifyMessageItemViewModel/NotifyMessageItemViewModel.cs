@@ -2,8 +2,8 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models.User;
-using WinUIKernel.Share.ViewModels;
 using Windows.System;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

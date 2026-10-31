@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
-using WinUIKernel.Share.Base;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 

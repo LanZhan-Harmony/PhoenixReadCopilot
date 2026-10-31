@@ -1,4 +1,4 @@
-using Windows.Storage;
+using Microsoft.Windows.Storage;
 
 namespace WinUIKernel.Share.Toolkits;
 
@@ -8,8 +8,8 @@ namespace WinUIKernel.Share.Toolkits;
 public class SharedSettingsToolkit : ISettingsToolkit
 {
     /// <inheritdoc/>
-    public bool IsSettingKeyExist(string settingName)
-        => GetSettingContainer().Values.ContainsKey(settingName);
+    public bool IsSettingKeyExist(string settingName) =>
+        GetSettingContainer().Values.ContainsKey(settingName);
 
     /// <inheritdoc/>
     public T ReadLocalSetting<T>(string settingName, T defaultValue)
@@ -58,6 +58,6 @@ public class SharedSettingsToolkit : ISettingsToolkit
     /// Get the setting container.
     /// </summary>
     /// <returns><see cref="ApplicationDataContainer"/>.</returns>
-    protected virtual Microsoft.Windows.Storage.ApplicationDataContainer GetSettingContainer()
-        => Microsoft.Windows.Storage.ApplicationData.GetDefault().LocalSettings;
+    protected virtual ApplicationDataContainer GetSettingContainer() =>
+        ApplicationData.GetDefault().LocalSettings;
 }

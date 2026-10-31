@@ -12,14 +12,22 @@ public sealed partial class NonVirtualizingStackLayout : NonVirtualizingLayout
     /// <summary>
     /// <see cref="Orientation"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty OrientationProperty =
-        DependencyProperty.Register(nameof(Orientation), typeof(Orientation), typeof(NonVirtualizingStackLayout), new PropertyMetadata(Orientation.Vertical));
+    public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(
+        nameof(Orientation),
+        typeof(Orientation),
+        typeof(NonVirtualizingStackLayout),
+        new PropertyMetadata(Orientation.Vertical)
+    );
 
     /// <summary>
     /// <see cref="Spacing"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty SpacingProperty =
-        DependencyProperty.Register(nameof(Spacing), typeof(double), typeof(NonVirtualizingStackLayout), new PropertyMetadata(2d));
+    public static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(
+        nameof(Spacing),
+        typeof(double),
+        typeof(NonVirtualizingStackLayout),
+        new PropertyMetadata(2d)
+    );
 
     /// <summary>
     /// 布局方向.
@@ -41,17 +49,18 @@ public sealed partial class NonVirtualizingStackLayout : NonVirtualizingLayout
 
     /// <inheritdoc/>
     protected override Size MeasureOverride(
-            NonVirtualizingLayoutContext context,
-            Size availableSize)
+        NonVirtualizingLayoutContext context,
+        Size availableSize
+    )
     {
         var extentU = 0.0;
         var extentV = 0.0;
         var childCount = context.Children.Count;
         var isVertical = Orientation == Orientation.Vertical;
         var spacing = Spacing;
-        var constraint = isVertical ?
-            new Size(availableSize.Width, double.PositiveInfinity) :
-            new Size(double.PositiveInfinity, availableSize.Height);
+        var constraint = isVertical
+            ? new Size(availableSize.Width, double.PositiveInfinity)
+            : new Size(double.PositiveInfinity, availableSize.Height);
 
         for (var i = 0; i < childCount; ++i)
         {
@@ -85,9 +94,7 @@ public sealed partial class NonVirtualizingStackLayout : NonVirtualizingLayout
     }
 
     /// <inheritdoc/>
-    protected override Size ArrangeOverride(
-        NonVirtualizingLayoutContext context,
-        Size finalSize)
+    protected override Size ArrangeOverride(NonVirtualizingLayoutContext context, Size finalSize)
     {
         var u = 0.0;
         var childCount = context.Children.Count;
@@ -104,9 +111,9 @@ public sealed partial class NonVirtualizingStackLayout : NonVirtualizingLayout
                 continue;
             }
 
-            bounds = isVertical ?
-                LayoutVertical(element, u, finalSize) :
-                LayoutHorizontal(element, u, finalSize);
+            bounds = isVertical
+                ? LayoutVertical(element, u, finalSize)
+                : LayoutHorizontal(element, u, finalSize);
             element.Arrange(bounds);
             u = (isVertical ? bounds.Bottom : bounds.Right) + spacing;
         }

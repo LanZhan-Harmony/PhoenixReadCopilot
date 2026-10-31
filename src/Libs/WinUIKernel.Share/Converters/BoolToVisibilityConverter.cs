@@ -20,13 +20,18 @@ public sealed partial class BoolToVisibilityConverter : IValueConverter
         if (value is bool v)
         {
             vis = IsReverse
-                ? v ? Visibility.Collapsed : Visibility.Visible
-                : v ? Visibility.Visible : Visibility.Collapsed;
+                ? v
+                    ? Visibility.Collapsed
+                    : Visibility.Visible
+                : v
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
 
         return vis;
     }
 
     /// <inheritdoc/>
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
 }

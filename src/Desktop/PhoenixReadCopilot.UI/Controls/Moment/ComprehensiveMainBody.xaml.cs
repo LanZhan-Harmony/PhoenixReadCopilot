@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 
 namespace PhoenixReadCopilot.UI.Controls.Moment;
@@ -65,16 +67,15 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
-            !args.IsIntermediate;
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
             Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     MomentScrollView.ExtentHeight
-                    - MomentScrollView.ViewportHeight
-                    - MomentScrollView.VerticalOffset
+                        - MomentScrollView.ViewportHeight
+                        - MomentScrollView.VerticalOffset
                     <= 240
                 )
                 {

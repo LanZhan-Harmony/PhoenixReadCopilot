@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
@@ -66,11 +67,7 @@ public sealed partial class MomentHeader : MomentHeaderBase
             foreach (var item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = GetSectionName(item.SectionType),
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = GetSectionName(item.SectionType), Tag = item }
                 );
             }
         }

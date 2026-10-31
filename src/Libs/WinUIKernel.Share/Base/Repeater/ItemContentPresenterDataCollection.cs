@@ -7,7 +7,8 @@ namespace WinUIKernel.Share.Base.Repeater;
 /// A class that converts a collection of items to ItemContentPresenterData.
 /// This allows DataTemplate and DataTemplateSelector properties to be passed down to any content presenters in a DataTemplate.
 /// </summary>
-public partial class ItemContentPresenterDataCollection : ConvertingCollectionProxy<ItemContentPresenterData, object>
+public partial class ItemContentPresenterDataCollection
+    : ConvertingCollectionProxy<ItemContentPresenterData, object>
 {
     /// <summary>
     /// ContentTemplate.
@@ -54,7 +55,7 @@ public partial class ItemContentPresenterDataCollection : ConvertingCollectionPr
         {
             Content = item,
             ContentTemplate = ContentTemplate,
-            ContentTemplateSelector = ContentTemplateSelector
+            ContentTemplateSelector = ContentTemplateSelector,
         };
     }
 
@@ -70,7 +71,11 @@ public partial class ItemContentPresenterDataCollection : ConvertingCollectionPr
     }
 
     /// <inheritdoc />
-    protected override bool ConvertOrUpdate(object sourceValue, ItemContentPresenterData existingConvertedValue, out ItemContentPresenterData result)
+    protected override bool ConvertOrUpdate(
+        object sourceValue,
+        ItemContentPresenterData existingConvertedValue,
+        out ItemContentPresenterData result
+    )
     {
         existingConvertedValue.Content = sourceValue;
         result = default;

@@ -12,10 +12,10 @@ using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

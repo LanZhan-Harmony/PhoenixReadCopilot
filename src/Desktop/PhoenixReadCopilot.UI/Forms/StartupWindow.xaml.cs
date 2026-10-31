@@ -1,10 +1,10 @@
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Authorization;
-using WinUIKernel.Share.Base;
 using WinUIEx;
 
 namespace PhoenixReadCopilot.UI.Forms;
@@ -12,7 +12,7 @@ namespace PhoenixReadCopilot.UI.Forms;
 /// <summary>
 /// 初始窗口.
 /// </summary>
-public sealed partial class StartupWindow : WindowBase
+public sealed partial class StartupWindow : WindowEx
 {
     private bool _isFirstActivated = true;
 
@@ -22,6 +22,7 @@ public sealed partial class StartupWindow : WindowBase
     public StartupWindow()
     {
         InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
         IsMaximizable = false;
         IsMinimizable = false;
         IsResizable = false;
@@ -33,8 +34,8 @@ public sealed partial class StartupWindow : WindowBase
         Title = Strings.Resources.AppName;
 
         this.CenterOnScreen();
-        this.SetIcon("Assets/logo.ico");
-        this.SetTitleBar(TitleBar);
+        AppWindow.SetIcon("Assets/logo.ico");
+        SetTitleBar(TitleBar);
         this.Get<AppViewModel>().Windows.Add(this);
 
         RootFrame.Navigate(typeof(StartupPage), default, new SuppressNavigationTransitionInfo());

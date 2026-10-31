@@ -2,55 +2,55 @@
 <local:SettingsPageControlBase x:Class="PhoenixReadCopilot.UI.Controls.Settings.NavigationSettingControl"
                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                               xmlns:base="using:WinUIKernel.Share.Base"
+                               xmlns:community="using:CommunityToolkit.WinUI.Controls"
                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                               xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
                                xmlns:ic="using:FluentIcons.WinUI"
                                xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                               xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
                                mc:Ignorable="d">
 
-    <base:SettingsExpander Description="{x:Bind strings:Resources.SideNavigationSettingDescription}" Header="{x:Bind strings:Resources.SideNavigationSetting}">
-        <base:SettingsExpander.HeaderIcon>
+    <community:SettingsExpander Description="{x:Bind strings:Resources.SideNavigationSettingDescription}" Header="{x:Bind strings:Resources.SideNavigationSetting}">
+        <community:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Navigation"/>
-        </base:SettingsExpander.HeaderIcon>
-        <base:SettingsExpander.Items>
-            <base:SettingsCard Header="{x:Bind strings:Resources.Popular}">
-                <base:SettingsCard.HeaderIcon>
+        </community:SettingsExpander.HeaderIcon>
+        <community:SettingsExpander.Items>
+            <community:SettingsCard Header="{x:Bind strings:Resources.Popular}">
+                <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Rocket"/>
-                </base:SettingsCard.HeaderIcon>
+                </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsPopularNavVisible, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.DynamicFeed}">
-                <base:SettingsCard.HeaderIcon>
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.DynamicFeed}">
+                <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="DesignIdeas"/>
-                </base:SettingsCard.HeaderIcon>
+                </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsMomentNavVisible, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.Video}">
-                <base:SettingsCard.HeaderIcon>
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.Video}">
+                <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="VideoClip"/>
-                </base:SettingsCard.HeaderIcon>
+                </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsVideoNavVisible, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.Anime}">
-                <base:SettingsCard.HeaderIcon>
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.Anime}">
+                <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Dust"/>
-                </base:SettingsCard.HeaderIcon>
+                </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsAnimeNavVisible, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.Cinema}">
-                <base:SettingsCard.HeaderIcon>
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.Cinema}">
+                <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="FilmstripPlay"/>
-                </base:SettingsCard.HeaderIcon>
+                </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsCinemaNavVisible, Mode=TwoWay}"/>
-            </base:SettingsCard>
-            <base:SettingsCard Header="{x:Bind strings:Resources.Article}">
-                <base:SettingsCard.HeaderIcon>
+            </community:SettingsCard>
+            <community:SettingsCard Header="{x:Bind strings:Resources.Article}">
+                <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="DocumentBulletList"/>
-                </base:SettingsCard.HeaderIcon>
+                </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsArticleNavVisible, Mode=TwoWay}"/>
-            </base:SettingsCard>
-        </base:SettingsExpander.Items>
-    </base:SettingsExpander>
+            </community:SettingsCard>
+        </community:SettingsExpander.Items>
+    </community:SettingsExpander>
 </local:SettingsPageControlBase>

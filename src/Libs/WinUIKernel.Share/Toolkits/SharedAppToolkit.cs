@@ -15,7 +15,9 @@ public class SharedAppToolkit(ISettingsToolkit settings) : IAppToolkit
     public ApplicationTheme GetCurrentTheme()
     {
         var localTheme = settings.ReadLocalSetting("AppTheme", ElementTheme.Default);
-        return localTheme == ElementTheme.Default ? Application.Current.RequestedTheme : localTheme == ElementTheme.Light ? ApplicationTheme.Light : ApplicationTheme.Dark;
+        return localTheme == ElementTheme.Default ? Application.Current.RequestedTheme
+            : localTheme == ElementTheme.Light ? ApplicationTheme.Light
+            : ApplicationTheme.Dark;
     }
 
     /// <inheritdoc/>
@@ -26,6 +28,6 @@ public class SharedAppToolkit(ISettingsToolkit settings) : IAppToolkit
     }
 
     /// <inheritdoc/>
-    public void ResetControlTheme(FrameworkElement element)
-        => element.RequestedTheme = settings.ReadLocalSetting("AppTheme", ElementTheme.Default);
+    public void ResetControlTheme(FrameworkElement element) =>
+        element.RequestedTheme = settings.ReadLocalSetting("AppTheme", ElementTheme.Default);
 }

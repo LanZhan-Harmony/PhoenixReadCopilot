@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;

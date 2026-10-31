@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 
 namespace PhoenixReadCopilot.UI.Controls.Popular;
@@ -39,8 +41,7 @@ public sealed partial class PopularMainBody : PopularPageControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
-            !args.IsIntermediate;
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         if (
             (
                 ViewModel.SelectedSection is PopularSectionItemViewModel secItem
@@ -58,8 +59,8 @@ public sealed partial class PopularMainBody : PopularPageControlBase
             {
                 if (
                     VideoScrollView.ExtentHeight
-                    - VideoScrollView.ViewportHeight
-                    - VideoScrollView.VerticalOffset
+                        - VideoScrollView.ViewportHeight
+                        - VideoScrollView.VerticalOffset
                     <= 240
                 )
                 {

@@ -2,17 +2,18 @@ using System.Runtime.InteropServices;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Microsoft.Windows.BadgeNotifications;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.Toolkits;
-using WinUIKernel.Share.ViewModels;
 using Windows.Storage;
 using Windows.System;
 using WinUIEx;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 
@@ -136,8 +137,8 @@ public sealed partial class AppViewModel : ViewModelBase
     private void MakeCurrentWindowEnterCompactOverlay()
     {
         var window = ActivatedWindow;
-        (window as WindowBase).MinHeight = 320;
-        (window as WindowBase).MinWidth = 560;
+        (window as WinUIKernel.Share.Base.WindowEx).MinHeight = 320;
+        (window as WinUIKernel.Share.Base.WindowEx).MinWidth = 560;
         window.SetWindowPresenter(AppWindowPresenterKind.CompactOverlay);
         window.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
         if (window is IPlayerHostWindow hostWindow)
@@ -150,8 +151,8 @@ public sealed partial class AppViewModel : ViewModelBase
     private void MakeCurrentWindowExitCompactOverlay()
     {
         var window = ActivatedWindow;
-        (window as WindowBase).MinHeight = 480;
-        (window as WindowBase).MinWidth = 640;
+        (window as WinUIKernel.Share.Base.WindowEx).MinHeight = 480;
+        (window as WinUIKernel.Share.Base.WindowEx).MinWidth = 640;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
         window.AppWindow.TitleBar.PreferredHeightOption =
             window is MainWindow ? TitleBarHeightOption.Tall : TitleBarHeightOption.Standard;

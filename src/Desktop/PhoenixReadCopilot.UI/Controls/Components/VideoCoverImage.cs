@@ -1,4 +1,5 @@
 using Microsoft.Graphics.Canvas;
+using Windows.Foundation;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;

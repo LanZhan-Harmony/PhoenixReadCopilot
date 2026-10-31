@@ -1,8 +1,10 @@
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
+using Windows.Foundation;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;
 

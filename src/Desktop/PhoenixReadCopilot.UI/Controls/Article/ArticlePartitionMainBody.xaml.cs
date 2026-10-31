@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 
 namespace PhoenixReadCopilot.UI.Controls.Article;
@@ -65,16 +67,15 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
-            !args.IsIntermediate;
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
             Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     ArticleScrollView.ExtentHeight
-                    - ArticleScrollView.ViewportHeight
-                    - ArticleScrollView.VerticalOffset
+                        - ArticleScrollView.ViewportHeight
+                        - ArticleScrollView.VerticalOffset
                     <= 240
                 )
                 {

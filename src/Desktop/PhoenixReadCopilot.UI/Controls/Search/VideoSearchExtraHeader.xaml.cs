@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.UI.Controls.Search;

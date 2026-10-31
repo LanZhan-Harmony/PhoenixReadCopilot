@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -71,10 +73,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.PlayInPrivate,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.EyeOff
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
             Tag = nameof(ViewModel.PlayInPrivateCommand),
         };
     }
@@ -84,10 +83,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.EnterUserSpace,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Person
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -110,10 +106,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -123,10 +116,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.CopyVideoUrl,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Copy
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
             Tag = nameof(ViewModel.CopyUrlCommand),
         };
     }
@@ -136,10 +126,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -152,10 +139,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
             args.TryGetPosition(this, out var point);
             ContextFlyout.ShowAt(
                 this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
-                {
-                    Position = point
-                }
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
             );
         }
 
@@ -165,10 +149,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout()
-        {
-            ShouldConstrainToRootBounds = false
-        };
+        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         if (ViewModel.Style == MomentCardStyle.Video)
         {
             menuFlyout.Items.Add(CreatePrivatePlayItem());

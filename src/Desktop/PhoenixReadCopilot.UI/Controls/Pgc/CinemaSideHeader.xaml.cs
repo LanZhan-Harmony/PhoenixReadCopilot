@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 
 namespace PhoenixReadCopilot.UI.Controls.Pgc;

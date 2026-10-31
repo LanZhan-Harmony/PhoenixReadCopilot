@@ -1,3 +1,6 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+
 namespace PhoenixReadCopilot.UI.Controls.History;
 
 /// <summary>
@@ -43,8 +46,8 @@ public sealed partial class HistoryVideoSearchSection : HistoryPageControlBase
             {
                 if (
                     VideoScrollView.ExtentHeight
-                    - VideoScrollView.ViewportHeight
-                    - VideoScrollView.VerticalOffset
+                        - VideoScrollView.ViewportHeight
+                        - VideoScrollView.VerticalOffset
                     <= 240
                 )
                 {

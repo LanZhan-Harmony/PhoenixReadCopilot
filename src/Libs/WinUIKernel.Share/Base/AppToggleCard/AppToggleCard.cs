@@ -11,8 +11,12 @@ public sealed partial class AppToggleCard : ToggleButton
     /// <summary>
     /// <see cref="IsEnableCheck"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IsEnableCheckProperty =
-        DependencyProperty.Register(nameof(IsEnableCheck), typeof(bool), typeof(AppToggleCard), new PropertyMetadata(false));
+    public static readonly DependencyProperty IsEnableCheckProperty = DependencyProperty.Register(
+        nameof(IsEnableCheck),
+        typeof(bool),
+        typeof(AppToggleCard),
+        new PropertyMetadata(false)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppToggleCard"/> class.

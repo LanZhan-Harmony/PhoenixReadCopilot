@@ -38,7 +38,8 @@ public sealed partial class AppNavigationItemViewModel : ViewModelBase
         FluentIcons.Common.Symbol? symbol = default,
         bool isSelected = false,
         string accessKey = "",
-        bool isVisible = true)
+        bool isVisible = true
+    )
     {
         PageKey = pageType.FullName;
         Title = title;
@@ -55,12 +56,12 @@ public sealed partial class AppNavigationItemViewModel : ViewModelBase
     public string PageKey { get; }
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is AppNavigationItemViewModel model && PageKey == model.PageKey;
+    public override bool Equals(object? obj) =>
+        obj is AppNavigationItemViewModel model && PageKey == model.PageKey;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(PageKey);
 
     [RelayCommand]
-    private void Navigate(object? parameter = default)
-        => _navigateAction?.Invoke(parameter);
+    private void Navigate(object? parameter = default) => _navigateAction?.Invoke(parameter);
 }

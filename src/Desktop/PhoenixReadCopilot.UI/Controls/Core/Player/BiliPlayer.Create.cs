@@ -2,13 +2,15 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Microsoft.UI;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PhoenixReadCopilot.UI.Controls.Danmaku;
 using PhoenixReadCopilot.UI.Controls.Player;
-using WinUIKernel.Share.Base;
 using Windows.System;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;
 

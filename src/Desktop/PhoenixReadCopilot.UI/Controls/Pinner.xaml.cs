@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.ViewModels.Core;

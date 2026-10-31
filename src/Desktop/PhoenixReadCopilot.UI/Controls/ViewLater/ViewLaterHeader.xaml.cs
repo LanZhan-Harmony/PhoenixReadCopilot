@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+
 namespace PhoenixReadCopilot.UI.Controls.ViewLater;
 
 /// <summary>

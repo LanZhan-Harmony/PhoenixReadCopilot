@@ -2,23 +2,27 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using WinUIKernel.Share.Base;
 using Windows.Graphics;
 using Windows.System;
 using Windows.UI.WindowManagement;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using WinUIEx;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Forms;
 
 /// <summary>
 /// 主窗口.
 /// </summary>
-public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWindow
+public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, ITipWindow
 {
     private const int WindowMinWidth = 640;
     private const int WindowMinHeight = 480;
@@ -32,9 +36,10 @@ public sealed partial class MainWindow : WindowBase, IPlayerHostWindow, ITipWind
     public MainWindow()
     {
         InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
         SetTitleBar(RootLayout.GetMainTitleBar());
         Title = Strings.Resources.AppName;
-        this.SetIcon("Assets/logo.ico");
+        AppWindow.SetIcon("Assets/logo.ico");
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         MinWidth = WindowMinWidth;
         MinHeight = WindowMinHeight;

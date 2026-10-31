@@ -97,25 +97,37 @@ public sealed partial class AppTitleBar : LayoutControlBase
         ActualThemeChanged -= OnActualThemeChanged;
     }
 
-    private static void OnBackButtonVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnBackButtonVisibleChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as AppTitleBar;
         instance?.UpdateBackButtonAsync();
     }
 
-    private static void OnIsBackEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnIsBackEnabledChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as AppTitleBar;
         instance?.UpdateInteractableElementsList();
     }
 
-    private static void OnIsPaneToggleButtonVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnIsPaneToggleButtonVisibleChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as AppTitleBar;
         instance?.UpdatePaneToggleButton();
     }
 
-    private static void OnIconElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnIconElementChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as AppTitleBar;
         instance?.UpdateIcon();
@@ -139,7 +151,10 @@ public sealed partial class AppTitleBar : LayoutControlBase
         instance?.UpdateHeader();
     }
 
-    private static void OnLeftEdgeElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnLeftEdgeElementChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as AppTitleBar;
         instance?.UpdateLeftEdge();
@@ -151,7 +166,10 @@ public sealed partial class AppTitleBar : LayoutControlBase
         instance?.UpdateContent();
     }
 
-    private static void OnCenterContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnCenterContentChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         var instance = d as AppTitleBar;
         instance?.UpdateCenterContent();
@@ -167,7 +185,10 @@ public sealed partial class AppTitleBar : LayoutControlBase
     {
         if (Content is not null && _contentArea is not null && _contentAreaGrid is not null)
         {
-            if (_compactModeThresholdWidth is not 0 && _contentArea.DesiredSize.Width >= _contentAreaGrid.ActualWidth)
+            if (
+                _compactModeThresholdWidth is not 0
+                && _contentArea.DesiredSize.Width >= _contentAreaGrid.ActualWidth
+            )
             {
                 _compactModeThresholdWidth = e.NewSize.Width;
                 VisualStateManager.GoToState(this, CompactVisualStateName, false);
@@ -185,54 +206,92 @@ public sealed partial class AppTitleBar : LayoutControlBase
         UpdateDragRegion();
     }
 
-    private void OnActualThemeChanged(FrameworkElement sender, object args)
-        => UpdateTheme();
+    private void OnActualThemeChanged(FrameworkElement sender, object args) => UpdateTheme();
 
-    private void OnInputActivationChanged(InputActivationListener sender, InputActivationListenerActivationChangedEventArgs args)
+    private void OnInputActivationChanged(
+        InputActivationListener sender,
+        InputActivationListenerActivationChangedEventArgs args
+    )
     {
         var isDeactivated = sender.State == InputActivationState.Deactivated;
 
         if (IsBackButtonVisible && IsBackEnabled)
         {
-            VisualStateManager.GoToState(this, isDeactivated ? BackButtonDeactivatedVisualStateName : BackButtonVisibleVisualStateName, false);
+            VisualStateManager.GoToState(
+                this,
+                isDeactivated
+                    ? BackButtonDeactivatedVisualStateName
+                    : BackButtonVisibleVisualStateName,
+                false
+            );
         }
 
         if (IsPaneToggleButtonVisible)
         {
-            VisualStateManager.GoToState(this, isDeactivated ? PaneToggleButtonDeactivatedVisualStateName : PaneToggleButtonVisibleVisualStateName, false);
+            VisualStateManager.GoToState(
+                this,
+                isDeactivated
+                    ? PaneToggleButtonDeactivatedVisualStateName
+                    : PaneToggleButtonVisibleVisualStateName,
+                false
+            );
         }
 
         if (!string.IsNullOrEmpty(Title))
         {
-            VisualStateManager.GoToState(this, isDeactivated ? TitleTextDeactivatedVisualStateName : TitleTextVisibleVisualStateName, false);
+            VisualStateManager.GoToState(
+                this,
+                isDeactivated
+                    ? TitleTextDeactivatedVisualStateName
+                    : TitleTextVisibleVisualStateName,
+                false
+            );
         }
 
         if (!string.IsNullOrEmpty(Subtitle))
         {
-            VisualStateManager.GoToState(this, isDeactivated ? SubtitleTextDeactivatedVisualStateName : SubtitleTextVisibleVisualStateName, false);
+            VisualStateManager.GoToState(
+                this,
+                isDeactivated
+                    ? SubtitleTextDeactivatedVisualStateName
+                    : SubtitleTextVisibleVisualStateName,
+                false
+            );
         }
 
         if (Header is not null)
         {
-            VisualStateManager.GoToState(this, isDeactivated ? HeaderDeactivatedVisualStateName : HeaderVisibleVisualStateName, false);
+            VisualStateManager.GoToState(
+                this,
+                isDeactivated ? HeaderDeactivatedVisualStateName : HeaderVisibleVisualStateName,
+                false
+            );
         }
 
         if (Content is not null)
         {
-            VisualStateManager.GoToState(this, isDeactivated ? ContentDeactivatedVisualStateName : ContentVisibleVisualStateName, false);
+            VisualStateManager.GoToState(
+                this,
+                isDeactivated ? ContentDeactivatedVisualStateName : ContentVisibleVisualStateName,
+                false
+            );
         }
 
         if (Footer is not null)
         {
-            VisualStateManager.GoToState(this, isDeactivated ? FooterDeactivatedVisualStateName : FooterVisibleVisualStateName, false);
+            VisualStateManager.GoToState(
+                this,
+                isDeactivated ? FooterDeactivatedVisualStateName : FooterVisibleVisualStateName,
+                false
+            );
         }
     }
 
-    private void OnBackButtonClick(object sender, RoutedEventArgs e)
-        => BackRequested?.Invoke(this, EventArgs.Empty);
+    private void OnBackButtonClick(object sender, RoutedEventArgs e) =>
+        BackRequested?.Invoke(this, EventArgs.Empty);
 
-    private void OnPaneToggleButtonClick(object sender, RoutedEventArgs e)
-        => PaneToggleRequested?.Invoke(this, EventArgs.Empty);
+    private void OnPaneToggleButtonClick(object sender, RoutedEventArgs e) =>
+        PaneToggleRequested?.Invoke(this, EventArgs.Empty);
 }
 
 /// <summary>
@@ -243,8 +302,12 @@ public sealed class AppTitleBarTemplateSettings : DependencyObject
     /// <summary>
     /// <see cref="IconElement"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty IconElementProperty =
-        DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(AppTitleBarTemplateSettings), new PropertyMetadata(default));
+    public static readonly DependencyProperty IconElementProperty = DependencyProperty.Register(
+        nameof(IconElement),
+        typeof(IconElement),
+        typeof(AppTitleBarTemplateSettings),
+        new PropertyMetadata(default)
+    );
 
     /// <summary>
     /// 标题栏图标.

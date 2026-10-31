@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using WinUIKernel.Share.Base;
 
@@ -40,8 +42,7 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
-            !args.IsIntermediate;
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
             Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
             () =>

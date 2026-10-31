@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 
 namespace PhoenixReadCopilot.UI.Controls.Message;
@@ -72,8 +74,8 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
             {
                 if (
                     MessageScrollView.ExtentHeight
-                    - MessageScrollView.ViewportHeight
-                    - MessageScrollView.VerticalOffset
+                        - MessageScrollView.ViewportHeight
+                        - MessageScrollView.VerticalOffset
                     <= 240
                 )
                 {

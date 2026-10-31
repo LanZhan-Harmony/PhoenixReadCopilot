@@ -1,8 +1,10 @@
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Authorization;
-using WinUIKernel.Share.Base;
 using WinUIEx;
 
 namespace PhoenixReadCopilot.UI.Forms;
@@ -10,7 +12,7 @@ namespace PhoenixReadCopilot.UI.Forms;
 /// <summary>
 /// 网页登录窗口.
 /// </summary>
-public sealed partial class WebSignInWindow : WindowBase
+public sealed partial class WebSignInWindow : WindowEx
 {
     private CancellationTokenSource _cancellationTokenSource = new();
 
@@ -20,6 +22,7 @@ public sealed partial class WebSignInWindow : WindowBase
     public WebSignInWindow()
     {
         InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
         AppWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
 
         Width = 1200;
@@ -28,8 +31,8 @@ public sealed partial class WebSignInWindow : WindowBase
         Title = Strings.Resources.AppName;
 
         this.CenterOnScreen();
-        this.SetIcon("Assets/logo.ico");
-        this.SetTitleBar(TitleBar);
+        AppWindow.SetIcon("Assets/logo.ico");
+        SetTitleBar(TitleBar);
         this.Get<AppViewModel>().Windows.Add(this);
 
         Closed += OnClosed;
@@ -65,7 +68,7 @@ public sealed partial class WebSignInWindow : WindowBase
 
     private async void OnNavigationCompletedAsync(
         WebView2 sender,
-        Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args
+        CoreWebView2NavigationCompletedEventArgs args
     )
     {
         if (sender.CoreWebView2.Source.StartsWith("https://passport.bilibili.com"))

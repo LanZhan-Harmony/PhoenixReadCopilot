@@ -1,3 +1,6 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+
 namespace PhoenixReadCopilot.UI.Controls.Users;
 
 /// <summary>
@@ -43,8 +46,8 @@ public sealed partial class FansBody : FansPageControlBase
             {
                 if (
                     UserScrollView.ExtentHeight
-                    - UserScrollView.ViewportHeight
-                    - UserScrollView.VerticalOffset
+                        - UserScrollView.ViewportHeight
+                        - UserScrollView.VerticalOffset
                     <= 240
                 )
                 {

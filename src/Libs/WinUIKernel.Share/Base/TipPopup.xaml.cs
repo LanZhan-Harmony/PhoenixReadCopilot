@@ -10,8 +10,12 @@ public sealed partial class TipPopup : LayoutUserControlBase
     /// <summary>
     /// <see cref="Text"/>的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty TextProperty =
-        DependencyProperty.Register(nameof(Text), typeof(string), typeof(TipPopup), new PropertyMetadata(string.Empty));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(TipPopup),
+        new PropertyMetadata(string.Empty)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TipPopup"/> class.

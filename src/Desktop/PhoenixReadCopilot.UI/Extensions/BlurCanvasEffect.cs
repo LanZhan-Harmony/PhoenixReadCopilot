@@ -6,6 +6,7 @@ using ComputeSharp.D2D1;
 using ComputeSharp.D2D1.WinUI;
 using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.UI;
+using Windows.Foundation;
 using Windows.Graphics.Effects;
 using Windows.UI;
 

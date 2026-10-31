@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:SettingsPageControlBase
-    x:Class="PhoenixReadCopilot.UI.Controls.Settings.ThemeSettingControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="using:WinUIKernel.Share.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
-    xmlns:ic="using:FluentIcons.WinUI"
-    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<local:SettingsPageControlBase x:Class="PhoenixReadCopilot.UI.Controls.Settings.ThemeSettingControl"
+                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                               xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                               xmlns:ic="using:FluentIcons.WinUI"
+                               xmlns:local="using:PhoenixReadCopilot.UI.Controls.Settings"
+                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                               xmlns:strings="using:PhoenixReadCopilot.UI.Strings"
+                               mc:Ignorable="d">
 
-    <base:SettingsExpander Description="{x:Bind strings:Resources.AppThemeDescription}"
-            Header="{x:Bind strings:Resources.AppTheme}">
-        <base:SettingsExpander.HeaderIcon>
+    <community:SettingsExpander Description="{x:Bind strings:Resources.AppThemeDescription}" Header="{x:Bind strings:Resources.AppTheme}">
+        <community:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="Color"/>
-        </base:SettingsExpander.HeaderIcon>
+        </community:SettingsExpander.HeaderIcon>
         <TextBlock Text="{x:Bind ViewModel.AppThemeText, Mode=OneWay}"/>
 
-        <base:SettingsExpander.Items>
-            <base:SettingsCard ContentAlignment="Left">
-                <RadioButtons
-                    x:Name="ThemePicker"
-                    Margin="0,0,0,8"
-                    SelectionChanged="OnThemeSelectionChanged">
+        <community:SettingsExpander.Items>
+            <community:SettingsCard ContentAlignment="Left">
+                <RadioButtons x:Name="ThemePicker"
+                              Margin="0,0,0,8"
+                              SelectionChanged="OnThemeSelectionChanged">
                     <RadioButton Content="{x:Bind strings:Resources.LightTheme}"/>
                     <RadioButton Content="{x:Bind strings:Resources.DarkTheme}"/>
                     <RadioButton Content="{x:Bind strings:Resources.SystemDefault}"/>
                 </RadioButtons>
-            </base:SettingsCard>
-        </base:SettingsExpander.Items>
-    </base:SettingsExpander>
+            </community:SettingsCard>
+        </community:SettingsExpander.Items>
+    </community:SettingsExpander>
 </local:SettingsPageControlBase>
