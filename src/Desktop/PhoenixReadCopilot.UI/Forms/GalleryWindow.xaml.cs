@@ -4,7 +4,7 @@ using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.Graphics;
 using WinUIEx;
 

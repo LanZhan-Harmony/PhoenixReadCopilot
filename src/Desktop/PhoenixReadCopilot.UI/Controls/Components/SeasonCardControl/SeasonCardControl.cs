@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;
 

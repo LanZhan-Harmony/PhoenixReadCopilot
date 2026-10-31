@@ -1,43 +1,35 @@
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Controls.Components;
 
 /// <summary>
+/// 视频卡片展示器.
+/// </summary>
+public abstract class VideoCardPresenter : LayoutUserControlBase<VideoItemViewModel>;
+
+/// <summary>
 /// 视频卡片控件.
 /// </summary>
-public sealed partial class VideoCardControl : VideoCardControlBase
+public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewModel>
 {
     private CardControl _rootCard;
-    private Button _userButton;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoCardControl"/> class.
     /// </summary>
-    public VideoCardControl()
-    {
-        InitializeComponent();
-    }
+    public VideoCardControl() => DefaultStyleKey = typeof(VideoCardControl);
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
         _rootCard = GetTemplateChild("RootCard") as CardControl;
-        _userButton = GetTemplateChild("UserButton") as Button;
         if (ViewModel is not null)
         {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.PlayCommand;
-            }
-
-            if (_userButton is not null)
-            {
-                _userButton.Command = ViewModel.ShowUserSpaceCommand;
-            }
+            _rootCard?.Command = ViewModel.PlayCommand;
         }
     }
 
@@ -56,11 +48,6 @@ public sealed partial class VideoCardControl : VideoCardControlBase
         if (_rootCard is not null)
         {
             _rootCard.Command = newValue?.PlayCommand;
-        }
-
-        if (_userButton is not null)
-        {
-            _userButton.Command = newValue?.ShowUserSpaceCommand;
         }
     }
 
@@ -82,10 +69,7 @@ public sealed partial class VideoCardControl : VideoCardControlBase
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.PlayInPrivate,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.EyeOff
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
             Tag = nameof(ViewModel.PlayInPrivateCommand),
         };
     }
@@ -95,10 +79,7 @@ public sealed partial class VideoCardControl : VideoCardControlBase
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.EnterUserSpace,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Person
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -166,10 +147,7 @@ public sealed partial class VideoCardControl : VideoCardControlBase
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -179,10 +157,7 @@ public sealed partial class VideoCardControl : VideoCardControlBase
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.CopyVideoUrl,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Copy
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
             Tag = nameof(ViewModel.CopyUriCommand),
         };
     }
@@ -192,10 +167,7 @@ public sealed partial class VideoCardControl : VideoCardControlBase
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -208,10 +180,7 @@ public sealed partial class VideoCardControl : VideoCardControlBase
             args.TryGetPosition(this, out var point);
             ContextFlyout.ShowAt(
                 this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
-                {
-                    Position = point
-                }
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
             );
         }
 
@@ -221,10 +190,7 @@ public sealed partial class VideoCardControl : VideoCardControlBase
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout()
-        {
-            ShouldConstrainToRootBounds = false
-        };
+        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePrivatePlayItem());
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
         if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.IsUserValid)
@@ -303,5 +269,3 @@ public sealed partial class VideoCardControl : VideoCardControlBase
         }
     }
 }
-
-public abstract class VideoCardControlBase : LayoutControlBase<VideoItemViewModel>;

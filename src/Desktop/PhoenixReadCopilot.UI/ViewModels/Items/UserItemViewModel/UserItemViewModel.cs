@@ -7,8 +7,8 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
-using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

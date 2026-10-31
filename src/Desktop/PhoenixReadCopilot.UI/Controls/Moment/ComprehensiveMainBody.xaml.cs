@@ -65,7 +65,7 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        Richasy.WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
+        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled =
             !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
             Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,

@@ -4,8 +4,8 @@ using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Danmaku;
-using Richasy.WinUIKernel.Share.Toolkits;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 

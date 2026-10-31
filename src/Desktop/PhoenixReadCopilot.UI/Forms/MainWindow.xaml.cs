@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.Graphics;
 using Windows.System;
 using Windows.UI.WindowManagement;

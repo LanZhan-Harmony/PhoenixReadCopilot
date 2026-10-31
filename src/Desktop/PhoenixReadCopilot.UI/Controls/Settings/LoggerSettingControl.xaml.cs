@@ -1,5 +1,5 @@
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.Storage;
 using Windows.System;
 

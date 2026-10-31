@@ -4,7 +4,7 @@ using System.Security;
 using Microsoft.Graphics.Canvas;
 using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.Streaming.Adaptive;

@@ -12,8 +12,8 @@ using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
-using Richasy.WinUIKernel.Share.Base;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Base;
+using WinUIKernel.Share.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 

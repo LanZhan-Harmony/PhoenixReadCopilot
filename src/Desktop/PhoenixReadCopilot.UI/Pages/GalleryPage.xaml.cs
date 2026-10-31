@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Models.Appearance;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Pages;
 

@@ -33,11 +33,6 @@ public sealed partial class VideoItemViewModel
     public string Author { get; init; }
 
     /// <summary>
-    /// 视频时长.
-    /// </summary>
-    public string? Duration { get; init; }
-
-    /// <summary>
     /// 发布时间.
     /// </summary>
     public string? PublishRelativeTime { get; init; }
@@ -66,11 +61,6 @@ public sealed partial class VideoItemViewModel
     /// 标签名称.
     /// </summary>
     public string? TagName { get; init; }
-
-    /// <summary>
-    /// 推荐理由.
-    /// </summary>
-    public string? RecommendReason { get; init; }
 
     /// <summary>
     /// 收集时间.

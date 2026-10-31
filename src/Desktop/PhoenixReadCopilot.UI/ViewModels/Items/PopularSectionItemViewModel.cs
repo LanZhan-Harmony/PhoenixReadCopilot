@@ -1,5 +1,5 @@
 using PhoenixReadCopilot.UI.Models.Constants;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

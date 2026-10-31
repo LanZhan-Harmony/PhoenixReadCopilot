@@ -11,9 +11,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// <summary>
 /// 播放器视图模型基类.
 /// </summary>
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning disable SA1401 // Fields should be private
-#pragma warning disable SA1600 // Elements should be documented
 public abstract partial class PlayerViewModelBase
 {
     /// <summary>
@@ -138,6 +135,3 @@ public abstract partial class PlayerViewModelBase
     /// </summary>
     public Window AttachedWindow { get; set; }
 }
-#pragma warning restore SA1600 // Elements should be documented
-#pragma warning restore SA1401 // Fields should be private
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

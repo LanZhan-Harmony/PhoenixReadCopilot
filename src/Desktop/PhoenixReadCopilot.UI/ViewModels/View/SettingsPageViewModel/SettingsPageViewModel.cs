@@ -4,8 +4,8 @@ using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.WinUIKernel.Share.Toolkits;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.ViewModels;
 using Windows.System;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;

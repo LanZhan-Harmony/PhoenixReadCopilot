@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:base="using:WinUIKernel.Share.Base"
+                    xmlns:local="using:PhoenixReadCopilot.UI.Controls.Components">
+
+    <Style x:Key="RecommendVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:RecommendVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HotVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:HotVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RankVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:RankVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PartitionVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:PartitionVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SearchVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:SearchVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MomentVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <local:MomentVideoCardPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ViewLaterVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:ViewLaterVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HistoryVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:HistoryVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="FavoriteVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:FavoriteVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="UgcSeasonFavoriteVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:UgcSeasonFavoriteVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PlayerRecommendVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard" Height="104">
+                        <local:PlayerRecommendVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PlayerSeasonVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <local:PlayerSeasonVideoCardPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PlayerPlaylistVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <local:PlayerPlaylistVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

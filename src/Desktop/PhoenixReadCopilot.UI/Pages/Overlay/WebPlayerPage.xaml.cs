@@ -4,7 +4,7 @@ using Microsoft.Web.WebView2.Core;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.Storage;
 
 namespace PhoenixReadCopilot.UI.Pages.Overlay;

@@ -4,7 +4,7 @@ using Microsoft.Web.WebView2.Core;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Article;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 

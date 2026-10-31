@@ -1,4 +1,4 @@
-using Richasy.WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.Toolkits;
 using Windows.Storage;
 
 namespace PhoenixReadCopilot.UI.Toolkits;

@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using PhoenixReadCopilot.UI.Models.Constants;
-using Richasy.WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Toolkits;
 

@@ -7,12 +7,12 @@ using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel;
-using Richasy.WinUIKernel.Share;
-using Richasy.WinUIKernel.Share.Toolkits;
-using Richasy.WinUIKernel.Share.ViewModels;
 using RichasyKernel;
 using Serilog;
 using Windows.Storage;
+using WinUIKernel.Share;
+using WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI;
 
@@ -144,7 +144,7 @@ internal static class GlobalDependencies
         return kernelBuilder;
     }
 
-    public static RichasyKernel.IKernelBuilder AddSerilog(this RichasyKernel.IKernelBuilder builder)
+    public static IKernelBuilder AddSerilog(this IKernelBuilder builder)
     {
         var loggerPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "Logger");
         if (!Directory.Exists(loggerPath))

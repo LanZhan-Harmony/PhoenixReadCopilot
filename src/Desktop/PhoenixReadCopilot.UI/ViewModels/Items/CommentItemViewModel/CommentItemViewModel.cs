@@ -5,7 +5,7 @@ using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Models.Comment;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

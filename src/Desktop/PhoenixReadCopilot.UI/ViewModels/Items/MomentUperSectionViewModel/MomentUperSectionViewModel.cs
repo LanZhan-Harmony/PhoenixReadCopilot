@@ -6,7 +6,7 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.Moment;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 

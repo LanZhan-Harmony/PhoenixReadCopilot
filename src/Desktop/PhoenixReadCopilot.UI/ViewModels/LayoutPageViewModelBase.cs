@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using Richasy.WinUIKernel.Share.Toolkits;
-using Richasy.WinUIKernel.Share.ViewModels;
+using WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels;
 

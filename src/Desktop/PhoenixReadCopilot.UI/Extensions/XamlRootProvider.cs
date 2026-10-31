@@ -1,5 +1,5 @@
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.WinUIKernel.Share;
+using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.UI.Extensions;
 

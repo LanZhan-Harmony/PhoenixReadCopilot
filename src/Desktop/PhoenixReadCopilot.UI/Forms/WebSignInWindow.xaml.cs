@@ -2,7 +2,7 @@ using Microsoft.UI.Windowing;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.WinUIKernel.Share.Base;
+using WinUIKernel.Share.Base;
 using WinUIEx;
 
 namespace PhoenixReadCopilot.UI.Forms;
