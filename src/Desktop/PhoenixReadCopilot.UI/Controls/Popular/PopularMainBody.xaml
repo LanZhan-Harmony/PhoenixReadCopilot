@@ -3,6 +3,7 @@
                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                               xmlns:base="using:WinUIKernel.Share.Base"
+                              xmlns:community="using:CommunityToolkit.WinUI.Controls"
                               xmlns:components="using:PhoenixReadCopilot.UI.Controls.Components"
                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                               xmlns:ext="using:PhoenixReadCopilot.UI.Extensions"
@@ -31,9 +32,13 @@
     <Grid>
         <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
             <Grid Margin="16,12">
-                <ItemsRepeater x:Name="VideoRepeater"
-                               ItemsSource="{x:Bind ViewModel.Videos}"
-                               Layout="{StaticResource VideoLayout}">
+                <ItemsRepeater x:Name="VideoRepeater" ItemsSource="{x:Bind ViewModel.Videos}">
+                    <ItemsRepeater.Layout>
+                        <community:StaggeredLayout ColumnSpacing="16"
+                                                   DesiredColumnWidth="200"
+                                                   ItemsStretch="Fill"
+                                                   RowSpacing="16"/>
+                    </ItemsRepeater.Layout>
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="items:VideoItemViewModel">
                             <ContentControl Content="{x:Bind}"

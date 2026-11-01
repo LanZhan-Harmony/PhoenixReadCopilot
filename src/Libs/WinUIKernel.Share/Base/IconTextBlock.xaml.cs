@@ -38,6 +38,13 @@ public sealed partial class IconTextBlock : LayoutUserControlBase
         new PropertyMetadata(default)
     );
 
+    public static readonly DependencyProperty TextTrimmingProperty = DependencyProperty.Register(
+        nameof(TextTrimming),
+        typeof(TextTrimming),
+        typeof(IconTextBlock),
+        new PropertyMetadata(TextTrimming.CharacterEllipsis)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="IconTextBlock"/> class.
     /// </summary>
@@ -68,5 +75,11 @@ public sealed partial class IconTextBlock : LayoutUserControlBase
     {
         get => (Brush)GetValue(IconBrushProperty);
         set => SetValue(IconBrushProperty, value);
+    }
+
+    public TextTrimming TextTrimming
+    {
+        get => (TextTrimming)GetValue(TextTrimmingProperty);
+        set => SetValue(TextTrimmingProperty, value);
     }
 }

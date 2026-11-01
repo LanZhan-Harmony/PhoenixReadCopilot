@@ -83,6 +83,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="PhoenixReadApi" />
     <PackageReference Include="ReswPlus" />
     <PackageReference Include="Richasy.BiliKernel.Authorizers.TV" />
     <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUICookies" />
