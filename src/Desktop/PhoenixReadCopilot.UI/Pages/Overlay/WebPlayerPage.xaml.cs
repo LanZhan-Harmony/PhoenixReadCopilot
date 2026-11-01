@@ -114,21 +114,18 @@ public sealed partial class WebPlayerPage : LayoutPageBase
     )
     {
         HideLoading();
-        var scriptFile = await StorageFile.GetFileFromApplicationUriAsync(
-            new Uri("ms-appx:///Assets/WebPlayer.js")
-        );
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
-            SettingNames.DefaultPlayerDisplayMode,
-            PlayerDisplayMode.Default
-        );
+        var scriptPath = Path.Combine(AppContext.BaseDirectory, "Assets", "WebPlayer.js");
+        if (!File.Exists(scriptPath))
+        {
+            return;
+        }
+
+        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
         var isFullWindow =
             preferDisplayMode is PlayerDisplayMode.FullWindow or PlayerDisplayMode.NewWindow;
         var isFullScreen = preferDisplayMode == PlayerDisplayMode.FullScreen;
         var isMiniView = preferDisplayMode == PlayerDisplayMode.CompactOverlay;
-        var script = await FileIO.ReadTextAsync(
-            scriptFile,
-            Windows.Storage.Streams.UnicodeEncoding.Utf8
-        );
+        var script = await File.ReadAllTextAsync(scriptPath);
         script = script
             .Replace("`isFullWindow`", isFullWindow.ToString().ToLower())
             .Replace("`isFullScreen`", isFullScreen.ToString().ToLower())
@@ -150,16 +147,10 @@ public sealed partial class WebPlayerPage : LayoutPageBase
 
     private async Task TryLoadExtensionAsync()
     {
-        var localFolder = ApplicationData.Current.LocalFolder;
-        var extensionFolder = await localFolder.CreateFolderAsync(
-            "Extensions",
-            CreationCollisionOption.OpenIfExists
-        );
-        var bewlyFolderPath = Path.Combine(extensionFolder.Path, "BewlyBewly");
-        var localVersion = SettingsToolkit.ReadLocalSetting(
-            SettingNames.BewlyExtensionVersion,
-            string.Empty
-        );
+        var extensionFolder = Path.Combine(PhoenixReadCopilot.UI.Helpers.PathHelper.RootFolderPath, "Extensions");
+        Directory.CreateDirectory(extensionFolder);
+        var bewlyFolderPath = Path.Combine(extensionFolder, "BewlyBewly");
+        var localVersion = Settings.BewlyExtensionVersion;
         if (localVersion != BewlyVersion)
         {
             if (Directory.Exists(bewlyFolderPath))
@@ -170,19 +161,19 @@ public sealed partial class WebPlayerPage : LayoutPageBase
             if (!Directory.Exists(bewlyFolderPath))
             {
                 Directory.CreateDirectory(bewlyFolderPath);
-                var bewlyZipFile = await StorageFile.GetFileFromApplicationUriAsync(
-                    new Uri("ms-appx:///Assets/BewlyBewly.zip")
-                );
-
-                // Unzip file and copy to folder.
-                await Task.Run(() =>
+                var bewlyZipPath = Path.Combine(AppContext.BaseDirectory, "Assets", "BewlyBewly.zip");
+                if (File.Exists(bewlyZipPath))
                 {
-                    ZipFile.ExtractToDirectory(bewlyZipFile.Path, bewlyFolderPath);
-                });
+                    // Unzip file and copy to folder.
+                    await Task.Run(() =>
+                    {
+                        ZipFile.ExtractToDirectory(bewlyZipPath, bewlyFolderPath);
+                    });
+                }
             }
 
             await MainView.CoreWebView2.Profile.AddBrowserExtensionAsync(bewlyFolderPath);
-            SettingsToolkit.WriteLocalSetting(SettingNames.BewlyExtensionVersion, BewlyVersion);
+            Settings.BewlyExtensionVersion = BewlyVersion;
         }
     }
 }

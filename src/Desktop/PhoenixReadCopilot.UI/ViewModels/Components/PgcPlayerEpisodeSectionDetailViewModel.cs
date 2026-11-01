@@ -41,10 +41,7 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
             .Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Player))
             .ToList();
         SelectedEpisode = Episodes.FirstOrDefault(p => p.Data.Identifier.Id == epid);
-        OnlyIndex = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsPgcPlayerPartsOnlyIndex,
-            false
-        );
+        OnlyIndex = Settings.IsPgcPlayerPartsOnlyIndex;
     }
 
     /// <inheritdoc/>
@@ -61,5 +58,5 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
     }
 
     partial void OnOnlyIndexChanged(bool value) =>
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsPgcPlayerPartsOnlyIndex, value);
+        Settings.IsPgcPlayerPartsOnlyIndex = value;
 }

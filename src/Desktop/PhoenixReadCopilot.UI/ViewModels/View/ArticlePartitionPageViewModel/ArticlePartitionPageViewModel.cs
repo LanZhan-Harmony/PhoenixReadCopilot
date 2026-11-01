@@ -58,10 +58,7 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
                 DispatcherQueuePriority.Low,
                 () =>
                 {
-                    var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(
-                        SettingNames.ArticlePartitionPageLastSelectedPartitionId,
-                        Partitions.First().Data.Id
-                    );
+                    var lastSelectedPartitionId = string.IsNullOrEmpty(Settings.ArticlePartitionPageLastSelectedPartitionId) ? Partitions.First().Data.Id : Settings.ArticlePartitionPageLastSelectedPartitionId;
                     var partition =
                         Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
                         ?? Partitions.First();
@@ -91,9 +88,7 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
             vm.InitializeCommand.Execute(default);
         }
 
-        SettingsToolkit.WriteLocalSetting(
-            SettingNames.ArticlePartitionPageLastSelectedPartitionId,
-            partition.Data.Id
-        );
+        Settings.ArticlePartitionPageLastSelectedPartitionId = partition.Data.Id
+        ;
     }
 }

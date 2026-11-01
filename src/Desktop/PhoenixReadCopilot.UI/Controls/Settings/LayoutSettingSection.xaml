@@ -14,6 +14,6 @@
         <community:SettingsCard.HeaderIcon>
             <ic:SymbolIcon Symbol="LayoutColumnTwo"/>
         </community:SettingsCard.HeaderIcon>
-        <ToggleSwitch IsOn="{x:Bind ViewModel.IsTopNavShown, Mode=TwoWay}"/>
+        <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsTopNavBarShown, Mode=TwoWay}"/>
     </community:SettingsCard>
 </local:SettingsPageControlBase>

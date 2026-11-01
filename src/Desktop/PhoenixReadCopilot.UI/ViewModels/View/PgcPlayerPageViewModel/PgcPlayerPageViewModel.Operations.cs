@@ -387,7 +387,7 @@ public sealed partial class PgcPlayerPageViewModel
 
                 ReportProgressCommand.Execute(Player.Duration);
 
-                var autoNext = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNext, true);
+                var autoNext = Settings.AutoPlayNext;
                 if ((!autoNext || !HasNextEpisode) && !_isFormatChanging)
                 {
                     Player.BackToDefaultModeCommand.Execute(default);
@@ -405,10 +405,7 @@ public sealed partial class PgcPlayerPageViewModel
                     return;
                 }
 
-                var withoutTip = SettingsToolkit.ReadLocalSetting(
-                    SettingNames.PlayNextWithoutTip,
-                    false
-                );
+                var withoutTip = Settings.PlayNextWithoutTip;
                 if (withoutTip)
                 {
                     PlayNextEpisode();

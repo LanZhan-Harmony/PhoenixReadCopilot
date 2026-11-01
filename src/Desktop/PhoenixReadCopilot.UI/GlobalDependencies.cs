@@ -2,6 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Extensions;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -9,7 +11,6 @@ using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel;
 using RichasyKernel;
 using Serilog;
-using Windows.Storage;
 using WinUIKernel.Share;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
@@ -22,6 +23,11 @@ internal static class GlobalDependencies
     /// 获取服务提供程序.
     /// </summary>
     public static Kernel Kernel { get; private set; }
+
+    /// <summary>
+    /// 全局应用设置.
+    /// </summary>
+    public static AppSettings Settings => Kernel.GetRequiredService<ISettingsService>().Settings;
 
     public static void Initialize()
     {
@@ -38,8 +44,7 @@ internal static class GlobalDependencies
             .AddXamlRootProvider()
             .AddBiliClient()
             .AddBiliAuthenticator()
-            .AddWinUICookiesResolver()
-            .AddWinUITokenResolver()
+            .AddLocalResolvers()
             .AddWinUIQRCodeResolver(RenderQRCodeAsync)
             .AddTVAuthenticationService()
             .AddMyProfileService()
@@ -110,11 +115,25 @@ internal static class GlobalDependencies
         return builder;
     }
 
+    public static IKernelBuilder AddLocalResolvers(this IKernelBuilder builder)
+    {
+        builder
+            .Services.AddSingleton<
+                Richasy.BiliKernel.Bili.Authorization.IBiliCookiesResolver,
+                LocalBiliCookiesResolver
+            >()
+            .AddSingleton<
+                Richasy.BiliKernel.Bili.Authorization.IBiliTokenResolver,
+                LocalBiliTokenResolver
+            >();
+        return builder;
+    }
+
     public static IKernelBuilder AddShareToolkits(this IKernelBuilder builder)
     {
         builder
-            .Services.AddSingleton<IAppToolkit, AppToolkit>()
-            .AddSingleton<ISettingsToolkit, SettingsToolkit>()
+            .Services.AddSingleton<ISettingsService, SettingsService>()
+            .AddSingleton<IAppToolkit, AppToolkit>()
             .AddSingleton<IFileToolkit, FileToolkit>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>();
         return builder;
@@ -146,11 +165,8 @@ internal static class GlobalDependencies
 
     public static IKernelBuilder AddSerilog(this IKernelBuilder builder)
     {
-        var loggerPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "Logger");
-        if (!Directory.Exists(loggerPath))
-        {
-            Directory.CreateDirectory(loggerPath);
-        }
+        var loggerPath = PhoenixReadCopilot.UI.Helpers.PathHelper.LogFolderPath;
+        Directory.CreateDirectory(loggerPath);
 
         // Create a logger with current date.
         Log.Logger = new LoggerConfiguration()

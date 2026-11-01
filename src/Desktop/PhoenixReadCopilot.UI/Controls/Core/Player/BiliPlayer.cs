@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Foundation;
@@ -248,9 +247,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
     )
     {
         RestoreCursor();
-        var isManual =
-            SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
-            == MTCBehavior.Manual;
+        var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
         if (!isManual)
         {
             if (forceHideTransportControls)
@@ -307,9 +304,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
         }
 
         _isDoubleTapped = true;
-        var isManual =
-            SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
-            == MTCBehavior.Manual;
+        var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
         if (isManual)
         {
             ViewModel.TogglePlayPauseCommand.Execute(default);

@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels;
@@ -21,10 +20,8 @@ public abstract partial class LayoutPageViewModelBase : ViewModelBase
     protected LayoutPageViewModelBase()
     {
 #pragma warning disable CA2214
-        NavColumnWidth = this.Get<ISettingsToolkit>()
-            .ReadLocalSetting($"{GetPageKey()}NavColumnWidth", GetDefaultNavColumnWidth());
-        IsNavColumnManualHide = this.Get<ISettingsToolkit>()
-            .ReadLocalSetting($"Is{GetPageKey()}NavColumnManualHide", false);
+        NavColumnWidth = Settings.GetNavColumnWidth(GetPageKey(), GetDefaultNavColumnWidth());
+        IsNavColumnManualHide = Settings.GetNavColumnManualHide(GetPageKey(), false);
 #pragma warning restore CA2214
     }
 
@@ -46,20 +43,19 @@ public abstract partial class LayoutPageViewModelBase : ViewModelBase
     protected virtual void IsNavManualHideChanged(bool value) =>
         NavColumnWidth = value
             ? 0
-            : this.Get<ISettingsToolkit>().ReadLocalSetting($"{GetPageKey()}NavColumnWidth", 240d);
+            : Settings.GetNavColumnWidth(GetPageKey(), 240d);
 
     partial void OnNavColumnWidthChanged(double value)
     {
         if (value > 0)
         {
-            this.Get<ISettingsToolkit>().WriteLocalSetting($"{GetPageKey()}NavColumnWidth", value);
+            Settings.SetNavColumnWidth(GetPageKey(), value);
         }
     }
 
     partial void OnIsNavColumnManualHideChanged(bool value)
     {
-        this.Get<ISettingsToolkit>()
-            .WriteLocalSetting($"Is{GetPageKey()}NavColumnManualHide", value);
+        Settings.SetNavColumnManualHide(GetPageKey(), value);
         IsNavManualHideChanged(value);
     }
 }

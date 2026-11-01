@@ -152,23 +152,15 @@ public partial class ImageExBase
 
     private async Task<StorageFolder> GetCacheFolderAsync(string? cacheSubFolder = null)
     {
-        var cacheFolder = await Microsoft
-            .Windows.Storage.ApplicationData.GetDefault()
-            .LocalCacheFolder.CreateFolderAsync(
-                CacheFolderName,
-                CreationCollisionOption.OpenIfExists
-            );
-
-        // 优先使用传入的参数，如果没有则调用虚方法（仅在 UI 线程安全）
+        var baseCache = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoenixReadCopilot", "Cache");
+        var cacheFolderPath = Path.Combine(baseCache, CacheFolderName);
         var subFolder = cacheSubFolder ?? GetCacheSubFolder();
         if (!string.IsNullOrEmpty(subFolder))
         {
-            cacheFolder = await cacheFolder.CreateFolderAsync(
-                subFolder,
-                CreationCollisionOption.OpenIfExists
-            );
+            cacheFolderPath = Path.Combine(cacheFolderPath, subFolder);
         }
 
-        return cacheFolder;
+        Directory.CreateDirectory(cacheFolderPath);
+        return await StorageFolder.GetFolderFromPathAsync(cacheFolderPath).AsTask();
     }
 }

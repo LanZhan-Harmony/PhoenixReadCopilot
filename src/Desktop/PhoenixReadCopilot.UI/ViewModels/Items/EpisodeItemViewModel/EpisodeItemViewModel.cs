@@ -39,20 +39,14 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
-            SettingNames.DefaultPlayerDisplayMode,
-            PlayerDisplayMode.Default
-        );
+        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PlayerType,
-            PlayerType.Native
-        );
+        var preferPlayer = Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), GetWebUrl());

@@ -85,10 +85,7 @@ public sealed partial class VideoPlayerPageViewModel
             return;
         }
 
-        var preferFormatSetting = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PreferQuality,
-            PreferQualityType.Auto
-        );
+        var preferFormatSetting = Settings.PreferQuality;
         var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
         var partIndex = _view.Parts?.IndexOf(_part) ?? 0;
 
@@ -102,10 +99,7 @@ public sealed partial class VideoPlayerPageViewModel
         PlayerFormatItemViewModel? selectedFormat = default;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
-            var lastSelectedFormat = SettingsToolkit.ReadLocalSetting(
-                SettingNames.LastSelectedVideoQuality,
-                0
-            );
+            var lastSelectedFormat = Settings.LastSelectedVideoQuality;
             selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
         }
         else if (preferFormatSetting == PreferQualityType.UHD)
@@ -242,10 +236,7 @@ public sealed partial class VideoPlayerPageViewModel
         if (part == null)
         {
             var historyPartId = _view.Progress?.Cid;
-            var autoLoadHistory = SettingsToolkit.ReadLocalSetting(
-                SettingNames.AutoLoadHistory,
-                true
-            );
+            var autoLoadHistory = Settings.AutoLoadHistory;
             if (!string.IsNullOrEmpty(historyPartId) && autoLoadHistory)
             {
                 part = _view.Parts.FirstOrDefault(p => p.Identifier.Id == historyPartId);
@@ -308,7 +299,7 @@ public sealed partial class VideoPlayerPageViewModel
             {
                 return _playlist.First();
             }
-            else if (SettingsToolkit.ReadLocalSetting(SettingNames.EndWithPlaylist, true))
+            else if (Settings.EndWithPlaylist)
             {
                 return default;
             }
@@ -332,10 +323,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         // 4. 检查推荐视频中是否有下一个视频.
-        var isAutoPlayRecommendVideo = SettingsToolkit.ReadLocalSetting(
-            SettingNames.AutoPlayNextRecommendVideo,
-            false
-        );
+        var isAutoPlayRecommendVideo = Settings.AutoPlayNextRecommendVideo;
         if (
             isAutoPlayRecommendVideo
             && Sections.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault()
@@ -387,10 +375,7 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void SyncDownloadAndSubtitle()
     {
-        var isAISubtitleFiltered = SettingsToolkit.ReadLocalSetting(
-            SettingNames.FilterAISubtitle,
-            true
-        );
+        var isAISubtitleFiltered = Settings.FilterAISubtitle;
         Downloader.HasAvailableSubtitle =
             Subtitle.IsAvailable
             && (isAISubtitleFiltered ? Subtitle.Metas.Any(p => !p.IsAI) : true);

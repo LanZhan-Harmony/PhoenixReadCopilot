@@ -153,10 +153,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         bool TryOpenInNewWindowIfPreferred()
         {
-            var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
-                SettingNames.DefaultPlayerDisplayMode,
-                PlayerDisplayMode.Default
-            );
+            var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
                 OpenInNewWindowCommand.Execute(default);
@@ -168,10 +165,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         bool TryOpenInWebPlayerIfPreferred()
         {
-            var preferPlayer = SettingsToolkit.ReadLocalSetting(
-                SettingNames.PlayerType,
-                PlayerType.Native
-            );
+            var preferPlayer = Settings.PlayerType;
             if (preferPlayer == PlayerType.Web)
             {
                 var webUrl = GetMediaUrl();

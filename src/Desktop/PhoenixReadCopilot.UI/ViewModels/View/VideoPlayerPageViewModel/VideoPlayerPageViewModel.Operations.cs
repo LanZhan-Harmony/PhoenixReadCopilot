@@ -364,7 +364,7 @@ public sealed partial class VideoPlayerPageViewModel
                     return;
                 }
 
-                var autoNext = SettingsToolkit.ReadLocalSetting(SettingNames.AutoPlayNext, true);
+                var autoNext = Settings.AutoPlayNext;
                 if ((!autoNext || !HasNextVideo) && !_isFormatChanging)
                 {
                     Player.BackToDefaultModeCommand.Execute(default);
@@ -382,10 +382,7 @@ public sealed partial class VideoPlayerPageViewModel
                     return;
                 }
 
-                var withoutTip = SettingsToolkit.ReadLocalSetting(
-                    SettingNames.PlayNextWithoutTip,
-                    false
-                );
+                var withoutTip = Settings.PlayNextWithoutTip;
                 if (withoutTip)
                 {
                     PlayNextVideoCommand.Execute(default);

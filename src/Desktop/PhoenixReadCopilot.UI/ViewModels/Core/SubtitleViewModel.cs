@@ -54,10 +54,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
         ClearAll();
         _aid = aid;
         _cid = cid;
-        IsEnabled = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsSubtitleEnabled,
-            true
-        );
+        IsEnabled = Settings.IsSubtitleEnabled;
     }
 
     /// <summary>
@@ -171,6 +168,6 @@ public sealed partial class SubtitleViewModel : ViewModelBase
     partial void OnIsEnabledChanged(bool value)
     {
         DeselectSubtitle();
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.IsSubtitleEnabled, value);
+        Settings.IsSubtitleEnabled = value;
     }
 }

@@ -64,10 +64,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         );
         await LoadPartitionsAsync();
         await Task.Delay(200);
-        var lastSelectedSectionId = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PopularPageLastSelectedSectionId,
-            PopularSectionType.Recommend.ToString()
-        );
+        var lastSelectedSectionId = string.IsNullOrEmpty(Settings.PopularPageLastSelectedSectionId) ? PopularSectionType.Recommend.ToString() : Settings.PopularPageLastSelectedSectionId;
         if (int.TryParse(lastSelectedSectionId, out var partitionId))
         {
             var section = Sections
@@ -117,7 +114,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             PopularRankPartitionViewModel partition => partition.Data.Id,
             _ => string.Empty,
         };
-        SettingsToolkit.WriteLocalSetting(SettingNames.PopularPageLastSelectedSectionId, sectionId);
+        Settings.PopularPageLastSelectedSectionId = sectionId;
 
         this.Get<DispatcherQueue>()
             .TryEnqueue(

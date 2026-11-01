@@ -38,10 +38,7 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
         _partSelectedAction = action;
         Parts = parts.ToList();
         SelectedPart = parts.FirstOrDefault(p => p.Identifier.Id == cid);
-        OnlyIndex = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsVideoPlayerPartsOnlyIndex,
-            false
-        );
+        OnlyIndex = Settings.IsVideoPlayerPartsOnlyIndex;
     }
 
     /// <summary>
@@ -79,8 +76,6 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     private void RaisePartChanged() => PartChanged?.Invoke(this, EventArgs.Empty);
 
     partial void OnOnlyIndexChanged(bool value) =>
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.IsVideoPlayerPartsOnlyIndex,
-            value
-        );
+        Settings.IsVideoPlayerPartsOnlyIndex = value
+        ;
 }

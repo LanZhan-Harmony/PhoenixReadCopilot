@@ -58,10 +58,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         ActiveMainWindow();
-        var lastSelectedPage = SettingsToolkit.ReadLocalSetting(
-            SettingNames.LastSelectedFeaturePage,
-            string.Empty
-        );
+        var lastSelectedPage = Settings.LastSelectedFeaturePage;
         if (IsOverlayOpen)
         {
             IsOverlayOpen = false;
@@ -84,7 +81,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             return;
         }
 
-        SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedFeaturePage, pageType.FullName);
+        Settings.LastSelectedFeaturePage = pageType.FullName;
         _navFrame.Navigate(
             pageType,
             parameter,
@@ -211,7 +208,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         _navFrame = navFrame;
         _overFrame = overFrame;
         _overFrame.Navigated += OnOverlayNavigated;
-        IsTopNavBarShown = SettingsToolkit.ReadLocalSetting(SettingNames.IsTopNavBarShown, true);
+        IsTopNavBarShown = Settings.IsTopNavBarShown;
 
         MenuItems = [.. GetMenuItems()];
 
@@ -223,10 +220,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     private IReadOnlyList<AppNavigationItemViewModel> GetMenuItems()
     {
-        var lastSelectedPage = SettingsToolkit.ReadLocalSetting(
-            SettingNames.LastSelectedFeaturePage,
-            typeof(PopularPage).FullName
-        );
+        var lastSelectedPage = string.IsNullOrEmpty(Settings.LastSelectedFeaturePage) ? typeof(PopularPage).FullName : Settings.LastSelectedFeaturePage;
         var list = new List<AppNavigationItemViewModel>
         {
             GetItem<PopularPage>(Resources.PopularSlim, FluentIcons.Common.Symbol.Rocket),
@@ -271,8 +265,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     )
         where TPage : Page
     {
-        var isVisible = this.Get<ISettingsToolkit>()
-            .ReadLocalSetting($"Is{typeof(TPage).Name}Visible", true);
+        var isVisible = Settings.GetPageVisible(typeof(TPage));
         return new AppNavigationItemViewModel(
             this,
             typeof(TPage),

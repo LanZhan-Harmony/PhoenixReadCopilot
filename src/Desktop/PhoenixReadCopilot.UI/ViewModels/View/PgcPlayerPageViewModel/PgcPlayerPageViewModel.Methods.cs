@@ -49,18 +49,12 @@ public sealed partial class PgcPlayerPageViewModel
         Downloader.Clear();
         Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
 
-        var preferFormatSetting = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PreferQuality,
-            PreferQualityType.Auto
-        );
+        var preferFormatSetting = Settings.PreferQuality;
         var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
         PlayerFormatItemViewModel? selectedFormat = default;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
-            var lastSelectedFormat = SettingsToolkit.ReadLocalSetting(
-                SettingNames.LastSelectedPgcQuality,
-                0
-            );
+            var lastSelectedFormat = Settings.LastSelectedPgcQuality;
             selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
         }
         else if (preferFormatSetting == PreferQualityType.UHD)
@@ -174,10 +168,7 @@ public sealed partial class PgcPlayerPageViewModel
         if (playEpisode == null)
         {
             var historyEpisodeId = _view.Progress?.Cid;
-            var autoLoadHistory = SettingsToolkit.ReadLocalSetting(
-                SettingNames.AutoLoadHistory,
-                true
-            );
+            var autoLoadHistory = Settings.AutoLoadHistory;
             if (!string.IsNullOrEmpty(historyEpisodeId) && autoLoadHistory)
             {
                 playEpisode = _view.Episodes.FirstOrDefault(p =>

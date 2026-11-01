@@ -19,37 +19,37 @@
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Rocket"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsPopularNavVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsPopularPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.DynamicFeed}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="DesignIdeas"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsMomentNavVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsMomentPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.Video}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="VideoClip"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsVideoNavVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsVideoPartitionPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.Anime}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Dust"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsAnimeNavVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsAnimePageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.Cinema}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="FilmstripPlay"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsCinemaNavVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsCinemaPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.Article}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="DocumentBulletList"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsArticleNavVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsArticlePartitionPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>

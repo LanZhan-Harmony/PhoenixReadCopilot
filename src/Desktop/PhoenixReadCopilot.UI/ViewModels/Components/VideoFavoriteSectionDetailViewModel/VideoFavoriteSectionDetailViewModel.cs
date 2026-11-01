@@ -120,10 +120,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     [RelayCommand]
     private void PlayCurrentList()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
-            SettingNames.DefaultPlayerDisplayMode,
-            PlayerDisplayMode.Default
-        );
+        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
 
         if (Items.Count == 1)
         {

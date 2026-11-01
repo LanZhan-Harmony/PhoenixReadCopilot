@@ -47,10 +47,7 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
             new EntertainmentIndexViewModel(PgcSectionType.Anime, _service),
         };
 
-        var lastType = SettingsToolkit.ReadLocalSetting(
-            SettingNames.AnimePageLastSelectedSectionType,
-            PgcSectionType.Timeline
-        );
+        var lastType = Settings.AnimePageLastSelectedSectionType;
         var section = Sections.FirstOrDefault(p => p.SectionType == lastType);
         this.Get<DispatcherQueue>()
             .TryEnqueue(
@@ -72,20 +69,16 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection = section;
-        SettingsToolkit.WriteLocalSetting(
-            SettingNames.AnimePageLastSelectedSectionType,
-            section.SectionType
-        );
+        Settings.AnimePageLastSelectedSectionType = section.SectionType
+        ;
         section.InitializeCommand.Execute(default);
     }
 
     [RelayCommand]
     private void ShowMyFavoriteAnime()
     {
-        SettingsToolkit.WriteLocalSetting(
-            SettingNames.LastSelectedFavoriteSection,
-            $"pgc_{PgcFavoriteType.Anime}"
-        );
+        Settings.LastSelectedFavoriteSection = $"pgc_{PgcFavoriteType.Anime}"
+        ;
         this.Get<NavigationViewModel>().NavigateToOver(typeof(FavoritesPage));
     }
 }

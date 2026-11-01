@@ -211,12 +211,12 @@ public sealed partial class FFmpegPlayerViewModel
 
         if (_videoSegment is not null || _audioSegment is not null)
         {
-            var mpdFilePath =
-                onlyVideo ? "ms-appx:///Assets/DashVideoWithoutAudioTemplate.xml"
-                : onlyAudio ? "ms-appx:///Assets/DashAudioWithoutVideoTemplate.xml"
-                : "ms-appx:///Assets/DashVideoTemplate.xml";
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(mpdFilePath));
-            var mpdStr = await FileIO.ReadTextAsync(file);
+            var mpdFileName =
+                onlyVideo ? "DashVideoWithoutAudioTemplate.xml"
+                : onlyAudio ? "DashAudioWithoutVideoTemplate.xml"
+                : "DashVideoTemplate.xml";
+            var mpdFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", mpdFileName);
+            var mpdStr = File.Exists(mpdFilePath) ? await File.ReadAllTextAsync(mpdFilePath) : string.Empty;
 
             var videoStr = string.Empty;
             if (_videoSegment is not null && !string.IsNullOrEmpty(_videoUrl))

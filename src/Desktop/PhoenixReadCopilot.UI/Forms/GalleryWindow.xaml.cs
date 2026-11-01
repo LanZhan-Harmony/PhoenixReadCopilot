@@ -54,8 +54,8 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 
     private static PointInt32 GetSavedWindowPosition()
     {
-        var left = SettingsToolkit.ReadLocalSetting(SettingNames.GalleryWindowPositionLeft, 0);
-        var top = SettingsToolkit.ReadLocalSetting(SettingNames.GalleryWindowPositionTop, 0);
+        var left = Settings.GalleryWindowPositionLeft;
+        var top = Settings.GalleryWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -68,19 +68,13 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 
         if (!_isActivated)
         {
-            var isMaximized = SettingsToolkit.ReadLocalSetting(
-                SettingNames.IsGalleryWindowMaximized,
-                false
-            );
+            var isMaximized = Settings.IsGalleryWindowMaximized;
             if (isMaximized)
             {
                 (AppWindow.Presenter as OverlappedPresenter).Maximize();
             }
 
-            var localTheme = SettingsToolkit.ReadLocalSetting(
-                SettingNames.AppTheme,
-                ElementTheme.Default
-            );
+            var localTheme = Settings.AppTheme;
             this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
         }
 
@@ -96,11 +90,8 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = SettingsToolkit.ReadLocalSetting(SettingNames.GalleryWindowWidth, 800d);
-        var previousHeight = SettingsToolkit.ReadLocalSetting(
-            SettingNames.GalleryWindowHeight,
-            600d
-        );
+        var previousWidth = Settings.GalleryWindowWidth;
+        var previousHeight = Settings.GalleryWindowHeight;
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -133,17 +124,15 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
         var left = AppWindow.Position.X;
         var top = AppWindow.Position.Y;
         var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsGalleryWindowMaximized, (bool)isMaximized);
+        Settings.IsGalleryWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)
         {
-            SettingsToolkit.WriteLocalSetting(SettingNames.GalleryWindowPositionLeft, left);
-            SettingsToolkit.WriteLocalSetting(SettingNames.GalleryWindowPositionTop, top);
-            SettingsToolkit.WriteLocalSetting(
-                SettingNames.GalleryWindowHeight,
-                Height < 500 ? 500d : Height
-            );
-            SettingsToolkit.WriteLocalSetting(SettingNames.GalleryWindowWidth, Width);
+            Settings.GalleryWindowPositionLeft = left;
+            Settings.GalleryWindowPositionTop = top;
+            Settings.GalleryWindowHeight = Height < 500 ? 500d : Height
+            ;
+            Settings.GalleryWindowWidth = Width;
         }
     }
 }

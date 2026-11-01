@@ -37,10 +37,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
 
         await LoadGroupsAsync();
         await Task.Delay(200);
-        var lastSelectedGroupId = SettingsToolkit.ReadLocalSetting(
-            SettingNames.FollowsPageLastSelectedGroupId,
-            string.Empty
-        );
+        var lastSelectedGroupId = Settings.FollowsPageLastSelectedGroupId;
         var group =
             Groups.FirstOrDefault(p => p.Id == lastSelectedGroupId)
             ?? Groups.FirstOrDefault(p => p.TotalCount > 0)
@@ -63,7 +60,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         }
 
         SelectedGroup = group;
-        SettingsToolkit.WriteLocalSetting(SettingNames.FollowsPageLastSelectedGroupId, group.Id);
+        Settings.FollowsPageLastSelectedGroupId = group.Id;
 
         this.Get<DispatcherQueue>()
             .TryEnqueue(

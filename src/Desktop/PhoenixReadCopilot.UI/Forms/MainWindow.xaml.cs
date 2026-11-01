@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Windows.Graphics;
 using Windows.System;
@@ -16,6 +15,7 @@ using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using WinUIEx;
 using WinUIKernel.Share.Base;
+using PhoenixReadCopilot.UI.Services;
 
 namespace PhoenixReadCopilot.UI.Forms;
 
@@ -70,8 +70,8 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
 
     private static PointInt32 GetSavedWindowPosition()
     {
-        var left = SettingsToolkit.ReadLocalSetting(SettingNames.MainWindowPositionLeft, 0);
-        var top = SettingsToolkit.ReadLocalSetting(SettingNames.MainWindowPositionTop, 0);
+        var left = Settings.MainWindowPositionLeft;
+        var top = Settings.MainWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -108,19 +108,13 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         }
 
         MoveAndResize();
-        var isMaximized = SettingsToolkit.ReadLocalSetting(
-            SettingNames.IsMainWindowMaximized,
-            false
-        );
+        var isMaximized = Settings.IsMainWindowMaximized;
         if (isMaximized)
         {
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        var localTheme = SettingsToolkit.ReadLocalSetting(
-            SettingNames.AppTheme,
-            ElementTheme.Default
-        );
+        var localTheme = Settings.AppTheme;
         this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }
@@ -129,10 +123,25 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     {
         if (!_shouldExit)
         {
-            e.Handled = true;
+            var hideWhenClose = Settings.HideWhenCloseWindow;
+            if (hideWhenClose)
+            {
+                e.Handled = true;
+                this.Hide();
+                SaveCurrentWindowStats();
+                await this.Get<ISettingsService>().FlushAsync();
+                return;
+            }
+
+            _shouldExit = true;
+            this.Hide();
+
+            SaveCurrentWindowStats();
+            await this.Get<ISettingsService>().FlushAsync();
+
             this.Get<AppViewModel>().IsClosed = true;
             RootLayout.ViewModel.Back();
-            foreach (var item in this.Get<AppViewModel>().Windows)
+            foreach (var item in this.Get<AppViewModel>().Windows.ToList())
             {
                 if (item is not MainWindow)
                 {
@@ -140,25 +149,12 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
                 }
             }
 
-            _shouldExit = true;
-            this.Hide();
+            Activated -= OnActivated;
+            Closed -= OnClosed;
 
-            var hideWhenClose = SettingsToolkit.ReadLocalSetting(
-                SettingNames.HideWhenCloseWindow,
-                false
-            );
-            if (!hideWhenClose)
-            {
-                Activated -= OnActivated;
-                Closed -= OnClosed;
-
-                GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().Windows.Remove(this);
-            }
-
+            GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().Windows.Remove(this);
             GlobalHook.Stop();
-            SaveCurrentWindowStats();
             App.Current?.Exit();
-            Environment.Exit(0);
         }
     }
 
@@ -206,8 +202,8 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = SettingsToolkit.ReadLocalSetting(SettingNames.MainWindowWidth, 1120d);
-        var previousHeight = SettingsToolkit.ReadLocalSetting(SettingNames.MainWindowHeight, 740d);
+        var previousWidth = Settings.MainWindowWidth;
+        var previousHeight = Settings.MainWindowHeight;
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -239,17 +235,17 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         var left = AppWindow.Position.X;
         var top = AppWindow.Position.Y;
         var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsMainWindowMaximized, (bool)isMaximized);
+        Settings.IsMainWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)
         {
-            SettingsToolkit.WriteLocalSetting(SettingNames.MainWindowPositionLeft, left);
-            SettingsToolkit.WriteLocalSetting(SettingNames.MainWindowPositionTop, top);
+            Settings.MainWindowPositionLeft = left;
+            Settings.MainWindowPositionTop = top;
 
             if (Height >= WindowMinHeight && Width >= WindowMinWidth)
             {
-                SettingsToolkit.WriteLocalSetting(SettingNames.MainWindowHeight, Height);
-                SettingsToolkit.WriteLocalSetting(SettingNames.MainWindowWidth, Width);
+                Settings.MainWindowHeight = Height;
+                Settings.MainWindowWidth = Width;
             }
         }
     }

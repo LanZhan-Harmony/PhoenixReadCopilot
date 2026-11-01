@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
@@ -9,7 +9,9 @@
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
-    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DefaultLanguage>zh-CN</DefaultLanguage>
@@ -20,9 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Reader\Dark.css" />
-    <None Remove="Assets\Reader\Light.css" />
-    <None Remove="Assets\Reader\ShowPage.html" />
+    <Using Include="PhoenixReadCopilot.UI.GlobalDependencies" Static="True" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Reader\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\StoreLogo.png" />
     <None Update="Assets\BewlyBewly.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

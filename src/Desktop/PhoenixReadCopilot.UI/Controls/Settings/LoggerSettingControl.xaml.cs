@@ -22,13 +22,20 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
         _ = await Launcher.LaunchFolderAsync(folder).AsTask();
     }
 
-    private async void OnCleanLoggerButtonClickAsync(object sender, RoutedEventArgs e)
+    private void OnCleanLoggerButtonClickAsync(object sender, RoutedEventArgs e)
     {
-        var folder = await StorageFolder.GetFolderFromPathAsync(App.LoggerFolder).AsTask();
-        await folder.DeleteAsync(StorageDeleteOption.PermanentDelete).AsTask();
-        _ = await ApplicationData
-            .Current.LocalFolder.CreateFolderAsync("Logger", CreationCollisionOption.OpenIfExists)
-            .AsTask();
+        if (Directory.Exists(App.LoggerFolder))
+        {
+            foreach (var file in Directory.GetFiles(App.LoggerFolder))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch { }
+            }
+        }
+
         this.Get<AppViewModel>()
             .ShowTipCommand.Execute((Strings.Resources.LogEmptied, InfoType.Success));
     }

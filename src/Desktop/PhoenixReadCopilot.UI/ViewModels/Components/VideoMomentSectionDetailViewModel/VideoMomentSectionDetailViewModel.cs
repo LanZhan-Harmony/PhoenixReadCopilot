@@ -106,9 +106,7 @@ public sealed partial class VideoMomentSectionDetailViewModel
     {
         var momentIds = Items.Take(10).Select(p => p.Data.Id).ToList();
         var lastTenMomentIds = string.Join(',', momentIds);
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.LastTenMomentIds,
-            lastTenMomentIds
-        );
+        Settings.LastTenMomentIds = lastTenMomentIds
+        ;
     }
 }
