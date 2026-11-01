@@ -12,19 +12,27 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="102"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <local:VideoCoverImage CornerRadius="4,4,0,0" Source="{x:Bind ViewModel.Cover}"/>
+        <Border Grid.Row="0"
+                MinHeight="112"
+                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                CornerRadius="4,4,0,0">
+            <Image HorizontalAlignment="Stretch"
+                   VerticalAlignment="Top"
+                   Stretch="Uniform">
+                <Image.Source>
+                    <BitmapImage DecodePixelType="Logical"
+                                 DecodePixelWidth="336"
+                                 UriSource="{x:Bind ViewModel.Cover}"/>
+                </Image.Source>
+            </Image>
+        </Border>
 
-        <Grid Grid.Row="1"
-              Padding="12,8,12,12"
-              RowSpacing="6">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1"
+                    Padding="12,8,12,12"
+                    Spacing="6">
             <TextBlock HorizontalAlignment="Left"
                        FontSize="12"
                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -32,43 +40,30 @@
                        Text="{x:Bind ViewModel.Author}"
                        TextTrimming="CharacterEllipsis"/>
 
-            <TextBlock Grid.Row="1"
-                       HorizontalAlignment="Left"
+            <TextBlock HorizontalAlignment="Left"
                        Text="{x:Bind ViewModel.Title}"
-                       TextTrimming="CharacterEllipsis"/>
-            <Grid Grid.Row="2" ColumnSpacing="8">
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"/>
+
+            <Grid Margin="0,8,0,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid ColumnSpacing="4" Visibility="{x:Bind ViewModel.TagName, Converter={StaticResource ObjectToVisibilityConverter}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <ic:SymbolIcon Margin="0,2,0,0"
-                                   VerticalAlignment="Center"
-                                   FontSize="10"
-                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                   Symbol="Tag"/>
-                    <TextBlock Grid.Column="1"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               FontSize="12"
-                               Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                               MaxLines="1"
-                               Text="{x:Bind ViewModel.TagName}"
-                               TextTrimming="CharacterEllipsis"/>
-                </Grid>
-
+                <base:IconTextBlock Grid.Column="0"
+                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                    IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                    Symbol="Tag"
+                                    Text="{x:Bind ViewModel.TagName}"
+                                    ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"
+                                    Visibility="{x:Bind ViewModel.TagName, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <base:IconTextBlock Grid.Column="1"
-                                    VerticalAlignment="Center"
                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                     IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                     Symbol="PlayCircle"
                                     Text="{x:Bind ViewModel.PlayCount, Converter={StaticResource CountConverter}}"
                                     ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"/>
             </Grid>
-        </Grid>
+        </StackPanel>
     </Grid>
 </local:VideoCardPresenter>

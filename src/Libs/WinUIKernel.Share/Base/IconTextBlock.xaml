@@ -18,6 +18,7 @@
         <TextBlock VerticalAlignment="Center"
                    Style="{StaticResource CaptionTextBlockStyle}"
                    Text="{x:Bind Text, Mode=OneWay}"
-                   TextLineBounds="Tight"/>
+                   TextLineBounds="Tight"
+                   TextTrimming="{x:Bind TextTrimming, Mode=OneWay}"/>
     </StackPanel>
 </local:LayoutUserControlBase>
