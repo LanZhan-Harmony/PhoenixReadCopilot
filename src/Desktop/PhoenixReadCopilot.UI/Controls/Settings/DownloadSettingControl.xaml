@@ -15,7 +15,7 @@
             <ic:SymbolIcon Symbol="ArrowDownload"/>
         </community:SettingsExpander.HeaderIcon>
         <community:SettingsExpander.Items>
-            <community:SettingsCard Description="{x:Bind ViewModel.DefaultDownloadPath, Mode=OneWay}" Header="{x:Bind strings:Resources.DefaultDownloadFolder}">
+            <community:SettingsCard Description="{x:Bind ViewModel.Settings.DownloadFolder, Mode=OneWay}" Header="{x:Bind strings:Resources.DefaultDownloadFolder}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Button MinWidth="120"
                             VerticalAlignment="Center"
@@ -30,26 +30,26 @@
                 </StackPanel>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.DownloadWithDanmaku}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.DownloadWithDanmaku, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.DownloadWithDanmaku, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.SkipAISubtitle}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.FilterAISubtitle, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.FilterAISubtitle, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.OpenFolderWhenDownloaded}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.OpenFolderAfterDownload, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.OpenFolderAfterDownload, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.UseExternalBBDownDescription}" Header="{x:Bind strings:Resources.UseExternalBBDown}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.UseExternalBBDown, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.UseExternalBBDown, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.CopyCommandWhenDownloadDescription}"
                                     Header="{x:Bind strings:Resources.CopyCommandWhenDownload}"
-                                    IsEnabled="{x:Bind ViewModel.UseExternalBBDown, Mode=OneWay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.OnlyCopyCommandWhenDownload, Mode=TwoWay}"/>
+                                    IsEnabled="{x:Bind ViewModel.Settings.UseExternalBBDown, Mode=OneWay}">
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.OnlyCopyCommandWhenDownload, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.GenCommandWithoutCredentialDescription}"
                                     Header="{x:Bind strings:Resources.GenCommandWithoutCredential}"
-                                    IsEnabled="{x:Bind ViewModel.UseExternalBBDown, Mode=OneWay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.WithoutCredentialWhenGenDownloadCommand, Mode=TwoWay}"/>
+                                    IsEnabled="{x:Bind ViewModel.Settings.UseExternalBBDown, Mode=OneWay}">
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.WithoutCredentialWhenGenDownloadCommand, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>

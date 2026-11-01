@@ -163,12 +163,12 @@ public sealed partial class NativePlayerViewModel
         var httpClient = GetVideoClient();
         var onlyVideo = !string.IsNullOrEmpty(_videoUrl) && string.IsNullOrEmpty(_audioUrl);
         var onlyAudio = string.IsNullOrEmpty(_videoUrl) && !string.IsNullOrEmpty(_audioUrl);
-        var mpdFilePath =
-            onlyVideo ? "ms-appx:///Assets/DashVideoWithoutAudioTemplate.xml"
-            : onlyAudio ? "ms-appx:///Assets/DashAudioWithoutVideoTemplate.xml"
-            : "ms-appx:///Assets/DashVideoTemplate.xml";
-        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(mpdFilePath));
-        var mpdStr = await FileIO.ReadTextAsync(file);
+        var mpdFileName =
+            onlyVideo ? "DashVideoWithoutAudioTemplate.xml"
+            : onlyAudio ? "DashAudioWithoutVideoTemplate.xml"
+            : "DashVideoTemplate.xml";
+        var mpdFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", mpdFileName);
+        var mpdStr = File.Exists(mpdFilePath) ? await File.ReadAllTextAsync(mpdFilePath) : string.Empty;
 
         var videoStr = $"""
             <Representation bandwidth="{_videoSegment.Bandwidth}" codecs="{_videoSegment.Codecs}" height="{_videoSegment.Height}" mimeType="{_videoSegment.MimeType}" id="{_videoSegment.Id}" width="{_videoSegment.Width}" startWithSap="1">

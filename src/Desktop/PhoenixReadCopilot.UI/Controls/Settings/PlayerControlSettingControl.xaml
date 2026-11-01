@@ -25,7 +25,7 @@
             <community:SettingsCard Description="{x:Bind strings:Resources.MTCBehaviorDescription}" Header="{x:Bind strings:Resources.MTCBehavior}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.MTCBehaviorCollection, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.MTCBehavior, Mode=TwoWay}">
+                          SelectedItem="{x:Bind ViewModel.Settings.MTCBehavior, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:MTCBehavior">
                             <TextBlock Text="{x:Bind Converter={StaticResource MTCConverter}}"/>
@@ -36,7 +36,7 @@
             <community:SettingsCard Description="{x:Bind strings:Resources.PreferCodecDescription}" Header="{x:Bind strings:Resources.PreferCodec}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PreferCodecCollection, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.PreferCodec, Mode=TwoWay}">
+                          SelectedItem="{x:Bind ViewModel.Settings.PreferCodec, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PreferCodecType">
                             <TextBlock Text="{x:Bind Converter={StaticResource PreferCodecConverter}}"/>
@@ -51,16 +51,16 @@
                            Minimum="3"
                            SmallChange="10"
                            SpinButtonPlacementMode="Compact"
-                           Value="{x:Bind ViewModel.SingleFastForwardAndRewindSpan, Mode=TwoWay}"/>
+                           Value="{x:Bind ViewModel.Settings.SingleFastForwardAndRewindSpan, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.GlobalPlaybackRateDescription}" Header="{x:Bind strings:Resources.GlobalPlaybackRate}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.GlobalPlayerSpeed, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsPlayerSpeedShare, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.PlaybackRateEnhancementDescription}" Header="{x:Bind strings:Resources.PlaybackRateEnhancement}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.PlayerSpeedEnhancement, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsPlayerSpeedEnhancement, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.BottomProgressVisibleDescription}" Header="{x:Bind strings:Resources.BottomProgressVisible}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.BottomProgressVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsBottomProgressVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>

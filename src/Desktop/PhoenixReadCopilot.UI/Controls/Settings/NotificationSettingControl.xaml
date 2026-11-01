@@ -14,10 +14,10 @@
         <community:SettingsExpander.HeaderIcon>
             <ic:SymbolIcon Symbol="AlertOn"/>
         </community:SettingsExpander.HeaderIcon>
-        <ToggleSwitch IsOn="{x:Bind ViewModel.IsNotificationEnabled, Mode=TwoWay}"/>
+        <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsNotificationEnabled, Mode=TwoWay}"/>
         <community:SettingsExpander.Items>
             <community:SettingsCard Header="{x:Bind strings:Resources.VideoDynamicNotification}">
-                <ToggleSwitch IsEnabled="{x:Bind ViewModel.IsNotificationEnabled, Mode=OneWay}" IsOn="{x:Bind ViewModel.IsVideoMomentNotificationEnabled, Mode=TwoWay}"/>
+                <ToggleSwitch IsEnabled="{x:Bind ViewModel.Settings.IsNotificationEnabled, Mode=OneWay}" IsOn="{x:Bind ViewModel.Settings.IsVideoMomentNotificationEnabled, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>

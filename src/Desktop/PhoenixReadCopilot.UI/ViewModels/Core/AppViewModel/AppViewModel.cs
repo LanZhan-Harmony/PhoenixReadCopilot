@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.BadgeNotifications;
 using PhoenixReadCopilot.UI.Forms;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -39,32 +40,52 @@ public sealed partial class AppViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task InitializeExternalAsync()
+    private Task InitializeExternalAsync()
     {
         var architecture = RuntimeInformation.ProcessArchitecture;
         var identifier = architecture == Architecture.Arm64 ? "arm64" : "x64";
 
-        var bbdownFile = await StorageFile
-            .GetFileFromApplicationUriAsync(
-                new Uri($"ms-appx:///Assets/BBDown/{identifier}/BBDown.exe")
-            )
-            .AsTask();
-        BBDownPath = bbdownFile.Path;
-
-        var ffmpegFile = await StorageFile
-            .GetFileFromApplicationUriAsync(
-                new Uri($"ms-appx:///Assets/ffmpeg/{identifier}/ffmpeg.exe")
-            )
-            .AsTask();
-        FFmpegPath = ffmpegFile.Path;
+        BBDownPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Assets",
+            "BBDown",
+            identifier,
+            "BBDown.exe"
+        );
+        FFmpegPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Assets",
+            "ffmpeg",
+            identifier,
+            "ffmpeg.exe"
+        );
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
     private void Launch()
     {
-        // 清除所有之前的badges.
-        BadgeNotificationManager.Current.ClearBadge();
-        if (_tokenResolver.GetToken() is not null)
+        // 清除所有之前的badges（仅在 MSIX 打包环境下支持）.
+        if (RuntimeHelper.IsMSIX)
+        {
+            try
+            {
+                BadgeNotificationManager.Current.ClearBadge();
+            }
+            catch { }
+        }
+
+        var hasToken = false;
+        try
+        {
+            hasToken = _tokenResolver.GetToken() is not null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get token during launch.");
+        }
+
+        if (hasToken)
         {
             IsInitialLoading = true;
             new MainWindow().Activate();
@@ -186,11 +207,11 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void CheckUpate()
     {
-        var localVersion = SettingsToolkit.ReadLocalSetting(SettingNames.AppVersion, string.Empty);
+        var localVersion = Settings.AppVersion;
         var currentVersion = this.Get<IAppToolkit>().GetPackageVersion();
         if (localVersion != currentVersion)
         {
-            SettingsToolkit.WriteLocalSetting(SettingNames.AppVersion, currentVersion);
+            Settings.AppVersion = currentVersion;
             IsUpdateShown = true;
         }
     }

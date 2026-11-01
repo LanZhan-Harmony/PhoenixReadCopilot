@@ -69,10 +69,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         if (SelectedSection is null)
         {
-            var isLastVideoSection = SettingsToolkit.ReadLocalSetting(
-                SettingNames.LastUserSpaceSectionIsVideo,
-                true
-            );
+            var isLastVideoSection = Settings.LastUserSpaceSectionIsVideo;
             var section = isLastVideoSection ? Sections.First() : Sections.Last();
             SelectSection(section);
         }
@@ -117,10 +114,8 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
 
         SelectedSection = section;
-        SettingsToolkit.WriteLocalSetting(
-            SettingNames.LastUserSpaceSectionIsVideo,
-            SelectedSection.IsVideo()
-        );
+        Settings.LastUserSpaceSectionIsVideo = SelectedSection.IsVideo()
+        ;
         SelectedSection.InitializeCommand.Execute(default);
     }
 

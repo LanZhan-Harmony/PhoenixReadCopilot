@@ -1,6 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -11,104 +14,39 @@ public sealed partial class SettingsPageViewModel
 {
     private bool _isInitialized;
 
-    [ObservableProperty]
-    public partial ElementTheme AppTheme { get; set; }
+    private readonly ISettingsService _settingsService;
 
-    [ObservableProperty]
-    public partial string AppThemeText { get; set; }
+    /// <summary>
+    /// 全局应用设置.
+    /// </summary>
+    public AppSettings Settings => _settingsService.Settings;
 
-    [ObservableProperty]
-    public partial bool IsTopNavShown { get; set; }
+    /// <summary>
+    /// 当前应用主题.
+    /// </summary>
+    public ElementTheme AppTheme => Settings.AppTheme;
 
-    [ObservableProperty]
-    public partial bool IsAutoPlayWhenLoaded { get; set; }
+    /// <summary>
+    /// 主题显示文本.
+    /// </summary>
+    public string AppThemeText =>
+        AppTheme switch
+        {
+            ElementTheme.Light => Resources.LightTheme,
+            ElementTheme.Dark => Resources.DarkTheme,
+            _ => Resources.SystemDefault,
+        };
 
-    [ObservableProperty]
-    public partial bool IsAutoPlayNextRecommendVideo { get; set; }
-
-    [ObservableProperty]
-    public partial PlayerDisplayMode DefaultPlayerDisplayMode { get; set; }
-
-    [ObservableProperty]
-    public partial bool AutoPlayNext { get; set; }
-
-    [ObservableProperty]
-    public partial bool PlayNextWithoutTip { get; set; }
-
-    [ObservableProperty]
-    public partial bool EndWithPlaylist { get; set; }
-
-    [ObservableProperty]
-    public partial PreferCodecType PreferCodec { get; set; }
-
-    [ObservableProperty]
-    public partial PreferQualityType PreferQuality { get; set; }
-
-    [ObservableProperty]
-    public partial PreferDecodeType PreferDecode { get; set; }
-
-    [ObservableProperty]
-    public partial PlayerType PlayerType { get; set; }
-
-    [ObservableProperty]
-    public partial MTCBehavior MTCBehavior { get; set; }
-
-    [ObservableProperty]
-    public partial double SingleFastForwardAndRewindSpan { get; set; }
-
-    [ObservableProperty]
-    public partial bool PlayerSpeedEnhancement { get; set; }
-
-    [ObservableProperty]
-    public partial bool GlobalPlayerSpeed { get; set; }
+    /// <summary>
+    /// 是否显示顶部导航栏.
+    /// </summary>
+    public bool IsTopNavShown => Settings.IsTopNavBarShown;
 
     [ObservableProperty]
     public partial string PackageVersion { get; set; }
 
     [ObservableProperty]
     public partial string Copyright { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsCopyScreenshot { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsOpenScreenshotFile { get; set; }
-
-    [ObservableProperty]
-    public partial bool AutoLoadHistory { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsNotificationEnabled { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsVideoMomentNotificationEnabled { get; set; }
-
-    [ObservableProperty]
-    public partial bool BottomProgressVisible { get; set; }
-
-    [ObservableProperty]
-    public partial bool NoP2P { get; set; }
-
-    [ObservableProperty]
-    public partial string DefaultDownloadPath { get; set; }
-
-    [ObservableProperty]
-    public partial bool DownloadWithDanmaku { get; set; }
-
-    [ObservableProperty]
-    public partial bool OpenFolderAfterDownload { get; set; }
-
-    [ObservableProperty]
-    public partial bool UseExternalBBDown { get; set; }
-
-    [ObservableProperty]
-    public partial bool OnlyCopyCommandWhenDownload { get; set; }
-
-    [ObservableProperty]
-    public partial bool WithoutCredentialWhenGenDownloadCommand { get; set; }
-
-    [ObservableProperty]
-    public partial bool FilterAISubtitle { get; set; }
 
     [ObservableProperty]
     public partial List<PlayerDisplayMode> PlayerDisplayModeCollection { get; set; }
@@ -127,25 +65,4 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     public partial List<MTCBehavior> MTCBehaviorCollection { get; set; }
-
-    [ObservableProperty]
-    public partial bool ShowSearchRecommend { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsPopularNavVisible { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsMomentNavVisible { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsVideoNavVisible { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsAnimeNavVisible { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsCinemaNavVisible { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsArticleNavVisible { get; set; }
 }

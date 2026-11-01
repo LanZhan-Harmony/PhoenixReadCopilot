@@ -76,10 +76,8 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
             sectionSettingValue = $"chat_{chatVM.Data.User.Id}";
         }
 
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.LastSelectedMessageSection,
-            sectionSettingValue
-        );
+        Settings.LastSelectedMessageSection = sectionSettingValue
+        ;
         CurrentSection = vm;
         await CurrentSection.InitializeCommand.ExecuteAsync(default);
         this.Get<AccountViewModel>().UpdateUnreadCommand.Execute(default);
@@ -154,10 +152,7 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.LastSelectedMessageSection,
-            string.Empty
-        );
+        var lastSelectedSection = Settings.LastSelectedMessageSection;
         UpdateUnreadCountCommand.Execute(default);
         if (string.IsNullOrEmpty(lastSelectedSection))
         {

@@ -31,10 +31,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         _cookiesResolver = cookiesResolver;
         _bbdownPath = this.Get<AppViewModel>().BBDownPath;
         _ffmpegPath = this.Get<AppViewModel>().FFmpegPath;
-        var localDownloadFolder = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DownloadFolder,
-            string.Empty
-        );
+        var localDownloadFolder = Settings.DownloadFolder;
         _downloadPath =
             string.IsNullOrEmpty(localDownloadFolder) || !Directory.Exists(localDownloadFolder)
                 ? Path.Combine(
@@ -47,10 +44,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             Directory.CreateDirectory(_downloadPath);
         }
 
-        _openFolderAfterDownload = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.OpenFolderAfterDownload,
-            true
-        );
+        _openFolderAfterDownload = Settings.OpenFolderAfterDownload;
     }
 
     /// <summary>
@@ -103,7 +97,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     }
 
     private static bool UseExternal() =>
-        SettingsToolkit.ReadLocalSetting(SettingNames.UseExternalBBDown, false);
+        Settings.UseExternalBBDown;
 
     /// <summary>
     /// 下载视频.
@@ -139,10 +133,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private void DownloadSubtitle()
     {
-        var isAISubtitleFiltered = SettingsToolkit.ReadLocalSetting(
-            SettingNames.FilterAISubtitle,
-            true
-        );
+        var isAISubtitleFiltered = Settings.FilterAISubtitle;
         var subCommand = isAISubtitleFiltered ? "--sub-only" : "--sub-only --skip-ai False";
         var command = $"{GetBasicCommand(false)} {subCommand} \"{_currentUrl}\"";
         LaunchDownloadProcess(command);
@@ -172,10 +163,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     {
         var token = _tokenResolver.GetToken().AccessToken;
         var cookie = _cookiesResolver.GetCookieString();
-        var preferCodec = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.PreferCodec,
-            PreferCodecType.H264
-        );
+        var preferCodec = Settings.PreferCodec;
         var codec = preferCodec switch
         {
             PreferCodecType.H264 => "avc",
@@ -184,14 +172,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
         };
 
         var cmd = $"-e {codec} --work-dir \"{_downloadPath}\" -ua \"{VideoUserAgent}\"";
-        var copyCommandOnly = SettingsToolkit.ReadLocalSetting(
-            SettingNames.OnlyCopyCommandWhenDownload,
-            false
-        );
-        var withoutCredential = SettingsToolkit.ReadLocalSetting(
-            SettingNames.WithoutCredentialWhenGenDownloadCommand,
-            false
-        );
+        var copyCommandOnly = Settings.OnlyCopyCommandWhenDownload;
+        var withoutCredential = Settings.WithoutCredentialWhenGenDownloadCommand;
         if (!UseExternal())
         {
             cmd += $" -app --ffmpeg-path \"{_ffmpegPath}\"";
@@ -204,10 +186,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         if (danmakuEnabled)
         {
-            var alsoDownDanmaku = SettingsToolkit.ReadLocalSetting(
-                Models.Constants.SettingNames.DownloadWithDanmaku,
-                false
-            );
+            var alsoDownDanmaku = Settings.DownloadWithDanmaku;
             if (alsoDownDanmaku)
             {
                 cmd += " -dd";
@@ -219,14 +198,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
     private void LaunchDownloadProcess(string command)
     {
-        var useExternalBBDown = SettingsToolkit.ReadLocalSetting(
-            SettingNames.UseExternalBBDown,
-            false
-        );
-        var copyCommandOnly = SettingsToolkit.ReadLocalSetting(
-            SettingNames.OnlyCopyCommandWhenDownload,
-            false
-        );
+        var useExternalBBDown = Settings.UseExternalBBDown;
+        var copyCommandOnly = Settings.OnlyCopyCommandWhenDownload;
         var fileName = useExternalBBDown ? "BBDown" : _bbdownPath;
         if (useExternalBBDown && copyCommandOnly)
         {

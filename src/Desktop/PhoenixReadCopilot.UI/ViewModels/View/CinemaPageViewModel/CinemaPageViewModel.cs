@@ -46,10 +46,7 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
             new EntertainmentIndexViewModel(PgcSectionType.TV, _service),
             new EntertainmentIndexViewModel(PgcSectionType.Documentary, _service),
         };
-        var lastType = SettingsToolkit.ReadLocalSetting(
-            SettingNames.CinemaPageLastSelectedSectionType,
-            PgcSectionType.Movie
-        );
+        var lastType = Settings.CinemaPageLastSelectedSectionType;
         var section = Sections.FirstOrDefault(p => p.SectionType == lastType);
         this.Get<DispatcherQueue>()
             .TryEnqueue(
@@ -71,20 +68,16 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection = section;
-        SettingsToolkit.WriteLocalSetting(
-            SettingNames.CinemaPageLastSelectedSectionType,
-            section.SectionType
-        );
+        Settings.CinemaPageLastSelectedSectionType = section.SectionType
+        ;
         section.InitializeCommand.Execute(default);
     }
 
     [RelayCommand]
     private void ShowMyFavoriteCinema()
     {
-        SettingsToolkit.WriteLocalSetting(
-            SettingNames.LastSelectedFavoriteSection,
-            $"pgc_{PgcFavoriteType.Cinema}"
-        );
+        Settings.LastSelectedFavoriteSection = $"pgc_{PgcFavoriteType.Cinema}"
+        ;
         this.Get<NavigationViewModel>().NavigateToOver(typeof(FavoritesPage));
     }
 }

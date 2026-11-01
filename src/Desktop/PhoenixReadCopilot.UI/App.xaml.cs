@@ -2,15 +2,13 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 using PhoenixReadCopilot.UI.Forms;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
-using Windows.Storage;
 
 namespace PhoenixReadCopilot.UI;
 
@@ -32,9 +30,16 @@ public partial class App : Application
         InitializeComponent();
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         UnhandledException += OnUnhandledException;
-        _notificationManager = AppNotificationManager.Default;
-        _notificationManager.NotificationInvoked += OnAppNotificationInvoked;
-        _notificationManager.Register();
+        try
+        {
+            _notificationManager = AppNotificationManager.Default;
+            _notificationManager.NotificationInvoked += OnAppNotificationInvoked;
+            _notificationManager.Register();
+        }
+        catch
+        {
+            _notificationManager = null;
+        }
     }
 
     /// <summary>
@@ -48,22 +53,14 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        var instance = Microsoft.Windows.AppLifecycle.AppInstance.FindOrRegisterForKey(Id);
+        var instance = AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
         {
-            var rootFolder = ApplicationData.Current.LocalFolder;
-            var fullPath = $"{rootFolder.Path}\\Logger";
-            LoggerFolder = fullPath;
-            if (!Directory.Exists(fullPath))
-            {
-                _ = Directory.CreateDirectory(fullPath);
-            }
+            LoggerFolder = PathHelper.LogFolderPath;
 
             instance.Activated += OnInstanceActivated;
-            GlobalDependencies.Initialize();
-            GlobalDependencies
-                .Kernel.GetRequiredService<AppViewModel>()
-                .LaunchCommand.Execute(default);
+            Initialize();
+            Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
             var mainWindow = GetMainWindow();
             if (mainWindow is not null)
             {
@@ -81,9 +78,7 @@ public partial class App : Application
     }
 
     private static MainWindow? GetMainWindow() =>
-        GlobalDependencies
-            .Kernel.GetRequiredService<AppViewModel>()
-            .Windows.Find(p => p is MainWindow) as MainWindow;
+        Kernel.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow) as MainWindow;
 
     private void OnMainWindowClosed(object sender, WindowEventArgs args)
     {
@@ -100,7 +95,11 @@ public partial class App : Application
 
     private void ExitApp()
     {
-        _notificationManager?.Unregister();
+        try
+        {
+            _notificationManager?.Unregister();
+        }
+        catch { }
         _notificationManager = null;
         Exit();
     }
@@ -110,20 +109,16 @@ public partial class App : Application
         Microsoft.UI.Xaml.UnhandledExceptionEventArgs e
     )
     {
-        GlobalDependencies
-            .Kernel.GetRequiredService<ILogger<App>>()
+        Kernel
+            .GetRequiredService<ILogger<App>>()
             .LogError(e.Exception, "Unhandled exception occurred.");
         e.Handled = true;
 
         // 一旦出现布局循环检测异常，就删除上次选中的功能页，然后重启应用.
         if (e.Message.Contains("Layout cycle detected"))
         {
-            SettingsToolkit.DeleteLocalSetting(
-                Models.Constants.SettingNames.LastSelectedFeaturePage
-            );
-            GlobalDependencies
-                .Kernel.GetRequiredService<AppViewModel>()
-                .RestartCommand.Execute(default);
+            Settings.LastSelectedFeaturePage = string.Empty;
+            Kernel.GetRequiredService<AppViewModel>().RestartCommand.Execute(default);
         }
     }
 
@@ -150,20 +145,8 @@ public partial class App : Application
                     ? (object)new VideoSnapshot(new VideoInformation(identifier, default))
                     : identifier;
                 var pageType = Type.GetType(type);
-                GlobalDependencies
-                    .Kernel.GetRequiredService<NavigationViewModel>()
-                    .NavigateToOver(pageType, obj);
+                Kernel.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);
             });
         }
     }
-
-    private void OnQuitCommandExecuteRequested(
-        XamlUICommand sender,
-        ExecuteRequestedEventArgs args
-    ) => ExitApp();
-
-    private void OnShowHideWindowCommandExecuteRequested(
-        XamlUICommand sender,
-        ExecuteRequestedEventArgs args
-    ) => GetMainWindow()?.Activate();
 }

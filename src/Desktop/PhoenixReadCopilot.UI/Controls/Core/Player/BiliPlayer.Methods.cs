@@ -76,9 +76,7 @@ public sealed partial class BiliPlayer
 
     private void CheckTransportControlVisibility(PointerRoutedEventArgs? args = default)
     {
-        var isManual =
-            SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
-            == MTCBehavior.Manual;
+        var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
         if (
             isManual
             || _transportControl is null
@@ -380,9 +378,7 @@ public sealed partial class BiliPlayer
                 return;
             }
 
-            var isManual =
-                SettingsToolkit.ReadLocalSetting(SettingNames.MTCBehavior, MTCBehavior.Automatic)
-                == MTCBehavior.Manual;
+            var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
             if (isManual)
             {
                 if (_transportControl is not null)

@@ -40,10 +40,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
             new ComprehensiveMomentSectionDetailViewModel(_momentDiscoveryService),
         };
 
-        var isLastVideoSection = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.LastMomentSectionIsVideo,
-            true
-        );
+        var isLastVideoSection = Settings.LastMomentSectionIsVideo;
         var section = isLastVideoSection ? Sections.First() : Sections.Last();
         SelectSectionCommand.Execute(section);
         this.Get<DispatcherQueue>()
@@ -63,10 +60,8 @@ public sealed partial class MomentPageViewModel : ViewModelBase
 
         SelectedSection = section;
         var isVideo = section is VideoMomentSectionDetailViewModel;
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.LastMomentSectionIsVideo,
-            isVideo
-        );
+        Settings.LastMomentSectionIsVideo = isVideo
+        ;
         SelectedSection.InitializeCommand.Execute(default);
     }
 

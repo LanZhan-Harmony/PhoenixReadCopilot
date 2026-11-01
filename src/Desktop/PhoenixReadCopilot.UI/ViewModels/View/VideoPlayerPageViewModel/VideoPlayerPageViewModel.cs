@@ -226,7 +226,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         var videoUrl = vSeg?.BaseUrl;
         var audioUrl = aSeg?.BaseUrl;
 
-        if (SettingsToolkit.ReadLocalSetting(SettingNames.PlayWithoutP2P, false))
+        if (Settings.PlayWithoutP2P)
         {
             if (vSeg?.BackupUrls is not null)
             {
@@ -244,7 +244,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         var isAutoPlay = !isFirstSet;
         if (isFirstSet)
         {
-            isAutoPlay = SettingsToolkit.ReadLocalSetting(SettingNames.ShouldAutoPlay, true);
+            isAutoPlay = Settings.ShouldAutoPlay;
         }
 
         // 切换清晰度时，如果播放器已经加载了媒体，那么就保持当前的播放进度.
@@ -253,7 +253,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _initialProgress = Player.Position;
         }
 
-        SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedVideoQuality, vm.Data.Quality);
+        Settings.LastSelectedVideoQuality = vm.Data.Quality;
         if (Player is NativePlayerViewModel npvm)
         {
             npvm.InjectSegments(vSeg, aSeg);
@@ -307,10 +307,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
-        var shouldReport = SettingsToolkit.ReadLocalSetting(
-            SettingNames.ShouldReportProgress,
-            true
-        );
+        var shouldReport = Settings.ShouldReportProgress;
         if (
             !shouldReport
             || IsPrivatePlay

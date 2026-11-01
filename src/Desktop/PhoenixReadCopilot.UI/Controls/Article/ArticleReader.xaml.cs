@@ -46,10 +46,8 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         double lineHeight = 1.5
     )
     {
-        var path = Path.Combine(Package.Current.InstalledPath, "Assets/Reader");
-        var theme = SettingsToolkit
-            .ReadLocalSetting(Models.Constants.SettingNames.AppTheme, ElementTheme.Default)
-            .ToString();
+        var path = Path.Combine(AppContext.BaseDirectory, "Assets", "Reader");
+        var theme = GlobalDependencies.Settings.AppTheme.ToString();
         if (theme == "Default")
         {
             theme = App.Current.RequestedTheme.ToString();

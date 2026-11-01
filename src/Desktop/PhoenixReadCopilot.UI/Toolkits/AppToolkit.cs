@@ -1,5 +1,8 @@
 using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Constants;
 using WinUIKernel.Share.Toolkits;
 
@@ -8,10 +11,34 @@ namespace PhoenixReadCopilot.UI.Toolkits;
 /// <summary>
 /// 应用工具组.
 /// </summary>
-internal sealed partial class AppToolkit : SharedAppToolkit
+internal sealed partial class AppToolkit : IAppToolkit
 {
-    public AppToolkit(ISettingsToolkit settings)
-        : base(settings) { }
+    /// <inheritdoc/>
+    public ApplicationTheme GetCurrentTheme()
+    {
+        var localTheme = Settings.AppTheme;
+        return localTheme == ElementTheme.Default ? Application.Current.RequestedTheme
+            : localTheme == ElementTheme.Light ? ApplicationTheme.Light
+            : ApplicationTheme.Dark;
+    }
+
+    /// <inheritdoc/>
+    public string GetPackageVersion()
+    {
+        if (RuntimeHelper.IsMSIX)
+        {
+            var appVersion = Windows.ApplicationModel.Package.Current.Id.Version;
+            return $"{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}.{appVersion.Revision}";
+        }
+
+        var version = Assembly.GetEntryAssembly()?.GetName().Version
+            ?? Assembly.GetExecutingAssembly().GetName().Version;
+        return $"{version?.Major}.{version?.Minor}.{version?.Build}.{version?.Revision}";
+    }
+
+    /// <inheritdoc/>
+    public void ResetControlTheme(FrameworkElement element) =>
+        element.RequestedTheme = Settings.AppTheme;
 
     /// <summary>
     /// 格式化时长.
@@ -94,10 +121,7 @@ internal sealed partial class AppToolkit : SharedAppToolkit
     /// <returns>解码标识符.</returns>
     public static string GetPreferCodecId()
     {
-        var preferCodec = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PreferCodec,
-            PreferCodecType.H264
-        );
+        var preferCodec = Settings.PreferCodec;
         return preferCodec switch
         {
             PreferCodecType.H265 => "hev",

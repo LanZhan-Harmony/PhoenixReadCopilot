@@ -196,49 +196,19 @@ public sealed partial class DanmakuViewModel : ViewModelBase
 
     private void ResetOptions()
     {
-        IsShowDanmaku = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsShowDanmaku,
-            true
-        );
-        DanmakuOpacity = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DanmakuOpacity,
-            0.8
-        );
-        DanmakuFontSize = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DanmakuFontSize,
-            1.5d
-        );
-        DanmakuArea = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DanmakuArea,
-            1d
-        );
-        DanmakuSpeed = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DanmakuSpeed,
-            1.2d
-        );
-        DanmakuFontFamily = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DanmakuFontFamily,
-            "Segoe UI"
-        );
-        IsDanmakuBold = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsDanmakuBold,
-            true
-        );
+        IsShowDanmaku = Settings.IsShowDanmaku;
+        DanmakuOpacity = Settings.DanmakuOpacity;
+        DanmakuFontSize = Settings.DanmakuFontSize;
+        DanmakuArea = Settings.DanmakuArea;
+        DanmakuSpeed = Settings.DanmakuSpeed;
+        DanmakuFontFamily = Settings.DanmakuFontFamily;
+        IsDanmakuBold = Settings.IsDanmakuBold;
         IsDanmakuLimit = true;
-        Location = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DanmakuLocation,
-            DanmakuLocation.Scroll
-        );
+        Location = Settings.DanmakuLocation;
         Color = AppToolkit.HexToColor(
-            SettingsToolkit.ReadLocalSetting(
-                Models.Constants.SettingNames.DanmakuColor,
-                Microsoft.UI.Colors.White.ToString()
-            )
+            string.IsNullOrEmpty(Settings.DanmakuColor) ? Microsoft.UI.Colors.White.ToString() : Settings.DanmakuColor
         );
-        IsStandardSize = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsDanmakuStandardSize,
-            true
-        );
+        IsStandardSize = Settings.IsDanmakuStandardSize;
         ResetStyle();
     }
 
@@ -247,10 +217,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     {
         var fonts = await this.Get<IFontToolkit>().GetFontsAsync();
         Fonts = fonts.ToList();
-        var localFont = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.DanmakuFontFamily,
-            "Segoe UI"
-        );
+        var localFont = Settings.DanmakuFontFamily;
         if (!Fonts.Contains(localFont))
         {
             DanmakuFontFamily = "Segoe UI";
@@ -264,41 +231,37 @@ public sealed partial class DanmakuViewModel : ViewModelBase
             Redraw();
         }
 
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.IsShowDanmaku, value);
+        Settings.IsShowDanmaku = value;
     }
 
     partial void OnDanmakuOpacityChanged(double value) =>
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.DanmakuOpacity, value);
+        Settings.DanmakuOpacity = value;
 
     partial void OnDanmakuFontSizeChanged(double value) =>
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.DanmakuFontSize, value);
+        Settings.DanmakuFontSize = value;
 
     partial void OnIsDanmakuBoldChanged(bool value) =>
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.IsDanmakuBold, value);
+        Settings.IsDanmakuBold = value;
 
     partial void OnDanmakuAreaChanged(double value) =>
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.DanmakuArea, value);
+        Settings.DanmakuArea = value;
 
     partial void OnDanmakuSpeedChanged(double value) =>
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.DanmakuSpeed, value);
+        Settings.DanmakuSpeed = value;
 
     partial void OnDanmakuFontFamilyChanged(string value) =>
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.DanmakuFontFamily, value);
+        Settings.DanmakuFontFamily = value;
 
     partial void OnIsStandardSizeChanged(bool value) =>
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.IsDanmakuStandardSize,
-            value
-        );
+        Settings.IsDanmakuStandardSize = value
+        ;
 
     partial void OnLocationChanged(DanmakuLocation value) =>
-        SettingsToolkit.WriteLocalSetting(Models.Constants.SettingNames.DanmakuLocation, value);
+        Settings.DanmakuLocation = value;
 
     partial void OnColorChanged(Windows.UI.Color value) =>
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.DanmakuColor,
-            value.ToString()
-        );
+        Settings.DanmakuColor = value.ToString()
+        ;
 
     partial void OnExtraSpeedChanged(double value) =>
         ExtraSpeedChanged?.Invoke(this, EventArgs.Empty);

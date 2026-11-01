@@ -21,10 +21,7 @@ public sealed partial class NotificationViewModel
     [RelayCommand]
     private async Task TrySendVideoMomentNotificationsAsync()
     {
-        var isVideoNotifyEnabled = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsVideoMomentNotificationEnabled,
-            true
-        );
+        var isVideoNotifyEnabled = Settings.IsVideoMomentNotificationEnabled;
         if (!isVideoNotifyEnabled)
         {
             return;
@@ -104,7 +101,14 @@ public sealed partial class NotificationViewModel
                     .SetHeroImage(new Uri(cover))
                     .BuildNotification();
 
-                AppNotificationManager.Default.Show(notification);
+                try
+                {
+                    AppNotificationManager.Default.Show(notification);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "发送通知失败.");
+                }
                 await Task.Delay(1000);
             }
 
@@ -133,10 +137,7 @@ public sealed partial class NotificationViewModel
     /// </summary>
     private void LoadLastTenMomentIds()
     {
-        var lastTenMomentIds = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.LastTenMomentIds,
-            string.Empty
-        );
+        var lastTenMomentIds = Settings.LastTenMomentIds;
         if (string.IsNullOrEmpty(lastTenMomentIds))
         {
             _momentIds = new List<string>();
@@ -150,10 +151,8 @@ public sealed partial class NotificationViewModel
     {
         _momentIds = momentIds;
         var lastTenMomentIds = string.Join(',', momentIds);
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.LastTenMomentIds,
-            lastTenMomentIds
-        );
+        Settings.LastTenMomentIds = lastTenMomentIds
+        ;
     }
 
     private void UpdateMomentTiles(List<MomentInformation> moments)

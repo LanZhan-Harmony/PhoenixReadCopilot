@@ -126,10 +126,9 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         var profileSettings = UserProfilePersonalizationSettings.Current;
         var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
-        var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(
-            "TempImages",
-            CreationCollisionOption.OpenIfExists
-        );
+        var tempFolder = Path.Combine(PhoenixReadCopilot.UI.Helpers.PathHelper.TempFolderPath, "TempImages");
+        Directory.CreateDirectory(tempFolder);
+        var folder = await StorageFolder.GetFolderFromPathAsync(tempFolder);
         var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
         using var stream = await file.OpenStreamForWriteAsync();
         using var client = new HttpClient();

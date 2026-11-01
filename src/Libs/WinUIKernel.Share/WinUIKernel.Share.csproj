@@ -11,7 +11,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsAotCompatible>true</IsAotCompatible>
     <EnableMsixTooling>true</EnableMsixTooling>
-    <WebView2EnableCsWinRTProjectionExcludeCoreRef>true</WebView2EnableCsWinRTProjectionExcludeCoreRef>
   </PropertyGroup>
 	
   <ItemGroup>

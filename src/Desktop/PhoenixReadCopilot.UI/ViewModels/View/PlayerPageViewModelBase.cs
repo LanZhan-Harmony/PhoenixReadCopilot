@@ -21,10 +21,7 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
     /// </summary>
     protected PlayerPageViewModelBase()
     {
-        var playerType = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PlayerType,
-            PlayerType.Native
-        );
+        var playerType = Settings.PlayerType;
 
         Player = playerType switch
         {

@@ -115,10 +115,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private void PlayAll()
     {
-        var preferDisplayMode = SettingsToolkit.ReadLocalSetting(
-            SettingNames.DefaultPlayerDisplayMode,
-            PlayerDisplayMode.Default
-        );
+        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
         if (Videos.Count == 1)
         {
             var video = Videos.First();

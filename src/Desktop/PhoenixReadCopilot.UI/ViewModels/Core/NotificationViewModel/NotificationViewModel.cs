@@ -30,10 +30,7 @@ public sealed partial class NotificationViewModel : ViewModelBase
     [RelayCommand]
     private async Task TryStartAsync()
     {
-        var isNotifyEnabled = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.IsNotificationEnabled,
-            true
-        );
+        var isNotifyEnabled = Settings.IsNotificationEnabled;
         if (!isNotifyEnabled)
         {
             return;
@@ -58,12 +55,21 @@ public sealed partial class NotificationViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        var entry = (await Package.Current.GetAppListEntriesAsync()).First();
-        _isTileSupport = StartScreenManager.GetDefault().SupportsAppListEntry(entry);
-
-        if (_isTileSupport)
+        if (PhoenixReadCopilot.UI.Helpers.RuntimeHelper.IsMSIX)
         {
-            TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+            try
+            {
+                var entry = (await Package.Current.GetAppListEntriesAsync()).FirstOrDefault();
+                if (entry is not null)
+                {
+                    _isTileSupport = StartScreenManager.GetDefault().SupportsAppListEntry(entry);
+                    if (_isTileSupport)
+                    {
+                        TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+                    }
+                }
+            }
+            catch { }
         }
     }
 

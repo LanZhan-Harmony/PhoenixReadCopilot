@@ -75,7 +75,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         player.CurrentStateChanged += OnMediaPlayerStateChanged;
         player.MediaFailed += OnMediaPlayerFailed;
         player.MediaEnded += OnMediaPlayerEnded;
-        player.Volume = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerVolume, 100) / 100.0;
+        player.Volume = Settings.PlayerVolume / 100.0;
 
         return player;
     }
@@ -174,10 +174,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 _ffmpegSource.PlaybackSession = session;
             }
 
-            sender.PlaybackSession.PlaybackRate = SettingsToolkit.ReadLocalSetting(
-                SettingNames.PlayerSpeed,
-                1d
-            );
+            sender.PlaybackSession.PlaybackRate = Settings.PlayerSpeed;
             _speedAction?.Invoke(sender.PlaybackSession.PlaybackRate);
 
             var duration = session.NaturalDuration.TotalSeconds;

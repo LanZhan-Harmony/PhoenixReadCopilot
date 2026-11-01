@@ -197,7 +197,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         var isAutoPlay = !isFirstSet;
         if (isFirstSet)
         {
-            isAutoPlay = SettingsToolkit.ReadLocalSetting(SettingNames.ShouldAutoPlay, true);
+            isAutoPlay = Settings.ShouldAutoPlay;
         }
 
         // 切换清晰度时，如果播放器已经加载了媒体，那么就保持当前的播放进度.
@@ -206,7 +206,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
             _initialProgress = Player.Position;
         }
 
-        SettingsToolkit.WriteLocalSetting(SettingNames.LastSelectedPgcQuality, vm.Data.Quality);
+        Settings.LastSelectedPgcQuality = vm.Data.Quality;
         if (Player is NativePlayerViewModel npvm)
         {
             npvm.InjectSegments(vSeg, aSeg);
@@ -262,10 +262,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
-        var shouldReport = SettingsToolkit.ReadLocalSetting(
-            SettingNames.ShouldReportProgress,
-            true
-        );
+        var shouldReport = Settings.ShouldReportProgress;
         if (
             !shouldReport
             || _view is null

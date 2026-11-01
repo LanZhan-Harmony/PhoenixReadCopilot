@@ -26,7 +26,7 @@
             <community:SettingsCard Description="{x:Bind strings:Resources.PlayerTypeDescription}" Header="{x:Bind strings:Resources.PlayerType}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PlayerTypeCollection, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.PlayerType, Mode=TwoWay}">
+                          SelectedItem="{x:Bind ViewModel.Settings.PlayerType, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PlayerType">
                             <TextBlock Text="{x:Bind Converter={StaticResource PlayerTypeConverter}}"/>
@@ -37,7 +37,7 @@
             <community:SettingsCard Header="{x:Bind strings:Resources.PreferQuality}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PreferQualityCollection, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.PreferQuality, Mode=TwoWay}">
+                          SelectedItem="{x:Bind ViewModel.Settings.PreferQuality, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PreferQualityType">
                             <TextBlock Text="{x:Bind Converter={StaticResource PreferQualityConverter}}"/>
@@ -48,7 +48,7 @@
             <community:SettingsCard Header="{x:Bind strings:Resources.DefaultPlayerDisplayMode}">
                 <ComboBox MinWidth="120"
                           ItemsSource="{x:Bind ViewModel.PlayerDisplayModeCollection, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.DefaultPlayerDisplayMode, Mode=TwoWay}">
+                          SelectedItem="{x:Bind ViewModel.Settings.DefaultPlayerDisplayMode, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PlayerDisplayMode">
                             <TextBlock Text="{x:Bind Converter={StaticResource DisplayModeConverter}}"/>
@@ -57,29 +57,29 @@
                 </ComboBox>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.AutoPlayWhenLoaded}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsAutoPlayWhenLoaded, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.ShouldAutoPlay, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.AutoLoadHistoryWhenLoaded}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.AutoLoadHistory, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoLoadHistory, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.AutoNextRelatedVideoDescription}" Header="{x:Bind strings:Resources.AutoNextRelatedVideo}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.IsAutoPlayNextRecommendVideo, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoPlayNextRecommendVideo, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.ContinuousPlayDescription}" Header="{x:Bind strings:Resources.ContinuousPlay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.AutoPlayNext, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.PlayNextWithoutTipDescription}"
                                     Header="{x:Bind strings:Resources.PlayNextWithoutTip}"
-                                    Visibility="{x:Bind ViewModel.AutoPlayNext, Mode=OneWay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.PlayNextWithoutTip, Mode=TwoWay}"/>
+                                    Visibility="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=OneWay}">
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.PlayNextWithoutTip, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.StopWhenEndOfPlaylistDescription}"
                                     Header="{x:Bind strings:Resources.StopWhenEndOfPlaylist}"
-                                    Visibility="{x:Bind ViewModel.AutoPlayNext, Mode=OneWay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.EndWithPlaylist, Mode=TwoWay}"/>
+                                    Visibility="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=OneWay}">
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.EndWithPlaylist, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.NoP2PDescription}" Header="{x:Bind strings:Resources.NoP2P}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.NoP2P, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.PlayWithoutP2P, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>

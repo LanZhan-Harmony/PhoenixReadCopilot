@@ -82,20 +82,15 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             sectionSettingValue = $"ugc_{ugcVM.Data.Id}";
         }
 
-        SettingsToolkit.WriteLocalSetting(
-            Models.Constants.SettingNames.LastSelectedFavoriteSection,
-            sectionSettingValue
-        );
+        Settings.LastSelectedFavoriteSection = sectionSettingValue
+        ;
         CurrentSection = vm;
         CurrentSection.TryFirstLoadCommand.Execute(default);
     }
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = SettingsToolkit.ReadLocalSetting(
-            Models.Constants.SettingNames.LastSelectedFavoriteSection,
-            string.Empty
-        );
+        var lastSelectedSection = Settings.LastSelectedFavoriteSection;
         if (string.IsNullOrEmpty(lastSelectedSection))
         {
             SelectSection(Sections.First());

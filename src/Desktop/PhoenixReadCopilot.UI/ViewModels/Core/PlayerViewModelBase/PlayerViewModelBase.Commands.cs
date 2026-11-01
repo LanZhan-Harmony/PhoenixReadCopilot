@@ -140,7 +140,7 @@ public abstract partial class PlayerViewModelBase
         if (Volume != value)
         {
             Volume = value;
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerVolume, value);
+            Settings.PlayerVolume = value;
         }
     }
 
@@ -156,13 +156,10 @@ public abstract partial class PlayerViewModelBase
         if (Speed != speed)
         {
             Speed = speed;
-            var isShareSpeed = SettingsToolkit.ReadLocalSetting(
-                SettingNames.IsPlayerSpeedShare,
-                true
-            );
+            var isShareSpeed = Settings.IsPlayerSpeedShare;
             if (isShareSpeed)
             {
-                SettingsToolkit.WriteLocalSetting(SettingNames.PlayerSpeed, speed);
+                Settings.PlayerSpeed = speed;
             }
         }
     }
@@ -283,10 +280,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void ForwardSkip()
     {
-        var seconds = SettingsToolkit.ReadLocalSetting(
-            SettingNames.SingleFastForwardAndRewindSpan,
-            15d
-        );
+        var seconds = Settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -308,10 +302,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void BackwardSkip()
     {
-        var seconds = SettingsToolkit.ReadLocalSetting(
-            SettingNames.SingleFastForwardAndRewindSpan,
-            15d
-        );
+        var seconds = Settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -346,10 +337,7 @@ public abstract partial class PlayerViewModelBase
             if (File.Exists(path))
             {
                 var file = await StorageFile.GetFileFromPathAsync(path);
-                var shouldCopyToClipboard = SettingsToolkit.ReadLocalSetting(
-                    SettingNames.CopyAfterScreenshot,
-                    true
-                );
+                var shouldCopyToClipboard = Settings.CopyAfterScreenshot;
                 if (shouldCopyToClipboard)
                 {
                     var dp = new DataPackage();
@@ -363,10 +351,7 @@ public abstract partial class PlayerViewModelBase
                         .ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
                 }
 
-                var shouldOpenFile = SettingsToolkit.ReadLocalSetting(
-                    SettingNames.OpenAfterScreenshot,
-                    true
-                );
+                var shouldOpenFile = Settings.OpenAfterScreenshot;
                 if (shouldOpenFile)
                 {
                     await Launcher.LaunchFileAsync(file).AsTask();

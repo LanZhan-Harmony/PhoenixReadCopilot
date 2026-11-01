@@ -54,10 +54,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenVideo(VideoSnapshot snapshot)
     {
         Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PlayerType,
-            PlayerType.Native
-        );
+        var preferPlayer = Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             MainFrame.Navigate(
@@ -76,10 +73,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenVideo((List<VideoInformation> videos, VideoSnapshot snapshot) data)
     {
         Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PlayerType,
-            PlayerType.Native
-        );
+        var preferPlayer = Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             MainFrame.Navigate(
@@ -98,10 +92,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenPgc(MediaIdentifier pgc)
     {
         Activate();
-        var preferPlayer = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PlayerType,
-            PlayerType.Native
-        );
+        var preferPlayer = Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             var url = $"https://www.bilibili.com/bangumi/play/{pgc.Id.Replace("_", string.Empty)}";
@@ -162,8 +153,8 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
 
     private static PointInt32 GetSavedWindowPosition()
     {
-        var left = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowPositionLeft, 0);
-        var top = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowPositionTop, 0);
+        var left = Settings.PlayerWindowPositionLeft;
+        var top = Settings.PlayerWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -180,19 +171,13 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         }
 
         MoveAndResize();
-        var isMaximized = SettingsToolkit.ReadLocalSetting(
-            SettingNames.IsPlayerWindowMaximized,
-            false
-        );
+        var isMaximized = Settings.IsPlayerWindowMaximized;
         if (isMaximized)
         {
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        var localTheme = SettingsToolkit.ReadLocalSetting(
-            SettingNames.AppTheme,
-            ElementTheme.Default
-        );
+        var localTheme = Settings.AppTheme;
         this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }
@@ -331,11 +316,8 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerWindowWidth, 1120d);
-        var previousHeight = SettingsToolkit.ReadLocalSetting(
-            SettingNames.PlayerWindowHeight,
-            740d
-        );
+        var previousWidth = Settings.PlayerWindowWidth;
+        var previousHeight = Settings.PlayerWindowHeight;
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -367,17 +349,17 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         var left = AppWindow.Position.X;
         var top = AppWindow.Position.Y;
         var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
-        SettingsToolkit.WriteLocalSetting(SettingNames.IsPlayerWindowMaximized, (bool)isMaximized);
+        Settings.IsPlayerWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)
         {
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionLeft, left);
-            SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowPositionTop, top);
+            Settings.PlayerWindowPositionLeft = left;
+            Settings.PlayerWindowPositionTop = top;
 
             if (Height >= WindowMinHeight && Width >= WindowMinWidth)
             {
-                SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowHeight, Height);
-                SettingsToolkit.WriteLocalSetting(SettingNames.PlayerWindowWidth, Width);
+                Settings.PlayerWindowHeight = Height;
+                Settings.PlayerWindowWidth = Width;
             }
         }
     }

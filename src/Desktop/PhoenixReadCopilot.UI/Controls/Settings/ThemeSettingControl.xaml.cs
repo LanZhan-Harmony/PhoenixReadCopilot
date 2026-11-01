@@ -33,6 +33,6 @@ public sealed partial class ThemeSettingControl : SettingsPageControlBase
             _ => ElementTheme.Default,
         };
 
-        ViewModel.AppTheme = theme;
+        ViewModel.Settings.AppTheme = theme;
     }
 }

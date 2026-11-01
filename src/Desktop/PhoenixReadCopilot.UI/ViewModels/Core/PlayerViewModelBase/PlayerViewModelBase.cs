@@ -77,10 +77,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             _smtc.ButtonPressed += OnSystemControlsButtonPressedAsync;
 
             // 独立窗口播放时默认全窗口播放.
-            var defaultDisplay = SettingsToolkit.ReadLocalSetting(
-                SettingNames.DefaultPlayerDisplayMode,
-                PlayerDisplayMode.Default
-            );
+            var defaultDisplay = Settings.DefaultPlayerDisplayMode;
             if (!IsFullScreen && defaultDisplay == PlayerDisplayMode.FullScreen)
             {
                 ToggleFullScreenCommand.Execute(default);
@@ -109,14 +106,11 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
 
         CancelNotification();
 
-        var isSpeedShare = SettingsToolkit.ReadLocalSetting(SettingNames.IsPlayerSpeedShare, true);
-        var localSpeed = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerSpeed, 1.0);
-        Volume = SettingsToolkit.ReadLocalSetting(SettingNames.PlayerVolume, 100);
+        var isSpeedShare = Settings.IsPlayerSpeedShare;
+        var localSpeed = Settings.PlayerSpeed;
+        Volume = Settings.PlayerVolume;
         Speed = isSpeedShare ? localSpeed : 1.0;
-        var isSpeedEnhancement = SettingsToolkit.ReadLocalSetting(
-            SettingNames.IsPlayerSpeedEnhancement,
-            false
-        );
+        var isSpeedEnhancement = Settings.IsPlayerSpeedEnhancement;
         MaxSpeed = isSpeedEnhancement ? 6.0 : 3.0;
         SpeedStep = isSpeedEnhancement ? 0.1 : 0.25;
 
@@ -202,10 +196,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <param name="shouldShow">是否需要显示.</param>
     public void CheckBottomProgressVisibility(bool shouldShow)
     {
-        var isEnabled = SettingsToolkit.ReadLocalSetting(
-            SettingNames.IsBottomProgressVisible,
-            true
-        );
+        var isEnabled = Settings.IsBottomProgressVisible;
         IsBottomProgressVisible = isEnabled && shouldShow;
     }
 

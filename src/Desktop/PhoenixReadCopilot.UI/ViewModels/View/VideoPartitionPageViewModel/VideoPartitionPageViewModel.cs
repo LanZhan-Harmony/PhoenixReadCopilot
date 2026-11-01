@@ -49,10 +49,7 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
 
         IsPartitionLoading = false;
         await Task.Delay(200);
-        var lastSelectedPartitionId = SettingsToolkit.ReadLocalSetting(
-            SettingNames.VideoPartitionPageLastSelectedPartitionId,
-            Partitions.First().Data.Id
-        );
+        var lastSelectedPartitionId = string.IsNullOrEmpty(Settings.VideoPartitionPageLastSelectedPartitionId) ? Partitions.First().Data.Id : Settings.VideoPartitionPageLastSelectedPartitionId;
         var partition =
             Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
             ?? Partitions.First();
@@ -80,9 +77,7 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
             vm.InitializeCommand.Execute(default);
         }
 
-        SettingsToolkit.WriteLocalSetting(
-            SettingNames.VideoPartitionPageLastSelectedPartitionId,
-            partition.Data.Id
-        );
+        Settings.VideoPartitionPageLastSelectedPartitionId = partition.Data.Id
+        ;
     }
 }
