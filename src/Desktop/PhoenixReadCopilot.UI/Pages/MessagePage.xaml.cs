@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class MessagePageBase : LayoutPageBase<MessagePageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePageBase"/> class.
     /// </summary>
-    protected MessagePageBase() => ViewModel = this.Get<MessagePageViewModel>();
+    protected MessagePageBase() => ViewModel = Ioc.Default.GetRequiredService<MessagePageViewModel>();
 }

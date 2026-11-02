@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class FavoritesPageBase : LayoutPageBase<FavoritesPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageBase"/> class.
     /// </summary>
-    protected FavoritesPageBase() => ViewModel = this.Get<FavoritesPageViewModel>();
+    protected FavoritesPageBase() => ViewModel = Ioc.Default.GetRequiredService<FavoritesPageViewModel>();
 }

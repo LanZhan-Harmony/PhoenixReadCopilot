@@ -1,8 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
@@ -14,16 +13,22 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBase
 {
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionPageViewModel"/> class.
     /// </summary>
     public VideoPartitionPageViewModel(
         IVideoDiscoveryService discoveryService,
-        ILogger<VideoPartitionPageViewModel> logger
+        ILogger<VideoPartitionPageViewModel> logger,
+        ISettingsService settingsService,
+        ILoggerFactory loggerFactory
     )
+        : base(settingsService)
     {
         _service = discoveryService;
         _logger = logger;
+        _loggerFactory = loggerFactory;
     }
 
     /// <inheritdoc/>
@@ -49,7 +54,11 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
 
         IsPartitionLoading = false;
         await Task.Delay(200);
-        var lastSelectedPartitionId = string.IsNullOrEmpty(Settings.VideoPartitionPageLastSelectedPartitionId) ? Partitions.First().Data.Id : Settings.VideoPartitionPageLastSelectedPartitionId;
+        var lastSelectedPartitionId = string.IsNullOrEmpty(
+            _settings.VideoPartitionPageLastSelectedPartitionId
+        )
+            ? Partitions.First().Data.Id
+            : _settings.VideoPartitionPageLastSelectedPartitionId;
         var partition =
             Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
             ?? Partitions.First();
@@ -71,13 +80,16 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
         }
         else
         {
-            var vm = new VideoPartitionDetailViewModel(partition, _service);
+            var vm = new VideoPartitionDetailViewModel(
+                partition,
+                _service,
+                _loggerFactory.CreateLogger<VideoPartitionDetailViewModel>()
+            );
             _partitionCache.Add(partition.Data, vm);
             SelectedPartition = vm;
             vm.InitializeCommand.Execute(default);
         }
 
-        Settings.VideoPartitionPageLastSelectedPartitionId = partition.Data.Id
-        ;
+        _settings.VideoPartitionPageLastSelectedPartitionId = partition.Data.Id;
     }
 }

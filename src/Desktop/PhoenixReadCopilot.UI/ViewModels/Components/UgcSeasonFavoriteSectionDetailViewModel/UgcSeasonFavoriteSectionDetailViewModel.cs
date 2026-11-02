@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -19,12 +19,13 @@ public sealed partial class UgcSeasonFavoriteSectionDetailViewModel
     /// </summary>
     public UgcSeasonFavoriteSectionDetailViewModel(
         VideoFavoriteFolder data,
-        IFavoriteService service
+        IFavoriteService service,
+        ILogger<UgcSeasonFavoriteSectionDetailViewModel> logger
     )
         : base(data)
     {
         _service = service;
-        _logger = this.Get<ILogger<UgcSeasonFavoriteSectionDetailViewModel>>();
+        _logger = logger;
         Cover = data.Cover?.Uri;
     }
 

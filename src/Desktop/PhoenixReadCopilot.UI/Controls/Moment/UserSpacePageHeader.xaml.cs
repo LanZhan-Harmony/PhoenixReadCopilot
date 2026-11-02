@@ -24,10 +24,7 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.Initialized -= OnViewModelInitialized;
-        }
+        ViewModel?.Initialized -= OnViewModelInitialized;
 
         Selector.SelectionChanged -= OnSelectorChanged;
     }

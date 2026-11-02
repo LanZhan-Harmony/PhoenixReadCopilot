@@ -1,10 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Article;
@@ -17,16 +16,25 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelBase
 {
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticlePartitionPageViewModel"/> class.
     /// </summary>
     public ArticlePartitionPageViewModel(
         IArticleDiscoveryService discoveryService,
-        ILogger<ArticlePartitionPageViewModel> logger
+        ILogger<ArticlePartitionPageViewModel> logger,
+        DispatcherQueue dispatcherQueue,
+        ISettingsService settingsService,
+        ILoggerFactory loggerFactory
     )
+        : base(settingsService)
     {
         _service = discoveryService;
         _logger = logger;
+        _dispatcherQueue = dispatcherQueue;
+        _loggerFactory = loggerFactory;
     }
 
     /// <inheritdoc/>
@@ -53,19 +61,22 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
         }
 
         IsPartitionLoading = false;
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                () =>
-                {
-                    var lastSelectedPartitionId = string.IsNullOrEmpty(Settings.ArticlePartitionPageLastSelectedPartitionId) ? Partitions.First().Data.Id : Settings.ArticlePartitionPageLastSelectedPartitionId;
-                    var partition =
-                        Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
-                        ?? Partitions.First();
-                    SelectPartition(partition);
-                    PartitionInitialized?.Invoke(this, EventArgs.Empty);
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            () =>
+            {
+                var lastSelectedPartitionId = string.IsNullOrEmpty(
+                    _settings.ArticlePartitionPageLastSelectedPartitionId
+                )
+                    ? Partitions.First().Data.Id
+                    : _settings.ArticlePartitionPageLastSelectedPartitionId;
+                var partition =
+                    Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
+                    ?? Partitions.First();
+                SelectPartition(partition);
+                PartitionInitialized?.Invoke(this, EventArgs.Empty);
+            }
+        );
     }
 
     [RelayCommand]
@@ -82,13 +93,17 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
         }
         else
         {
-            var vm = new ArticlePartitionDetailViewModel(partition, _service);
+            var vm = new ArticlePartitionDetailViewModel(
+                partition,
+                _service,
+                _dispatcherQueue,
+                _loggerFactory.CreateLogger<ArticlePartitionDetailViewModel>()
+            );
             _partitionCache.Add(partition.Data, vm);
             SelectedPartition = vm;
             vm.InitializeCommand.Execute(default);
         }
 
-        Settings.ArticlePartitionPageLastSelectedPartitionId = partition.Data.Id
-        ;
+        _settings.ArticlePartitionPageLastSelectedPartitionId = partition.Data.Id;
     }
 }

@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
@@ -20,12 +20,13 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     /// </summary>
     public VideoPartitionDetailViewModel(
         PartitionViewModel partition,
-        IVideoDiscoveryService service
+        IVideoDiscoveryService service,
+        ILogger<VideoPartitionDetailViewModel> logger
     )
         : base(partition)
     {
         _service = service;
-        _logger = this.Get<ILogger<VideoPartitionDetailViewModel>>();
+        _logger = logger;
     }
 
     [RelayCommand]

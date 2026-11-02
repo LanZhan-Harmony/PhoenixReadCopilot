@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -17,13 +18,24 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class ViewLaterPageViewModel : ViewModelBase
 {
+    private readonly NavigationViewModel _navigationViewModel;
+
+    private readonly AppSettings _settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewLaterPageViewModel"/> class.
     /// </summary>
-    public ViewLaterPageViewModel(IViewLaterService service, ILogger<ViewLaterPageViewModel> logger)
+    public ViewLaterPageViewModel(
+        IViewLaterService service,
+        ILogger<ViewLaterPageViewModel> logger,
+        NavigationViewModel navigationViewModel,
+        ISettingsService settingsService
+    )
     {
         _service = service;
         _logger = logger;
+        _navigationViewModel = navigationViewModel;
+        _settings = settingsService.Settings;
     }
 
     [RelayCommand]
@@ -115,7 +127,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private void PlayAll()
     {
-        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
+        var preferDisplayMode = _settings.DefaultPlayerDisplayMode;
         if (Videos.Count == 1)
         {
             var video = Videos.First();
@@ -125,8 +137,10 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
                 return;
             }
 
-            this.Get<NavigationViewModel>()
-                .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video.Data));
+            _navigationViewModel.NavigateToOver(
+                typeof(VideoPlayerPage),
+                new VideoSnapshot(video.Data)
+            );
         }
         else
         {
@@ -140,7 +154,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
                 return;
             }
 
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), data);
+            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), data);
         }
     }
 

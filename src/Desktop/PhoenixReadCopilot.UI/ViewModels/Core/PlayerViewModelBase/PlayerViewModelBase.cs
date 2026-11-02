@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Media;
@@ -19,10 +20,17 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerViewModelBase"/> class.
     /// </summary>
-    protected PlayerViewModelBase()
+    protected PlayerViewModelBase(
+        ISettingsService settingsService,
+        AppViewModel appViewModel,
+        ILogger<PlayerViewModelBase> logger,
+        DispatcherQueue dispatcherQueue
+    )
     {
-        _logger = this.Get<ILogger<PlayerViewModelBase>>();
-        _dispatcherQueue = this.Get<DispatcherQueue>();
+        _settings = settingsService.Settings;
+        _appViewModel = appViewModel;
+        _logger = logger;
+        _dispatcherQueue = dispatcherQueue;
     }
 
     /// <summary>
@@ -69,7 +77,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         _isClosed = false;
         if (_smtc is null)
         {
-            var currentWindow = this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle();
+            var currentWindow = _appViewModel.ActivatedWindow.GetWindowHandle();
             _smtc = SystemMediaTransportControlsInterop.GetForWindow(currentWindow);
             _smtc.IsEnabled = true;
             _smtc.IsPlayEnabled = true;
@@ -77,7 +85,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             _smtc.ButtonPressed += OnSystemControlsButtonPressedAsync;
 
             // 独立窗口播放时默认全窗口播放.
-            var defaultDisplay = Settings.DefaultPlayerDisplayMode;
+            var defaultDisplay = _settings.DefaultPlayerDisplayMode;
             if (!IsFullScreen && defaultDisplay == PlayerDisplayMode.FullScreen)
             {
                 ToggleFullScreenCommand.Execute(default);
@@ -106,11 +114,11 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
 
         CancelNotification();
 
-        var isSpeedShare = Settings.IsPlayerSpeedShare;
-        var localSpeed = Settings.PlayerSpeed;
-        Volume = Settings.PlayerVolume;
+        var isSpeedShare = _settings.IsPlayerSpeedShare;
+        var localSpeed = _settings.PlayerSpeed;
+        Volume = _settings.PlayerVolume;
         Speed = isSpeedShare ? localSpeed : 1.0;
-        var isSpeedEnhancement = Settings.IsPlayerSpeedEnhancement;
+        var isSpeedEnhancement = _settings.IsPlayerSpeedEnhancement;
         MaxSpeed = isSpeedEnhancement ? 6.0 : 3.0;
         SpeedStep = isSpeedEnhancement ? 0.1 : 0.25;
 
@@ -196,7 +204,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <param name="shouldShow">是否需要显示.</param>
     public void CheckBottomProgressVisibility(bool shouldShow)
     {
-        var isEnabled = Settings.IsBottomProgressVisible;
+        var isEnabled = _settings.IsBottomProgressVisible;
         IsBottomProgressVisible = isEnabled && shouldShow;
     }
 

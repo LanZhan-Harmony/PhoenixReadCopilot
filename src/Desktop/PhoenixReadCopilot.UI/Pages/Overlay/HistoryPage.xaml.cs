@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class HistoryPageBase : LayoutPageBase<HistoryPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryPageBase"/> class.
     /// </summary>
-    protected HistoryPageBase() => ViewModel = this.Get<HistoryPageViewModel>();
+    protected HistoryPageBase() => ViewModel = Ioc.Default.GetRequiredService<HistoryPageViewModel>();
 }

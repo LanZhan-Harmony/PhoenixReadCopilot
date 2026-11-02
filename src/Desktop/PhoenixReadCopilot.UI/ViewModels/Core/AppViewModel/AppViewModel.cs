@@ -7,9 +7,9 @@ using Microsoft.Windows.BadgeNotifications;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using Richasy.BiliKernel.Bili.Authorization;
-using Windows.Storage;
 using Windows.System;
 using WinUIEx;
 using WinUIKernel.Share.Base;
@@ -23,13 +23,23 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class AppViewModel : ViewModelBase
 {
+    private readonly IAppToolkit _appToolkit;
+    private readonly AppSettings _settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AppViewModel"/> class.
     /// </summary>
-    public AppViewModel(ILogger<AppViewModel> logger, IBiliTokenResolver tokenResolver)
+    public AppViewModel(
+        ILogger<AppViewModel> logger,
+        IBiliTokenResolver tokenResolver,
+        ISettingsService settingsService,
+        IAppToolkit appToolkit
+    )
     {
         _logger = logger;
         _tokenResolver = tokenResolver;
+        _settings = settingsService.Settings;
+        _appToolkit = appToolkit;
     }
 
     [RelayCommand]
@@ -207,11 +217,11 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void CheckUpate()
     {
-        var localVersion = Settings.AppVersion;
-        var currentVersion = this.Get<IAppToolkit>().GetPackageVersion();
+        var localVersion = _settings.AppVersion;
+        var currentVersion = _appToolkit.GetPackageVersion();
         if (localVersion != currentVersion)
         {
-            Settings.AppVersion = currentVersion;
+            _settings.AppVersion = currentVersion;
             IsUpdateShown = true;
         }
     }
@@ -222,7 +232,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShowUpdateAsync()
     {
-        var packVersion = this.Get<IAppToolkit>().GetPackageVersion();
+        var packVersion = _appToolkit.GetPackageVersion();
         var url = $"https://github.com/Richasy/Bili.Copilot/releases/tag/v{packVersion}";
         await Launcher.LaunchUriAsync(new Uri(url));
         HideUpdate();
@@ -232,7 +242,7 @@ public sealed partial class AppViewModel : ViewModelBase
     {
         if (!value)
         {
-            this.Get<NotificationViewModel>().TryStartCommand.Execute(default);
+            // Started via NotificationViewModel
         }
     }
 }

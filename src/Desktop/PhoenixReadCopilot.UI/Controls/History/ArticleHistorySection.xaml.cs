@@ -31,10 +31,7 @@ public sealed partial class ArticleHistorySection : ArticleHistorySectionBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnArticleListUpdatedAsync;
-        }
+        ViewModel?.ListUpdated -= OnArticleListUpdatedAsync;
 
         ArticleRepeater.ItemsSource = null;
         ArticleScrollView.ViewChanged -= OnViewChanged;
@@ -47,10 +44,7 @@ public sealed partial class ArticleHistorySection : ArticleHistorySectionBase
         ArticleHistorySectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ListUpdated -= OnArticleListUpdatedAsync;
-        }
+        oldValue?.ListUpdated -= OnArticleListUpdatedAsync;
 
         if (newValue is null)
         {

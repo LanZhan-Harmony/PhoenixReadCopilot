@@ -345,18 +345,12 @@ public sealed partial class AppTitleBar
     {
         FindName(BackButtonPartName);
         _backButton = GetTemplateChild(BackButtonPartName) as Button;
-        if (_backButton is not null)
-        {
-            _backButton.Click += OnBackButtonClick;
-        }
+        _backButton?.Click += OnBackButtonClick;
     }
 
     private void LoadPaneToggleButton()
     {
         _paneToggleButton = GetTemplateChild(PaneToggleButtonPartName) as Button;
-        if (_paneToggleButton is not null)
-        {
-            _paneToggleButton.Click += OnPaneToggleButtonClick;
-        }
+        _paneToggleButton?.Click += OnPaneToggleButtonClick;
     }
 }

@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -12,6 +13,7 @@ namespace PhoenixReadCopilot.UI.Pages;
 /// </summary>
 public sealed partial class StartupPage : StartupPageBase
 {
+    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPage"/> class.
     /// </summary>
@@ -28,7 +30,7 @@ public sealed partial class StartupPage : StartupPageBase
 
     private void OnWebSignInButtonClick(object sender, RoutedEventArgs e)
     {
-        var window = this.Get<AppViewModel>().Windows.FirstOrDefault(p => p is WebSignInWindow);
+        var window = _appViewModel.Windows.FirstOrDefault(p => p is WebSignInWindow);
         if (window is not null)
         {
             window.Activate();
@@ -57,5 +59,5 @@ public abstract class StartupPageBase : LayoutPageBase<StartupPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPageBase"/> class.
     /// </summary>
-    public StartupPageBase() => ViewModel = this.Get<StartupPageViewModel>();
+    public StartupPageBase() => ViewModel = Ioc.Default.GetRequiredService<StartupPageViewModel>();
 }

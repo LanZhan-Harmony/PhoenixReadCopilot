@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -19,14 +19,22 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticlePartitionDetailViewModel"/> class.
     /// </summary>
+    private readonly DispatcherQueue _dispatcherQueue;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ArticlePartitionDetailViewModel"/> class.
+    /// </summary>
     public ArticlePartitionDetailViewModel(
         PartitionViewModel data,
-        IArticleDiscoveryService service
+        IArticleDiscoveryService service,
+        DispatcherQueue dispatcherQueue,
+        ILogger<ArticlePartitionDetailViewModel> logger
     )
         : base(data)
     {
         _service = service;
-        _logger = this.Get<ILogger<ArticlePartitionDetailViewModel>>();
+        _dispatcherQueue = dispatcherQueue;
+        _logger = logger;
         _isRecommendPartition = data.Data.Id == "_";
         _isHotPartition = data.Data.Id == "-";
     }
@@ -72,7 +80,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         SelectedSortType = sortType;
 
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 async () =>
@@ -100,7 +108,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
         }
 
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 async () =>
@@ -134,7 +142,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         CurrentPartition = partition;
 
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 async () =>

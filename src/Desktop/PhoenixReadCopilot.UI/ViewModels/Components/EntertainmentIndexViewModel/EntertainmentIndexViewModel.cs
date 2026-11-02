@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -17,11 +17,22 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     /// <summary>
     /// Initializes a new instance of the <see cref="EntertainmentIndexViewModel"/> class.
     /// </summary>
-    public EntertainmentIndexViewModel(PgcSectionType type, IEntertainmentDiscoveryService service)
+    private readonly DispatcherQueue _dispatcherQueue;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntertainmentIndexViewModel"/> class.
+    /// </summary>
+    public EntertainmentIndexViewModel(
+        PgcSectionType type,
+        IEntertainmentDiscoveryService service,
+        DispatcherQueue dispatcherQueue,
+        ILogger<EntertainmentIndexViewModel> logger
+    )
     {
         SectionType = type;
-        _logger = this.Get<ILogger<EntertainmentIndexViewModel>>();
         _service = service;
+        _dispatcherQueue = dispatcherQueue;
+        _logger = logger;
     }
 
     private static EntertainmentType GetEntertainmentType(PgcSectionType type)
@@ -67,7 +78,7 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     private Task Refresh()
     {
         _pageNumer = 0;
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 async () =>
@@ -126,7 +137,7 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     private void RequestForConditionChanged()
     {
         _pageNumer = 0;
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 () =>

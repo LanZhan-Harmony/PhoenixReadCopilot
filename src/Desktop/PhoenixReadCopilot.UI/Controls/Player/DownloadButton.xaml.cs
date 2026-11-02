@@ -18,10 +18,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.MetaInitialized -= OnMetaInitialized;
-        }
+        ViewModel?.MetaInitialized -= OnMetaInitialized;
     }
 
     /// <inheritdoc/>
@@ -30,10 +27,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
         DownloadViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.MetaInitialized -= OnMetaInitialized;
-        }
+        oldValue?.MetaInitialized -= OnMetaInitialized;
 
         if (newValue is null)
         {

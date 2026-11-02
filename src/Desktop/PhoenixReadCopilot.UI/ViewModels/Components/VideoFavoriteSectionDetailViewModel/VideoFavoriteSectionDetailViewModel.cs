@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -20,14 +21,25 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     : ViewModelBase<VideoFavoriteFolder>,
         IFavoriteSectionDetailViewModel
 {
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly AppSettings _settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoFavoriteSectionDetailViewModel"/> class.
     /// </summary>
-    public VideoFavoriteSectionDetailViewModel(VideoFavoriteFolder data, IFavoriteService service)
+    public VideoFavoriteSectionDetailViewModel(
+        VideoFavoriteFolder data,
+        IFavoriteService service,
+        NavigationViewModel navigationViewModel,
+        ISettingsService settingsService,
+        ILogger<VideoFavoriteSectionDetailViewModel> logger
+    )
         : base(data)
     {
         _service = service;
-        _logger = this.Get<ILogger<VideoFavoriteSectionDetailViewModel>>();
+        _navigationViewModel = navigationViewModel;
+        _settings = settingsService.Settings;
+        _logger = logger;
     }
 
     internal void InjectFirstPageData(VideoFavoriteFolderDetail detail)
@@ -39,7 +51,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
             Items.Add(
                 new VideoItemViewModel(
                     item,
-                    Models.Constants.VideoCardStyle.Favorite,
+                    VideoCardStyle.Favorite,
                     removeAction: RemoveVideo,
                     favFolder: Data
                 )
@@ -95,7 +107,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
                     Items.Add(
                         new VideoItemViewModel(
                             item,
-                            Models.Constants.VideoCardStyle.Favorite,
+                            VideoCardStyle.Favorite,
                             removeAction: RemoveVideo,
                             favFolder: Data
                         )
@@ -120,7 +132,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     [RelayCommand]
     private void PlayCurrentList()
     {
-        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
+        var preferDisplayMode = _settings.DefaultPlayerDisplayMode;
 
         if (Items.Count == 1)
         {
@@ -131,8 +143,10 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
                 return;
             }
 
-            this.Get<NavigationViewModel>()
-                .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video.Data));
+            _navigationViewModel.NavigateToOver(
+                typeof(VideoPlayerPage),
+                new VideoSnapshot(video.Data)
+            );
         }
         else
         {
@@ -143,7 +157,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
                 return;
             }
 
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), data);
+            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), data);
         }
     }
 

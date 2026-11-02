@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels;
@@ -8,6 +10,11 @@ namespace PhoenixReadCopilot.UI.ViewModels;
 /// </summary>
 public abstract partial class LayoutPageViewModelBase : ViewModelBase
 {
+    /// <summary>
+    /// 应用设置.
+    /// </summary>
+    protected readonly AppSettings _settings;
+
     [ObservableProperty]
     public partial double NavColumnWidth { get; set; }
 
@@ -17,11 +24,12 @@ public abstract partial class LayoutPageViewModelBase : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="LayoutPageViewModelBase"/> class.
     /// </summary>
-    protected LayoutPageViewModelBase()
+    protected LayoutPageViewModelBase(ISettingsService settingsService)
     {
+        _settings = settingsService.Settings;
 #pragma warning disable CA2214
-        NavColumnWidth = Settings.GetNavColumnWidth(GetPageKey(), GetDefaultNavColumnWidth());
-        IsNavColumnManualHide = Settings.GetNavColumnManualHide(GetPageKey(), false);
+        NavColumnWidth = _settings.GetNavColumnWidth(GetPageKey(), GetDefaultNavColumnWidth());
+        IsNavColumnManualHide = _settings.GetNavColumnManualHide(GetPageKey(), false);
 #pragma warning restore CA2214
     }
 
@@ -41,21 +49,19 @@ public abstract partial class LayoutPageViewModelBase : ViewModelBase
     /// 导航栏手动关闭时的行为.
     /// </summary>
     protected virtual void IsNavManualHideChanged(bool value) =>
-        NavColumnWidth = value
-            ? 0
-            : Settings.GetNavColumnWidth(GetPageKey(), 240d);
+        NavColumnWidth = value ? 0 : _settings.GetNavColumnWidth(GetPageKey(), 240d);
 
     partial void OnNavColumnWidthChanged(double value)
     {
         if (value > 0)
         {
-            Settings.SetNavColumnWidth(GetPageKey(), value);
+            _settings.SetNavColumnWidth(GetPageKey(), value);
         }
     }
 
     partial void OnIsNavColumnManualHideChanged(bool value)
     {
-        Settings.SetNavColumnManualHide(GetPageKey(), value);
+        _settings.SetNavColumnManualHide(GetPageKey(), value);
         IsNavManualHideChanged(value);
     }
 }

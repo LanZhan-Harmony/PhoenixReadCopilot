@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,20 +17,35 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class PinnerViewModel : ViewModelBase
 {
+    private readonly Richasy.BiliKernel.Bili.Authorization.IBiliTokenResolver _tokenResolver;
+    private readonly WinUIKernel.Share.Toolkits.IFileToolkit _fileToolkit;
+    private readonly AppViewModel _appViewModel;
+    private readonly ILogger<PinnerViewModel> _logger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.
+    /// </summary>
+    public PinnerViewModel(
+        Richasy.BiliKernel.Bili.Authorization.IBiliTokenResolver tokenResolver,
+        WinUIKernel.Share.Toolkits.IFileToolkit fileToolkit,
+        AppViewModel appViewModel,
+        ILogger<PinnerViewModel> logger
+    )
+    {
+        _tokenResolver = tokenResolver;
+        _fileToolkit = fileToolkit;
+        _appViewModel = appViewModel;
+        _logger = logger;
+    }
+
     private const string PinFileName = "User-{0}.json";
     private const string PinFolderName = "Fixed";
-    private readonly ILogger<PinnerViewModel> _logger;
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.
-    /// </summary>
-    public PinnerViewModel(ILogger<PinnerViewModel> logger) => _logger = logger;
 
     /// <summary>
     /// 条目列表.
@@ -39,8 +55,8 @@ public sealed partial class PinnerViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        var currentUserId = this.Get<IBiliTokenResolver>().GetToken().UserId;
-        var data = await this.Get<IFileToolkit>()
+        var currentUserId = _tokenResolver.GetToken().UserId;
+        var data = await _fileToolkit
             .ReadLocalDataAsync(
                 string.Format(PinFileName, currentUserId),
                 GlobalSerializeContext.Default.ListPinItem,
@@ -61,14 +77,14 @@ public sealed partial class PinnerViewModel : ViewModelBase
     {
         if (Items.Contains(item))
         {
-            this.Get<AppViewModel>()
+            _appViewModel
                 .ShowTipCommand.Execute((Resources.AlreadyPinned, InfoType.Warning));
             return;
         }
 
         Items.Add(item);
         await SaveDataAsync();
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Fixed, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Resources.Fixed, InfoType.Success));
     }
 
     [RelayCommand]
@@ -80,9 +96,9 @@ public sealed partial class PinnerViewModel : ViewModelBase
 
     private async Task SaveDataAsync()
     {
-        await this.Get<IFileToolkit>()
+        await _fileToolkit
             .WriteLocalDataAsync(
-                string.Format(PinFileName, this.Get<IBiliTokenResolver>().GetToken().UserId),
+                string.Format(PinFileName, _tokenResolver.GetToken().UserId),
                 Items.ToList(),
                 GlobalSerializeContext.Default.ListPinItem,
                 PinFolderName

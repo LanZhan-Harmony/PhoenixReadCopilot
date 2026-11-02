@@ -2,11 +2,13 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
@@ -20,6 +22,12 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class UserSpacePageViewModel : ViewModelBase
 {
+    private readonly AppViewModel _appViewModel;
+    private readonly PinnerViewModel _pinnerViewModel;
+    private readonly AppSettings _settings;
+    private readonly IMomentDiscoveryService _momentDiscoveryService;
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePageViewModel"/> class.
     /// </summary>
@@ -28,7 +36,12 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         IRelationshipService relationshipService,
         IUserService userService,
         ISearchService searchService,
-        ILogger<UserSpacePageViewModel> logger
+        ILogger<UserSpacePageViewModel> logger,
+        AppViewModel appViewModel,
+        PinnerViewModel pinnerViewModel,
+        ISettingsService settingsService,
+        IMomentDiscoveryService momentDiscoveryService,
+        ILoggerFactory loggerFactory
     )
     {
         CommentModule = comment;
@@ -36,6 +49,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         _userService = userService;
         _searchService = searchService;
         _logger = logger;
+        _appViewModel = appViewModel;
+        _pinnerViewModel = pinnerViewModel;
+        _settings = settingsService.Settings;
+        _momentDiscoveryService = momentDiscoveryService;
+        _loggerFactory = loggerFactory;
     }
 
     [RelayCommand]
@@ -53,8 +71,14 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             Sections = new List<UserMomentDetailViewModel>
             {
-                this.Get<UserMomentDetailViewModel>(),
-                this.Get<UserMomentDetailViewModel>(),
+                new UserMomentDetailViewModel(
+                    _momentDiscoveryService,
+                    _loggerFactory.CreateLogger<UserMomentDetailViewModel>()
+                ),
+                new UserMomentDetailViewModel(
+                    _momentDiscoveryService,
+                    _loggerFactory.CreateLogger<UserMomentDetailViewModel>()
+                ),
             };
 
             Sections.ElementAt(0).SetIsVideo(true);
@@ -69,7 +93,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         if (SelectedSection is null)
         {
-            var isLastVideoSection = Settings.LastUserSpaceSectionIsVideo;
+            var isLastVideoSection = _settings.LastUserSpaceSectionIsVideo;
             var section = isLastVideoSection ? Sections.First() : Sections.Last();
             SelectSection(section);
         }
@@ -114,8 +138,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
 
         SelectedSection = section;
-        Settings.LastUserSpaceSectionIsVideo = SelectedSection.IsVideo()
-        ;
+        _settings.LastUserSpaceSectionIsVideo = SelectedSection.IsVideo();
         SelectedSection.InitializeCommand.Execute(default);
     }
 
@@ -128,14 +151,14 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             {
                 await _relationshipService.UnfollowUserAsync(_profile.Id);
                 IsFollowed = false;
-                this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
+                _appViewModel.ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "取消关注用户时失败");
-                this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute((Resources.FailedToUnfollowUser, InfoType.Error));
+                _appViewModel.ShowTipCommand.Execute(
+                    (Resources.FailedToUnfollowUser, InfoType.Error)
+                );
             }
         }
         else
@@ -144,14 +167,14 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             {
                 await _relationshipService.FollowUserAsync(_profile.Id);
                 IsFollowed = true;
-                this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
+                _appViewModel.ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "关注用户时失败");
-                this.Get<AppViewModel>()
-                    .ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
+                _appViewModel.ShowTipCommand.Execute(
+                    (Resources.FailedToFollowUser, InfoType.Error)
+                );
             }
         }
     }
@@ -165,7 +188,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             _profile.Avatar.Uri.ToString(),
             PinContentType.User
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        _pinnerViewModel.AddItemCommand.Execute(pinItem);
     }
 
     [RelayCommand]
@@ -178,8 +201,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "获取用户信息时失败");
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.FailedToGetUserInformation, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute(
+                (Resources.FailedToGetUserInformation, InfoType.Error)
+            );
         }
     }
 
@@ -229,8 +253,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "搜索用户视频时失败");
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.FailedToSearchUserVideos, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute(
+                (Resources.FailedToSearchUserVideos, InfoType.Error)
+            );
         }
         finally
         {
@@ -262,8 +287,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "获取用户关系时失败");
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.FailedToGetUserRelation, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute(
+                (Resources.FailedToGetUserRelation, InfoType.Error)
+            );
         }
     }
 

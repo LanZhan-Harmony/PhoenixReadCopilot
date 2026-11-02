@@ -57,10 +57,7 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
     private static void OnIsHideChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var instance = d as SideSplitButton;
-        if (instance != null)
-        {
-            instance.SymbolControl.Symbol = instance.GetSymbol();
-        }
+        instance?.SymbolControl.Symbol = instance.GetSymbol();
     }
 
     private FluentIcons.Common.Symbol GetSymbol()

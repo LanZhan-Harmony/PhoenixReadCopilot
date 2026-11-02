@@ -1,4 +1,6 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Windows.Storage;
 using Windows.System;
@@ -11,6 +13,7 @@ namespace PhoenixReadCopilot.UI.Controls.Settings;
 /// </summary>
 public sealed partial class LoggerSettingControl : SettingsPageControlBase
 {
+    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
     /// <summary>
     /// Initializes a new instance of the <see cref="LoggerSettingControl"/> class.
     /// </summary>
@@ -18,15 +21,15 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
 
     private async void OnOpenLoggerFolderButtonClickAsync(object sender, RoutedEventArgs e)
     {
-        var folder = await StorageFolder.GetFolderFromPathAsync(App.LoggerFolder).AsTask();
+        var folder = await StorageFolder.GetFolderFromPathAsync(PathHelper.LogFolderPath).AsTask();
         _ = await Launcher.LaunchFolderAsync(folder).AsTask();
     }
 
     private void OnCleanLoggerButtonClickAsync(object sender, RoutedEventArgs e)
     {
-        if (Directory.Exists(App.LoggerFolder))
+        if (Directory.Exists(PathHelper.LogFolderPath))
         {
-            foreach (var file in Directory.GetFiles(App.LoggerFolder))
+            foreach (var file in Directory.GetFiles(PathHelper.LogFolderPath))
             {
                 try
                 {
@@ -36,7 +39,7 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
             }
         }
 
-        this.Get<AppViewModel>()
+        _appViewModel
             .ShowTipCommand.Execute((Strings.Resources.LogEmptied, InfoType.Success));
     }
 }

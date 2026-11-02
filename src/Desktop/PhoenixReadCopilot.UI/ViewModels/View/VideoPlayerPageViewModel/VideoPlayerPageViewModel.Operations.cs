@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
@@ -158,7 +159,7 @@ public sealed partial class VideoPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -166,22 +167,20 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            await this.Get<IViewLaterService>().AddAsync(_view.Information.Identifier.Id);
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
+            await _viewLaterService.AddAsync(_view.Information.Identifier.Id);
+            _appViewModel.ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "添加稍后再看失败");
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
+            _logger.LogError(ex, "添加稍后再看失败");
+            _appViewModel.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
 
     [RelayCommand]
     private void ShareVideoUrl()
     {
-        var handle = this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle();
+        var handle = _appViewModel.ActivatedWindow.GetWindowHandle();
         var transferManager = DataTransferManagerInterop.GetForWindow(handle);
         transferManager.DataRequested += OnTransferDataRequested;
         DataTransferManagerInterop.ShowShareUIForWindow(handle);
@@ -240,7 +239,7 @@ public sealed partial class VideoPlayerPageViewModel
     private void OpenUserSpace()
     {
         var profile = _view.Information.Publisher.User;
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), profile);
+        _navigationViewModel.NavigateToOver(typeof(UserSpacePage), profile);
     }
 
     [RelayCommand]
@@ -268,7 +267,7 @@ public sealed partial class VideoPlayerPageViewModel
             _view.Information.Identifier.Cover.Uri.ToString(),
             PinContentType.Video
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        _pinnerViewModel.AddItemCommand.Execute(pinItem);
     }
 
     [RelayCommand]
@@ -277,7 +276,7 @@ public sealed partial class VideoPlayerPageViewModel
         var dp = new DataPackage();
         dp.SetText(Title);
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     private string GetWebLink() =>
@@ -340,78 +339,74 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void PlayerSpeedChanged(double speed)
     {
-        if (Danmaku is not null)
-        {
-            Danmaku.ExtraSpeed = speed;
-        }
+        Danmaku?.ExtraSpeed = speed;
     }
 
     private void PlayerMediaEnded()
     {
-        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
-            .TryEnqueue(() =>
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            // 清除弹幕.
+            Danmaku.ClearDanmaku();
+            Subtitle.ClearSubtitle();
+
+            ReportProgressCommand.Execute(Player.Duration);
+
+            // 单视频循环.
+            if (CurrentLoop == VideoLoopType.Single)
             {
-                // 清除弹幕.
-                Danmaku.ClearDanmaku();
-                Subtitle.ClearSubtitle();
+                Player.RestartCommand.Execute(default);
+                return;
+            }
 
-                ReportProgressCommand.Execute(Player.Duration);
+            var autoNext = _settings.AutoPlayNext;
+            if ((!autoNext || !HasNextVideo) && !_isFormatChanging)
+            {
+                Player.BackToDefaultModeCommand.Execute(default);
+                return;
+            }
 
-                // 单视频循环.
-                if (CurrentLoop == VideoLoopType.Single)
+            if (IsPageLoading || Player.IsPlayerDataLoading)
+            {
+                return;
+            }
+
+            var next = FindNextVideo();
+            if (next is null)
+            {
+                return;
+            }
+
+            var withoutTip = _settings.PlayNextWithoutTip;
+            if (withoutTip)
+            {
+                PlayNextVideoCommand.Execute(default);
+            }
+            else
+            {
+                string tip = default;
+                if (next is VideoPart part)
                 {
-                    Player.RestartCommand.Execute(default);
-                    return;
-                }
-
-                var autoNext = Settings.AutoPlayNext;
-                if ((!autoNext || !HasNextVideo) && !_isFormatChanging)
-                {
-                    Player.BackToDefaultModeCommand.Execute(default);
-                    return;
-                }
-
-                if (IsPageLoading || Player.IsPlayerDataLoading)
-                {
-                    return;
-                }
-
-                var next = FindNextVideo();
-                if (next is null)
-                {
-                    return;
-                }
-
-                var withoutTip = Settings.PlayNextWithoutTip;
-                if (withoutTip)
-                {
-                    PlayNextVideoCommand.Execute(default);
-                }
-                else
-                {
-                    string tip = default;
-                    if (next is VideoPart part)
-                    {
-                        tip = string.Format(
-                            Resources.NextVideoNotificationTemplate,
-                            part.Identifier.Title
-                        );
-                    }
-                    else if (next is VideoInformation video)
-                    {
-                        tip = string.Format(
-                            Resources.NextVideoNotificationTemplate,
-                            video.Identifier.Title
-                        );
-                    }
-
-                    var notification = new PlayerNotification(
-                        () => PlayNextVideoCommand.Execute(default),
-                        tip,
-                        5
+                    tip = string.Format(
+                        Resources.NextVideoNotificationTemplate,
+                        part.Identifier.Title
                     );
-                    Player.ShowNotification(notification);
                 }
-            });
+                else if (next is VideoInformation video)
+                {
+                    tip = string.Format(
+                        Resources.NextVideoNotificationTemplate,
+                        video.Identifier.Title
+                    );
+                }
+
+                var notification = new PlayerNotification(
+                    () => PlayNextVideoCommand.Execute(default),
+                    tip,
+                    5
+                );
+                Player.ShowNotification(notification);
+            }
+        });
     }
 }

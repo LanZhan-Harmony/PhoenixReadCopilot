@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Models.Appearance;
 using WinUIKernel.Share.Base;
@@ -25,7 +27,11 @@ public sealed partial class GalleryPage : GalleryPageBase
     {
         if (e.Parameter is (BiliImage image, List<BiliImage> list))
         {
-            ViewModel = new GalleryPageViewModel(image, list);
+            ViewModel = new GalleryPageViewModel(
+                image,
+                list,
+                Ioc.Default.GetRequiredService<AppViewModel>()
+            );
         }
     }
 

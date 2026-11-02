@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -27,10 +28,7 @@ public sealed partial class MomentHeader : MomentHeaderBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.Initialized -= OnViewModelInitialized;
-        }
+        ViewModel?.Initialized -= OnViewModelInitialized;
 
         Selector.SelectionChanged -= OnSelectorChanged;
     }
@@ -86,5 +84,6 @@ public abstract class MomentHeaderBase : LayoutUserControlBase<MomentPageViewMod
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentHeaderBase"/> class.
     /// </summary>
-    protected MomentHeaderBase() => ViewModel = this.Get<MomentPageViewModel>();
+    protected MomentHeaderBase() =>
+        ViewModel = Ioc.Default.GetRequiredService<MomentPageViewModel>();
 }

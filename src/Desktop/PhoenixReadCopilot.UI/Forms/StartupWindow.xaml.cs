@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -14,6 +15,9 @@ namespace PhoenixReadCopilot.UI.Forms;
 /// </summary>
 public sealed partial class StartupWindow : WindowEx
 {
+    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+    private readonly StartupPageViewModel _startupViewModel = Ioc.Default.GetRequiredService<StartupPageViewModel>();
+    private readonly IBiliTokenResolver _tokenResolver = Ioc.Default.GetRequiredService<IBiliTokenResolver>();
     private bool _isFirstActivated = true;
 
     /// <summary>
@@ -36,7 +40,7 @@ public sealed partial class StartupWindow : WindowEx
         this.CenterOnScreen();
         AppWindow.SetIcon("Assets/logo.ico");
         SetTitleBar(TitleBar);
-        this.Get<AppViewModel>().Windows.Add(this);
+        _appViewModel.Windows.Add(this);
 
         RootFrame.Navigate(typeof(StartupPage), default, new SuppressNavigationTransitionInfo());
 
@@ -46,10 +50,10 @@ public sealed partial class StartupWindow : WindowEx
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-        var localToken = this.Get<IBiliTokenResolver>().GetToken();
+        var localToken = _tokenResolver.GetToken();
         if (localToken is null)
         {
-            this.Get<StartupPageViewModel>().ExitCommand.Execute(default);
+            _startupViewModel.ExitCommand.Execute(default);
         }
     }
 
@@ -61,6 +65,6 @@ public sealed partial class StartupWindow : WindowEx
             return;
         }
 
-        this.Get<StartupPageViewModel>().ReloadQRCodeCommand.Execute(default);
+        _startupViewModel.ReloadQRCodeCommand.Execute(default);
     }
 }

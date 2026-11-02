@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using WinUIKernel.Share.Toolkits;
 
@@ -13,9 +14,7 @@ public abstract class AppDialog : ContentDialog
     /// </summary>
     protected AppDialog()
     {
-        XamlRoot = WinUIKernelShareExtensions
-            .Kernel.GetRequiredService<IXamlRootProvider>()
-            .XamlRoot;
-        WinUIKernelShareExtensions.Kernel.GetRequiredService<IAppToolkit>().ResetControlTheme(this);
+        XamlRoot = Ioc.Default.GetRequiredService<IXamlRootProvider>().XamlRoot;
+        Ioc.Default.GetRequiredService<IAppToolkit>().ResetControlTheme(this);
     }
 }

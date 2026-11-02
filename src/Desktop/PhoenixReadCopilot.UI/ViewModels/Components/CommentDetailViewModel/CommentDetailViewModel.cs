@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -15,15 +16,23 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentDetailViewModel"/> class.
     /// </summary>
+    private readonly DispatcherQueue _dispatcherQueue;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CommentDetailViewModel"/> class.
+    /// </summary>
     public CommentDetailViewModel(
         CommentItemViewModel data,
         Action<CommentDetailViewModel> showMoreAction,
-        ICommentService service
+        ICommentService service,
+        DispatcherQueue dispatcherQueue,
+        ILogger<CommentDetailViewModel> logger
     )
         : base(data)
     {
         _service = service;
-        _logger = this.Get<ILogger<CommentDetailViewModel>>();
+        _dispatcherQueue = dispatcherQueue;
+        _logger = logger;
         _showMoreAction = showMoreAction;
     }
 
@@ -88,7 +97,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void Refresh()
     {
         Clear();
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(DispatcherQueuePriority.Low, async () => await LoadItemsAsync());
     }
 

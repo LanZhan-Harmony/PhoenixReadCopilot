@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -15,13 +15,19 @@ public sealed partial class UserSearchSectionDetailViewModel
     : ViewModelBase,
         ISearchSectionDetailViewModel
 {
+    private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSearchSectionDetailViewModel"/> class.
     /// </summary>
-    public UserSearchSectionDetailViewModel(ISearchService service)
+    public UserSearchSectionDetailViewModel(
+        ISearchService service,
+        Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue,
+        ILogger<UserSearchSectionDetailViewModel> logger
+    )
     {
         _service = service;
-        _logger = this.Get<ILogger<UserSearchSectionDetailViewModel>>();
+        _dispatcherQueue = dispatcherQueue;
+        _logger = logger;
     }
 
     /// <inheritdoc/>
@@ -41,7 +47,7 @@ public sealed partial class UserSearchSectionDetailViewModel
         _keyword = string.Empty;
         IsEmpty = false;
         _canRequest = false;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, Items.Clear);
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Items.Clear);
     }
 
     [RelayCommand]

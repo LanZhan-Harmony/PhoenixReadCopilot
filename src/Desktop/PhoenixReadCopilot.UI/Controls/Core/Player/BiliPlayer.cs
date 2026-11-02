@@ -1,8 +1,11 @@
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Foundation;
@@ -11,6 +14,8 @@ namespace PhoenixReadCopilot.UI.Controls.Core;
 
 public sealed partial class BiliPlayer : PlayerControlBase
 {
+    private readonly AppSettings _settings;
+
     private Rect _transportControlTriggerRect;
     private DispatcherTimer? _cursorTimer;
 
@@ -37,7 +42,11 @@ public sealed partial class BiliPlayer : PlayerControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="BiliPlayer"/> class.
     /// </summary>
-    public BiliPlayer() => InitializeComponent();
+    public BiliPlayer()
+    {
+        _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 获取当前是否有文本框获得焦点.
@@ -247,7 +256,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
     )
     {
         RestoreCursor();
-        var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
+        var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
         if (!isManual)
         {
             if (forceHideTransportControls)
@@ -304,7 +313,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
         }
 
         _isDoubleTapped = true;
-        var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
+        var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
         if (isManual)
         {
             ViewModel.TogglePlayPauseCommand.Execute(default);

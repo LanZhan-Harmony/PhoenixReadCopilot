@@ -30,10 +30,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         _rootCard = GetTemplateChild("RootCard") as CardControl;
         if (ViewModel is not null)
         {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.ActivateCommand;
-            }
+            _rootCard?.Command = ViewModel.ActivateCommand;
         }
     }
 
@@ -49,10 +46,7 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         MomentItemViewModel? newValue
     )
     {
-        if (_rootCard is not null)
-        {
-            _rootCard.Command = newValue?.ActivateCommand;
-        }
+        _rootCard?.Command = newValue?.ActivateCommand;
     }
 
     private static MenuFlyoutItem CreateOpenInNewWindowItem()

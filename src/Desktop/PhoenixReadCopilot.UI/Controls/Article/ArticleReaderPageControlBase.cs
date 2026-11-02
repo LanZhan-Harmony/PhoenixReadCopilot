@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -12,5 +13,5 @@ public abstract class ArticleReaderPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleReaderPageControlBase"/> class.
     /// </summary>
-    protected ArticleReaderPageControlBase() => ViewModel = this.Get<ArticleReaderPageViewModel>();
+    protected ArticleReaderPageControlBase() => ViewModel = Ioc.Default.GetRequiredService<ArticleReaderPageViewModel>();
 }

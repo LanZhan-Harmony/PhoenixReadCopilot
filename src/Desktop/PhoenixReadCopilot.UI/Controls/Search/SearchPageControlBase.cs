@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -11,5 +12,5 @@ public abstract class SearchPageControlBase : LayoutUserControlBase<SearchPageVi
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPageControlBase"/> class.
     /// </summary>
-    protected SearchPageControlBase() => ViewModel = this.Get<SearchPageViewModel>();
+    protected SearchPageControlBase() => ViewModel = Ioc.Default.GetRequiredService<SearchPageViewModel>();
 }

@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Media;
 using Windows.System.Display;
@@ -27,6 +29,9 @@ public abstract partial class PlayerViewModelBase
 
     protected readonly ILogger<PlayerViewModelBase> _logger;
     protected readonly DispatcherQueue _dispatcherQueue;
+    protected readonly AppViewModel _appViewModel;
+
+    protected readonly AppSettings _settings;
 
     protected string? _videoUrl;
     protected string? _audioUrl;

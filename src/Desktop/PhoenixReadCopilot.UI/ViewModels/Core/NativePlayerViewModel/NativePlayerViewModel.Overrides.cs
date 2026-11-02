@@ -31,10 +31,7 @@ public sealed partial class NativePlayerViewModel
 
         _isDisposed = true;
         _element?.SetMediaPlayer(default);
-        if (Player.PlaybackSession != null)
-        {
-            Player.PlaybackSession.PositionChanged -= OnMediaPositionChanged;
-        }
+        Player.PlaybackSession?.PositionChanged -= OnMediaPositionChanged;
 
         Player.MediaOpened -= OnMediaPlayerOpened;
         Player.CurrentStateChanged -= OnMediaPlayerStateChanged;
@@ -85,8 +82,7 @@ public sealed partial class NativePlayerViewModel
     {
         if (!Player?.CanSeek ?? false)
         {
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
+            _appViewModel.ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
             return Task.CompletedTask;
         }
 
@@ -151,10 +147,7 @@ public sealed partial class NativePlayerViewModel
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("Referer", "https://www.bilibili.com/");
         httpClient.DefaultRequestHeaders.Add("User-Agent", VideoUserAgent);
-        httpClient.DefaultRequestHeaders.Add(
-            "Cookie",
-            this.Get<IBiliCookiesResolver>().GetCookieString()
-        );
+        httpClient.DefaultRequestHeaders.Add("Cookie", _cookiesResolver.GetCookieString());
         return httpClient;
     }
 
@@ -168,7 +161,9 @@ public sealed partial class NativePlayerViewModel
             : onlyAudio ? "DashAudioWithoutVideoTemplate.xml"
             : "DashVideoTemplate.xml";
         var mpdFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", mpdFileName);
-        var mpdStr = File.Exists(mpdFilePath) ? await File.ReadAllTextAsync(mpdFilePath) : string.Empty;
+        var mpdStr = File.Exists(mpdFilePath)
+            ? await File.ReadAllTextAsync(mpdFilePath)
+            : string.Empty;
 
         var videoStr = $"""
             <Representation bandwidth="{_videoSegment.Bandwidth}" codecs="{_videoSegment.Codecs}" height="{_videoSegment.Height}" mimeType="{_videoSegment.MimeType}" id="{_videoSegment.Id}" width="{_videoSegment.Width}" startWithSap="1">
@@ -270,11 +265,8 @@ public sealed partial class NativePlayerViewModel
         {
             if (Position != position)
             {
-                if (_inputStream != null)
-                {
-                    _inputStream.Dispose();
-                    _inputStream = null;
-                }
+                _inputStream?.Dispose();
+                _inputStream = null;
 
                 Debug.WriteLine("Seek: {0:N0} -> {1:N0}", Position, position);
                 Position = position;
@@ -289,17 +281,10 @@ public sealed partial class NativePlayerViewModel
             }
 
             _isDisposing = true;
-            if (_inputStream != null)
-            {
-                _inputStream.Dispose();
-                _inputStream = null;
-            }
-
-            if (_client != null)
-            {
-                _client.Dispose();
-                _client = null;
-            }
+            _inputStream?.Dispose();
+            _inputStream = null;
+            _client?.Dispose();
+            _client = null;
         }
 
         public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(

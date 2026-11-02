@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
@@ -87,5 +88,5 @@ public abstract class AppSearchBoxBase : LayoutUserControlBase<SearchBoxViewMode
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBoxBase"/> class.
     /// </summary>
-    protected AppSearchBoxBase() => ViewModel = this.Get<SearchBoxViewModel>();
+    protected AppSearchBoxBase() => ViewModel = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
 }

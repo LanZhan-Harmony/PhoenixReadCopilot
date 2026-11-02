@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Comment;
@@ -10,8 +11,10 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class CommentItemViewModel
 {
+    private static ILogger<CommentItemViewModel>? _logger;
+    private static ILogger<CommentItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<CommentItemViewModel>>();
+
     private readonly ICommentService _service;
-    private readonly ILogger<CommentItemViewModel> _logger;
     private readonly Action<CommentItemViewModel> _markReplyTargetAction;
 
     [ObservableProperty]

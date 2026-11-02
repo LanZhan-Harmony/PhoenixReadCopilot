@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -13,7 +14,7 @@ namespace PhoenixReadCopilot.UI.Controls;
 /// </summary>
 public sealed partial class RootLayout : RootLayoutBase
 {
-    private readonly AppViewModel _appViewModel;
+    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayout"/> class.
@@ -21,7 +22,6 @@ public sealed partial class RootLayout : RootLayoutBase
     public RootLayout()
     {
         InitializeComponent();
-        _appViewModel = this.Get<AppViewModel>();
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed partial class RootLayout : RootLayoutBase
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
         SecondaryTitleBar.IsBackEnabled =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
-        this.Get<AppViewModel>().ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
+        _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
             Microsoft.UI.Windowing.TitleBarHeightOption.Standard;
         NavView.IsPaneOpen = false;
         VisualStateManager.GoToState(NavView, "PaneCollapsed", false);
@@ -82,7 +82,7 @@ public sealed partial class RootLayout : RootLayoutBase
         MainTitleBar.Visibility = Visibility.Visible;
         SecondaryTitleBar.Visibility = Visibility.Collapsed;
         SecondaryTitleBar.IsBackButtonVisible = false;
-        this.Get<AppViewModel>().ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
+        _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
             Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
         NavView.IsPaneOpen = true;
         VisualStateManager.GoToState(NavView, "PaneVisible", false);
@@ -252,5 +252,5 @@ public abstract class RootLayoutBase : LayoutUserControlBase<NavigationViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayoutBase"/> class.
     /// </summary>
-    protected RootLayoutBase() => ViewModel = this.Get<NavigationViewModel>();
+    protected RootLayoutBase() => ViewModel = Ioc.Default.GetRequiredService<NavigationViewModel>();
 }

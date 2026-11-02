@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -16,10 +16,13 @@ public sealed partial class ArticleHistorySectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleHistorySectionDetailViewModel"/> class.
     /// </summary>
-    public ArticleHistorySectionDetailViewModel(IViewHistoryService service)
+    public ArticleHistorySectionDetailViewModel(
+        IViewHistoryService service,
+        ILogger<ArticleHistorySectionDetailViewModel> logger
+    )
     {
         _service = service;
-        _logger = this.Get<ILogger<ArticleHistorySectionDetailViewModel>>();
+        _logger = logger;
     }
 
     [RelayCommand]

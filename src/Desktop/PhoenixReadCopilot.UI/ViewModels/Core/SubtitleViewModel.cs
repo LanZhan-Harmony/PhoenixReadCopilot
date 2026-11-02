@@ -1,7 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models.Subtitle;
 using WinUIKernel.Share.ViewModels;
@@ -13,6 +14,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class SubtitleViewModel : ViewModelBase
 {
+    private readonly AppSettings Settings;
+
     private readonly ISubtitleService _service;
     private readonly ILogger<SubtitleViewModel> _logger;
 
@@ -40,9 +43,14 @@ public sealed partial class SubtitleViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SubtitleViewModel"/> class.
     /// </summary>
-    public SubtitleViewModel(ISubtitleService service, ILogger<SubtitleViewModel> logger)
+    public SubtitleViewModel(
+        ISubtitleService service,
+        ISettingsService settingsService,
+        ILogger<SubtitleViewModel> logger
+    )
     {
         _service = service;
+        Settings = settingsService.Settings;
         _logger = logger;
     }
 

@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Models.Settings;
@@ -15,12 +16,28 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SettingsPageViewModel : ViewModelBase
 {
+    private readonly AppViewModel _appViewModel;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly IAppToolkit _appToolkit;
+    private readonly IFileToolkit _fileToolkit;
+    public AppSettings Settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPageViewModel"/> class.
     /// </summary>
-    public SettingsPageViewModel(ISettingsService settingsService)
+    public SettingsPageViewModel(
+        ISettingsService settingsService,
+        AppViewModel appViewModel,
+        NavigationViewModel navigationViewModel,
+        IAppToolkit appToolkit,
+        IFileToolkit fileToolkit
+    )
     {
-        _settingsService = settingsService;
+        Settings = settingsService.Settings;
+        _appViewModel = appViewModel;
+        _navigationViewModel = navigationViewModel;
+        _appToolkit = appToolkit;
+        _fileToolkit = fileToolkit;
         Settings.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName == null)
@@ -33,14 +50,11 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             {
                 case nameof(AppSettings.AppTheme):
                     OnPropertyChanged(nameof(AppThemeText));
-                    this.Get<AppViewModel>()
-                        .ChangeThemeCommand.Execute(_settingsService.Settings.AppTheme);
+                    _appViewModel.ChangeThemeCommand.Execute(Settings.AppTheme);
                     break;
                 case nameof(AppSettings.IsTopNavBarShown):
                     OnPropertyChanged(nameof(IsTopNavShown));
-                    this.Get<NavigationViewModel>().IsTopNavBarShown = _settingsService
-                        .Settings
-                        .IsTopNavBarShown;
+                    _navigationViewModel.IsTopNavBarShown = Settings.IsTopNavBarShown;
                     break;
             }
         };
@@ -63,7 +77,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
 
         var copyrightTemplate = Resources.Copyright;
         Copyright = string.Format(copyrightTemplate, 2026);
-        PackageVersion = this.Get<IAppToolkit>().GetPackageVersion();
+        PackageVersion = _appToolkit.GetPackageVersion();
 
         _isInitialized = true;
     }
@@ -71,8 +85,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ChooseDownloadFolderAsync()
     {
-        var folder = await this.Get<IFileToolkit>()
-            .PickFolderAsync(this.Get<AppViewModel>().ActivatedWindow);
+        var folder = await _fileToolkit.PickFolderAsync(_appViewModel.ActivatedWindow);
         if (folder != null)
         {
             Settings.DownloadFolder = folder.Path;

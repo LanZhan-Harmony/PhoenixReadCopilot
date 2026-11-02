@@ -32,7 +32,6 @@
     <PackageVersion Include="Richasy.BiliKernel.Services.Search" Version="0.0.1-preview5" />
     <PackageVersion Include="Richasy.BiliKernel.Services.User" Version="0.0.1-preview5" />
     <PackageVersion Include="Richasy.WinUIKernel.Share" Version="0.0.8-preview4" />
-    <PackageVersion Include="RichasyKernel.Abstractions" Version="0.0.1" />
     <PackageVersion Include="Serilog" Version="4.4.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />

@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Moment;
@@ -14,16 +16,27 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class MomentPageViewModel : ViewModelBase
 {
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly ISettingsService _settingsService;
+    private AppSettings _settings => _settingsService.Settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentPageViewModel"/> class.
     /// </summary>
     public MomentPageViewModel(
         IMomentDiscoveryService discoveryService,
-        CommentMainViewModel comment
+        CommentMainViewModel comment,
+        DispatcherQueue dispatcherQueue,
+        ISettingsService settingsService,
+        ILoggerFactory loggerFactory
     )
     {
         _momentDiscoveryService = discoveryService;
         CommentModule = comment;
+        _dispatcherQueue = dispatcherQueue;
+        _settingsService = settingsService;
+        _loggerFactory = loggerFactory;
     }
 
     [RelayCommand]
@@ -36,18 +49,30 @@ public sealed partial class MomentPageViewModel : ViewModelBase
 
         Sections = new List<IMomentSectionDetailViewModel>
         {
-            new VideoMomentSectionDetailViewModel(_momentDiscoveryService),
-            new ComprehensiveMomentSectionDetailViewModel(_momentDiscoveryService),
+            new VideoMomentSectionDetailViewModel(
+                _momentDiscoveryService,
+                _dispatcherQueue,
+                this,
+                _settingsService,
+                _loggerFactory.CreateLogger<VideoMomentSectionDetailViewModel>()
+            ),
+            new ComprehensiveMomentSectionDetailViewModel(
+                _momentDiscoveryService,
+                _dispatcherQueue,
+                this,
+                _loggerFactory.CreateLogger<ComprehensiveMomentSectionDetailViewModel>(),
+                _loggerFactory.CreateLogger<MomentUperSectionViewModel>(),
+                _settingsService
+            ),
         };
 
-        var isLastVideoSection = Settings.LastMomentSectionIsVideo;
+        var isLastVideoSection = _settings.LastMomentSectionIsVideo;
         var section = isLastVideoSection ? Sections.First() : Sections.Last();
         SelectSectionCommand.Execute(section);
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                () => Initialized?.Invoke(this, EventArgs.Empty)
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            () => Initialized?.Invoke(this, EventArgs.Empty)
+        );
     }
 
     [RelayCommand]
@@ -60,8 +85,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
 
         SelectedSection = section;
         var isVideo = section is VideoMomentSectionDetailViewModel;
-        Settings.LastMomentSectionIsVideo = isVideo
-        ;
+        _settings.LastMomentSectionIsVideo = isVideo;
         SelectedSection.InitializeCommand.Execute(default);
     }
 

@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Danmaku.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI;
@@ -11,6 +12,7 @@ namespace PhoenixReadCopilot.UI.Controls.Danmaku;
 /// </summary>
 public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 {
+    private static readonly ILogger<DanmakuFrostMaster> _danmakuLogger = Ioc.Default.GetRequiredService<ILogger<DanmakuFrostMaster>>();
     private List<DanmakuItem> _cachedDanmakus = new();
     private int _lastProgress;
     private DanmakuFrostMaster _danmakuController;
@@ -198,7 +200,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
                 _danmakuController?.Close();
                 _danmakuController = new DanmakuFrostMaster(
                     RootGrid,
-                    this.Get<ILogger<DanmakuFrostMaster>>()
+                    _danmakuLogger
                 );
 
                 if (_cachedDanmakus.Count != 0)

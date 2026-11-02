@@ -186,72 +186,45 @@ public sealed partial class BiliPlayer
     {
         if (e.PropertyName == nameof(ViewModel.IsPaused))
         {
-            if (_progressBar != null)
-            {
-                _progressBar.ShowPaused = ViewModel.IsPaused;
-            }
+            _progressBar?.ShowPaused = ViewModel.IsPaused;
         }
         else if (e.PropertyName == nameof(ViewModel.IsBuffering))
         {
-            if (_progressBar != null)
-            {
-                _progressBar.IsIndeterminate = ViewModel.IsBuffering;
-            }
+            _progressBar?.IsIndeterminate = ViewModel.IsBuffering;
         }
         else if (e.PropertyName == nameof(ViewModel.Duration))
         {
-            if (_progressBar != null)
-            {
-                _progressBar.Maximum = ViewModel.Duration;
-            }
+            _progressBar?.Maximum = ViewModel.Duration;
         }
         else if (e.PropertyName == nameof(ViewModel.Position))
         {
-            if (_progressBar != null)
-            {
-                _progressBar.Value = ViewModel.Position;
-            }
+            _progressBar?.Value = ViewModel.Position;
         }
         else if (e.PropertyName == nameof(ViewModel.IsBottomProgressVisible))
         {
-            if (_progressBar != null)
-            {
-                _progressBar.Visibility = ViewModel.IsBottomProgressVisible
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-            }
+            _progressBar?.Visibility = ViewModel.IsBottomProgressVisible
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
         else if (e.PropertyName == nameof(ViewModel.IsFailed))
         {
-            if (_notificationContainer != null)
-            {
-                _notificationContainer.Visibility = ViewModel.IsFailed
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
-            }
+            _notificationContainer?.Visibility = ViewModel.IsFailed
+                ? Visibility.Collapsed
+                : Visibility.Visible;
 
-            if (_operationContainer != null)
-            {
-                _operationContainer.Visibility = ViewModel.IsFailed
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
-            }
+            _operationContainer?.Visibility = ViewModel.IsFailed
+                ? Visibility.Collapsed
+                : Visibility.Visible;
 
-            if (_failedHolder != null)
-            {
-                _failedHolder.Visibility = ViewModel.IsFailed
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-            }
+            _failedHolder?.Visibility = ViewModel.IsFailed
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
         else if (e.PropertyName == nameof(ViewModel.IsPlayerDataLoading))
         {
-            if (_loadingWidget != null)
-            {
-                _loadingWidget.Visibility = ViewModel.IsPlayerDataLoading
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-            }
+            _loadingWidget?.Visibility = ViewModel.IsPlayerDataLoading
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
             if (!ViewModel.IsPlayerDataLoading)
             {

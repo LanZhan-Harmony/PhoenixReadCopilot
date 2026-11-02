@@ -39,22 +39,22 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
+        var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = Settings.PlayerType;
+        var preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
+            ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
             return;
         }
 
         var id = new MediaIdentifier("ep_" + Data.Identifier.Id, default, default);
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(PgcPlayerPage), id);
+        ItemServices.Navigation.NavigateToOver(typeof(PgcPlayerPage), id);
     }
 
     [RelayCommand]
@@ -75,7 +75,7 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
             Data.Identifier.Cover.Uri.ToString(),
             PinContentType.Pgc
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        ItemServices.Pinner.AddItemCommand.Execute(pinItem);
     }
 
     private string GetWebUrl() => $"https://www.bilibili.com/bangumi/play/ep{Data.Identifier.Id}";

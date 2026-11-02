@@ -30,10 +30,7 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.Initialized -= OnViewModelInitialized;
-        }
+        ViewModel?.Initialized -= OnViewModelInitialized;
 
         Selector.SelectionChanged -= OnSelectorChanged;
     }
@@ -44,10 +41,7 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         VideoPartitionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.Initialized -= OnViewModelInitialized;
-        }
+        oldValue?.Initialized -= OnViewModelInitialized;
 
         if (newValue is null)
         {

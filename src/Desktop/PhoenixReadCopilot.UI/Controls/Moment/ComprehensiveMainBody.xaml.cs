@@ -31,10 +31,7 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnListUpdatedAsync;
-        }
+        ViewModel?.ListUpdated -= OnListUpdatedAsync;
 
         MomentScrollView.ViewChanged -= OnViewChanged;
         MomentScrollView.SizeChanged -= OnScrollViewSizeChanged;
@@ -46,10 +43,7 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
         MomentUperSectionViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ListUpdated -= OnListUpdatedAsync;
-        }
+        oldValue?.ListUpdated -= OnListUpdatedAsync;
 
         if (newValue is null)
         {

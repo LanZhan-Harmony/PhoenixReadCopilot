@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
@@ -19,15 +19,21 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class GalleryPageViewModel : ViewModelBase
 {
+    private readonly AppViewModel _appViewModel;
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPageViewModel"/> class.
     /// </summary>
-    public GalleryPageViewModel(BiliImage image, List<BiliImage>? images = default)
+    public GalleryPageViewModel(
+        BiliImage image,
+        List<BiliImage>? images,
+        AppViewModel appViewModel
+    )
     {
         SelectedImage = image;
         Images = images ?? new List<BiliImage> { image };
         IsGroup = Images?.Count > 1;
         IsMenuHide = false;
+        _appViewModel = appViewModel;
     }
 
     [RelayCommand]
@@ -79,7 +85,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         dp.SetWebLink(SelectedImage.SourceUri);
         dp.SetBitmap(RandomAccessStreamReference.CreateFromUri(SelectedImage.SourceUri));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -101,7 +107,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         savePicker.FileTypeChoices.Add($"{extension.TrimStart('.').ToUpper()} 图片", [extension]);
         InitializeWithWindow.Initialize(
             savePicker,
-            this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle()
+            _appViewModel.ActivatedWindow.GetWindowHandle()
         );
         var file = await savePicker.PickSaveFileAsync();
         if (file is null)
@@ -113,7 +119,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         using var client = new HttpClient();
         using var response = await client.GetAsync(SelectedImage.SourceUri);
         await response.Content.CopyToAsync(stream);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Saved, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Resources.Saved, InfoType.Success));
     }
 
     [RelayCommand]
@@ -139,12 +145,12 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
             : await profileSettings.TrySetLockScreenImageAsync(file);
         if (result)
         {
-            this.Get<AppViewModel>()
+            _appViewModel
                 .ShowTipCommand.Execute((Resources.SetSuccess, InfoType.Success));
         }
         else
         {
-            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.SetFailed, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute((Resources.SetFailed, InfoType.Error));
         }
     }
 }

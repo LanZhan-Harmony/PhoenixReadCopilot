@@ -32,10 +32,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
     protected override void OnControlUnloaded()
     {
         View.ItemsSource = default;
-        if (ViewModel is not null)
-        {
-            ViewModel.PartChanged -= OnPartChanged;
-        }
+        ViewModel?.PartChanged -= OnPartChanged;
     }
 
     /// <inheritdoc/>
@@ -44,10 +41,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
         VideoPlayerPartSectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.PartChanged -= OnPartChanged;
-        }
+        oldValue?.PartChanged -= OnPartChanged;
 
         if (newValue is null)
         {

@@ -6,8 +6,13 @@ namespace PhoenixReadCopilot.UI.Extensions;
 
 public sealed class XamlRootProvider : IXamlRootProvider
 {
+    private readonly AppViewModel _appViewModel;
+
+    public XamlRootProvider(AppViewModel appViewModel)
+    {
+        _appViewModel = appViewModel;
+    }
+
     public XamlRoot? XamlRoot =>
-        GlobalDependencies
-            .Kernel.GetRequiredService<AppViewModel>()
-            .ActivatedWindow.Content.XamlRoot;
+        _appViewModel.ActivatedWindow?.Content?.XamlRoot;
 }

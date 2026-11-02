@@ -1,16 +1,16 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.Forms;
-using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
-using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
@@ -20,6 +20,18 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class NavigationViewModel : ViewModelBase, INavServiceViewModel
 {
+    private readonly AppViewModel _appViewModel;
+
+    private SearchBoxViewModel SearchBoxViewModel =>
+        field ??= Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+    private readonly AppSettings _settings;
+
+    public NavigationViewModel(ISettingsService settingsService, AppViewModel appViewModel)
+    {
+        _appViewModel = appViewModel;
+        _settings = settingsService.Settings;
+    }
+
     private Frame? _navFrame;
     private Frame? _overFrame;
 
@@ -58,7 +70,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         ActiveMainWindow();
-        var lastSelectedPage = Settings.LastSelectedFeaturePage;
+        var lastSelectedPage = _settings.LastSelectedFeaturePage;
         if (IsOverlayOpen)
         {
             IsOverlayOpen = false;
@@ -81,7 +93,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             return;
         }
 
-        Settings.LastSelectedFeaturePage = pageType.FullName;
+        _settings.LastSelectedFeaturePage = pageType.FullName;
         _navFrame.Navigate(
             pageType,
             parameter,
@@ -145,10 +157,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     public void SetNavItemVisibility(Type pageType, bool isVisible)
     {
         var item = MenuItems.FirstOrDefault(p => p.PageKey == pageType.FullName);
-        if (item is not null)
-        {
-            item.IsVisible = isVisible;
-        }
+        item?.IsVisible = isVisible;
     }
 
     /// <summary>
@@ -208,7 +217,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         _navFrame = navFrame;
         _overFrame = overFrame;
         _overFrame.Navigated += OnOverlayNavigated;
-        IsTopNavBarShown = Settings.IsTopNavBarShown;
+        IsTopNavBarShown = _settings.IsTopNavBarShown;
 
         MenuItems = [.. GetMenuItems()];
 
@@ -220,7 +229,9 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     private IReadOnlyList<AppNavigationItemViewModel> GetMenuItems()
     {
-        var lastSelectedPage = string.IsNullOrEmpty(Settings.LastSelectedFeaturePage) ? typeof(PopularPage).FullName : Settings.LastSelectedFeaturePage;
+        var lastSelectedPage = string.IsNullOrEmpty(_settings.LastSelectedFeaturePage)
+            ? typeof(PopularPage).FullName
+            : _settings.LastSelectedFeaturePage;
         var list = new List<AppNavigationItemViewModel>
         {
             GetItem<PopularPage>(Resources.PopularSlim, FluentIcons.Common.Symbol.Rocket),
@@ -265,7 +276,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     )
         where TPage : Page
     {
-        var isVisible = Settings.GetPageVisible(typeof(TPage));
+        var isVisible = _settings.GetPageVisible(typeof(TPage));
         return new AppNavigationItemViewModel(
             this,
             typeof(TPage),
@@ -276,12 +287,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         );
     }
 
-    private void ActiveMainWindow() =>
-        this.Get<AppViewModel>().Windows.Find(p => p is MainWindow)?.Activate();
+    private void ActiveMainWindow() => _appViewModel.Windows.Find(p => p is MainWindow)?.Activate();
 
     private void OnOverlayNavigated(object sender, NavigationEventArgs e)
     {
-        var searchBox = this.Get<SearchBoxViewModel>();
+        var searchBox = SearchBoxViewModel;
         if (e.SourcePageType == typeof(UserSpacePage))
         {
             searchBox.SetExtraRegion("space", Resources.UserSpace);

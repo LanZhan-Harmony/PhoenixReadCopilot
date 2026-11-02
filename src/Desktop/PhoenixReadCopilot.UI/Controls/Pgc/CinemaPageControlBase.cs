@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -11,5 +12,5 @@ public abstract class CinemaPageControlBase : LayoutUserControlBase<CinemaPageVi
     /// <summary>
     /// Initializes a new instance of the <see cref="CinemaPageControlBase"/> class.
     /// </summary>
-    protected CinemaPageControlBase() => ViewModel = this.Get<CinemaPageViewModel>();
+    protected CinemaPageControlBase() => ViewModel = Ioc.Default.GetRequiredService<CinemaPageViewModel>();
 }

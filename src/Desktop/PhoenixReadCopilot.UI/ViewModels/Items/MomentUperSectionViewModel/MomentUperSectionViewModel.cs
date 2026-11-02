@@ -21,8 +21,6 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
     public MomentUperSectionViewModel(MomentProfile data)
         : base(data)
     {
-        _service = this.Get<IMomentDiscoveryService>();
-        _logger = this.Get<ILogger<MomentUperSectionViewModel>>();
         IsTotal = data is null;
         Avatar = data?.User?.Avatar.Uri;
         Name = data?.User?.Name ?? Resources.AllDynamic;
@@ -35,7 +33,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = momentView.HasMoreMoments != true;
         _offset = momentView.Offset;
         _baseline = momentView.UpdateBaseline;
-        this.Get<DispatcherQueue>()
+        ItemServices.DispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 () =>
@@ -82,7 +80,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = false;
         Items.Clear();
 
-        this.Get<DispatcherQueue>()
+        ItemServices.DispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 async () =>
@@ -119,7 +117,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         catch (Exception ex)
         {
             _preventLoadMore = true;
-            _logger.LogError(ex, "加载动态列表失败.");
+            Logger.LogError(ex, "加载动态列表失败.");
         }
         finally
         {
@@ -130,7 +128,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
 
     private async Task LoadComprehensiveItemsAsync()
     {
-        var view = await _service.GetComprehensiveMomentsAsync(_offset, _baseline);
+        var view = await Service.GetComprehensiveMomentsAsync(_offset, _baseline);
         if (view is not null)
         {
             _offset = view.Offset;
@@ -153,7 +151,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
 
     private async Task LoadUperItemsAsync()
     {
-        var (moments, offset, hasMore) = await _service.GetUserMomentsAsync(Data.User, _offset);
+        var (moments, offset, hasMore) = await Service.GetUserMomentsAsync(Data.User, _offset);
         _offset = offset;
         _preventLoadMore = !hasMore || string.IsNullOrEmpty(offset);
         if (moments is not null)
@@ -174,5 +172,5 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
     }
 
     private void ShowComment(MomentItemViewModel item) =>
-        this.Get<MomentPageViewModel>().ShowCommentCommand.Execute(item.Data);
+        ItemServices.MomentPage.ShowCommentCommand.Execute(item.Data);
 }

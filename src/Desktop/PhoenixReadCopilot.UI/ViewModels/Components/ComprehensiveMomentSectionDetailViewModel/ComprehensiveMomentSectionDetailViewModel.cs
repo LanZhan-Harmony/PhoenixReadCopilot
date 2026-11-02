@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
@@ -16,10 +18,21 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="ComprehensiveMomentSectionDetailViewModel"/> class.
     /// </summary>
-    public ComprehensiveMomentSectionDetailViewModel(IMomentDiscoveryService service)
+    public ComprehensiveMomentSectionDetailViewModel(
+        IMomentDiscoveryService service,
+        DispatcherQueue dispatcherQueue,
+        MomentPageViewModel momentPageViewModel,
+        ILogger<ComprehensiveMomentSectionDetailViewModel> logger,
+        ILogger<MomentUperSectionViewModel> uperLogger,
+        ISettingsService settingsService
+    )
+        : base(settingsService)
     {
         _service = service;
-        _logger = this.Get<ILogger<VideoMomentSectionDetailViewModel>>();
+        _dispatcherQueue = dispatcherQueue;
+        _momentPageViewModel = momentPageViewModel;
+        _logger = logger;
+        _uperLogger = uperLogger;
     }
 
     /// <inheritdoc/>
@@ -48,16 +61,15 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         if (SelectedUper.IsTotal)
         {
             Upers.Clear();
-            this.Get<DispatcherQueue>()
-                .TryEnqueue(
-                    DispatcherQueuePriority.Low,
-                    async () =>
-                    {
-                        SelectedUper?.Items?.Clear();
-                        SelectedUper = default;
-                        await InitializeAsync();
-                    }
-                );
+            _dispatcherQueue.TryEnqueue(
+                DispatcherQueuePriority.Low,
+                async () =>
+                {
+                    SelectedUper?.Items?.Clear();
+                    SelectedUper = default;
+                    await InitializeAsync();
+                }
+            );
         }
         else
         {

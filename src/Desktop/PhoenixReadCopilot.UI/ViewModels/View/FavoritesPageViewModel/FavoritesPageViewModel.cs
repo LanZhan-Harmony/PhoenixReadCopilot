@@ -2,8 +2,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
@@ -15,13 +16,30 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
 {
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ISettingsService _settingsService;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageViewModel"/> class.
     /// </summary>
-    public FavoritesPageViewModel(IFavoriteService service, ILogger<FavoritesPageViewModel> logger)
+    public FavoritesPageViewModel(
+        IFavoriteService service,
+        ILogger<FavoritesPageViewModel> logger,
+        DispatcherQueue dispatcherQueue,
+        ISettingsService settingsService,
+        NavigationViewModel navigationViewModel,
+        ILoggerFactory loggerFactory
+    )
+        : base(settingsService)
     {
         _service = service;
         _logger = logger;
+        _dispatcherQueue = dispatcherQueue;
+        _settingsService = settingsService;
+        _navigationViewModel = navigationViewModel;
+        _loggerFactory = loggerFactory;
     }
 
     /// <inheritdoc/>
@@ -38,8 +56,20 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         }
 
         IsLoading = true;
-        Sections.Add(new PgcFavoriteSectionDetailViewModel(PgcFavoriteType.Anime, _service));
-        Sections.Add(new PgcFavoriteSectionDetailViewModel(PgcFavoriteType.Cinema, _service));
+        Sections.Add(
+            new PgcFavoriteSectionDetailViewModel(
+                PgcFavoriteType.Anime,
+                _service,
+                _loggerFactory.CreateLogger<PgcFavoriteSectionDetailViewModel>()
+            )
+        );
+        Sections.Add(
+            new PgcFavoriteSectionDetailViewModel(
+                PgcFavoriteType.Cinema,
+                _service,
+                _loggerFactory.CreateLogger<PgcFavoriteSectionDetailViewModel>()
+            )
+        );
         await InitializeVideoFoldersAsync();
         IsLoading = false;
         RestoreSelection();
@@ -49,15 +79,14 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void Refresh()
     {
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    Sections.Clear();
-                    await InitializeAsync();
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Sections.Clear();
+                await InitializeAsync();
+            }
+        );
     }
 
     [RelayCommand]
@@ -82,15 +111,14 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             sectionSettingValue = $"ugc_{ugcVM.Data.Id}";
         }
 
-        Settings.LastSelectedFavoriteSection = sectionSettingValue
-        ;
+        _settings.LastSelectedFavoriteSection = sectionSettingValue;
         CurrentSection = vm;
         CurrentSection.TryFirstLoadCommand.Execute(default);
     }
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = Settings.LastSelectedFavoriteSection;
+        var lastSelectedSection = _settings.LastSelectedFavoriteSection;
         if (string.IsNullOrEmpty(lastSelectedSection))
         {
             SelectSection(Sections.First());
@@ -154,7 +182,10 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             var (groups, defaultGroup) = await _service.GetVideoFavoriteGroupsAsync();
             var defaultGroupVM = new VideoFavoriteSectionDetailViewModel(
                 defaultGroup.Folder,
-                _service
+                _service,
+                _navigationViewModel,
+                _settingsService,
+                _loggerFactory.CreateLogger<VideoFavoriteSectionDetailViewModel>()
             );
             defaultGroupVM.InjectFirstPageData(defaultGroup);
             Sections.Add(defaultGroupVM);
@@ -166,8 +197,18 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
                     var folderVM =
                         folder.IsUgcSeason == true
                             ? (IFavoriteSectionDetailViewModel)
-                            new UgcSeasonFavoriteSectionDetailViewModel(folder, _service)
-                            : new VideoFavoriteSectionDetailViewModel(folder, _service);
+                                new UgcSeasonFavoriteSectionDetailViewModel(
+                                    folder,
+                                    _service,
+                                    _loggerFactory.CreateLogger<UgcSeasonFavoriteSectionDetailViewModel>()
+                                )
+                            : new VideoFavoriteSectionDetailViewModel(
+                                folder,
+                                _service,
+                                _navigationViewModel,
+                                _settingsService,
+                                _loggerFactory.CreateLogger<VideoFavoriteSectionDetailViewModel>()
+                            );
                     Sections.Add(folderVM);
                 }
             }

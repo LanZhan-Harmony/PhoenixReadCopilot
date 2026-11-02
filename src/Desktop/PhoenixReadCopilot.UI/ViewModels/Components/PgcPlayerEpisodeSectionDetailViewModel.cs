@@ -1,8 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
@@ -17,6 +18,7 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
         IPlayerSectionDetailViewModel
 {
     private readonly Action<EpisodeInformation> _episodeSelectedAction;
+    private readonly AppSettings _settings;
 
     [ObservableProperty]
     public partial List<EpisodeItemViewModel>? Episodes { get; set; }
@@ -33,15 +35,17 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
     public PgcPlayerEpisodeSectionDetailViewModel(
         IList<EpisodeInformation> episodes,
         string epid,
-        Action<EpisodeInformation> action
+        Action<EpisodeInformation> action,
+        ISettingsService settingsService
     )
     {
+        _settings = settingsService.Settings;
         _episodeSelectedAction = action;
         Episodes = episodes
             .Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Player))
             .ToList();
         SelectedEpisode = Episodes.FirstOrDefault(p => p.Data.Identifier.Id == epid);
-        OnlyIndex = Settings.IsPgcPlayerPartsOnlyIndex;
+        OnlyIndex = _settings.IsPgcPlayerPartsOnlyIndex;
     }
 
     /// <inheritdoc/>
@@ -57,6 +61,5 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
         _episodeSelectedAction?.Invoke(episode.Data);
     }
 
-    partial void OnOnlyIndexChanged(bool value) =>
-        Settings.IsPgcPlayerPartsOnlyIndex = value;
+    partial void OnOnlyIndexChanged(bool value) => _settings.IsPgcPlayerPartsOnlyIndex = value;
 }

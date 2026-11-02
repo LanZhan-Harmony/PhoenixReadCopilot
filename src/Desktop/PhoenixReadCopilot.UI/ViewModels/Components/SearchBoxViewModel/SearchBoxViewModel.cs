@@ -1,7 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
@@ -14,12 +15,22 @@ namespace PhoenixReadCopilot.UI.ViewModels.Components;
 /// </summary>
 public sealed partial class SearchBoxViewModel : ViewModelBase
 {
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly AppSettings _settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchBoxViewModel"/> class.
     /// </summary>
-    public SearchBoxViewModel(ISearchService searchService, ILogger<SearchBoxViewModel> logger)
+    public SearchBoxViewModel(
+        ISearchService searchService,
+        NavigationViewModel navigationViewModel,
+        ISettingsService settingsService,
+        ILogger<SearchBoxViewModel> logger
+    )
     {
         _searchService = searchService;
+        _navigationViewModel = navigationViewModel;
+        _settings = settingsService.Settings;
         _logger = logger;
     }
 
@@ -41,7 +52,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         {
             if (string.IsNullOrEmpty(_extraRegionId))
             {
-                var isRecommendEnabled = Settings.ShowSearchRecommend;
+                var isRecommendEnabled = _settings.ShowSearchRecommend;
                 if (!isRecommendEnabled)
                 {
                     _recommendItems.Clear();
@@ -163,11 +174,11 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
         if (string.IsNullOrEmpty(vm.RegionId) || vm.RegionId == "global")
         {
-            this.Get<NavigationViewModel>().Search(keyword);
+            _navigationViewModel.Search(keyword);
         }
         else
         {
-            this.Get<NavigationViewModel>().SearchInRegion(keyword);
+            _navigationViewModel.SearchInRegion(keyword);
         }
     }
 }

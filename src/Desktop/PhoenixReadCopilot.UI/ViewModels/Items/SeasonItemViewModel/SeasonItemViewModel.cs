@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
@@ -22,6 +23,9 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformation>
 {
+    private static ILogger<SeasonItemViewModel>? _logger;
+    private static ILogger<SeasonItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<SeasonItemViewModel>>();
+
     private readonly Action<SeasonItemViewModel>? _removeAction;
 
     /// <summary>
@@ -50,22 +54,22 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
+        var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = Settings.PlayerType;
+        var preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
-            this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
+            ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
             return;
         }
 
         var identifier = new MediaIdentifier("ss_" + Data.Identifier.Id, default, default);
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(PgcPlayerPage), identifier);
+        ItemServices.Navigation.NavigateToOver(typeof(PgcPlayerPage), identifier);
     }
 
     [RelayCommand]
@@ -82,13 +86,13 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     {
         try
         {
-            await this.Get<IEntertainmentDiscoveryService>().FollowAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
+            await ItemServices.Entertainment.FollowAsync(Data.Identifier.Id);
+            ItemServices.App.ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "追番/追剧失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "追番/追剧失败");
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.FailedToFollowPgc, InfoType.Error));
         }
     }
@@ -98,14 +102,14 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     {
         try
         {
-            await this.Get<IEntertainmentDiscoveryService>().UnfollowAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>()
+            await ItemServices.Entertainment.UnfollowAsync(Data.Identifier.Id);
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "取消追番/追剧失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "取消追番/追剧失败");
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.FailedToUnfollowPgc, InfoType.Error));
         }
     }
@@ -128,7 +132,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
             Data.Identifier.Cover.Uri.ToString(),
             PinContentType.Pgc
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        ItemServices.Pinner.AddItemCommand.Execute(pinItem);
     }
 
     private string GetWebUrl() => $"https://www.bilibili.com/bangumi/play/ss{Data.Identifier.Id}";
@@ -137,13 +141,13 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     {
         try
         {
-            await this.Get<IFavoriteService>().MarkPgcAsync(Data.Identifier, status);
+            await ItemServices.Favorite.MarkPgcAsync(Data.Identifier, status);
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<SeasonItemViewModel>>().LogError(ex, "标记想看失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "标记想看失败");
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.FailedToMarkPgc, InfoType.Error));
         }
     }

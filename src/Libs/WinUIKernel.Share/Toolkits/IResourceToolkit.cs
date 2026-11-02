@@ -8,13 +8,6 @@ namespace WinUIKernel.Share.Toolkits;
 public interface IResourceToolkit
 {
     /// <summary>
-    /// Get localized text.
-    /// </summary>
-    /// <param name="stringName">Resource name corresponding to localized text.</param>
-    /// <returns>Localized text.</returns>
-    string GetLocalizedString(string stringName);
-
-    /// <summary>
     /// Get theme brush.
     /// </summary>
     Brush GetThemeBrush(string brushName);

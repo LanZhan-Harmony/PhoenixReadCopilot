@@ -1,9 +1,13 @@
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Toolkits;
@@ -13,10 +17,17 @@ namespace PhoenixReadCopilot.UI.Toolkits;
 /// </summary>
 internal sealed partial class AppToolkit : IAppToolkit
 {
+    private readonly AppSettings _settings;
+
+    public AppToolkit(ISettingsService settingsService)
+    {
+        _settings = settingsService.Settings;
+    }
+
     /// <inheritdoc/>
     public ApplicationTheme GetCurrentTheme()
     {
-        var localTheme = Settings.AppTheme;
+        var localTheme = _settings.AppTheme;
         return localTheme == ElementTheme.Default ? Application.Current.RequestedTheme
             : localTheme == ElementTheme.Light ? ApplicationTheme.Light
             : ApplicationTheme.Dark;
@@ -31,14 +42,15 @@ internal sealed partial class AppToolkit : IAppToolkit
             return $"{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}.{appVersion.Revision}";
         }
 
-        var version = Assembly.GetEntryAssembly()?.GetName().Version
+        var version =
+            Assembly.GetEntryAssembly()?.GetName().Version
             ?? Assembly.GetExecutingAssembly().GetName().Version;
         return $"{version?.Major}.{version?.Minor}.{version?.Build}.{version?.Revision}";
     }
 
     /// <inheritdoc/>
     public void ResetControlTheme(FrameworkElement element) =>
-        element.RequestedTheme = Settings.AppTheme;
+        element.RequestedTheme = _settings.AppTheme;
 
     /// <summary>
     /// 格式化时长.
@@ -121,7 +133,7 @@ internal sealed partial class AppToolkit : IAppToolkit
     /// <returns>解码标识符.</returns>
     public static string GetPreferCodecId()
     {
-        var preferCodec = Settings.PreferCodec;
+        var preferCodec = ItemServices.Settings.PreferCodec;
         return preferCodec switch
         {
             PreferCodecType.H265 => "hev",

@@ -29,10 +29,7 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.SectionInitialized -= OnViewModelSectionInitialized;
-        }
+        ViewModel?.SectionInitialized -= OnViewModelSectionInitialized;
 
         Selector.SelectionChanged -= OnSelectorChanged;
     }
@@ -43,10 +40,7 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
         PgcPlayerPageViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.SectionInitialized -= OnViewModelSectionInitialized;
-        }
+        oldValue?.SectionInitialized -= OnViewModelSectionInitialized;
 
         if (newValue is null)
         {

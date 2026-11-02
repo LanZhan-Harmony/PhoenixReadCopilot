@@ -5,8 +5,8 @@ using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
@@ -18,16 +18,25 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 {
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularPageViewModel"/> class.
     /// </summary>
     public PopularPageViewModel(
         IVideoDiscoveryService discoveryService,
-        ILogger<PopularPageViewModel> logger
+        ILogger<PopularPageViewModel> logger,
+        NavigationViewModel navigationViewModel,
+        DispatcherQueue dispatcherQueue,
+        ISettingsService settingsService
     )
+        : base(settingsService)
     {
         _service = discoveryService;
         _logger = logger;
+        _navigationViewModel = navigationViewModel;
+        _dispatcherQueue = dispatcherQueue;
     }
 
     /// <inheritdoc/>
@@ -64,7 +73,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         );
         await LoadPartitionsAsync();
         await Task.Delay(200);
-        var lastSelectedSectionId = string.IsNullOrEmpty(Settings.PopularPageLastSelectedSectionId) ? PopularSectionType.Recommend.ToString() : Settings.PopularPageLastSelectedSectionId;
+        var lastSelectedSectionId = string.IsNullOrEmpty(_settings.PopularPageLastSelectedSectionId)
+            ? PopularSectionType.Recommend.ToString()
+            : _settings.PopularPageLastSelectedSectionId;
         if (int.TryParse(lastSelectedSectionId, out var partitionId))
         {
             var section = Sections
@@ -114,29 +125,28 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             PopularRankPartitionViewModel partition => partition.Data.Id,
             _ => string.Empty,
         };
-        Settings.PopularPageLastSelectedSectionId = sectionId;
+        _settings.PopularPageLastSelectedSectionId = sectionId;
 
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Videos.Clear();
+                if (_videoCache.TryGetValue(vm, out var cacheVideos))
                 {
-                    Videos.Clear();
-                    if (_videoCache.TryGetValue(vm, out var cacheVideos))
+                    foreach (var video in cacheVideos)
                     {
-                        foreach (var video in cacheVideos)
-                        {
-                            Videos.Add(video);
-                        }
+                        Videos.Add(video);
+                    }
 
-                        VideoListUpdated?.Invoke(this, EventArgs.Empty);
-                    }
-                    else
-                    {
-                        await LoadVideosAsync();
-                    }
+                    VideoListUpdated?.Invoke(this, EventArgs.Empty);
                 }
-            );
+                else
+                {
+                    await LoadVideosAsync();
+                }
+            }
+        );
     }
 
     [RelayCommand]
@@ -169,8 +179,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
 
         VideoListUpdated?.Invoke(this, EventArgs.Empty);
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
     }
 
     [RelayCommand]
@@ -200,8 +209,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         {
             var videos = await _service.GetCuratedPlaylistAsync();
             var firstSnapshot = new VideoSnapshot(videos.First());
-            this.Get<NavigationViewModel>()
-                .NavigateToOver(typeof(VideoPlayerPage), (videos, firstSnapshot));
+            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), (videos, firstSnapshot));
         }
         catch (Exception ex)
         {

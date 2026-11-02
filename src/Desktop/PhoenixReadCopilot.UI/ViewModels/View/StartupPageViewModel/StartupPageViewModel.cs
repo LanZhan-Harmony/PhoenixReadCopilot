@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -15,18 +16,25 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class StartupPageViewModel : ViewModelBase
 {
+    private readonly IAppToolkit _appToolkit;
+    private readonly AppViewModel _appViewModel;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPageViewModel"/> class.
     /// </summary>
     public StartupPageViewModel(
         IAuthenticationService authenticationService,
         ILogger<StartupPageViewModel> logger,
-        DispatcherQueue dispatcherQueue
+        DispatcherQueue dispatcherQueue,
+        IAppToolkit appToolkit,
+        AppViewModel appViewModel
     )
     {
         _authenticationService = authenticationService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
+        _appToolkit = appToolkit;
+        _appViewModel = appViewModel;
     }
 
     /// <summary>
@@ -36,7 +44,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync(Image qrcodeImageControl)
     {
-        Version = this.Get<IAppToolkit>().GetPackageVersion();
+        Version = _appToolkit.GetPackageVersion();
         QRCodeImage = qrcodeImageControl;
         await ReloadQRCodeAsync();
     }
@@ -88,7 +96,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
 
         if (shouldRestart)
         {
-            this.Get<AppViewModel>().RestartCommand.Execute(default);
+            _appViewModel.RestartCommand.Execute(default);
         }
     }
 
@@ -112,7 +120,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
 
     private async Task<bool> CheckAuthorizeStatusAsync()
     {
-        var tokenResolver = this.Get<IAuthenticationService>();
+        var tokenResolver = _authenticationService;
         try
         {
             await tokenResolver

@@ -83,15 +83,9 @@ public sealed partial class AppTitleBar : LayoutControlBase
             _inputActivationListener = default;
         }
 
-        if (_backButton is not null)
-        {
-            _backButton.Click -= OnBackButtonClick;
-        }
+        _backButton?.Click -= OnBackButtonClick;
 
-        if (_paneToggleButton is not null)
-        {
-            _paneToggleButton.Click -= OnPaneToggleButtonClick;
-        }
+        _paneToggleButton?.Click -= OnPaneToggleButtonClick;
 
         SizeChanged -= OnSizeChanged;
         ActualThemeChanged -= OnActualThemeChanged;

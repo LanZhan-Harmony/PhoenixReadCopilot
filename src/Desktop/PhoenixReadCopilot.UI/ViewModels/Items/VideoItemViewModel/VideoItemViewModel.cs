@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
@@ -23,6 +24,9 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 {
+    private static ILogger<VideoItemViewModel>? _logger;
+    private static ILogger<VideoItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<VideoItemViewModel>>();
+
     private readonly Action<VideoItemViewModel>? _removeAction;
     private readonly VideoFavoriteFolder? _favFolder;
 
@@ -64,28 +68,28 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
+        var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
             OpenInNewWindowCommand.Execute(default);
             return;
         }
 
-        var preferPlayer = Settings.PlayerType;
+        var preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
-            this.Get<NavigationViewModel>()
+            ItemServices.Navigation
                 .NavigateToOver(typeof(WebPlayerPage), GetWebUri().ToString());
             return;
         }
 
-        this.Get<NavigationViewModel>()
+        ItemServices.Navigation
             .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data));
     }
 
     [RelayCommand]
     private void PlayInPrivate() =>
-        this.Get<NavigationViewModel>()
+        ItemServices.Navigation
             .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data, true));
 
     [RelayCommand]
@@ -93,7 +97,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         if (Data.Publisher?.User is not null)
         {
-            this.Get<NavigationViewModel>()
+            ItemServices.Navigation
                 .NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);
         }
     }
@@ -103,14 +107,14 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            await this.Get<IViewLaterService>().AddAsync(Data.Identifier.Id);
-            this.Get<AppViewModel>()
+            await ItemServices.ViewLater.AddAsync(Data.Identifier.Id);
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "添加稍后再看失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "添加稍后再看失败");
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
@@ -120,13 +124,13 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            await this.Get<IViewLaterService>().RemoveAsync([Data.Identifier.Id]);
+            await ItemServices.ViewLater.RemoveAsync([Data.Identifier.Id]);
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除稍后再看视频失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "移除稍后再看视频失败");
+            ItemServices.App
                 .ShowTipCommand.Execute(
                     (Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
                 );
@@ -138,13 +142,13 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            await this.Get<IViewHistoryService>().RemoveVideoHistoryItemAsync(Data);
+            await ItemServices.ViewHistory.RemoveVideoHistoryItemAsync(Data);
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除历史记录视频失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "移除历史记录视频失败");
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.FailedToRemoveVideoFromHistory, InfoType.Error));
         }
     }
@@ -154,13 +158,13 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            await this.Get<IFavoriteService>().RemoveVideoAsync(_favFolder, Data.Identifier);
+            await ItemServices.Favorite.RemoveVideoAsync(_favFolder, Data.Identifier);
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<VideoItemViewModel>>().LogError(ex, "移除收藏视频失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "移除收藏视频失败");
+            ItemServices.App
                 .ShowTipCommand.Execute(
                     (Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
                 );
@@ -181,7 +185,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         dp.SetText(GetWebUri().ToString());
         dp.SetWebLink(GetWebUri());
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        ItemServices.App.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -193,7 +197,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             Data.Identifier.Cover.Uri.ToString(),
             PinContentType.Video
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        ItemServices.Pinner.AddItemCommand.Execute(pinItem);
     }
 
     private Uri GetWebUri()

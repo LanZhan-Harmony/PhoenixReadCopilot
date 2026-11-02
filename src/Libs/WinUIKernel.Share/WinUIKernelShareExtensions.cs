@@ -1,8 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using RichasyKernel;
-using WinUIKernel.Share.Toolkits;
-
 namespace WinUIKernel.Share;
 
 /// <summary>
@@ -10,8 +5,6 @@ namespace WinUIKernel.Share;
 /// </summary>
 public static class WinUIKernelShareExtensions
 {
-    internal static Kernel Kernel { get; private set; }
-
     /// <summary>
     /// 是否启用卡片动画。
     /// </summary>
@@ -26,19 +19,4 @@ public static class WinUIKernelShareExtensions
     /// 图片缓存时间。
     /// </summary>
     public static TimeSpan ImageCacheTime { get; set; } = TimeSpan.FromDays(7);
-
-    internal static InternalResourceToolkit ResourceToolkit { get; } = new();
-
-    internal static ILogger Logger { get; set; }
-
-    /// <summary>
-    /// Initialize the Share kernel.
-    /// </summary>
-    /// <param name="kernel">Kernel.</param>
-    /// <param name="logger">日志记录.</param>
-    public static void InitializeShareKernel(this Kernel kernel, ILogger? logger = null)
-    {
-        Kernel = kernel;
-        Logger = logger ?? NullLogger.Instance;
-    }
 }

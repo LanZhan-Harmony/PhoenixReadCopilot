@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -5,8 +6,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Graphics;
@@ -23,6 +25,9 @@ namespace PhoenixReadCopilot.UI.Forms;
 /// </summary>
 public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, ITipWindow
 {
+    private readonly AppViewModel _appViewModel;
+    private readonly AppSettings _settings;
+
     private const int WindowMinWidth = 640;
     private const int WindowMinHeight = 480;
     private readonly InputActivationListener _inputActivationListener;
@@ -33,6 +38,8 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     /// </summary>
     public PlayerWindow()
     {
+        _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
+        _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
         InitializeComponent();
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(TitleBar);
@@ -41,7 +48,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
         MinWidth = WindowMinWidth;
         MinHeight = WindowMinHeight;
-        this.Get<AppViewModel>().Windows.Add(this);
+        _appViewModel.Windows.Add(this);
         _inputActivationListener = InputActivationListener.GetForWindowId(AppWindow.Id);
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
         Activated += OnActivated;
@@ -54,7 +61,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenVideo(VideoSnapshot snapshot)
     {
         Activate();
-        var preferPlayer = Settings.PlayerType;
+        var preferPlayer = _settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             MainFrame.Navigate(
@@ -73,7 +80,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenVideo((List<VideoInformation> videos, VideoSnapshot snapshot) data)
     {
         Activate();
-        var preferPlayer = Settings.PlayerType;
+        var preferPlayer = _settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             MainFrame.Navigate(
@@ -92,7 +99,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenPgc(MediaIdentifier pgc)
     {
         Activate();
-        var preferPlayer = Settings.PlayerType;
+        var preferPlayer = _settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             var url = $"https://www.bilibili.com/bangumi/play/{pgc.Id.Replace("_", string.Empty)}";
@@ -151,10 +158,10 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         TipContainer.Visibility = Visibility.Collapsed;
     }
 
-    private static PointInt32 GetSavedWindowPosition()
+    private PointInt32 GetSavedWindowPosition()
     {
-        var left = Settings.PlayerWindowPositionLeft;
-        var top = Settings.PlayerWindowPositionTop;
+        var left = _settings.PlayerWindowPositionLeft;
+        var top = _settings.PlayerWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -162,7 +169,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     {
         if (args.WindowActivationState != WindowActivationState.Deactivated)
         {
-            this.Get<AppViewModel>().ActivatedWindow = this;
+            _appViewModel.ActivatedWindow = this;
         }
 
         if (!_isFirstActivated)
@@ -171,14 +178,14 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         }
 
         MoveAndResize();
-        var isMaximized = Settings.IsPlayerWindowMaximized;
+        var isMaximized = _settings.IsPlayerWindowMaximized;
         if (isMaximized)
         {
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        var localTheme = Settings.AppTheme;
-        this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
+        var localTheme = _settings.AppTheme;
+        _appViewModel.ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }
 
@@ -189,7 +196,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         Activated -= OnActivated;
         Closed -= OnClosed;
 
-        GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().Windows.Remove(this);
+        _appViewModel.Windows.Remove(this);
         GlobalHook.Stop();
         SaveCurrentWindowStats();
     }
@@ -316,8 +323,8 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = Settings.PlayerWindowWidth;
-        var previousHeight = Settings.PlayerWindowHeight;
+        var previousWidth = _settings.PlayerWindowWidth;
+        var previousHeight = _settings.PlayerWindowHeight;
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -349,17 +356,17 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         var left = AppWindow.Position.X;
         var top = AppWindow.Position.Y;
         var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
-        Settings.IsPlayerWindowMaximized = (bool)isMaximized;
+        _settings.IsPlayerWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)
         {
-            Settings.PlayerWindowPositionLeft = left;
-            Settings.PlayerWindowPositionTop = top;
+            _settings.PlayerWindowPositionLeft = left;
+            _settings.PlayerWindowPositionTop = top;
 
             if (Height >= WindowMinHeight && Width >= WindowMinWidth)
             {
-                Settings.PlayerWindowHeight = Height;
-                Settings.PlayerWindowWidth = Width;
+                _settings.PlayerWindowHeight = Height;
+                _settings.PlayerWindowWidth = Width;
             }
         }
     }

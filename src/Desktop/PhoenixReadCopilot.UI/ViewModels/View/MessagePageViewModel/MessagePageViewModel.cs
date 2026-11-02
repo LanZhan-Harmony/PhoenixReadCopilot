@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -17,13 +17,31 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
 {
+    private readonly AccountViewModel _accountViewModel;
+    private readonly AppViewModel _appViewModel;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePageViewModel"/> class.
     /// </summary>
-    public MessagePageViewModel(IMessageService service, ILogger<MessagePageViewModel> logger)
+    public MessagePageViewModel(
+        IMessageService service,
+        ILogger<MessagePageViewModel> logger,
+        AccountViewModel accountViewModel,
+        AppViewModel appViewModel,
+        ISettingsService settingsService,
+        NavigationViewModel navigationViewModel,
+        ILoggerFactory loggerFactory
+    )
+        : base(settingsService)
     {
         _service = service;
         _logger = logger;
+        _accountViewModel = accountViewModel;
+        _appViewModel = appViewModel;
+        _navigationViewModel = navigationViewModel;
+        _loggerFactory = loggerFactory;
     }
 
     /// <inheritdoc/>
@@ -40,9 +58,27 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         }
 
         IsLoading = true;
-        Sections.Add(new NotifyMessageSectionDetailViewModel(NotifyMessageType.Reply, _service));
-        Sections.Add(new NotifyMessageSectionDetailViewModel(NotifyMessageType.At, _service));
-        Sections.Add(new NotifyMessageSectionDetailViewModel(NotifyMessageType.Like, _service));
+        Sections.Add(
+            new NotifyMessageSectionDetailViewModel(
+                NotifyMessageType.Reply,
+                _service,
+                _loggerFactory.CreateLogger<NotifyMessageSectionDetailViewModel>()
+            )
+        );
+        Sections.Add(
+            new NotifyMessageSectionDetailViewModel(
+                NotifyMessageType.At,
+                _service,
+                _loggerFactory.CreateLogger<NotifyMessageSectionDetailViewModel>()
+            )
+        );
+        Sections.Add(
+            new NotifyMessageSectionDetailViewModel(
+                NotifyMessageType.Like,
+                _service,
+                _loggerFactory.CreateLogger<NotifyMessageSectionDetailViewModel>()
+            )
+        );
         await LoadChatSessionsAsync();
         IsLoading = false;
         RestoreSelection();
@@ -76,11 +112,10 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
             sectionSettingValue = $"chat_{chatVM.Data.User.Id}";
         }
 
-        Settings.LastSelectedMessageSection = sectionSettingValue
-        ;
+        _settings.LastSelectedMessageSection = sectionSettingValue;
         CurrentSection = vm;
         await CurrentSection.InitializeCommand.ExecuteAsync(default);
-        this.Get<AccountViewModel>().UpdateUnreadCommand.Execute(default);
+        _accountViewModel.UpdateUnreadCommand.Execute(default);
     }
 
     [RelayCommand]
@@ -131,7 +166,15 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
             {
                 foreach (var item in sessions)
                 {
-                    Sections.Add(new ChatMessageSectionDetailViewModel(item));
+                    Sections.Add(
+                        new ChatMessageSectionDetailViewModel(
+                            item,
+                            _service,
+                            _navigationViewModel,
+                            _appViewModel,
+                            _loggerFactory.CreateLogger<ChatMessageSectionDetailViewModel>()
+                        )
+                    );
                 }
 
                 ChatSessionsUpdated?.Invoke(this, EventArgs.Empty);
@@ -141,8 +184,9 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         {
             _preventLoadMore = true;
             _logger.LogError(ex, "加载聊天会话时失败.");
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.FailedToLoadChatSessions, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute(
+                (Resources.FailedToLoadChatSessions, InfoType.Error)
+            );
         }
         finally
         {
@@ -152,7 +196,7 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = Settings.LastSelectedMessageSection;
+        var lastSelectedSection = _settings.LastSelectedMessageSection;
         UpdateUnreadCountCommand.Execute(default);
         if (string.IsNullOrEmpty(lastSelectedSection))
         {

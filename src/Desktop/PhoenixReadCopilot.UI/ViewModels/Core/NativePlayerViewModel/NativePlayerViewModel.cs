@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Media.Playback;
 
@@ -13,6 +15,20 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class NativePlayerViewModel : PlayerViewModelBase
 {
+    private readonly IBiliCookiesResolver _cookiesResolver;
+
+    public NativePlayerViewModel(
+        ISettingsService settingsService,
+        AppViewModel appViewModel,
+        ILogger<PlayerViewModelBase> logger,
+        DispatcherQueue dispatcherQueue,
+        IBiliCookiesResolver cookiesResolver
+    )
+        : base(settingsService, appViewModel, logger, dispatcherQueue)
+    {
+        _cookiesResolver = cookiesResolver;
+    }
+
     private MediaPlayerElement? _element;
     private DashSegmentInformation? _videoSegment;
     private DashSegmentInformation? _audioSegment;
@@ -61,7 +77,7 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
         player.CurrentStateChanged += OnMediaPlayerStateChanged;
         player.MediaFailed += OnMediaPlayerFailed;
         player.MediaEnded += OnMediaPlayerEnded;
-        player.Volume = Settings.PlayerVolume / 100.0;
+        player.Volume = _settings.PlayerVolume / 100.0;
 
         return player;
     }
@@ -155,7 +171,7 @@ public sealed partial class NativePlayerViewModel : PlayerViewModelBase
                 return;
             }
 
-            sender.PlaybackSession.PlaybackRate = Settings.PlayerSpeed;
+            sender.PlaybackSession.PlaybackRate = _settings.PlayerSpeed;
             _speedAction?.Invoke(sender.PlaybackSession.PlaybackRate);
 
             if (Position > 0)

@@ -1,12 +1,14 @@
 using System.IO.Compression;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Web.WebView2.Core;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Windows.Storage;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Pages.Overlay;
@@ -16,6 +18,9 @@ namespace PhoenixReadCopilot.UI.Pages.Overlay;
 /// </summary>
 public sealed partial class WebPlayerPage : LayoutPageBase
 {
+    private readonly AppSettings _settings;
+    private readonly AppViewModel _appViewModel;
+
     private const string BewlyVersion = "0.32.0";
     private const string UserAgent =
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2048.1";
@@ -25,7 +30,12 @@ public sealed partial class WebPlayerPage : LayoutPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="WebPlayerPage"/> class.
     /// </summary>
-    public WebPlayerPage() => InitializeComponent();
+    public WebPlayerPage()
+    {
+        _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
+        _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -97,7 +107,7 @@ public sealed partial class WebPlayerPage : LayoutPageBase
 
     private void OnContainsFullScreenElementChanged(CoreWebView2 sender, object args)
     {
-        var appVM = this.Get<AppViewModel>();
+        var appVM = _appViewModel;
         if (sender.ContainsFullScreenElement)
         {
             appVM.MakeCurrentWindowEnterFullScreenCommand.Execute(default);
@@ -120,7 +130,7 @@ public sealed partial class WebPlayerPage : LayoutPageBase
             return;
         }
 
-        var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
+        var preferDisplayMode = _settings.DefaultPlayerDisplayMode;
         var isFullWindow =
             preferDisplayMode is PlayerDisplayMode.FullWindow or PlayerDisplayMode.NewWindow;
         var isFullScreen = preferDisplayMode == PlayerDisplayMode.FullScreen;
@@ -147,10 +157,10 @@ public sealed partial class WebPlayerPage : LayoutPageBase
 
     private async Task TryLoadExtensionAsync()
     {
-        var extensionFolder = Path.Combine(PhoenixReadCopilot.UI.Helpers.PathHelper.RootFolderPath, "Extensions");
+        var extensionFolder = Path.Combine(PathHelper.RootFolderPath, "Extensions");
         Directory.CreateDirectory(extensionFolder);
         var bewlyFolderPath = Path.Combine(extensionFolder, "BewlyBewly");
-        var localVersion = Settings.BewlyExtensionVersion;
+        var localVersion = _settings.BewlyExtensionVersion;
         if (localVersion != BewlyVersion)
         {
             if (Directory.Exists(bewlyFolderPath))
@@ -161,7 +171,11 @@ public sealed partial class WebPlayerPage : LayoutPageBase
             if (!Directory.Exists(bewlyFolderPath))
             {
                 Directory.CreateDirectory(bewlyFolderPath);
-                var bewlyZipPath = Path.Combine(AppContext.BaseDirectory, "Assets", "BewlyBewly.zip");
+                var bewlyZipPath = Path.Combine(
+                    AppContext.BaseDirectory,
+                    "Assets",
+                    "BewlyBewly.zip"
+                );
                 if (File.Exists(bewlyZipPath))
                 {
                     // Unzip file and copy to folder.
@@ -173,7 +187,7 @@ public sealed partial class WebPlayerPage : LayoutPageBase
             }
 
             await MainView.CoreWebView2.Profile.AddBrowserExtensionAsync(bewlyFolderPath);
-            Settings.BewlyExtensionVersion = BewlyVersion;
+            _settings.BewlyExtensionVersion = BewlyVersion;
         }
     }
 }

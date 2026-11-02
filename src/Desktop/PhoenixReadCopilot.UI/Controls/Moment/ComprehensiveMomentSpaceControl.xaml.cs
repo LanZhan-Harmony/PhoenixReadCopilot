@@ -26,10 +26,7 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnListUpdatedAsync;
-        }
+        ViewModel?.ListUpdated -= OnListUpdatedAsync;
 
         MomentScrollView.ViewChanged -= OnViewChanged;
         MomentScrollView.SizeChanged -= OnScrollViewSizeChanged;

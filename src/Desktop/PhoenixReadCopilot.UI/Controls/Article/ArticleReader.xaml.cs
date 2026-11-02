@@ -1,12 +1,14 @@
 using System.Text.Json;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.Web.WebView2.Core;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Article;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using WinUIKernel.Share.Base;
@@ -18,12 +20,20 @@ namespace PhoenixReadCopilot.UI.Controls.Article;
 /// </summary>
 public sealed partial class ArticleReader : LayoutUserControlBase
 {
+    private readonly AppSettings _settings;
+    private readonly AppViewModel _appViewModel;
+
     private string? _selectedText;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleReader"/> class.
     /// </summary>
-    public ArticleReader() => InitializeComponent();
+    public ArticleReader()
+    {
+        _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
+        _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 控件加载完成.
@@ -47,7 +57,7 @@ public sealed partial class ArticleReader : LayoutUserControlBase
     )
     {
         var path = Path.Combine(AppContext.BaseDirectory, "Assets", "Reader");
-        var theme = GlobalDependencies.Settings.AppTheme.ToString();
+        var theme = _settings.AppTheme.ToString();
         if (theme == "Default")
         {
             theme = App.Current.RequestedTheme.ToString();
@@ -179,7 +189,7 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         var dp = new DataPackage();
         dp.SetText(_selectedText);
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>()
+        _appViewModel
             .ShowTipCommand.Execute((Strings.Resources.Copied, InfoType.Success));
     }
 }

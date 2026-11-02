@@ -1,9 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Base;
@@ -16,6 +18,12 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class VideoPlayerPageViewModel
 {
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly PinnerViewModel _pinnerViewModel;
+    private readonly IViewLaterService _viewLaterService;
+    private readonly IBiliTokenResolver _tokenResolver;
+    private readonly DispatcherQueue _dispatcherQueue;
+
     private readonly IPlayerService _service;
     private readonly IRelationshipService _relationshipService;
     private readonly IFavoriteService _favoriteService;
