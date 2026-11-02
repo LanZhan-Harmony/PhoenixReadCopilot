@@ -1,3 +1,5 @@
+// Copyright (c) Bili Copilot. All rights reserved.
+
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Windows.Foundation.Diagnostics;
@@ -6,9 +8,9 @@ namespace Danmaku.Core;
 
 internal static class Logger
 {
-    private static ILogger<DanmakuFrostMaster> _logger;
+    private static ILogger<DanmakuRenderer> _logger;
 
-    public static void SetLogger(ILogger<DanmakuFrostMaster> logger)
+    public static void SetLogger(ILogger<DanmakuRenderer> logger)
     {
         _logger = logger;
     }
@@ -27,7 +29,11 @@ internal static class Logger
         }
 
         message =
-            $"{filePath ?? string.Empty}({lineNumber})->{memberName ?? string.Empty}(): {message ?? string.Empty}";
+            $"[Danmaku] {filePath ?? string.Empty}({lineNumber})->{memberName ?? string.Empty}(): {message ?? string.Empty}";
+
+#if DEBUG
+        System.Diagnostics.Debug.WriteLine(message);
+#endif
 
         if (level == LoggingLevel.Error)
         {
