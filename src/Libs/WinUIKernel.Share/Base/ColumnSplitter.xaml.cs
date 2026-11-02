@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
 namespace WinUIKernel.Share.Base;
@@ -190,7 +191,7 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
     protected override void OnControlLoaded()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (IsInvertDirection)

@@ -1,3 +1,6 @@
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Media;
+
 namespace WinUIKernel.Share.Base;
 
 /// <summary>
@@ -11,11 +14,7 @@ public abstract class WindowEx : WinUIEx.WindowEx
     protected WindowEx()
     {
         AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-        AppWindow.TitleBar.IconShowOptions = Microsoft
-            .UI
-            .Windowing
-            .IconShowOptions
-            .HideIconAndSystemMenu;
-        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+        AppWindow.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
+        SystemBackdrop = new MicaBackdrop();
     }
 }

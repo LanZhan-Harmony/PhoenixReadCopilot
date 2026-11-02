@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -41,13 +42,13 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     VideoScrollView.ExtentHeight
-                    - VideoScrollView.ViewportHeight
-                    - VideoScrollView.VerticalOffset
+                        - VideoScrollView.ViewportHeight
+                        - VideoScrollView.VerticalOffset
                     <= 240
                 )
                 {
@@ -68,7 +69,7 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
     private void CheckVideoCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)

@@ -6,6 +6,7 @@ using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
@@ -303,11 +304,7 @@ public sealed partial class PgcPlayerPageViewModel
         Player.Title = EpisodeTitle;
         var aid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
         var cid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid).ToString();
-        _comments.Initialize(
-            aid,
-            Richasy.BiliKernel.Models.CommentTargetType.Video,
-            Richasy.BiliKernel.Models.CommentSortType.Hot
-        );
+        _comments.Initialize(aid, CommentTargetType.Video, CommentSortType.Hot);
         Subtitle?.ResetData(aid, cid);
         CalcPlayerHeight();
         ReloadEpisodeOpeartionCommand.Execute(default);

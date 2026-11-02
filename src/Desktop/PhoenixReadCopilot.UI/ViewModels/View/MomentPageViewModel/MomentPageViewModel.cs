@@ -6,6 +6,7 @@ using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Moment;
+using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
@@ -98,11 +99,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
             return;
         }
 
-        CommentModule.Initialize(
-            data.CommentId,
-            data.CommentType!.Value,
-            Richasy.BiliKernel.Models.CommentSortType.Hot
-        );
+        CommentModule.Initialize(data.CommentId, data.CommentType!.Value, CommentSortType.Hot);
         CommentModule.RefreshCommand.Execute(default);
     }
 }

@@ -1,8 +1,9 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Comment;
+using Richasy.BiliKernel.Models;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
@@ -62,7 +63,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             var view = await _service.GetDetailCommentsAsync(
                 targetId,
                 targetType,
-                Richasy.BiliKernel.Models.CommentSortType.Time,
+                CommentSortType.Time,
                 Data.Data.Id,
                 _offset
             );
@@ -96,8 +97,10 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void Refresh()
     {
         Clear();
-        _dispatcherQueue
-            .TryEnqueue(DispatcherQueuePriority.Low, async () => await LoadItemsAsync());
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () => await LoadItemsAsync()
+        );
     }
 
     [RelayCommand]

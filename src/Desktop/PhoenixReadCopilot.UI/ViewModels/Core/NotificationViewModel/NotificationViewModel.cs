@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using Richasy.BiliKernel.Bili.Moment;
@@ -60,7 +61,7 @@ public sealed partial class NotificationViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        if (PhoenixReadCopilot.UI.Helpers.RuntimeHelper.IsMSIX)
+        if (RuntimeHelper.IsMSIX)
         {
             try
             {

@@ -1,5 +1,7 @@
 using Humanizer;
 using PhoenixReadCopilot.UI.Strings;
+using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.ViewModels;
 
@@ -20,13 +22,10 @@ public sealed partial class ChatMessageItemViewModel : ViewModelBase<ChatMessage
         ActualTime = data.Time?.ToString("yyyy/MM/dd HH:mm:ss");
         Content = data.Content;
         IsMe = data.SenderId == ItemServices.TokenResolver.GetToken().UserId.ToString();
-        IsWithdrawn = data.Type == Richasy.BiliKernel.Models.ChatMessageType.Withdrawn;
-        if (data.Type == Richasy.BiliKernel.Models.ChatMessageType.Unknown)
+        IsWithdrawn = data.Type == ChatMessageType.Withdrawn;
+        if (data.Type == ChatMessageType.Unknown)
         {
-            Content = new Richasy.BiliKernel.Models.Appearance.EmoteText(
-                Resources.NotSupportContent,
-                default
-            );
+            Content = new EmoteText(Resources.NotSupportContent, default);
         }
     }
 }

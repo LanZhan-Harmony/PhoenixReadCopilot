@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
@@ -63,13 +64,13 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     MessageScrollView.ExtentHeight
-                    - MessageScrollView.ViewportHeight
-                    - MessageScrollView.VerticalOffset
+                        - MessageScrollView.ViewportHeight
+                        - MessageScrollView.VerticalOffset
                     <= 240
                 )
                 {
@@ -90,7 +91,7 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
     private void CheckMessageCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (MessageScrollView.ScrollableHeight <= 240 && ViewModel is not null)

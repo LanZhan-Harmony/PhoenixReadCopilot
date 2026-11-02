@@ -1,6 +1,7 @@
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Windows.System;
 using Windows.UI.Core;
 
 namespace PhoenixReadCopilot.UI.Controls.Message;
@@ -17,11 +18,9 @@ public sealed partial class ChatMessageBox : ChatMessageControlBase
 
     private void OnInputBoxKeyDown(object sender, KeyRoutedEventArgs e)
     {
-        if (e.Key == Windows.System.VirtualKey.Enter)
+        if (e.Key == VirtualKey.Enter)
         {
-            var shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(
-                Windows.System.VirtualKey.Shift
-            );
+            var shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift);
             var isShiftDown =
                 shiftState == CoreVirtualKeyStates.Down
                 || shiftState == (CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked);

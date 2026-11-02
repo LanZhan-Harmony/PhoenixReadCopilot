@@ -15,13 +15,13 @@ public sealed partial class ArticleSearchSectionDetailViewModel
     : ViewModelBase,
         ISearchSectionDetailViewModel
 {
-    private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
+    private readonly DispatcherQueue _dispatcherQueue;
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleSearchSectionDetailViewModel"/> class.
     /// </summary>
     public ArticleSearchSectionDetailViewModel(
         ISearchService service,
-        Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue,
+        DispatcherQueue dispatcherQueue,
         ILogger<ArticleSearchSectionDetailViewModel> logger
     )
     {

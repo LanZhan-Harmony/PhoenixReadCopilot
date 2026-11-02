@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Windows.UI;
 
 namespace PhoenixReadCopilot.UI.Controls.Danmaku;
@@ -18,8 +19,6 @@ public sealed partial class DanmakuSendOptions : DanmakuControlBase
     private void OnSizeItemClick(object sender, RoutedEventArgs e) =>
         ViewModel.IsStandardSize = (sender as FrameworkElement).Tag.ToString() == "Standard";
 
-    private void OnColorItemTapped(
-        object sender,
-        Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e
-    ) => ViewModel.Color = (Color)(sender as FrameworkElement).DataContext;
+    private void OnColorItemTapped(object sender, TappedRoutedEventArgs e) =>
+        ViewModel.Color = (Color)(sender as FrameworkElement).DataContext;
 }

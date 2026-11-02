@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -41,13 +42,13 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     MomentScrollView.ExtentHeight
-                    - MomentScrollView.ViewportHeight
-                    - MomentScrollView.VerticalOffset
+                        - MomentScrollView.ViewportHeight
+                        - MomentScrollView.VerticalOffset
                     <= 240
                 )
                 {
@@ -68,7 +69,7 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
     private void CheckMomentCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)

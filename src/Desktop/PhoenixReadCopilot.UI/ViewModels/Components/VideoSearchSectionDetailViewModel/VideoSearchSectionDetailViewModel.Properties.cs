@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
@@ -15,7 +16,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
 {
     private readonly ISearchService _service;
     private readonly ILogger<VideoSearchSectionDetailViewModel> _logger;
-    private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
+    private readonly DispatcherQueue _dispatcherQueue;
 
     private bool _canRequest;
     private int? _currentPage;

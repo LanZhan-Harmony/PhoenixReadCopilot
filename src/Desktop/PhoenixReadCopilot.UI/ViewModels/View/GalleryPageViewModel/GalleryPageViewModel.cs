@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
@@ -129,10 +130,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         var profileSettings = UserProfilePersonalizationSettings.Current;
         var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
-        var tempFolder = Path.Combine(
-            PhoenixReadCopilot.UI.Helpers.PathHelper.TempFolderPath,
-            "TempImages"
-        );
+        var tempFolder = Path.Combine(PathHelper.TempFolderPath, "TempImages");
         Directory.CreateDirectory(tempFolder);
         var folder = await StorageFolder.GetFolderFromPathAsync(tempFolder);
         var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);

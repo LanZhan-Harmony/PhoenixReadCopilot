@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadCopilot.UI.Forms;
 using Richasy.BiliKernel.Models.Appearance;
@@ -171,7 +172,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
             : Visibility.Collapsed;
     }
 
-    private void OnImageTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+    private void OnImageTapped(object sender, TappedRoutedEventArgs e)
     {
         var image = (sender as Image).DataContext as BiliImage;
         if (image is not null)

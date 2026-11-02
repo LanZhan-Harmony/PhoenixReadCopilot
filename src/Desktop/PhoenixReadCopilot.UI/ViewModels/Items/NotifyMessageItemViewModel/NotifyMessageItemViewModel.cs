@@ -1,3 +1,4 @@
+using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using PhoenixReadCopilot.UI.Strings;
@@ -18,10 +19,7 @@ public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMes
     public NotifyMessageItemViewModel(NotifyMessage data)
         : base(data)
     {
-        PublishRelativeTime = data.PublishTime.Humanize(
-            default,
-            new System.Globalization.CultureInfo("zh-CN")
-        );
+        PublishRelativeTime = data.PublishTime.Humanize(default, new CultureInfo("zh-CN"));
         FirstUserAvatar = data.Users?.First().Avatar.Uri;
         FirstUserName = data.Users?.First().Name;
         IsMultipleUsers = data.Users.Count > 1;

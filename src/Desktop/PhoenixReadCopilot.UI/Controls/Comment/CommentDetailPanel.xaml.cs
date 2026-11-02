@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
@@ -62,13 +63,13 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     CommentScrollView.ExtentHeight
-                    - CommentScrollView.ViewportHeight
-                    - CommentScrollView.VerticalOffset
+                        - CommentScrollView.ViewportHeight
+                        - CommentScrollView.VerticalOffset
                     <= 240
                 )
                 {
@@ -89,7 +90,7 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
     private void CheckCommentCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)

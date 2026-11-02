@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
+using Richasy.BiliKernel.Bili;
 using Richasy.BiliKernel.Bili.Authorization;
 using WinUIEx;
 
@@ -16,9 +17,12 @@ namespace PhoenixReadCopilot.UI.Forms;
 public sealed partial class WebSignInWindow : WindowEx
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
-    private readonly StartupPageViewModel _startupViewModel = Ioc.Default.GetRequiredService<StartupPageViewModel>();
-    private readonly IBiliTokenResolver _tokenResolver = Ioc.Default.GetRequiredService<IBiliTokenResolver>();
-    private readonly IAuthenticationService _authService = Ioc.Default.GetRequiredService<IAuthenticationService>();
+    private readonly StartupPageViewModel _startupViewModel =
+        Ioc.Default.GetRequiredService<StartupPageViewModel>();
+    private readonly IBiliTokenResolver _tokenResolver =
+        Ioc.Default.GetRequiredService<IBiliTokenResolver>();
+    private readonly IAuthenticationService _authService =
+        Ioc.Default.GetRequiredService<IAuthenticationService>();
     private CancellationTokenSource _cancellationTokenSource = new();
 
     /// <summary>
@@ -90,14 +94,10 @@ public sealed partial class WebSignInWindow : WindowEx
             var cookieDict = cookies.Select(p => (p.Name, p.Value)).ToDictionary();
             if (cookieDict.Count > 0)
             {
-                await _authService
-                    .SignInAsync(
-                        new Richasy.BiliKernel.Bili.AuthorizeExecutionSettings
-                        {
-                            Cookies = cookieDict,
-                        },
-                        _cancellationTokenSource.Token
-                    );
+                await _authService.SignInAsync(
+                    new AuthorizeExecutionSettings { Cookies = cookieDict },
+                    _cancellationTokenSource.Token
+                );
                 _cancellationTokenSource = default;
                 Close();
             }

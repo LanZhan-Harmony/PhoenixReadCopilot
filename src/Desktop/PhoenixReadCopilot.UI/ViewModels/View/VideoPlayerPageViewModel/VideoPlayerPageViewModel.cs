@@ -12,6 +12,7 @@ using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -117,11 +118,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             var initialPart =
                 FindInitialPart(default) ?? throw new Exception("无法找到视频的分集信息.");
             _part = initialPart;
-            _comments.Initialize(
-                AvId,
-                Richasy.BiliKernel.Models.CommentTargetType.Video,
-                Richasy.BiliKernel.Models.CommentSortType.Hot
-            );
+            _comments.Initialize(AvId, CommentTargetType.Video, CommentSortType.Hot);
             LoadInitialProgress();
             InitializeSections();
             InitializeLoops();

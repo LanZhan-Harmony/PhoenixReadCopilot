@@ -4,6 +4,7 @@ using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.Graphics.Canvas;
 using Microsoft.UI.Xaml;
 using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace WinUIKernel.Share.Base;
 
@@ -118,24 +119,24 @@ public abstract partial class ImageExBase
         var stats = GetRequestStats();
         var pressure = CheckConnectionPoolPressure();
 
-        System.Diagnostics.Debug.WriteLine("========== ImageEx 连接池诊断 ==========");
-        System.Diagnostics.Debug.WriteLine($"连接池状态: {pressure.Message}");
-        System.Diagnostics.Debug.WriteLine($"去重缓存: {stats.PendingUrls} 个 URL");
-        System.Diagnostics.Debug.WriteLine("--- 累计统计 ---");
-        System.Diagnostics.Debug.WriteLine($"总启动: {stats.TotalStarted}");
-        System.Diagnostics.Debug.WriteLine($"总完成: {stats.TotalCompleted}");
-        System.Diagnostics.Debug.WriteLine($"总失败: {stats.TotalFailed}");
-        System.Diagnostics.Debug.WriteLine($"总取消: {stats.TotalCancelled}");
-        System.Diagnostics.Debug.WriteLine($"缓存命中: {stats.FromCache}");
-        System.Diagnostics.Debug.WriteLine($"请求去重: {stats.Deduplicated}");
-        System.Diagnostics.Debug.WriteLine($"本地解码: {stats.LocalDecodes}");
+        Debug.WriteLine("========== ImageEx 连接池诊断 ==========");
+        Debug.WriteLine($"连接池状态: {pressure.Message}");
+        Debug.WriteLine($"去重缓存: {stats.PendingUrls} 个 URL");
+        Debug.WriteLine("--- 累计统计 ---");
+        Debug.WriteLine($"总启动: {stats.TotalStarted}");
+        Debug.WriteLine($"总完成: {stats.TotalCompleted}");
+        Debug.WriteLine($"总失败: {stats.TotalFailed}");
+        Debug.WriteLine($"总取消: {stats.TotalCancelled}");
+        Debug.WriteLine($"缓存命中: {stats.FromCache}");
+        Debug.WriteLine($"请求去重: {stats.Deduplicated}");
+        Debug.WriteLine($"本地解码: {stats.LocalDecodes}");
 
         if (pressure.IsUnderPressure)
         {
-            System.Diagnostics.Debug.WriteLine("⚠️ 建议：考虑调用 CancelAllLoading() 释放资源");
+            Debug.WriteLine("⚠️ 建议：考虑调用 CancelAllLoading() 释放资源");
         }
 
-        System.Diagnostics.Debug.WriteLine("==========================================");
+        Debug.WriteLine("==========================================");
 #endif
     }
 
@@ -804,7 +805,7 @@ public abstract partial class ImageExBase
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -820,7 +821,7 @@ public abstract partial class ImageExBase
     /// 解码完成后将位图转移到共享设备，这样可以真正实现并行解码.
     /// </remarks>
     private static async Task<CanvasBitmap?> LoadBitmapAsync(
-        Windows.Storage.Streams.IRandomAccessStream stream,
+        IRandomAccessStream stream,
         CancellationToken cancellationToken
     )
     {

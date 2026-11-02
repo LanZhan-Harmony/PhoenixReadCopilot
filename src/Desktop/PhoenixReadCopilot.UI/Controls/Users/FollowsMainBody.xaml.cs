@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -41,13 +42,13 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     UserScrollView.ExtentHeight
-                    - UserScrollView.ViewportHeight
-                    - UserScrollView.VerticalOffset
+                        - UserScrollView.ViewportHeight
+                        - UserScrollView.VerticalOffset
                     <= 240
                 )
                 {
@@ -68,7 +69,7 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
     private void CheckUserCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)

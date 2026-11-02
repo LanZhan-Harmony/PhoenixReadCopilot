@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -19,7 +20,8 @@ public abstract class VideoCardPresenter : LayoutUserControlBase<VideoItemViewMo
 /// </summary>
 public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewModel>
 {
-    private static readonly IResourceToolkit _resourceToolkit = Ioc.Default.GetRequiredService<IResourceToolkit>();
+    private static readonly IResourceToolkit _resourceToolkit =
+        Ioc.Default.GetRequiredService<IResourceToolkit>();
     private CardControl _rootCard;
 
     /// <summary>
@@ -70,10 +72,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.PlayInPrivate,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.EyeOff
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
             Tag = nameof(ViewModel.PlayInPrivateCommand),
         };
     }
@@ -83,10 +82,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.EnterUserSpace,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Person
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -157,10 +153,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -170,10 +163,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.CopyVideoUrl,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Copy
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
             Tag = nameof(ViewModel.CopyUriCommand),
         };
     }
@@ -183,10 +173,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -197,13 +184,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         {
             CreateContextFlyout();
             args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(
-                this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
-                {
-                    Position = point
-                }
-            );
+            ContextFlyout.ShowAt(this, new FlyoutShowOptions { Position = point });
         }
 
         RelocateCommands();
@@ -212,10 +193,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout()
-        {
-            ShouldConstrainToRootBounds = false
-        };
+        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePrivatePlayItem());
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
         if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.IsUserValid)

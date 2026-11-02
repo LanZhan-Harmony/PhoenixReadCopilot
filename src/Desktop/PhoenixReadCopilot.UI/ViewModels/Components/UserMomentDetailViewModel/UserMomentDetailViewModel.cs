@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -78,7 +79,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         _offset = default;
         IsEmpty = false;
         _preventLoadMore = false;
-        Items = new System.Collections.ObjectModel.ObservableCollection<MomentItemViewModel>();
+        Items = new ObservableCollection<MomentItemViewModel>();
     }
 
     [RelayCommand]

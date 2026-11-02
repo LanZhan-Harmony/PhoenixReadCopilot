@@ -12,6 +12,7 @@ using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Models.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Globalization;
+using Windows.System;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -169,8 +170,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     [RelayCommand]
-    private async Task OpenInBroswerAsync() =>
-        await Windows.System.Launcher.LaunchUriAsync(GetWebUri()).AsTask();
+    private async Task OpenInBroswerAsync() => await Launcher.LaunchUriAsync(GetWebUri()).AsTask();
 
     [RelayCommand]
     private void OpenInNewWindow() => new PlayerWindow().OpenVideo(new VideoSnapshot(Data));

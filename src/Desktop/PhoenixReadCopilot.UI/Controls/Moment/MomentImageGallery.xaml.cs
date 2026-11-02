@@ -1,5 +1,6 @@
 using System.Drawing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Forms;
 using Richasy.BiliKernel.Models.Appearance;
 using WinUIKernel.Share.Base;
@@ -37,7 +38,7 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
 
     protected override void OnControlUnloaded() => ImageRepeater.ItemsSource = default;
 
-    private void OnImageTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+    private void OnImageTapped(object sender, TappedRoutedEventArgs e)
     {
         e.Handled = true;
         var image = (sender as Image).Tag as BiliImage;

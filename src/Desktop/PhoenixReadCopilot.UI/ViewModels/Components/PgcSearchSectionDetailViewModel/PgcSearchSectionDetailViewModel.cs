@@ -16,13 +16,13 @@ public sealed partial class PgcSearchSectionDetailViewModel
     : ViewModelBase,
         ISearchSectionDetailViewModel
 {
-    private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
+    private readonly DispatcherQueue _dispatcherQueue;
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcSearchSectionDetailViewModel"/> class.
     /// </summary>
     public PgcSearchSectionDetailViewModel(
         ISearchService service,
-        Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue,
+        DispatcherQueue dispatcherQueue,
         ILogger<PgcSearchSectionDetailViewModel> logger
     )
     {

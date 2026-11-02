@@ -1,3 +1,4 @@
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Globalization;
@@ -23,7 +24,7 @@ public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInform
         : base(info)
     {
         var firstLan = ApplicationLanguages.Languages[0];
-        var culture = new System.Globalization.CultureInfo(firstLan);
+        var culture = new CultureInfo(firstLan);
         var targetDay = DateTimeOffset.FromUnixTimeSeconds(info.TimeStamp).ToLocalTime();
         DayOfWeek = targetDay.ToString("ddd", culture);
         Date = info.Date;

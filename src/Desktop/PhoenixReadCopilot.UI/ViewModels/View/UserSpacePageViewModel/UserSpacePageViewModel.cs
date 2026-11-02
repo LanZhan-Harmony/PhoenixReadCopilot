@@ -11,6 +11,7 @@ using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -302,11 +303,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
 
         IsCommentsOpened = true;
-        CommentModule.Initialize(
-            moment.CommentId,
-            moment.CommentType!.Value,
-            Richasy.BiliKernel.Models.CommentSortType.Hot
-        );
+        CommentModule.Initialize(moment.CommentId, moment.CommentType!.Value, CommentSortType.Hot);
         CommentModule.RefreshCommand.Execute(default);
     }
 

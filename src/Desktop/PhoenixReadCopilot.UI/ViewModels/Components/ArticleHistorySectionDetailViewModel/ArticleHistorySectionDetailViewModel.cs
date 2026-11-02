@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -41,7 +42,7 @@ public sealed partial class ArticleHistorySectionDetailViewModel
     {
         IsEmpty = false;
         _isPreventLoadMore = false;
-        Items = new System.Collections.ObjectModel.ObservableCollection<ArticleItemViewModel>();
+        Items = new ObservableCollection<ArticleItemViewModel>();
         _offset = 0;
         await LoadItemsAsync();
     }
