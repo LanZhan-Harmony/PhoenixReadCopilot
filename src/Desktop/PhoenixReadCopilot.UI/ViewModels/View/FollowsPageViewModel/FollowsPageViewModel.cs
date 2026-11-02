@@ -14,8 +14,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
 {
-    private readonly DispatcherQueue _dispatcherQueue;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FollowsPageViewModel"/> class.
     /// </summary>

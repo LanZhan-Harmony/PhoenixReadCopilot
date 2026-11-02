@@ -15,9 +15,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class StartupPageViewModel : ViewModelBase
 {
-    private readonly IAppToolkit _appToolkit;
-    private readonly AppViewModel _appViewModel;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPageViewModel"/> class.
     /// </summary>

@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Models.Search;
@@ -14,6 +16,8 @@ public sealed partial class SearchBoxViewModel
 {
     private readonly ISearchService _searchService;
     private readonly ILogger<SearchBoxViewModel> _logger;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly AppSettings _settings;
     private readonly List<SearchRecommendItem> _recommendItems = new();
     private CancellationTokenSource? _cancellationTokenSource;
     private string _extraRegionId = string.Empty;

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -8,6 +9,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class GalleryPageViewModel
 {
+    private readonly AppViewModel _appViewModel;
+
     [ObservableProperty]
     public partial List<BiliImage>? Images { get; set; }
 

@@ -19,10 +19,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class HistoryPageViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryPageViewModel"/> class.
     /// </summary>

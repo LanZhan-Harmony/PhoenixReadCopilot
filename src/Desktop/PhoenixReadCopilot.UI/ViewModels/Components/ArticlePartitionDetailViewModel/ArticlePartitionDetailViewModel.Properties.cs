@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models;
@@ -19,6 +20,7 @@ public sealed partial class ArticlePartitionDetailViewModel
     private readonly Dictionary<string, int> _childPartitionOffsetCache = new();
     private readonly bool _isRecommendPartition;
     private readonly bool _isHotPartition;
+    private readonly DispatcherQueue _dispatcherQueue;
 
     private List<ArticleItemViewModel> _recommendCache;
     private int _recommendOffset;

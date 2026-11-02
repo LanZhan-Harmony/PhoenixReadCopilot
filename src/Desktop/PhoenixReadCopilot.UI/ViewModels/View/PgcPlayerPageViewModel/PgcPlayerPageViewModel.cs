@@ -19,10 +19,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
 {
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly PinnerViewModel _pinnerViewModel;
-    private readonly DispatcherQueue _dispatcherQueue;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerPageViewModel"/> class.
     /// </summary>

@@ -1,4 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Moment;
@@ -11,6 +15,11 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 public sealed partial class MomentPageViewModel
 {
     private readonly IMomentDiscoveryService _momentDiscoveryService;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly ISettingsService _settingsService;
+
+    private AppSettings _settings => _settingsService.Settings;
 
     [ObservableProperty]
     public partial List<IMomentSectionDetailViewModel> Sections { get; set; }

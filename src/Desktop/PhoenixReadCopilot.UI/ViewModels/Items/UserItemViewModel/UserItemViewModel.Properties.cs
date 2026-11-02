@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
@@ -7,6 +9,11 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class UserItemViewModel
 {
+    private static ILogger<UserItemViewModel>? _logger;
+
+    private static ILogger<UserItemViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<UserItemViewModel>>();
+
     [ObservableProperty]
     public partial bool IsFollowed { get; set; }
 

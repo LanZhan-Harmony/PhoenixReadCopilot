@@ -13,8 +13,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentProfile>
 {
-    private readonly Action<MomentInformation>? _showCommentAction;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentUperSectionViewModel"/> class.
     /// </summary>

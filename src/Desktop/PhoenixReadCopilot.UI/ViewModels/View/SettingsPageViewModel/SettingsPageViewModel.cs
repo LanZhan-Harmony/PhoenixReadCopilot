@@ -15,12 +15,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SettingsPageViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly IAppToolkit _appToolkit;
-    private readonly IFileToolkit _fileToolkit;
-    public AppSettings Settings;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPageViewModel"/> class.
     /// </summary>

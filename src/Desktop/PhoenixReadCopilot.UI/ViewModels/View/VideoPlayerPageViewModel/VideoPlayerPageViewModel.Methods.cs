@@ -1,3 +1,4 @@
+using System.Globalization;
 using Humanizer;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
@@ -5,7 +6,6 @@ using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.User;
-using System.Globalization;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -28,19 +28,14 @@ public sealed partial class VideoPlayerPageViewModel
         var relativeTime =
             DateTimeOffset.Now - view.Information.PublishTime > TimeSpan.FromDays(90)
                 ? view.Information.PublishTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                : view.Information.PublishTime.Humanize(
-                    default,
-                    new CultureInfo("zh-CN")
-                );
+                : view.Information.PublishTime.Humanize(default, new CultureInfo("zh-CN"));
         PublishRelativeTime = string.Format(Resources.AuthorPublishTime, relativeTime);
         Description = view.Information.GetExtensionIfNotNull<string>(
             VideoExtensionDataId.Description
         );
         IsFollow =
-            view.OwnerCommunity.Relation
-            != UserRelationStatus.Unfollow
-            && view.OwnerCommunity.Relation
-            != UserRelationStatus.Unknown;
+            view.OwnerCommunity.Relation != UserRelationStatus.Unfollow
+            && view.OwnerCommunity.Relation != UserRelationStatus.Unknown;
         IsInteractionVideo = view.IsInteractiveVideo;
         Tags = view.Tags.ToList();
         InitializeCommunityInformation(view.Information.CommunityInformation);
@@ -384,11 +379,7 @@ public sealed partial class VideoPlayerPageViewModel
     private void InitializeLoops()
     {
         var currentType = CurrentLoop;
-        var loops = new List<VideoLoopType>
-        {
-            VideoLoopType.None,
-            VideoLoopType.Single
-        };
+        var loops = new List<VideoLoopType> { VideoLoopType.None, VideoLoopType.Single };
         if (
             Sections.OfType<VideoPlayerPartSectionDetailViewModel>().Any()
             || _playlist is not null

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Comment;
@@ -15,6 +16,8 @@ public sealed partial class CommentMainViewModel
 {
     private readonly ICommentService _service;
     private readonly ILogger<CommentMainViewModel> _logger;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
 
     private bool _preventLoadMore;
     private CommentTargetType _targetType;

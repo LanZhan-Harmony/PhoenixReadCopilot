@@ -2,7 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Authorization;
+using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -14,6 +16,8 @@ public sealed partial class StartupPageViewModel
     private readonly ILogger<StartupPageViewModel> _logger;
     private readonly IAuthenticationService _authenticationService;
     private readonly DispatcherQueue _dispatcherQueue;
+    private readonly IAppToolkit _appToolkit;
+    private readonly AppViewModel _appViewModel;
 
     private CancellationTokenSource? _cancellationTokenSource;
 

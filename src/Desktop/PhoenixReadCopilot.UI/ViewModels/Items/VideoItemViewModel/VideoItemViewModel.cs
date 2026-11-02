@@ -1,5 +1,4 @@
 using System.Globalization;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -23,13 +22,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 {
-    private static ILogger<VideoItemViewModel>? _logger;
-    private static ILogger<VideoItemViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<VideoItemViewModel>>();
-
-    private readonly Action<VideoItemViewModel>? _removeAction;
-    private readonly VideoFavoriteFolder? _favFolder;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class.
     /// </summary>

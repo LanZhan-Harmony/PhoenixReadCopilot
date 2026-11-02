@@ -1,7 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Strings;
+using PhoenixReadCopilot.UI.ViewModels.Core;
+using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -10,6 +13,11 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SettingsPageViewModel
 {
+    private readonly AppViewModel _appViewModel;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly IAppToolkit _appToolkit;
+    private readonly IFileToolkit _fileToolkit;
+    public AppSettings Settings;
     private bool _isInitialized;
 
     /// <summary>

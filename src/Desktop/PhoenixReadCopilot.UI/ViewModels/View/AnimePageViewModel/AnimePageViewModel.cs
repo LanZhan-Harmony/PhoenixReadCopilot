@@ -18,10 +18,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
 {
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="AnimePageViewModel"/> class.
     /// </summary>

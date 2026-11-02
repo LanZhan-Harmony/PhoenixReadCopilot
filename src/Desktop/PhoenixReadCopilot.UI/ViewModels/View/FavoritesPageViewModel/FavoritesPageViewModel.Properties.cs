@@ -1,6 +1,9 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.Services;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 
@@ -13,6 +16,10 @@ public sealed partial class FavoritesPageViewModel
 {
     private readonly IFavoriteService _service;
     private readonly ILogger<FavoritesPageViewModel> _logger;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ISettingsService _settingsService;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly ILoggerFactory _loggerFactory;
 
     [ObservableProperty]
     public partial IFavoriteSectionDetailViewModel CurrentSection { get; set; }

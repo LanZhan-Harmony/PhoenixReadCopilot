@@ -16,11 +16,6 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentDetailViewModel"/> class.
     /// </summary>
-    private readonly DispatcherQueue _dispatcherQueue;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommentDetailViewModel"/> class.
-    /// </summary>
     public CommentDetailViewModel(
         CommentItemViewModel data,
         Action<CommentDetailViewModel> showMoreAction,

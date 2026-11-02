@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -17,11 +16,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class MomentPageViewModel : ViewModelBase
 {
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly ISettingsService _settingsService;
-    private AppSettings _settings => _settingsService.Settings;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentPageViewModel"/> class.
     /// </summary>

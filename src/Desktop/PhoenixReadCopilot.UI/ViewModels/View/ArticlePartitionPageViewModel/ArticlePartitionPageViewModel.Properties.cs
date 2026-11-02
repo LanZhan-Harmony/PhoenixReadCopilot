@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Article;
@@ -15,6 +16,8 @@ public sealed partial class ArticlePartitionPageViewModel
 {
     private readonly IArticleDiscoveryService _service;
     private readonly ILogger<ArticlePartitionPageViewModel> _logger;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
     private readonly Dictionary<Partition, ArticlePartitionDetailViewModel> _partitionCache = new();
 
     [ObservableProperty]

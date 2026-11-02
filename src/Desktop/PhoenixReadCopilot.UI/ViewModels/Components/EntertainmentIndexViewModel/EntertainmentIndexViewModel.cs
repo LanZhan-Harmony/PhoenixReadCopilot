@@ -17,11 +17,6 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     /// <summary>
     /// Initializes a new instance of the <see cref="EntertainmentIndexViewModel"/> class.
     /// </summary>
-    private readonly DispatcherQueue _dispatcherQueue;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EntertainmentIndexViewModel"/> class.
-    /// </summary>
     public EntertainmentIndexViewModel(
         PgcSectionType type,
         IEntertainmentDiscoveryService service,

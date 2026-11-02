@@ -16,11 +16,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
 {
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ISettingsService _settingsService;
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly ILoggerFactory _loggerFactory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageViewModel"/> class.
     /// </summary>

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Components;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models.Article;
 
@@ -14,6 +15,7 @@ public sealed partial class ArticleReaderPageViewModel
     private readonly IArticleDiscoveryService _discoveryService;
     private readonly IArticleOperationService _operationService;
     private readonly ILogger<ArticleReaderPageViewModel> _logger;
+    private readonly NavigationViewModel _navigationViewModel;
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }

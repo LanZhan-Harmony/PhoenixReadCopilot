@@ -16,9 +16,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelBase
 {
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticlePartitionPageViewModel"/> class.
     /// </summary>

@@ -19,11 +19,6 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticlePartitionDetailViewModel"/> class.
     /// </summary>
-    private readonly DispatcherQueue _dispatcherQueue;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ArticlePartitionDetailViewModel"/> class.
-    /// </summary>
     public ArticlePartitionDetailViewModel(
         PartitionViewModel data,
         IArticleDiscoveryService service,

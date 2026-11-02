@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
@@ -7,6 +9,12 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class SeasonItemViewModel
 {
+    private static ILogger<SeasonItemViewModel>? _logger;
+    private readonly Action<SeasonItemViewModel>? _removeAction;
+
+    private static ILogger<SeasonItemViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<SeasonItemViewModel>>();
+
     /// <summary>
     /// 标题.
     /// </summary>

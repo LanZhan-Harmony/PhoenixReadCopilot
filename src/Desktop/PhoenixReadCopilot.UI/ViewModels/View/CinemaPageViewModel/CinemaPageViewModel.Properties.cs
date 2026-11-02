@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Components;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -12,6 +14,9 @@ public sealed partial class CinemaPageViewModel
 {
     private readonly IEntertainmentDiscoveryService _service;
     private readonly ILogger<CinemaPageViewModel> _logger;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
 
     [ObservableProperty]
     public partial List<EntertainmentIndexViewModel>? Sections { get; set; }

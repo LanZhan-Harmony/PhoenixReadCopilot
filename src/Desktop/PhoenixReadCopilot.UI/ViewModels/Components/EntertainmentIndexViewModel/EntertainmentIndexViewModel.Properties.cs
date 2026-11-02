@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
@@ -14,6 +15,7 @@ public sealed partial class EntertainmentIndexViewModel
 {
     private readonly IEntertainmentDiscoveryService _service;
     private readonly ILogger<EntertainmentIndexViewModel> _logger;
+    private readonly DispatcherQueue _dispatcherQueue;
     private int _pageNumer;
 
     [ObservableProperty]

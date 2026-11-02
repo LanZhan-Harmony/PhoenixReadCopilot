@@ -16,8 +16,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class ArticleReaderPageViewModel : ViewModelBase
 {
-    private readonly NavigationViewModel _navigationViewModel;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleReaderPageViewModel"/> class.
     /// </summary>

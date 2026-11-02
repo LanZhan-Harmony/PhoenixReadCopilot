@@ -12,8 +12,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class FansPageViewModel : ViewModelBase
 {
-    private readonly DispatcherQueue _dispatcherQueue;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPageViewModel"/> class.
     /// </summary>

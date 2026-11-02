@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Helpers;
-using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using Richasy.BiliKernel.Bili.Moment;
 using Windows.ApplicationModel;
@@ -17,9 +16,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class NotificationViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
-    private readonly AppSettings Settings;
-
     public NotificationViewModel(
         IMomentDiscoveryService momentService,
         AppViewModel appViewModel,

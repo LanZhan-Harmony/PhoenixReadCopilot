@@ -17,11 +17,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
 {
-    private readonly AccountViewModel _accountViewModel;
-    private readonly AppViewModel _appViewModel;
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly ILoggerFactory _loggerFactory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePageViewModel"/> class.
     /// </summary>

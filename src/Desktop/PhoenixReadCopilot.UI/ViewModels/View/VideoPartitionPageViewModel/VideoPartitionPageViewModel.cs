@@ -13,8 +13,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBase
 {
-    private readonly ILoggerFactory _loggerFactory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionPageViewModel"/> class.
     /// </summary>

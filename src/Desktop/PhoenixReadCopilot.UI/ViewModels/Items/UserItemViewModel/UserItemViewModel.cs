@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
@@ -16,8 +15,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
 {
-    private static ILogger<UserItemViewModel>? _logger;
-    private static ILogger<UserItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<UserItemViewModel>>();
     /// <summary>
     /// Initializes a new instance of the <see cref="UserItemViewModel"/> class.
     /// </summary>
