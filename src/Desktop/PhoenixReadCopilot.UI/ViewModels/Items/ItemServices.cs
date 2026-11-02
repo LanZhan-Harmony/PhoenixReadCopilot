@@ -4,7 +4,6 @@ using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.Moment;
@@ -17,47 +16,41 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 internal static class ItemServices
 {
-    public static NavigationViewModel Navigation =>
-        field ??= Ioc.Default.GetRequiredService<NavigationViewModel>();
+    public static NavigationViewModel Navigation =
+        Ioc.Default.GetRequiredService<NavigationViewModel>();
 
-    public static AppViewModel App => field ??= Ioc.Default.GetRequiredService<AppViewModel>();
+    public static AppViewModel App = Ioc.Default.GetRequiredService<AppViewModel>();
 
-    public static PinnerViewModel Pinner =>
-        field ??= Ioc.Default.GetRequiredService<PinnerViewModel>();
+    public static PinnerViewModel Pinner = Ioc.Default.GetRequiredService<PinnerViewModel>();
 
-    public static AppSettings Settings =>
-        Ioc.Default.GetRequiredService<ISettingsService>().Settings;
+    public static AppSettings Settings = Ioc
+        .Default.GetRequiredService<ISettingsService>()
+        .Settings;
 
-    public static IViewLaterService ViewLater =>
-        field ??= Ioc.Default.GetRequiredService<IViewLaterService>();
+    public static IViewLaterService ViewLater = Ioc.Default.GetRequiredService<IViewLaterService>();
 
-    public static IViewHistoryService ViewHistory =>
-        field ??= Ioc.Default.GetRequiredService<IViewHistoryService>();
+    public static IViewHistoryService ViewHistory =
+        Ioc.Default.GetRequiredService<IViewHistoryService>();
 
-    public static IFavoriteService Favorite =>
-        field ??= Ioc.Default.GetRequiredService<IFavoriteService>();
+    public static IFavoriteService Favorite = Ioc.Default.GetRequiredService<IFavoriteService>();
 
-    public static IRelationshipService Relationship =>
-        field ??= Ioc.Default.GetRequiredService<IRelationshipService>();
+    public static IRelationshipService Relationship =
+        Ioc.Default.GetRequiredService<IRelationshipService>();
 
-    public static IEntertainmentDiscoveryService Entertainment =>
-        field ??= Ioc.Default.GetRequiredService<IEntertainmentDiscoveryService>();
+    public static IEntertainmentDiscoveryService Entertainment =
+        Ioc.Default.GetRequiredService<IEntertainmentDiscoveryService>();
 
-    public static IMomentOperationService MomentOperation =>
-        field ??= Ioc.Default.GetRequiredService<IMomentOperationService>();
+    public static IMomentOperationService MomentOperation =
+        Ioc.Default.GetRequiredService<IMomentOperationService>();
 
-    public static IBiliTokenResolver TokenResolver =>
-        field ??= Ioc.Default.GetRequiredService<IBiliTokenResolver>();
+    public static IBiliTokenResolver TokenResolver =
+        Ioc.Default.GetRequiredService<IBiliTokenResolver>();
 
-    public static AccountViewModel Account =>
-        field ??= Ioc.Default.GetRequiredService<AccountViewModel>();
+    public static AccountViewModel Account = Ioc.Default.GetRequiredService<AccountViewModel>();
 
-    public static IMomentDiscoveryService MomentDiscovery =>
-        field ??= Ioc.Default.GetRequiredService<IMomentDiscoveryService>();
+    public static IMomentDiscoveryService MomentDiscovery =
+        Ioc.Default.GetRequiredService<IMomentDiscoveryService>();
 
-    public static DispatcherQueue DispatcherQueue =>
-        field ??= Ioc.Default.GetRequiredService<DispatcherQueue>();
-
-    public static MomentPageViewModel MomentPage =>
-        field ??= Ioc.Default.GetRequiredService<MomentPageViewModel>();
+    public static DispatcherQueue DispatcherQueue =
+        Ioc.Default.GetRequiredService<DispatcherQueue>();
 }

@@ -68,8 +68,8 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
             {
                 if (
                     MomentScrollView.ExtentHeight
-                        - MomentScrollView.ViewportHeight
-                        - MomentScrollView.VerticalOffset
+                    - MomentScrollView.ViewportHeight
+                    - MomentScrollView.VerticalOffset
                     <= 240
                 )
                 {

@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
@@ -57,11 +56,4 @@ public sealed partial class ArticlePartitionSideBody : ArticlePartitionSideBodyB
 /// 文章分区侧边栏基类.
 /// </summary>
 public abstract class ArticlePartitionSideBodyBase
-    : LayoutUserControlBase<ArticlePartitionPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ArticlePartitionSideBodyBase"/> class.
-    /// </summary>
-    protected ArticlePartitionSideBodyBase() =>
-        ViewModel = Ioc.Default.GetRequiredService<ArticlePartitionPageViewModel>();
-}
+    : LayoutUserControlBase<ArticlePartitionPageViewModel> { }

@@ -197,11 +197,11 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
                     var folderVM =
                         folder.IsUgcSeason == true
                             ? (IFavoriteSectionDetailViewModel)
-                                new UgcSeasonFavoriteSectionDetailViewModel(
-                                    folder,
-                                    _service,
-                                    _loggerFactory.CreateLogger<UgcSeasonFavoriteSectionDetailViewModel>()
-                                )
+                            new UgcSeasonFavoriteSectionDetailViewModel(
+                                folder,
+                                _service,
+                                _loggerFactory.CreateLogger<UgcSeasonFavoriteSectionDetailViewModel>()
+                            )
                             : new VideoFavoriteSectionDetailViewModel(
                                 folder,
                                 _service,

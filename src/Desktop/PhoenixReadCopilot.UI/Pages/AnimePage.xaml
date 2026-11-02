@@ -62,7 +62,7 @@
             Height="1"
             HorizontalAlignment="Stretch"
             Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
-        <pgc:AnimeSideHeader Margin="0,0,-6,0"
+        <pgc:AnimeSideHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" Margin="0,0,-6,0"
                 Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
         <ContentControl
             Grid.Row="2"
@@ -71,7 +71,7 @@
             ContentTemplateSelector="{StaticResource SideBodySelector}"
             Style="{StaticResource AppContentControlStyle}"
             Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
-        <pgc:AnimeMainHeader
+        <pgc:AnimeMainHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}"
             Grid.Column="2"
             Margin="-6,0,0,0"
             VerticalAlignment="Center"/>

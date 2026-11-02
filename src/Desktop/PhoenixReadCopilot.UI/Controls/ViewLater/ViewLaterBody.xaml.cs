@@ -46,8 +46,8 @@ public sealed partial class ViewLaterBody : ViewLaterPageControlBase
             {
                 if (
                     VideoScrollView.ExtentHeight
-                        - VideoScrollView.ViewportHeight
-                        - VideoScrollView.VerticalOffset
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
                     <= 240
                 )
                 {

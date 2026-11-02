@@ -6,9 +6,7 @@ using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
 using PhoenixReadCopilot.UI.Strings;
-using Richasy.BiliKernel.Bili.Authorization;
 using Windows.Media.Playback;
-using Windows.Storage;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;

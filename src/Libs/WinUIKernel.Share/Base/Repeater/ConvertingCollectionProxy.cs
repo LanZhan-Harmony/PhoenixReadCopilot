@@ -204,6 +204,7 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
     }
 
     #region ObservableCollection overrides
+
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     protected override void InsertItem(int index, T item)
     {
@@ -230,5 +231,6 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
         throw new NotImplementedException("Cannot set items in ConvertingCollectionProxy");
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+
     #endregion
 }

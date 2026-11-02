@@ -68,8 +68,8 @@ public sealed partial class UgcFavoriteBody : UgcFavoriteControlBase
             {
                 if (
                     VideoScrollView.ExtentHeight
-                        - VideoScrollView.ViewportHeight
-                        - VideoScrollView.VerticalOffset
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
                     <= 240
                 )
                 {

@@ -29,7 +29,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <history:HistoryHeader/>
+        <history:HistoryHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}"/>
         <Border Grid.Row="1"
                 Height="1"
                 HorizontalAlignment="Stretch"
@@ -39,6 +39,6 @@
                         ContentTemplateSelector="{StaticResource TemplateSelector}"
                         Style="{StaticResource AppContentControlStyle}"
                         Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
-        <history:HistoryVideoSearchSection Grid.Row="2" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}"/>
+        <history:HistoryVideoSearchSection Grid.Row="2" ViewModel="{x:Bind ViewModel, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}"/>
     </Grid>
 </local:HistoryPageBase>

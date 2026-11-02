@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -32,6 +33,24 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         _navigationViewModel = navigationViewModel;
         _settings = settingsService.Settings;
         _logger = logger;
+        _navigationViewModel.OverlayNavigated += OnOverlayNavigated;
+    }
+
+    private void OnOverlayNavigated(object? sender, Type sourcePageType)
+    {
+        if (sourcePageType == typeof(UserSpacePage))
+        {
+            SetExtraRegion("space", Resources.UserSpace);
+        }
+        else if (sourcePageType == typeof(HistoryPage))
+        {
+            SetExtraRegion("history", Resources.ViewHistory);
+        }
+        else
+        {
+            SetExtraRegion(string.Empty, string.Empty);
+            Keyword = string.Empty;
+        }
     }
 
     /// <summary>

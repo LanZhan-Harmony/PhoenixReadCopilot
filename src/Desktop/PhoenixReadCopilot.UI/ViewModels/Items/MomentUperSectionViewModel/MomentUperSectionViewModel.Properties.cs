@@ -1,6 +1,6 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Moment;
 
@@ -13,7 +13,8 @@ public sealed partial class MomentUperSectionViewModel
 {
     private static IMomentDiscoveryService Service => ItemServices.MomentDiscovery;
     private static ILogger<MomentUperSectionViewModel>? _logger;
-    private static ILogger<MomentUperSectionViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentUperSectionViewModel>>();
+    private static ILogger<MomentUperSectionViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentUperSectionViewModel>>();
     private bool _preventLoadMore;
     private string? _offset;
     private string? _baseline;

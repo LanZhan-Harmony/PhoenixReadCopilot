@@ -46,8 +46,8 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
             {
                 if (
                     UserScrollView.ExtentHeight
-                        - UserScrollView.ViewportHeight
-                        - UserScrollView.VerticalOffset
+                    - UserScrollView.ViewportHeight
+                    - UserScrollView.VerticalOffset
                     <= 240
                 )
                 {

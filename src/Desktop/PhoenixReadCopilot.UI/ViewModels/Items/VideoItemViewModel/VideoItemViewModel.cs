@@ -1,5 +1,5 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using System.Globalization;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -9,8 +9,6 @@ using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
-using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Globalization;
@@ -25,7 +23,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 {
     private static ILogger<VideoItemViewModel>? _logger;
-    private static ILogger<VideoItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<VideoItemViewModel>>();
+    private static ILogger<VideoItemViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<VideoItemViewModel>>();
 
     private readonly Action<VideoItemViewModel>? _removeAction;
     private readonly VideoFavoriteFolder? _favFolder;
@@ -78,27 +77,26 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         var preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
-            ItemServices.Navigation
-                .NavigateToOver(typeof(WebPlayerPage), GetWebUri().ToString());
+            ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), GetWebUri().ToString());
             return;
         }
 
-        ItemServices.Navigation
-            .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data));
+        ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data));
     }
 
     [RelayCommand]
     private void PlayInPrivate() =>
-        ItemServices.Navigation
-            .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data, true));
+        ItemServices.Navigation.NavigateToOver(
+            typeof(VideoPlayerPage),
+            new VideoSnapshot(Data, true)
+        );
 
     [RelayCommand]
     private void ShowUserSpace()
     {
         if (Data.Publisher?.User is not null)
         {
-            ItemServices.Navigation
-                .NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);
+            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);
         }
     }
 
@@ -108,14 +106,14 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         try
         {
             await ItemServices.ViewLater.AddAsync(Data.Identifier.Id);
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.AddViewLaterSucceed, InfoType.Success)
+            );
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "添加稍后再看失败");
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
 
@@ -130,10 +128,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             Logger.LogError(ex, "移除稍后再看视频失败");
-            ItemServices.App
-                .ShowTipCommand.Execute(
-                    (Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
-                );
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
+            );
         }
     }
 
@@ -148,8 +145,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             Logger.LogError(ex, "移除历史记录视频失败");
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.FailedToRemoveVideoFromHistory, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.FailedToRemoveVideoFromHistory, InfoType.Error)
+            );
         }
     }
 
@@ -164,10 +162,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             Logger.LogError(ex, "移除收藏视频失败");
-            ItemServices.App
-                .ShowTipCommand.Execute(
-                    (Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
-                );
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
+            );
         }
     }
 

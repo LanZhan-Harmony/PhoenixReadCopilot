@@ -58,9 +58,9 @@
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
 
-        <search:SearchHeader Grid.ColumnSpan="3"/>
+        <search:SearchHeader Grid.ColumnSpan="3" ViewModel="{x:Bind ViewModel, Mode=OneWay}"/>
 
-        <search:SearchSideBody Grid.Row="2"
+        <search:SearchSideBody Grid.Row="2" ViewModel="{x:Bind ViewModel, Mode=OneWay}"
                                Margin="0,0,-6,0"
                                Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
 

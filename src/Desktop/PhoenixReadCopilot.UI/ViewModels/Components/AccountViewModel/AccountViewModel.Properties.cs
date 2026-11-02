@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Bili.Authorization;
+using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;

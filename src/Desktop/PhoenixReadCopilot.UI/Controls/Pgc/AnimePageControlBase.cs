@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using PhoenixReadCopilot.UI.ViewModels.View;
+﻿using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Pgc;
@@ -7,10 +6,4 @@ namespace PhoenixReadCopilot.UI.Controls.Pgc;
 /// <summary>
 /// 动漫页面控件基类.
 /// </summary>
-public abstract class AnimePageControlBase : LayoutUserControlBase<AnimePageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AnimePageControlBase"/> class.
-    /// </summary>
-    protected AnimePageControlBase() => ViewModel = Ioc.Default.GetRequiredService<AnimePageViewModel>();
-}
+public abstract class AnimePageControlBase : LayoutUserControlBase<AnimePageViewModel> { }

@@ -1,13 +1,12 @@
-using PhoenixReadCopilot.UI.ViewModels.Items;
 using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
+using PhoenixReadCopilot.UI.ViewModels.Items;
 using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Toolkits;

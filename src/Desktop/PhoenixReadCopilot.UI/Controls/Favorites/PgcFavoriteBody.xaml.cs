@@ -68,8 +68,8 @@ public sealed partial class PgcFavoriteBody : PgcFavoriteControlBase
             {
                 if (
                     SeasonScrollView.ExtentHeight
-                        - SeasonScrollView.ViewportHeight
-                        - SeasonScrollView.VerticalOffset
+                    - SeasonScrollView.ViewportHeight
+                    - SeasonScrollView.VerticalOffset
                     <= 240
                 )
                 {

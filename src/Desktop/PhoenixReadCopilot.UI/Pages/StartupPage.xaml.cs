@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -14,6 +14,7 @@ namespace PhoenixReadCopilot.UI.Pages;
 public sealed partial class StartupPage : StartupPageBase
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPage"/> class.
     /// </summary>

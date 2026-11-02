@@ -6,9 +6,6 @@ using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
-using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
@@ -134,8 +131,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                         default,
                         default
                     );
-                    ItemServices.Navigation
-                        .NavigateToOver(typeof(PgcPlayerPage), identifier);
+                    ItemServices.Navigation.NavigateToOver(typeof(PgcPlayerPage), identifier);
                 }
                 else
                 {
@@ -219,14 +215,14 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         try
         {
             await ItemServices.ViewLater.AddAsync(aid);
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.AddViewLaterSucceed, InfoType.Success)
+            );
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "添加稍后再看失败");
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
 

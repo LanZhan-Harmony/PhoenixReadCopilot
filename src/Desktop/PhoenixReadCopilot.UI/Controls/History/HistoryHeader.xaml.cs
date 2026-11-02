@@ -66,7 +66,11 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
             foreach (var item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem() { Text = GetSectionName(item.Type), Tag = item }
+                    new SelectorBarItem()
+                    {
+                        Text = GetSectionName(item.Type),
+                        Tag = item
+                    }
                 );
             }
         }

@@ -44,7 +44,10 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Globe
+            },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -54,7 +57,10 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
+            Icon = new FluentIcons.WinUI.SymbolIcon
+            {
+                Symbol = FluentIcons.Common.Symbol.Pin
+            },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -67,7 +73,10 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
             args.TryGetPosition(this, out var point);
             ContextFlyout.ShowAt(
                 this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
+                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions
+                {
+                    Position = point
+                }
             );
         }
 

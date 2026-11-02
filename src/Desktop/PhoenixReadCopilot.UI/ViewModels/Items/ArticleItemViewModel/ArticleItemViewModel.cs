@@ -1,5 +1,5 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using System.Globalization;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -7,8 +7,6 @@ using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Article;
 using Windows.Globalization;
 using WinUIKernel.Share.Base;
@@ -22,7 +20,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformation>
 {
     private static ILogger<ArticleItemViewModel>? _logger;
-    private static ILogger<ArticleItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<ArticleItemViewModel>>();
+    private static ILogger<ArticleItemViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<ArticleItemViewModel>>();
 
     private readonly Action<ArticleItemViewModel>? _removeAction;
 
@@ -85,8 +84,9 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
         catch (Exception ex)
         {
             Logger.LogError(ex, "移除历史记录时失败");
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.FailedToRemoveVideoFromHistory, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.FailedToRemoveVideoFromHistory, InfoType.Error)
+            );
         }
     }
 
