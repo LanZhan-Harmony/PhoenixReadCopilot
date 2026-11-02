@@ -55,9 +55,8 @@ public sealed partial class PinnerViewModel : ViewModelBase
     private async Task InitializeAsync()
     {
         var currentUserId = _tokenResolver.GetToken().UserId;
-        var data = await _fileToolkit.ReadLocalDataAsync(
+        var data = await _fileToolkit.ReadLocalDataAsync<List<PinItem>>(
             string.Format(PinFileName, currentUserId),
-            GlobalSerializeContext.Default.ListPinItem,
             "[]",
             PinFolderName
         );
@@ -93,10 +92,9 @@ public sealed partial class PinnerViewModel : ViewModelBase
 
     private async Task SaveDataAsync()
     {
-        await _fileToolkit.WriteLocalDataAsync(
+        await _fileToolkit.WriteLocalDataAsync<List<PinItem>>(
             string.Format(PinFileName, _tokenResolver.GetToken().UserId),
             Items.ToList(),
-            GlobalSerializeContext.Default.ListPinItem,
             PinFolderName
         );
         IsEmpty = Items.Count == 0;

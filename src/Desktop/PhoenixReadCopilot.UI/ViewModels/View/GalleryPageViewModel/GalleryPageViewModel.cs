@@ -1,15 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.Storage.Pickers;
 using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.System.UserProfile;
-using WinRT.Interop;
-using WinUIEx;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -96,27 +94,33 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
         var extension = Path.GetExtension(fileName);
-        var savePicker = new FileSavePicker
+        var savePicker = new FileSavePicker(_appViewModel.ActivatedWindow.AppWindow.Id)
         {
             SuggestedStartLocation = PickerLocationId.PicturesLibrary,
             SuggestedFileName = fileName,
         };
 
         savePicker.FileTypeChoices.Add($"{extension.TrimStart('.').ToUpper()} 图片", [extension]);
-        InitializeWithWindow.Initialize(
-            savePicker,
-            _appViewModel.ActivatedWindow.GetWindowHandle()
-        );
-        var file = await savePicker.PickSaveFileAsync();
+        PickFileResult? file = await savePicker.PickSaveFileAsync();
         if (file is null)
         {
             return;
         }
 
-        using var stream = await file.OpenStreamForWriteAsync();
         using var client = new HttpClient();
-        using var response = await client.GetAsync(SelectedImage.SourceUri);
-        await response.Content.CopyToAsync(stream);
+        using var response = await client.GetAsync(
+            SelectedImage.SourceUri,
+            HttpCompletionOption.ResponseHeadersRead
+        );
+        await using var fileStream = new FileStream(
+            file.Path,
+            FileMode.Create,
+            FileAccess.Write,
+            FileShare.None,
+            81920,
+            FileOptions.Asynchronous
+        );
+        await response.Content.CopyToAsync(fileStream);
         _appViewModel.ShowTipCommand.Execute((Resources.Saved, InfoType.Success));
     }
 
@@ -132,12 +136,23 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
         var tempFolder = Path.Combine(PathHelper.TempFolderPath, "TempImages");
         Directory.CreateDirectory(tempFolder);
-        var folder = await StorageFolder.GetFolderFromPathAsync(tempFolder);
-        var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-        using var stream = await file.OpenStreamForWriteAsync();
+        var filePath = Path.Combine(tempFolder, fileName);
         using var client = new HttpClient();
-        using var response = await client.GetAsync(SelectedImage.SourceUri);
-        await response.Content.CopyToAsync(stream);
+        using var response = await client.GetAsync(
+            SelectedImage.SourceUri,
+            HttpCompletionOption.ResponseHeadersRead
+        );
+        await using var fileStream = new FileStream(
+            filePath,
+            FileMode.Create,
+            FileAccess.Write,
+            FileShare.None,
+            81920,
+            FileOptions.Asynchronous
+        );
+        await response.Content.CopyToAsync(fileStream);
+
+        var file = await StorageFile.GetFileFromPathAsync(filePath);
         var result = isWallPaper
             ? await profileSettings.TrySetWallpaperImageAsync(file)
             : await profileSettings.TrySetLockScreenImageAsync(file);

@@ -1,9 +1,6 @@
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
+using Microsoft.UI;
+using Microsoft.Windows.Storage.Pickers;
 using PhoenixReadCopilot.UI.Helpers;
-using Windows.Storage;
-using Windows.Storage.Pickers;
-using WinRT.Interop;
 using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Toolkits;
@@ -26,79 +23,91 @@ internal sealed class FileToolkit : IFileToolkit
     }
 
     /// <inheritdoc/>
-    public async Task<StorageFile> PickFileAsync(string extension, object windowInstance)
-    {
-        var picker = new FileOpenPicker();
-        InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(windowInstance));
-        foreach (var ext in extension.Split(',', StringSplitOptions.RemoveEmptyEntries))
-        {
-            picker.FileTypeFilter.Add(ext);
-        }
-
-        picker.SuggestedStartLocation = PickerLocationId.Desktop;
-        return await picker.PickSingleFileAsync().AsTask();
-    }
-
-    /// <inheritdoc/>
-    public async Task<IReadOnlyList<StorageFile>?> PickMultipleFileAsync(
-        string extension,
-        object windowInstance
-    )
+    public async Task<string?> PickFileAsync(string extension, WindowId windowId)
     {
         try
         {
-            var picker = new FileOpenPicker();
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(windowInstance));
-            foreach (var ext in extension.Split(',', StringSplitOptions.RemoveEmptyEntries))
+            FileOpenPicker picker = new(windowId);
+            foreach (string ext in extension.Split(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 picker.FileTypeFilter.Add(ext);
             }
 
             picker.SuggestedStartLocation = PickerLocationId.Desktop;
-            return await picker.PickMultipleFilesAsync().AsTask();
+            PickFileResult? result = await picker.PickSingleFileAsync();
+            return result?.Path;
         }
         catch (Exception)
         {
-            return default;
+            return null;
         }
     }
 
     /// <inheritdoc/>
-    public async Task<StorageFile?> SaveFileAsync(string extension, object windowInstance)
+    public async Task<IReadOnlyList<string>> PickMultipleFileAsync(string extension, WindowId windowId)
     {
         try
         {
-            var picker = new FileSavePicker();
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(windowInstance));
-            var exts = extension.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var ext in exts)
+            FileOpenPicker picker = new(windowId);
+            foreach (string ext in extension.Split(',', StringSplitOptions.RemoveEmptyEntries))
+            {
+                picker.FileTypeFilter.Add(ext);
+            }
+
+            picker.SuggestedStartLocation = PickerLocationId.Desktop;
+            IReadOnlyList<PickFileResult> results = await picker.PickMultipleFilesAsync();
+            return [.. results.Select(r => r.Path)];
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<string?> SaveFileAsync(string extension, WindowId windowId)
+    {
+        try
+        {
+            FileSavePicker picker = new(windowId);
+            string[] exts = extension.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            foreach (string ext in exts)
             {
                 picker.FileTypeChoices.Add(ext, [ext]);
             }
 
             picker.SuggestedStartLocation = PickerLocationId.Desktop;
-            return await picker.PickSaveFileAsync().AsTask();
+            PickFileResult? result = await picker.PickSaveFileAsync();
+            return result?.Path;
         }
         catch (Exception)
         {
-            return default;
+            return null;
         }
     }
 
     /// <inheritdoc/>
-    public async Task<StorageFolder> PickFolderAsync(object windowInstance)
+    public async Task<string?> PickFolderAsync(WindowId windowId)
     {
-        var picker = new FolderPicker();
-        InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(windowInstance));
-        picker.SuggestedStartLocation = PickerLocationId.Desktop;
-        picker.FileTypeFilter.Add("*");
-        return await picker.PickSingleFolderAsync().AsTask();
+        try
+        {
+            FolderPicker picker = new(windowId)
+            {
+                SuggestedStartLocation = PickerLocationId.Desktop,
+            };
+
+            PickFolderResult? result = await picker.PickSingleFolderAsync();
+            return result?.Path;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     /// <inheritdoc/>
     public async Task<T> ReadLocalDataAsync<T>(
         string fileName,
-        JsonTypeInfo<T> typeInfo,
         string defaultValue = "{}",
         string folderName = ""
     )
@@ -124,17 +133,12 @@ internal sealed class FileToolkit : IFileToolkit
         return (
             typeof(T) == typeof(string)
                 ? (T)content.Clone()
-                : JsonSerializer.Deserialize<T>(content, typeInfo)
+                : JsonAotSerializer.Deserialize<T>(content)
         )!;
     }
 
     /// <inheritdoc/>
-    public async Task WriteLocalDataAsync<T>(
-        string fileName,
-        T data,
-        JsonTypeInfo<T> typeInfo,
-        string folderName = ""
-    )
+    public async Task WriteLocalDataAsync<T>(string fileName, T data, string folderName = "")
     {
         var targetFolder = string.IsNullOrEmpty(folderName)
             ? PathHelper.RootFolderPath
@@ -142,8 +146,7 @@ internal sealed class FileToolkit : IFileToolkit
         Directory.CreateDirectory(targetFolder);
 
         var filePath = Path.Combine(targetFolder, fileName);
-        var writeContent =
-            data is string ? data.ToString() : JsonSerializer.Serialize(data, typeInfo);
+        var writeContent = data is string ? data.ToString() : JsonAotSerializer.Serialize(data);
         var tmpPath = filePath + ".tmp";
         await File.WriteAllTextAsync(tmpPath, writeContent);
         File.Move(tmpPath, filePath, true);

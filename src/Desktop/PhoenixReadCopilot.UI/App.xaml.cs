@@ -1,4 +1,3 @@
-using System.Text.Json;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -130,10 +129,7 @@ public partial class App : Application
 
             _dispatcherQueue.TryEnqueue(() =>
             {
-                var identifier = JsonSerializer.Deserialize(
-                    argsStr,
-                    GlobalSerializeContext.Default.MediaIdentifier
-                );
+                var identifier = JsonAotSerializer.Deserialize<MediaIdentifier>(argsStr);
                 var obj = type.Contains("VideoPlayer")
                     ? (object)new VideoSnapshot(new VideoInformation(identifier, default))
                     : identifier;
