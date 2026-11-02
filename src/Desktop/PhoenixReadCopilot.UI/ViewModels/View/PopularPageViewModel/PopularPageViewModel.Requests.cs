@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
@@ -13,15 +14,51 @@ public sealed partial class PopularPageViewModel
 {
     private async Task LoadRecommendVideosAsync()
     {
+        if (!_hasMoreRecommendations && _recommendOffset > 0)
+        {
+            return;
+        }
+
         try
         {
-            var (videos, nextOffset) = await _service.GetRecommendVideoListAsync(_recommendOffset);
-            _recommendOffset = nextOffset;
-            TryAddVideos(videos, VideoCardStyle.Recommend);
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+            var ct = _cancellationTokenSource.Token;
+
+            var page = await _apiClient.GetRecommendationsAsync(
+                RecommendationGenre.ShortDrama,
+                offset: _recommendOffset,
+                sessionId: _recommendSessionId,
+                seen: _seenDramaIds,
+                cancellationToken: ct
+            );
+
+            _recommendOffset = page.NextOffset;
+            _recommendSessionId = page.SessionId;
+            _hasMoreRecommendations = page.HasMore;
+
+            if (page.Items is { Count: > 0 })
+            {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    foreach (var item in page.Items)
+                    {
+                        if (!string.IsNullOrWhiteSpace(item.Id) && _seenDramaIds.Add(item.Id))
+                        {
+                            Videos.Add(new VideoItemViewModel(item, VideoCardStyle.Recommend));
+                        }
+                    }
+                });
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // 请求已取消，正常忽略
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载推荐视频时出错.");
+            _logger.LogError(ex, "尝试加载红果短剧推荐时出错.");
         }
     }
 

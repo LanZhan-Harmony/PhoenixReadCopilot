@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
@@ -22,6 +23,8 @@ internal static class ItemServices
     public static AppViewModel App = Ioc.Default.GetRequiredService<AppViewModel>();
 
     public static PinnerViewModel Pinner = Ioc.Default.GetRequiredService<PinnerViewModel>();
+
+    public static PhoenixReadApiClient PhoenixRead => Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
 
     public static AppSettings Settings = Ioc
         .Default.GetRequiredService<ISettingsService>()

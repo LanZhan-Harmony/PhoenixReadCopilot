@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
@@ -14,6 +15,7 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 public sealed partial class PopularPageViewModel
 {
     private readonly IVideoDiscoveryService _service;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<PopularPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -22,7 +24,11 @@ public sealed partial class PopularPageViewModel
         List<VideoItemViewModel>
     > _videoCache = new();
 
-    private long _recommendOffset;
+    private int _recommendOffset;
+    private string? _recommendSessionId;
+    private readonly HashSet<string> _seenDramaIds = new();
+    private bool _hasMoreRecommendations = true;
+    private CancellationTokenSource? _cancellationTokenSource;
     private long _hotOffset;
 
     [ObservableProperty]
