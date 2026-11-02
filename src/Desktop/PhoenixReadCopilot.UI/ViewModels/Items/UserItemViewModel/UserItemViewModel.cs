@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
@@ -17,6 +18,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
 {
+    private static ILogger<UserItemViewModel>? _logger;
+    private static ILogger<UserItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<UserItemViewModel>>();
     /// <summary>
     /// Initializes a new instance of the <see cref="UserItemViewModel"/> class.
     /// </summary>
@@ -38,7 +41,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
 
     [RelayCommand]
     private void ShowUserSpace() =>
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Profile.User);
+        ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.Profile.User);
 
     [RelayCommand]
     private void Pin()
@@ -49,26 +52,26 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
             Data.Profile.User.Avatar.Uri.ToString(),
             PinContentType.User
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        ItemServices.Pinner.AddItemCommand.Execute(pinItem);
     }
 
     [RelayCommand]
     private async Task ToggleFollowAsync()
     {
-        var relationService = this.Get<IRelationshipService>();
+        var relationService = ItemServices.Relationship;
         if (IsFollowed)
         {
             try
             {
                 await relationService.UnfollowUserAsync(Id);
                 IsFollowed = false;
-                this.Get<AppViewModel>()
+                ItemServices.App
                     .ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
             }
             catch (Exception ex)
             {
-                this.Get<ILogger<UserItemViewModel>>().LogError(ex, "取消关注用户时失败");
-                this.Get<AppViewModel>()
+                Logger.LogError(ex, "取消关注用户时失败");
+                ItemServices.App
                     .ShowTipCommand.Execute((Resources.FailedToUnfollowUser, InfoType.Error));
             }
         }
@@ -78,13 +81,13 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
             {
                 await relationService.FollowUserAsync(Id);
                 IsFollowed = true;
-                this.Get<AppViewModel>()
+                ItemServices.App
                     .ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
             }
             catch (Exception ex)
             {
-                this.Get<ILogger<UserItemViewModel>>().LogError(ex, "关注用户时失败");
-                this.Get<AppViewModel>()
+                Logger.LogError(ex, "关注用户时失败");
+                ItemServices.App
                     .ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
             }
         }

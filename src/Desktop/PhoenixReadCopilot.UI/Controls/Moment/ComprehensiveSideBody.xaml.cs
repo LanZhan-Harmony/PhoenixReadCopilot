@@ -16,10 +16,7 @@ public sealed partial class ComprehensiveSideBody : ComprehensiveSectionControlB
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.Initialized += OnInitialized;
-        }
+        ViewModel?.Initialized += OnInitialized;
 
         SectionView.SelectionChanged += OnSectionSelectionChanged;
         CheckSelection();
@@ -29,10 +26,7 @@ public sealed partial class ComprehensiveSideBody : ComprehensiveSectionControlB
     protected override void OnControlUnloaded()
     {
         SectionView.ItemsSource = default;
-        if (ViewModel is not null)
-        {
-            ViewModel.Initialized -= OnInitialized;
-        }
+        ViewModel?.Initialized -= OnInitialized;
 
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }

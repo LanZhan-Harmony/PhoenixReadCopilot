@@ -31,10 +31,7 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ItemsUpdated -= OnItemsUpdatedAsync;
-        }
+        ViewModel?.ItemsUpdated -= OnItemsUpdatedAsync;
 
         SeasonRepeater.ItemsSource = null;
         SeasonScrollView.ViewChanged -= OnViewChanged;
@@ -47,10 +44,7 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
         EntertainmentIndexViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ItemsUpdated -= OnItemsUpdatedAsync;
-        }
+        oldValue?.ItemsUpdated -= OnItemsUpdatedAsync;
 
         if (newValue is null)
         {

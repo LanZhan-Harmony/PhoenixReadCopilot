@@ -1,12 +1,15 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
@@ -29,9 +32,24 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         DanmakuViewModel danmaku,
         SubtitleViewModel subtitle,
         CommentMainViewModel comments,
-        DownloadViewModel download
+        DownloadViewModel download,
+        ISettingsService settingsService,
+        AppViewModel appViewModel,
+        NavigationViewModel navigationViewModel,
+        PinnerViewModel pinnerViewModel,
+        IViewLaterService viewLaterService,
+        IBiliTokenResolver tokenResolver,
+        DispatcherQueue dispatcherQueue,
+        IBiliCookiesResolver cookiesResolver,
+        ILogger<PlayerViewModelBase> playerLogger
     )
+        : base(settingsService, appViewModel, dispatcherQueue, cookiesResolver, playerLogger)
     {
+        _navigationViewModel = navigationViewModel;
+        _pinnerViewModel = pinnerViewModel;
+        _viewLaterService = viewLaterService;
+        _tokenResolver = tokenResolver;
+        _dispatcherQueue = dispatcherQueue;
         _service = service;
         _relationshipService = relationshipService;
         _favoriteService = favoriteService;
@@ -226,7 +244,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         var videoUrl = vSeg?.BaseUrl;
         var audioUrl = aSeg?.BaseUrl;
 
-        if (Settings.PlayWithoutP2P)
+        if (_settings.PlayWithoutP2P)
         {
             if (vSeg?.BackupUrls is not null)
             {
@@ -244,7 +262,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         var isAutoPlay = !isFirstSet;
         if (isFirstSet)
         {
-            isAutoPlay = Settings.ShouldAutoPlay;
+            isAutoPlay = _settings.ShouldAutoPlay;
         }
 
         // 切换清晰度时，如果播放器已经加载了媒体，那么就保持当前的播放进度.
@@ -253,7 +271,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _initialProgress = Player.Position;
         }
 
-        Settings.LastSelectedVideoQuality = vm.Data.Quality;
+        _settings.LastSelectedVideoQuality = vm.Data.Quality;
         if (Player is NativePlayerViewModel npvm)
         {
             npvm.InjectSegments(vSeg, aSeg);
@@ -307,7 +325,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
-        var shouldReport = Settings.ShouldReportProgress;
+        var shouldReport = _settings.ShouldReportProgress;
         if (
             !shouldReport
             || IsPrivatePlay

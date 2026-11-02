@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -7,6 +8,7 @@ using Microsoft.Windows.AppNotifications;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
 
@@ -17,7 +19,7 @@ namespace PhoenixReadCopilot.UI;
 /// </summary>
 public partial class App : Application
 {
-    private const string Id = "Richasy.PhoenixReadCopilot";
+    private const string Id = "PhoenixReadCopilot";
     private readonly DispatcherQueue _dispatcherQueue;
     private AppNotificationManager _notificationManager;
 
@@ -28,6 +30,7 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+        ServiceHelper.ConfigureServices();
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         UnhandledException += OnUnhandledException;
         try
@@ -43,11 +46,6 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// 日志文件夹.
-    /// </summary>
-    public static string LoggerFolder { get; private set; }
-
-    /// <summary>
     /// Invoked when the application is launched.
     /// </summary>
     /// <param name="args">Details about the launch request and process.</param>
@@ -56,16 +54,10 @@ public partial class App : Application
         var instance = AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
         {
-            LoggerFolder = PathHelper.LogFolderPath;
-
             instance.Activated += OnInstanceActivated;
-            Initialize();
-            Kernel.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
+            Ioc.Default.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
             var mainWindow = GetMainWindow();
-            if (mainWindow is not null)
-            {
-                mainWindow.Closed += OnMainWindowClosed;
-            }
+            mainWindow?.Closed += OnMainWindowClosed;
         }
         else
         {
@@ -78,7 +70,8 @@ public partial class App : Application
     }
 
     private static MainWindow? GetMainWindow() =>
-        Kernel.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow) as MainWindow;
+        Ioc.Default.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow)
+        as MainWindow;
 
     private void OnMainWindowClosed(object sender, WindowEventArgs args)
     {
@@ -109,16 +102,16 @@ public partial class App : Application
         Microsoft.UI.Xaml.UnhandledExceptionEventArgs e
     )
     {
-        Kernel
-            .GetRequiredService<ILogger<App>>()
+        Ioc.Default.GetRequiredService<ILogger<App>>()
             .LogError(e.Exception, "Unhandled exception occurred.");
         e.Handled = true;
 
         // 一旦出现布局循环检测异常，就删除上次选中的功能页，然后重启应用.
         if (e.Message.Contains("Layout cycle detected"))
         {
-            Settings.LastSelectedFeaturePage = string.Empty;
-            Kernel.GetRequiredService<AppViewModel>().RestartCommand.Execute(default);
+            Ioc.Default.GetRequiredService<ISettingsService>().Settings.LastSelectedFeaturePage =
+                string.Empty;
+            Ioc.Default.GetRequiredService<AppViewModel>().RestartCommand.Execute(default);
         }
     }
 
@@ -145,7 +138,7 @@ public partial class App : Application
                     ? (object)new VideoSnapshot(new VideoInformation(identifier, default))
                     : identifier;
                 var pageType = Type.GetType(type);
-                Kernel.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);
+                Ioc.Default.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);
             });
         }
     }

@@ -15,6 +15,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
 {
     private readonly ISearchService _service;
     private readonly ILogger<VideoSearchSectionDetailViewModel> _logger;
+    private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
 
     private bool _canRequest;
     private int? _currentPage;

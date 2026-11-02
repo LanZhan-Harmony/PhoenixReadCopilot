@@ -30,10 +30,7 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ArticleListUpdated -= OnArticleListUpdatedAsync;
-        }
+        ViewModel?.ArticleListUpdated -= OnArticleListUpdatedAsync;
 
         ArticleRepeater.ItemsSource = null;
         ArticleScrollView.ViewChanged -= OnViewChanged;
@@ -46,10 +43,7 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
         ArticlePartitionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ArticleListUpdated -= OnArticleListUpdatedAsync;
-        }
+        oldValue?.ArticleListUpdated -= OnArticleListUpdatedAsync;
 
         if (newValue is null)
         {

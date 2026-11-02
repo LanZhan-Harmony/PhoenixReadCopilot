@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
@@ -51,5 +52,5 @@ public abstract class SearchPageBase : LayoutPageBase<SearchPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPageBase"/> class.
     /// </summary>
-    protected SearchPageBase() => ViewModel = this.Get<SearchPageViewModel>();
+    protected SearchPageBase() => ViewModel = Ioc.Default.GetRequiredService<SearchPageViewModel>();
 }

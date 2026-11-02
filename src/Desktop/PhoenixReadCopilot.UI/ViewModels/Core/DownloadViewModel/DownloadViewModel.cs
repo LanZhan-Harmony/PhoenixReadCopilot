@@ -2,6 +2,8 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -17,21 +19,28 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class DownloadViewModel : ViewModelBase
 {
+    private readonly AppViewModel _appViewModel;
+    private readonly AppSettings _settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DownloadViewModel"/> class.
     /// </summary>
     public DownloadViewModel(
         ILogger<DownloadViewModel> logger,
         IBiliTokenResolver tokenResolver,
-        IBiliCookiesResolver cookiesResolver
+        IBiliCookiesResolver cookiesResolver,
+        AppViewModel appViewModel,
+        ISettingsService settingsService
     )
     {
         _logger = logger;
         _tokenResolver = tokenResolver;
         _cookiesResolver = cookiesResolver;
-        _bbdownPath = this.Get<AppViewModel>().BBDownPath;
-        _ffmpegPath = this.Get<AppViewModel>().FFmpegPath;
-        var localDownloadFolder = Settings.DownloadFolder;
+        _appViewModel = appViewModel;
+        _settings = settingsService.Settings;
+        _bbdownPath = _appViewModel.BBDownPath;
+        _ffmpegPath = _appViewModel.FFmpegPath;
+        var localDownloadFolder = _settings.DownloadFolder;
         _downloadPath =
             string.IsNullOrEmpty(localDownloadFolder) || !Directory.Exists(localDownloadFolder)
                 ? Path.Combine(
@@ -44,7 +53,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             Directory.CreateDirectory(_downloadPath);
         }
 
-        _openFolderAfterDownload = Settings.OpenFolderAfterDownload;
+        _openFolderAfterDownload = _settings.OpenFolderAfterDownload;
     }
 
     /// <summary>
@@ -96,8 +105,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         Episodes = null;
     }
 
-    private static bool UseExternal() =>
-        Settings.UseExternalBBDown;
+    private bool UseExternal() => _settings.UseExternalBBDown;
 
     /// <summary>
     /// 下载视频.
@@ -133,7 +141,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private void DownloadSubtitle()
     {
-        var isAISubtitleFiltered = Settings.FilterAISubtitle;
+        var isAISubtitleFiltered = _settings.FilterAISubtitle;
         var subCommand = isAISubtitleFiltered ? "--sub-only" : "--sub-only --skip-ai False";
         var command = $"{GetBasicCommand(false)} {subCommand} \"{_currentUrl}\"";
         LaunchDownloadProcess(command);
@@ -163,7 +171,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     {
         var token = _tokenResolver.GetToken().AccessToken;
         var cookie = _cookiesResolver.GetCookieString();
-        var preferCodec = Settings.PreferCodec;
+        var preferCodec = _settings.PreferCodec;
         var codec = preferCodec switch
         {
             PreferCodecType.H264 => "avc",
@@ -172,8 +180,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
         };
 
         var cmd = $"-e {codec} --work-dir \"{_downloadPath}\" -ua \"{VideoUserAgent}\"";
-        var copyCommandOnly = Settings.OnlyCopyCommandWhenDownload;
-        var withoutCredential = Settings.WithoutCredentialWhenGenDownloadCommand;
+        var copyCommandOnly = _settings.OnlyCopyCommandWhenDownload;
+        var withoutCredential = _settings.WithoutCredentialWhenGenDownloadCommand;
         if (!UseExternal())
         {
             cmd += $" -app --ffmpeg-path \"{_ffmpegPath}\"";
@@ -186,7 +194,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         if (danmakuEnabled)
         {
-            var alsoDownDanmaku = Settings.DownloadWithDanmaku;
+            var alsoDownDanmaku = _settings.DownloadWithDanmaku;
             if (alsoDownDanmaku)
             {
                 cmd += " -dd";
@@ -198,8 +206,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
     private void LaunchDownloadProcess(string command)
     {
-        var useExternalBBDown = Settings.UseExternalBBDown;
-        var copyCommandOnly = Settings.OnlyCopyCommandWhenDownload;
+        var useExternalBBDown = _settings.UseExternalBBDown;
+        var copyCommandOnly = _settings.OnlyCopyCommandWhenDownload;
         var fileName = useExternalBBDown ? "BBDown" : _bbdownPath;
         if (useExternalBBDown && copyCommandOnly)
         {
@@ -207,7 +215,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             var dp = new DataPackage();
             dp.SetText(cmd);
             Clipboard.SetContent(dp);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+            _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
             return;
         }
 

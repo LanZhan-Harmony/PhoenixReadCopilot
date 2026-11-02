@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -17,10 +17,14 @@ public sealed partial class NotifyMessageSectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="NotifyMessageSectionDetailViewModel"/> class.
     /// </summary>
-    public NotifyMessageSectionDetailViewModel(NotifyMessageType type, IMessageService service)
+    public NotifyMessageSectionDetailViewModel(
+        NotifyMessageType type,
+        IMessageService service,
+        ILogger<NotifyMessageSectionDetailViewModel> logger
+    )
     {
         _service = service;
-        _logger = this.Get<ILogger<NotifyMessageSectionDetailViewModel>>();
+        _logger = logger;
         Type = type;
     }
 

@@ -46,11 +46,8 @@ public sealed partial class FFmpegPlayerViewModel
             Player = null;
         }
 
-        if (_ffmpegSource is not null)
-        {
-            _ffmpegSource.Dispose();
-            _ffmpegSource = null;
-        }
+        _ffmpegSource?.Dispose();
+        _ffmpegSource = null;
 
         return Task.CompletedTask;
     }
@@ -102,8 +99,7 @@ public sealed partial class FFmpegPlayerViewModel
 
         if (Player.PlaybackSession?.CanSeek == false && !Player.CanSeek)
         {
-            this.Get<AppViewModel>()
-                .ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
+            _appViewModel.ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
             return Task.CompletedTask;
         }
 
@@ -181,7 +177,7 @@ public sealed partial class FFmpegPlayerViewModel
         config.Video.VideoDecoderMode = VideoDecoderMode.Automatic;
         config.General.FastSeek = true;
 
-        var cookies = this.Get<IBiliCookiesResolver>().GetCookieString();
+        var cookies = _cookiesResolver.GetCookieString();
         var headerSb = new StringBuilder();
         headerSb.Append($"User-Agent: {VideoUserAgent}\r\n");
         headerSb.Append($"Referer: {VideoReferer}\r\n");
@@ -216,7 +212,9 @@ public sealed partial class FFmpegPlayerViewModel
                 : onlyAudio ? "DashAudioWithoutVideoTemplate.xml"
                 : "DashVideoTemplate.xml";
             var mpdFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", mpdFileName);
-            var mpdStr = File.Exists(mpdFilePath) ? await File.ReadAllTextAsync(mpdFilePath) : string.Empty;
+            var mpdStr = File.Exists(mpdFilePath)
+                ? await File.ReadAllTextAsync(mpdFilePath)
+                : string.Empty;
 
             var videoStr = string.Empty;
             if (_videoSegment is not null && !string.IsNullOrEmpty(_videoUrl))

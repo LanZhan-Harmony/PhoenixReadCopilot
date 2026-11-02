@@ -15,10 +15,13 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
     /// <summary>
     /// Initializes a new instance of the <see cref="AnimeTimelineViewModel"/> class.
     /// </summary>
-    public AnimeTimelineViewModel(IEntertainmentDiscoveryService discoveryService)
+    public AnimeTimelineViewModel(
+        IEntertainmentDiscoveryService discoveryService,
+        ILogger<AnimeTimelineViewModel> logger
+    )
     {
         _service = discoveryService;
-        _logger = this.Get<ILogger<AnimeTimelineViewModel>>();
+        _logger = logger;
     }
 
     [RelayCommand]
@@ -113,10 +116,7 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        if (SelectedTimeline is not null)
-        {
-            SelectedTimeline.Items = default;
-        }
+        SelectedTimeline?.Items = default;
 
         Timelines =
             new System.Collections.ObjectModel.ObservableCollection<TimelineItemViewModel>();

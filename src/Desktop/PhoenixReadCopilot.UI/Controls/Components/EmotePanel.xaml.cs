@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using Richasy.BiliKernel.Models.Appearance;
@@ -55,5 +56,5 @@ public abstract class EmotePanelBase : LayoutUserControlBase<EmoteModuleViewMode
     /// <summary>
     /// Initializes a new instance of the <see cref="EmotePanelBase"/> class.
     /// </summary>
-    protected EmotePanelBase() => ViewModel = this.Get<EmoteModuleViewModel>();
+    protected EmotePanelBase() => ViewModel = Ioc.Default.GetRequiredService<EmoteModuleViewModel>();
 }

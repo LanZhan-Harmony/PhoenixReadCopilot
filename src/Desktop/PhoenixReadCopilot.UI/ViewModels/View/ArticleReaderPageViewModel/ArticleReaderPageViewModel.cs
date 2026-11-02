@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages.Overlay;
@@ -14,6 +15,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class ArticleReaderPageViewModel : ViewModelBase
 {
+    private readonly NavigationViewModel _navigationViewModel;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleReaderPageViewModel"/> class.
     /// </summary>
@@ -21,13 +24,15 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         IArticleDiscoveryService discovery,
         IArticleOperationService operation,
         ILogger<ArticleReaderPageViewModel> logger,
-        CommentMainViewModel comment
+        CommentMainViewModel comment,
+        PhoenixReadCopilot.UI.ViewModels.Core.NavigationViewModel navigationViewModel
     )
     {
         _discoveryService = discovery;
         _operationService = operation;
         _logger = logger;
         CommentModule = comment;
+        _navigationViewModel = navigationViewModel;
     }
 
     [RelayCommand]
@@ -127,7 +132,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowUserSpace() =>
-        this.Get<NavigationViewModel>()
+        _navigationViewModel
             .NavigateToOver(typeof(UserSpacePage), Content.Author.Profile.User);
 
     private void InitializeUser()

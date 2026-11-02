@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
-using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
 using Microsoft.UI.Xaml;
 using Windows.Storage;
@@ -15,7 +14,7 @@ public abstract partial class ImageExBase
 {
     // 用于去重,避免重复请求同一个URL
     private static readonly Dictionary<string, Task<byte[]?>> _pendingRequests = new();
-    private static readonly object _pendingRequestsLock = new();
+    private static readonly Lock _pendingRequestsLock = new();
 
     // 调试统计信息
     private static int _totalRequestsStarted;
@@ -304,11 +303,6 @@ public abstract partial class ImageExBase
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
-#pragma warning disable CA1848 // 使用 LoggerMessage 委托
-#pragma warning disable CA2254 // 模板应为静态表达式
-            WinUIKernelShareExtensions.Logger.LogError(ex, $"Failed to load image from {_lastUri}");
-#pragma warning restore CA2254 // 模板应为静态表达式
-#pragma warning restore CA1848 // 使用 LoggerMessage 委托
             if (
                 HolderImage is not null
                 && !cancellationToken.IsCancellationRequested
@@ -367,14 +361,6 @@ public abstract partial class ImageExBase
                         catch (Exception ex)
                         {
                             Debug.WriteLine(ex.Message);
-#pragma warning disable CA1848 // 使用 LoggerMessage 委托
-#pragma warning disable CA2254 // 模板应为静态表达式
-                            WinUIKernelShareExtensions.Logger.LogError(
-                                ex,
-                                $"Failed to draw image with {_lastUri}"
-                            );
-#pragma warning restore CA2254 // 模板应为静态表达式
-#pragma warning restore CA1848 // 使用 LoggerMessage 委托
                             ImageFailed?.Invoke(this, EventArgs.Empty);
                         }
                         finally
@@ -431,11 +417,6 @@ public abstract partial class ImageExBase
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
-#pragma warning disable CA1848 // 使用 LoggerMessage 委托
-#pragma warning disable CA2254 // 模板应为静态表达式
-            WinUIKernelShareExtensions.Logger.LogError(ex, $"Failed to draw image with {_lastUri}");
-#pragma warning restore CA2254 // 模板应为静态表达式
-#pragma warning restore CA1848 // 使用 LoggerMessage 委托
 
             if (HolderImage is not null && IsCurrentRequest(requestId))
             {
@@ -488,7 +469,7 @@ public abstract partial class ImageExBase
             == 0
         )
         {
-            WinUIKernelShareExtensions.Logger.LogError(
+            Debug.WriteLine(
                 $"Shared Win2D CanvasDevice instance was lost (HRESULT: 0x{sender.GetDeviceLostReason():X8})."
             );
         }

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace PhoenixReadCopilot.UI.Helpers;
 
@@ -49,7 +49,7 @@ public sealed class Debouncer : IDisposable
         }
     }
 
-    public Debouncer(TimeSpan delay, Action<Exception>? onError = null)
+    public Debouncer(TimeSpan delay, Action<Exception>? onError = null, ILogger<Debouncer>? logger = null)
     {
         if (delay < TimeSpan.Zero)
         {
@@ -62,7 +62,7 @@ public sealed class Debouncer : IDisposable
 
         DefaultDelay = delay;
         _onError = onError;
-        _logger = this.Get<ILogger<Debouncer>>();
+        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Debouncer>.Instance;
         _timer = new Timer(
             static s => ((Debouncer)s!).OnTimerElapsed(),
             this,

@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class ArticlePartitionPageBase : LayoutPageBase<ArticlePartition
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticlePartitionPageBase"/> class.
     /// </summary>
-    protected ArticlePartitionPageBase() => ViewModel = this.Get<ArticlePartitionPageViewModel>();
+    protected ArticlePartitionPageBase() => ViewModel = Ioc.Default.GetRequiredService<ArticlePartitionPageViewModel>();
 }

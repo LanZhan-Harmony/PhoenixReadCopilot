@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Pages;
@@ -24,12 +24,16 @@ public sealed partial class AccountViewModel : ViewModelBase
         IMyProfileService myProfileService,
         IMessageService messageService,
         NavigationViewModel navService,
+        AppViewModel appViewModel,
+        IAuthenticationService authService,
         ILogger<AccountViewModel> logger
     )
     {
         _navService = navService;
         _messageService = messageService;
         _myProfileService = myProfileService;
+        _appViewModel = appViewModel;
+        _authService = authService;
         _logger = logger;
     }
 
@@ -48,8 +52,8 @@ public sealed partial class AccountViewModel : ViewModelBase
             Introduce = string.IsNullOrEmpty(MyProfile.Introduce)
                 ? Resources.NoSelfIntroduce
                 : MyProfile.Introduce;
-            this.Get<AppViewModel>().IsInitialLoading = false;
-            this.Get<AppViewModel>().CheckUpateCommand.Execute(default);
+            _appViewModel.IsInitialLoading = false;
+            _appViewModel.CheckUpateCommand.Execute(default);
             UpdateUnreadCommand.Execute(default);
         }
         catch (Exception ex)
@@ -64,7 +68,7 @@ public sealed partial class AccountViewModel : ViewModelBase
                 PrimaryButtonText = Resources.ReSignIn,
                 CloseButtonText = Resources.Exit,
                 DefaultButton = ContentDialogButton.Primary,
-                XamlRoot = this.Get<AppViewModel>().ActivatedWindow.Content.XamlRoot,
+                XamlRoot = _appViewModel.ActivatedWindow.Content.XamlRoot,
             };
 
             var result = await dialog.ShowAsync();
@@ -106,9 +110,9 @@ public sealed partial class AccountViewModel : ViewModelBase
     [RelayCommand]
     private async Task SignOutAsync()
     {
-        await this.Get<IAuthenticationService>().SignOutAsync().ConfigureAwait(false);
+        await _authService.SignOutAsync().ConfigureAwait(false);
         MyProfile = null;
-        this.Get<AppViewModel>().RestartCommand.Execute(default);
+        _appViewModel.RestartCommand.Execute(default);
     }
 
     [RelayCommand]

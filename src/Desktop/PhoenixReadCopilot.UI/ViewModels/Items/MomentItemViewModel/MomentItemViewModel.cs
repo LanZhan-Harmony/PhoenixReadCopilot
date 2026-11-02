@@ -35,8 +35,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         : base(data)
     {
         _showMomentAction = showCommentAction;
-        _operationService = this.Get<IMomentOperationService>();
-        _logger = this.Get<ILogger<MomentItemViewModel>>();
         IsLiked = data.CommunityInformation?.IsLiked ?? false;
         LikeCount = data.CommunityInformation?.LikeCount;
         CommentCount = data.CommunityInformation?.CommentCount;
@@ -94,11 +92,11 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             if (state)
             {
-                await _operationService.LikeMomentAsync(Data);
+                await OperationService.LikeMomentAsync(Data);
             }
             else
             {
-                await _operationService.DislikeMomentAsync(Data);
+                await OperationService.DislikeMomentAsync(Data);
             }
 
             IsLiked = state;
@@ -106,7 +104,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "切换评论点赞状态时失败");
+            Logger.LogError(ex, "切换评论点赞状态时失败");
         }
     }
 
@@ -121,7 +119,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             if (!TryOpenInNewWindowIfPreferred() && !TryOpenInWebPlayerIfPreferred())
             {
                 var snapshot = new VideoSnapshot(vinfo);
-                this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), snapshot);
+                ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), snapshot);
             }
         }
         else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
@@ -136,7 +134,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                         default,
                         default
                     );
-                    this.Get<NavigationViewModel>()
+                    ItemServices.Navigation
                         .NavigateToOver(typeof(PgcPlayerPage), identifier);
                 }
                 else
@@ -153,7 +151,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         bool TryOpenInNewWindowIfPreferred()
         {
-            var preferDisplayMode = Settings.DefaultPlayerDisplayMode;
+            var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
                 OpenInNewWindowCommand.Execute(default);
@@ -165,13 +163,13 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         bool TryOpenInWebPlayerIfPreferred()
         {
-            var preferPlayer = Settings.PlayerType;
+            var preferPlayer = ItemServices.Settings.PlayerType;
             if (preferPlayer == PlayerType.Web)
             {
                 var webUrl = GetMediaUrl();
                 if (webUrl is not null)
                 {
-                    this.Get<NavigationViewModel>().NavigateToOver(typeof(WebPlayerPage), webUrl);
+                    ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), webUrl);
                 }
 
                 return true;
@@ -183,7 +181,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
     [RelayCommand]
     private void ShowUserSpace() =>
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User);
+        ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.User);
 
     [RelayCommand]
     private void PlayInPrivate()
@@ -195,7 +193,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         }
 
         var snapshot = new VideoSnapshot(vinfo, true);
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(VideoPlayerPage), snapshot);
+        ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), snapshot);
     }
 
     [RelayCommand]
@@ -220,14 +218,14 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         try
         {
-            await this.Get<IViewLaterService>().AddAsync(aid);
-            this.Get<AppViewModel>()
+            await ItemServices.ViewLater.AddAsync(aid);
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "添加稍后再看失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "添加稍后再看失败");
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
@@ -278,7 +276,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             dataPackage.SetText(url);
             dataPackage.SetWebLink(new Uri(url));
             Clipboard.SetContent(dataPackage);
-            this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+            ItemServices.App.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
         }
     }
 
@@ -315,7 +313,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         if (pinItem is not null)
         {
-            this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+            ItemServices.Pinner.AddItemCommand.Execute(pinItem);
         }
     }
 

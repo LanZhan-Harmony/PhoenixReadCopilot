@@ -25,7 +25,6 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
         : base(data)
     {
         _service = service;
-        _logger = this.Get<ILogger<CommentItemViewModel>>();
         Level = data.User.Level ?? 0;
         IsTop = data.IsTop;
         IsLiked = data.CommunityInformation.IsLiked;
@@ -52,7 +51,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "切换评论点赞状态时失败");
+            Logger.LogError(ex, "切换评论点赞状态时失败");
         }
     }
 
@@ -61,5 +60,5 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
 
     [RelayCommand]
     private void ShowUserSpace() =>
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User.User);
+        ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.User.User);
 }

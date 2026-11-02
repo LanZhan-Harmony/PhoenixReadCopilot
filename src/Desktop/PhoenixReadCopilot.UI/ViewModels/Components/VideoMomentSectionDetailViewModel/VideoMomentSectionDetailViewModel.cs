@@ -1,7 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
@@ -16,13 +17,24 @@ public sealed partial class VideoMomentSectionDetailViewModel
     : ViewModelBase,
         IMomentSectionDetailViewModel
 {
+    private readonly AppSettings _settings;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoMomentSectionDetailViewModel"/> class.
     /// </summary>
-    public VideoMomentSectionDetailViewModel(IMomentDiscoveryService service)
+    public VideoMomentSectionDetailViewModel(
+        IMomentDiscoveryService service,
+        DispatcherQueue dispatcherQueue,
+        MomentPageViewModel momentPageViewModel,
+        ISettingsService settingsService,
+        ILogger<VideoMomentSectionDetailViewModel> logger
+    )
     {
         _service = service;
-        _logger = this.Get<ILogger<VideoMomentSectionDetailViewModel>>();
+        _dispatcherQueue = dispatcherQueue;
+        _momentPageViewModel = momentPageViewModel;
+        _settings = settingsService.Settings;
+        _logger = logger;
     }
 
     [RelayCommand]
@@ -45,15 +57,14 @@ public sealed partial class VideoMomentSectionDetailViewModel
         IsEmpty = false;
         _preventLoadMore = false;
         Items.Clear();
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    await LoadItemsAsync();
-                    SaveLastTenMomentIds();
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                await LoadItemsAsync();
+                SaveLastTenMomentIds();
+            }
+        );
     }
 
     [RelayCommand]
@@ -100,13 +111,12 @@ public sealed partial class VideoMomentSectionDetailViewModel
     }
 
     private void ShowComment(MomentItemViewModel item) =>
-        this.Get<MomentPageViewModel>().ShowCommentCommand.Execute(item.Data);
+        _momentPageViewModel.ShowCommentCommand.Execute(item.Data);
 
     private void SaveLastTenMomentIds()
     {
         var momentIds = Items.Take(10).Select(p => p.Data.Id).ToList();
         var lastTenMomentIds = string.Join(',', momentIds);
-        Settings.LastTenMomentIds = lastTenMomentIds
-        ;
+        _settings.LastTenMomentIds = lastTenMomentIds;
     }
 }

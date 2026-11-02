@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -31,10 +32,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         _rootCard = GetTemplateChild("RootCard") as CardControl;
         if (ViewModel is not null)
         {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.OpenReaderCommand;
-            }
+            _rootCard?.Command = ViewModel.OpenReaderCommand;
         }
     }
 
@@ -50,10 +48,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         ArticleItemViewModel? newValue
     )
     {
-        if (_rootCard is not null)
-        {
-            _rootCard.Command = newValue?.OpenReaderCommand;
-        }
+        _rootCard?.Command = newValue?.OpenReaderCommand;
     }
 
     private static MenuFlyoutItem CreateOpenInBroswerItem()
@@ -94,7 +89,8 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,
-                Foreground = this.Get<IResourceToolkit>()
+                Foreground = Ioc
+                    .Default.GetRequiredService<IResourceToolkit>()
                     .GetThemeBrush("SystemFillColorCriticalBrush"),
             },
             Tag = nameof(ViewModel.RemoveHistoryCommand),

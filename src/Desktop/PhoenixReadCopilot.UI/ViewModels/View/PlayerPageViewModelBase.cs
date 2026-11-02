@@ -1,7 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
+using Richasy.BiliKernel.Bili.Authorization;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -10,6 +14,9 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 {
+    protected readonly AppViewModel _appViewModel;
+    protected readonly ISettingsService _settingsService;
+
     [ObservableProperty]
     public partial PlayerViewModelBase Player { get; set; }
 
@@ -19,17 +26,26 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPageViewModelBase"/> class.
     /// </summary>
-    protected PlayerPageViewModelBase()
+    protected PlayerPageViewModelBase(
+        ISettingsService settingsService,
+        AppViewModel appViewModel,
+        DispatcherQueue dispatcherQueue,
+        IBiliCookiesResolver cookiesResolver,
+        ILogger<PlayerViewModelBase> playerLogger
+    )
+        : base(settingsService)
     {
-        var playerType = Settings.PlayerType;
+        _settingsService = settingsService;
+        _appViewModel = appViewModel;
+        var playerType = _settings.PlayerType;
 
         Player = playerType switch
         {
-            PlayerType.Native => new NativePlayerViewModel(),
-            PlayerType.FFmpeg => new FFmpegPlayerViewModel(),
-            _ => new NativePlayerViewModel(),
+            PlayerType.Native => Ioc.Default.GetService<NativePlayerViewModel>(),
+            PlayerType.FFmpeg => Ioc.Default.GetService<FFmpegPlayerViewModel>(),
+            _ => Ioc.Default.GetService<NativePlayerViewModel>(),
         };
 
-        Player.AttachedWindow = this.Get<AppViewModel>().ActivatedWindow;
+        Player.AttachedWindow = appViewModel.ActivatedWindow;
     }
 }

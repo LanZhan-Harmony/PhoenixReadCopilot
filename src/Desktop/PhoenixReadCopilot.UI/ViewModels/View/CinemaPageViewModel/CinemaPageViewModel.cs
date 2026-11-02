@@ -4,7 +4,7 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Media;
@@ -17,16 +17,28 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
 {
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CinemaPageViewModel"/> class.
     /// </summary>
     public CinemaPageViewModel(
         IEntertainmentDiscoveryService discoveryService,
-        ILogger<CinemaPageViewModel> logger
+        ILogger<CinemaPageViewModel> logger,
+        NavigationViewModel navigationViewModel,
+        DispatcherQueue dispatcherQueue,
+        ISettingsService settingsService,
+        ILoggerFactory loggerFactory
     )
+        : base(settingsService)
     {
         _service = discoveryService;
         _logger = logger;
+        _navigationViewModel = navigationViewModel;
+        _dispatcherQueue = dispatcherQueue;
+        _loggerFactory = loggerFactory;
     }
 
     /// <inheritdoc/>
@@ -42,21 +54,35 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
 
         Sections = new List<EntertainmentIndexViewModel>
         {
-            new EntertainmentIndexViewModel(PgcSectionType.Movie, _service),
-            new EntertainmentIndexViewModel(PgcSectionType.TV, _service),
-            new EntertainmentIndexViewModel(PgcSectionType.Documentary, _service),
+            new EntertainmentIndexViewModel(
+                PgcSectionType.Movie,
+                _service,
+                _dispatcherQueue,
+                _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
+            ),
+            new EntertainmentIndexViewModel(
+                PgcSectionType.TV,
+                _service,
+                _dispatcherQueue,
+                _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
+            ),
+            new EntertainmentIndexViewModel(
+                PgcSectionType.Documentary,
+                _service,
+                _dispatcherQueue,
+                _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
+            ),
         };
-        var lastType = Settings.CinemaPageLastSelectedSectionType;
+        var lastType = _settings.CinemaPageLastSelectedSectionType;
         var section = Sections.FirstOrDefault(p => p.SectionType == lastType);
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                () =>
-                {
-                    SelectSection(section ?? Sections.First());
-                    SectionInitialized?.Invoke(this, EventArgs.Empty);
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            () =>
+            {
+                SelectSection(section ?? Sections.First());
+                SectionInitialized?.Invoke(this, EventArgs.Empty);
+            }
+        );
     }
 
     [RelayCommand]
@@ -68,16 +94,14 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection = section;
-        Settings.CinemaPageLastSelectedSectionType = section.SectionType
-        ;
+        _settings.CinemaPageLastSelectedSectionType = section.SectionType;
         section.InitializeCommand.Execute(default);
     }
 
     [RelayCommand]
     private void ShowMyFavoriteCinema()
     {
-        Settings.LastSelectedFavoriteSection = $"pgc_{PgcFavoriteType.Cinema}"
-        ;
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(FavoritesPage));
+        _settings.LastSelectedFavoriteSection = $"pgc_{PgcFavoriteType.Cinema}";
+        _navigationViewModel.NavigateToOver(typeof(FavoritesPage));
     }
 }

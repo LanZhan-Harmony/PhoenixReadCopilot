@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
@@ -13,7 +15,10 @@ namespace PhoenixReadCopilot.UI.ViewModels.Components;
 public sealed partial class ComprehensiveMomentSectionDetailViewModel
 {
     private readonly IMomentDiscoveryService _service;
-    private readonly ILogger<VideoMomentSectionDetailViewModel> _logger;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly MomentPageViewModel _momentPageViewModel;
+    private readonly ILogger<ComprehensiveMomentSectionDetailViewModel> _logger;
+    private readonly ILogger<MomentUperSectionViewModel> _uperLogger;
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }

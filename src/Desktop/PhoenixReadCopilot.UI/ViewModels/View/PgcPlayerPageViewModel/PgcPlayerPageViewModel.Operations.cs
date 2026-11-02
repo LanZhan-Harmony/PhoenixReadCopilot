@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
@@ -138,7 +139,7 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -149,13 +150,13 @@ public sealed partial class PgcPlayerPageViewModel
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
-        this.Get<AppViewModel>().ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
     private void ShareEpisodeUrl()
     {
-        var handle = this.Get<AppViewModel>().ActivatedWindow.GetWindowHandle();
+        var handle = _appViewModel.ActivatedWindow.GetWindowHandle();
         var transferManager = DataTransferManagerInterop.GetForWindow(handle);
         transferManager.DataRequested += OnTransferDataRequested;
         DataTransferManagerInterop.ShowShareUIForWindow(handle);
@@ -225,8 +226,7 @@ public sealed partial class PgcPlayerPageViewModel
         }
         else if (nextPart is VideoInformation video)
         {
-            this.Get<NavigationViewModel>()
-                .NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video));
+            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(video));
         }
         else
         {
@@ -328,7 +328,7 @@ public sealed partial class PgcPlayerPageViewModel
             _view.Information.Identifier.Cover.Uri.ToString(),
             PinContentType.Pgc
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        _pinnerViewModel.AddItemCommand.Execute(pinItem);
     }
 
     private void PlayerProgressChanged(int progress, int duration)
@@ -370,68 +370,64 @@ public sealed partial class PgcPlayerPageViewModel
 
     private void PlayerSpeedChanged(double speed)
     {
-        if (Danmaku is not null)
-        {
-            Danmaku.ExtraSpeed = speed;
-        }
+        Danmaku?.ExtraSpeed = speed;
     }
 
     private void PlayerMediaEnded()
     {
-        this.Get<Microsoft.UI.Dispatching.DispatcherQueue>()
-            .TryEnqueue(() =>
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            // 清除弹幕.
+            Danmaku.ClearDanmaku();
+            Subtitle.ClearSubtitle();
+
+            ReportProgressCommand.Execute(Player.Duration);
+
+            var autoNext = _settings.AutoPlayNext;
+            if ((!autoNext || !HasNextEpisode) && !_isFormatChanging)
             {
-                // 清除弹幕.
-                Danmaku.ClearDanmaku();
-                Subtitle.ClearSubtitle();
+                Player.BackToDefaultModeCommand.Execute(default);
+                return;
+            }
 
-                ReportProgressCommand.Execute(Player.Duration);
+            if (IsPageLoading || Player.IsPlayerDataLoading)
+            {
+                return;
+            }
 
-                var autoNext = Settings.AutoPlayNext;
-                if ((!autoNext || !HasNextEpisode) && !_isFormatChanging)
+            var next = FindNextEpisode();
+            if (next is null)
+            {
+                return;
+            }
+
+            var withoutTip = _settings.PlayNextWithoutTip;
+            if (withoutTip)
+            {
+                PlayNextEpisode();
+            }
+            else
+            {
+                string tip = default;
+                if (next is EpisodeInformation episode)
                 {
-                    Player.BackToDefaultModeCommand.Execute(default);
-                    return;
+                    tip = string.Format(
+                        Resources.NextEpisodeNotificationTemplate,
+                        episode.Identifier.Title
+                    );
+                }
+                else if (next is VideoInformation video)
+                {
+                    tip = string.Format(
+                        Resources.NextVideoNotificationTemplate,
+                        video.Identifier.Title
+                    );
                 }
 
-                if (IsPageLoading || Player.IsPlayerDataLoading)
-                {
-                    return;
-                }
-
-                var next = FindNextEpisode();
-                if (next is null)
-                {
-                    return;
-                }
-
-                var withoutTip = Settings.PlayNextWithoutTip;
-                if (withoutTip)
-                {
-                    PlayNextEpisode();
-                }
-                else
-                {
-                    string tip = default;
-                    if (next is EpisodeInformation episode)
-                    {
-                        tip = string.Format(
-                            Resources.NextEpisodeNotificationTemplate,
-                            episode.Identifier.Title
-                        );
-                    }
-                    else if (next is VideoInformation video)
-                    {
-                        tip = string.Format(
-                            Resources.NextVideoNotificationTemplate,
-                            video.Identifier.Title
-                        );
-                    }
-
-                    var notification = new PlayerNotification(PlayNextEpisode, tip, 5);
-                    Player.ShowNotification(notification);
-                }
-            });
+                var notification = new PlayerNotification(PlayNextEpisode, tip, 5);
+                Player.ShowNotification(notification);
+            }
+        });
     }
 
     private string GetSeasonUrl() =>

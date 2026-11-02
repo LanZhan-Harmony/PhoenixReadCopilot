@@ -1,7 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
@@ -16,6 +17,7 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
         IPlayerSectionDetailViewModel
 {
     private readonly Action<VideoPart> _partSelectedAction;
+    private readonly AppSettings _settings;
 
     [ObservableProperty]
     public partial List<VideoPart> Parts { get; set; }
@@ -32,13 +34,15 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     public VideoPlayerPartSectionDetailViewModel(
         IList<VideoPart> parts,
         string cid,
-        Action<VideoPart> action
+        Action<VideoPart> action,
+        ISettingsService settingsService
     )
     {
+        _settings = settingsService.Settings;
         _partSelectedAction = action;
         Parts = parts.ToList();
         SelectedPart = parts.FirstOrDefault(p => p.Identifier.Id == cid);
-        OnlyIndex = Settings.IsVideoPlayerPartsOnlyIndex;
+        OnlyIndex = _settings.IsVideoPlayerPartsOnlyIndex;
     }
 
     /// <summary>
@@ -75,7 +79,5 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     /// </summary>
     private void RaisePartChanged() => PartChanged?.Invoke(this, EventArgs.Empty);
 
-    partial void OnOnlyIndexChanged(bool value) =>
-        Settings.IsVideoPlayerPartsOnlyIndex = value
-        ;
+    partial void OnOnlyIndexChanged(bool value) => _settings.IsVideoPlayerPartsOnlyIndex = value;
 }

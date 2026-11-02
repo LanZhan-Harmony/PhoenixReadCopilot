@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -21,10 +21,15 @@ public sealed partial class VideoSearchSectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoSearchSectionDetailViewModel"/> class.
     /// </summary>
-    public VideoSearchSectionDetailViewModel(ISearchService service)
+    public VideoSearchSectionDetailViewModel(
+        ISearchService service,
+        Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue,
+        ILogger<VideoSearchSectionDetailViewModel> logger
+    )
     {
         _service = service;
-        _logger = this.Get<ILogger<VideoSearchSectionDetailViewModel>>();
+        _dispatcherQueue = dispatcherQueue;
+        _logger = logger;
         Sorts = [.. Enum.GetValues<ComprehensiveSearchSortType>()];
     }
 
@@ -43,14 +48,14 @@ public sealed partial class VideoSearchSectionDetailViewModel
         IsEmpty = false;
         _isPreventLoadMore = false;
         _canRequest = false;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, Items.Clear);
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Items.Clear);
     }
 
     internal void SetFirstPageData(IReadOnlyList<VideoInformation> videos, int? initialOffset)
     {
         _canRequest = true;
         _currentPage = initialOffset;
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 () =>
@@ -126,7 +131,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 async () =>

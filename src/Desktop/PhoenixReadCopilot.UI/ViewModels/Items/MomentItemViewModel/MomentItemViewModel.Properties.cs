@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -11,8 +12,10 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class MomentItemViewModel
 {
-    private readonly IMomentOperationService _operationService;
-    private readonly ILogger<MomentItemViewModel> _logger;
+    private static IMomentOperationService OperationService => ItemServices.MomentOperation;
+    private static ILogger<MomentItemViewModel>? _logger;
+    private static ILogger<MomentItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentItemViewModel>>();
+
     private readonly Action<MomentItemViewModel> _showMomentAction;
 
     [ObservableProperty]

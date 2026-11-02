@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
@@ -62,5 +63,5 @@ public abstract class ArticlePartitionSideBodyBase
     /// Initializes a new instance of the <see cref="ArticlePartitionSideBodyBase"/> class.
     /// </summary>
     protected ArticlePartitionSideBodyBase() =>
-        ViewModel = this.Get<ArticlePartitionPageViewModel>();
+        ViewModel = Ioc.Default.GetRequiredService<ArticlePartitionPageViewModel>();
 }

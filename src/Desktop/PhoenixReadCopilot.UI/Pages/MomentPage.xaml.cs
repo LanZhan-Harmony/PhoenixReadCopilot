@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class MomentPageBase : LayoutPageBase<MomentPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentPageBase"/> class.
     /// </summary>
-    protected MomentPageBase() => ViewModel = this.Get<MomentPageViewModel>();
+    protected MomentPageBase() => ViewModel = Ioc.Default.GetRequiredService<MomentPageViewModel>();
 }

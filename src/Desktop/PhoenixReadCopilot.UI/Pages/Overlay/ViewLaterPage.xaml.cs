@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class ViewLaterPageBase : LayoutPageBase<ViewLaterPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewLaterPageBase"/> class.
     /// </summary>
-    protected ViewLaterPageBase() => ViewModel = this.Get<ViewLaterPageViewModel>();
+    protected ViewLaterPageBase() => ViewModel = Ioc.Default.GetRequiredService<ViewLaterPageViewModel>();
 }

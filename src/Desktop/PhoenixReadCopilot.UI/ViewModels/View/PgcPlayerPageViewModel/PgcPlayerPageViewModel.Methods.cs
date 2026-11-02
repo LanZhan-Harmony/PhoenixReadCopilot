@@ -1,6 +1,5 @@
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models;
@@ -49,12 +48,12 @@ public sealed partial class PgcPlayerPageViewModel
         Downloader.Clear();
         Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
 
-        var preferFormatSetting = Settings.PreferQuality;
+        var preferFormatSetting = _settings.PreferQuality;
         var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
         PlayerFormatItemViewModel? selectedFormat = default;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
-            var lastSelectedFormat = Settings.LastSelectedPgcQuality;
+            var lastSelectedFormat = _settings.LastSelectedPgcQuality;
             selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
         }
         else if (preferFormatSetting == PreferQualityType.UHD)
@@ -104,7 +103,8 @@ public sealed partial class PgcPlayerPageViewModel
                 new PgcPlayerEpisodeSectionDetailViewModel(
                     _view.Episodes,
                     _episode.Identifier.Id,
-                    ChangeEpisode
+                    ChangeEpisode,
+                    _settingsService
                 )
             );
         }
@@ -168,7 +168,7 @@ public sealed partial class PgcPlayerPageViewModel
         if (playEpisode == null)
         {
             var historyEpisodeId = _view.Progress?.Cid;
-            var autoLoadHistory = Settings.AutoLoadHistory;
+            var autoLoadHistory = _settings.AutoLoadHistory;
             if (!string.IsNullOrEmpty(historyEpisodeId) && autoLoadHistory)
             {
                 playEpisode = _view.Episodes.FirstOrDefault(p =>

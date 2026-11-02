@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages.Overlay;
@@ -22,11 +22,19 @@ public sealed partial class ChatMessageSectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="ChatMessageSectionDetailViewModel"/> class.
     /// </summary>
-    public ChatMessageSectionDetailViewModel(ChatSession session)
+    public ChatMessageSectionDetailViewModel(
+        ChatSession session,
+        IMessageService service,
+        NavigationViewModel navigationViewModel,
+        AppViewModel appViewModel,
+        ILogger<ChatMessageSectionDetailViewModel> logger
+    )
         : base(session)
     {
-        _service = this.Get<IMessageService>();
-        _logger = this.Get<ILogger<ChatMessageSectionDetailViewModel>>();
+        _service = service;
+        _navigationViewModel = navigationViewModel;
+        _appViewModel = appViewModel;
+        _logger = logger;
 
         Avatar = session.User?.Avatar?.Uri;
         UserName = session.User?.Name;
@@ -52,7 +60,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
 
     [RelayCommand]
     private void ShowUserSpace() =>
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.User);
+        _navigationViewModel.NavigateToOver(typeof(UserSpacePage), Data.User);
 
     [RelayCommand]
     private async Task RefreshAsync()
@@ -89,7 +97,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "发送消息时失败");
-            this.Get<AppViewModel>()
+            _appViewModel
                 .ShowTipCommand.Execute((Resources.FailedToSendMessage, InfoType.Error));
         }
         finally
@@ -137,7 +145,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
         {
             _preventLoadMore = true;
             _logger.LogError(ex, "加载聊天消息时失败");
-            this.Get<AppViewModel>()
+            _appViewModel
                 .ShowTipCommand.Execute((Resources.FailedToLoadChatMessages, InfoType.Error));
         }
         finally

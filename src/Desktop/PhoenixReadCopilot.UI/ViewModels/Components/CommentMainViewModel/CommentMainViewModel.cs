@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -16,10 +16,23 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentMainViewModel"/> class.
     /// </summary>
-    public CommentMainViewModel(ICommentService service, ILogger<CommentMainViewModel> logger)
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CommentMainViewModel"/> class.
+    /// </summary>
+    public CommentMainViewModel(
+        ICommentService service,
+        ILogger<CommentMainViewModel> logger,
+        DispatcherQueue dispatcherQueue,
+        ILoggerFactory loggerFactory
+    )
     {
         _service = service;
         _logger = logger;
+        _dispatcherQueue = dispatcherQueue;
+        _loggerFactory = loggerFactory;
 
         Sorts = Enum.GetValues<CommentSortType>().ToList();
     }
@@ -78,7 +91,9 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                 TopItem = new CommentDetailViewModel(
                     new CommentItemViewModel(view.TopComment, _service, SetReplyTarget),
                     ShowMore,
-                    _service
+                    _service,
+                    _dispatcherQueue,
+                    _loggerFactory.CreateLogger<CommentDetailViewModel>()
                 );
             }
 
@@ -90,7 +105,9 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                         new CommentDetailViewModel(
                             new CommentItemViewModel(item, _service, SetReplyTarget),
                             ShowMore,
-                            _service
+                            _service,
+                            _dispatcherQueue,
+                            _loggerFactory.CreateLogger<CommentDetailViewModel>()
                         )
                     );
                 }
@@ -177,7 +194,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             }
         }
 
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, Comments.Clear);
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Comments.Clear);
         _offset = 0;
         _preventLoadMore = false;
         Id = default;

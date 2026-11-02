@@ -1,8 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Models.Settings;
-using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -13,13 +11,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 public sealed partial class SettingsPageViewModel
 {
     private bool _isInitialized;
-
-    private readonly ISettingsService _settingsService;
-
-    /// <summary>
-    /// 全局应用设置.
-    /// </summary>
-    public AppSettings Settings => _settingsService.Settings;
 
     /// <summary>
     /// 当前应用主题.

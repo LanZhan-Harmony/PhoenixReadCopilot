@@ -10,8 +10,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 public sealed partial class NotificationViewModel : INotificationViewModel
 {
     [RelayCommand]
-    private static async Task ShowTipAsync((string, InfoType) data) =>
-        await GlobalDependencies
-            .Kernel.GetRequiredService<AppViewModel>()
-            .ShowTipCommand.ExecuteAsync(data);
+    private async Task ShowTipAsync((string, InfoType) data) =>
+        await _appViewModel.ShowTipCommand.ExecuteAsync(data);
 }

@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -140,7 +141,7 @@ public abstract partial class PlayerViewModelBase
         if (Volume != value)
         {
             Volume = value;
-            Settings.PlayerVolume = value;
+            _settings.PlayerVolume = value;
         }
     }
 
@@ -156,10 +157,10 @@ public abstract partial class PlayerViewModelBase
         if (Speed != speed)
         {
             Speed = speed;
-            var isShareSpeed = Settings.IsPlayerSpeedShare;
+            var isShareSpeed = _settings.IsPlayerSpeedShare;
             if (isShareSpeed)
             {
-                Settings.PlayerSpeed = speed;
+                _settings.PlayerSpeed = speed;
             }
         }
     }
@@ -170,11 +171,11 @@ public abstract partial class PlayerViewModelBase
         IsFullScreen = !IsFullScreen;
         if (IsFullScreen)
         {
-            this.Get<AppViewModel>().MakeCurrentWindowEnterFullScreenCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowEnterFullScreenCommand.Execute(default);
         }
         else
         {
-            this.Get<AppViewModel>().MakeCurrentWindowExitFullScreenCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowExitFullScreenCommand.Execute(default);
         }
 
         _windowStateChangeAction?.Invoke();
@@ -186,11 +187,11 @@ public abstract partial class PlayerViewModelBase
         IsFullWindow = !IsFullWindow;
         if (IsFullWindow)
         {
-            this.Get<AppViewModel>().MakeCurrentWindowEnterOverlapCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowEnterOverlapCommand.Execute(default);
         }
         else
         {
-            this.Get<AppViewModel>().MakeCurrentWindowExitOverlapCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowExitOverlapCommand.Execute(default);
         }
 
         _windowStateChangeAction?.Invoke();
@@ -202,11 +203,11 @@ public abstract partial class PlayerViewModelBase
         IsCompactOverlay = !IsCompactOverlay;
         if (IsCompactOverlay)
         {
-            this.Get<AppViewModel>().MakeCurrentWindowEnterCompactOverlayCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowEnterCompactOverlayCommand.Execute(default);
         }
         else
         {
-            this.Get<AppViewModel>().MakeCurrentWindowExitCompactOverlayCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowExitCompactOverlayCommand.Execute(default);
         }
 
         _windowStateChangeAction?.Invoke();
@@ -280,7 +281,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void ForwardSkip()
     {
-        var seconds = Settings.SingleFastForwardAndRewindSpan;
+        var seconds = _settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -302,7 +303,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void BackwardSkip()
     {
-        var seconds = Settings.SingleFastForwardAndRewindSpan;
+        var seconds = _settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -337,7 +338,7 @@ public abstract partial class PlayerViewModelBase
             if (File.Exists(path))
             {
                 var file = await StorageFile.GetFileFromPathAsync(path);
-                var shouldCopyToClipboard = Settings.CopyAfterScreenshot;
+                var shouldCopyToClipboard = _settings.CopyAfterScreenshot;
                 if (shouldCopyToClipboard)
                 {
                     var dp = new DataPackage();
@@ -347,11 +348,10 @@ public abstract partial class PlayerViewModelBase
                         )
                     );
                     Clipboard.SetContent(dp);
-                    this.Get<AppViewModel>()
-                        .ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+                    _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
                 }
 
-                var shouldOpenFile = Settings.OpenAfterScreenshot;
+                var shouldOpenFile = _settings.OpenAfterScreenshot;
                 if (shouldOpenFile)
                 {
                     await Launcher.LaunchFileAsync(file).AsTask();

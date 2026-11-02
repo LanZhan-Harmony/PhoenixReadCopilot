@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Models.User;
@@ -35,6 +36,6 @@ public abstract class UserSpacePageBase : LayoutPageBase<UserSpacePageViewModel>
     /// </summary>
     protected UserSpacePageBase()
     {
-        ViewModel = this.Get<UserSpacePageViewModel>();
+        ViewModel = Ioc.Default.GetRequiredService<UserSpacePageViewModel>();
     }
 }

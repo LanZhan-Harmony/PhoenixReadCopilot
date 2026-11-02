@@ -19,7 +19,7 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     public PlayerFormatItemViewModel(PlayerFormatInformation data)
         : base(data)
     {
-        var userIsVip = this.Get<AccountViewModel>().MyProfile.IsVip ?? false;
+        var userIsVip = ItemServices.Account.MyProfile.IsVip ?? false;
         IsEnabled = !data.NeedVip || (data.NeedVip && userIsVip);
     }
 }

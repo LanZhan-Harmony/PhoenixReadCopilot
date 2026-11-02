@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Pages.Overlay;
@@ -15,6 +16,7 @@ namespace PhoenixReadCopilot.UI.Controls;
 /// </summary>
 public sealed partial class Pinner : PinnerBase
 {
+    private readonly NavigationViewModel _navigationViewModel = Ioc.Default.GetRequiredService<NavigationViewModel>();
     /// <summary>
     /// Initializes a new instance of the <see cref="Pinner"/> class.
     /// </summary>
@@ -28,7 +30,7 @@ public sealed partial class Pinner : PinnerBase
     private void OnItemClick(object sender, RoutedEventArgs e)
     {
         var item = (sender as FrameworkElement)?.DataContext as PinItem;
-        var navVM = this.Get<NavigationViewModel>();
+        var navVM = _navigationViewModel;
         if (item.Type == Models.Constants.PinContentType.User)
         {
             var user = new UserProfile(item.Id, item.Title, new BiliImage(new Uri(item.Cover)));
@@ -74,5 +76,5 @@ public abstract class PinnerBase : LayoutUserControlBase<PinnerViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerBase"/> class.
     /// </summary>
-    protected PinnerBase() => ViewModel = this.Get<PinnerViewModel>();
+    protected PinnerBase() => ViewModel = Ioc.Default.GetRequiredService<PinnerViewModel>();
 }

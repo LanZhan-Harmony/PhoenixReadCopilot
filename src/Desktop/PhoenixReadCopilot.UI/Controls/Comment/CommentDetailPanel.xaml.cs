@@ -31,10 +31,7 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnCommentListUpdatedAsync;
-        }
+        ViewModel?.ListUpdated -= OnCommentListUpdatedAsync;
 
         CommentScrollView.ViewChanged -= OnViewChanged;
         CommentScrollView.SizeChanged -= OnScrollViewSizeChanged;
@@ -46,10 +43,7 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
         CommentDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ListUpdated -= OnCommentListUpdatedAsync;
-        }
+        oldValue?.ListUpdated -= OnCommentListUpdatedAsync;
 
         if (newValue is null)
         {

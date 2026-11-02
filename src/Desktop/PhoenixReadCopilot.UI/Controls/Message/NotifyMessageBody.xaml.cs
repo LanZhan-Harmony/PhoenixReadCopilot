@@ -30,10 +30,7 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnMessageListUpdatedAsync;
-        }
+        ViewModel?.ListUpdated -= OnMessageListUpdatedAsync;
 
         MessageRepeater.ItemsSource = null;
         MessageScrollView.ViewChanged -= OnViewChanged;
@@ -46,10 +43,7 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
         NotifyMessageSectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ListUpdated -= OnMessageListUpdatedAsync;
-        }
+        oldValue?.ListUpdated -= OnMessageListUpdatedAsync;
 
         if (newValue is null)
         {

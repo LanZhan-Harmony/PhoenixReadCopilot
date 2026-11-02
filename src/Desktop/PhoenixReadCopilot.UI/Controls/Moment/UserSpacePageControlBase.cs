@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -11,5 +12,5 @@ public abstract class UserSpacePageControlBase : LayoutUserControlBase<UserSpace
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePageControlBase"/> class.
     /// </summary>
-    protected UserSpacePageControlBase() => ViewModel = this.Get<UserSpacePageViewModel>();
+    protected UserSpacePageControlBase() => ViewModel = Ioc.Default.GetRequiredService<UserSpacePageViewModel>();
 }

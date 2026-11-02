@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -142,5 +143,5 @@ public abstract class VideoPlayerPageBase : LayoutPageBase<VideoPlayerPageViewMo
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPageBase"/> class.
     /// </summary>
-    protected VideoPlayerPageBase() => ViewModel = this.Get<VideoPlayerPageViewModel>();
+    protected VideoPlayerPageBase() => ViewModel = Ioc.Default.GetRequiredService<VideoPlayerPageViewModel>();
 }

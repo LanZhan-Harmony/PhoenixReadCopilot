@@ -26,10 +26,7 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.SectionInitialized -= OnViewModelSectionInitialized;
-        }
+        ViewModel?.SectionInitialized -= OnViewModelSectionInitialized;
 
         Selector.SelectionChanged -= OnSelectorChanged;
     }

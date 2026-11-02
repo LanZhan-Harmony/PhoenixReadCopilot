@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -19,18 +20,28 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class HistoryPageViewModel : ViewModelBase
 {
+    private readonly AppViewModel _appViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryPageViewModel"/> class.
     /// </summary>
     public HistoryPageViewModel(
         IViewHistoryService service,
         ISearchService searchService,
-        ILogger<HistoryPageViewModel> logger
+        ILogger<HistoryPageViewModel> logger,
+        AppViewModel appViewModel,
+        DispatcherQueue dispatcherQueue,
+        ILoggerFactory loggerFactory
     )
     {
         _service = service;
         _searchService = searchService;
         _logger = logger;
+        _appViewModel = appViewModel;
+        _dispatcherQueue = dispatcherQueue;
+        _loggerFactory = loggerFactory;
     }
 
     [RelayCommand]
@@ -55,8 +66,8 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             var vm = type switch
             {
                 ViewHistoryTabType.Video => (IHistorySectionDetailViewModel)
-                    new VideoHistorySectionDetailViewModel(_service),
-                ViewHistoryTabType.Article => new ArticleHistorySectionDetailViewModel(_service),
+                    new VideoHistorySectionDetailViewModel(_service, _loggerFactory.CreateLogger<VideoHistorySectionDetailViewModel>()),
+                ViewHistoryTabType.Article => new ArticleHistorySectionDetailViewModel(_service, _loggerFactory.CreateLogger<ArticleHistorySectionDetailViewModel>()),
                 _ => null,
             };
 
@@ -166,7 +177,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "搜索用户视频时失败");
-            this.Get<AppViewModel>()
+            _appViewModel
                 .ShowTipCommand.Execute((Resources.FailedToSearchUserVideos, InfoType.Error));
         }
         finally
@@ -182,7 +193,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         IsSearchMode = false;
         SearchKeyword = string.Empty;
         IsSearchEmpty = false;
-        this.Get<DispatcherQueue>().TryEnqueue(DispatcherQueuePriority.Low, SearchVideos.Clear);
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, SearchVideos.Clear);
         _preventLoadMoreSearch = false;
         _searchPn = 0;
         CancelSearch();

@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class AnimePageBase : LayoutPageBase<AnimePageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="AnimePageBase"/> class.
     /// </summary>
-    protected AnimePageBase() => ViewModel = this.Get<AnimePageViewModel>();
+    protected AnimePageBase() => ViewModel = Ioc.Default.GetRequiredService<AnimePageViewModel>();
 }

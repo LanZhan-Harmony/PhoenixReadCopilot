@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class VideoPartitionPageBase : LayoutPageBase<VideoPartitionPage
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionPageBase"/> class.
     /// </summary>
-    protected VideoPartitionPageBase() => ViewModel = this.Get<VideoPartitionPageViewModel>();
+    protected VideoPartitionPageBase() => ViewModel = Ioc.Default.GetRequiredService<VideoPartitionPageViewModel>();
 }

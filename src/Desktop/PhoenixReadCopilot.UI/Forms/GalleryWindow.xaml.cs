@@ -1,8 +1,9 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Pages;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
 using Windows.Graphics;
@@ -18,6 +19,9 @@ namespace PhoenixReadCopilot.UI.Forms;
 /// </summary>
 public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 {
+    private readonly AppViewModel _appViewModel;
+    private readonly AppSettings _settings;
+
     private bool _isActivated;
 
     /// <summary>
@@ -25,6 +29,8 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
     /// </summary>
     public GalleryWindow(BiliImage image, List<BiliImage> list = default)
     {
+        _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
+        _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
         InitializeComponent();
         ExtendsContentIntoTitleBar = true;
         MainFrame.Tag = this;
@@ -36,7 +42,7 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
         SetTitleBar(TitleBar);
 
         MainFrame.Navigate(typeof(GalleryPage), (image, list));
-        this.Get<AppViewModel>().Windows.Add(this);
+        _appViewModel.Windows.Add(this);
 
         MoveAndResize();
     }
@@ -52,10 +58,10 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
         TipContainer.Visibility = Visibility.Collapsed;
     }
 
-    private static PointInt32 GetSavedWindowPosition()
+    private PointInt32 GetSavedWindowPosition()
     {
-        var left = Settings.GalleryWindowPositionLeft;
-        var top = Settings.GalleryWindowPositionTop;
+        var left = _settings.GalleryWindowPositionLeft;
+        var top = _settings.GalleryWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -63,19 +69,19 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
     {
         if (args.WindowActivationState != WindowActivationState.Deactivated)
         {
-            this.Get<AppViewModel>().ActivatedWindow = this;
+            _appViewModel.ActivatedWindow = this;
         }
 
         if (!_isActivated)
         {
-            var isMaximized = Settings.IsGalleryWindowMaximized;
+            var isMaximized = _settings.IsGalleryWindowMaximized;
             if (isMaximized)
             {
                 (AppWindow.Presenter as OverlappedPresenter).Maximize();
             }
 
-            var localTheme = Settings.AppTheme;
-            this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
+            var localTheme = _settings.AppTheme;
+            _appViewModel.ChangeThemeCommand.Execute(localTheme);
         }
 
         _isActivated = true;
@@ -83,15 +89,15 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-        this.Get<AppViewModel>().Windows.Remove(this);
+        _appViewModel.Windows.Remove(this);
         SaveCurrentWindowStats();
     }
 
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = Settings.GalleryWindowWidth;
-        var previousHeight = Settings.GalleryWindowHeight;
+        var previousWidth = _settings.GalleryWindowWidth;
+        var previousHeight = _settings.GalleryWindowHeight;
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -124,15 +130,14 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
         var left = AppWindow.Position.X;
         var top = AppWindow.Position.Y;
         var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
-        Settings.IsGalleryWindowMaximized = (bool)isMaximized;
+        _settings.IsGalleryWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)
         {
-            Settings.GalleryWindowPositionLeft = left;
-            Settings.GalleryWindowPositionTop = top;
-            Settings.GalleryWindowHeight = Height < 500 ? 500d : Height
-            ;
-            Settings.GalleryWindowWidth = Width;
+            _settings.GalleryWindowPositionLeft = left;
+            _settings.GalleryWindowPositionTop = top;
+            _settings.GalleryWindowHeight = Height < 500 ? 500d : Height;
+            _settings.GalleryWindowWidth = Width;
         }
     }
 }

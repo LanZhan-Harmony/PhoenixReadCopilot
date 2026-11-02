@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Toolkits;
 using Windows.Foundation;
 
 namespace PhoenixReadCopilot.UI.Controls.Core;
@@ -76,7 +75,7 @@ public sealed partial class BiliPlayer
 
     private void CheckTransportControlVisibility(PointerRoutedEventArgs? args = default)
     {
-        var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
+        var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
         if (
             isManual
             || _transportControl is null
@@ -378,7 +377,7 @@ public sealed partial class BiliPlayer
                 return;
             }
 
-            var isManual = GlobalDependencies.Settings.MTCBehavior == MTCBehavior.Manual;
+            var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
             if (isManual)
             {
                 if (_transportControl is not null)

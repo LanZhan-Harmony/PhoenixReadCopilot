@@ -37,10 +37,7 @@ public sealed partial class UserCardControl : UserCardControlBase
     protected override void OnControlUnloaded()
     {
         ContextRequested -= OnContextRequested;
-        if (ViewModel != null)
-        {
-            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        ViewModel?.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
     /// <inheritdoc/>
@@ -49,15 +46,9 @@ public sealed partial class UserCardControl : UserCardControlBase
         UserItemViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        oldValue?.PropertyChanged -= OnViewModelPropertyChanged;
 
-        if (newValue is not null)
-        {
-            newValue.PropertyChanged += OnViewModelPropertyChanged;
-        }
+        newValue?.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     private static MenuFlyoutItem CreatePinItem()
@@ -80,18 +71,12 @@ public sealed partial class UserCardControl : UserCardControlBase
 
     private void CheckFollowState()
     {
-        if (FollowButton is not null)
-        {
-            FollowButton.IsChecked = ViewModel?.IsFollowed;
-        }
+        FollowButton?.IsChecked = ViewModel?.IsFollowed;
 
-        if (FollowIcon is not null)
-        {
-            FollowIcon.IconVariant =
-                ViewModel?.IsFollowed == true
-                    ? FluentIcons.Common.IconVariant.Filled
-                    : FluentIcons.Common.IconVariant.Regular;
-        }
+        FollowIcon?.IconVariant =
+            ViewModel?.IsFollowed == true
+                ? FluentIcons.Common.IconVariant.Filled
+                : FluentIcons.Common.IconVariant.Regular;
     }
 
     private void OnContextRequested(UIElement sender, ContextRequestedEventArgs args)

@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -13,6 +14,6 @@ public abstract class PopularPageControlBase : LayoutUserControlBase<PopularPage
     /// </summary>
     protected PopularPageControlBase()
     {
-        ViewModel = this.Get<PopularPageViewModel>();
+        ViewModel = Ioc.Default.GetRequiredService<PopularPageViewModel>();
     }
 }

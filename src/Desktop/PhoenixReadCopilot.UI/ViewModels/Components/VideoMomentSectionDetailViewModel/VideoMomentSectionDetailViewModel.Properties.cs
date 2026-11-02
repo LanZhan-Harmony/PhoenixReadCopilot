@@ -14,6 +14,8 @@ public sealed partial class VideoMomentSectionDetailViewModel
 {
     private readonly IMomentDiscoveryService _service;
     private readonly ILogger<VideoMomentSectionDetailViewModel> _logger;
+    private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
+    private readonly PhoenixReadCopilot.UI.ViewModels.View.MomentPageViewModel _momentPageViewModel;
 
     private bool _preventLoadMore;
     private string? _offset;

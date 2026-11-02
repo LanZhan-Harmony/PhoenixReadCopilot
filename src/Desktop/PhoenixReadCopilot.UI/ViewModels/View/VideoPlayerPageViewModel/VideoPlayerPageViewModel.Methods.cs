@@ -1,10 +1,8 @@
 using Humanizer;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -22,8 +20,7 @@ public sealed partial class VideoPlayerPageViewModel
         AvId = view.Information.Identifier.Id;
         BvId = view.Information.BvId;
         IsMyVideo =
-            _view.Information.Publisher.User.Id
-            == this.Get<IBiliTokenResolver>().GetToken().UserId.ToString();
+            _view.Information.Publisher.User.Id == _tokenResolver.GetToken().UserId.ToString();
         UpAvatar = view.Information.Publisher.User.Avatar.Uri;
         UpName = view.Information.Publisher.User.Name;
         var relativeTime =
@@ -85,7 +82,7 @@ public sealed partial class VideoPlayerPageViewModel
             return;
         }
 
-        var preferFormatSetting = Settings.PreferQuality;
+        var preferFormatSetting = _settings.PreferQuality;
         var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
         var partIndex = _view.Parts?.IndexOf(_part) ?? 0;
 
@@ -99,7 +96,7 @@ public sealed partial class VideoPlayerPageViewModel
         PlayerFormatItemViewModel? selectedFormat = default;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
-            var lastSelectedFormat = Settings.LastSelectedVideoQuality;
+            var lastSelectedFormat = _settings.LastSelectedVideoQuality;
             selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
         }
         else if (preferFormatSetting == PreferQualityType.UHD)
@@ -149,7 +146,8 @@ public sealed partial class VideoPlayerPageViewModel
                 new VideoPlayerPartSectionDetailViewModel(
                     _view.Parts,
                     _part.Identifier.Id,
-                    ChangePart
+                    ChangePart,
+                    _settingsService
                 )
             );
         }
@@ -236,7 +234,7 @@ public sealed partial class VideoPlayerPageViewModel
         if (part == null)
         {
             var historyPartId = _view.Progress?.Cid;
-            var autoLoadHistory = Settings.AutoLoadHistory;
+            var autoLoadHistory = _settings.AutoLoadHistory;
             if (!string.IsNullOrEmpty(historyPartId) && autoLoadHistory)
             {
                 part = _view.Parts.FirstOrDefault(p => p.Identifier.Id == historyPartId);
@@ -299,7 +297,7 @@ public sealed partial class VideoPlayerPageViewModel
             {
                 return _playlist.First();
             }
-            else if (Settings.EndWithPlaylist)
+            else if (_settings.EndWithPlaylist)
             {
                 return default;
             }
@@ -323,7 +321,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         // 4. 检查推荐视频中是否有下一个视频.
-        var isAutoPlayRecommendVideo = Settings.AutoPlayNextRecommendVideo;
+        var isAutoPlayRecommendVideo = _settings.AutoPlayNextRecommendVideo;
         if (
             isAutoPlayRecommendVideo
             && Sections.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault()
@@ -375,7 +373,7 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void SyncDownloadAndSubtitle()
     {
-        var isAISubtitleFiltered = Settings.FilterAISubtitle;
+        var isAISubtitleFiltered = _settings.FilterAISubtitle;
         Downloader.HasAvailableSubtitle =
             Subtitle.IsAvailable
             && (isAISubtitleFiltered ? Subtitle.Metas.Any(p => !p.IsAI) : true);

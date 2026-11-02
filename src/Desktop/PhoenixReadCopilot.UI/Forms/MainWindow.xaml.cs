@@ -1,11 +1,14 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Windows.Graphics;
 using Windows.System;
@@ -15,7 +18,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using WinUIEx;
 using WinUIKernel.Share.Base;
-using PhoenixReadCopilot.UI.Services;
 
 namespace PhoenixReadCopilot.UI.Forms;
 
@@ -24,6 +26,10 @@ namespace PhoenixReadCopilot.UI.Forms;
 /// </summary>
 public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, ITipWindow
 {
+    private readonly ISettingsService _settingsService;
+    private readonly AppViewModel _appViewModel;
+    private AppSettings _settings => _settingsService.Settings;
+
     private const int WindowMinWidth = 640;
     private const int WindowMinHeight = 480;
     private readonly InputActivationListener _inputActivationListener;
@@ -35,6 +41,8 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     /// </summary>
     public MainWindow()
     {
+        _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
+        _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
         InitializeComponent();
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(RootLayout.GetMainTitleBar());
@@ -43,7 +51,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         MinWidth = WindowMinWidth;
         MinHeight = WindowMinHeight;
-        this.Get<AppViewModel>().Windows.Add(this);
+        _appViewModel.Windows.Add(this);
         _inputActivationListener = InputActivationListener.GetForWindowId(AppWindow.Id);
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
         Activated += OnActivated;
@@ -68,10 +76,10 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         TipContainer.Visibility = Visibility.Collapsed;
     }
 
-    private static PointInt32 GetSavedWindowPosition()
+    private PointInt32 GetSavedWindowPosition()
     {
-        var left = Settings.MainWindowPositionLeft;
-        var top = Settings.MainWindowPositionTop;
+        var left = _settings.MainWindowPositionLeft;
+        var top = _settings.MainWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -99,7 +107,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     {
         if (args.WindowActivationState != WindowActivationState.Deactivated)
         {
-            this.Get<AppViewModel>().ActivatedWindow = this;
+            _appViewModel.ActivatedWindow = this;
         }
 
         if (!_isFirstActivated)
@@ -108,14 +116,14 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         }
 
         MoveAndResize();
-        var isMaximized = Settings.IsMainWindowMaximized;
+        var isMaximized = _settings.IsMainWindowMaximized;
         if (isMaximized)
         {
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        var localTheme = Settings.AppTheme;
-        this.Get<AppViewModel>().ChangeThemeCommand.Execute(localTheme);
+        var localTheme = _settings.AppTheme;
+        _appViewModel.ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }
 
@@ -123,13 +131,13 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     {
         if (!_shouldExit)
         {
-            var hideWhenClose = Settings.HideWhenCloseWindow;
+            var hideWhenClose = _settings.HideWhenCloseWindow;
             if (hideWhenClose)
             {
                 e.Handled = true;
                 this.Hide();
                 SaveCurrentWindowStats();
-                await this.Get<ISettingsService>().FlushAsync();
+                await _settingsService.FlushAsync();
                 return;
             }
 
@@ -137,11 +145,11 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
             this.Hide();
 
             SaveCurrentWindowStats();
-            await this.Get<ISettingsService>().FlushAsync();
+            await _settingsService.FlushAsync();
 
-            this.Get<AppViewModel>().IsClosed = true;
+            _appViewModel.IsClosed = true;
             RootLayout.ViewModel.Back();
-            foreach (var item in this.Get<AppViewModel>().Windows.ToList())
+            foreach (var item in _appViewModel.Windows.ToList())
             {
                 if (item is not MainWindow)
                 {
@@ -152,7 +160,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
             Activated -= OnActivated;
             Closed -= OnClosed;
 
-            GlobalDependencies.Kernel.GetRequiredService<AppViewModel>().Windows.Remove(this);
+            _appViewModel.Windows.Remove(this);
             GlobalHook.Stop();
             App.Current?.Exit();
         }
@@ -202,8 +210,8 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
         var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = Settings.MainWindowWidth;
-        var previousHeight = Settings.MainWindowHeight;
+        var previousWidth = _settings.MainWindowWidth;
+        var previousHeight = _settings.MainWindowHeight;
         var width = Convert.ToInt32(previousWidth * scaleFactor);
         var height = Convert.ToInt32(previousHeight * scaleFactor);
 
@@ -235,17 +243,17 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         var left = AppWindow.Position.X;
         var top = AppWindow.Position.Y;
         var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
-        Settings.IsMainWindowMaximized = (bool)isMaximized;
+        _settings.IsMainWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)
         {
-            Settings.MainWindowPositionLeft = left;
-            Settings.MainWindowPositionTop = top;
+            _settings.MainWindowPositionLeft = left;
+            _settings.MainWindowPositionTop = top;
 
             if (Height >= WindowMinHeight && Width >= WindowMinWidth)
             {
-                Settings.MainWindowHeight = Height;
-                Settings.MainWindowWidth = Width;
+                _settings.MainWindowHeight = Height;
+                _settings.MainWindowWidth = Width;
             }
         }
     }

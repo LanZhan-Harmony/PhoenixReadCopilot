@@ -30,10 +30,7 @@ public sealed partial class VideoFavoriteBody : VideoFavoriteControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnVideoListUpdatedAsync;
-        }
+        ViewModel?.ListUpdated -= OnVideoListUpdatedAsync;
 
         VideoRepeater.ItemsSource = null;
         VideoScrollView.ViewChanged -= OnViewChanged;
@@ -46,10 +43,7 @@ public sealed partial class VideoFavoriteBody : VideoFavoriteControlBase
         VideoFavoriteSectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ListUpdated -= OnVideoListUpdatedAsync;
-        }
+        oldValue?.ListUpdated -= OnVideoListUpdatedAsync;
 
         if (newValue is null)
         {

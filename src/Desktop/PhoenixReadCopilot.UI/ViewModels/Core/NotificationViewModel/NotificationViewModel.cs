@@ -1,7 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.Services;
 using Richasy.BiliKernel.Bili.Moment;
 using Windows.ApplicationModel;
 using Windows.UI.Notifications;
@@ -15,15 +16,19 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class NotificationViewModel : ViewModelBase
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotificationViewModel"/> class.
-    /// </summary>
+    private readonly AppViewModel _appViewModel;
+    private readonly AppSettings Settings;
+
     public NotificationViewModel(
         IMomentDiscoveryService momentService,
+        AppViewModel appViewModel,
+        ISettingsService settingsService,
         ILogger<NotificationViewModel> logger
     )
     {
         _momentService = momentService;
+        _appViewModel = appViewModel;
+        Settings = settingsService.Settings;
         _logger = logger;
     }
 
@@ -65,7 +70,9 @@ public sealed partial class NotificationViewModel : ViewModelBase
                     _isTileSupport = StartScreenManager.GetDefault().SupportsAppListEntry(entry);
                     if (_isTileSupport)
                     {
-                        TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+                        TileUpdateManager
+                            .CreateTileUpdaterForApplication()
+                            .EnableNotificationQueue(true);
                     }
                 }
             }

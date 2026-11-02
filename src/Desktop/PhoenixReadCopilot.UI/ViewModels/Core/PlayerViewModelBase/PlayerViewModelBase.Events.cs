@@ -32,7 +32,7 @@ public abstract partial class PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(async () =>
         {
-            if (_isClosed || this.Get<AppViewModel>().IsClosed)
+            if (_isClosed || _appViewModel.IsClosed)
             {
                 await OnCloseAsync();
                 return;
@@ -56,13 +56,10 @@ public abstract partial class PlayerViewModelBase
                 IsPaused = !IsBuffering;
             }
 
-            if (_smtc is not null)
-            {
-                _smtc.PlaybackStatus =
-                    IsFailed ? MediaPlaybackStatus.Stopped
-                    : IsPaused ? MediaPlaybackStatus.Paused
-                    : MediaPlaybackStatus.Playing;
-            }
+            _smtc?.PlaybackStatus =
+                IsFailed ? MediaPlaybackStatus.Stopped
+                : IsPaused ? MediaPlaybackStatus.Paused
+                : MediaPlaybackStatus.Playing;
 
             IsFailed = state == PlayerState.Failed;
             _stateAction?.Invoke(state);

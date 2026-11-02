@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using PhoenixReadCopilot.UI.ViewModels.View;
@@ -34,5 +35,5 @@ public abstract class SettingsPageBase : LayoutPageBase<SettingsPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPageBase"/> class.
     /// </summary>
-    protected SettingsPageBase() => ViewModel = this.Get<SettingsPageViewModel>();
+    protected SettingsPageBase() => ViewModel = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 }

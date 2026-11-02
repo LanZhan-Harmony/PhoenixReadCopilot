@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -14,6 +15,10 @@ namespace PhoenixReadCopilot.UI.Forms;
 /// </summary>
 public sealed partial class WebSignInWindow : WindowEx
 {
+    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+    private readonly StartupPageViewModel _startupViewModel = Ioc.Default.GetRequiredService<StartupPageViewModel>();
+    private readonly IBiliTokenResolver _tokenResolver = Ioc.Default.GetRequiredService<IBiliTokenResolver>();
+    private readonly IAuthenticationService _authService = Ioc.Default.GetRequiredService<IAuthenticationService>();
     private CancellationTokenSource _cancellationTokenSource = new();
 
     /// <summary>
@@ -33,14 +38,14 @@ public sealed partial class WebSignInWindow : WindowEx
         this.CenterOnScreen();
         AppWindow.SetIcon("Assets/logo.ico");
         SetTitleBar(TitleBar);
-        this.Get<AppViewModel>().Windows.Add(this);
+        _appViewModel.Windows.Add(this);
 
         Closed += OnClosed;
         Activated += OnActivated;
     }
 
     private void OnActivated(object sender, WindowActivatedEventArgs args) =>
-        this.Get<StartupPageViewModel>().ExitCommand.Execute(default);
+        _startupViewModel.ExitCommand.Execute(default);
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
@@ -53,10 +58,10 @@ public sealed partial class WebSignInWindow : WindowEx
 
         Activated -= OnActivated;
         Closed -= OnClosed;
-        var localToken = this.Get<IBiliTokenResolver>().GetToken();
+        var localToken = _tokenResolver.GetToken();
         if (localToken != null)
         {
-            this.Get<AppViewModel>().RestartCommand.Execute(default);
+            _appViewModel.RestartCommand.Execute(default);
         }
     }
 
@@ -85,7 +90,7 @@ public sealed partial class WebSignInWindow : WindowEx
             var cookieDict = cookies.Select(p => (p.Name, p.Value)).ToDictionary();
             if (cookieDict.Count > 0)
             {
-                await this.Get<IAuthenticationService>()
+                await _authService
                     .SignInAsync(
                         new Richasy.BiliKernel.Bili.AuthorizeExecutionSettings
                         {

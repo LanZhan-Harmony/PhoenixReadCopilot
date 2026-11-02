@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using WinUIKernel.Share.Base;
 
@@ -28,5 +29,5 @@ public abstract class HeaderAccountControlBase : LayoutUserControlBase<AccountVi
     /// <summary>
     /// Initializes a new instance of the <see cref="HeaderAccountControlBase"/> class.
     /// </summary>
-    protected HeaderAccountControlBase() => ViewModel = this.Get<AccountViewModel>();
+    protected HeaderAccountControlBase() => ViewModel = Ioc.Default.GetRequiredService<AccountViewModel>();
 }

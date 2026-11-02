@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -31,10 +32,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         _rootCard = GetTemplateChild("RootCard") as CardControl;
         if (ViewModel is not null)
         {
-            if (_rootCard is not null)
-            {
-                _rootCard.Command = ViewModel.PlayCommand;
-            }
+            _rootCard?.Command = ViewModel.PlayCommand;
         }
     }
 
@@ -50,10 +48,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         SeasonItemViewModel? newValue
     )
     {
-        if (_rootCard is not null)
-        {
-            _rootCard.Command = newValue?.PlayCommand;
-        }
+        _rootCard?.Command = newValue?.PlayCommand;
     }
 
     private static MenuFlyoutItem CreateOpenInNewWindowItem()
@@ -140,7 +135,8 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.HeartBroken,
-                Foreground = this.Get<IResourceToolkit>()
+                Foreground = Ioc
+                    .Default.GetRequiredService<IResourceToolkit>()
                     .GetThemeBrush("SystemFillColorCriticalBrush"),
             },
             Tag = nameof(ViewModel.UnfollowCommand),

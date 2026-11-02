@@ -1,9 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.Toolkits;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
@@ -15,13 +14,22 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
 {
+    private readonly DispatcherQueue _dispatcherQueue;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FollowsPageViewModel"/> class.
     /// </summary>
-    public FollowsPageViewModel(IRelationshipService service, ILogger<FollowsPageViewModel> logger)
+    public FollowsPageViewModel(
+        IRelationshipService service,
+        ILogger<FollowsPageViewModel> logger,
+        DispatcherQueue dispatcherQueue,
+        ISettingsService settingsService
+    )
+        : base(settingsService)
     {
         _service = service;
         _logger = logger;
+        _dispatcherQueue = dispatcherQueue;
     }
 
     /// <inheritdoc/>
@@ -37,7 +45,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
 
         await LoadGroupsAsync();
         await Task.Delay(200);
-        var lastSelectedGroupId = Settings.FollowsPageLastSelectedGroupId;
+        var lastSelectedGroupId = _settings.FollowsPageLastSelectedGroupId;
         var group =
             Groups.FirstOrDefault(p => p.Id == lastSelectedGroupId)
             ?? Groups.FirstOrDefault(p => p.TotalCount > 0)
@@ -60,31 +68,30 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         }
 
         SelectedGroup = group;
-        Settings.FollowsPageLastSelectedGroupId = group.Id;
+        _settings.FollowsPageLastSelectedGroupId = group.Id;
 
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Users.Clear();
+                if (_userCache.TryGetValue(group, out var list))
                 {
-                    Users.Clear();
-                    if (_userCache.TryGetValue(group, out var list))
+                    foreach (var user in list)
                     {
-                        foreach (var user in list)
-                        {
-                            Users.Add(user);
-                        }
-
-                        UserListUpdated?.Invoke(this, EventArgs.Empty);
-                    }
-                    else
-                    {
-                        await LoadUsersAsync();
+                        Users.Add(user);
                     }
 
-                    IsEmpty = Users.Count == 0;
+                    UserListUpdated?.Invoke(this, EventArgs.Empty);
                 }
-            );
+                else
+                {
+                    await LoadUsersAsync();
+                }
+
+                IsEmpty = Users.Count == 0;
+            }
+        );
     }
 
     [RelayCommand]
@@ -135,19 +142,18 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void Refresh()
     {
-        this.Get<DispatcherQueue>()
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    Users.Clear();
-                    Groups.Clear();
-                    _userCache.Clear();
-                    _offsetCache.Clear();
-                    SelectedGroup = default;
-                    await InitializeAsync();
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Users.Clear();
+                Groups.Clear();
+                _userCache.Clear();
+                _offsetCache.Clear();
+                SelectedGroup = default;
+                await InitializeAsync();
+            }
+        );
     }
 
     private async Task LoadGroupsAsync()

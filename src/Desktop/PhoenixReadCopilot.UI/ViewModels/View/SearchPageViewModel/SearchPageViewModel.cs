@@ -1,8 +1,10 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
@@ -19,13 +21,28 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 {
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPageViewModel"/> class.
     /// </summary>
-    public SearchPageViewModel(ISearchService service, ILogger<SearchPageViewModel> logger)
+    public SearchPageViewModel(
+        ISearchService service,
+        ILogger<SearchPageViewModel> logger,
+        NavigationViewModel navigationViewModel,
+        ISettingsService settingsService,
+        DispatcherQueue dispatcherQueue,
+        ILoggerFactory loggerFactory
+    )
+        : base(settingsService)
     {
         _service = service;
         _logger = logger;
+        _navigationViewModel = navigationViewModel;
+        _dispatcherQueue = dispatcherQueue;
+        _loggerFactory = loggerFactory;
     }
 
     /// <inheritdoc/>
@@ -51,7 +68,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             // videoId should be a number.
             if (long.TryParse(videoId, out var id))
             {
-                this.Get<NavigationViewModel>().Back();
+                _navigationViewModel.Back();
                 var video = new VideoInformation(
                     new MediaIdentifier(videoId, default, default),
                     default
@@ -68,7 +85,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
                     new MediaIdentifier(IdToolkit.Bv2Av(keyword).ToString(), default, default),
                     default
                 );
-                this.Get<NavigationViewModel>().Back();
+                _navigationViewModel.Back();
                 new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(default);
                 return;
             }
@@ -130,7 +147,11 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         int? page
     )
     {
-        var newSection = new VideoSearchSectionDetailViewModel(_service);
+        var newSection = new VideoSearchSectionDetailViewModel(
+            _service,
+            _dispatcherQueue,
+            _loggerFactory.CreateLogger<VideoSearchSectionDetailViewModel>()
+        );
         newSection.Initialize(Keyword, new SearchPartition(0, Resources.Video));
         newSection.SetFirstPageData(videos, page);
         return newSection;
@@ -141,9 +162,21 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         var sectionDetail = type switch
         {
             SearchSectionType.Anime or SearchSectionType.Cinema => (ISearchSectionDetailViewModel)
-                new PgcSearchSectionDetailViewModel(_service),
-            SearchSectionType.User => new UserSearchSectionDetailViewModel(_service),
-            SearchSectionType.Article => new ArticleSearchSectionDetailViewModel(_service),
+                new PgcSearchSectionDetailViewModel(
+                    _service,
+                    _dispatcherQueue,
+                    _loggerFactory.CreateLogger<PgcSearchSectionDetailViewModel>()
+                ),
+            SearchSectionType.User => new UserSearchSectionDetailViewModel(
+                _service,
+                _dispatcherQueue,
+                _loggerFactory.CreateLogger<UserSearchSectionDetailViewModel>()
+            ),
+            SearchSectionType.Article => new ArticleSearchSectionDetailViewModel(
+                _service,
+                _dispatcherQueue,
+                _loggerFactory.CreateLogger<ArticleSearchSectionDetailViewModel>()
+            ),
             _ => default,
         };
 

@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class FollowsPageBase : LayoutPageBase<FollowsPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="FollowsPageBase"/> class.
     /// </summary>
-    protected FollowsPageBase() => ViewModel = this.Get<FollowsPageViewModel>();
+    protected FollowsPageBase() => ViewModel = Ioc.Default.GetRequiredService<FollowsPageViewModel>();
 }

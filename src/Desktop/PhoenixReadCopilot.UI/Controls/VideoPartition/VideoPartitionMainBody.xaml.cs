@@ -30,10 +30,7 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
-        }
+        ViewModel?.VideoListUpdated -= OnVideoListUpdatedAsync;
 
         VideoRepeater.ItemsSource = null;
         VideoScrollView.ViewChanged -= OnViewChanged;
@@ -46,10 +43,7 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
         VideoPartitionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.VideoListUpdated -= OnVideoListUpdatedAsync;
-        }
+        oldValue?.VideoListUpdated -= OnVideoListUpdatedAsync;
 
         if (newValue is null)
         {

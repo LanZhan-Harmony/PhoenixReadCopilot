@@ -699,11 +699,8 @@ internal class DanmakuRender
     public void Close()
     {
         Stop();
-        if (_container != null)
-        {
-            _container.SizeChanged -= OnContainerSizeChanged;
-            _container = null;
-        }
+        _container?.SizeChanged -= OnContainerSizeChanged;
+        _container = null;
 
         if (_canvas != null)
         {
@@ -1158,16 +1155,10 @@ internal class DanmakuRender
 
         public void Dispose()
         {
-            if (RenderTarget != null)
-            {
-                RenderTarget.Dispose();
-                RenderTarget = null;
-            }
-            if (TransformEffect != null)
-            {
-                TransformEffect.Dispose();
-                TransformEffect = null;
-            }
+            RenderTarget?.Dispose();
+            RenderTarget = null;
+            TransformEffect?.Dispose();
+            TransformEffect = null;
         }
 
         private static uint GetNextId()

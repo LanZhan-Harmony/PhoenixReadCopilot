@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -11,5 +12,5 @@ public abstract class SettingsPageControlBase : LayoutUserControlBase<SettingsPa
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPageControlBase"/> class.
     /// </summary>
-    protected SettingsPageControlBase() => ViewModel = this.Get<SettingsPageViewModel>();
+    protected SettingsPageControlBase() => ViewModel = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 }

@@ -1,11 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models.Constants;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Pages.Overlay;
+using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
@@ -17,6 +19,10 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
 {
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly PinnerViewModel _pinnerViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerPageViewModel"/> class.
     /// </summary>
@@ -28,9 +34,20 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         DanmakuViewModel danmaku,
         SubtitleViewModel subtitle,
         CommentMainViewModel comments,
-        DownloadViewModel downloader
+        DownloadViewModel downloader,
+        ISettingsService settingsService,
+        AppViewModel appViewModel,
+        NavigationViewModel navigationViewModel,
+        PinnerViewModel pinnerViewModel,
+        DispatcherQueue dispatcherQueue,
+        IBiliCookiesResolver cookiesResolver,
+        ILogger<PlayerViewModelBase> playerLogger
     )
+        : base(settingsService, appViewModel, dispatcherQueue, cookiesResolver, playerLogger)
     {
+        _navigationViewModel = navigationViewModel;
+        _pinnerViewModel = pinnerViewModel;
+        _dispatcherQueue = dispatcherQueue;
         _service = service;
         _favoriteService = favoriteService;
         _discoveryService = discoveryService;
@@ -197,7 +214,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         var isAutoPlay = !isFirstSet;
         if (isFirstSet)
         {
-            isAutoPlay = Settings.ShouldAutoPlay;
+            isAutoPlay = _settings.ShouldAutoPlay;
         }
 
         // 切换清晰度时，如果播放器已经加载了媒体，那么就保持当前的播放进度.
@@ -206,7 +223,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
             _initialProgress = Player.Position;
         }
 
-        Settings.LastSelectedPgcQuality = vm.Data.Quality;
+        _settings.LastSelectedPgcQuality = vm.Data.Quality;
         if (Player is NativePlayerViewModel npvm)
         {
             npvm.InjectSegments(vSeg, aSeg);
@@ -262,7 +279,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
-        var shouldReport = Settings.ShouldReportProgress;
+        var shouldReport = _settings.ShouldReportProgress;
         if (
             !shouldReport
             || _view is null

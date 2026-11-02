@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
 
@@ -13,6 +14,8 @@ public sealed partial class ChatMessageSectionDetailViewModel
 {
     private readonly IMessageService _service;
     private readonly ILogger<ChatMessageSectionDetailViewModel> _logger;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly AppViewModel _appViewModel;
 
     private bool _preventLoadMore;
 

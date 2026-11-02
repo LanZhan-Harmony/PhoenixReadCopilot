@@ -1,8 +1,7 @@
-using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using WinUIKernel.Share.Extensions;
 
 namespace WinUIKernel.Share.Base.Repeater;
 
@@ -43,10 +42,7 @@ public partial class AppItemsRepeater : ItemsRepeater
         }
         catch (Exception e)
         {
-            WinUIKernelShareExtensions.Logger?.LogError(
-                e,
-                "An error occurred when measuring AppItemsRepeater."
-            );
+            Debug.WriteLine($"An error occurred when measuring AppItemsRepeater: {e.Message}");
         }
 
         if (availableSize.Width >= 0 && !double.IsInfinity(availableSize.Width))

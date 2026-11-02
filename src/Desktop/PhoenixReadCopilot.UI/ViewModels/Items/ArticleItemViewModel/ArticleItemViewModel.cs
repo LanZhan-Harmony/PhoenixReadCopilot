@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
@@ -20,6 +21,9 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformation>
 {
+    private static ILogger<ArticleItemViewModel>? _logger;
+    private static ILogger<ArticleItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<ArticleItemViewModel>>();
+
     private readonly Action<ArticleItemViewModel>? _removeAction;
 
     /// <summary>
@@ -55,13 +59,13 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     [RelayCommand]
     private void OpenReader()
     {
-        var navVM = this.Get<NavigationViewModel>();
+        var navVM = ItemServices.Navigation;
         navVM.NavigateToOver(typeof(ArticleReaderPage), Data.Identifier);
     }
 
     [RelayCommand]
     private void ShowUserSpace() =>
-        this.Get<NavigationViewModel>().NavigateToOver(typeof(UserSpacePage), Data.Publisher);
+        ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.Publisher);
 
     [RelayCommand]
     private async Task OpenInBroswerAsync()
@@ -75,13 +79,13 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     {
         try
         {
-            await this.Get<IViewHistoryService>().RemoveArticleHistoryItemAsync(Data);
+            await ItemServices.ViewHistory.RemoveArticleHistoryItemAsync(Data);
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
         {
-            this.Get<ILogger<ArticleItemViewModel>>().LogError(ex, "移除历史记录时失败");
-            this.Get<AppViewModel>()
+            Logger.LogError(ex, "移除历史记录时失败");
+            ItemServices.App
                 .ShowTipCommand.Execute((Resources.FailedToRemoveVideoFromHistory, InfoType.Error));
         }
     }
@@ -95,6 +99,6 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
             Data.Identifier.Cover.Uri.ToString(),
             PinContentType.Article
         );
-        this.Get<PinnerViewModel>().AddItemCommand.Execute(pinItem);
+        ItemServices.Pinner.AddItemCommand.Execute(pinItem);
     }
 }

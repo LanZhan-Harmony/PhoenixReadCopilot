@@ -30,10 +30,7 @@ public sealed partial class PgcFavoriteBody : PgcFavoriteControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnSeasonListUpdatedAsync;
-        }
+        ViewModel?.ListUpdated -= OnSeasonListUpdatedAsync;
 
         SeasonRepeater.ItemsSource = null;
         SeasonScrollView.ViewChanged -= OnViewChanged;
@@ -46,10 +43,7 @@ public sealed partial class PgcFavoriteBody : PgcFavoriteControlBase
         PgcFavoriteSectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.ListUpdated -= OnSeasonListUpdatedAsync;
-        }
+        oldValue?.ListUpdated -= OnSeasonListUpdatedAsync;
 
         if (newValue is null)
         {

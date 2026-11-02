@@ -181,11 +181,8 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         ActualThemeChanged -= OnActualThemeChangedAsync;
         CanvasImageSource = default;
         ResetCancellationTokenSource();
-        if (_backgroundBrush is not null)
-        {
-            _backgroundBrush.ImageSource = default;
-            _backgroundBrush = null;
-        }
+        _backgroundBrush?.ImageSource = default;
+        _backgroundBrush = null;
     }
 
     private async void OnCompositionTargetSurfaceContentsLost(object? sender, object e)

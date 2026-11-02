@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.User;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
@@ -15,6 +16,8 @@ public sealed partial class AccountViewModel
     private readonly IMessageService _messageService;
     private readonly NavigationViewModel _navService;
     private readonly ILogger<AccountViewModel> _logger;
+    private readonly AppViewModel _appViewModel;
+    private readonly IAuthenticationService _authService;
 
     [ObservableProperty]
     public partial UserDetailProfile MyProfile { get; set; }

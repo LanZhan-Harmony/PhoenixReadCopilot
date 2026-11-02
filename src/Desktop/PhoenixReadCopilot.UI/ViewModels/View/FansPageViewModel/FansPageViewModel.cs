@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -12,13 +13,19 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class FansPageViewModel : ViewModelBase
 {
+    private readonly DispatcherQueue _dispatcherQueue;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPageViewModel"/> class.
     /// </summary>
-    public FansPageViewModel(IRelationshipService service, ILogger<FansPageViewModel> logger)
+    public FansPageViewModel(
+        IRelationshipService service,
+        ILogger<FansPageViewModel> logger,
+        DispatcherQueue dispatcherQueue)
     {
         _service = service;
         _logger = logger;
+        _dispatcherQueue = dispatcherQueue;
     }
 
     [RelayCommand]
@@ -38,7 +45,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
         IsEmpty = false;
         _pageNumber = 0;
         TotalCount = 0;
-        this.Get<DispatcherQueue>()
+        _dispatcherQueue
             .TryEnqueue(
                 DispatcherQueuePriority.Low,
                 async () =>

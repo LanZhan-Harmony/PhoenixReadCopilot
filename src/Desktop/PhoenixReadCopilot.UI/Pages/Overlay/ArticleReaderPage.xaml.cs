@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Models.Article;
@@ -51,5 +52,5 @@ public abstract class ArticleReaderPageBase : LayoutPageBase<ArticleReaderPageVi
     /// <summary>
     /// Initializes a new instance of the <see cref="ArticleReaderPageBase"/> class.
     /// </summary>
-    protected ArticleReaderPageBase() => ViewModel = this.Get<ArticleReaderPageViewModel>();
+    protected ArticleReaderPageBase() => ViewModel = Ioc.Default.GetRequiredService<ArticleReaderPageViewModel>();
 }

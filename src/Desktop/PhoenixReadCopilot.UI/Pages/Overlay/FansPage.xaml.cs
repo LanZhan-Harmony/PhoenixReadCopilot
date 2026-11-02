@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -25,5 +26,5 @@ public abstract class FansPageBase : LayoutPageBase<FansPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPageBase"/> class.
     /// </summary>
-    protected FansPageBase() => ViewModel = this.Get<FansPageViewModel>();
+    protected FansPageBase() => ViewModel = Ioc.Default.GetRequiredService<FansPageViewModel>();
 }

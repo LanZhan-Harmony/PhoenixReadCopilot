@@ -20,7 +20,7 @@ public sealed partial class ChatMessageItemViewModel : ViewModelBase<ChatMessage
         RelativeTime = data.Time.Humanize();
         ActualTime = data.Time?.ToString("yyyy/MM/dd HH:mm:ss");
         Content = data.Content;
-        IsMe = data.SenderId == this.Get<IBiliTokenResolver>().GetToken().UserId.ToString();
+        IsMe = data.SenderId == ItemServices.TokenResolver.GetToken().UserId.ToString();
         IsWithdrawn = data.Type == Richasy.BiliKernel.Models.ChatMessageType.Withdrawn;
         if (data.Type == Richasy.BiliKernel.Models.ChatMessageType.Unknown)
         {

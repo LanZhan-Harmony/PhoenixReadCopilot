@@ -1,3 +1,4 @@
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -136,5 +137,5 @@ public abstract class PgcPlayerPageBase : LayoutPageBase<PgcPlayerPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerPageBase"/> class.
     /// </summary>
-    protected PgcPlayerPageBase() => ViewModel = this.Get<PgcPlayerPageViewModel>();
+    protected PgcPlayerPageBase() => ViewModel = Ioc.Default.GetRequiredService<PgcPlayerPageViewModel>();
 }

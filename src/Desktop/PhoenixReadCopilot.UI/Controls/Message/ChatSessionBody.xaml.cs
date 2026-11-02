@@ -27,10 +27,7 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.RequestScrollToBottom -= OnRequestScrollToBottom;
-        }
+        ViewModel?.RequestScrollToBottom -= OnRequestScrollToBottom;
     }
 
     /// <inheritdoc/>
@@ -39,10 +36,7 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
         ChatMessageSectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.RequestScrollToBottom -= OnRequestScrollToBottom;
-        }
+        oldValue?.RequestScrollToBottom -= OnRequestScrollToBottom;
 
         if (newValue is null)
         {

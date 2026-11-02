@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -17,10 +17,14 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcFavoriteSectionDetailViewModel"/> class.
     /// </summary>
-    public PgcFavoriteSectionDetailViewModel(PgcFavoriteType type, IFavoriteService service)
+    public PgcFavoriteSectionDetailViewModel(
+        PgcFavoriteType type,
+        IFavoriteService service,
+        ILogger<PgcFavoriteSectionDetailViewModel> logger
+    )
     {
         _service = service;
-        _logger = this.Get<ILogger<PgcFavoriteSectionDetailViewModel>>();
+        _logger = logger;
         StatusList = Enum.GetValues<PgcFavoriteStatus>().ToList();
         Type = type;
     }

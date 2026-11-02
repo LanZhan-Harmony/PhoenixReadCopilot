@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
@@ -16,10 +16,13 @@ public sealed partial class VideoHistorySectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoHistorySectionDetailViewModel"/> class.
     /// </summary>
-    public VideoHistorySectionDetailViewModel(IViewHistoryService service)
+    public VideoHistorySectionDetailViewModel(
+        IViewHistoryService service,
+        ILogger<VideoHistorySectionDetailViewModel> logger
+    )
     {
         _service = service;
-        _logger = this.Get<ILogger<VideoHistorySectionDetailViewModel>>();
+        _logger = logger;
     }
 
     [RelayCommand]
