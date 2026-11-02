@@ -3,7 +3,6 @@ using Microsoft.Graphics.Canvas.UI.Xaml;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Windows.Foundation;
 using Windows.UI;
 
 namespace Danmaku.Core;
@@ -38,17 +37,24 @@ public class DanmakuFrostMaster
             return;
         }
 
-        var canvas = new CanvasAnimatedControl();
-        canvas.UseSharedDevice = true;
-        canvas.DpiScale = (float)rootGrid.XamlRoot.RasterizationScale;
-        canvas.ClearColor = Colors.Transparent;
-        canvas.Background = new SolidColorBrush(Colors.Transparent);
+        var canvas = new CanvasAnimatedControl
+        {
+            UseSharedDevice = true,
+            DpiScale = (float)rootGrid.XamlRoot.RasterizationScale,
+            ClearColor = Colors.Transparent,
+            Background = new SolidColorBrush(Colors.Transparent),
+        };
         rootGrid.Children.Add(canvas);
         Logger.SetLogger(logger);
 
         _render = new DanmakuRender(canvas, rootGrid);
 
-        Windows.System.Threading.ThreadPool.RunAsync(Updater_DoWork).AsTask();
+        Task.Factory.StartNew(
+            Updater_DoWork,
+            CancellationToken.None,
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default
+        );
 
         Logger.Log("DanmakuFrostMaster is created");
     }
@@ -273,7 +279,7 @@ public class DanmakuFrostMaster
         }
     }
 
-    private void Updater_DoWork(IAsyncAction action)
+    private void Updater_DoWork()
     {
         if (_render is null)
         {

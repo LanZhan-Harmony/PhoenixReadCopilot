@@ -84,10 +84,12 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ChooseDownloadFolderAsync()
     {
-        var folder = await _fileToolkit.PickFolderAsync(_appViewModel.ActivatedWindow);
-        if (folder != null)
+        var folderPath = await _fileToolkit.PickFolderAsync(
+            _appViewModel.ActivatedWindow.AppWindow.Id
+        );
+        if (folderPath != null)
         {
-            Settings.DownloadFolder = folder.Path;
+            Settings.DownloadFolder = folderPath;
         }
     }
 

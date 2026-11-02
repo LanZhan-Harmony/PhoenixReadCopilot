@@ -2,10 +2,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Models.Settings;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Authorization;
+using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.UI.Helpers;
 
@@ -39,6 +41,10 @@ namespace PhoenixReadCopilot.UI.Helpers;
 [JsonSerializable(typeof(AppSettings))]
 [JsonSerializable(typeof(DanmakuLocation))]
 [JsonSerializable(typeof(BiliToken))]
+[JsonSerializable(typeof(MediaIdentifier))]
+[JsonSerializable(typeof(List<string>))]
+[JsonSerializable(typeof(PinItem))]
+[JsonSerializable(typeof(List<PinItem>))]
 internal sealed partial class SourceGenerationContext : JsonSerializerContext;
 
 internal static class JsonAotSerializer

@@ -1,4 +1,4 @@
-using Windows.Storage;
+using Microsoft.Windows.Storage;
 
 namespace PhoenixReadCopilot.UI.Helpers;
 
@@ -55,7 +55,7 @@ internal static class PathHelper
     {
         if (RuntimeHelper.IsMSIX)
         {
-            return ApplicationData.Current.LocalFolder.Path;
+            return ApplicationData.GetDefault().LocalPath;
         }
 
         var portablePath = Path.Combine(AppContext.BaseDirectory, "AppData");

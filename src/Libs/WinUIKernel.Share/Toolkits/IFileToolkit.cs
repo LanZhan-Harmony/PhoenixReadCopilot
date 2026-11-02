@@ -1,5 +1,4 @@
-using System.Text.Json.Serialization.Metadata;
-using Windows.Storage;
+using Microsoft.UI;
 
 namespace WinUIKernel.Share.Toolkits;
 
@@ -12,35 +11,32 @@ public interface IFileToolkit
     /// 选择文件.
     /// </summary>
     /// <param name="extension">扩展名.</param>
-    /// <param name="windowInstance">窗口对象.</param>
+    /// <param name="windowId"></param>
     /// <returns>文件对象（可能为空）.</returns>
-    Task<StorageFile> PickFileAsync(string extension, object windowInstance);
+    Task<string?> PickFileAsync(string extension, WindowId windowId);
 
     /// <summary>
     /// 选择多个文件.
     /// </summary>
     /// <param name="extension">扩展名.</param>
-    /// <param name="windowInstance">窗口对象.</param>
+    /// <param name="windowId"></param>
     /// <returns>文件对象（可能为空）.</returns>
-    Task<IReadOnlyList<StorageFile>?> PickMultipleFileAsync(
-        string extension,
-        object windowInstance
-    );
+    Task<IReadOnlyList<string>> PickMultipleFileAsync(string extension, WindowId windowId);
 
     /// <summary>
     /// 选择文件夹.
     /// </summary>
-    /// <param name="windowInstance">窗口对象.</param>
+    /// <param name="windowId"></param>
     /// <returns>文件夹.</returns>
-    Task<StorageFolder> PickFolderAsync(object windowInstance);
+    Task<string?> PickFolderAsync(WindowId windowId);
 
     /// <summary>
     /// 保存文件.
     /// </summary>
     /// <param name="extension">扩展名.</param>
-    /// <param name="windowInstance">窗口实例.</param>
+    /// <param name="windowId"></param>
     /// <returns>文件.</returns>
-    Task<StorageFile?> SaveFileAsync(string extension, object windowInstance);
+    Task<string?> SaveFileAsync(string extension, WindowId windowId);
 
     /// <summary>
     /// Get local data and convert.
@@ -53,7 +49,6 @@ public interface IFileToolkit
     /// <returns>Converted result.</returns>
     Task<T> ReadLocalDataAsync<T>(
         string fileName,
-        JsonTypeInfo<T> typeInfo,
         string defaultValue = "{}",
         string folderName = ""
     );
@@ -67,12 +62,7 @@ public interface IFileToolkit
     /// <param name="typeInfo">Type info for serialize.</param>
     /// <param name="folderName">The folder to which the file belongs.</param>
     /// <returns><see cref="Task"/>.</returns>
-    Task WriteLocalDataAsync<T>(
-        string fileName,
-        T data,
-        JsonTypeInfo<T> typeInfo,
-        string folderName = ""
-    );
+    Task WriteLocalDataAsync<T>(string fileName, T data, string folderName = "");
 
     /// <summary>
     /// Delete local data file.

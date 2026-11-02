@@ -1,9 +1,9 @@
 using System.Security;
-using System.Text.Json;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
+using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
@@ -60,10 +60,7 @@ public sealed partial class NotificationViewModel
                     title = vinfo.Identifier.Title;
                     cover = vinfo.Identifier.Cover.Uri.ToString();
                     pageType = typeof(VideoPlayerPage).FullName;
-                    arguments = JsonSerializer.Serialize(
-                        vinfo.Identifier,
-                        GlobalSerializeContext.Default.MediaIdentifier
-                    );
+                    arguments = JsonAotSerializer.Serialize(vinfo.Identifier);
                 }
                 else if (moment.Data is EpisodeInformation einfo)
                 {
@@ -78,10 +75,7 @@ public sealed partial class NotificationViewModel
                             default,
                             default
                         );
-                        arguments = JsonSerializer.Serialize(
-                            identifier,
-                            GlobalSerializeContext.Default.MediaIdentifier
-                        );
+                        arguments = JsonAotSerializer.Serialize(identifier);
                     }
                     else
                     {
