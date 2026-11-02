@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages.Overlay;
-using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Models.Comment;
 using WinUIKernel.Share.ViewModels;

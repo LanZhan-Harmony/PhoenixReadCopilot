@@ -6,10 +6,6 @@ using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.Toolkits;
-using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 using Windows.System;
@@ -24,7 +20,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformation>
 {
     private static ILogger<SeasonItemViewModel>? _logger;
-    private static ILogger<SeasonItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<SeasonItemViewModel>>();
+    private static ILogger<SeasonItemViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<SeasonItemViewModel>>();
 
     private readonly Action<SeasonItemViewModel>? _removeAction;
 
@@ -92,8 +89,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         catch (Exception ex)
         {
             Logger.LogError(ex, "追番/追剧失败");
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.FailedToFollowPgc, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute((Resources.FailedToFollowPgc, InfoType.Error));
         }
     }
 
@@ -103,14 +99,14 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         try
         {
             await ItemServices.Entertainment.UnfollowAsync(Data.Identifier.Id);
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
+            ItemServices.App.ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "取消追番/追剧失败");
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.FailedToUnfollowPgc, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.FailedToUnfollowPgc, InfoType.Error)
+            );
         }
     }
 
@@ -147,8 +143,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         catch (Exception ex)
         {
             Logger.LogError(ex, "标记想看失败");
-            ItemServices.App
-                .ShowTipCommand.Execute((Resources.FailedToMarkPgc, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute((Resources.FailedToMarkPgc, InfoType.Error));
         }
     }
 }

@@ -68,8 +68,8 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
             {
                 if (
                     ArticleScrollView.ExtentHeight
-                        - ArticleScrollView.ViewportHeight
-                        - ArticleScrollView.VerticalOffset
+                    - ArticleScrollView.ViewportHeight
+                    - ArticleScrollView.VerticalOffset
                     <= 240
                 )
                 {

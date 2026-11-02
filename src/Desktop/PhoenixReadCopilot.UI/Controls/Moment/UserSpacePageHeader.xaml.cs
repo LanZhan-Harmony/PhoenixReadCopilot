@@ -52,7 +52,11 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
         {
             foreach (var item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem() { Text = item.Title, Tag = item });
+                Selector.Items.Add(new SelectorBarItem()
+                {
+                    Text = item.Title,
+                    Tag = item
+                });
             }
         }
 

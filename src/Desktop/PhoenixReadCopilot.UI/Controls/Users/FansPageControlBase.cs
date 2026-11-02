@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using PhoenixReadCopilot.UI.ViewModels.View;
+﻿using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Users;
@@ -7,10 +6,4 @@ namespace PhoenixReadCopilot.UI.Controls.Users;
 /// <summary>
 /// 粉丝页面控件基类.
 /// </summary>
-public abstract class FansPageControlBase : LayoutUserControlBase<FansPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FansPageControlBase"/> class.
-    /// </summary>
-    protected FansPageControlBase() => ViewModel = Ioc.Default.GetRequiredService<FansPageViewModel>();
-}
+public abstract class FansPageControlBase : LayoutUserControlBase<FansPageViewModel> { }

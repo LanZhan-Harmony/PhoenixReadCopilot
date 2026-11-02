@@ -4,7 +4,6 @@ using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Toolkits;
-using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
 using Windows.System;
 using WinUIKernel.Share.ViewModels;

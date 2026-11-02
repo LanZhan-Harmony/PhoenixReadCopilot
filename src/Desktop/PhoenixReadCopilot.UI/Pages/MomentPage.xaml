@@ -33,7 +33,7 @@
                 Height="1"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
-        <moment:MomentHeader VerticalAlignment="Center"/>
+        <moment:MomentHeader VerticalAlignment="Center" ViewModel="{x:Bind ViewModel, Mode=OneWay}"/>
         <ContentControl Grid.Row="2"
                         Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
                         ContentTemplateSelector="{StaticResource Selector}"

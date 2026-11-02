@@ -19,7 +19,7 @@
             x:Name="Reader"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"/>
-        <article:ArticleReaderToolBar
+        <article:ArticleReaderToolBar ViewModel="{x:Bind ViewModel, Mode=OneWay}"
             Margin="12"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"

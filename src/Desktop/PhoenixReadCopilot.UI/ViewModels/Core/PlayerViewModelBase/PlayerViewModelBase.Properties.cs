@@ -4,7 +4,6 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Models.Settings;
-using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Media;
 using Windows.System.Display;

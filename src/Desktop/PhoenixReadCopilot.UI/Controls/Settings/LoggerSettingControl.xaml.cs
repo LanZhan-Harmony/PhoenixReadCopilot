@@ -14,6 +14,7 @@ namespace PhoenixReadCopilot.UI.Controls.Settings;
 public sealed partial class LoggerSettingControl : SettingsPageControlBase
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LoggerSettingControl"/> class.
     /// </summary>
@@ -39,7 +40,6 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
             }
         }
 
-        _appViewModel
-            .ShowTipCommand.Execute((Strings.Resources.LogEmptied, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Strings.Resources.LogEmptied, InfoType.Success));
     }
 }

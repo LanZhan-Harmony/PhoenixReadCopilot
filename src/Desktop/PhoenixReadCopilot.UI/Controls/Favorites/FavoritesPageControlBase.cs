@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using PhoenixReadCopilot.UI.ViewModels.View;
+﻿using PhoenixReadCopilot.UI.ViewModels.View;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Favorites;
@@ -7,10 +6,4 @@ namespace PhoenixReadCopilot.UI.Controls.Favorites;
 /// <summary>
 /// 收藏页面控件基类.
 /// </summary>
-public abstract class FavoritesPageControlBase : LayoutUserControlBase<FavoritesPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FavoritesPageControlBase"/> class.
-    /// </summary>
-    protected FavoritesPageControlBase() => ViewModel = Ioc.Default.GetRequiredService<FavoritesPageViewModel>();
-}
+public abstract class FavoritesPageControlBase : LayoutUserControlBase<FavoritesPageViewModel> { }

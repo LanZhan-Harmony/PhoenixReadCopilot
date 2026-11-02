@@ -189,7 +189,6 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         var dp = new DataPackage();
         dp.SetText(_selectedText);
         Clipboard.SetContent(dp);
-        _appViewModel
-            .ShowTipCommand.Execute((Strings.Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTipCommand.Execute((Strings.Resources.Copied, InfoType.Success));
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -10,7 +9,6 @@ using PhoenixReadCopilot.UI.Pages;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.ViewModels.Components;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
@@ -21,10 +19,12 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 public sealed partial class NavigationViewModel : ViewModelBase, INavServiceViewModel
 {
     private readonly AppViewModel _appViewModel;
-
-    private SearchBoxViewModel SearchBoxViewModel =>
-        field ??= Ioc.Default.GetRequiredService<SearchBoxViewModel>();
     private readonly AppSettings _settings;
+
+    /// <summary>
+    /// 覆盖层导航事件.
+    /// </summary>
+    public event EventHandler<Type>? OverlayNavigated;
 
     public NavigationViewModel(ISettingsService settingsService, AppViewModel appViewModel)
     {
@@ -291,20 +291,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     private void OnOverlayNavigated(object sender, NavigationEventArgs e)
     {
-        var searchBox = SearchBoxViewModel;
-        if (e.SourcePageType == typeof(UserSpacePage))
-        {
-            searchBox.SetExtraRegion("space", Resources.UserSpace);
-        }
-        else if (e.SourcePageType == typeof(HistoryPage))
-        {
-            searchBox.SetExtraRegion("history", Resources.ViewHistory);
-        }
-        else
-        {
-            searchBox.SetExtraRegion(string.Empty, string.Empty);
-            searchBox.Keyword = string.Empty;
-        }
+        OverlayNavigated?.Invoke(this, e.SourcePageType);
     }
 
     private void CheckSubPageStatus()

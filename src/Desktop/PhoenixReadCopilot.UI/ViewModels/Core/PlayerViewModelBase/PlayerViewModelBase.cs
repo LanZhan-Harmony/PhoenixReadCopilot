@@ -3,7 +3,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Services;
-using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Windows.Media;
 using Windows.Storage.Streams;

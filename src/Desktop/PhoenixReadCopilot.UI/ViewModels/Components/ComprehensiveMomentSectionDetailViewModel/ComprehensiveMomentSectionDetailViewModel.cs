@@ -47,7 +47,12 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         }
 
         IsLoading = true;
-        Upers.Add(new MomentUperSectionViewModel(default));
+        Upers.Add(
+            new MomentUperSectionViewModel(
+                default,
+                data => _momentPageViewModel.ShowCommentCommand.Execute(data)
+            )
+        );
         await LoadUpersAsync();
         IsLoading = false;
         SelectUper(Upers.First());
@@ -99,7 +104,12 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
             {
                 foreach (var item in upers)
                 {
-                    Upers.Add(new MomentUperSectionViewModel(item));
+                    Upers.Add(
+                        new MomentUperSectionViewModel(
+                            item,
+                            data => _momentPageViewModel.ShowCommentCommand.Execute(data)
+                        )
+                    );
                 }
             }
 

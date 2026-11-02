@@ -33,14 +33,14 @@
             Height="1"
             HorizontalAlignment="Stretch"
             Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
-        <pgc:CinemaSideHeader Margin="0,0,-6,0"
+        <pgc:CinemaSideHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" Margin="0,0,-6,0"
                 Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
         <pgc:EntertainmentIndexSideControl
             Grid.Row="2"
             Margin="0,0,-6,0"
             ViewModel="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
             Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
-        <pgc:CinemaMainHeader
+        <pgc:CinemaMainHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}"
             Grid.Column="2"
             Margin="-6,0,0,0"
             VerticalAlignment="Center"/>

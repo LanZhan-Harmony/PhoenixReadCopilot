@@ -33,15 +33,15 @@
             Height="1"
             HorizontalAlignment="Stretch"
             Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
-        <popular:PopularSideHeader Margin="0,0,-6,0"
+        <popular:PopularSideHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" Margin="0,0,-6,0"
                 Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
-        <popular:PopularSideBody
+        <popular:PopularSideBody ViewModel="{x:Bind ViewModel, Mode=OneWay}"
             Grid.Row="2"
             Margin="0,0,-6,0"
             Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
-        <popular:PopularMainHeader Grid.Column="2"
+        <popular:PopularMainHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" Grid.Column="2"
                 Margin="-6,0,0,0"/>
-        <popular:PopularMainBody
+        <popular:PopularMainBody ViewModel="{x:Bind ViewModel, Mode=OneWay}"
             Grid.Row="2"
             Grid.Column="2"
             Margin="-6,0,0,0"/>

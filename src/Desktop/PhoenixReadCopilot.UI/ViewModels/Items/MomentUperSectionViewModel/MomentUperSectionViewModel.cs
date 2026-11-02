@@ -3,8 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
-using PhoenixReadCopilot.UI.ViewModels.View;
-using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
@@ -15,12 +13,18 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentProfile>
 {
+    private readonly Action<MomentInformation>? _showCommentAction;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentUperSectionViewModel"/> class.
     /// </summary>
-    public MomentUperSectionViewModel(MomentProfile data)
+    public MomentUperSectionViewModel(
+        MomentProfile data,
+        Action<MomentInformation>? showCommentAction = null
+    )
         : base(data)
     {
+        _showCommentAction = showCommentAction;
         IsTotal = data is null;
         Avatar = data?.User?.Avatar.Uri;
         Name = data?.User?.Name ?? Resources.AllDynamic;
@@ -172,5 +176,5 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
     }
 
     private void ShowComment(MomentItemViewModel item) =>
-        ItemServices.MomentPage.ShowCommentCommand.Execute(item.Data);
+        _showCommentAction?.Invoke(item.Data);
 }

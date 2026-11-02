@@ -73,7 +73,11 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
             foreach (var item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem() { Text = item.Title ?? default, Tag = item }
+                    new SelectorBarItem()
+                    {
+                        Text = item.Title ?? default,
+                        Tag = item
+                    }
                 );
             }
         }

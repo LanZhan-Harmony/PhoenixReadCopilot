@@ -1,13 +1,10 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Strings;
-using Richasy.BiliKernel.Bili.Authorization;
 using WinUIKernel.Share.Base;
-using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
@@ -56,13 +53,12 @@ public sealed partial class PinnerViewModel : ViewModelBase
     private async Task InitializeAsync()
     {
         var currentUserId = _tokenResolver.GetToken().UserId;
-        var data = await _fileToolkit
-            .ReadLocalDataAsync(
-                string.Format(PinFileName, currentUserId),
-                GlobalSerializeContext.Default.ListPinItem,
-                "[]",
-                PinFolderName
-            );
+        var data = await _fileToolkit.ReadLocalDataAsync(
+            string.Format(PinFileName, currentUserId),
+            GlobalSerializeContext.Default.ListPinItem,
+            "[]",
+            PinFolderName
+        );
         Items.Clear();
         if (data.Count > 0)
         {
@@ -77,8 +73,7 @@ public sealed partial class PinnerViewModel : ViewModelBase
     {
         if (Items.Contains(item))
         {
-            _appViewModel
-                .ShowTipCommand.Execute((Resources.AlreadyPinned, InfoType.Warning));
+            _appViewModel.ShowTipCommand.Execute((Resources.AlreadyPinned, InfoType.Warning));
             return;
         }
 
@@ -96,13 +91,12 @@ public sealed partial class PinnerViewModel : ViewModelBase
 
     private async Task SaveDataAsync()
     {
-        await _fileToolkit
-            .WriteLocalDataAsync(
-                string.Format(PinFileName, _tokenResolver.GetToken().UserId),
-                Items.ToList(),
-                GlobalSerializeContext.Default.ListPinItem,
-                PinFolderName
-            );
+        await _fileToolkit.WriteLocalDataAsync(
+            string.Format(PinFileName, _tokenResolver.GetToken().UserId),
+            Items.ToList(),
+            GlobalSerializeContext.Default.ListPinItem,
+            PinFolderName
+        );
         IsEmpty = Items.Count == 0;
     }
 }

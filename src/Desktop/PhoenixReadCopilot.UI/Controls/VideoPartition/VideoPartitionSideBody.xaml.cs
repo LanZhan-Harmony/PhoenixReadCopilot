@@ -1,4 +1,3 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
@@ -57,10 +56,4 @@ public sealed partial class VideoPartitionSideBody : VideoPartitionSideBodyBase
 /// 视频分区页面侧边栏主体的基类.
 /// </summary>
 public abstract class VideoPartitionSideBodyBase
-    : LayoutUserControlBase<VideoPartitionPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPartitionSideBodyBase"/> class.
-    /// </summary>
-    protected VideoPartitionSideBodyBase() => ViewModel = Ioc.Default.GetRequiredService<VideoPartitionPageViewModel>();
-}
+    : LayoutUserControlBase<VideoPartitionPageViewModel> { }

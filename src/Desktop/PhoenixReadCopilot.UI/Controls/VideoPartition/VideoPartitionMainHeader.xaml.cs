@@ -88,7 +88,11 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
             foreach (var item in ViewModel.Children)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem() { Text = item.Title ?? default, Tag = item }
+                    new SelectorBarItem()
+                    {
+                        Text = item.Title ?? default,
+                        Tag = item
+                    }
                 );
             }
         }

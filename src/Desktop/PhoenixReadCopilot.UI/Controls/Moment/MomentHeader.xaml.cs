@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -65,7 +64,11 @@ public sealed partial class MomentHeader : MomentHeaderBase
             foreach (var item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem() { Text = GetSectionName(item.SectionType), Tag = item }
+                    new SelectorBarItem()
+                    {
+                        Text = GetSectionName(item.SectionType),
+                        Tag = item
+                    }
                 );
             }
         }
@@ -79,11 +82,4 @@ public sealed partial class MomentHeader : MomentHeaderBase
 /// <summary>
 /// 动态头部基类.
 /// </summary>
-public abstract class MomentHeaderBase : LayoutUserControlBase<MomentPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MomentHeaderBase"/> class.
-    /// </summary>
-    protected MomentHeaderBase() =>
-        ViewModel = Ioc.Default.GetRequiredService<MomentPageViewModel>();
-}
+public abstract class MomentHeaderBase : LayoutUserControlBase<MomentPageViewModel> { }

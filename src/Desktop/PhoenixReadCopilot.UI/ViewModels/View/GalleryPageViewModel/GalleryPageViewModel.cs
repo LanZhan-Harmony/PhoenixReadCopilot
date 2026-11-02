@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
@@ -20,14 +20,11 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 public sealed partial class GalleryPageViewModel : ViewModelBase
 {
     private readonly AppViewModel _appViewModel;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPageViewModel"/> class.
     /// </summary>
-    public GalleryPageViewModel(
-        BiliImage image,
-        List<BiliImage>? images,
-        AppViewModel appViewModel
-    )
+    public GalleryPageViewModel(BiliImage image, List<BiliImage>? images, AppViewModel appViewModel)
     {
         SelectedImage = image;
         Images = images ?? new List<BiliImage> { image };
@@ -132,7 +129,10 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         var profileSettings = UserProfilePersonalizationSettings.Current;
         var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
-        var tempFolder = Path.Combine(PhoenixReadCopilot.UI.Helpers.PathHelper.TempFolderPath, "TempImages");
+        var tempFolder = Path.Combine(
+            PhoenixReadCopilot.UI.Helpers.PathHelper.TempFolderPath,
+            "TempImages"
+        );
         Directory.CreateDirectory(tempFolder);
         var folder = await StorageFolder.GetFolderFromPathAsync(tempFolder);
         var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
@@ -145,8 +145,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
             : await profileSettings.TrySetLockScreenImageAsync(file);
         if (result)
         {
-            _appViewModel
-                .ShowTipCommand.Execute((Resources.SetSuccess, InfoType.Success));
+            _appViewModel.ShowTipCommand.Execute((Resources.SetSuccess, InfoType.Success));
         }
         else
         {

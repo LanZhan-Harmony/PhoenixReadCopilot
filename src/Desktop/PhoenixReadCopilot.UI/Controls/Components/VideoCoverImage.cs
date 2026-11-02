@@ -27,12 +27,13 @@ public sealed partial class VideoCoverImage : ImageExBase
     /// <summary>
     /// <see cref="AutoAdjustAspectRatio"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty AutoAdjustAspectRatioProperty = DependencyProperty.Register(
-        nameof(AutoAdjustAspectRatio),
-        typeof(bool),
-        typeof(VideoCoverImage),
-        new PropertyMetadata(true)
-    );
+    public static readonly DependencyProperty AutoAdjustAspectRatioProperty =
+        DependencyProperty.Register(
+            nameof(AutoAdjustAspectRatio),
+            typeof(bool),
+            typeof(VideoCoverImage),
+            new PropertyMetadata(true)
+        );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoCoverImage"/> class.
@@ -63,7 +64,10 @@ public sealed partial class VideoCoverImage : ImageExBase
         set => SetValue(AutoAdjustAspectRatioProperty, value);
     }
 
-    private static void OnAspectRatioPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnAspectRatioPropertyChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         if (d is VideoCoverImage control)
         {
@@ -80,7 +84,10 @@ public sealed partial class VideoCoverImage : ImageExBase
     {
         if (sender is VideoCoverImage control && control.AspectRatio > 0)
         {
-            control.DecodeHeight = Math.Max(1, Math.Round(control.DecodeWidth / control.AspectRatio));
+            control.DecodeHeight = Math.Max(
+                1,
+                Math.Round(control.DecodeWidth / control.AspectRatio)
+            );
         }
     }
 
@@ -126,9 +133,10 @@ public sealed partial class VideoCoverImage : ImageExBase
         // 高度无限制（例如 StaggeredLayout 或 RowDefinition Height="Auto"），极速返回尺寸，避开模板遍历
         if (double.IsPositiveInfinity(availableSize.Height))
         {
-            var targetWidth = double.IsPositiveInfinity(availableSize.Width) || availableSize.Width <= 0
-                ? DecodeWidth
-                : availableSize.Width;
+            var targetWidth =
+                double.IsPositiveInfinity(availableSize.Width) || availableSize.Width <= 0
+                    ? DecodeWidth
+                    : availableSize.Width;
             var targetHeight = targetWidth / ratio;
             return new Size(targetWidth, targetHeight);
         }
@@ -183,9 +191,11 @@ public sealed partial class VideoCoverImage : ImageExBase
         var targetHeight = (float)DecodeHeight;
 
         // 确保 CanvasImageSource 具有与当前 DecodeWidth / DecodeHeight 匹配的分辨率
-        if (CanvasImageSource == null ||
-            Math.Abs(CanvasImageSource.Size.Width - targetWidth) > 0.5 ||
-            Math.Abs(CanvasImageSource.Size.Height - targetHeight) > 0.5)
+        if (
+            CanvasImageSource == null
+            || Math.Abs(CanvasImageSource.Size.Width - targetWidth) > 0.5
+            || Math.Abs(CanvasImageSource.Size.Height - targetHeight) > 0.5
+        )
         {
             var device = CanvasDevice.GetSharedDevice();
             CanvasImageSource = new CanvasImageSource(
@@ -193,7 +203,8 @@ public sealed partial class VideoCoverImage : ImageExBase
                 targetWidth,
                 targetHeight,
                 96,
-                CanvasAlphaMode.Ignore);
+                CanvasAlphaMode.Ignore
+            );
         }
 
         var sourceRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
