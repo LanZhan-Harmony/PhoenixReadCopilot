@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Extensions;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Toolkits;
@@ -54,7 +55,18 @@ internal class ServiceHelper
             .AddSingleton<IFileToolkit, FileToolkit>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
-            // 4. Bili 客户端
+            // 4. 红果客户端单例 (双轨并存)
+            .AddSingleton<PhoenixReadApiClient>(_ =>
+            {
+                var sessionPath = Path.Combine(PathHelper.AuthFolderPath, "phoenix_session.json");
+                return new PhoenixReadApiClient(new PhoenixReadApiOptions
+                {
+                    AuthenticationStateFilePath = sessionPath,
+                    RequestTimeout = TimeSpan.FromSeconds(25),
+                    RetryCount = 2,
+                });
+            })
+            // 5. Bili 客户端
             .AddSingleton<BiliHttpClient>()
             .AddSingleton<BiliAuthenticator>()
             .AddSingleton(

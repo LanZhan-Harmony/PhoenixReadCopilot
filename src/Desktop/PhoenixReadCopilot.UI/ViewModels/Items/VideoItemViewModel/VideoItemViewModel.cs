@@ -2,12 +2,14 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.Toolkits;
+using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Globalization;
@@ -55,6 +57,55 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             ProgressText = AppToolkit.FormatDuration(TimeSpan.FromSeconds(progress.Value));
         }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class from a <see cref="Drama"/>.
+    /// </summary>
+    public VideoItemViewModel(
+        Drama drama,
+        VideoCardStyle style = VideoCardStyle.Recommend,
+        Action<VideoItemViewModel>? removeAction = default
+    )
+        : base(CreateVideoInformation(drama))
+    {
+        _removeAction = removeAction;
+        Drama = drama;
+        Style = style;
+        Title = drama.Title;
+        Subtitle = drama.Remark;
+
+        if (!string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var coverUri))
+        {
+            Cover = coverUri;
+        }
+
+        Score = drama.Score;
+        EpisodeCount = drama.EpisodeCount;
+        EpisodeCountText = drama.EpisodeCount > 0
+            ? (drama.ReleaseStatus == DramaReleaseStatus.Finished ? $"全{drama.EpisodeCount}集" : $"更新至{drama.EpisodeCount}集")
+            : (!string.IsNullOrWhiteSpace(drama.Remark) ? drama.Remark : null);
+        Tags = drama.Tags ?? [];
+        Category = drama.Category;
+        Heat = drama.Heat;
+        Views = drama.Views;
+
+        Author = !string.IsNullOrEmpty(drama.Category)
+            ? drama.Category
+            : (drama.Credits.FirstOrDefault()?.User?.Name ?? string.Empty);
+        TagName = Tags.Count > 0 ? Tags[0] : drama.Category;
+        if (double.TryParse(drama.Views, out var vc))
+        {
+            PlayCount = vc;
+        }
+    }
+
+    private static VideoInformation CreateVideoInformation(Drama drama)
+    {
+        var cover = !string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri)
+            ? new BiliImage(uri)
+            : default;
+        return new VideoInformation(new MediaIdentifier(drama.Id, drama.Title, cover), default);
     }
 
     [RelayCommand]
@@ -180,10 +231,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void Pin()
     {
+        var coverUri = Cover?.ToString() ?? Data.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
         var pinItem = new PinItem(
             Data.Identifier.Id,
             Data.Identifier.Title,
-            Data.Identifier.Cover.Uri.ToString(),
+            coverUri,
             PinContentType.Video
         );
         ItemServices.Pinner.AddItemCommand.Execute(pinItem);
@@ -191,6 +243,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 
     private Uri GetWebUri()
     {
+        if (Drama is not null)
+        {
+            return new Uri($"https://hongguoduanju.com/drama/{Drama.Id}");
+        }
+
         var shortLink = Data.GetExtensionIfNotNull<string>(VideoExtensionDataId.ShortLink);
         return string.IsNullOrEmpty(shortLink)
             ? new Uri($"https://www.bilibili.com/video/av{Data.Identifier.Id}")

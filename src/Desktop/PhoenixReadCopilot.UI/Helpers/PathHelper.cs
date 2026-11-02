@@ -18,6 +18,11 @@ internal static class PathHelper
     internal static string SettingsFolderPath { get; }
 
     /// <summary>
+    /// 认证文件夹路径.
+    /// </summary>
+    internal static string AuthFolderPath { get; }
+
+    /// <summary>
     /// 日志文件夹路径.
     /// </summary>
     internal static string LogFolderPath { get; }
@@ -36,6 +41,7 @@ internal static class PathHelper
     {
         RootFolderPath = GetApplicationDataRoot();
         SettingsFolderPath = Path.Combine(RootFolderPath, "Settings");
+        AuthFolderPath = Path.Combine(RootFolderPath, "Auth");
         LogFolderPath = Path.Combine(RootFolderPath, "Logs");
         TempFolderPath = Path.Combine(RootFolderPath, "Temp");
         CacheFolderPath = Path.Combine(RootFolderPath, "Cache");
@@ -46,6 +52,7 @@ internal static class PathHelper
     {
         Directory.CreateDirectory(RootFolderPath);
         Directory.CreateDirectory(SettingsFolderPath);
+        Directory.CreateDirectory(AuthFolderPath);
         Directory.CreateDirectory(LogFolderPath);
         Directory.CreateDirectory(TempFolderPath);
         Directory.CreateDirectory(CacheFolderPath);

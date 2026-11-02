@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages;
@@ -23,6 +24,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public PopularPageViewModel(
         IVideoDiscoveryService discoveryService,
+        PhoenixReadApiClient apiClient,
         ILogger<PopularPageViewModel> logger,
         NavigationViewModel navigationViewModel,
         DispatcherQueue dispatcherQueue,
@@ -31,6 +33,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         : base(settingsService)
     {
         _service = discoveryService;
+        _apiClient = apiClient;
         _logger = logger;
         _navigationViewModel = navigationViewModel;
         _dispatcherQueue = dispatcherQueue;
@@ -189,6 +192,10 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             if (section.Type == PopularSectionType.Recommend)
             {
                 _recommendOffset = 0;
+                _recommendSessionId = null;
+                _seenDramaIds.Clear();
+                _hasMoreRecommendations = true;
+                _cancellationTokenSource?.Cancel();
             }
             else if (section.Type == PopularSectionType.Hot)
             {
