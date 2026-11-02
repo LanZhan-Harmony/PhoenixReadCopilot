@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
-using Danmaku.Core;
+using Danmaku.Core.Enums;
+using Danmaku.Core.Models;
 using Richasy.BiliKernel.Models.Danmaku;
 using Windows.UI;
 
@@ -132,7 +133,7 @@ public static class BilibiliDanmakuParser
         {
             var danmakuItem = new DanmakuItem()
             {
-                Id = Convert.ToUInt64(danmakuElem.Id),
+                Id = danmakuElem.Id,
                 HasBorder = false,
                 Text = danmakuElem.Content,
                 TextColor = ParseColor(danmakuElem.Color),
@@ -348,7 +349,7 @@ public static class BilibiliDanmakuParser
                 else if (list[i].Mode == DanmakuMode.Advanced)
                 {
                     // Compare Id
-                    if (list[i].Id <= list[j].Id)
+                    if (Convert.ToUInt64(list[i].Id) <= Convert.ToUInt64(list[j].Id))
                     {
                         tmp[k++] = list[i++];
                     }
