@@ -1,6 +1,8 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
+using WinUIKernel.Share;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Search;
@@ -42,9 +44,9 @@ public sealed partial class ArticleSectionDetailControl : ArticleSectionDetailCo
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
+        WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
@@ -71,7 +73,7 @@ public sealed partial class ArticleSectionDetailControl : ArticleSectionDetailCo
     private void CheckArticleCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (ArticleScrollView.ScrollableHeight <= 240 && ViewModel is not null)

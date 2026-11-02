@@ -7,6 +7,8 @@ using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Windows.ApplicationModel;
+using Windows.UI;
 using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.Toolkits;
@@ -37,7 +39,7 @@ internal sealed partial class AppToolkit : IAppToolkit
     {
         if (RuntimeHelper.IsMSIX)
         {
-            var appVersion = Windows.ApplicationModel.Package.Current.Id.Version;
+            var appVersion = Package.Current.Id.Version;
             return $"{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}.{appVersion.Revision}";
         }
 
@@ -87,8 +89,8 @@ internal sealed partial class AppToolkit : IAppToolkit
     /// 将颜色代码转换为Windows.UI.Color对象.
     /// </summary>
     /// <param name="hexCode">颜色代码.</param>
-    /// <returns><see cref="Windows.UI.Color"/>.</returns>
-    public static Windows.UI.Color HexToColor(string hexCode)
+    /// <returns><see cref="Color"/>.</returns>
+    public static Color HexToColor(string hexCode)
     {
         // 去除可能包含的 # 符号
         if (hexCode.StartsWith("#"))
@@ -101,7 +103,7 @@ internal sealed partial class AppToolkit : IAppToolkit
             hexCode = intValue.ToString("X2");
         }
 
-        var color = default(Windows.UI.Color);
+        var color = default(Color);
         if (hexCode.Length == 4)
         {
             hexCode = "00" + hexCode;

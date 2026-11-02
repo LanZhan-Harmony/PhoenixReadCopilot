@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 
@@ -47,13 +48,13 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
     private void OnViewChanged(ScrollView sender, object args)
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     SectionView.ScrollView.ExtentHeight
-                    - SectionView.ScrollView.ViewportHeight
-                    - SectionView.ScrollView.VerticalOffset
+                        - SectionView.ScrollView.ViewportHeight
+                        - SectionView.ScrollView.VerticalOffset
                     <= 240
                 )
                 {
@@ -80,7 +81,7 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
     private void CheckChatSessionCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (SectionView.ScrollView.ScrollableHeight <= 240 && ViewModel is not null)

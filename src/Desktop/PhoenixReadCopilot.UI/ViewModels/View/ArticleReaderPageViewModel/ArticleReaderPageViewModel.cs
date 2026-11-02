@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Article;
+using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Article;
+using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -24,7 +26,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         IArticleOperationService operation,
         ILogger<ArticleReaderPageViewModel> logger,
         CommentMainViewModel comment,
-        PhoenixReadCopilot.UI.ViewModels.Core.NavigationViewModel navigationViewModel
+        NavigationViewModel navigationViewModel
     )
     {
         _discoveryService = discovery;
@@ -42,11 +44,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         IsLoading = true;
         Article = article;
         IsCommentsOpened = false;
-        CommentModule.Initialize(
-            article.Id,
-            Richasy.BiliKernel.Models.CommentTargetType.Article,
-            Richasy.BiliKernel.Models.CommentSortType.Hot
-        );
+        CommentModule.Initialize(article.Id, CommentTargetType.Article, CommentSortType.Hot);
         try
         {
             Content = await _discoveryService.GetArticleContentAsync(article);
@@ -131,8 +129,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowUserSpace() =>
-        _navigationViewModel
-            .NavigateToOver(typeof(UserSpacePage), Content.Author.Profile.User);
+        _navigationViewModel.NavigateToOver(typeof(UserSpacePage), Content.Author.Profile.User);
 
     private void InitializeUser()
     {
@@ -144,9 +141,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
         Author = Content.Author.Profile.User.Name;
         Avatar = Content.Author.Profile.User.Avatar.Uri;
         IsVip = Content.Author.Profile.IsVip ?? false;
-        IsFollowed =
-            Content.Author.Community.Relation
-            == Richasy.BiliKernel.Models.User.UserRelationStatus.Following;
+        IsFollowed = Content.Author.Community.Relation == UserRelationStatus.Following;
     }
 
     private void InitializeStats()

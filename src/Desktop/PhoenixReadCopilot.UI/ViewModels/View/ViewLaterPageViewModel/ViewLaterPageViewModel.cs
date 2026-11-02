@@ -9,6 +9,7 @@ using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
@@ -114,7 +115,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     {
         try
         {
-            await _service.CleanAsync(Richasy.BiliKernel.Models.ViewLaterCleanType.All);
+            await _service.CleanAsync(ViewLaterCleanType.All);
             await Task.Delay(500);
             await RefreshAsync();
         }

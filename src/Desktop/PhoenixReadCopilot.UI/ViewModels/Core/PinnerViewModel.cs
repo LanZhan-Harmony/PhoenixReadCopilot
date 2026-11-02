@@ -4,7 +4,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Strings;
+using Richasy.BiliKernel.Bili.Authorization;
 using WinUIKernel.Share.Base;
+using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
@@ -14,8 +16,8 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class PinnerViewModel : ViewModelBase
 {
-    private readonly Richasy.BiliKernel.Bili.Authorization.IBiliTokenResolver _tokenResolver;
-    private readonly WinUIKernel.Share.Toolkits.IFileToolkit _fileToolkit;
+    private readonly IBiliTokenResolver _tokenResolver;
+    private readonly IFileToolkit _fileToolkit;
     private readonly AppViewModel _appViewModel;
     private readonly ILogger<PinnerViewModel> _logger;
 
@@ -23,8 +25,8 @@ public sealed partial class PinnerViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.
     /// </summary>
     public PinnerViewModel(
-        Richasy.BiliKernel.Bili.Authorization.IBiliTokenResolver tokenResolver,
-        WinUIKernel.Share.Toolkits.IFileToolkit fileToolkit,
+        IBiliTokenResolver tokenResolver,
+        IFileToolkit fileToolkit,
         AppViewModel appViewModel,
         ILogger<PinnerViewModel> logger
     )

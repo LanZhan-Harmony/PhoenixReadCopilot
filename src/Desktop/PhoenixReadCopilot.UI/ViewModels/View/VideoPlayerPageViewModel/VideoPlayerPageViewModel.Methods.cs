@@ -4,6 +4,8 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
+using Richasy.BiliKernel.Models.User;
+using System.Globalization;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -28,7 +30,7 @@ public sealed partial class VideoPlayerPageViewModel
                 ? view.Information.PublishTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
                 : view.Information.PublishTime.Humanize(
                     default,
-                    new System.Globalization.CultureInfo("zh-CN")
+                    new CultureInfo("zh-CN")
                 );
         PublishRelativeTime = string.Format(Resources.AuthorPublishTime, relativeTime);
         Description = view.Information.GetExtensionIfNotNull<string>(
@@ -36,9 +38,9 @@ public sealed partial class VideoPlayerPageViewModel
         );
         IsFollow =
             view.OwnerCommunity.Relation
-            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unfollow
+            != UserRelationStatus.Unfollow
             && view.OwnerCommunity.Relation
-            != Richasy.BiliKernel.Models.User.UserRelationStatus.Unknown;
+            != UserRelationStatus.Unknown;
         IsInteractionVideo = view.IsInteractiveVideo;
         Tags = view.Tags.ToList();
         InitializeCommunityInformation(view.Information.CommunityInformation);

@@ -7,6 +7,7 @@ using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
+using Richasy.BiliKernel.Models.Search;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
@@ -93,14 +94,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 Suggestion.Clear();
                 foreach (var item in _recommendItems)
                 {
-                    Suggestion.Add(
-                        new(
-                            new Richasy.BiliKernel.Models.Search.SearchSuggestItem(
-                                item.Text,
-                                item.Keyword
-                            )
-                        )
-                    );
+                    Suggestion.Add(new(new SearchSuggestItem(item.Text, item.Keyword)));
                 }
             }
             else

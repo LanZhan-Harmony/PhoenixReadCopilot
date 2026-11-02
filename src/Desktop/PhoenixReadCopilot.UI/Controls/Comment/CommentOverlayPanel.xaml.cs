@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 namespace PhoenixReadCopilot.UI.Controls.Comment;
 
@@ -31,6 +32,6 @@ public sealed partial class CommentOverlayPanel : CommentMainPanelBase
         set => SetValue(IsPanelOpenedProperty, value);
     }
 
-    private void OnHolderTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) =>
+    private void OnHolderTapped(object sender, TappedRoutedEventArgs e) =>
         IsPanelOpened = !IsPanelOpened;
 }

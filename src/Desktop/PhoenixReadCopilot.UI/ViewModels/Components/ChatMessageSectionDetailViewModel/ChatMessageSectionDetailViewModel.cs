@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using System.Globalization;
+using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Pages.Overlay;
@@ -40,10 +41,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
         UserName = session.User?.Name;
         UnreadCount = session.UnreadCount;
         LastMessage = Data.LastMessage;
-        LastMessageTime = Data.Time.Humanize(
-            default,
-            new System.Globalization.CultureInfo("zh-CN")
-        );
+        LastMessageTime = Data.Time.Humanize(default, new CultureInfo("zh-CN"));
     }
 
     [RelayCommand]
@@ -91,14 +89,13 @@ public sealed partial class ChatMessageSectionDetailViewModel
             }
 
             LastMessage = msg.Content.Text;
-            LastMessageTime = now.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
+            LastMessageTime = now.Humanize(default, new CultureInfo("zh-CN"));
             RequestScrollToBottom?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "发送消息时失败");
-            _appViewModel
-                .ShowTipCommand.Execute((Resources.FailedToSendMessage, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute((Resources.FailedToSendMessage, InfoType.Error));
         }
         finally
         {
@@ -130,7 +127,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
                     LastMessage = messages.Last().Content.Text;
                     LastMessageTime = messages
                         .Last()
-                        .Time.Humanize(default, new System.Globalization.CultureInfo("zh-CN"));
+                        .Time.Humanize(default, new CultureInfo("zh-CN"));
                 }
 
                 RequestScrollToBottom?.Invoke(this, EventArgs.Empty);
@@ -145,8 +142,9 @@ public sealed partial class ChatMessageSectionDetailViewModel
         {
             _preventLoadMore = true;
             _logger.LogError(ex, "加载聊天消息时失败");
-            _appViewModel
-                .ShowTipCommand.Execute((Resources.FailedToLoadChatMessages, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute(
+                (Resources.FailedToLoadChatMessages, InfoType.Error)
+            );
         }
         finally
         {

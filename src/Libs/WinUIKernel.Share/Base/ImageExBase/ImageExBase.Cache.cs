@@ -1,3 +1,5 @@
+using System.Text;
+using System.Web;
 using Windows.Storage;
 
 namespace WinUIKernel.Share.Base;
@@ -115,9 +117,7 @@ public partial class ImageExBase
     {
         key = NormalizeKey(key);
         using var md5 = System.Security.Cryptography.MD5.Create();
-        var hash = Convert.ToHexStringLower(
-            md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(key))
-        );
+        var hash = Convert.ToHexStringLower(md5.ComputeHash(Encoding.UTF8.GetBytes(key)));
         return hash;
     }
 
@@ -136,7 +136,7 @@ public partial class ImageExBase
             // 可选：对查询参数排序（如果参数顺序不影响内容）
             if (!string.IsNullOrEmpty(uri.Query))
             {
-                var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                var queryParams = HttpUtility.ParseQueryString(uri.Query);
                 var sortedQuery = string.Join(
                     "&",
                     queryParams.AllKeys.OrderBy(k => k).Select(k => $"{k}={queryParams[k]}")
@@ -152,7 +152,11 @@ public partial class ImageExBase
 
     private async Task<StorageFolder> GetCacheFolderAsync(string? cacheSubFolder = null)
     {
-        var baseCache = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoenixReadCopilot", "Cache");
+        var baseCache = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "PhoenixReadCopilot",
+            "Cache"
+        );
         var cacheFolderPath = Path.Combine(baseCache, CacheFolderName);
         var subFolder = cacheSubFolder ?? GetCacheSubFolder();
         if (!string.IsNullOrEmpty(subFolder))

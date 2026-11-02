@@ -6,6 +6,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace WinUIKernel.Share.Base;
 
@@ -210,7 +211,7 @@ public sealed partial class CardControl : Button
             return;
         }
 
-        CommunityToolkit.WinUI.Effects.SetShadow(_shadowContainer, _initialShadow);
+        Effects.SetShadow(_shadowContainer, _initialShadow);
         var shadowContext = _initialShadow?.GetElementContext(_shadowContainer);
         if (shadowContext?.Shadow is DropShadow dropShadow)
         {
@@ -232,7 +233,7 @@ public sealed partial class CardControl : Button
         }
 
         _shadowCreated = false;
-        CommunityToolkit.WinUI.Effects.SetShadow(_shadowContainer, default);
+        Effects.SetShadow(_shadowContainer, default);
     }
 
     private void ApplyShadowAnimation()
@@ -258,12 +259,7 @@ public sealed partial class CardControl : Button
 #pragma warning disable VSTHRD103 // Call async methods when in an async method
         AnimationBuilder
             .Create()
-            .Translation(
-                Axis.Y,
-                offset,
-                duration: duration,
-                easingMode: Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseInOut
-            )
+            .Translation(Axis.Y, offset, duration: duration, easingMode: EasingMode.EaseInOut)
             .Start(this);
 #pragma warning restore VSTHRD103 // Call async methods when in an async method
 

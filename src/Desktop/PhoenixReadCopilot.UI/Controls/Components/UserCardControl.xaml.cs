@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using WinUIKernel.Share.Base;
@@ -85,10 +86,7 @@ public sealed partial class UserCardControl : UserCardControlBase
         {
             CreateContextFlyout();
             args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(
-                this,
-                new Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions { Position = point }
-            );
+            ContextFlyout.ShowAt(this, new FlyoutShowOptions { Position = point });
         }
 
         RelocateCommands();

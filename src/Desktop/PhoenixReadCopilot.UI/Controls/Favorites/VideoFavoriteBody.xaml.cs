@@ -1,6 +1,8 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
+using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.UI.Controls.Favorites;
 
@@ -61,15 +63,15 @@ public sealed partial class VideoFavoriteBody : VideoFavoriteControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernel.Share.WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
+        WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (
                     VideoScrollView.ExtentHeight
-                    - VideoScrollView.ViewportHeight
-                    - VideoScrollView.VerticalOffset
+                        - VideoScrollView.ViewportHeight
+                        - VideoScrollView.VerticalOffset
                     <= 240
                 )
                 {
@@ -90,7 +92,7 @@ public sealed partial class VideoFavoriteBody : VideoFavoriteControlBase
     private void CheckVideoCount()
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)

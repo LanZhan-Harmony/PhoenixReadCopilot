@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.View;
@@ -49,10 +50,8 @@ public sealed partial class GalleryPage : GalleryPageBase
 
     protected override void OnPageUnloaded() => ImageView.ItemsSource = default;
 
-    private void OnScrollViewTapped(
-        object sender,
-        Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e
-    ) => ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
+    private void OnScrollViewTapped(object sender, TappedRoutedEventArgs e) =>
+        ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
 
     private void CheckButtonStatus()
     {

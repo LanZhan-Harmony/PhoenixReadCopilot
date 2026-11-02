@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Data;
+using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.UI.Converters;
 
@@ -6,11 +7,11 @@ internal sealed partial class PgcFavoriteIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var type = (Richasy.BiliKernel.Models.PgcFavoriteType)value;
+        var type = (PgcFavoriteType)value;
         return type switch
         {
-            Richasy.BiliKernel.Models.PgcFavoriteType.Anime => FluentIcons.Common.Symbol.Dust,
-            Richasy.BiliKernel.Models.PgcFavoriteType.Cinema => FluentIcons
+            PgcFavoriteType.Anime => FluentIcons.Common.Symbol.Dust,
+            PgcFavoriteType.Cinema => FluentIcons
                 .Common
                 .Symbol
                 .MoviesAndTv,

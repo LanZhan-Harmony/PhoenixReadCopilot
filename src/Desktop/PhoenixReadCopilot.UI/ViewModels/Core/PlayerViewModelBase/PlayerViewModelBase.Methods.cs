@@ -1,3 +1,5 @@
+using Windows.System.Display;
+
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 
 /// <summary>
@@ -40,7 +42,7 @@ public abstract partial class PlayerViewModelBase
 
         _dispatcherQueue.TryEnqueue(() =>
         {
-            _displayRequest = new Windows.System.Display.DisplayRequest();
+            _displayRequest = new DisplayRequest();
             _displayRequest.RequestActive();
         });
     }

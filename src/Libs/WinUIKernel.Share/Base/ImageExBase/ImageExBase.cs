@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Graphics.Canvas;
 using Microsoft.UI.Xaml;
@@ -191,9 +192,9 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         await RedrawAsync();
     }
 
-    private static System.Net.Http.HttpClient CreateHttpClientIgnoringCertificateErrors()
+    private static HttpClient CreateHttpClientIgnoringCertificateErrors()
     {
-        var clientHandler = new System.Net.Http.HttpClientHandler
+        var clientHandler = new HttpClientHandler
         {
             ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
             AllowAutoRedirect = true,
@@ -290,7 +291,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         }
 
 #if DEBUG
-        System.Diagnostics.Debug.WriteLine(
+        Debug.WriteLine(
             $"[ImageEx] 全局取消了 {count} 个实例的图片加载，其中 {markedCount} 个被标记为待恢复"
         );
 #endif
@@ -341,10 +342,10 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         }
 
 #if DEBUG
-        System.Diagnostics.Debug.WriteLine($"[ImageEx] 恢复了 {count} 个实例的图片加载");
+        Debug.WriteLine($"[ImageEx] 恢复了 {count} 个实例的图片加载");
         if (totalCancelled > count)
         {
-            System.Diagnostics.Debug.WriteLine(
+            Debug.WriteLine(
                 $"[ImageEx] 跳过 {totalCancelled - count} 个实例：未加载={notLoaded}, 无Source={noSource}"
             );
         }

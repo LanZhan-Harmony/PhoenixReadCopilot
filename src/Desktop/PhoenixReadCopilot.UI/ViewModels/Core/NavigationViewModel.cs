@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models.Settings;
@@ -94,11 +95,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         _settings.LastSelectedFeaturePage = pageType.FullName;
-        _navFrame.Navigate(
-            pageType,
-            parameter,
-            new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
-        );
+        _navFrame.Navigate(pageType, parameter, new EntranceNavigationTransitionInfo());
     }
 
     /// <inheritdoc/>
@@ -128,11 +125,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             return;
         }
 
-        _overFrame.Navigate(
-            pageType,
-            parameter,
-            new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
-        );
+        _overFrame.Navigate(pageType, parameter, new EntranceNavigationTransitionInfo());
         IsOverlayOpen = true;
         CheckSubPageStatus();
     }

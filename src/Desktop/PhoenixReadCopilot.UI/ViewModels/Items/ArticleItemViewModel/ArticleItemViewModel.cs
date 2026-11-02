@@ -9,6 +9,7 @@ using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Models.Article;
 using Windows.Globalization;
+using Windows.System;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -70,7 +71,7 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     private async Task OpenInBroswerAsync()
     {
         var url = $"https://www.bilibili.com/read/cv{Data.Identifier.Id}";
-        await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
+        await Launcher.LaunchUriAsync(new Uri(url));
     }
 
     [RelayCommand]

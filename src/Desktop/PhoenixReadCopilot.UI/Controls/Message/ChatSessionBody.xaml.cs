@@ -1,3 +1,4 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 
@@ -49,7 +50,7 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
     private void OnRequestScrollToBottom(object? sender, EventArgs e)
     {
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 MessageView.ScrollTo(

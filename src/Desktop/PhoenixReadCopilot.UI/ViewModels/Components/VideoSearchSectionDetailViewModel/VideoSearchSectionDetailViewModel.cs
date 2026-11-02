@@ -23,7 +23,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     /// </summary>
     public VideoSearchSectionDetailViewModel(
         ISearchService service,
-        Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue,
+        DispatcherQueue dispatcherQueue,
         ILogger<VideoSearchSectionDetailViewModel> logger
     )
     {

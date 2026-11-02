@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -50,7 +51,7 @@ public sealed partial class RootLayout : RootLayoutBase
         SecondaryTitleBar.IsBackEnabled =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
         _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
-            Microsoft.UI.Windowing.TitleBarHeightOption.Standard;
+            TitleBarHeightOption.Standard;
         NavView.IsPaneOpen = false;
         VisualStateManager.GoToState(NavView, "PaneCollapsed", false);
         VisualStateManager.GoToState(this, nameof(PlayerState), false);
@@ -83,7 +84,7 @@ public sealed partial class RootLayout : RootLayoutBase
         SecondaryTitleBar.Visibility = Visibility.Collapsed;
         SecondaryTitleBar.IsBackButtonVisible = false;
         _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
-            Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
+            TitleBarHeightOption.Tall;
         NavView.IsPaneOpen = true;
         VisualStateManager.GoToState(NavView, "PaneVisible", false);
         VisualStateManager.GoToState(this, nameof(NormalState), false);

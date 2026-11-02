@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -118,8 +119,7 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
     {
         SelectedTimeline?.Items = default;
 
-        Timelines =
-            new System.Collections.ObjectModel.ObservableCollection<TimelineItemViewModel>();
+        Timelines = new ObservableCollection<TimelineItemViewModel>();
         SelectedTimeline = default;
         await InitializeAsync();
     }

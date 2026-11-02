@@ -1,6 +1,8 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Models.Search;
@@ -28,10 +30,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
     }
 
-    private void OnBoxGettingFocus(
-        UIElement sender,
-        Microsoft.UI.Xaml.Input.GettingFocusEventArgs args
-    )
+    private void OnBoxGettingFocus(UIElement sender, GettingFocusEventArgs args)
     {
         if (!Box.IsSuggestionListOpen)
         {
@@ -73,10 +72,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
 
         ViewModel.TryCancelSuggestCommand.Execute(default);
-        DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
-            ViewModel.Suggestion.Clear
-        );
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, ViewModel.Suggestion.Clear);
     }
 }
 
@@ -88,5 +84,6 @@ public abstract class AppSearchBoxBase : LayoutUserControlBase<SearchBoxViewMode
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBoxBase"/> class.
     /// </summary>
-    protected AppSearchBoxBase() => ViewModel = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+    protected AppSearchBoxBase() =>
+        ViewModel = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
 }

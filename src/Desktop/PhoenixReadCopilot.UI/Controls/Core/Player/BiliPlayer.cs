@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -111,7 +112,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
 
         SetTransportVisibility(true);
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 ArrangeSubtitleSize();
@@ -166,7 +167,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
         newValue.Initialized += OnViewModelInitialized;
 
         DispatcherQueue.TryEnqueue(
-            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            DispatcherQueuePriority.Low,
             () =>
             {
                 ArrangeSubtitleSize();
