@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;
 
@@ -13,6 +15,8 @@ public sealed partial class PopularPageViewModel
 {
     private readonly IVideoDiscoveryService _service;
     private readonly ILogger<PopularPageViewModel> _logger;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
     private readonly Dictionary<
         IPopularSectionItemViewModel,
         List<VideoItemViewModel>

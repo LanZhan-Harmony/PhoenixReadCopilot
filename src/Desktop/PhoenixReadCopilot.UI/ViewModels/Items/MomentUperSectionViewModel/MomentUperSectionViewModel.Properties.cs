@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Richasy.BiliKernel.Bili.Moment;
+using Richasy.BiliKernel.Models.Moment;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
@@ -11,13 +12,15 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class MomentUperSectionViewModel
 {
-    private static IMomentDiscoveryService Service => ItemServices.MomentDiscovery;
     private static ILogger<MomentUperSectionViewModel>? _logger;
-    private static ILogger<MomentUperSectionViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentUperSectionViewModel>>();
+    private readonly Action<MomentInformation>? _showCommentAction;
     private bool _preventLoadMore;
     private string? _offset;
     private string? _baseline;
+
+    private static IMomentDiscoveryService Service => ItemServices.MomentDiscovery;
+    private static ILogger<MomentUperSectionViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentUperSectionViewModel>>();
 
     [ObservableProperty]
     public partial bool HasUnread { get; set; }

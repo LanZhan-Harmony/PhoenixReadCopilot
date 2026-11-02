@@ -1,10 +1,11 @@
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
+using Danmaku.Core;
 using Richasy.BiliKernel.Models.Danmaku;
 using Windows.UI;
 
-namespace Danmaku.Core;
+namespace PhoenixReadCopilot.UI.Controls.Danmaku;
 
 /// <summary>
 /// BiliBili 弹幕解析器.

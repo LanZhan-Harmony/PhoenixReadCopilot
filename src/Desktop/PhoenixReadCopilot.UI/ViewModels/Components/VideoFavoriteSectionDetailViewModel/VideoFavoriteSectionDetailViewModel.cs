@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
@@ -21,9 +20,6 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     : ViewModelBase<VideoFavoriteFolder>,
         IFavoriteSectionDetailViewModel
 {
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly AppSettings _settings;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoFavoriteSectionDetailViewModel"/> class.
     /// </summary>

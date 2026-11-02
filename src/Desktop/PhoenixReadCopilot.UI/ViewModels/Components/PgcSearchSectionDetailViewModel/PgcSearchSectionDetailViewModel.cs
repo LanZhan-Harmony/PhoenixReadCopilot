@@ -16,7 +16,6 @@ public sealed partial class PgcSearchSectionDetailViewModel
     : ViewModelBase,
         ISearchSectionDetailViewModel
 {
-    private readonly DispatcherQueue _dispatcherQueue;
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcSearchSectionDetailViewModel"/> class.
     /// </summary>

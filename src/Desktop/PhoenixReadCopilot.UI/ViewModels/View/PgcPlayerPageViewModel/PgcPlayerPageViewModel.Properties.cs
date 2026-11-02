@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -20,6 +21,9 @@ public sealed partial class PgcPlayerPageViewModel
     private readonly IFavoriteService _favoriteService;
     private readonly ILogger<PgcPlayerPageViewModel> _logger;
     private readonly CommentMainViewModel _comments;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly PinnerViewModel _pinnerViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
 
     private CancellationTokenSource _pageLoadCancellationTokenSource;
     private CancellationTokenSource _dashLoadCancellationTokenSource;

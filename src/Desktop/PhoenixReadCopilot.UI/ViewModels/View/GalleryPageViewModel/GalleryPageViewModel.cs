@@ -18,8 +18,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class GalleryPageViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPageViewModel"/> class.
     /// </summary>

@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
@@ -17,9 +16,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Components;
 /// </summary>
 public sealed partial class SearchBoxViewModel : ViewModelBase
 {
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly AppSettings _settings;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchBoxViewModel"/> class.
     /// </summary>

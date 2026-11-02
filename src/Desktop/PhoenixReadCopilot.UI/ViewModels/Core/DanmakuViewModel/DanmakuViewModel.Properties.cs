@@ -1,9 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Settings;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Danmaku;
 using Windows.UI;
+using WinUIKernel.Share.Toolkits;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
 
@@ -14,6 +16,8 @@ public sealed partial class DanmakuViewModel
 {
     private readonly IDanmakuService _danmakuService;
     private readonly ILogger<DanmakuViewModel> _logger;
+    private readonly IFontToolkit _fontToolkit;
+    private readonly AppSettings _settings;
 
     private string _aid;
     private string _cid;

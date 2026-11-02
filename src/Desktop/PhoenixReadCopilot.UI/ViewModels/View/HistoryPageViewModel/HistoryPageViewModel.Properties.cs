@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
@@ -15,6 +17,9 @@ public sealed partial class HistoryPageViewModel
     private readonly IViewHistoryService _service;
     private readonly ISearchService _searchService;
     private readonly ILogger<HistoryPageViewModel> _logger;
+    private readonly AppViewModel _appViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory;
     private int _searchPn;
     private bool _preventLoadMoreSearch;
     private CancellationTokenSource _searchCancellationTokenSource;

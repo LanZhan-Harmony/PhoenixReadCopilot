@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using PhoenixReadCopilot.UI.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
@@ -18,6 +19,7 @@ public sealed partial class VideoMomentSectionDetailViewModel
     private readonly ILogger<VideoMomentSectionDetailViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly MomentPageViewModel _momentPageViewModel;
+    private readonly AppSettings _settings;
 
     private bool _preventLoadMore;
     private string? _offset;

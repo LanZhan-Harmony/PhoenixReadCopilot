@@ -18,9 +18,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 {
-    private readonly NavigationViewModel _navigationViewModel;
-    private readonly DispatcherQueue _dispatcherQueue;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularPageViewModel"/> class.
     /// </summary>

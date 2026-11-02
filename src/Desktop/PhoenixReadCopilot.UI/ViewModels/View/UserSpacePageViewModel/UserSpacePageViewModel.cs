@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Components;
@@ -23,12 +22,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.View;
 /// </summary>
 public sealed partial class UserSpacePageViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
-    private readonly PinnerViewModel _pinnerViewModel;
-    private readonly AppSettings _settings;
-    private readonly IMomentDiscoveryService _momentDiscoveryService;
-    private readonly ILoggerFactory _loggerFactory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePageViewModel"/> class.
     /// </summary>

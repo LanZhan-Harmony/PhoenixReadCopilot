@@ -16,12 +16,6 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentMainViewModel"/> class.
     /// </summary>
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommentMainViewModel"/> class.
-    /// </summary>
     public CommentMainViewModel(
         ICommentService service,
         ILogger<CommentMainViewModel> logger,

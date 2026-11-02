@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 
@@ -13,6 +14,7 @@ public sealed partial class FansPageViewModel
 {
     private readonly IRelationshipService _service;
     private readonly ILogger<FansPageViewModel> _logger;
+    private readonly DispatcherQueue _dispatcherQueue;
 
     private int _pageNumber;
 

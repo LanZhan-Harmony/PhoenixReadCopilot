@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Settings;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 
@@ -13,6 +15,8 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
 {
     private readonly IFavoriteService _service;
     private readonly ILogger<VideoFavoriteSectionDetailViewModel> _logger;
+    private readonly NavigationViewModel _navigationViewModel;
+    private readonly AppSettings _settings;
 
     private int _pageNumber;
     private bool _preventLoadMore;

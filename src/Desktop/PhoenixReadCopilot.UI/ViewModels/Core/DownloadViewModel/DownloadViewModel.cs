@@ -2,7 +2,6 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
 using Richasy.BiliKernel.Bili.Authorization;
@@ -18,9 +17,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class DownloadViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
-    private readonly AppSettings _settings;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DownloadViewModel"/> class.
     /// </summary>

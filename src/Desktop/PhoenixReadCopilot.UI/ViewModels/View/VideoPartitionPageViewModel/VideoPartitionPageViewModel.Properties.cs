@@ -15,6 +15,7 @@ public sealed partial class VideoPartitionPageViewModel
 {
     private readonly IVideoDiscoveryService _service;
     private readonly ILogger<VideoPartitionPageViewModel> _logger;
+    private readonly ILoggerFactory _loggerFactory;
     private readonly Dictionary<Partition, VideoPartitionDetailViewModel> _partitionCache = new();
 
     [ObservableProperty]

@@ -1,4 +1,7 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.UI.Models.Constants;
+using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Items;
 
@@ -7,6 +10,13 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class VideoItemViewModel
 {
+    private static ILogger<VideoItemViewModel>? _logger;
+    private readonly Action<VideoItemViewModel>? _removeAction;
+    private readonly VideoFavoriteFolder? _favFolder;
+
+    private static ILogger<VideoItemViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<VideoItemViewModel>>();
+
     /// <summary>
     /// 样式.
     /// </summary>

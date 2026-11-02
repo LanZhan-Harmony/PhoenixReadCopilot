@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Settings;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Models.Media;
 
@@ -15,6 +16,8 @@ public sealed partial class DownloadViewModel
     private readonly ILogger<DownloadViewModel> _logger;
     private readonly IBiliTokenResolver _tokenResolver;
     private readonly IBiliCookiesResolver _cookiesResolver;
+    private readonly AppViewModel _appViewModel;
+    private readonly AppSettings _settings;
     private readonly string _bbdownPath;
     private readonly string _ffmpegPath;
     private readonly string _downloadPath;

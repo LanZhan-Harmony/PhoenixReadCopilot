@@ -7,7 +7,6 @@ using Microsoft.Windows.BadgeNotifications;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Helpers;
 using PhoenixReadCopilot.UI.Models.Constants;
-using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using Richasy.BiliKernel.Bili.Authorization;
 using Windows.System;
@@ -23,9 +22,6 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class AppViewModel : ViewModelBase
 {
-    private readonly IAppToolkit _appToolkit;
-    private readonly AppSettings _settings;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="AppViewModel"/> class.
     /// </summary>

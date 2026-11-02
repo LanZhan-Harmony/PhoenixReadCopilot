@@ -1,8 +1,11 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.ViewModels.Components;
+using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
@@ -18,6 +21,11 @@ public sealed partial class UserSpacePageViewModel
     private readonly IUserService _userService;
     private readonly ISearchService _searchService;
     private readonly ILogger<UserSpacePageViewModel> _logger;
+    private readonly AppViewModel _appViewModel;
+    private readonly PinnerViewModel _pinnerViewModel;
+    private readonly AppSettings _settings;
+    private readonly IMomentDiscoveryService _momentDiscoveryService;
+    private readonly ILoggerFactory _loggerFactory;
     private UserProfile _profile;
     private int _searchPn;
     private bool _preventLoadMoreSearch;
