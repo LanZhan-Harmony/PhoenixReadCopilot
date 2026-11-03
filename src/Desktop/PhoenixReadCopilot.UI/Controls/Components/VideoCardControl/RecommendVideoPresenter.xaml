@@ -17,82 +17,64 @@
         </Grid.RowDefinitions>
 
         <!--  海报封面容器  -->
-        <Grid Grid.Row="0">
-            <local:VideoCoverImage AspectRatio="0.75"
-                                   AutoAdjustAspectRatio="True"
-                                   CornerRadius="6,6,0,0"
-                                   Source="{x:Bind ViewModel.Cover, Mode=OneWay}"/>
+        <Border Grid.Row="0"
+                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                CornerRadius="4,4,0,0">
+            <Image HorizontalAlignment="Stretch"
+                   VerticalAlignment="Top"
+                   Stretch="Uniform">
+                <Image.Source>
+                    <BitmapImage DecodePixelType="Logical"
+                                 DecodePixelWidth="336"
+                                 UriSource="{x:Bind ViewModel.Cover}"/>
+                </Image.Source>
+            </Image>
+        </Border>
 
-            <!--  右上角：评分徽章  -->
-            <Border Margin="6"
-                    Padding="6,2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Background="#E6D32F2F"
-                    CornerRadius="4"
-                    Visibility="{x:Bind ViewModel.HasScore, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                <StackPanel Orientation="Horizontal" Spacing="3">
-                    <ic:SymbolIcon FontSize="10"
-                                   Foreground="White"
-                                   Symbol="Star"/>
-                    <TextBlock FontSize="11"
-                               FontWeight="Bold"
-                               Foreground="White"
-                               Text="{x:Bind ViewModel.Score, Mode=OneWay}"/>
-                </StackPanel>
-            </Border>
+        <!--  左下角：集数  -->
+        <Border Grid.Row="0"
+                Margin="4"
+                Padding="4"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="#99000000"
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.HasEpisodeCount}">
+            <TextBlock Foreground="White"
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Text="{x:Bind ViewModel.EpisodeCountText}"/>
+        </Border>
 
-            <!--  右下角：集数/更新状态  -->
-            <Border Margin="6"
-                    Padding="6,2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Background="#B3000000"
-                    CornerRadius="4"
-                    Visibility="{x:Bind ViewModel.HasEpisodeCount, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock FontSize="11"
-                           Foreground="White"
-                           Text="{x:Bind ViewModel.EpisodeCountText, Mode=OneWay}"/>
-            </Border>
-        </Grid>
+        <!--  右下角：评分徽章  -->
+        <Border Grid.Row="0"
+                Margin="4"
+                Padding="4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="#B0D32F2F"
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.HasScore}">
+            <StackPanel Orientation="Horizontal" Spacing="3">
+                <TextBlock FontWeight="Bold"
+                           Foreground="Gold"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="{x:Bind ViewModel.Score}"/>
+                <ic:SymbolIcon FontSize="{StaticResource CaptionTextBlockFontSize}"
+                               Foreground="Gold"
+                               IconVariant="Filled"
+                               Symbol="Star"/>
+            </StackPanel>
+        </Border>
 
         <!--  信息与元数据  -->
         <StackPanel Grid.Row="1"
-                    Padding="12,10,12,12"
+                    Padding="12,8,12,14"
                     Spacing="6">
             <!--  标题  -->
             <TextBlock HorizontalAlignment="Left"
-                       FontWeight="SemiBold"
-                       MaxLines="2"
-                       Text="{x:Bind ViewModel.Title, Mode=OneWay}"
+                       Text="{x:Bind ViewModel.Title}"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="Wrap"/>
-
-            <!--  标签列表  -->
-            <StackPanel Orientation="Horizontal"
-                        Spacing="4"
-                        Visibility="{x:Bind ViewModel.HasTags, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Border Padding="6,1.5"
-                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        Visibility="{x:Bind ViewModel.PrimaryTag, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
-                    <TextBlock FontSize="11"
-                               Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                               Text="{x:Bind ViewModel.PrimaryTag, Mode=OneWay}"/>
-                </Border>
-                <Border Padding="6,1.5"
-                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        Visibility="{x:Bind ViewModel.HasSecondaryTag, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock FontSize="11"
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                               Text="{x:Bind ViewModel.SecondaryTag, Mode=OneWay}"/>
-                </Border>
-            </StackPanel>
 
             <!--  底部行：题材分类 / 热度播放量  -->
             <Grid Margin="0,2,0,0">
@@ -104,16 +86,17 @@
                 <base:IconTextBlock Grid.Column="0"
                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                     IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
-                                    Symbol="FilmstripPlay"
-                                    Text="{x:Bind ViewModel.Author, Mode=OneWay}"
-                                    Visibility="{x:Bind ViewModel.Author, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                    Symbol="Tag"
+                                    Text="{x:Bind ViewModel.Author}"
+                                    Visibility="{x:Bind ViewModel.Author, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <!--  热度或播放量  -->
                 <base:IconTextBlock Grid.Column="1"
                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                     IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                    Symbol="Fire"
-                                    Text="{x:Bind ViewModel.HeatOrPlayCountText, Mode=OneWay}"
-                                    Visibility="{x:Bind ViewModel.HeatOrPlayCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                    Symbol="PlayCircle"
+                                    Text="{x:Bind ViewModel.HeatOrPlayCountText}"
+                                    ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"
+                                    Visibility="{x:Bind ViewModel.HeatOrPlayCountText, Converter={StaticResource ObjectToVisibilityConverter}}"/>
             </Grid>
         </StackPanel>
     </Grid>
