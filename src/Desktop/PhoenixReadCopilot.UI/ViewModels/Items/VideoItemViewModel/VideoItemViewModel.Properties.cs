@@ -12,12 +12,12 @@ namespace PhoenixReadCopilot.UI.ViewModels.Items;
 /// </summary>
 public sealed partial class VideoItemViewModel
 {
-    private static ILogger<VideoItemViewModel>? _logger;
     private readonly Action<VideoItemViewModel>? _removeAction;
     private readonly VideoFavoriteFolder? _favFolder;
 
-    private static ILogger<VideoItemViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<VideoItemViewModel>>();
+    private static readonly ILogger<VideoItemViewModel> _logger = Ioc.Default.GetRequiredService<
+        ILogger<VideoItemViewModel>
+    >();
 
     /// <summary>
     /// 短剧数据实体 (如果是红果短剧).
@@ -72,32 +72,12 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 集数文本 (如 "全80集" / "更新至50集").
     /// </summary>
-    public string? EpisodeCountText { get; init; }
+    public string? EpisodeCountText => $"{EpisodeCount}集";
 
     /// <summary>
     /// 标签列表.
     /// </summary>
     public IReadOnlyList<string> Tags { get; init; } = [];
-
-    /// <summary>
-    /// 主标签.
-    /// </summary>
-    public string? PrimaryTag => Tags.Count > 0 ? Tags[0] : TagName;
-
-    /// <summary>
-    /// 次标签.
-    /// </summary>
-    public string? SecondaryTag => Tags.Count > 1 ? Tags[1] : null;
-
-    /// <summary>
-    /// 是否有次标签.
-    /// </summary>
-    public bool HasSecondaryTag => !string.IsNullOrEmpty(SecondaryTag);
-
-    /// <summary>
-    /// 是否有标签.
-    /// </summary>
-    public bool HasTags => !string.IsNullOrEmpty(PrimaryTag);
 
     /// <summary>
     /// 分类.

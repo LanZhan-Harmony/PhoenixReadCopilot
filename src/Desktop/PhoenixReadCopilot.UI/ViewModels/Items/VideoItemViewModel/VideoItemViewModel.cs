@@ -75,16 +75,16 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         Title = drama.Title;
         Subtitle = drama.Remark;
 
-        if (!string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var coverUri))
+        if (
+            !string.IsNullOrEmpty(drama.CoverUrl)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var coverUri)
+        )
         {
             Cover = coverUri;
         }
 
         Score = drama.Score;
         EpisodeCount = drama.EpisodeCount;
-        EpisodeCountText = drama.EpisodeCount > 0
-            ? (drama.ReleaseStatus == DramaReleaseStatus.Finished ? $"全{drama.EpisodeCount}集" : $"更新至{drama.EpisodeCount}集")
-            : (!string.IsNullOrWhiteSpace(drama.Remark) ? drama.Remark : null);
         Tags = drama.Tags ?? [];
         Category = drama.Category;
         Heat = drama.Heat;
@@ -102,9 +102,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 
     private static VideoInformation CreateVideoInformation(Drama drama)
     {
-        var cover = !string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri)
-            ? new BiliImage(uri)
-            : default;
+        var cover =
+            !string.IsNullOrEmpty(drama.CoverUrl)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri)
+                ? new BiliImage(uri)
+                : default;
         return new VideoInformation(new MediaIdentifier(drama.Id, drama.Title, cover), default);
     }
 
@@ -156,7 +158,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "添加稍后再看失败");
+            _logger.LogError(ex, "添加稍后再看失败");
             ItemServices.App.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }
@@ -171,7 +173,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "移除稍后再看视频失败");
+            _logger.LogError(ex, "移除稍后再看视频失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
             );
@@ -188,7 +190,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "移除历史记录视频失败");
+            _logger.LogError(ex, "移除历史记录视频失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.FailedToRemoveVideoFromHistory, InfoType.Error)
             );
@@ -205,7 +207,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "移除收藏视频失败");
+            _logger.LogError(ex, "移除收藏视频失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
             );

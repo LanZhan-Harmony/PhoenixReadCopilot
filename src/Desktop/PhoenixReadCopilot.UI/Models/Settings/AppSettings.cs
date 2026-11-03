@@ -25,7 +25,7 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool AutoPlayNextRecommendVideo { get; set; } = false;
 
     [ObservableProperty]
-    public partial bool AutoPlayNext { get; set; } = false;
+    public partial bool AutoPlayNext { get; set; } = true;
 
     [ObservableProperty]
     public partial bool PlayNextWithoutTip { get; set; } = false;
