@@ -115,6 +115,12 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
 
     private void OnFavoriteButtonClick(object sender, RoutedEventArgs e)
     {
+        if (ItemsSource is null)
+        {
+            Command?.Execute(default);
+            return;
+        }
+
         InitializeCommand?.Execute(default);
         FavoriteTip.IsOpen = true;
     }

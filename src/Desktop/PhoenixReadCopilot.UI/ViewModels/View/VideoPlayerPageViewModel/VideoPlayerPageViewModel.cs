@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Pages.Overlay;
@@ -9,16 +10,12 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
 /// <summary>
-/// 视频播放器页面视图模型.
+/// 短剧播放器页面视图模型.
 /// </summary>
 public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 {
@@ -26,9 +23,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     /// Initializes a new instance of the <see cref="VideoPlayerPageViewModel"/> class.
     /// </summary>
     public VideoPlayerPageViewModel(
-        IPlayerService service,
-        IRelationshipService relationshipService,
-        IFavoriteService favoriteService,
         ILogger<VideoPlayerPageViewModel> logger,
         DanmakuViewModel danmaku,
         SubtitleViewModel subtitle,
@@ -38,24 +32,19 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         AppViewModel appViewModel,
         NavigationViewModel navigationViewModel,
         PinnerViewModel pinnerViewModel,
-        IViewLaterService viewLaterService,
-        IBiliTokenResolver tokenResolver,
         DispatcherQueue dispatcherQueue,
-        IBiliCookiesResolver cookiesResolver,
-        ILogger<PlayerViewModelBase> playerLogger
+        PhoenixReadApiClient apiClient,
+        DramaReviewSectionDetailViewModel dramaReviews
     )
-        : base(settingsService, appViewModel, dispatcherQueue, cookiesResolver, playerLogger)
+        : base(settingsService, appViewModel)
     {
         _navigationViewModel = navigationViewModel;
         _pinnerViewModel = pinnerViewModel;
-        _viewLaterService = viewLaterService;
-        _tokenResolver = tokenResolver;
         _dispatcherQueue = dispatcherQueue;
-        _service = service;
-        _relationshipService = relationshipService;
-        _favoriteService = favoriteService;
         _logger = logger;
         _comments = comments;
+        _apiClient = apiClient;
+        _dramaReviews = dramaReviews;
         Danmaku = danmaku;
         Subtitle = subtitle;
         Downloader = download;
@@ -71,7 +60,12 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     /// <summary>
     /// 注入播放列表.
     /// </summary>
-    public void InjectPlaylist(IList<VideoInformation> playlist) => _playlist = playlist;
+    public void InjectPlaylist(IList<Drama> playlist) => _dramaPlaylist = playlist;
+
+    /// <summary>
+    /// 注入播放列表 (兼容老调用).
+    /// </summary>
+    public void InjectPlaylist(object? playlist) { }
 
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(VideoPlayerPage);
@@ -80,7 +74,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     protected override double GetDefaultNavColumnWidth() => 360d;
 
     [RelayCommand]
-    private async Task InitializePageAsync(VideoSnapshot snapshot)
+    private async Task InitializePageAsync(object parameter)
     {
         if (IsPageLoading)
         {
@@ -88,11 +82,21 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         IsPageLoading = true;
-        var video = snapshot.Video;
-        IsPrivatePlay = snapshot.IsPrivate;
+        string seriesId = string.Empty;
+
+        if (parameter is VideoSnapshot snapshot)
+        {
+            seriesId = snapshot.Video.Identifier.Id;
+            IsPrivatePlay = snapshot.IsPrivate;
+        }
+        else if (parameter is string id)
+        {
+            seriesId = id;
+        }
+
         try
         {
-            if (_view is not null && _view.Information.Identifier.Id != video.Identifier.Id)
+            if (!string.IsNullOrEmpty(_seriesId) && _seriesId != seriesId)
             {
                 // 记录上一个视频的播放进度.
                 await ReportProgressAsync(Player.Position);
@@ -100,27 +104,29 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
             ClearView();
             Player.CancelNotification();
-            if (
-                _playlist is not null
-                && !_playlist.Any(p => p.Identifier.Id == video.Identifier.Id)
-            )
-            {
-                _playlist = default;
-            }
 
             Player.IsSeparatorWindowPlayer = IsSeparatorWindowPlayer;
             _pageLoadCancellationTokenSource = new CancellationTokenSource();
-            var view = await _service.GetVideoPageDetailAsync(
-                video.Identifier,
+            _seriesId = seriesId;
+
+            // 获取红果短剧详情与分集
+            var details = await _apiClient.GetDramaDetailsAsync(
+                _seriesId,
                 _pageLoadCancellationTokenSource.Token
             );
-            InitializeView(view);
-            var initialPart =
-                FindInitialPart(default) ?? throw new Exception("无法找到视频的分集信息.");
-            _part = initialPart;
-            _comments.Initialize(AvId, CommentTargetType.Video, CommentSortType.Hot);
+            _dramaDetails = details;
+            _episodes = details.Episodes;
+
+            InitializeDramaView(details);
+            var initialPart = FindInitialPart(default) ?? throw new Exception("无法找到短剧的分集信息.");
+            _currentEpisode = initialPart;
+
+            // 初始化整剧剧评与分集评论
+            _dramaReviews.Initialize(_seriesId, details.Drama.Score);
+            _comments.Initialize(_seriesId, _currentEpisode.VideoId, CommentSortType.Hot);
+
             LoadInitialProgress();
-            InitializeSections();
+            await InitializeSectionsAsync();
             InitializeLoops();
             ChangePart(initialPart);
             ViewInitialized?.Invoke(this, EventArgs.Empty);
@@ -130,7 +136,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             if (ex is not TaskCanceledException)
             {
                 IsPageLoadFailed = true;
-                _logger.LogError(ex, $"尝试获取视频 {video.Identifier.Id} 详情时失败.");
+                _logger.LogError(ex, $"尝试获取短剧 {seriesId} 详情时失败.");
             }
             else
             {
@@ -144,7 +150,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     }
 
     [RelayCommand]
-    private async Task InitializeDashMediaAsync(VideoPart part)
+    private async Task InitializeDashMediaAsync(Episode episode)
     {
         if (IsMediaLoading)
         {
@@ -155,23 +161,22 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         try
         {
             _dashLoadCancellationTokenSource = new CancellationTokenSource();
-            var info = await _service.GetVideoPlayDetailAsync(
-                _view.Information.Identifier,
-                Convert.ToInt64(part.Identifier.Id),
+            _currentVideoId = episode.VideoId;
+
+            // 解析红果短剧媒体源（包含各清晰度与 AES-128 CENC 解密密钥）
+            var mediaList = await _apiClient.ResolveMediaAsync(
+                _seriesId,
+                episode.VideoId,
                 _dashLoadCancellationTokenSource.Token
             );
-            if (_view is null)
+
+            if (mediaList is null || mediaList.Count == 0)
             {
                 return;
             }
 
-            InitializeDash(info);
-            var onlineCount = await _service.GetOnlineViewerAsync(
-                _view.Information.Identifier.Id,
-                part.Identifier.Id,
-                _dashLoadCancellationTokenSource.Token
-            );
-            OnlineCountText = onlineCount.Text;
+            _currentMediaList = mediaList;
+            InitializePlaybackMedias(mediaList);
         }
         catch (Exception ex)
         {
@@ -180,7 +185,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 IsMediaLoadFailed = true;
                 _logger.LogError(
                     ex,
-                    $"尝试获取视频 {_view.Information.Identifier.Id} 的第 {part.Index} 分集时失败."
+                    $"尝试获取短剧 {_seriesId} 的第 {episode.Number} 分集媒体时失败."
                 );
             }
             else
@@ -229,70 +234,51 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         _isFormatChanging = true;
         var isFirstSet = SelectedFormat == default;
         SelectedFormat = vm;
-        var maxAudioQuality = _audioSegments?.Max(p => Convert.ToInt32(p.Id));
-        var preferCodec = AppToolkit.GetPreferCodecId();
-        var vSeg =
-            _videoSegments?.FirstOrDefault(p =>
-                p.Id == vm.Data.Quality.ToString() && p.Codecs.Contains(preferCodec)
-            )
-            ?? _videoSegments?.FirstOrDefault(p => p.Id == vm.Data.Quality.ToString());
-        var aSeg = _audioSegments?.FirstOrDefault(p => p.Id == maxAudioQuality.ToString());
-
-        var videoUrl = vSeg?.BaseUrl;
-        var audioUrl = aSeg?.BaseUrl;
-
-        if (_settings.PlayWithoutP2P)
+        var media = vm.PlaybackMedia ?? _currentMediaList?.FirstOrDefault();
+        if (media == null)
         {
-            if (vSeg?.BackupUrls is not null)
-            {
-                string[] videoUrls = [vSeg?.BaseUrl, .. vSeg?.BackupUrls];
-                videoUrl = Array.Find(videoUrls, p => !AppToolkit.IsP2PUrl(p)) ?? vSeg?.BaseUrl;
-            }
-
-            if (aSeg?.BackupUrls is not null)
-            {
-                string[] audioUrls = [aSeg?.BaseUrl, .. aSeg?.BackupUrls];
-                audioUrl = Array.Find(audioUrls, p => !AppToolkit.IsP2PUrl(p)) ?? aSeg?.BaseUrl;
-            }
+            _isFormatChanging = false;
+            return;
         }
 
-        var isAutoPlay = !isFirstSet;
-        if (isFirstSet)
+        var videoUrl = media.Url;
+        if (
+            !string.IsNullOrEmpty(media.BackupUrl)
+            && _settings.PlayWithoutP2P
+            && AppToolkit.IsP2PUrl(videoUrl)
+        )
         {
-            isAutoPlay = _settings.ShouldAutoPlay;
+            videoUrl = media.BackupUrl;
         }
 
-        // 切换清晰度时，如果播放器已经加载了媒体，那么就保持当前的播放进度.
+        var isAutoPlay = !isFirstSet || _settings.ShouldAutoPlay;
+
+        // 切换清晰度时保持当前播放进度
         if (_initialProgress == 0 && Player.Position != 0)
         {
             _initialProgress = Player.Position;
         }
 
         _settings.LastSelectedVideoQuality = vm.Data.Quality;
-        if (Player is NativePlayerViewModel npvm)
-        {
-            npvm.InjectSegments(vSeg, aSeg);
-        }
-        else if (Player is FFmpegPlayerViewModel fpvm)
-        {
-            fpvm.InjectSegments(vSeg, aSeg, _part?.Duration ?? 0);
-        }
+
+        // 注入 CENC 解密密钥与 Referer 请求头
+        Player.DecryptionKey = media.DecryptionKey;
+        Player.CustomReferer = !string.IsNullOrEmpty(media.Referer)
+            ? media.Referer
+            : "https://novel.snssdk.com";
 
         Danmaku.ClearAll();
         await Player.SetPlayDataAsync(
             videoUrl,
-            audioUrl,
+            null,
             isAutoPlay,
             _initialProgress < 0 ? 0 : _initialProgress,
-            extraOptions: _part.Identifier.Id
-        );
-        Player.InitializeSmtc(
-            _view.Information.Identifier.Cover.SourceUri.ToString(),
-            Title,
-            UpName
+            extraOptions: _currentEpisode?.VideoId
         );
 
-        // 重置初始进度，避免影响其它视频.
+        Player.InitializeSmtc(Cover?.ToString() ?? string.Empty, $"{Title} - 第{_currentEpisode?.Number}集");
+
+        // 重置初始进度，避免影响其它视频
         _initialProgress = 0;
         _isFormatChanging = false;
     }
@@ -326,8 +312,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         if (
             !shouldReport
             || IsPrivatePlay
-            || _view is null
-            || _view.Information is null
+            || string.IsNullOrEmpty(_seriesId)
+            || _currentEpisode is null
             || progress == 0
             || Player.IsPlayerDataLoading
         )
@@ -338,16 +324,21 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         try
         {
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-            await _service.ReportVideoProgressAsync(
-                AvId,
-                _part.Identifier.Id,
-                progress,
+            await _apiClient.ReportProgressAsync(
+                new ProgressUpdate
+                {
+                    SeriesId = _seriesId,
+                    VideoId = _currentEpisode.VideoId,
+                    EpisodeNumber = _currentEpisode.Number,
+                    CurrentPositionMs = progress * 1000L,
+                    DurationMs = (long)_currentEpisode.Duration.TotalMilliseconds,
+                },
                 cancellationToken.Token
             );
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试上报播放进度时失败.");
+            _logger.LogError(ex, "尝试上报短剧播放进度时失败.");
         }
     }
 

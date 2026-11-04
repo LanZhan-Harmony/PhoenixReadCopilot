@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Forms;
 using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
@@ -7,17 +8,17 @@ using PhoenixReadCopilot.UI.Pages.Overlay;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
+using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage.Streams;
 using Windows.System;
-using WinUIEx;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
 /// <summary>
-/// 视频播放器页面视图模型.
+/// 短剧播放器页面视图模型.
 /// </summary>
 public sealed partial class VideoPlayerPageViewModel
 {
@@ -26,20 +27,20 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            if (IsFollow)
+            var firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
+            if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
             {
-                await _relationshipService.UnfollowUserAsync(_view.Information.Publisher.User.Id);
-                IsFollow = false;
-            }
-            else
-            {
-                await _relationshipService.FollowUserAsync(_view.Information.Publisher.User.Id);
-                IsFollow = true;
+                var state = !IsFollow;
+                var res = await _apiClient.SetFollowAsync(user.Id, state);
+                if (res.Succeeded)
+                {
+                    IsFollow = state;
+                }
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试关注/取消关注 UP 主时失败.");
+            _logger.LogError(ex, "尝试关注/取消关注制作人员时失败.");
         }
     }
 
@@ -48,104 +49,83 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
+            var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
             var state = !IsLiked;
-            await _service.ToggleVideoLikeAsync(_view.Information.Identifier.Id, state);
-            IsLiked = state;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "尝试点赞/取消点赞视频时失败.");
-        }
-    }
-
-    [RelayCommand]
-    private async Task CoinAsync(int count = 1)
-    {
-        try
-        {
-            await _service.CoinVideoAsync(_view.Information.Identifier.Id, count, IsCoinAlsoLike);
-            IsCoined = true;
-            if (IsCoinAlsoLike && !IsLiked)
+            if (!string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(targetVideoId))
             {
-                IsLiked = true;
+                var res = await _apiClient.SetDramaEpisodeLikeAsync(_seriesId, targetVideoId, state);
+                if (res.Succeeded)
+                {
+                    IsLiked = state;
+                    LikeCount += state ? 1 : -1;
+                }
+                else
+                {
+                    _appViewModel.ShowTipCommand.Execute((res.Message ?? "点赞操作失败", InfoType.Warning));
+                }
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试投币/取消投币视频时失败.");
+            _logger.LogError(ex, "尝试点赞/取消点赞分集时失败.");
         }
     }
 
     [RelayCommand]
-    private async Task TripleAsync()
+    private async Task ToggleFavoriteAsync()
     {
         try
         {
-            await _service.TripleVideoAsync(_view.Information.Identifier.Id);
-            IsLiked = true;
-            IsCoined = true;
-            IsFavorited = true;
+            var state = !IsFavorited;
+            if (!string.IsNullOrEmpty(_seriesId))
+            {
+                var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+                var res = await _apiClient.SetFavoriteAsync(_seriesId, targetVideoId, state);
+                if (res.Succeeded)
+                {
+                    IsFavorited = state;
+                    FavoriteCount += state ? 1 : -1;
+                }
+                else
+                {
+                    _appViewModel.ShowTipCommand.Execute((res.Message ?? "收藏操作失败", InfoType.Warning));
+                }
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试一键三连视频时失败.");
+            _logger.LogError(ex, "尝试收藏/取消收藏剧集时失败.");
         }
     }
 
     [RelayCommand]
-    private async Task InitializeFavoritesAsync()
-    {
-        if (FavoriteFolders is not null)
-        {
-            return;
-        }
+    private Task FavoriteAsync() => ToggleFavoriteAsync();
 
+    [RelayCommand]
+    private async Task ShareAsync()
+    {
         try
         {
-            var (folders, ids) = await _favoriteService.GetPlayingVideoFavoriteFoldersAsync(
-                _view.Information.Identifier.Id
-            );
-            FavoriteFolders = folders
-                .Select(p => new PlayerFavoriteFolderViewModel(p, ids.Contains(p.Id)))
-                .ToList();
+            var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+            var shareInfo = await _apiClient.CreateShareLinkAsync(_seriesId, targetVideoId);
+            var url = !string.IsNullOrEmpty(shareInfo.Url)
+                ? shareInfo.Url
+                : (!string.IsNullOrEmpty(shareInfo.ShortUrl) ? shareInfo.ShortUrl : GetWebLink());
+
+            var package = new DataPackage();
+            package.SetText(url);
+            package.SetWebLink(new Uri(url));
+            Clipboard.SetContent(package);
+            _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试获取收藏夹列表时失败.");
+            _logger.LogError(ex, "分享短剧链接失败.");
         }
     }
 
     [RelayCommand]
-    private async Task FavoriteAsync()
-    {
-        if (FavoriteFolders is null)
-        {
-            return;
-        }
-
-        var selectedFolders = FavoriteFolders
-            ?.Where(p => p.IsSelected)
-            .Select(p => p.Data.Id)
-            .ToList();
-        var unselectedFolders = FavoriteFolders
-            ?.Where(p => !p.IsSelected)
-            .Select(p => p.Data.Id)
-            .ToList();
-        try
-        {
-            await _service.FavoriteVideoAsync(
-                _view.Information.Identifier.Id,
-                selectedFolders,
-                unselectedFolders
-            );
-            IsFavorited = selectedFolders.Count != 0;
-            FavoriteFolders = default;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "尝试收藏视频时失败.");
-        }
-    }
+    private void ShareVideoUrl() => ShareCommand.Execute(default);
 
     [RelayCommand]
     private void CopyVideoUrl()
@@ -163,37 +143,18 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            await _viewLaterService.AddAsync(_view.Information.Identifier.Id);
-            _appViewModel.ShowTipCommand.Execute((Resources.AddViewLaterSucceed, InfoType.Success));
+            if (!string.IsNullOrEmpty(_seriesId))
+            {
+                var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+                await _apiClient.SetFavoriteAsync(_seriesId, targetVideoId, true);
+                IsFavorited = true;
+                _appViewModel.ShowTipCommand.Execute(("已加入追剧列表", InfoType.Success));
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "添加稍后再看失败");
-            _appViewModel.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
-        }
-    }
-
-    [RelayCommand]
-    private void ShareVideoUrl()
-    {
-        var handle = _appViewModel.ActivatedWindow.GetWindowHandle();
-        var transferManager = DataTransferManagerInterop.GetForWindow(handle);
-        transferManager.DataRequested += OnTransferDataRequested;
-        DataTransferManagerInterop.ShowShareUIForWindow(handle);
-
-        void OnTransferDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
-        {
-            var url = GetWebLink();
-            var dp = new DataPackage();
-            dp.SetText(url);
-            dp.SetWebLink(new Uri(url));
-            dp.Properties.Title = Title;
-            dp.Properties.Description = Description;
-            dp.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(
-                _view.Information.Identifier.Cover.Uri
-            );
-            args.Request.Data = dp;
-            sender.DataRequested -= OnTransferDataRequested;
+            _logger.LogError(ex, "加入追剧列表失败");
+            _appViewModel.ShowTipCommand.Execute(("加入追剧列表失败", InfoType.Error));
         }
     }
 
@@ -217,13 +178,13 @@ public sealed partial class VideoPlayerPageViewModel
 
         _initialProgress = 0;
 
-        if (nextPart is VideoPart part)
+        if (nextPart is Episode episode)
         {
-            ChangePart(part);
+            ChangePart(episode);
         }
-        else if (nextPart is VideoInformation video)
+        else if (nextPart is Drama rec)
         {
-            InitializePageCommand.Execute(new VideoSnapshot(video, IsPrivatePlay));
+            InitializePageCommand.Execute(rec.Id);
         }
         else
         {
@@ -234,8 +195,15 @@ public sealed partial class VideoPlayerPageViewModel
     [RelayCommand]
     private void OpenUserSpace()
     {
-        var profile = _view.Information.Publisher.User;
-        _navigationViewModel.NavigateToOver(typeof(UserSpacePage), profile);
+        var firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
+        if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
+        {
+            var avatarImage = !string.IsNullOrEmpty(user.AvatarUrl) && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out var uri)
+                ? new BiliImage(uri)
+                : default;
+            var profile = new Richasy.BiliKernel.Models.User.UserProfile(user.Id, user.Name, avatarImage);
+            _navigationViewModel.NavigateToOver(typeof(UserSpacePage), profile);
+        }
     }
 
     [RelayCommand]
@@ -251,16 +219,18 @@ public sealed partial class VideoPlayerPageViewModel
             Player.TogglePlayPauseCommand.Execute(default);
         }
 
-        new PlayerWindow().OpenVideo(new VideoSnapshot(_view.Information, IsPrivatePlay));
+        var coverImage = Cover != null ? new BiliImage(Cover) : default;
+        var info = new VideoInformation(new MediaIdentifier(_seriesId, Title, coverImage), default);
+        new PlayerWindow().OpenVideo(new VideoSnapshot(info, IsPrivatePlay));
     }
 
     [RelayCommand]
     private void Pin()
     {
         var pinItem = new PinItem(
-            _view.Information.Identifier.Id,
-            _view.Information.Identifier.Title,
-            _view.Information.Identifier.Cover.Uri.ToString(),
+            _seriesId,
+            Title,
+            Cover?.ToString() ?? string.Empty,
             PinContentType.Video
         );
         _pinnerViewModel.AddItemCommand.Execute(pinItem);
@@ -276,33 +246,48 @@ public sealed partial class VideoPlayerPageViewModel
     }
 
     private string GetWebLink() =>
-        $"https://www.bilibili.com/video/av{_view.Information.Identifier.Id}";
+        !string.IsNullOrEmpty(_seriesId)
+            ? $"https://novel.snssdk.com/page/drama?book_id={_seriesId}"
+            : "https://novel.snssdk.com";
 
-    private void ChangePart(VideoPart part)
+    private void ChangePart(Episode episode)
     {
+        if (episode is null)
+        {
+            return;
+        }
+
         if (_initialProgress == 0)
         {
             _initialProgress = -1;
         }
 
-        _part = part;
+        _currentEpisode = episode;
+        _currentVideoId = episode.VideoId;
         Player.CancelNotification();
-        Danmaku?.ResetData(_view.Information.Identifier.Id, part.Identifier.Id);
-        Subtitle?.ResetData(_view.Information.Identifier.Id, part.Identifier.Id);
-        InitializeDashMediaCommand.Execute(part);
+
+        Danmaku?.ResetData(_seriesId, episode.VideoId);
+        Subtitle?.ResetData(_seriesId, episode.VideoId);
+
+        // 加载分集媒体
+        InitializeDashMediaCommand.Execute(episode);
         Subtitle.InitializeCommand.Execute(default);
+
+        // 切换分集评论
+        _comments.Initialize(_seriesId, episode.VideoId, CommentSortType.Hot);
+
         InitializeNextVideo();
         var partSection =
-            Sections.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
+            Sections?.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
             as VideoPlayerPartSectionDetailViewModel;
-        partSection?.UpdateSelectedPartCommand.Execute(part);
+        partSection?.UpdateSelectedPartCommand.Execute(episode);
     }
 
     private void PlayerProgressChanged(int progress, int duration)
     {
         if (progress < duration && progress > 1 && (Danmaku?.IsEmpty() ?? false))
         {
-            Danmaku?.ResetData(_view?.Information.Identifier.Id, _part?.Identifier.Id);
+            Danmaku?.ResetData(_seriesId, _currentEpisode?.VideoId ?? _currentVideoId);
             Danmaku?.LoadDanmakusCommand.Execute(duration);
         }
 
@@ -312,7 +297,7 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void PlayerStateChanged(PlayerState state)
     {
-        if (_view == null)
+        if (_currentEpisode == null && string.IsNullOrEmpty(_seriesId))
         {
             return;
         }
@@ -380,19 +365,19 @@ public sealed partial class VideoPlayerPageViewModel
             }
             else
             {
-                string tip = default;
-                if (next is VideoPart part)
+                string tip = default!;
+                if (next is Episode episode)
                 {
                     tip = string.Format(
                         Resources.NextVideoNotificationTemplate,
-                        part.Identifier.Title
+                        $"第 {episode.Number} 集"
                     );
                 }
-                else if (next is VideoInformation video)
+                else if (next is Drama rec)
                 {
                     tip = string.Format(
                         Resources.NextVideoNotificationTemplate,
-                        video.Identifier.Title
+                        rec.Title
                     );
                 }
 

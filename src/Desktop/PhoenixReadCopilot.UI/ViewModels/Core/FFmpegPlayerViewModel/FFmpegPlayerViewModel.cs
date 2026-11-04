@@ -3,11 +3,10 @@ using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.UI.Models;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
-using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Models.Media;
 using Windows.Media.Playback;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Core;
@@ -17,28 +16,27 @@ namespace PhoenixReadCopilot.UI.ViewModels.Core;
 /// </summary>
 public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 {
-    private readonly IBiliCookiesResolver _cookiesResolver;
-
     public FFmpegPlayerViewModel(
         ISettingsService settingsService,
         AppViewModel appViewModel,
         ILogger<PlayerViewModelBase> logger,
-        DispatcherQueue dispatcherQueue,
-        IBiliCookiesResolver cookiesResolver
+        DispatcherQueue dispatcherQueue
     )
-        : base(settingsService, appViewModel, logger, dispatcherQueue)
-    {
-        _cookiesResolver = cookiesResolver;
-    }
+        : base(settingsService, appViewModel, logger, dispatcherQueue) { }
 
     private MediaPlayerElement? _element;
-    private DashSegmentInformation? _videoSegment;
-    private DashSegmentInformation? _audioSegment;
+    private MediaSegmentInformation? _videoSegment;
+    private MediaSegmentInformation? _audioSegment;
     private int _customDuration;
     private FFmpegMediaSource? _ffmpegSource;
     private TcpListener? _manifestListener;
     private CancellationTokenSource? _manifestServerCts;
     private bool _isDisposed;
+
+    /// <summary>
+    /// CENC 解密密钥.
+    /// </summary>
+    public override string? DecryptionKey { get; set; }
 
     /// <summary>
     /// 媒体播放器.
@@ -68,8 +66,8 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     /// 注入播放片段.
     /// </summary>
     public void InjectSegments(
-        DashSegmentInformation? video,
-        DashSegmentInformation? audio,
+        MediaSegmentInformation? video,
+        MediaSegmentInformation? audio,
         int duration = 0
     )
     {
@@ -82,6 +80,44 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         }
 
         UpdateState(PlayerState.None);
+    }
+
+    /// <summary>
+    /// 注入 DASH 播放片段（兼容重载）.
+    /// </summary>
+    public void InjectSegments(
+        Richasy.BiliKernel.Models.Media.DashSegmentInformation? video,
+        Richasy.BiliKernel.Models.Media.DashSegmentInformation? audio,
+        int duration = 0
+    )
+    {
+        MediaSegmentInformation? v = video is null
+            ? null
+            : new MediaSegmentInformation
+            {
+                Id = video.Id,
+                BaseUrl = video.BaseUrl,
+                Bandwidth = video.Bandwidth,
+                Codecs = video.Codecs,
+                MimeType = video.MimeType,
+                Width = video.Width,
+                Height = video.Height,
+                IndexRange = video.IndexRange,
+                Initialization = video.Initialization,
+            };
+        MediaSegmentInformation? a = audio is null
+            ? null
+            : new MediaSegmentInformation
+            {
+                Id = audio.Id,
+                BaseUrl = audio.BaseUrl,
+                Bandwidth = audio.Bandwidth,
+                Codecs = audio.Codecs,
+                MimeType = audio.MimeType,
+                IndexRange = audio.IndexRange,
+                Initialization = audio.Initialization,
+            };
+        InjectSegments(v, a, duration);
     }
 
     private MediaPlayer CreatePlayer()

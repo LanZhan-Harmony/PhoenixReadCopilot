@@ -2211,9 +2211,6 @@
   <data name="DXVA2Decode" xml:space="preserve">
     <value>DXVA2 硬解</value>
   </data>
-  <data name="Native" xml:space="preserve">
-    <value>原生</value>
-  </data>
   <data name="FailedToFollowPgc" xml:space="preserve">
     <value>追番/追剧失败</value>
   </data>

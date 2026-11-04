@@ -1,123 +1,98 @@
-using System.Globalization;
-using Humanizer;
+using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.User;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
 /// <summary>
-/// 视频播放器页面视图模型.
+/// 短剧播放器页面视图模型.
 /// </summary>
 public sealed partial class VideoPlayerPageViewModel
 {
-    private void InitializeView(VideoPlayerView view)
+    private void InitializeDramaView(DramaDetails details)
     {
-        _view = view;
-        Cover = view.Information.Identifier.Cover.SourceUri;
-        Title = view.Information.Identifier.Title;
-        AvId = view.Information.Identifier.Id;
-        BvId = view.Information.BvId;
-        IsMyVideo =
-            _view.Information.Publisher.User.Id == _tokenResolver.GetToken().UserId.ToString();
-        UpAvatar = view.Information.Publisher.User.Avatar.Uri;
-        UpName = view.Information.Publisher.User.Name;
-        var relativeTime =
-            DateTimeOffset.Now - view.Information.PublishTime > TimeSpan.FromDays(90)
-                ? view.Information.PublishTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                : view.Information.PublishTime.Humanize(default, new CultureInfo("zh-CN"));
-        PublishRelativeTime = string.Format(Resources.AuthorPublishTime, relativeTime);
-        Description = view.Information.GetExtensionIfNotNull<string>(
-            VideoExtensionDataId.Description
-        );
-        IsFollow =
-            view.OwnerCommunity.Relation != UserRelationStatus.Unfollow
-            && view.OwnerCommunity.Relation != UserRelationStatus.Unknown;
-        IsInteractionVideo = view.IsInteractiveVideo;
-        Tags = view.Tags.ToList();
-        InitializeCommunityInformation(view.Information.CommunityInformation);
-        IsLiked = view.Operation.IsLiked;
-        IsCoined = view.Operation.IsCoined;
-        IsFavorited = view.Operation.IsFavorited;
-        IsCoinAlsoLike = true;
+        var drama = details.Drama;
+        _seriesId = drama.Id;
+        Title = drama.Title;
+        Description = drama.Description;
+        Cover =
+            !string.IsNullOrEmpty(drama.CoverUrl)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var coverUri)
+                ? coverUri
+                : default;
+        PlayCount =
+            drama.PlayCount > 0
+                ? drama.PlayCount
+                : (double.TryParse(drama.Views, out var vc) ? vc : 0);
+        LikeCount = drama.DiggCount;
+        FavoriteCount = drama.FollowCount;
+        OnlineCountText = !string.IsNullOrEmpty(drama.Heat)
+            ? drama.Heat
+            : (!string.IsNullOrEmpty(drama.Score) ? $"{drama.Score} 分" : "热播中");
+
+        PublishRelativeTime = !string.IsNullOrEmpty(drama.OnlineDate)
+            ? drama.OnlineDate
+            : "红果独播";
+
+        Credits =
+            drama
+                .Credits?.Select(c => new DramaCreditItemViewModel(c, _apiClient, _appViewModel))
+                .ToList()
+            ?? [];
+        Tags = drama.Tags?.ToList() ?? [];
+
         Player.Title = Title;
         CalcPlayerHeight();
     }
 
-    private void InitializeCommunityInformation(VideoCommunityInformation info)
+    private void InitializePlaybackMedias(IReadOnlyList<PlaybackMedia> mediaList)
     {
-        PlayCount = info.PlayCount ?? 0;
-        DanmakuCount = info.DanmakuCount ?? 0;
-        CommentCount = info.CommentCount ?? 0;
-        LikeCount = info.LikeCount ?? 0;
-        CoinCount = info.CoinCount ?? 0;
-        FavoriteCount = info.FavoriteCount ?? 0;
-    }
-
-    private void InitializeDash(DashMediaInformation info)
-    {
-        _videoSegments = info.Videos;
-        _audioSegments = info.Audios;
-
         Downloader.Clear();
-        Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
+        Downloader.InitializeDrama(_seriesId, Title, Cover?.ToString() ?? string.Empty);
 
-        // 用户个人视频无需会员即可观看最高画质.
-        if (IsMyVideo)
-        {
-            foreach (var format in Formats)
-            {
-                format.IsEnabled = true;
-            }
-        }
+        // 按清晰度文案去重，每种清晰度只保留一条，优先保留带解密密钥与高码率的
+        var distinctMedias = mediaList
+            .GroupBy(PlayerFormatItemViewModel.GetFormatKey)
+            .Select(g =>
+                g.OrderByDescending(m => !string.IsNullOrEmpty(m.DecryptionKey))
+                    .ThenByDescending(m => m.Bitrate)
+                    .First()
+            )
+            .OrderByDescending(PlayerFormatItemViewModel.GetQualityScore)
+            .ToList();
 
-        if (_view == default)
-        {
-            return;
-        }
+        Formats = distinctMedias.Select(m => new PlayerFormatItemViewModel(m)).ToList();
 
-        var preferFormatSetting = _settings.PreferQuality;
-        var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
-        var partIndex = _view.Parts?.IndexOf(_part) ?? 0;
+        var partIndex = _episodes is not null && _currentEpisode is not null
+            ? _episodes.ToList().FindIndex(e => e.VideoId == _currentEpisode.VideoId)
+            : 0;
 
-        // 下载可以选择所有清晰度.
         Downloader.InitializeMetas(
             GetWebLink(),
-            info.Formats.AsReadOnly(),
-            _view.Parts?.Count > 1 ? _view.Parts.AsReadOnly() : default,
-            partIndex + 1
+            Formats.Select(p => p.Data).ToList(),
+            default,
+            partIndex >= 0 ? partIndex + 1 : 1
         );
-        PlayerFormatItemViewModel? selectedFormat = default;
-        if (preferFormatSetting == PreferQualityType.Auto)
-        {
-            var lastSelectedFormat = _settings.LastSelectedVideoQuality;
-            selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
-        }
-        else if (preferFormatSetting == PreferQualityType.UHD)
-        {
-            selectedFormat = availableFormats.Find(p => p.Data.Quality == 120);
-        }
-        else if (preferFormatSetting == PreferQualityType.HD)
-        {
-            var hdFormats = availableFormats
-                .Where(p => p.Data.Quality == 116 || p.Data.Quality == 80)
-                .ToList();
-            selectedFormat = hdFormats.OrderByDescending(p => p.Data.Quality).FirstOrDefault();
-        }
 
-        if (selectedFormat is null)
+        // 选择最佳画质或用户偏好画质
+        var selectedFormat = Formats.FirstOrDefault();
+        var lastSelectedQuality = _settings.LastSelectedVideoQuality;
+        if (lastSelectedQuality > 0)
         {
-            var maxQuality = availableFormats.Max(p => p.Data.Quality);
-            selectedFormat = availableFormats.Find(p => p.Data.Quality == maxQuality);
+            var matched = Formats.Find(p => p.Data.Quality == lastSelectedQuality);
+            if (matched != null)
+            {
+                selectedFormat = matched;
+            }
         }
 
         ChangeFormatCommand.Execute(selectedFormat);
     }
 
-    private void InitializeSections()
+    private async Task InitializeSectionsAsync()
     {
         if (Sections?.Count > 0)
         {
@@ -129,40 +104,38 @@ public sealed partial class VideoPlayerPageViewModel
             new VideoPlayerInfoSectionDetailViewModel(this),
         };
 
-        if (_view.Seasons is not null)
-        {
-            sections.Insert(
-                0,
-                new VideoPlayerSeasonSectionDetailViewModel(this, _view.Seasons, AvId)
-            );
-        }
-
-        if (_view.Parts?.Count > 1)
+        // 1. 分集列表（网格序号模式）
+        if (_episodes?.Count > 1)
         {
             sections.Add(
                 new VideoPlayerPartSectionDetailViewModel(
-                    _view.Parts,
-                    _part.Identifier.Id,
+                    _episodes,
+                    _currentEpisode?.VideoId ?? string.Empty,
                     ChangePart,
                     _settingsService
                 )
             );
         }
 
-        if (_playlist is not null)
-        {
-            sections.Insert(
-                0,
-                new VideoPlayerPlaylistSectionDetailViewModel(this, _playlist, AvId)
-            );
-        }
+        // 2. 剧评 Tab（整部剧一份，显示评分与发表评论）
+        sections.Add(_dramaReviews);
 
-        if (_view.Recommends is not null)
-        {
-            sections.Add(new VideoPlayerRecommendSectionDetailViewModel(_view.Recommends));
-        }
-
+        // 3. 评论列表 Tab（分集评论）
         sections.Add(_comments);
+
+        // 4. 专属关联好剧推荐（调用红果推荐接口）
+        try
+        {
+            var rec = await _apiClient.GetSeriesRecommendationsAsync(_seriesId);
+            if (rec?.Items is { Count: > 0 } recItems)
+            {
+                sections.Add(new VideoPlayerRecommendSectionDetailViewModel(recItems));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取推荐好剧失败.");
+        }
 
         Sections = sections;
         SelectSection(Sections.First());
@@ -172,13 +145,11 @@ public sealed partial class VideoPlayerPageViewModel
     private void ClearView()
     {
         IsPageLoadFailed = false;
-        _view = default;
-        _part = default;
-        _videoSegments = default;
-        _audioSegments = default;
+        _episodes = default;
+        _currentEpisode = default;
+        _dramaDetails = default;
         _initialProgress = -1;
         Tags = default;
-        UpAvatar = default;
         IsFollow = false;
         IsMyVideo = false;
         PlayCount = 0;
@@ -188,11 +159,7 @@ public sealed partial class VideoPlayerPageViewModel
         CoinCount = 0;
         FavoriteCount = 0;
         IsLiked = false;
-        IsCoined = false;
         IsFavorited = false;
-        IsCoinAlsoLike = true;
-        AvId = default;
-        BvId = default;
         FavoriteFolders = default;
         SelectedFormat = default;
         Sections?.Clear();
@@ -200,45 +167,37 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void CalcPlayerHeight()
     {
-        if (
-            PlayerWidth <= 0
-            || _view?.AspectRatio is null
-            || Player.IsFullScreen
-            || Player.IsCompactOverlay
-        )
+        if (PlayerWidth <= 0 || Player.IsFullScreen || Player.IsCompactOverlay)
         {
             return;
         }
 
-        PlayerHeight = (double)(
-            PlayerWidth * _view.AspectRatio.Value.Height / _view.AspectRatio.Value.Width
-        );
+        // 红果短剧默认为 9:16 竖屏短剧
+        var ratioWidth = 9.0;
+        var ratioHeight = 16.0;
+        if (_currentEpisode?.IsVertical == false)
+        {
+            ratioWidth = 16.0;
+            ratioHeight = 9.0;
+        }
+
+        PlayerHeight = PlayerWidth * ratioHeight / ratioWidth;
     }
 
-    private VideoPart? FindInitialPart(string? initialPartId = default)
+    private Episode? FindInitialPart(string? initialVideoId = default)
     {
-        if (_view.Parts?.Count == 1)
+        if (_episodes?.Count == 1)
         {
-            return _view.Parts.First();
+            return _episodes.First();
         }
 
-        VideoPart? part = default;
-        if (!string.IsNullOrEmpty(initialPartId))
+        Episode? part = default;
+        if (!string.IsNullOrEmpty(initialVideoId) && _episodes is not null)
         {
-            part = _view.Parts.FirstOrDefault(p => p.Identifier.Id == initialPartId);
+            part = _episodes.FirstOrDefault(p => p.VideoId == initialVideoId);
         }
 
-        if (part == null)
-        {
-            var historyPartId = _view.Progress?.Cid;
-            var autoLoadHistory = _settings.AutoLoadHistory;
-            if (!string.IsNullOrEmpty(historyPartId) && autoLoadHistory)
-            {
-                part = _view.Parts.FirstOrDefault(p => p.Identifier.Id == historyPartId);
-            }
-        }
-
-        return part ?? _view.Parts.FirstOrDefault();
+        return part ?? _episodes?.FirstOrDefault();
     }
 
     private void LoadInitialProgress(int? progress = default)
@@ -248,84 +207,37 @@ public sealed partial class VideoPlayerPageViewModel
         {
             _initialProgress = progress.Value;
         }
-        else if (_view.Progress is not null)
-        {
-            var p = Convert.ToInt32(_view.Progress.Progress);
-            if (p < _view.Information.Duration - 5)
-            {
-                _initialProgress = p;
-            }
-        }
     }
 
     private object? FindNextVideo()
     {
         var isListLoop = CurrentLoop == VideoLoopType.List;
-        var hasUgcSeason = Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().Any();
 
-        // 1. 先检查分P列表中是否有下一个视频.
-        if (
-            Sections.OfType<VideoPlayerPartSectionDetailViewModel>().FirstOrDefault()
-            is VideoPlayerPartSectionDetailViewModel partSection
-        )
+        // 1. 先检查分集列表中是否有下一集.
+        if (_episodes is not null && _currentEpisode is not null)
         {
-            var index = partSection.Parts.ToList().IndexOf(_part);
-            if (index < partSection.Parts.Count - 1)
+            var list = _episodes.ToList();
+            var index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
+            if (index >= 0 && index < list.Count - 1)
             {
-                return partSection.Parts.ElementAt(index + 1);
+                return list[index + 1];
             }
 
-            if (_playlist is null && isListLoop && !hasUgcSeason)
+            if (isListLoop && list.Count > 0)
             {
-                return partSection.Parts.First();
+                return list[0];
             }
         }
 
-        // 2. 检查播放列表中是否有下一个视频.
-        if (_playlist is not null)
-        {
-            var index = _playlist.ToList().IndexOf(_view.Information);
-            if (index < _playlist.Count - 1)
-            {
-                return _playlist.ElementAt(index + 1);
-            }
-
-            if (isListLoop)
-            {
-                return _playlist.First();
-            }
-            else if (_settings.EndWithPlaylist)
-            {
-                return default;
-            }
-        }
-
-        // 3. 检查合集中是否有下一个视频.
-        if (
-            Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().FirstOrDefault()
-            is VideoPlayerSeasonSectionDetailViewModel seasonSection
-        )
-        {
-            var index = seasonSection.Items.ToList().IndexOf(seasonSection.SelectedItem);
-            if (index < seasonSection.Items.Count - 1)
-            {
-                return seasonSection.Items.ElementAt(index + 1).Data;
-            }
-            else if (isListLoop)
-            {
-                return seasonSection.Items.First().Data;
-            }
-        }
-
-        // 4. 检查推荐视频中是否有下一个视频.
+        // 2. 检查推荐好剧中是否有下一个短剧.
         var isAutoPlayRecommendVideo = _settings.AutoPlayNextRecommendVideo;
         if (
             isAutoPlayRecommendVideo
-            && Sections.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault()
+            && Sections?.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault()
                 is VideoPlayerRecommendSectionDetailViewModel recommendSection
         )
         {
-            return recommendSection.Items.First().Data;
+            return recommendSection.Items.FirstOrDefault()?.Data;
         }
 
         return default;
@@ -333,29 +245,26 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void InitializeNextVideo()
     {
-        if (_view is null || Sections.Count == 0)
+        if (Sections is null || Sections.Count == 0)
         {
             return;
         }
 
         var next = FindNextVideo();
         HasNextVideo = next is not null;
-        if (next is VideoPart part)
+        if (next is Episode episode)
         {
-            NextVideoTip = string.Format(Resources.PlayNextPartTipTemplate, part.Identifier.Title);
+            NextVideoTip = string.Format(Resources.PlayNextPartTipTemplate, $"第 {episode.Number} 集");
         }
-        else if (next is VideoInformation video)
+        else if (next is Drama rec)
         {
-            NextVideoTip = string.Format(
-                Resources.PlayNextVideoTipTemplate,
-                video.Identifier.Title
-            );
+            NextVideoTip = string.Format(Resources.PlayNextVideoTipTemplate, rec.Title);
         }
     }
 
     private void ReloadPart()
     {
-        if (_part is null)
+        if (_currentEpisode is null)
         {
             return;
         }
@@ -365,7 +274,7 @@ public sealed partial class VideoPlayerPageViewModel
             _initialProgress = Player.Position;
         }
 
-        InitializeDashMediaCommand.Execute(_part);
+        InitializeDashMediaCommand.Execute(_currentEpisode);
     }
 
     private void SyncDownloadAndSubtitle()
@@ -380,11 +289,7 @@ public sealed partial class VideoPlayerPageViewModel
     {
         var currentType = CurrentLoop;
         var loops = new List<VideoLoopType> { VideoLoopType.None, VideoLoopType.Single };
-        if (
-            Sections.OfType<VideoPlayerPartSectionDetailViewModel>().Any()
-            || _playlist is not null
-            || Sections.OfType<VideoPlayerSeasonSectionDetailViewModel>().Any()
-        )
+        if (_episodes?.Count > 1)
         {
             loops.Add(VideoLoopType.List);
         }

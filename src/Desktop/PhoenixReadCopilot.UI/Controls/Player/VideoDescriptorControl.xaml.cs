@@ -1,7 +1,6 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.UI.ViewModels.Components;
-using Richasy.BiliKernel.Models.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Player;
 
@@ -10,7 +9,9 @@ namespace PhoenixReadCopilot.UI.Controls.Player;
 /// </summary>
 public sealed partial class VideoDescriptorControl : VideoPlayerPageControlBase
 {
-    private readonly SearchBoxViewModel _searchBoxViewModel = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+    private readonly SearchBoxViewModel _searchBoxViewModel =
+        Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoDescriptorControl"/> class.
     /// </summary>
@@ -20,7 +21,7 @@ public sealed partial class VideoDescriptorControl : VideoPlayerPageControlBase
 
     private void OnTagButtonClick(object sender, RoutedEventArgs e)
     {
-        var data = (sender as FrameworkElement).DataContext as BiliTag;
-        _searchBoxViewModel.SearchCommand.Execute(data.Name);
+        var data = (sender as FrameworkElement).DataContext as string;
+        _searchBoxViewModel.SearchCommand.Execute(data);
     }
 }

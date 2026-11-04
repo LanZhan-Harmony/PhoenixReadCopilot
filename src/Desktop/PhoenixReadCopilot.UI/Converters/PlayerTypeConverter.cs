@@ -14,17 +14,14 @@ internal sealed partial class PlayerTypeConverter : IValueConverter
         {
             switch (type)
             {
-                case PlayerType.Native:
-                    result = Resources.Native;
+                case PlayerType.FFmpeg:
+                    result = Resources.FFmpegPlayer;
                     break;
                 case PlayerType.Web:
                     result = Resources.Web;
                     break;
-                case PlayerType.FFmpeg:
-                    result = Resources.FFmpegPlayer;
-                    break;
                 default:
-                    result = Resources.Native;
+                    result = Resources.FFmpegPlayer;
                     break;
             }
         }

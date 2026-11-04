@@ -8,6 +8,8 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
 {
     public DataTemplate CommentTemplate { get; set; }
 
+    public DataTemplate DramaReviewTemplate { get; set; }
+
     public DataTemplate RecommendTemplate { get; set; }
 
     public DataTemplate UgcSeasonTemplate { get; set; }
@@ -24,7 +26,11 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
-        if (item is CommentMainViewModel)
+        if (item is DramaReviewSectionDetailViewModel)
+        {
+            return DramaReviewTemplate;
+        }
+        else if (item is CommentMainViewModel)
         {
             return CommentTemplate;
         }

@@ -1,29 +1,29 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models.Settings;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.UI.ViewModels.Components;
 
 /// <summary>
-/// 视频播放器分P详情视图模型.
+/// 短剧分集详情视图模型.
 /// </summary>
 public sealed partial class VideoPlayerPartSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {
-    private readonly Action<VideoPart> _partSelectedAction;
+    private readonly Action<Episode> _partSelectedAction;
     private readonly AppSettings _settings;
 
     [ObservableProperty]
-    public partial List<VideoPart> Parts { get; set; }
+    public partial List<Episode> Parts { get; set; }
 
     [ObservableProperty]
-    public partial VideoPart SelectedPart { get; set; }
+    public partial Episode? SelectedPart { get; set; }
 
     [ObservableProperty]
     public partial bool OnlyIndex { get; set; }
@@ -32,23 +32,23 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     /// Initializes a new instance of the <see cref="VideoPlayerPartSectionDetailViewModel"/> class.
     /// </summary>
     public VideoPlayerPartSectionDetailViewModel(
-        IList<VideoPart> parts,
-        string cid,
-        Action<VideoPart> action,
+        IReadOnlyList<Episode> parts,
+        string currentVideoId,
+        Action<Episode> action,
         ISettingsService settingsService
     )
     {
         _settings = settingsService.Settings;
         _partSelectedAction = action;
         Parts = parts.ToList();
-        SelectedPart = parts.FirstOrDefault(p => p.Identifier.Id == cid);
+        SelectedPart = parts.FirstOrDefault(p => p.VideoId == currentVideoId);
         OnlyIndex = _settings.IsVideoPlayerPartsOnlyIndex;
     }
 
     /// <summary>
     /// 分集变更.
     /// </summary>
-    public event EventHandler PartChanged;
+    public event EventHandler? PartChanged;
 
     /// <inheritdoc/>
     public string Title { get; } = Resources.Parts;
@@ -57,7 +57,7 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     private static Task TryFirstLoadAsync() => Task.CompletedTask;
 
     [RelayCommand]
-    private void SelectPart(VideoPart part)
+    private void SelectPart(Episode part)
     {
         SelectedPart = part;
         _partSelectedAction?.Invoke(part);
@@ -65,11 +65,11 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     }
 
     [RelayCommand]
-    private void UpdateSelectedPart(VideoPart part)
+    private void UpdateSelectedPart(Episode part)
     {
         if (SelectedPart != part)
         {
-            SelectedPart = Parts.FirstOrDefault(p => p.Identifier.Id == part.Identifier.Id);
+            SelectedPart = Parts.FirstOrDefault(p => p.VideoId == part.VideoId);
             RaisePartChanged();
         }
     }

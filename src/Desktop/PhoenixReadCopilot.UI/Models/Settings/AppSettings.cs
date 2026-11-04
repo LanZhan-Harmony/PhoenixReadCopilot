@@ -68,7 +68,7 @@ public sealed partial class AppSettings : ObservableObject
     public partial PreferDecodeType PreferDecode { get; set; } = PreferDecodeType.Auto;
 
     [ObservableProperty]
-    public partial PlayerType PlayerType { get; set; } = PlayerType.Native;
+    public partial PlayerType PlayerType { get; set; } = PlayerType.FFmpeg;
 
     [ObservableProperty]
     public partial MTCBehavior MTCBehavior { get; set; } = MTCBehavior.Manual;

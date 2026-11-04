@@ -7,7 +7,6 @@ using PhoenixReadCopilot.UI.Toolkits;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
@@ -35,11 +34,9 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         AppViewModel appViewModel,
         NavigationViewModel navigationViewModel,
         PinnerViewModel pinnerViewModel,
-        DispatcherQueue dispatcherQueue,
-        IBiliCookiesResolver cookiesResolver,
-        ILogger<PlayerViewModelBase> playerLogger
+        DispatcherQueue dispatcherQueue
     )
-        : base(settingsService, appViewModel, dispatcherQueue, cookiesResolver, playerLogger)
+        : base(settingsService, appViewModel)
     {
         _navigationViewModel = navigationViewModel;
         _pinnerViewModel = pinnerViewModel;
@@ -49,7 +46,6 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         _discoveryService = discoveryService;
         _comments = comments;
         _logger = logger;
-        Player.IsPgc = true;
         Danmaku = danmaku;
         Subtitle = subtitle;
         Downloader = downloader;
@@ -220,11 +216,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         _settings.LastSelectedPgcQuality = vm.Data.Quality;
-        if (Player is NativePlayerViewModel npvm)
-        {
-            npvm.InjectSegments(vSeg, aSeg);
-        }
-        else if (Player is FFmpegPlayerViewModel fpvm)
+        if (Player is FFmpegPlayerViewModel fpvm)
         {
             fpvm.InjectSegments(vSeg, aSeg, Convert.ToInt32(_episode?.Duration ?? 0));
         }
@@ -239,11 +231,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
                 .GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid)
                 .ToString()
         );
-        Player.InitializeSmtc(
-            _episode.Identifier.Cover.SourceUri.ToString(),
-            EpisodeTitle,
-            SeasonTitle
-        );
+        Player.InitializeSmtc(_episode.Identifier.Cover.SourceUri.ToString(), EpisodeTitle);
 
         // 重置初始进度，避免影响其它视频.
         _initialProgress = 0;
