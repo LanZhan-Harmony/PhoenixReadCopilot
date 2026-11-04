@@ -1,7 +1,9 @@
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadApi;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Comment;
@@ -60,6 +62,26 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         InitializeComponent();
     }
 
+    /// <inheritdoc/>
+    protected override void OnControlLoaded()
+    {
+        base.OnControlLoaded();
+        UpdateLoginState();
+    }
+
+    /// <summary>
+    /// 更新登录状态.
+    /// </summary>
+    public void UpdateLoginState()
+    {
+        var apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        var isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        ReplyBox.IsEnabled = isAuthenticated;
+        ReplyBox.PlaceholderText = isAuthenticated
+            ? Strings.Resources.ReplyPlaceholderText
+            : "请先登录后发表评论";
+    }
+
     /// <summary>
     /// 回复文本.
     /// </summary>
@@ -101,6 +123,14 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         AutoSuggestBoxQuerySubmittedEventArgs args
     )
     {
+        var apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        var isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        if (!isAuthenticated)
+        {
+            UpdateLoginState();
+            return;
+        }
+
         if (string.IsNullOrEmpty(Text))
         {
             return;

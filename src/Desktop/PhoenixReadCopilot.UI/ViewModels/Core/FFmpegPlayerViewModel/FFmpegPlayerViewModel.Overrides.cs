@@ -175,23 +175,22 @@ public sealed partial class FFmpegPlayerViewModel
         config.Video.VideoDecoderMode = VideoDecoderMode.Automatic;
         config.General.FastSeek = true;
 
-        var cookies = _cookiesResolver.GetCookieString();
         var headerSb = new StringBuilder();
-        headerSb.Append($"User-Agent: {VideoUserAgent}\r\n");
-        headerSb.Append($"Referer: {VideoReferer}\r\n");
-        if (!string.IsNullOrEmpty(cookies))
-        {
-            headerSb.Append($"Cookie: {cookies}\r\n");
-        }
+        var referer = CustomReferer;
+        headerSb.Append($"Referer: {referer}\r\n");
 
         var headerStr = headerSb.ToString();
         config.FFmpegOptions["headers"] = headerStr;
-        config.FFmpegOptions["user_agent"] = VideoUserAgent;
-        config.FFmpegOptions["referer"] = VideoReferer;
+        config.FFmpegOptions["referer"] = referer;
         config.FFmpegOptions["protocol_whitelist"] = "file,http,https,tcp,tls,crypto";
         config.FFmpegOptions["reconnect"] = 1;
         config.FFmpegOptions["reconnect_streamed"] = 1;
         config.FFmpegOptions["reconnect_on_network_error"] = 1;
+
+        if (!string.IsNullOrEmpty(DecryptionKey))
+        {
+            config.FFmpegOptions["decryption_key"] = DecryptionKey;
+        }
 
         return config;
     }

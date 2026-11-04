@@ -75,12 +75,6 @@
                            FontWeight="Bold"
                            Style="{StaticResource BodyTextBlockStyle}"
                            Text="{x:Bind ViewModel.UserName, Mode=OneWay}"/>
-                <Image x:Name="LevelImage"
-                       Grid.Column="1"
-                       Height="8"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       Source="{x:Bind ViewModel.Level, Converter={StaticResource LevelImageConverter}, Mode=OneWay}"/>
                 <TextBlock x:Name="PublishTimeBlock"
                            Grid.Column="2"
                            VerticalAlignment="Center"

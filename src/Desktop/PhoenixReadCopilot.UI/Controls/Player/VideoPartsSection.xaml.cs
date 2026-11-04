@@ -1,13 +1,13 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.ViewModels.Components;
-using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.UI.Controls.Player;
 
 /// <summary>
-/// 视频播放器分P部分.
+/// 短剧播放器选集部分.
 /// </summary>
 public sealed partial class VideoPartsSection : VideoPartsSectionBase
 {
@@ -25,14 +25,17 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
         }
 
         UpdateSelection();
-        InitializeLayoutAsync();
+        ScrollToCurrentAsync();
     }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
         View.ItemsSource = default;
-        ViewModel?.PartChanged -= OnPartChanged;
+        if (ViewModel is not null)
+        {
+            ViewModel.PartChanged -= OnPartChanged;
+        }
     }
 
     /// <inheritdoc/>
@@ -41,7 +44,10 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
         VideoPlayerPartSectionDetailViewModel? newValue
     )
     {
-        oldValue?.PartChanged -= OnPartChanged;
+        if (oldValue is not null)
+        {
+            oldValue.PartChanged -= OnPartChanged;
+        }
 
         if (newValue is null)
         {
@@ -50,56 +56,50 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
 
         newValue.PartChanged += OnPartChanged;
         UpdateSelection();
-        InitializeLayoutAsync();
+        ScrollToCurrentAsync();
     }
 
     private void OnPartSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        if (IsLoaded && sender.SelectedItem is VideoPart part && part != ViewModel.SelectedPart)
+        if (IsLoaded && sender.SelectedItem is Episode episode && episode != ViewModel.SelectedPart)
         {
-            ViewModel.SelectPartCommand.Execute(part);
+            ViewModel.SelectPartCommand.Execute(episode);
         }
     }
 
     private void OnPartChanged(object? sender, EventArgs e) => UpdateSelection();
 
-    private async void OnIndexToggledAsync(object sender, RoutedEventArgs e)
-    {
-        await Task.Delay(100);
-        InitializeLayoutAsync();
-    }
-
     private void UpdateSelection()
     {
-        if (ViewModel?.SelectedPart is VideoPart part)
+        if (ViewModel?.SelectedPart is Episode episode && ViewModel.Parts is not null)
         {
-            View.Select(ViewModel.Parts.ToList().IndexOf(part));
+            var index = ViewModel.Parts.ToList().IndexOf(episode);
+            if (index >= 0)
+            {
+                View.Select(index);
+            }
         }
     }
 
-    private async void InitializeLayoutAsync()
+    private async void ScrollToCurrentAsync()
     {
-        if (ViewModel.OnlyIndex)
+        if (ViewModel?.SelectedPart is Episode episode && ViewModel.Parts is not null)
         {
-            View.Layout = IndexLayout;
-            View.ItemTemplate = IndexTemplate;
+            var index = ViewModel.Parts.ToList().IndexOf(episode);
+            if (index >= 0)
+            {
+                await Task.Delay(100);
+                View.StartBringItemIntoView(
+                    index,
+                    new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 }
+                );
+            }
         }
-        else
-        {
-            View.Layout = DefaultLayout;
-            View.ItemTemplate = DefaultTemplate;
-        }
-
-        await Task.Delay(100);
-        View.StartBringItemIntoView(
-            ViewModel.Parts.ToList().IndexOf(ViewModel.SelectedPart),
-            new BringIntoViewOptions { VerticalAlignmentRatio = 0.5 }
-        );
     }
 }
 
 /// <summary>
-/// 视频播放器分P部分.
+/// 视频播放器分P部分基类.
 /// </summary>
 public abstract class VideoPartsSectionBase
     : LayoutUserControlBase<VideoPlayerPartSectionDetailViewModel> { }

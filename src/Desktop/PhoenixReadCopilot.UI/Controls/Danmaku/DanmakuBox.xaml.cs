@@ -1,5 +1,8 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadApi;
+using PhoenixReadCopilot.UI.Strings;
 
 namespace PhoenixReadCopilot.UI.Controls.Danmaku;
 
@@ -23,6 +26,24 @@ public sealed partial class DanmakuBox : DanmakuControlBase
     /// </summary>
     public event EventHandler InputGotFocus;
 
+    /// <inheritdoc/>
+    protected override void OnControlLoaded()
+    {
+        base.OnControlLoaded();
+        UpdateLoginState();
+    }
+
+    public void UpdateLoginState()
+    {
+        var apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        var isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+
+        DanmakuInputBox.IsEnabled = isAuthenticated;
+        DanmakuInputBox.PlaceholderText = isAuthenticated
+            ? PhoenixReadCopilot.UI.Strings.Resources.DanmakuPlaceholder
+            : "请先登录后发送弹幕";
+    }
+
     private async void OnDanmakuInputBoxSubmittedAsync(
         AutoSuggestBox sender,
         AutoSuggestBoxQuerySubmittedEventArgs args
@@ -33,11 +54,18 @@ public sealed partial class DanmakuBox : DanmakuControlBase
             return;
         }
 
+        var apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        var isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        if (!isAuthenticated)
+        {
+            return;
+        }
+
         sender.IsEnabled = false;
         await ViewModel.SendDanmakuCommand.ExecuteAsync(args.QueryText);
         DispatcherQueue.TryEnqueue(() =>
         {
-            sender.IsEnabled = true;
+            UpdateLoginState();
             sender.Text = string.Empty;
         });
     }

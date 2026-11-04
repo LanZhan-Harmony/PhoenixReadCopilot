@@ -35,7 +35,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <summary>
     /// 初始化系统播放控制器.
     /// </summary>
-    public void InitializeSmtc(string cover, string title, string subtitle)
+    public void InitializeSmtc(string cover, string title)
     {
         if (_smtc is null)
         {
@@ -56,7 +56,6 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         }
 
         updater.VideoProperties.Title = title;
-        updater.VideoProperties.Subtitle = subtitle;
         updater.Update();
     }
 

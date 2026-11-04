@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Strings;
 using PhoenixReadCopilot.UI.ViewModels.Items;
@@ -25,6 +26,16 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     {
         Items = items
             .Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerRecommend))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VideoPlayerRecommendSectionDetailViewModel"/> class from dramas.
+    /// </summary>
+    public VideoPlayerRecommendSectionDetailViewModel(IEnumerable<Drama> dramas)
+    {
+        Items = dramas
+            .Select(d => new VideoItemViewModel(d, VideoCardStyle.PlayerRecommend))
             .ToList();
     }
 

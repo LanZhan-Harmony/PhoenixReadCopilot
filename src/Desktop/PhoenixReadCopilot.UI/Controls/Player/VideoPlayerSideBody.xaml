@@ -12,6 +12,10 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
+        <DataTemplate x:Key="DramaReviewTemplate"
+                x:DataType="components:DramaReviewSectionDetailViewModel">
+            <comment:DramaReviewMainPanel ViewModel="{x:Bind}"/>
+        </DataTemplate>
         <DataTemplate x:Key="CommentTemplate"
                 x:DataType="components:CommentMainViewModel">
             <comment:CommentMainPanel ViewModel="{x:Bind}"/>
@@ -38,6 +42,7 @@
         </DataTemplate>
         <extensions:PlayerSectionTemplateSelector
             x:Key="Selector"
+            DramaReviewTemplate="{StaticResource DramaReviewTemplate}"
             CommentTemplate="{StaticResource CommentTemplate}"
             InfoTemplate="{StaticResource InfoTemplate}"
             PartTemplate="{StaticResource PartTemplate}"

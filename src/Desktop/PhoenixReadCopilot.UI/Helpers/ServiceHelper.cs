@@ -59,12 +59,14 @@ internal class ServiceHelper
             .AddSingleton<PhoenixReadApiClient>(_ =>
             {
                 var sessionPath = Path.Combine(PathHelper.AuthFolderPath, "phoenix_session.json");
-                return new PhoenixReadApiClient(new PhoenixReadApiOptions
-                {
-                    AuthenticationStateFilePath = sessionPath,
-                    RequestTimeout = TimeSpan.FromSeconds(25),
-                    RetryCount = 2,
-                });
+                return new PhoenixReadApiClient(
+                    new PhoenixReadApiOptions
+                    {
+                        AuthenticationStateFilePath = sessionPath,
+                        RequestTimeout = TimeSpan.FromSeconds(25),
+                        RetryCount = 2,
+                    }
+                );
             })
             // 5. Bili 客户端
             .AddSingleton<BiliHttpClient>()
@@ -100,9 +102,9 @@ internal class ServiceHelper
             // Core
             .AddSingleton<AppViewModel>()
             .AddTransient<DanmakuViewModel>()
+            .AddTransient<DramaReviewSectionDetailViewModel>()
             .AddTransient<DownloadViewModel>()
             .AddTransient<FFmpegPlayerViewModel>()
-            .AddTransient<NativePlayerViewModel>()
             .AddSingleton<NotificationViewModel>()
             .AddSingleton<INotificationViewModel>(sp =>
                 sp.GetRequiredService<NotificationViewModel>()

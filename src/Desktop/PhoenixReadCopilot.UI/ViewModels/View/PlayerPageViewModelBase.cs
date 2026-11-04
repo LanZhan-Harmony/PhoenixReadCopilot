@@ -5,7 +5,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.Services;
 using PhoenixReadCopilot.UI.ViewModels.Core;
-using Richasy.BiliKernel.Bili.Authorization;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
@@ -26,13 +25,7 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPageViewModelBase"/> class.
     /// </summary>
-    protected PlayerPageViewModelBase(
-        ISettingsService settingsService,
-        AppViewModel appViewModel,
-        DispatcherQueue dispatcherQueue,
-        IBiliCookiesResolver cookiesResolver,
-        ILogger<PlayerViewModelBase> playerLogger
-    )
+    protected PlayerPageViewModelBase(ISettingsService settingsService, AppViewModel appViewModel)
         : base(settingsService)
     {
         _settingsService = settingsService;
@@ -41,9 +34,8 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 
         Player = playerType switch
         {
-            PlayerType.Native => Ioc.Default.GetService<NativePlayerViewModel>(),
             PlayerType.FFmpeg => Ioc.Default.GetService<FFmpegPlayerViewModel>(),
-            _ => Ioc.Default.GetService<NativePlayerViewModel>(),
+            _ => Ioc.Default.GetService<FFmpegPlayerViewModel>(),
         };
 
         Player.AttachedWindow = appViewModel.ActivatedWindow;

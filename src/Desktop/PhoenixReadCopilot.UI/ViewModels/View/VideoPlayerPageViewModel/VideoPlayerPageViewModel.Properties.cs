@@ -1,43 +1,38 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.UI.Models.Constants;
 using PhoenixReadCopilot.UI.ViewModels.Components;
 using PhoenixReadCopilot.UI.ViewModels.Core;
 using PhoenixReadCopilot.UI.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models.Base;
-using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.UI.ViewModels.View;
 
 /// <summary>
-/// 视频播放器页面视图模型.
+/// 短剧播放器页面视图模型.
 /// </summary>
 public sealed partial class VideoPlayerPageViewModel
 {
     private readonly NavigationViewModel _navigationViewModel;
     private readonly PinnerViewModel _pinnerViewModel;
-    private readonly IViewLaterService _viewLaterService;
-    private readonly IBiliTokenResolver _tokenResolver;
     private readonly DispatcherQueue _dispatcherQueue;
-
-    private readonly IPlayerService _service;
-    private readonly IRelationshipService _relationshipService;
-    private readonly IFavoriteService _favoriteService;
     private readonly ILogger<VideoPlayerPageViewModel> _logger;
     private readonly CommentMainViewModel _comments;
+    private readonly PhoenixReadApiClient _apiClient;
+    private readonly DramaReviewSectionDetailViewModel _dramaReviews;
 
-    private CancellationTokenSource _pageLoadCancellationTokenSource;
-    private CancellationTokenSource _dashLoadCancellationTokenSource;
+    private DramaDetails? _dramaDetails;
+    private string _seriesId = string.Empty;
+    private string _currentVideoId = string.Empty;
+    private IReadOnlyList<PlaybackMedia>? _currentMediaList;
+    private IReadOnlyList<Episode>? _episodes;
+    private Episode? _currentEpisode;
+    private IList<Drama>? _dramaPlaylist;
 
-    private VideoPlayerView? _view;
-    private VideoPart? _part;
-    private IList<DashSegmentInformation>? _videoSegments;
-    private IList<DashSegmentInformation>? _audioSegments;
-    private IList<VideoInformation>? _playlist;
+    private CancellationTokenSource? _pageLoadCancellationTokenSource;
+    private CancellationTokenSource? _dashLoadCancellationTokenSource;
+
     private int _initialProgress;
     private bool _isFormatChanging;
 
@@ -57,19 +52,13 @@ public sealed partial class VideoPlayerPageViewModel
     public partial Uri? Cover { get; set; }
 
     [ObservableProperty]
-    public partial string Title { get; set; }
+    public partial string Title { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string Description { get; set; }
+    public partial string Description { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string UpName { get; set; }
-
-    [ObservableProperty]
-    public partial Uri? UpAvatar { get; set; }
-
-    [ObservableProperty]
-    public partial string PublishRelativeTime { get; set; }
+    public partial string PublishRelativeTime { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsFollow { get; set; }
@@ -102,31 +91,19 @@ public sealed partial class VideoPlayerPageViewModel
     public partial double FavoriteCount { get; set; }
 
     [ObservableProperty]
-    public partial string OnlineCountText { get; set; }
-
-    [ObservableProperty]
-    public partial string AvId { get; set; }
-
-    [ObservableProperty]
-    public partial string BvId { get; set; }
+    public partial string OnlineCountText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsLiked { get; set; }
 
     [ObservableProperty]
-    public partial bool IsCoined { get; set; }
-
-    [ObservableProperty]
     public partial bool IsFavorited { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsCoinAlsoLike { get; set; }
 
     [ObservableProperty]
     public partial bool HasNextVideo { get; set; }
 
     [ObservableProperty]
-    public partial string NextVideoTip { get; set; }
+    public partial string NextVideoTip { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsPrivatePlay { get; set; }
@@ -147,13 +124,16 @@ public sealed partial class VideoPlayerPageViewModel
     public partial List<PlayerFormatItemViewModel>? Formats { get; set; }
 
     [ObservableProperty]
-    public partial List<BiliTag>? Tags { get; set; }
+    public partial List<string>? Tags { get; set; }
 
     [ObservableProperty]
     public partial List<PlayerFavoriteFolderViewModel>? FavoriteFolders { get; set; }
 
     [ObservableProperty]
-    public partial List<VideoLoopType> LoopTypes { get; set; }
+    public partial List<DramaCreditItemViewModel>? Credits { get; set; }
+
+    [ObservableProperty]
+    public partial List<VideoLoopType> LoopTypes { get; set; } = [];
 
     [ObservableProperty]
     public partial List<IPlayerSectionDetailViewModel>? Sections { get; set; }
@@ -161,12 +141,12 @@ public sealed partial class VideoPlayerPageViewModel
     /// <summary>
     /// 视图数据加载完成.
     /// </summary>
-    public event EventHandler ViewInitialized;
+    public event EventHandler? ViewInitialized;
 
     /// <summary>
     /// 区块加载完成.
     /// </summary>
-    public event EventHandler SectionInitialized;
+    public event EventHandler? SectionInitialized;
 
     /// <summary>
     /// 弹幕视图模型.
