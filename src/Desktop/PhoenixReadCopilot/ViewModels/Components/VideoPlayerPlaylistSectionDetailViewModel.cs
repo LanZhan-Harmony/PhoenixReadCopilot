@@ -1,0 +1,52 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Strings;
+using PhoenixReadCopilot.ViewModels.Items;
+using PhoenixReadCopilot.ViewModels.View;
+using Richasy.BiliKernel.Models.Media;
+using WinUIKernel.Share.ViewModels;
+
+namespace PhoenixReadCopilot.ViewModels.Components;
+
+/// <summary>
+/// 视频播放器播放列表部分.
+/// </summary>
+public sealed partial class VideoPlayerPlaylistSectionDetailViewModel
+    : ViewModelBase,
+        IPlayerSectionDetailViewModel
+{
+    private readonly string _videoId;
+
+    [ObservableProperty]
+    public partial List<VideoItemViewModel> Items { get; set; }
+
+    [ObservableProperty]
+    public partial VideoItemViewModel SelectedItem { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VideoPlayerPlaylistSectionDetailViewModel"/> class.
+    /// </summary>
+    public VideoPlayerPlaylistSectionDetailViewModel(
+        VideoPlayerPageViewModel page,
+        IList<VideoInformation> list,
+        string videoId
+    )
+    {
+        _videoId = videoId;
+        Page = page;
+        Items = list.Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerPlaylist)).ToList();
+        SelectedItem = Items.FirstOrDefault(p => p.Data.Identifier.Id == _videoId);
+    }
+
+    /// <inheritdoc/>
+    public string Title => Resources.Playlist;
+
+    /// <summary>
+    /// 页面视图模型.
+    /// </summary>
+    public VideoPlayerPageViewModel Page { get; }
+
+    [RelayCommand]
+    private static Task TryFirstLoadAsync() => Task.CompletedTask;
+}

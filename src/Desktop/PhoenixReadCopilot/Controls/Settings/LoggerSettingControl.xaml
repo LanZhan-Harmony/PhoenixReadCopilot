@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:SettingsPageControlBase x:Class="PhoenixReadCopilot.Controls.Settings.LoggerSettingControl"
+                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                               xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                               xmlns:ic="using:FluentIcons.WinUI"
+                               xmlns:local="using:PhoenixReadCopilot.Controls.Settings"
+                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                               xmlns:strings="using:PhoenixReadCopilot.Strings"
+                               mc:Ignorable="d">
+
+    <community:SettingsExpander Description="{x:Bind strings:Resources.LoggerModuleDescription}" Header="{x:Bind strings:Resources.LoggerModule}">
+        <Button x:Name="OpenLoggerFolderButton"
+                MinWidth="120"
+                Click="OnOpenLoggerFolderButtonClickAsync"
+                Content="{x:Bind strings:Resources.OpenFolder}"/>
+        <community:SettingsExpander.HeaderIcon>
+            <ic:SymbolIcon Symbol="Channel"/>
+        </community:SettingsExpander.HeaderIcon>
+        <community:SettingsExpander.Items>
+            <community:SettingsCard Header="{x:Bind strings:Resources.CleanLogger}">
+                <Button x:Name="CleanLoggerButton"
+                        MinWidth="120"
+                        Click="OnCleanLoggerButtonClickAsync"
+                        Content="{x:Bind strings:Resources.Clean}"/>
+            </community:SettingsCard>
+        </community:SettingsExpander.Items>
+    </community:SettingsExpander>
+</local:SettingsPageControlBase>
