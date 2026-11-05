@@ -1,0 +1,42 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.ViewModels.Items;
+using Richasy.BiliKernel.Bili.Media;
+
+namespace PhoenixReadCopilot.ViewModels.Components;
+
+/// <summary>
+/// 娱乐索引视图模型.
+/// </summary>
+public sealed partial class EntertainmentIndexViewModel
+{
+    private readonly IEntertainmentDiscoveryService _service;
+    private readonly ILogger<EntertainmentIndexViewModel> _logger;
+    private readonly DispatcherQueue _dispatcherQueue;
+    private int _pageNumer;
+
+    [ObservableProperty]
+    public partial List<IndexFilterViewModel>? Filters { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsFilterLoading { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsSeasonLoading { get; set; }
+
+    /// <summary>
+    /// 条目已更新.
+    /// </summary>
+    public event EventHandler ItemsUpdated;
+
+    /// <inheritdoc/>
+    public PgcSectionType SectionType { get; }
+
+    /// <summary>
+    /// 剧集列表.
+    /// </summary>
+    public ObservableCollection<SeasonItemViewModel> Items { get; } = new();
+}

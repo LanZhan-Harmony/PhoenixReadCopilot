@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:DramaReviewMainPanelBase x:Class="PhoenixReadCopilot.Controls.Comment.DramaReviewMainPanel"
+                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                xmlns:base="using:WinUIKernel.Share.Base"
+                                xmlns:comp="using:PhoenixReadCopilot.Controls.Components"
+                                xmlns:converters="using:PhoenixReadCopilot.Converters"
+                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                xmlns:ic="using:FluentIcons.WinUI"
+                                xmlns:items="using:PhoenixReadCopilot.ViewModels.Components"
+                                xmlns:local="using:PhoenixReadCopilot.Controls.Comment"
+                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                xmlns:models="using:Richasy.BiliKernel.Models"
+                                xmlns:strings="using:PhoenixReadCopilot.Strings"
+                                mc:Ignorable="d">
+
+    <Grid Padding="0,12" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--  顶部剧评标题、评分与排序切换，与评论列表位置和样式完全一致  -->
+        <Grid Padding="12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="12,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock VerticalAlignment="Center"
+                           FontSize="14"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           Text="剧评"/>
+                <Border Padding="6,2"
+                        VerticalAlignment="Center"
+                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                        CornerRadius="4"
+                        Visibility="{x:Bind ViewModel.DramaScore, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+                    <TextBlock FontSize="11"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Text="{x:Bind ViewModel.DramaScore, Mode=OneWay}"/>
+                </Border>
+            </StackPanel>
+            <ComboBox x:Name="SortTypeComboBox"
+                      Grid.Column="1"
+                      MinWidth="100"
+                      VerticalAlignment="Center"
+                      IsEnabled="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                      ItemsSource="{x:Bind ViewModel.Sorts, Mode=OneWay}"
+                      SelectedItem="{x:Bind ViewModel.SortType, Mode=OneWay}"
+                      SelectionChanged="OnSortChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:CommentSortType">
+                        <TextBlock Text="{x:Bind Converter={StaticResource SortTypeTextConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+
+        <!--  中间剧评列表，条目排版与 CommentItemControl 完全一致  -->
+        <Grid Grid.Row="1">
+            <ScrollViewer x:Name="ReviewScrollView"
+                          Padding="0"
+                          Style="{StaticResource PageScrollViewerStyle}">
+                <StackPanel Margin="12,0">
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Reviews, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="items:DramaReviewItemViewModel">
+                                <Grid Margin="0,0,0,4"
+                                      Padding="12"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                      BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                      BorderThickness="1"
+                                      ColumnSpacing="12"
+                                      CornerRadius="{StaticResource ControlCornerRadius}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--  左侧头像  -->
+                                    <StackPanel>
+                                        <Button VerticalAlignment="Top" Style="{StaticResource AvatarButtonStyle}">
+                                            <PersonPicture Width="40"
+                                                           Height="40"
+                                                           DisplayName="{x:Bind UserName, Mode=OneWay}"
+                                                           ProfilePicture="{x:Bind Avatar, Mode=OneWay, Converter={StaticResource BitmapConverter}}"/>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <!--  右侧内容区域（3行：用户名+时间、评语文本、点赞行）  -->
+                                    <Grid Grid.Column="1" RowSpacing="8">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--  第一行：用户名与发布时间  -->
+                                        <Grid ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock FontWeight="Bold"
+                                                       Style="{StaticResource BodyTextBlockStyle}"
+                                                       Text="{x:Bind UserName, Mode=OneWay}"/>
+                                            <TextBlock Grid.Column="2"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                                       Text="{x:Bind RelativeTime, Mode=OneWay}"
+                                                       ToolTipService.ToolTip="{x:Bind ActualTime, Mode=OneWay}"/>
+                                        </Grid>
+
+                                        <!--  第二行：正文内容  -->
+                                        <Grid Grid.Row="1">
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       IsTextSelectionEnabled="True"
+                                                       Text="{x:Bind Text, Mode=OneWay}"
+                                                       TextWrapping="Wrap"/>
+                                        </Grid>
+
+                                        <!--  第三行：点赞按钮  -->
+                                        <Grid Grid.Row="2" ColumnSpacing="12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ToggleButton VerticalAlignment="Center"
+                                                          Command="{x:Bind ToggleLikeCommand, Mode=OneWay}"
+                                                          IsChecked="{x:Bind IsLiked, Mode=OneWay}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <ic:SymbolIcon VerticalAlignment="Center"
+                                                                   FontSize="12"
+                                                                   IconVariant="{x:Bind IsLiked, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
+                                                                   Symbol="ThumbLike"/>
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               FontSize="12"
+                                                               Text="{x:Bind LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
+                                                </StackPanel>
+                                            </ToggleButton>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+
+            <base:EmptyHolder Description="暂无剧评，快来发表第一条评价吧！"
+                              Emoji="&#x1FAE2;"
+                              Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}">
+                <base:EmptyHolder.ActionElement>
+                    <HyperlinkButton Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}" Content="{x:Bind strings:Resources.Refresh}"/>
+                </base:EmptyHolder.ActionElement>
+            </base:EmptyHolder>
+            <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
+        </Grid>
+
+        <!--  底部发送剧评区域（带评分星级，与评论文本输入框风格统一）  -->
+        <Border Grid.Row="2"
+                Margin="12,0"
+                Padding="8"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="{StaticResource ControlCornerRadius}">
+            <StackPanel Spacing="6">
+                <!--  评分星级  -->
+                <StackPanel Margin="4,2,0,2"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Text="我的评分:"/>
+                    <RatingControl VerticalAlignment="Center"
+                                   IsEnabled="{x:Bind ViewModel.CanSendReview, Mode=OneWay}"
+                                   MaxRating="5"
+                                   Value="{x:Bind ViewModel.Rating, Mode=TwoWay}"/>
+                    <TextBlock x:Name="RatingTextBlock"
+                               VerticalAlignment="Center"
+                               x:Load="{x:Bind ViewModel.CanSendReview, Mode=OneWay}"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                               Text="{x:Bind ViewModel.Rating, Mode=OneWay}"/>
+                </StackPanel>
+
+                <!--  输入框与发送按钮  -->
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="ReviewInputBox"
+                             MaxHeight="80"
+                             Padding="12,8"
+                             AcceptsReturn="False"
+                             IsEnabled="{x:Bind ViewModel.CanSendReview, Mode=OneWay}"
+                             PlaceholderText="{x:Bind ViewModel.ReviewPlaceholderText, Mode=OneWay}"
+                             TextWrapping="Wrap"/>
+                    <Button Grid.Column="1"
+                            VerticalAlignment="Bottom"
+                            Click="OnSendReviewClick"
+                            IsEnabled="{x:Bind ViewModel.CanSendReview, Mode=OneWay}"
+                            Style="{StaticResource AccentButtonStyle}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <ic:SymbolIcon FontSize="12" Symbol="Send"/>
+                            <TextBlock Text="发送"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</local:DramaReviewMainPanelBase>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ActiveDebugProfile>PhoenixReadCopilot (Unpackaged)</ActiveDebugProfile>
+    <Source>D:\下载\Browser\Icon.png</Source>
+    <SmallTileSource>D:\下载\Browser\Icon.png</SmallTileSource>
+    <MediumTileSource>D:\下载\Browser\Icon.png</MediumTileSource>
+    <WideTileSource>D:\下载\Browser\Icon.png</WideTileSource>
+    <LargeTileSource>D:\下载\Browser\Icon.png</LargeTileSource>
+    <AppIconSource>D:\下载\Browser\Icon.png</AppIconSource>
+    <SplashScreenSource>D:\下载\Browser\Icon.png</SplashScreenSource>
+    <BadgeLogoSource>D:\下载\Browser\Icon.png</BadgeLogoSource>
+    <PackageLogoSource>D:\下载\Browser\Icon.png</PackageLogoSource>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+</Project>

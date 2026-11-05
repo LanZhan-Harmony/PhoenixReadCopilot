@@ -10,6 +10,7 @@
 - **重构目标**：本项目正在从原 Bilibili 客户端（BiliKernel）全面迁移重构为**红果短剧（PhoenixRead）**桌面客户端。
 - **本地 API 依赖**：`PhoenixReadApi` 本地 NuGet 包已在项目中配置就绪，命名空间为 `using PhoenixReadApi;`，严禁再引入旧版 B 站接口依赖。
 - **编译性能基准**：本项目多平台（x86/x64/ARM64）配置庞大，**构建和调试时必须显式指定 `x64` 平台**以实现最快编译速度：
+
   ```powershell
   # 编译项目 (Debug x64)
   dotnet build src/Desktop/PhoenixReadCopilot.UI/PhoenixReadCopilot.UI.csproj -p:Platform=x64 -c Debug
@@ -28,7 +29,7 @@
 d:\code\WinUI3\PhoenixReadCopilot\
 ├── src/
 │   ├── Desktop/
-│   │   ├── PhoenixReadCopilot.UI/              # [核心应用工程] WinUI 3 界面、交互与业务逻辑
+│   │   ├── PhoenixReadCopilot/              # [核心应用工程] WinUI 3 界面、交互与业务逻辑
 │   │   │   ├── Controls/                       # 自定义控件与复合组件（按业务模块聚合）
 │   │   │   ├── Converters/                     # XAML 专用 IValueConverter 转换器
 │   │   │   ├── Extensions/                     # 扩展方法、TemplateSelector、MarkupExtension
@@ -47,7 +48,7 @@ d:\code\WinUI3\PhoenixReadCopilot\
 │   │   │       ├── Components/                 # 组件级 ViewModel（评论区、搜索框等）
 │   │   │       └── Items/                      # 列表项/卡片级 ViewModel（剧集项、分集项等）
 │   │   │
-│   │   └── PhoenixReadCopilot.UI.Models/       # [轻量模型库] 进程内跨模块共享的基础模型与数据传输对象
+│   │   └── PhoenixReadCopilot.Core/       # [轻量模型库] 进程内跨模块共享的基础模型与数据传输对象
 │   │
 │   └── Libs/
 │       ├── Danmaku.Core/                       # [弹幕引擎] 弹幕协议解析与弹幕轨道渲染模型
@@ -55,12 +56,15 @@ d:\code\WinUI3\PhoenixReadCopilot\
 ```
 
 ### ⚠️ 红线规则：严禁在 `src\Libs\WinUIKernel.Share` 里面新增代码！
+
 - `WinUIKernel.Share` 是跨多个 WinAppSDK 项目公用的外部基础 submodule/类库。
 - **严禁向 `src\Libs\WinUIKernel.Share` 新增任何业务类、自定义控件、工具方法或样式！**
 - 所有针对红果助理新加的控件、转化器、辅助工具及 UI 样式，**一律放入 `src/Desktop/PhoenixReadCopilot.UI` 对应的目录下**。
 
 ### 2.1 Services、Helpers 与 Toolkits 的职责边界
+
 为避免工具与逻辑杂糅，三者遵循严格的职责划分：
+
 - **`Services/`（业务服务层）**：
   - **依赖注入管理**：由 DI 容器托管，必须抽象接口（如 `ISettingsService`、`IDramaService`）；
   - **有状态与生命周期**：负责本地持久化、设置读取写入、登录会话管理、数据请求调度等核心业务逻辑。
@@ -77,20 +81,23 @@ d:\code\WinUI3\PhoenixReadCopilot\
 本项目强依赖 `CommunityToolkit.Mvvm` 的源代码生成器。为了保证单个文件职责单一、避免上千行臃肿代码，**所有复杂的页面级 ViewModel 必须建立独立文件夹，并采用 `partial class` 分离拆分**：
 
 ### 3.1 拆分结构标准
+
 以 `PopularPageViewModel` 或 `DramaPlayerPageViewModel` 为例：
 
-| 文件命名 | 包含内容与职责 |
-| :--- | :--- |
-| `XxxViewModel.cs` | **主类与生命周期**：构造函数、服务依赖注入绑定、初始化入口 (`InitializeAsync`)、清理 (`Dispose`/`OnCloseAsync`)、主要页面路由。 |
+| 文件命名                     | 包含内容与职责                                                                                                                                                                                |
+| :--------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `XxxViewModel.cs`            | **主类与生命周期**：构造函数、服务依赖注入绑定、初始化入口 (`InitializeAsync`)、清理 (`Dispose`/`OnCloseAsync`)、主要页面路由。                                                               |
 | `XxxViewModel.Properties.cs` | **私有状态与公开属性**：私有字段（`_service`, `_logger`, 游标/偏移量、`CancellationTokenSource`）、公开属性 (`[ObservableProperty] public partial ...`) 以及事件定义 (`event EventHandler`)。 |
-| `XxxViewModel.Requests.cs` | **网络与数据请求**：对 `PhoenixReadApiClient` 的异步数据拉取、分页加载、游标更新、列表拼装 (`LoadRecommendVideosAsync` 等)。 |
-| `XxxViewModel.Operations.cs` | **用户交互命令**：响应用户主动点击的命令 (`[RelayCommand]`，如收藏、点赞、关注、换清晰度、分享、选集等)。 |
-| `XxxViewModel.Methods.cs` | **内部辅助与数据转换**：非请求类的内部计算、视图初始化数据映射、格式化方法等。 |
+| `XxxViewModel.Requests.cs`   | **网络与数据请求**：对 `PhoenixReadApiClient` 的异步数据拉取、分页加载、游标更新、列表拼装 (`LoadRecommendVideosAsync` 等)。                                                                  |
+| `XxxViewModel.Operations.cs` | **用户交互命令**：响应用户主动点击的命令 (`[RelayCommand]`，如收藏、点赞、关注、换清晰度、分享、选集等)。                                                                                     |
+| `XxxViewModel.Methods.cs`    | **内部辅助与数据转换**：非请求类的内部计算、视图初始化数据映射、格式化方法等。                                                                                                                |
 
 > **注意**：较简单的小型 ViewModel（如简单的卡片列表项 `ItemViewModel`），若代码量少于 100 行，可保留在单个文件中；一旦属性或操作复杂，必须立即遵循上述规则拆分为 `.cs` 与 `.Properties.cs`。
 
 ### 3.2 属性定义语法（强制 Partial Property 语法）
+
 本项目全面采用 C# 13 + CommunityToolkit.Mvvm 8.4+ 的分部属性生成方式，**禁止使用旧式的私有字段注解**：
+
 ```csharp
 // 正确（本项目强制规范）：
 [ObservableProperty]
@@ -105,7 +112,9 @@ private bool _isLoading;
 ```
 
 ### 3.3 命令定义语法
+
 使用 `[RelayCommand]` 特性生成 IRelayCommand / AsyncRelayCommand，命令方法名以操作语义命名：
+
 ```csharp
 [RelayCommand]
 private async Task RefreshAsync()
@@ -125,6 +134,7 @@ private void SelectEpisode(EpisodeItemViewModel episode)
 ## 4. C# 编码与语法规范
 
 ### 4.1 命名规范
+
 - **私有字段**：下划线前缀的小驼峰：`_service`、`_logger`、`_recommendOffset`、`_cancellationTokenSource`。
 - **公共属性 / 方法 / 类 / 接口**：大驼峰（PascalCase）：`Title`、`EpisodeCount`、`InitializeAsync`、`IDramaDiscoveryService`。
 - **局部变量 / 参数**：小驼峰（camelCase）：`seriesId`、`cancellationToken`。
@@ -139,11 +149,13 @@ private void SelectEpisode(EpisodeItemViewModel episode)
   - 转换器：`*Converter`（如 `BoolToVisibilityConverter`）
 
 ### 4.2 现代 C# 特性与格式
+
 - **空安全声明**：全库启用 `<Nullable>enable</Nullable>`，引用类型需准确声明可空性（`Drama? drama`），杜绝不可控的 `NullReferenceException`。
 - **模式匹配**：使用 `is null`、`is not null`、`is { Count: > 0 }` 等现代语法。
 - **XML 文档注释**：公共类、公开属性及重要方法均需附带简洁明了的中文注释（`/// <summary>...</summary>`）。
 
 ### 4.3 异步编程规范
+
 1. **命名结尾**：凡执行异步操作的方法，方法名必须以 `Async` 结尾。
 2. **返回类型**：
    - 必须返回 `Task` 或 `Task<T>`；
@@ -163,6 +175,7 @@ private void SelectEpisode(EpisodeItemViewModel episode)
      ```
 
 ### 4.4 异常处理与日志记录
+
 - 每个核心 ViewModel 均需注入 `ILogger<T>`。
 - 业务请求必须进行有节制的异常兜底，严禁静默吞掉异常：
   ```csharp
@@ -179,6 +192,7 @@ private void SelectEpisode(EpisodeItemViewModel episode)
   ```
 
 ### 4.5 本地化与字符串资源
+
 - **禁止在代码和 XAML 中硬编码业务文本**（如提示信息、按钮名称）。
 - 文本统一在 `src/Desktop/PhoenixReadCopilot.UI/Strings/zh-CN/Resources.resw` 中定义，在 C# 中通过 `Resources.KeyName` 强类型调用（由 ReswPlus 自动生成）。
 
@@ -200,3 +214,4 @@ private void SelectEpisode(EpisodeItemViewModel episode)
 3. **分页游标规范**：
    - 红果接口通常返回游标 `NextOffset`（而非固定的 PageIndex）；
    - ViewModel 中维护 `_offset`，首次传 0，后续翻页传入上一次响应返回的 `page.NextOffset`，并通过 `page.HasMore` 控制加载状态。
+

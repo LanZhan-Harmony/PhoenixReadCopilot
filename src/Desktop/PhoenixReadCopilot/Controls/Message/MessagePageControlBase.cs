@@ -1,0 +1,16 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
+using PhoenixReadCopilot.ViewModels.View;
+using WinUIKernel.Share.Base;
+
+namespace PhoenixReadCopilot.Controls.Message;
+
+/// <summary>
+/// 消息页面控件基类.
+/// </summary>
+public abstract class MessagePageControlBase : LayoutUserControlBase<MessagePageViewModel>
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessagePageControlBase"/> class.
+    /// </summary>
+    protected MessagePageControlBase() => ViewModel = Ioc.Default.GetRequiredService<MessagePageViewModel>();
+}

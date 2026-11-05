@@ -1,0 +1,223 @@
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Pages;
+using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Services;
+using PhoenixReadCopilot.Strings;
+using PhoenixReadCopilot.ViewModels.Core;
+using PhoenixReadCopilot.ViewModels.Items;
+using Richasy.BiliKernel.Bili.Media;
+
+namespace PhoenixReadCopilot.ViewModels.View;
+
+/// <summary>
+/// 流行视频页面视图模型.
+/// </summary>
+public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PopularPageViewModel"/> class.
+    /// </summary>
+    public PopularPageViewModel(
+        IVideoDiscoveryService discoveryService,
+        PhoenixReadApiClient apiClient,
+        ILogger<PopularPageViewModel> logger,
+        NavigationViewModel navigationViewModel,
+        DispatcherQueue dispatcherQueue,
+        ISettingsService settingsService
+    )
+        : base(settingsService)
+    {
+        _service = discoveryService;
+        _apiClient = apiClient;
+        _logger = logger;
+        _navigationViewModel = navigationViewModel;
+        _dispatcherQueue = dispatcherQueue;
+    }
+
+    /// <inheritdoc/>
+    protected override string GetPageKey() => nameof(PopularPage);
+
+    [RelayCommand]
+    private async Task InitializeAsync()
+    {
+        if (Sections.Count > 0)
+        {
+            return;
+        }
+
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.Balloon,
+                Resources.Recommend,
+                PopularSectionType.Recommend
+            )
+        );
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.Fire,
+                Resources.Hot,
+                PopularSectionType.Hot
+            )
+        );
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.RibbonStar,
+                Resources.Rank,
+                PopularSectionType.Rank
+            )
+        );
+        await LoadPartitionsAsync();
+        await Task.Delay(200);
+        var lastSelectedSectionId = string.IsNullOrEmpty(_settings.PopularPageLastSelectedSectionId)
+            ? PopularSectionType.Recommend.ToString()
+            : _settings.PopularPageLastSelectedSectionId;
+        if (int.TryParse(lastSelectedSectionId, out var partitionId))
+        {
+            var section = Sections
+                .OfType<PopularRankPartitionViewModel>()
+                .FirstOrDefault(p => p.Data.Id == partitionId.ToString());
+            if (section != null)
+            {
+                SelectSectionCommand.Execute(section);
+            }
+            else
+            {
+                SelectSectionCommand.Execute(Sections.First());
+            }
+        }
+        else if (Enum.TryParse<PopularSectionType>(lastSelectedSectionId, out var sectionType))
+        {
+            var section = Sections
+                .OfType<PopularSectionItemViewModel>()
+                .First(p => p.Type == sectionType);
+            SelectSectionCommand.Execute(section);
+        }
+        else
+        {
+            SelectSectionCommand.Execute(Sections.First());
+        }
+
+        SectionInitialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    [RelayCommand]
+    private void SelectSection(IPopularSectionItemViewModel vm)
+    {
+        if (vm is null || vm == SelectedSection)
+        {
+            return;
+        }
+
+        if (Videos.Count > 0)
+        {
+            _videoCache[SelectedSection] = Videos.ToList();
+        }
+
+        SelectedSection = vm;
+        var sectionId = vm switch
+        {
+            PopularSectionItemViewModel section => section.Type.ToString(),
+            PopularRankPartitionViewModel partition => partition.Data.Id,
+            _ => string.Empty,
+        };
+        _settings.PopularPageLastSelectedSectionId = sectionId;
+
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Videos.Clear();
+                if (_videoCache.TryGetValue(vm, out var cacheVideos))
+                {
+                    foreach (var video in cacheVideos)
+                    {
+                        Videos.Add(video);
+                    }
+
+                    VideoListUpdated?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    await LoadVideosAsync();
+                }
+            }
+        );
+    }
+
+    [RelayCommand]
+    private async Task LoadVideosAsync()
+    {
+        if (IsVideoLoading)
+        {
+            return;
+        }
+
+        IsVideoLoading = true;
+        if (SelectedSection is PopularSectionItemViewModel section)
+        {
+            if (section.Type == PopularSectionType.Recommend)
+            {
+                await LoadRecommendVideosAsync();
+            }
+            else if (section.Type == PopularSectionType.Hot)
+            {
+                await LoadHotVideosAsync();
+            }
+            else if (section.Type == PopularSectionType.Rank && Videos.Count == 0)
+            {
+                await LoadTotalRankVideosAsync();
+            }
+        }
+        else if (SelectedSection is PopularRankPartitionViewModel partition && Videos.Count == 0)
+        {
+            await LoadPartitionRankVideosAsync(partition.Data);
+        }
+
+        VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
+    }
+
+    [RelayCommand]
+    private async Task RefreshVideoAsync()
+    {
+        Videos.Clear();
+        _videoCache.Remove(SelectedSection);
+        if (SelectedSection is PopularSectionItemViewModel section)
+        {
+            if (section.Type == PopularSectionType.Recommend)
+            {
+                _recommendOffset = 0;
+                _recommendSessionId = null;
+                _seenDramaIds.Clear();
+                _hasMoreRecommendations = true;
+                _cancellationTokenSource?.Cancel();
+            }
+            else if (section.Type == PopularSectionType.Hot)
+            {
+                _hotOffset = 0;
+            }
+        }
+
+        await LoadVideosAsync();
+    }
+
+    [RelayCommand]
+    private async Task PlayCuratedListAsync()
+    {
+        try
+        {
+            var videos = await _service.GetCuratedPlaylistAsync();
+            var firstSnapshot = new VideoSnapshot(videos.First());
+            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), (videos, firstSnapshot));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取精选视频时失败");
+        }
+    }
+}
