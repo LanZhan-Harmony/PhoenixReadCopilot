@@ -32,13 +32,9 @@
     <Grid>
         <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
             <Grid Margin="16,12">
-                <ItemsRepeater x:Name="VideoRepeater" ItemsSource="{x:Bind ViewModel.Videos}">
-                    <ItemsRepeater.Layout>
-                        <community:StaggeredLayout ColumnSpacing="16"
-                                                   DesiredColumnWidth="200"
-                                                   ItemsStretch="Fill"
-                                                   RowSpacing="16"/>
-                    </ItemsRepeater.Layout>
+                <ItemsRepeater x:Name="VideoRepeater"
+                               ItemsSource="{x:Bind ViewModel.Videos}"
+                               Layout="{StaticResource VideoLayout}">
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="items:VideoItemViewModel">
                             <ContentControl Content="{x:Bind}"
