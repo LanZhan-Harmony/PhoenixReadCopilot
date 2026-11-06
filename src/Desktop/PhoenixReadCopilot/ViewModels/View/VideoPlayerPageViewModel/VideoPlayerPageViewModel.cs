@@ -6,7 +6,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.Toolkits;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
@@ -243,14 +242,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         var videoUrl = media.Url;
-        if (
-            !string.IsNullOrEmpty(media.BackupUrl)
-            && _settings.PlayWithoutP2P
-            && AppToolkit.IsP2PUrl(videoUrl)
-        )
-        {
-            videoUrl = media.BackupUrl;
-        }
 
         var isAutoPlay = !isFirstSet || _settings.ShouldAutoPlay;
 

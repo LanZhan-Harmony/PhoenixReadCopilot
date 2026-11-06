@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.System;
 using WinUIKernel.Share.Toolkits;
@@ -64,7 +63,6 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         PlayerDisplayModeCollection = [.. Enum.GetValues<PlayerDisplayMode>()];
         PreferCodecCollection = [.. Enum.GetValues<PreferCodecType>()];
         PreferQualityCollection = [.. Enum.GetValues<PreferQualityType>()];
-        PreferDecodeCollection = [.. Enum.GetValues<PreferDecodeType>()];
         PlayerTypeCollection = [.. Enum.GetValues<PlayerType>()];
         MTCBehaviorCollection = [.. Enum.GetValues<MTCBehavior>()];
 

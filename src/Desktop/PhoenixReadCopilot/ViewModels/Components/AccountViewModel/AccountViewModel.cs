@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.User;

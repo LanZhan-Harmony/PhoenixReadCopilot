@@ -203,11 +203,11 @@ private void SelectEpisode(EpisodeItemViewModel episode)
 在对接 `D:\code\C#\PhoenixReadApi` 时，应严格遵循以下指引：
 
 1. **依赖注入与单例管理**：
-   - 在 `GlobalDependencies.cs` 中注册 `PhoenixReadApiClient` 为单例；
+   - 注册 `PhoenixReadApiClient` 为单例；
    - 会话状态持久化文件统一写入 `PathHelper.AuthFolderPath` 文件夹。
 2. **媒体播放与 CENC 解密**：
    - 项目播放核心为主力 `FFmpegPlayerViewModel`（基于 `FFmpegInteropX`）和备选 `WebPlayerPage`（基于 WebView2 + EME）；
-   - 从 `client.ResolveMediaAsync(seriesId, videoId)` 获取 [PlaybackMedia](file:///D:/code/C%23/PhoenixReadApi/PhoenixReadApi/Public/Models/PlaybackMedia.cs) 后，**必须检查 `DecryptionKey`**；若非空，将 AES-128 解密密钥作为参数传递给播放器：
+   - 从 `client.ResolveMediaAsync(seriesId, videoId)` 获取 [PlaybackMedia](file:///D:/code/C#/PhoenixReadApi/PhoenixReadApi/Public/Models/PlaybackMedia.cs) 后，**必须检查 `DecryptionKey`**；若非空，将 AES-128 解密密钥作为参数传递给播放器：
      ```csharp
      config.FFmpegOptions["decryption_key"] = media.DecryptionKey;
      ```

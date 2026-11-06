@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Models;
-using PhoenixReadCopilot.Strings;
 using Richasy.BiliKernel.Bili.Authorization;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;

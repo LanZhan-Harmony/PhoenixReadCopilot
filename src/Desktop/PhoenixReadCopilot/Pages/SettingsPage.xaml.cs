@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share.Base;
 
@@ -22,9 +21,6 @@ public sealed partial class SettingsPage : SettingsPageBase
         ViewModel.InitializeCommand.Execute(default);
         GenericContainer.Visibility = Visibility.Visible;
     }
-
-    private void OnJoinGroupButtonClick(object sender, RoutedEventArgs e) =>
-        FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
 }
 
 /// <summary>

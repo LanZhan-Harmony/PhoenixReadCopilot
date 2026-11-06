@@ -552,12 +552,6 @@
   <data name="DebugInformation" xml:space="preserve">
     <value>调试信息</value>
   </data>
-  <data name="DecodeType" xml:space="preserve">
-    <value>解码类型</value>
-  </data>
-  <data name="DecodeTypeDescription" xml:space="preserve">
-    <value>选择视频的解码方式，可以选择强制硬解或软解</value>
-  </data>
   <data name="DecodingError" xml:space="preserve">
     <value>解码失败或者正在切换片源</value>
   </data>
@@ -2177,27 +2171,6 @@
   </data>
   <data name="CopySeasonUrl" xml:space="preserve">
     <value>复制剧集地址</value>
-  </data>
-  <data name="NoP2P" xml:space="preserve">
-    <value>不使用 P2P 节点</value>
-  </data>
-  <data name="NoP2PDescription" xml:space="preserve">
-    <value>将会尝试使用从非 MCDN/PCDN 节点获取视频和音频流</value>
-  </data>
-  <data name="PreferDecode" xml:space="preserve">
-    <value>解码偏好</value>
-  </data>
-  <data name="PreferDecodeDescription" xml:space="preserve">
-    <value>优先选择指定的解码器（请选择适用自身硬件的解码器）</value>
-  </data>
-  <data name="D3D11Decode" xml:space="preserve">
-    <value>D3D11 硬解</value>
-  </data>
-  <data name="NVDECDecode" xml:space="preserve">
-    <value>NVDEC 硬解（仅限N卡）</value>
-  </data>
-  <data name="DXVA2Decode" xml:space="preserve">
-    <value>DXVA2 硬解</value>
   </data>
   <data name="FailedToFollowPgc" xml:space="preserve">
     <value>追番/追剧失败</value>

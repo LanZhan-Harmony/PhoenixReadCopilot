@@ -1,9 +1,8 @@
 using System.Globalization;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
@@ -142,17 +141,4 @@ internal sealed partial class AppToolkit : IAppToolkit
             _ => "avc",
         };
     }
-
-    /// <summary>
-    /// 是否为P2P地址.
-    /// </summary>
-    /// <returns>检查结果.</returns>
-    public static bool IsP2PUrl(string url)
-    {
-        var uri = new Uri(url);
-        return P2PRegex().IsMatch(uri.Host);
-    }
-
-    [GeneratedRegex(@"(mcdn.bilivideo.(cn|com)|szbdyd.com)")]
-    private static partial Regex P2PRegex();
 }

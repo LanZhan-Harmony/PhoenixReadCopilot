@@ -72,8 +72,8 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
             {
                 if (
                     SeasonScrollView.ExtentHeight
-                        - SeasonScrollView.ViewportHeight
-                        - SeasonScrollView.VerticalOffset
+                    - SeasonScrollView.ViewportHeight
+                    - SeasonScrollView.VerticalOffset
                     <= 240
                 )
                 {

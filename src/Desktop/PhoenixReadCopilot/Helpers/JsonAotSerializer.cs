@@ -2,8 +2,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Models.Settings;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Authorization;
@@ -34,7 +34,6 @@ namespace PhoenixReadCopilot.Helpers;
 [JsonSerializable(typeof(PlayerDisplayMode))]
 [JsonSerializable(typeof(PreferCodecType))]
 [JsonSerializable(typeof(PreferQualityType))]
-[JsonSerializable(typeof(PreferDecodeType))]
 [JsonSerializable(typeof(PlayerType))]
 [JsonSerializable(typeof(MTCBehavior))]
 [JsonSerializable(typeof(PgcSectionType))]

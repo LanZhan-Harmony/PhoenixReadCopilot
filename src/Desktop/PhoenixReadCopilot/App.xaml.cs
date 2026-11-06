@@ -70,7 +70,7 @@ public partial class App : Application
 
     private static MainWindow? GetMainWindow() =>
         Ioc.Default.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow)
-        as MainWindow;
+            as MainWindow;
 
     private void OnMainWindowClosed(object sender, WindowEventArgs args)
     {

@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;

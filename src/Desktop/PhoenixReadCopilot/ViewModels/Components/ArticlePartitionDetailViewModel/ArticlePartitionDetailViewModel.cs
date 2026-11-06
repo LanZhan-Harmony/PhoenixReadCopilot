@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models;

@@ -47,8 +47,8 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
             {
                 if (
                     MomentScrollView.ExtentHeight
-                        - MomentScrollView.ViewportHeight
-                        - MomentScrollView.VerticalOffset
+                    - MomentScrollView.ViewportHeight
+                    - MomentScrollView.VerticalOffset
                     <= 240
                 )
                 {
