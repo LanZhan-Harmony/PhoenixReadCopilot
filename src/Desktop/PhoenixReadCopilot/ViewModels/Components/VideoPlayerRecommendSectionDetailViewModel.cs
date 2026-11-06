@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;

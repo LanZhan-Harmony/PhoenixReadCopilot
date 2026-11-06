@@ -33,11 +33,10 @@
     <PackageVersion Include="Richasy.BiliKernel.Services.Search" Version="0.0.1-preview5" />
     <PackageVersion Include="Richasy.BiliKernel.Services.User" Version="0.0.1-preview5" />
     <PackageVersion Include="Richasy.WinUIKernel.Share" Version="0.0.8-preview4" />
-    <PackageVersion Include="Serilog" Version="4.4.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
-    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.6.4" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
     <PackageVersion Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
     <PackageVersion Include="System.Drawing.Common" Version="10.0.14" />
     <PackageVersion Include="Vortice.Direct2D1" Version="3.8.3" />

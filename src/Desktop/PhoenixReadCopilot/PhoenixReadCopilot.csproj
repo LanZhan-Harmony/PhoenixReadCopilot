@@ -90,7 +90,6 @@
     <PackageReference Include="Richasy.BiliKernel.Services.Moment" />
     <PackageReference Include="Richasy.BiliKernel.Services.Search" />
     <PackageReference Include="Richasy.BiliKernel.Services.User" />
-    <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.File" />
   </ItemGroup>

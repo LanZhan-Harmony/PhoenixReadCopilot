@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Models;
@@ -74,17 +75,16 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         SelectedSortType = sortType;
 
-        _dispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    _childPartitionArticleCache.Clear();
-                    Articles.Clear();
-                    _childPartitionOffsetCache.Clear();
-                    await LoadArticlesAsync();
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                _childPartitionArticleCache.Clear();
+                Articles.Clear();
+                _childPartitionOffsetCache.Clear();
+                await LoadArticlesAsync();
+            }
+        );
     }
 
     [RelayCommand]
@@ -102,15 +102,14 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
             _childPartitionOffsetCache.Remove(CurrentPartition.Data.Id);
         }
 
-        _dispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    Articles.Clear();
-                    await LoadArticlesAsync();
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Articles.Clear();
+                await LoadArticlesAsync();
+            }
+        );
     }
 
     [RelayCommand]
@@ -136,42 +135,38 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         CurrentPartition = partition;
 
-        _dispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Articles.Clear();
+                if (IsRecommend && _recommendCache?.Count > 0)
                 {
-                    Articles.Clear();
-                    if (IsRecommend && _recommendCache?.Count > 0)
+                    foreach (var item in _recommendCache)
                     {
-                        foreach (var item in _recommendCache)
-                        {
-                            Articles.Add(item);
-                        }
-                    }
-                    else if (
-                        _childPartitionArticleCache.TryGetValue(
-                            CurrentPartition.Data.Id,
-                            out var cache
-                        )
-                    )
-                    {
-                        foreach (var item in cache)
-                        {
-                            Articles.Add(item);
-                        }
-                    }
-
-                    if (Articles.Count == 0)
-                    {
-                        await LoadArticlesAsync();
-                    }
-                    else
-                    {
-                        ArticleListUpdated?.Invoke(this, EventArgs.Empty);
+                        Articles.Add(item);
                     }
                 }
-            );
+                else if (
+                    _childPartitionArticleCache.TryGetValue(CurrentPartition.Data.Id, out var cache)
+                )
+                {
+                    foreach (var item in cache)
+                    {
+                        Articles.Add(item);
+                    }
+                }
+
+                if (Articles.Count == 0)
+                {
+                    await LoadArticlesAsync();
+                }
+                else
+                {
+                    ArticleListUpdated?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        );
     }
 
     [RelayCommand]

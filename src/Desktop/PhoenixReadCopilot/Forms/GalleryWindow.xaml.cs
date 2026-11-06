@@ -7,6 +7,8 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
 using Windows.Graphics;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 using WinUIEx;
 using WinUIKernel.Share.Base;
 

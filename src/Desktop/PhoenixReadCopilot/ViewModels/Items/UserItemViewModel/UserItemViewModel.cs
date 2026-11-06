@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Strings;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;

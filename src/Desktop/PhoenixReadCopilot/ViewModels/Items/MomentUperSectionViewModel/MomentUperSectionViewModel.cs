@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Strings;
 using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
@@ -34,26 +35,21 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = momentView.HasMoreMoments != true;
         _offset = momentView.Offset;
         _baseline = momentView.UpdateBaseline;
-        ItemServices.DispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                () =>
+        ItemServices.DispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            () =>
+            {
+                Items.Clear();
+                foreach (var item in momentView.Moments)
                 {
-                    Items.Clear();
-                    foreach (var item in momentView.Moments)
-                    {
-                        Items.Add(
-                            new MomentItemViewModel(
-                                item,
-                                MomentCardStyle.Comprehensive,
-                                ShowComment
-                            )
-                        );
-                    }
-
-                    ListUpdated?.Invoke(this, EventArgs.Empty);
+                    Items.Add(
+                        new MomentItemViewModel(item, MomentCardStyle.Comprehensive, ShowComment)
+                    );
                 }
-            );
+
+                ListUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        );
     }
 
     [RelayCommand]
@@ -81,14 +77,13 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = false;
         Items.Clear();
 
-        ItemServices.DispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    await LoadItemsAsync();
-                }
-            );
+        ItemServices.DispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                await LoadItemsAsync();
+            }
+        );
     }
 
     [RelayCommand]
@@ -172,6 +167,5 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         }
     }
 
-    private void ShowComment(MomentItemViewModel item) =>
-        _showCommentAction?.Invoke(item.Data);
+    private void ShowComment(MomentItemViewModel item) => _showCommentAction?.Invoke(item.Data);
 }

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Services;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;

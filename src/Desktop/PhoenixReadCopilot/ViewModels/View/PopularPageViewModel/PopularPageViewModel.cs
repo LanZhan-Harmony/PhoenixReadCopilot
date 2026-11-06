@@ -7,6 +7,7 @@ using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Media;

@@ -5,6 +5,7 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Appearance;

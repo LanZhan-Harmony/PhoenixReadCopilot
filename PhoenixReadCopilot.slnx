@@ -5,13 +5,13 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Desktop/">
-    <Project Path="src/Desktop/PhoenixReadCopilot.Core/PhoenixReadCopilot.Core.csproj" />
     <Project Path="src/Desktop/PhoenixReadCopilot/PhoenixReadCopilot.csproj">
       <Platform Solution="*|ARM64" Project="ARM64" />
       <Platform Solution="*|x64" Project="x64" />
       <Platform Solution="*|x86" Project="x86" />
       <Deploy />
     </Project>
+    <Project Path="src/Desktop/PhoenixReadCopilot.Core/PhoenixReadCopilot.Core.csproj" />
   </Folder>
   <Folder Name="/Libs/">
     <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj">
@@ -22,7 +22,7 @@
     <Project Path="src/Libs/WinUIKernel.Share/WinUIKernel.Share.csproj">
       <Platform Solution="*|ARM64" Project="ARM64" />
       <Platform Solution="*|x86" Project="x86" />
-      <Platform Solution="Debug|x64" Project="x64" />
+      <Platform Solution="*|x64" Project="x64" />
     </Project>
   </Folder>
 </Solution>
