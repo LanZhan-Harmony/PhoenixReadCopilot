@@ -67,11 +67,7 @@
             <community:SettingsCard Description="{x:Bind strings:Resources.ContinuousPlayDescription}" Header="{x:Bind strings:Resources.ContinuousPlay}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=TwoWay}"/>
             </community:SettingsCard>
-            <community:SettingsCard Description="{x:Bind strings:Resources.PlayNextWithoutTipDescription}"
-                                    Header="{x:Bind strings:Resources.PlayNextWithoutTip}"
-                                    Visibility="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=OneWay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.PlayNextWithoutTip, Mode=TwoWay}"/>
-            </community:SettingsCard>
+
             <community:SettingsCard Description="{x:Bind strings:Resources.StopWhenEndOfPlaylistDescription}"
                                     Header="{x:Bind strings:Resources.StopWhenEndOfPlaylist}"
                                     Visibility="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=OneWay}">

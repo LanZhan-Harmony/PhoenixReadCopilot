@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
+using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.Converters;
 

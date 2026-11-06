@@ -29,25 +29,50 @@ public sealed partial class FFmpegPlayerViewModel
 
         _isDisposed = true;
         _element?.SetMediaPlayer(default);
-        if (Player?.PlaybackSession != null)
-        {
-            Player.PlaybackSession.PositionChanged -= OnMediaPositionChanged;
-            Player.PlaybackSession.NaturalDurationChanged -= OnMediaNaturalDurationChanged;
-        }
 
         if (Player is not null)
         {
-            Player.MediaOpened -= OnMediaPlayerOpened;
-            Player.CurrentStateChanged -= OnMediaPlayerStateChanged;
-            Player.MediaFailed -= OnMediaPlayerFailed;
-            Player.MediaEnded -= OnMediaPlayerEnded;
-            Player.Dispose();
+            try
+            {
+                Player.Pause();
+            }
+            catch { }
+
+            try
+            {
+                if (Player.PlaybackSession != null)
+                {
+                    Player.PlaybackSession.PositionChanged -= OnMediaPositionChanged;
+                    Player.PlaybackSession.NaturalDurationChanged -= OnMediaNaturalDurationChanged;
+                }
+            }
+            catch { }
+
+            try
+            {
+                Player.MediaOpened -= OnMediaPlayerOpened;
+                Player.CurrentStateChanged -= OnMediaPlayerStateChanged;
+                Player.MediaFailed -= OnMediaPlayerFailed;
+                Player.MediaEnded -= OnMediaPlayerEnded;
+                Player.Source = null;
+                Player.Dispose();
+            }
+            catch { }
             Player = null;
         }
 
-        _ffmpegSource?.Dispose();
-        _ffmpegSource = null;
+        if (_ffmpegSource is not null)
+        {
+            try
+            {
+                _ffmpegSource.PlaybackSession = null;
+                _ffmpegSource.Dispose();
+            }
+            catch { }
+            _ffmpegSource = null;
+        }
 
+        GC.Collect(1, GCCollectionMode.Optimized);
         return Task.CompletedTask;
     }
 
@@ -102,6 +127,7 @@ public sealed partial class FFmpegPlayerViewModel
             return Task.CompletedTask;
         }
 
+        _hasEnded = false;
         Player.Position = position;
         return Task.CompletedTask;
     }
@@ -175,6 +201,9 @@ public sealed partial class FFmpegPlayerViewModel
         var config = new MediaSourceConfig();
         config.Video.VideoDecoderMode = VideoDecoderMode.Automatic;
         config.General.FastSeek = true;
+        config.General.ReadAheadBufferEnabled = true;
+        config.General.ReadAheadBufferDuration = TimeSpan.FromSeconds(15);
+        config.General.ReadAheadBufferSize = 16 * 1024 * 1024;
 
         var headerSb = new StringBuilder();
         var referer = CustomReferer;

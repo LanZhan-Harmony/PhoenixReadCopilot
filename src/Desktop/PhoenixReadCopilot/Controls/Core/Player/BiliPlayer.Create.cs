@@ -124,7 +124,7 @@ public sealed partial class BiliPlayer
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Top,
-            Visibility = ViewModel?.IsFailed ?? false ? Visibility.Visible : Visibility.Collapsed,
+            Visibility = Visibility.Visible,
         };
         rootGrid.Children.Add(_notificationContainer);
 

@@ -5,7 +5,6 @@ using Danmaku.Core.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Models.Danmaku;
 
 namespace PhoenixReadCopilot.Controls.Danmaku;
 
@@ -102,11 +101,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         );
     }
 
-    private async void OnDanmakuListAddedAsync(object? sender, IReadOnlyList<DanmakuInformation> e)
+    private async void OnDanmakuListAddedAsync(object? sender, IReadOnlyList<DanmakuItem> e)
     {
-        var items = BilibiliDanmakuParser.GetDanmakuList(e, true);
         var isFirstLoad = _cachedDanmakus.Count == 0;
-        _cachedDanmakus = [.. _cachedDanmakus.Concat(items).Distinct()];
+        _cachedDanmakus = [.. _cachedDanmakus.Concat(e).DistinctBy(x => x.Id)];
         if (isFirstLoad)
         {
             await Task.Delay(250);
@@ -114,7 +112,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
         else
         {
-            _danmakuRenderer?.AddDanmakuList(items);
+            _danmakuRenderer?.AddDanmakuList(e as List<DanmakuItem> ?? e.ToList());
         }
     }
 

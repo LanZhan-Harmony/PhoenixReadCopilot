@@ -86,6 +86,16 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
             };
         }
 
+        else if (value is PhoenixReadApi.CommentSortOrder cso)
+        {
+            result = cso switch
+            {
+                PhoenixReadApi.CommentSortOrder.Hot => Resources.HotReply,
+                PhoenixReadApi.CommentSortOrder.Latest => Resources.LatestReply,
+                _ => string.Empty,
+            };
+        }
+
         return result;
     }
 

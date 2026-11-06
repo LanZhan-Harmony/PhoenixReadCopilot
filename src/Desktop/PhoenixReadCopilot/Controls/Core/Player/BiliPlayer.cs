@@ -275,6 +275,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
 
     private void OnRequestShowNotification(object? sender, PlayerNotificationItemViewModel e)
     {
+        _notificationContainer.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
         _notificationContainer.Children.Clear();
         var control = new PlayerNotificationControl();
         control.ViewModel = e;

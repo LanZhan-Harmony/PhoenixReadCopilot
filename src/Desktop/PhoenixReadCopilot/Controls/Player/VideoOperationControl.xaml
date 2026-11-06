@@ -70,7 +70,8 @@
             <ComboBox x:Name="LoopComboBox"
                       HorizontalAlignment="Stretch"
                       ItemsSource="{x:Bind ViewModel.LoopTypes, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.CurrentLoop, Mode=TwoWay}">
+                      SelectedItem="{x:Bind ViewModel.CurrentLoop, Mode=OneWay}"
+                      SelectionChanged="OnLoopSelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="constants:VideoLoopType">
                         <TextBlock Text="{x:Bind Converter={StaticResource LoopTypeConverter}}"/>

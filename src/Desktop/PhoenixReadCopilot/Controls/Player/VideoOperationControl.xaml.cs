@@ -15,11 +15,14 @@ public sealed partial class VideoOperationControl : VideoPlayerPageControlBase
 
     private void OnLoopSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (LoopComboBox.SelectedItem is null)
+        if (ViewModel is null || LoopComboBox.SelectedItem is not VideoLoopType loopType)
         {
             return;
         }
 
-        ViewModel.CurrentLoop = (VideoLoopType)LoopComboBox.SelectedItem;
+        if (ViewModel.CurrentLoop != loopType)
+        {
+            ViewModel.CurrentLoop = loopType;
+        }
     }
 }

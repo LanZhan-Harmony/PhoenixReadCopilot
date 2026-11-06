@@ -42,7 +42,21 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     /// <summary>
     /// 初始化红果短剧分集评论.
     /// </summary>
-    public void Initialize(string seriesId, string videoId, CommentSortType sortType = CommentSortType.Hot)
+    public void Initialize(string seriesId, string videoId, CommentSortOrder sortOrder = CommentSortOrder.Hot)
+    {
+        Clear();
+        _seriesId = seriesId;
+        _videoId = videoId;
+        Id = videoId;
+        SortType = sortOrder == CommentSortOrder.Latest ? CommentSortType.Time : CommentSortType.Hot;
+        UpdateLoginState();
+        Initialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// 初始化红果短剧分集评论（兼容模式）.
+    /// </summary>
+    public void Initialize(string seriesId, string videoId, CommentSortType sortType)
     {
         Clear();
         _seriesId = seriesId;

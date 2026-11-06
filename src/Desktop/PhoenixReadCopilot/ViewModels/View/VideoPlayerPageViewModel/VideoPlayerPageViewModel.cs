@@ -9,7 +9,6 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -88,6 +87,10 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             seriesId = snapshot.Video.Identifier.Id;
             IsPrivatePlay = snapshot.IsPrivate;
         }
+        else if (parameter is Drama drama)
+        {
+            seriesId = drama.Id;
+        }
         else if (parameter is string id)
         {
             seriesId = id;
@@ -123,7 +126,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
             // 初始化整剧剧评与分集评论
             _dramaReviews.Initialize(_seriesId, details.Drama.Score);
-            _comments.Initialize(_seriesId, _currentEpisode.VideoId, CommentSortType.Hot);
+            _comments.Initialize(_seriesId, _currentEpisode.VideoId, CommentSortOrder.Hot);
 
             LoadInitialProgress();
             await InitializeSectionsAsync();

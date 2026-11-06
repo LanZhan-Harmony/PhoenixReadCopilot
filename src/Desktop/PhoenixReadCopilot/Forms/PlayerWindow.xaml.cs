@@ -75,6 +75,15 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     }
 
     /// <summary>
+    /// 打开短剧内容.
+    /// </summary>
+    public void OpenDrama(string seriesId)
+    {
+        Activate();
+        MainFrame.Navigate(typeof(VideoPlayerPage), seriesId);
+    }
+
+    /// <summary>
     /// 打开视频.
     /// </summary>
     public void OpenVideo((List<VideoInformation> videos, VideoSnapshot snapshot) data)

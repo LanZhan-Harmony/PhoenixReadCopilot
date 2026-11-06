@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.Models.Settings;
 
@@ -26,9 +25,6 @@ public sealed partial class AppSettings : ObservableObject
 
     [ObservableProperty]
     public partial bool AutoPlayNext { get; set; } = true;
-
-    [ObservableProperty]
-    public partial bool PlayNextWithoutTip { get; set; } = false;
 
     [ObservableProperty]
     public partial bool EndWithPlaylist { get; set; } = true;
@@ -121,7 +117,7 @@ public sealed partial class AppSettings : ObservableObject
     public partial string DownloadFolder { get; set; } =
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
-            "Bili Downloads"
+            "PhoenixRead Downloads"
         );
 
     [ObservableProperty]

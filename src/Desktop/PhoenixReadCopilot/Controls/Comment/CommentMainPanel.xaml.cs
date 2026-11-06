@@ -90,7 +90,11 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
         );
     }
 
-    private void OnInitialized(object? sender, EventArgs e) => CheckSortType();
+    private void OnInitialized(object? sender, EventArgs e)
+    {
+        CheckSortType();
+        CheckCommentCount();
+    }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
     {

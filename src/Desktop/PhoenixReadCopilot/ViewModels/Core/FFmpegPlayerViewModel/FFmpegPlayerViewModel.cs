@@ -32,6 +32,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     private TcpListener? _manifestListener;
     private CancellationTokenSource? _manifestServerCts;
     private bool _isDisposed;
+    private bool _hasEnded;
 
     /// <summary>
     /// CENC 解密密钥.
@@ -144,11 +145,12 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            if (!IsMediaLoaded())
+            if (!IsMediaLoaded() || _hasEnded)
             {
                 return;
             }
 
+            _hasEnded = true;
             ReachEnd();
         });
     }
@@ -162,14 +164,28 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 return;
             }
 
-            var state = sender.PlaybackSession.PlaybackState switch
+            PlayerState state = PlayerState.None;
+            try
             {
-                MediaPlaybackState.Opening => PlayerState.Opening,
-                MediaPlaybackState.Buffering => PlayerState.Buffering,
-                MediaPlaybackState.Playing => PlayerState.Playing,
-                MediaPlaybackState.Paused => PlayerState.Paused,
-                _ => PlayerState.None,
-            };
+                var session = sender.PlaybackSession;
+                if (session is null)
+                {
+                    return;
+                }
+
+                state = session.PlaybackState switch
+                {
+                    MediaPlaybackState.Opening => PlayerState.Opening,
+                    MediaPlaybackState.Buffering => PlayerState.Buffering,
+                    MediaPlaybackState.Playing => PlayerState.Playing,
+                    MediaPlaybackState.Paused => PlayerState.Paused,
+                    _ => PlayerState.None,
+                };
+            }
+            catch
+            {
+                return;
+            }
 
             UpdateState(state);
         });
@@ -179,18 +195,46 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            var session = sender.PlaybackSession;
+            _hasEnded = false;
+            Windows.Media.Playback.MediaPlaybackSession? session = null;
+            try
+            {
+                session = sender.PlaybackSession;
+            }
+            catch
+            {
+                return;
+            }
+
             if (session is null)
             {
                 return;
             }
 
-            _ffmpegSource?.PlaybackSession = session;
+            try
+            {
+                if (_ffmpegSource is not null)
+                {
+                    _ffmpegSource.PlaybackSession = session;
+                }
+            }
+            catch { }
 
             sender.PlaybackSession.PlaybackRate = _settings.PlayerSpeed;
             _speedAction?.Invoke(sender.PlaybackSession.PlaybackRate);
 
-            var duration = session.NaturalDuration.TotalSeconds;
+            double duration = 0;
+            try
+            {
+                if (session.PlaybackState != MediaPlaybackState.None)
+                {
+                    duration = session.NaturalDuration.TotalSeconds;
+                }
+            }
+            catch
+            {
+                // 忽略底层 COMException
+            }
             if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
             {
                 duration = _ffmpegSource.Duration.TotalSeconds;
@@ -222,7 +266,22 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            var duration = sender.NaturalDuration.TotalSeconds;
+            double duration = 0;
+            double position = 0;
+            try
+            {
+                if (sender.PlaybackState == MediaPlaybackState.None)
+                {
+                    return;
+                }
+
+                duration = sender.NaturalDuration.TotalSeconds;
+                position = sender.Position.TotalSeconds;
+            }
+            catch
+            {
+                return;
+            }
             if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
             {
                 duration = _ffmpegSource.Duration.TotalSeconds;
@@ -249,7 +308,22 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 return;
             }
 
-            var duration = sender.NaturalDuration.TotalSeconds;
+            double duration = 0;
+            double position = 0;
+            try
+            {
+                if (sender.PlaybackState == MediaPlaybackState.None)
+                {
+                    return;
+                }
+
+                duration = sender.NaturalDuration.TotalSeconds;
+                position = sender.Position.TotalSeconds;
+            }
+            catch
+            {
+                return;
+            }
             if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
             {
                 duration = _ffmpegSource.Duration.TotalSeconds;
@@ -265,9 +339,14 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 duration = Duration;
             }
 
-            var position = sender.Position.TotalSeconds;
-            if (duration > 0 && position > duration)
+            if (duration > 0 && position >= duration)
             {
+                if (!_hasEnded)
+                {
+                    _hasEnded = true;
+                    UpdatePosition(Convert.ToInt32(duration), Convert.ToInt32(duration));
+                    ReachEnd();
+                }
                 return;
             }
 
