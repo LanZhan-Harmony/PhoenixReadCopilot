@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
 using Richasy.BiliKernel.Models.Media;

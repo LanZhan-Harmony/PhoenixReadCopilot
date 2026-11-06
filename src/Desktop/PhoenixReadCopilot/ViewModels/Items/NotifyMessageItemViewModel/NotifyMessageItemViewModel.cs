@@ -1,6 +1,7 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
+using PhoenixReadCopilot.Strings;
 using Richasy.BiliKernel.Models.User;
 using Windows.System;
 using WinUIKernel.Share.ViewModels;

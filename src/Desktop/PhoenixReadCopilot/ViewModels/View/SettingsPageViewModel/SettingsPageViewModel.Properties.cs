@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Toolkits;
 

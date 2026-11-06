@@ -13,6 +13,8 @@ using PhoenixReadCopilot.ViewModels.Core;
 using Richasy.BiliKernel.Models.Media;
 using Windows.Graphics;
 using Windows.System;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 using WinUIEx;
 using WinUIKernel.Share.Base;
 

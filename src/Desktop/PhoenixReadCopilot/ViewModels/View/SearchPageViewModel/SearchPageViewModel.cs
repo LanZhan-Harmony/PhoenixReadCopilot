@@ -5,6 +5,7 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.Toolkits;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;

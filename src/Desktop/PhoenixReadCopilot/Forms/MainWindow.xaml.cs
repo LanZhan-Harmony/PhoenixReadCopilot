@@ -12,6 +12,9 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Graphics;
 using Windows.System;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 using WinUIEx;
 using WinUIKernel.Share.Base;
 

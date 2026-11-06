@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share.ViewModels;

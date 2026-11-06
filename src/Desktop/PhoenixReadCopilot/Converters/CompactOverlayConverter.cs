@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Data;
+using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 

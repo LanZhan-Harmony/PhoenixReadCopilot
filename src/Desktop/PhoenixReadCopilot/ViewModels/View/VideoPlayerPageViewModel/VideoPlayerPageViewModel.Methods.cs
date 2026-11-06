@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
 
@@ -291,11 +292,7 @@ public sealed partial class VideoPlayerPageViewModel
     private void InitializeLoops()
     {
         var currentType = CurrentLoop;
-        var loops = new List<VideoLoopType>
-        {
-            VideoLoopType.None,
-            VideoLoopType.Single
-        };
+        var loops = new List<VideoLoopType> { VideoLoopType.None, VideoLoopType.Single };
         if (_episodes?.Count > 1)
         {
             loops.Add(VideoLoopType.List);

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
@@ -60,8 +61,14 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             var vm = type switch
             {
                 ViewHistoryTabType.Video => (IHistorySectionDetailViewModel)
-                    new VideoHistorySectionDetailViewModel(_service, _loggerFactory.CreateLogger<VideoHistorySectionDetailViewModel>()),
-                ViewHistoryTabType.Article => new ArticleHistorySectionDetailViewModel(_service, _loggerFactory.CreateLogger<ArticleHistorySectionDetailViewModel>()),
+                    new VideoHistorySectionDetailViewModel(
+                        _service,
+                        _loggerFactory.CreateLogger<VideoHistorySectionDetailViewModel>()
+                    ),
+                ViewHistoryTabType.Article => new ArticleHistorySectionDetailViewModel(
+                    _service,
+                    _loggerFactory.CreateLogger<ArticleHistorySectionDetailViewModel>()
+                ),
                 _ => null,
             };
 
@@ -171,8 +178,9 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "搜索用户视频时失败");
-            _appViewModel
-                .ShowTipCommand.Execute((Resources.FailedToSearchUserVideos, InfoType.Error));
+            _appViewModel.ShowTipCommand.Execute(
+                (Resources.FailedToSearchUserVideos, InfoType.Error)
+            );
         }
         finally
         {
