@@ -38,9 +38,9 @@
             <localConverters:ColorToBrushConverter x:Key="BrushConverter"/>
 
             <UniformGridLayout x:Key="VideoLayout"
-                               ItemsStretch="None"
+                               ItemsStretch="Fill"
                                MinColumnSpacing="16"
-                               MinItemHeight="240"
+                               MinItemHeight="385"
                                MinItemWidth="200"
                                MinRowSpacing="16"/>
 
