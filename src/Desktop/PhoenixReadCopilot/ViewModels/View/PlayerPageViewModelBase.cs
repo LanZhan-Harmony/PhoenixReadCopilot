@@ -1,7 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;

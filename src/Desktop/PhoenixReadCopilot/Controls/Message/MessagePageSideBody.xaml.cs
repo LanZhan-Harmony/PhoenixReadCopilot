@@ -53,8 +53,8 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
             {
                 if (
                     SectionView.ScrollView.ExtentHeight
-                        - SectionView.ScrollView.ViewportHeight
-                        - SectionView.ScrollView.VerticalOffset
+                    - SectionView.ScrollView.ViewportHeight
+                    - SectionView.ScrollView.VerticalOffset
                     <= 240
                 )
                 {

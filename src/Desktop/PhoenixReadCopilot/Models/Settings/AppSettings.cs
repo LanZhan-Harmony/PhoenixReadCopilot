@@ -65,9 +65,6 @@ public sealed partial class AppSettings : ObservableObject
     public partial PreferQualityType PreferQuality { get; set; } = PreferQualityType.Auto;
 
     [ObservableProperty]
-    public partial PreferDecodeType PreferDecode { get; set; } = PreferDecodeType.Auto;
-
-    [ObservableProperty]
     public partial PlayerType PlayerType { get; set; } = PlayerType.FFmpeg;
 
     [ObservableProperty]
@@ -75,9 +72,6 @@ public sealed partial class AppSettings : ObservableObject
 
     [ObservableProperty]
     public partial bool IsBottomProgressVisible { get; set; } = true;
-
-    [ObservableProperty]
-    public partial bool PlayWithoutP2P { get; set; } = false;
 
     [ObservableProperty]
     public partial bool CopyAfterScreenshot { get; set; } = true;

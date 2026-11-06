@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
-using PhoenixReadCopilot.Forms;
-using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Toolkits;
 using Richasy.BiliKernel.Models.Media;

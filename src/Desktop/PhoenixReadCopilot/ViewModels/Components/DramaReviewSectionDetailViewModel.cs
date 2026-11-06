@@ -5,7 +5,6 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Models;
@@ -41,8 +40,10 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
         Id = comment.Id;
         Text = comment.Text;
         UserName = comment.Author?.Name ?? "匿名观众";
-        if (!string.IsNullOrEmpty(comment.Author?.AvatarUrl) &&
-            Uri.TryCreate(comment.Author.AvatarUrl, UriKind.Absolute, out var avatarUri))
+        if (
+            !string.IsNullOrEmpty(comment.Author?.AvatarUrl)
+            && Uri.TryCreate(comment.Author.AvatarUrl, UriKind.Absolute, out var avatarUri)
+        )
         {
             Avatar = avatarUri;
         }
@@ -52,7 +53,9 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
 
         if (comment.CreatedAtUnixSeconds > 0)
         {
-            var time = DateTimeOffset.FromUnixTimeSeconds(comment.CreatedAtUnixSeconds).ToLocalTime();
+            var time = DateTimeOffset
+                .FromUnixTimeSeconds(comment.CreatedAtUnixSeconds)
+                .ToLocalTime();
             RelativeTime = time.Humanize();
             ActualTime = time.ToString("yyyy-MM-dd HH:mm:ss");
         }
@@ -110,7 +113,9 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
 /// <summary>
 /// 剧评区块视图模型 (整部剧只有一份).
 /// </summary>
-public sealed partial class DramaReviewSectionDetailViewModel : ViewModelBase, IPlayerSectionDetailViewModel
+public sealed partial class DramaReviewSectionDetailViewModel
+    : ViewModelBase,
+        IPlayerSectionDetailViewModel
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly AppViewModel _appViewModel;
@@ -175,7 +180,8 @@ public sealed partial class DramaReviewSectionDetailViewModel : ViewModelBase, I
 
     public bool CanSendReview => IsLoggedIn && !IsSending;
 
-    public string ReviewPlaceholderText => IsLoggedIn ? "发表你对本剧的评价..." : "请先登录后发表剧评";
+    public string ReviewPlaceholderText =>
+        IsLoggedIn ? "发表你对本剧的评价..." : "请先登录后发表剧评";
 
     /// <summary>
     /// 初始化剧评组件.
@@ -250,7 +256,11 @@ public sealed partial class DramaReviewSectionDetailViewModel : ViewModelBase, I
         try
         {
             var sendRating = Math.Clamp(Math.Round(Rating * 2.0) / 2.0, 0.5, 5.0);
-            var result = await _apiClient.SendDramaReviewAsync(SeriesId, sendRating, content.Trim());
+            var result = await _apiClient.SendDramaReviewAsync(
+                SeriesId,
+                sendRating,
+                content.Trim()
+            );
             if (result.Succeeded)
             {
                 _appViewModel.ShowTipCommand.Execute(("剧评发表成功", InfoType.Success));
@@ -258,7 +268,9 @@ public sealed partial class DramaReviewSectionDetailViewModel : ViewModelBase, I
             }
             else
             {
-                _appViewModel.ShowTipCommand.Execute((result.Message ?? "发表失败", InfoType.Error));
+                _appViewModel.ShowTipCommand.Execute(
+                    (result.Message ?? "发表失败", InfoType.Error)
+                );
             }
         }
         catch (Exception ex)
@@ -284,8 +296,14 @@ public sealed partial class DramaReviewSectionDetailViewModel : ViewModelBase, I
         UpdateLoginState();
         try
         {
-            var sortOrder = SortType == CommentSortType.Time ? CommentSortOrder.Latest : CommentSortOrder.Hot;
-            var page = await _apiClient.GetDramaReviewsAsync(SeriesId, count: 20, cursor: _cursor, sort: sortOrder);
+            var sortOrder =
+                SortType == CommentSortType.Time ? CommentSortOrder.Latest : CommentSortOrder.Hot;
+            var page = await _apiClient.GetDramaReviewsAsync(
+                SeriesId,
+                count: 20,
+                cursor: _cursor,
+                sort: sortOrder
+            );
             _cursor = page.Cursor;
             _hasMore = page.HasMore;
             TotalCount = page.Total;
@@ -294,7 +312,15 @@ public sealed partial class DramaReviewSectionDetailViewModel : ViewModelBase, I
             {
                 if (!Reviews.Any(r => r.Id == item.Id))
                 {
-                    Reviews.Add(new DramaReviewItemViewModel(item, SeriesId, _apiClient, _appViewModel, _logger));
+                    Reviews.Add(
+                        new DramaReviewItemViewModel(
+                            item,
+                            SeriesId,
+                            _apiClient,
+                            _appViewModel,
+                            _logger
+                        )
+                    );
                 }
             }
 

@@ -95,7 +95,10 @@ public sealed partial class WebSignInWindow : WindowEx
             if (cookieDict.Count > 0)
             {
                 await _authService.SignInAsync(
-                    new AuthorizeExecutionSettings { Cookies = cookieDict },
+                    new AuthorizeExecutionSettings
+                    {
+                        Cookies = cookieDict
+                    },
                     _cancellationTokenSource.Token
                 );
                 _cancellationTokenSource = default;

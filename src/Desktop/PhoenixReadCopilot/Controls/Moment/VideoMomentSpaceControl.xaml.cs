@@ -47,8 +47,8 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
             {
                 if (
                     VideoScrollView.ExtentHeight
-                        - VideoScrollView.ViewportHeight
-                        - VideoScrollView.VerticalOffset
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
                     <= 240
                 )
                 {

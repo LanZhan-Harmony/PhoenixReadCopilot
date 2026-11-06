@@ -6,7 +6,6 @@ using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Strings;
 using Windows.Media.Playback;
 using WinUIKernel.Share.Base;
 

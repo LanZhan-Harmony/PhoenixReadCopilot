@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
 

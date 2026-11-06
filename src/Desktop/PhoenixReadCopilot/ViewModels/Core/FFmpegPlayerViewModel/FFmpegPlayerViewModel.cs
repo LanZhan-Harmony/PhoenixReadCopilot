@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.Strings;
 using Windows.Media.Playback;
 
 namespace PhoenixReadCopilot.ViewModels.Core;

@@ -58,7 +58,6 @@ public enum SettingNames
     AutoLoadHistory,
     IsNotificationEnabled,
     IsVideoMomentNotificationEnabled,
-    PlayWithoutP2P,
     DefaultPlayerDisplayMode,
     PreferCodec,
     IsBottomProgressVisible,

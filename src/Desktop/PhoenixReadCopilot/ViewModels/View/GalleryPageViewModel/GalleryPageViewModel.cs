@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Windows.Storage.Pickers;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
 using Windows.ApplicationModel.DataTransfer;

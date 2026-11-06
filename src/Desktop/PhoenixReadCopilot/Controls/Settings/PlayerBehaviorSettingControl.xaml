@@ -15,7 +15,6 @@
         <converters:PreferQualityTypeConverter x:Key="PreferQualityConverter"/>
         <converters:PlayerTypeConverter x:Key="PlayerTypeConverter"/>
         <converters:DisplayModeConverter x:Key="DisplayModeConverter"/>
-        <converters:PreferDecodeTypeConverter x:Key="PreferDecodeConverter"/>
     </UserControl.Resources>
 
     <community:SettingsExpander Description="{x:Bind strings:Resources.PlayerBehaviorDescription}" Header="{x:Bind strings:Resources.PlayerBehavior}">
@@ -77,9 +76,6 @@
                                     Header="{x:Bind strings:Resources.StopWhenEndOfPlaylist}"
                                     Visibility="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=OneWay}">
                 <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.EndWithPlaylist, Mode=TwoWay}"/>
-            </community:SettingsCard>
-            <community:SettingsCard Description="{x:Bind strings:Resources.NoP2PDescription}" Header="{x:Bind strings:Resources.NoP2P}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.PlayWithoutP2P, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>

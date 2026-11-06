@@ -69,8 +69,8 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
             {
                 if (
                     MessageScrollView.ExtentHeight
-                        - MessageScrollView.ViewportHeight
-                        - MessageScrollView.VerticalOffset
+                    - MessageScrollView.ViewportHeight
+                    - MessageScrollView.VerticalOffset
                     <= 240
                 )
                 {

@@ -79,8 +79,8 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
             {
                 if (
                     CommentScrollView.ExtentHeight
-                        - CommentScrollView.ViewportHeight
-                        - CommentScrollView.VerticalOffset
+                    - CommentScrollView.ViewportHeight
+                    - CommentScrollView.VerticalOffset
                     <= 240
                 )
                 {

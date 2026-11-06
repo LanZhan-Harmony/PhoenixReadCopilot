@@ -193,7 +193,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     {
         var finalSpeed = ViewModel.DanmakuSpeed * 5 * ViewModel.ExtraSpeed;
         _danmakuRenderer?.UpdateConfiguration(
-            new DanmakuConfiguration { RollingSpeedBase = (float)finalSpeed }
+            new DanmakuConfiguration
+            {
+                RollingSpeedBase = (float)finalSpeed
+            }
         );
     }
 

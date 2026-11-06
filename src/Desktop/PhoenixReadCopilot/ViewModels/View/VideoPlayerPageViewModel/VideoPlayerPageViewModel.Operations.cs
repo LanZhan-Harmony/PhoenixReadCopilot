@@ -1,13 +1,11 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Forms;
-using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
-using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
@@ -53,7 +51,11 @@ public sealed partial class VideoPlayerPageViewModel
             var state = !IsLiked;
             if (!string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(targetVideoId))
             {
-                var res = await _apiClient.SetDramaEpisodeLikeAsync(_seriesId, targetVideoId, state);
+                var res = await _apiClient.SetDramaEpisodeLikeAsync(
+                    _seriesId,
+                    targetVideoId,
+                    state
+                );
                 if (res.Succeeded)
                 {
                     IsLiked = state;
@@ -61,7 +63,9 @@ public sealed partial class VideoPlayerPageViewModel
                 }
                 else
                 {
-                    _appViewModel.ShowTipCommand.Execute((res.Message ?? "点赞操作失败", InfoType.Warning));
+                    _appViewModel.ShowTipCommand.Execute(
+                        (res.Message ?? "点赞操作失败", InfoType.Warning)
+                    );
                 }
             }
         }
@@ -88,7 +92,9 @@ public sealed partial class VideoPlayerPageViewModel
                 }
                 else
                 {
-                    _appViewModel.ShowTipCommand.Execute((res.Message ?? "收藏操作失败", InfoType.Warning));
+                    _appViewModel.ShowTipCommand.Execute(
+                        (res.Message ?? "收藏操作失败", InfoType.Warning)
+                    );
                 }
             }
         }
@@ -198,10 +204,16 @@ public sealed partial class VideoPlayerPageViewModel
         var firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
         if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
         {
-            var avatarImage = !string.IsNullOrEmpty(user.AvatarUrl) && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out var uri)
-                ? new BiliImage(uri)
-                : default;
-            var profile = new Richasy.BiliKernel.Models.User.UserProfile(user.Id, user.Name, avatarImage);
+            var avatarImage =
+                !string.IsNullOrEmpty(user.AvatarUrl)
+                && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out var uri)
+                    ? new BiliImage(uri)
+                    : default;
+            var profile = new Richasy.BiliKernel.Models.User.UserProfile(
+                user.Id,
+                user.Name,
+                avatarImage
+            );
             _navigationViewModel.NavigateToOver(typeof(UserSpacePage), profile);
         }
     }
@@ -375,10 +387,7 @@ public sealed partial class VideoPlayerPageViewModel
                 }
                 else if (next is Drama rec)
                 {
-                    tip = string.Format(
-                        Resources.NextVideoNotificationTemplate,
-                        rec.Title
-                    );
+                    tip = string.Format(Resources.NextVideoNotificationTemplate, rec.Title);
                 }
 
                 var notification = new PlayerNotification(

@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Models.Settings;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Toolkits;
 
@@ -55,9 +54,6 @@ public sealed partial class SettingsPageViewModel
 
     [ObservableProperty]
     public partial List<PreferQualityType> PreferQualityCollection { get; set; }
-
-    [ObservableProperty]
-    public partial List<PreferDecodeType> PreferDecodeCollection { get; set; }
 
     [ObservableProperty]
     public partial List<PlayerType> PlayerTypeCollection { get; set; }

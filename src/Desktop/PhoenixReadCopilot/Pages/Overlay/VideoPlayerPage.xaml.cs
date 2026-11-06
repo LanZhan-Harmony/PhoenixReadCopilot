@@ -2,10 +2,10 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Controls.Core;
 using PhoenixReadCopilot.Controls.Danmaku;
 using PhoenixReadCopilot.Controls.Player;
+using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.ViewModels.View;
 using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.Base;
@@ -93,15 +93,33 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
         ViewModel.CleanCommand.Execute(default);
 
     private DanmakuControlBase CreateDanmakuPanel() =>
-        new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };
+        new VideoDanmakuPanel()
+        {
+            ViewModel = ViewModel.Danmaku
+        };
 
     private FrameworkElement CreateTransportControl()
     {
-        var leftPanel = new VideoPlayerTransportLeftPanel() { ViewModel = ViewModel };
-        var danmakuBox = new DanmakuBox() { ViewModel = ViewModel.Danmaku };
-        var rightPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-        var formatButton = new VideoPlayerFormatButton() { ViewModel = ViewModel };
-        var subtitleButton = new SubtitleButton() { ViewModel = ViewModel.Subtitle };
+        var leftPanel = new VideoPlayerTransportLeftPanel()
+        {
+            ViewModel = ViewModel
+        };
+        var danmakuBox = new DanmakuBox()
+        {
+            ViewModel = ViewModel.Danmaku
+        };
+        var rightPanel = new StackPanel()
+        {
+            Orientation = Orientation.Horizontal
+        };
+        var formatButton = new VideoPlayerFormatButton()
+        {
+            ViewModel = ViewModel
+        };
+        var subtitleButton = new SubtitleButton()
+        {
+            ViewModel = ViewModel.Subtitle
+        };
         rightPanel.Children.Add(formatButton);
         rightPanel.Children.Add(subtitleButton);
         danmakuBox.InputGotFocus += OnDanmakuInputGotFocus;
