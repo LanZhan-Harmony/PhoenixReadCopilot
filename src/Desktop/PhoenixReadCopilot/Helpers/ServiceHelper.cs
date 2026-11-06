@@ -90,7 +90,6 @@ internal class ServiceHelper
             .AddSingleton<IMomentDiscoveryService, MomentDiscoveryService>()
             .AddSingleton<IMomentOperationService, MomentOperationService>()
             .AddSingleton<IPlayerService, PlayerService>()
-            .AddSingleton<IDanmakuService, DanmakuService>()
             .AddSingleton<ISubtitleService, SubtitleService>()
             .AddSingleton<IArticleDiscoveryService, ArticleDiscoveryService>()
             .AddSingleton<IArticleOperationService, ArticleOperationService>()

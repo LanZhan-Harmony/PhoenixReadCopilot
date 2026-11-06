@@ -395,32 +395,7 @@ public sealed partial class PgcPlayerPageViewModel
                 return;
             }
 
-            var withoutTip = _settings.PlayNextWithoutTip;
-            if (withoutTip)
-            {
-                PlayNextEpisode();
-            }
-            else
-            {
-                string tip = default;
-                if (next is EpisodeInformation episode)
-                {
-                    tip = string.Format(
-                        Resources.NextEpisodeNotificationTemplate,
-                        episode.Identifier.Title
-                    );
-                }
-                else if (next is VideoInformation video)
-                {
-                    tip = string.Format(
-                        Resources.NextVideoNotificationTemplate,
-                        video.Identifier.Title
-                    );
-                }
-
-                var notification = new PlayerNotification(PlayNextEpisode, tip, 5);
-                Player.ShowNotification(notification);
-            }
+            PlayNextEpisode();
         });
     }
 

@@ -1,11 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Models.Settings;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Danmaku;
 using Windows.UI;
 using WinUIKernel.Share.Toolkits;
+using DanmakuCoreItem = Danmaku.Core.Models.DanmakuItem;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -14,15 +14,17 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// </summary>
 public sealed partial class DanmakuViewModel
 {
-    private readonly IDanmakuService _danmakuService;
+    private readonly PhoenixReadApiClient _apiClient;
+    private readonly AppViewModel _appViewModel;
     private readonly ILogger<DanmakuViewModel> _logger;
     private readonly IFontToolkit _fontToolkit;
     private readonly AppSettings _settings;
 
-    private string _aid;
-    private string _cid;
+    private string _seriesId = string.Empty;
+    private string _videoId = string.Empty;
     private int _position;
     private int _duration;
+    private CancellationTokenSource? _loadCancellationTokenSource;
 
     [ObservableProperty]
     public partial bool IsShowDanmaku { get; set; }
@@ -81,45 +83,45 @@ public sealed partial class DanmakuViewModel
     /// <summary>
     /// 当弹幕列表添加时触发的事件.
     /// </summary>
-    public event EventHandler<IReadOnlyList<DanmakuInformation>> ListAdded;
+    public event EventHandler<IReadOnlyList<DanmakuCoreItem>>? ListAdded;
 
     /// <summary>
     /// 速度加成改变时触发的事件.
     /// </summary>
-    public event EventHandler ExtraSpeedChanged;
+    public event EventHandler? ExtraSpeedChanged;
 
     /// <summary>
     /// 当请求清除弹幕时触发的事件.
     /// </summary>
-    public event EventHandler RequestClearDanmaku;
+    public event EventHandler? RequestClearDanmaku;
 
     /// <summary>
     /// 当请求重绘弹幕时触发的事件.
     /// </summary>
-    public event EventHandler RequestRedrawDanmaku;
+    public event EventHandler? RequestRedrawDanmaku;
 
     /// <summary>
     /// 当进度更新时触发的事件.
     /// </summary>
-    public event EventHandler<int> ProgressChanged;
+    public event EventHandler<int>? ProgressChanged;
 
     /// <summary>
     /// 暂停弹幕.
     /// </summary>
-    public event EventHandler PauseDanmaku;
+    public event EventHandler? PauseDanmaku;
 
     /// <summary>
     /// 恢复弹幕.
     /// </summary>
-    public event EventHandler ResumeDanmaku;
+    public event EventHandler? ResumeDanmaku;
 
     /// <summary>
     /// 请求添加单条弹幕.
     /// </summary>
-    public event EventHandler<string> RequestAddSingleDanmaku;
+    public event EventHandler<string>? RequestAddSingleDanmaku;
 
     /// <summary>
     /// 请求重置样式.
     /// </summary>
-    public event EventHandler RequestResetStyle;
+    public event EventHandler? RequestResetStyle;
 }

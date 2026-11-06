@@ -1,12 +1,14 @@
 using CommunityToolkit.Mvvm.Input;
+using Danmaku.Core.Enums;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Toolkits;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Danmaku;
+using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
+using DanmakuCoreItem = Danmaku.Core.Models.DanmakuItem;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -19,13 +21,15 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="DanmakuViewModel"/> class.
     /// </summary>
     public DanmakuViewModel(
-        IDanmakuService service,
+        PhoenixReadApiClient apiClient,
+        AppViewModel appViewModel,
         ILogger<DanmakuViewModel> logger,
         ISettingsService settingsService,
         IFontToolkit fontToolkit
     )
     {
-        _danmakuService = service;
+        _apiClient = apiClient;
+        _appViewModel = appViewModel;
         _logger = logger;
         _settings = settingsService.Settings;
         _fontToolkit = fontToolkit;
@@ -48,11 +52,11 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// <summary>
     /// 重置数据.
     /// </summary>
-    public void ResetData(string aid, string cid)
+    public void ResetData(string seriesId, string videoId)
     {
         ClearAll();
-        _aid = aid;
-        _cid = cid;
+        _seriesId = seriesId;
+        _videoId = videoId;
         ResetData();
     }
 
@@ -105,9 +109,12 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// </summary>
     public void ClearAll()
     {
+        _loadCancellationTokenSource?.Cancel();
+        _loadCancellationTokenSource?.Dispose();
+        _loadCancellationTokenSource = null;
         _duration = 0;
-        _aid = string.Empty;
-        _cid = string.Empty;
+        _seriesId = string.Empty;
+        _videoId = string.Empty;
         ClearDanmaku();
     }
 
@@ -125,73 +132,102 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// 是否为空.
     /// </summary>
     /// <returns>结果.</returns>
-    public bool IsEmpty() => string.IsNullOrEmpty(_aid) || string.IsNullOrEmpty(_cid);
+    public bool IsEmpty() => string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(_videoId);
 
     [RelayCommand]
     private async Task LoadDanmakusAsync(int duration)
     {
         if (
             IsLoading
-            || string.IsNullOrEmpty(_aid)
-            || string.IsNullOrEmpty(_cid)
+            || string.IsNullOrEmpty(_seriesId)
+            || string.IsNullOrEmpty(_videoId)
             || _duration == duration
         )
         {
             return;
         }
 
+        _loadCancellationTokenSource?.Cancel();
+        _loadCancellationTokenSource?.Dispose();
+        _loadCancellationTokenSource = new CancellationTokenSource();
+        var token = _loadCancellationTokenSource.Token;
+
         IsLoading = true;
         _duration = duration;
-        var count = Convert.ToInt32(Math.Ceiling(_duration / 360d));
-        if (count == 0)
-        {
-            count = 1;
-        }
 
-        var totalDanmakus = new List<DanmakuInformation>();
-        for (var i = 0; i < count; i++)
+        try
         {
-            try
+            var durationMs = duration > 0 ? duration * 1000L : 3600000L;
+            var page = await _apiClient.GetDanmakuAsync(
+                _seriesId,
+                _videoId,
+                0,
+                durationMs,
+                token
+            );
+
+            if (page.Items is { Count: > 0 })
             {
-                var danmakus = await _danmakuService.GetSegmentDanmakusAsync(_aid, _cid, i + 1);
-                totalDanmakus.AddRange(danmakus);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"加载 {_aid} | {_cid} 的弹幕失败，索引为 {i}");
-                break;
+                var danmakus = page.Items
+                    .Select(item => new DanmakuCoreItem
+                    {
+                        Id = item.Id,
+                        Text = item.Text,
+                        StartMs = (uint)Math.Max(0, item.TimeMs),
+                        Mode = DanmakuMode.Rolling,
+                        TextColor = Microsoft.UI.Colors.White,
+                        BaseFontSize = 24,
+                        HasOutline = true,
+                    })
+                    .ToList();
+
+                CanShowDanmaku = true;
+                ListAdded?.Invoke(this, danmakus);
             }
         }
-
-        if (totalDanmakus.Count > 0)
+        catch (Exception ex)
         {
-            CanShowDanmaku = true;
-            ListAdded?.Invoke(this, totalDanmakus);
+            if (ex is not TaskCanceledException)
+            {
+                _logger.LogError(ex, $"加载短剧 {_seriesId} | {_videoId} 的弹幕失败.");
+            }
         }
-
-        IsLoading = false;
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     [RelayCommand]
     private async Task SendDanmakuAsync(string text)
     {
+        if (string.IsNullOrWhiteSpace(text) || string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(_videoId))
+        {
+            return;
+        }
+
         try
         {
-            var danmakuColor = (Color.R * 256 * 256) + (Color.G * 256) + Color.B;
-            await _danmakuService.SendVideoDanmakuAsync(
-                text,
-                _aid,
-                _cid,
-                _position,
-                danmakuColor.ToString(),
-                IsStandardSize,
-                Location
+            var result = await _apiClient.SendDanmakuAsync(
+                _seriesId,
+                _videoId,
+                text.Trim()
             );
-            RequestAddSingleDanmaku?.Invoke(this, text);
+
+            if (result.Succeeded)
+            {
+                RequestAddSingleDanmaku?.Invoke(this, text.Trim());
+                _appViewModel.ShowTipCommand.Execute(("弹幕发送成功", InfoType.Success));
+            }
+            else
+            {
+                _appViewModel.ShowTipCommand.Execute((result.Message ?? "弹幕发送失败", InfoType.Warning));
+            }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "弹幕发送失败.");
+            _appViewModel.ShowTipCommand.Execute(("弹幕发送出现异常", InfoType.Error));
         }
     }
 

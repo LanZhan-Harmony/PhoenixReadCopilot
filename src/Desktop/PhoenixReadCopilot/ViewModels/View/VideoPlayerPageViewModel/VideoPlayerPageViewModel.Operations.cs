@@ -7,9 +7,6 @@ using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using WinUIKernel.Share.Base;
@@ -205,36 +202,38 @@ public sealed partial class VideoPlayerPageViewModel
         var firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
         if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
         {
-            var avatarImage =
-                !string.IsNullOrEmpty(user.AvatarUrl)
-                && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out var uri)
-                    ? new BiliImage(uri)
-                    : default;
-            var profile = new Richasy.BiliKernel.Models.User.UserProfile(
-                user.Id,
-                user.Name,
-                avatarImage
-            );
-            _navigationViewModel.NavigateToOver(typeof(UserSpacePage), profile);
+            _navigationViewModel.NavigateToOver(typeof(UserSpacePage), user.Id);
         }
     }
 
     [RelayCommand]
+
     private void OpenInNewWindow()
+
     {
+
         if (Player.Position > 0)
+
         {
+
             ReportProgressCommand.Execute(Player.Position);
+
         }
+
+
 
         if (!Player.IsPaused)
+
         {
+
             Player.TogglePlayPauseCommand.Execute(default);
+
         }
 
-        var coverImage = Cover != null ? new BiliImage(Cover) : default;
-        var info = new VideoInformation(new MediaIdentifier(_seriesId, Title, coverImage), default);
-        new PlayerWindow().OpenVideo(new VideoSnapshot(info, IsPrivatePlay));
+
+
+        new PlayerWindow().OpenDrama(_seriesId);
+
     }
 
     [RelayCommand]
@@ -287,7 +286,11 @@ public sealed partial class VideoPlayerPageViewModel
         Subtitle.InitializeCommand.Execute(default);
 
         // 切换分集评论
-        _comments.Initialize(_seriesId, episode.VideoId, CommentSortType.Hot);
+        _comments.Initialize(_seriesId, episode.VideoId, CommentSortOrder.Hot);
+        if (SelectedSection == _comments)
+        {
+            _comments.TryFirstLoadCommand.Execute(default);
+        }
 
         InitializeNextVideo();
         var partSection =
@@ -353,10 +356,33 @@ public sealed partial class VideoPlayerPageViewModel
                 return;
             }
 
-            var autoNext = _settings.AutoPlayNext;
-            if ((!autoNext || !HasNextVideo) && !_isFormatChanging)
+            var next = FindNextVideo();
+            if (next is null)
             {
-                Player.BackToDefaultModeCommand.Execute(default);
+                if (!_isFormatChanging)
+                {
+                    Player.BackToDefaultModeCommand.Execute(default);
+                }
+                return;
+            }
+
+            // 判断下一项类型与对应自动播放设置
+            bool shouldAutoPlay = false;
+            if (next is Episode)
+            {
+                shouldAutoPlay = _settings.AutoPlayNext;
+            }
+            else if (next is Drama)
+            {
+                shouldAutoPlay = _settings.AutoPlayNextRecommendVideo;
+            }
+
+            if (!shouldAutoPlay)
+            {
+                if (!_isFormatChanging)
+                {
+                    Player.BackToDefaultModeCommand.Execute(default);
+                }
                 return;
             }
 
@@ -365,39 +391,8 @@ public sealed partial class VideoPlayerPageViewModel
                 return;
             }
 
-            var next = FindNextVideo();
-            if (next is null)
-            {
-                return;
-            }
-
-            var withoutTip = _settings.PlayNextWithoutTip;
-            if (withoutTip)
-            {
-                PlayNextVideoCommand.Execute(default);
-            }
-            else
-            {
-                string tip = default!;
-                if (next is Episode episode)
-                {
-                    tip = string.Format(
-                        Resources.NextVideoNotificationTemplate,
-                        $"第 {episode.Number} 集"
-                    );
-                }
-                else if (next is Drama rec)
-                {
-                    tip = string.Format(Resources.NextVideoNotificationTemplate, rec.Title);
-                }
-
-                var notification = new PlayerNotification(
-                    () => PlayNextVideoCommand.Execute(default),
-                    tip,
-                    5
-                );
-                Player.ShowNotification(notification);
-            }
+            // 直接播放下一集或下一个短剧，无需触发倒计时浮层弹窗
+            PlayNextVideoCommand.Execute(default);
         });
     }
 }

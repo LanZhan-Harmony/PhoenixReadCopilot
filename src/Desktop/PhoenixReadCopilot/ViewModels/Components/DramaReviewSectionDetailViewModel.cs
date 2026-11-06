@@ -7,7 +7,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -138,8 +137,8 @@ public sealed partial class DramaReviewSectionDetailViewModel
         _logger = logger;
 
         Reviews = [];
-        Sorts = [CommentSortType.Hot, CommentSortType.Time];
-        SortType = CommentSortType.Hot;
+        Sorts = [CommentSortOrder.Hot, CommentSortOrder.Latest];
+        SortType = CommentSortOrder.Hot;
         Rating = 5.0; // 默认 5 星满分
     }
 
@@ -171,10 +170,25 @@ public sealed partial class DramaReviewSectionDetailViewModel
     public partial long TotalCount { get; set; }
 
     [ObservableProperty]
-    public partial List<CommentSortType> Sorts { get; set; }
+    public partial List<CommentSortOrder> Sorts { get; set; }
 
     [ObservableProperty]
-    public partial CommentSortType SortType { get; set; }
+    public partial CommentSortOrder SortType { get; set; }
+
+    /// <summary>
+    /// 是否有更多剧评可加载.
+    /// </summary>
+    public bool HasMore => _hasMore;
+
+    /// <summary>
+    /// 列表已更新事件.
+    /// </summary>
+    public event EventHandler? ListUpdated;
+
+    /// <summary>
+    /// 初始化事件.
+    /// </summary>
+    public event EventHandler? Initialized;
 
     public ObservableCollection<DramaReviewItemViewModel> Reviews { get; }
 
@@ -192,6 +206,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         DramaScore = score;
         UpdateLoginState();
         Clear();
+        Initialized?.Invoke(this, EventArgs.Empty);
     }
 
     public void UpdateLoginState()
@@ -220,7 +235,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
     }
 
     [RelayCommand]
-    public async Task ChangeSortTypeAsync(CommentSortType type)
+    public async Task ChangeSortTypeAsync(CommentSortOrder type)
     {
         SortType = type;
         await RefreshAsync();
@@ -296,13 +311,11 @@ public sealed partial class DramaReviewSectionDetailViewModel
         UpdateLoginState();
         try
         {
-            var sortOrder =
-                SortType == CommentSortType.Time ? CommentSortOrder.Latest : CommentSortOrder.Hot;
             var page = await _apiClient.GetDramaReviewsAsync(
                 SeriesId,
                 count: 20,
                 cursor: _cursor,
-                sort: sortOrder
+                sort: SortType
             );
             _cursor = page.Cursor;
             _hasMore = page.HasMore;
@@ -325,6 +338,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
             }
 
             IsEmpty = Reviews.Count == 0;
+            ListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {

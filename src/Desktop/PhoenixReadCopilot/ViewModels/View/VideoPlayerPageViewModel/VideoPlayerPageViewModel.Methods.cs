@@ -140,6 +140,7 @@ public sealed partial class VideoPlayerPageViewModel
 
         Sections = sections;
         SelectSection(Sections.First());
+        InitializeNextVideo();
         SectionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
@@ -238,7 +239,8 @@ public sealed partial class VideoPlayerPageViewModel
                 is VideoPlayerRecommendSectionDetailViewModel recommendSection
         )
         {
-            return recommendSection.Items.FirstOrDefault()?.Data;
+            var firstItem = recommendSection.Items.FirstOrDefault();
+            return firstItem?.Drama ?? (object?)firstItem?.Data;
         }
 
         return default;
@@ -246,11 +248,6 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void InitializeNextVideo()
     {
-        if (Sections is null || Sections.Count == 0)
-        {
-            return;
-        }
-
         var next = FindNextVideo();
         HasNextVideo = next is not null;
         if (next is Episode episode)
