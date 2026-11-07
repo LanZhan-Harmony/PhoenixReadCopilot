@@ -22,7 +22,8 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
 {
     private static readonly IResourceToolkit _resourceToolkit =
         Ioc.Default.GetRequiredService<IResourceToolkit>();
-    private CardControl _rootCard;
+    private CardControl? _rootCard;
+    private VideoCardPresenter? _presenter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoCardControl"/> class.
@@ -32,10 +33,18 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
+        base.OnApplyTemplate();
         _rootCard = GetTemplateChild("RootCard") as CardControl;
-        if (ViewModel is not null)
+        _presenter = (_rootCard?.Content as VideoCardPresenter) ?? (GetTemplateChild("Presenter") as VideoCardPresenter);
+
+        if (_rootCard != null && ViewModel != null)
         {
-            _rootCard?.Command = ViewModel.PlayCommand;
+            _rootCard.Command = ViewModel.PlayCommand;
+        }
+
+        if (_presenter != null && ViewModel != null)
+        {
+            _presenter.ViewModel = ViewModel;
         }
     }
 
@@ -51,7 +60,21 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         VideoItemViewModel? newValue
     )
     {
-        _rootCard?.Command = newValue?.PlayCommand;
+        base.OnViewModelChanged(oldValue, newValue);
+        if (_rootCard != null)
+        {
+            _rootCard.Command = newValue?.PlayCommand;
+        }
+
+        if (_presenter == null && _rootCard != null)
+        {
+            _presenter = (_rootCard.Content as VideoCardPresenter) ?? (GetTemplateChild("Presenter") as VideoCardPresenter);
+        }
+
+        if (_presenter != null)
+        {
+            _presenter.ViewModel = newValue;
+        }
     }
 
     private static MenuFlyoutItem CreateOpenInNewWindowItem()

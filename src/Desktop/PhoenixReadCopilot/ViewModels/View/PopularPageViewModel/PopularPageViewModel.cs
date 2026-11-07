@@ -3,19 +3,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Media;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 流行视频页面视图模型.
+/// 流行与榜单页面视图模型.
 /// </summary>
 public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 {
@@ -23,7 +21,6 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="PopularPageViewModel"/> class.
     /// </summary>
     public PopularPageViewModel(
-        IVideoDiscoveryService discoveryService,
         PhoenixReadApiClient apiClient,
         ILogger<PopularPageViewModel> logger,
         NavigationViewModel navigationViewModel,
@@ -32,7 +29,6 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _service = discoveryService;
         _apiClient = apiClient;
         _logger = logger;
         _navigationViewModel = navigationViewModel;
@@ -50,6 +46,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
+        // 1. 推荐流
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.Balloon,
@@ -57,97 +54,160 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
                 PopularSectionType.Recommend
             )
         );
-        Sections.Add(
-            new PopularSectionItemViewModel(
-                FluentIcons.Common.Symbol.Fire,
-                Resources.Hot,
-                PopularSectionType.Hot
-            )
-        );
+
+        // 2. 推荐榜
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.RibbonStar,
-                Resources.Rank,
-                PopularSectionType.Rank
+                Resources.BoardRecommend,
+                PopularSectionType.LeaderboardRecommend,
+                leaderboardType: ShortDramaLeaderboardType.Recommend
             )
         );
-        await LoadPartitionsAsync();
-        await Task.Delay(200);
-        var lastSelectedSectionId = string.IsNullOrEmpty(_settings.PopularPageLastSelectedSectionId)
-            ? PopularSectionType.Recommend.ToString()
-            : _settings.PopularPageLastSelectedSectionId;
-        if (int.TryParse(lastSelectedSectionId, out var partitionId))
+
+        // 3. 热播榜
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.Fire,
+                Resources.BoardHotPlay,
+                PopularSectionType.LeaderboardHotPlay,
+                leaderboardType: ShortDramaLeaderboardType.HotPlay
+            )
+        );
+
+        // 4. 新剧榜
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.Sparkle,
+                Resources.BoardNewRelease,
+                PopularSectionType.LeaderboardNewRelease,
+                leaderboardType: ShortDramaLeaderboardType.NewRelease
+            )
+        );
+
+        // 5. 热搜榜
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.Search,
+                Resources.BoardHotSearch,
+                PopularSectionType.LeaderboardHotSearch,
+                leaderboardType: ShortDramaLeaderboardType.HotSearch
+            )
+        );
+
+        // 6. 演员排行榜
+        Sections.Add(
+            new PopularSectionItemViewModel(
+                FluentIcons.Common.Symbol.PeopleStar,
+                Resources.LeaderboardActor,
+                PopularSectionType.LeaderboardActor,
+                isActorLeaderboard: true
+            )
+        );
+
+        var lastSelectedSectionId = _settings.PopularPageLastSelectedSectionId;
+        IPopularSectionItemViewModel? targetSection = null;
+        if (!string.IsNullOrEmpty(lastSelectedSectionId) && Enum.TryParse<PopularSectionType>(lastSelectedSectionId, out var sectionType))
         {
-            var section = Sections
-                .OfType<PopularRankPartitionViewModel>()
-                .FirstOrDefault(p => p.Data.Id == partitionId.ToString());
-            if (section != null)
-            {
-                SelectSectionCommand.Execute(section);
-            }
-            else
-            {
-                SelectSectionCommand.Execute(Sections.First());
-            }
-        }
-        else if (Enum.TryParse<PopularSectionType>(lastSelectedSectionId, out var sectionType))
-        {
-            var section = Sections
-                .OfType<PopularSectionItemViewModel>()
-                .First(p => p.Type == sectionType);
-            SelectSectionCommand.Execute(section);
-        }
-        else
-        {
-            SelectSectionCommand.Execute(Sections.First());
+            targetSection = Sections.OfType<PopularSectionItemViewModel>().FirstOrDefault(p => p.Type == sectionType);
         }
 
+        SelectSectionCommand.Execute(targetSection ?? Sections.First());
         SectionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
-    private void SelectSection(IPopularSectionItemViewModel vm)
+    private async Task SelectSectionAsync(IPopularSectionItemViewModel vm)
     {
         if (vm is null || vm == SelectedSection)
         {
             return;
         }
 
-        if (Videos.Count > 0)
-        {
-            _videoCache[SelectedSection] = Videos.ToList();
-        }
+        // 取消正在进行的请求
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+        IsVideoLoading = false;
+
+        // 立即清空当前显示列表，防止界面残留或不同榜单互相串数据
+        Videos.Clear();
 
         SelectedSection = vm;
-        var sectionId = vm switch
+        if (vm is PopularSectionItemViewModel pSection)
         {
-            PopularSectionItemViewModel section => section.Type.ToString(),
-            PopularRankPartitionViewModel partition => partition.Data.Id,
-            _ => string.Empty,
-        };
-        _settings.PopularPageLastSelectedSectionId = sectionId;
+            _settings.PopularPageLastSelectedSectionId = pSection.Type.ToString();
+            IsLeaderboardSection = pSection.LeaderboardType.HasValue;
+        }
+        else
+        {
+            IsLeaderboardSection = false;
+        }
 
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
+        var cacheKey = GetCacheKey(vm, CurrentChannel);
+        if (_videoCache.TryGetValue(cacheKey, out var cacheVideos) && cacheVideos.Count > 0)
+        {
+            foreach (var video in cacheVideos)
             {
-                Videos.Clear();
-                if (_videoCache.TryGetValue(vm, out var cacheVideos))
-                {
-                    foreach (var video in cacheVideos)
-                    {
-                        Videos.Add(video);
-                    }
-
-                    VideoListUpdated?.Invoke(this, EventArgs.Empty);
-                }
-                else
-                {
-                    await LoadVideosAsync();
-                }
+                Videos.Add(video);
             }
-        );
+
+            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            ResetPagination(vm);
+            await LoadVideosAsync();
+        }
     }
+
+    [RelayCommand]
+    private async Task ChangeChannelAsync(string channelName)
+    {
+        if (!Enum.TryParse<ShortDramaLeaderboardChannel>(channelName, out var channel))
+        {
+            return;
+        }
+
+        if (CurrentChannel == channel)
+        {
+            return;
+        }
+
+        // 取消正在进行的请求
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+        IsVideoLoading = false;
+
+        // 立即清空当前列表
+        Videos.Clear();
+        CurrentChannel = channel;
+
+        if (SelectedSection != null)
+        {
+            var cacheKey = GetCacheKey(SelectedSection, CurrentChannel);
+            if (_videoCache.TryGetValue(cacheKey, out var cacheVideos) && cacheVideos.Count > 0)
+            {
+                foreach (var video in cacheVideos)
+                {
+                    Videos.Add(video);
+                }
+
+                VideoListUpdated?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                _leaderboardOffset = 0;
+                _leaderboardSessionId = null;
+                _hasMoreLeaderboard = true;
+                await LoadVideosAsync();
+            }
+        }
+    }
+
+    [RelayCommand]
+    private Task ChangeBoardAsync(string boardName) => ChangeChannelAsync(boardName);
 
     [RelayCommand]
     private async Task LoadVideosAsync()
@@ -158,66 +218,121 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
 
         IsVideoLoading = true;
-        if (SelectedSection is PopularSectionItemViewModel section)
-        {
-            if (section.Type == PopularSectionType.Recommend)
-            {
-                await LoadRecommendVideosAsync();
-            }
-            else if (section.Type == PopularSectionType.Hot)
-            {
-                await LoadHotVideosAsync();
-            }
-            else if (section.Type == PopularSectionType.Rank && Videos.Count == 0)
-            {
-                await LoadTotalRankVideosAsync();
-            }
-        }
-        else if (SelectedSection is PopularRankPartitionViewModel partition && Videos.Count == 0)
-        {
-            await LoadPartitionRankVideosAsync(partition.Data);
-        }
+        var requestId = ++_currentRequestId;
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+        var ct = _cancellationTokenSource.Token;
 
-        VideoListUpdated?.Invoke(this, EventArgs.Empty);
-        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
+        try
+        {
+            if (SelectedSection is PopularSectionItemViewModel section)
+            {
+                if (section.Type == PopularSectionType.Recommend)
+                {
+                    await LoadRecommendVideosAsync(requestId, ct);
+                }
+                else if (section.LeaderboardType.HasValue)
+                {
+                    await LoadDramaLeaderboardAsync(section.LeaderboardType.Value, CurrentChannel, requestId, ct);
+                }
+                else if (section.IsActorLeaderboard)
+                {
+                    await LoadActorLeaderboardAsync(requestId, ct);
+                }
+            }
+        }
+        finally
+        {
+            if (requestId == _currentRequestId)
+            {
+                VideoListUpdated?.Invoke(this, EventArgs.Empty);
+                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
+            }
+        }
     }
 
     [RelayCommand]
     private async Task RefreshVideoAsync()
     {
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+        IsVideoLoading = false;
+
         Videos.Clear();
-        _videoCache.Remove(SelectedSection);
-        if (SelectedSection is PopularSectionItemViewModel section)
+        if (SelectedSection != null)
         {
-            if (section.Type == PopularSectionType.Recommend)
-            {
-                _recommendOffset = 0;
-                _recommendSessionId = null;
-                _seenDramaIds.Clear();
-                _hasMoreRecommendations = true;
-                _cancellationTokenSource?.Cancel();
-            }
-            else if (section.Type == PopularSectionType.Hot)
-            {
-                _hotOffset = 0;
-            }
+            _videoCache.Remove(GetCacheKey(SelectedSection, CurrentChannel));
+            ResetPagination(SelectedSection);
         }
 
         await LoadVideosAsync();
     }
 
-    [RelayCommand]
-    private async Task PlayCuratedListAsync()
+    private void ResetPagination(IPopularSectionItemViewModel section)
     {
-        try
+        if (section is PopularSectionItemViewModel pSection)
         {
-            var videos = await _service.GetCuratedPlaylistAsync();
-            var firstSnapshot = new VideoSnapshot(videos.First());
-            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), (videos, firstSnapshot));
+            if (pSection.Type == PopularSectionType.Recommend)
+            {
+                _recommendOffset = 0;
+                _recommendSessionId = null;
+                _seenDramaIds.Clear();
+                _hasMoreRecommendations = true;
+            }
+            else if (pSection.LeaderboardType.HasValue)
+            {
+                _leaderboardOffset = 0;
+                _leaderboardSessionId = null;
+                _hasMoreLeaderboard = true;
+            }
+            else if (pSection.IsActorLeaderboard)
+            {
+                _actorOffset = 0;
+                _actorSessionId = null;
+                _hasMoreActor = true;
+            }
         }
-        catch (Exception ex)
+    }
+
+    private static string GetCacheKey(IPopularSectionItemViewModel section, ShortDramaLeaderboardChannel channel)
+    {
+        if (section is PopularSectionItemViewModel pSection)
         {
-            _logger.LogError(ex, "获取精选视频时失败");
+            if (pSection.IsActorLeaderboard)
+            {
+                return "Actor";
+            }
+
+            if (pSection.LeaderboardType.HasValue)
+            {
+                return $"Leaderboard_{pSection.LeaderboardType.Value}_{channel}";
+            }
+
+            return pSection.Type.ToString();
+        }
+
+        return section?.ToString() ?? string.Empty;
+    }
+
+    /// <summary>
+    /// 短剧排行榜受众频道列表.
+    /// </summary>
+    public static readonly IReadOnlyList<(string Title, ShortDramaLeaderboardChannel Channel)> Channels =
+    [
+        (Resources.ChannelAll, ShortDramaLeaderboardChannel.All),
+        (Resources.ChannelFemale, ShortDramaLeaderboardChannel.Female),
+        (Resources.ChannelMale, ShortDramaLeaderboardChannel.Male),
+    ];
+
+    [RelayCommand]
+    private void PlayCuratedList()
+    {
+        var first = Videos.FirstOrDefault();
+        if (first?.Drama != null)
+        {
+            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
         }
     }
 }

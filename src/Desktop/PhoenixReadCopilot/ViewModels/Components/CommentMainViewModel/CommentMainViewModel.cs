@@ -42,13 +42,18 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     /// <summary>
     /// 初始化红果短剧分集评论.
     /// </summary>
-    public void Initialize(string seriesId, string videoId, CommentSortOrder sortOrder = CommentSortOrder.Hot)
+    public void Initialize(
+        string seriesId,
+        string videoId,
+        CommentSortOrder sortOrder = CommentSortOrder.Hot
+    )
     {
         Clear();
         _seriesId = seriesId;
         _videoId = videoId;
         Id = videoId;
-        SortType = sortOrder == CommentSortOrder.Latest ? CommentSortType.Time : CommentSortType.Hot;
+        SortType =
+            sortOrder == CommentSortOrder.Latest ? CommentSortType.Time : CommentSortType.Hot;
         UpdateLoginState();
         Initialized?.Invoke(this, EventArgs.Empty);
     }
@@ -130,13 +135,26 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         UpdateLoginState();
 
         // 优先使用红果分集评论接口
-        if (_apiClient is not null && !string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(_videoId))
+        if (
+            _apiClient is not null
+            && !string.IsNullOrEmpty(_seriesId)
+            && !string.IsNullOrEmpty(_videoId)
+        )
         {
             try
             {
                 IsLoading = true;
-                var sortOrder = SortType == CommentSortType.Time ? CommentSortOrder.Latest : CommentSortOrder.Hot;
-                var page = await _apiClient.GetEpisodeCommentsAsync(_seriesId, _videoId, count: 20, cursor: _cursor, sort: sortOrder);
+                var sortOrder =
+                    SortType == CommentSortType.Time
+                        ? CommentSortOrder.Latest
+                        : CommentSortOrder.Hot;
+                var page = await _apiClient.GetEpisodeCommentsAsync(
+                    _seriesId,
+                    _videoId,
+                    count: 20,
+                    cursor: _cursor,
+                    sort: sortOrder
+                );
                 _cursor = page.Cursor;
                 _preventLoadMore = !page.HasMore;
                 TopItem = null;
@@ -148,7 +166,13 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                         continue;
                     }
 
-                    var itemVm = new CommentItemViewModel(item, _seriesId, _videoId, _apiClient, SetReplyTarget);
+                    var itemVm = new CommentItemViewModel(
+                        item,
+                        _seriesId,
+                        _videoId,
+                        _apiClient,
+                        SetReplyTarget
+                    );
                     Comments.Add(
                         new CommentDetailViewModel(
                             itemVm,
@@ -248,7 +272,11 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         content = content.Trim();
 
         // 红果分集发送/回复评论
-        if (_apiClient is not null && !string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(_videoId))
+        if (
+            _apiClient is not null
+            && !string.IsNullOrEmpty(_seriesId)
+            && !string.IsNullOrEmpty(_videoId)
+        )
         {
             if (!_apiClient.GetAuthenticationState().IsAuthenticated)
             {
@@ -266,11 +294,12 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                 }
                 else
                 {
-                    result = await _apiClient.SendCommentReplyAsync(
-                        _replyItem.Data.Id,
-                        _videoId,
-                        content,
-                        _replyItem.Data.User?.User?.Id ?? string.Empty
+                    result = await _apiClient.SendEpisodeCommentReplyAsync(
+                        commentId: _replyItem.Data.Id,
+                        seriesId: _seriesId,
+                        videoId: _videoId,
+                        text: content,
+                        replyToUserId: _replyItem.Data.User?.User?.Id ?? string.Empty
                     );
                 }
 
@@ -282,7 +311,9 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                 }
                 else
                 {
-                    _appViewModel?.ShowTipCommand.Execute((result.Message ?? "发表失败", InfoType.Error));
+                    _appViewModel?.ShowTipCommand.Execute(
+                        (result.Message ?? "发表失败", InfoType.Error)
+                    );
                 }
             }
             catch (Exception ex)

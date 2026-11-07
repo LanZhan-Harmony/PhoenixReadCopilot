@@ -15,7 +15,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="102"/>
         </Grid.RowDefinitions>
-        <local:VideoCoverImage CornerRadius="4,4,0,0" Source="{x:Bind ViewModel.Cover}"/>
+        <local:VideoCoverImage CornerRadius="4,4,0,0" Source="{x:Bind ViewModel.Cover, Mode=OneWay}"/>
 
         <Grid Grid.Row="1"
               Padding="12,8,12,12"
@@ -30,11 +30,11 @@
                        FontSize="12"
                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                        MaxLines="1"
-                       Text="{x:Bind ViewModel.Author}"
+                       Text="{x:Bind ViewModel.Author, Mode=OneWay}"
                        TextTrimming="CharacterEllipsis"/>
             <TextBlock Grid.Row="1"
                        HorizontalAlignment="Left"
-                       Text="{x:Bind ViewModel.Title}"
+                       Text="{x:Bind ViewModel.Title, Mode=OneWay}"
                        TextTrimming="CharacterEllipsis"/>
             <Grid Grid.Row="2" ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
@@ -45,10 +45,10 @@
                            VerticalAlignment="Center"
                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                            Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="{x:Bind ViewModel.Subtitle}"
+                           Text="{x:Bind ViewModel.Subtitle, Mode=OneWay}"
                            TextTrimming="CharacterEllipsis"
                            TextWrapping="NoWrap"
-                           Visibility="{x:Bind ViewModel.Subtitle, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                           Visibility="{x:Bind ViewModel.Subtitle, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <StackPanel Grid.Column="1"
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
@@ -61,7 +61,7 @@
                     <TextBlock VerticalAlignment="Center"
                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                Style="{StaticResource CaptionTextBlockStyle}"
-                               Text="{x:Bind ViewModel.PlayCount, Converter={StaticResource CountConverter}}"
+                               Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
                                TextLineBounds="Tight"/>
                 </StackPanel>
             </Grid>

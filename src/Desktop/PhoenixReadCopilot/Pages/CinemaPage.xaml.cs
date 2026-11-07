@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 影院页面.
 /// </summary>
-public sealed partial class CinemaPage : CinemaPageBase
+public partial class CinemaPage : CinemaPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CinemaPage"/> class.

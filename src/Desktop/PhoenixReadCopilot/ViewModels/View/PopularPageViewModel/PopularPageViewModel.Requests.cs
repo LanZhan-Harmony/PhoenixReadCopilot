@@ -2,17 +2,15 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 流行视频页面视图模型.
+/// 流行与榜单页面视图模型 (数据请求分部).
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
-    private async Task LoadRecommendVideosAsync()
+    private async Task LoadRecommendVideosAsync(long requestId, CancellationToken ct)
     {
         if (!_hasMoreRecommendations && _recommendOffset > 0)
         {
@@ -21,11 +19,6 @@ public sealed partial class PopularPageViewModel
 
         try
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            var ct = _cancellationTokenSource.Token;
-
             var page = await _apiClient.GetRecommendationsAsync(
                 RecommendationGenre.ShortDrama,
                 offset: _recommendOffset,
@@ -33,6 +26,11 @@ public sealed partial class PopularPageViewModel
                 seen: _seenDramaIds,
                 cancellationToken: ct
             );
+
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            {
+                return;
+            }
 
             _recommendOffset = page.NextOffset;
             _recommendSessionId = page.SessionId;
@@ -42,12 +40,28 @@ public sealed partial class PopularPageViewModel
             {
                 _dispatcherQueue.TryEnqueue(() =>
                 {
+                    if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
                     foreach (var item in page.Items)
                     {
-                        if (!string.IsNullOrWhiteSpace(item.Id) && _seenDramaIds.Add(item.Id))
+                        if (string.IsNullOrWhiteSpace(item.Id))
+                        {
+                            continue;
+                        }
+
+                        // 严格自动去重：不仅在当前推荐会话中去重，还要确保当前展示列表中绝不包含重复剧集
+                        if (_seenDramaIds.Add(item.Id) && !Videos.Any(v => v.Drama?.Id == item.Id))
                         {
                             Videos.Add(new VideoItemViewModel(item, VideoCardStyle.Recommend));
                         }
+                    }
+
+                    if (SelectedSection != null)
+                    {
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = Videos.ToList();
                     }
                 });
             }
@@ -62,78 +76,142 @@ public sealed partial class PopularPageViewModel
         }
     }
 
-    private async Task LoadHotVideosAsync()
+    private async Task LoadDramaLeaderboardAsync(
+        ShortDramaLeaderboardType type,
+        ShortDramaLeaderboardChannel channel,
+        long requestId,
+        CancellationToken ct
+    )
     {
-        try
+        if (!_hasMoreLeaderboard && _leaderboardOffset > 0)
         {
-            var (videos, nextOffset) = await _service.GetHotVideoListAsync(_hotOffset);
-            _hotOffset = nextOffset;
-            TryAddVideos(videos, VideoCardStyle.Hot);
+            return;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "尝试加载热门视频时出错.");
-        }
-    }
-
-    private async Task LoadTotalRankVideosAsync()
-    {
-        try
-        {
-            var videos = await _service.GetGlobalRankingListAsync();
-            TryAddVideos(videos, VideoCardStyle.Rank);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "尝试加载全站排行榜视频时出错.");
-        }
-    }
-
-    private async Task LoadPartitionRankVideosAsync(Partition partition)
-    {
-        try
-        {
-            var videos = await _service.GetPartitionRankingListAsync(partition);
-            TryAddVideos(videos, VideoCardStyle.Rank);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"尝试加载 {partition.Name} 分区排行榜视频时出错.");
-        }
-    }
-
-    private async Task LoadPartitionsAsync()
-    {
-        IsPartitionLoading = true;
 
         try
         {
-            var partitions = await _service.GetVideoPartitionsAsync();
-            if (partitions != null)
+            var page = await _apiClient.GetShortDramaLeaderboardAsync(
+                type: type,
+                channel: channel,
+                offset: _leaderboardOffset,
+                sessionId: _leaderboardSessionId,
+                cancellationToken: ct
+            );
+
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
             {
-                // 去除资讯分区，因为资讯分区没有排行榜.
-                foreach (var item in partitions.Where(p => p.Id != "202"))
+                return;
+            }
+
+            _leaderboardOffset = page.NextOffset;
+            _leaderboardSessionId = page.SessionId;
+            _hasMoreLeaderboard = page.HasMore;
+
+            BoardTitle = page.BoardTitle;
+            if (page.Items is { Count: > 0 })
+            {
+                _dispatcherQueue.TryEnqueue(() =>
                 {
-                    Sections.Add(new PopularRankPartitionViewModel(item));
-                }
+                    if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    foreach (var item in page.Items)
+                    {
+                        if (string.IsNullOrWhiteSpace(item.Id) || Videos.Any(v => v.Drama?.Id == item.Id))
+                        {
+                            continue;
+                        }
+
+                        var vm = new VideoItemViewModel(item, VideoCardStyle.Rank)
+                        {
+                            Rank = Videos.Count + 1,
+                        };
+                        Videos.Add(vm);
+                    }
+
+                    if (SelectedSection != null)
+                    {
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = Videos.ToList();
+                    }
+                });
             }
+        }
+        catch (OperationCanceledException)
+        {
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载视频分区列表时出错.");
+            _logger.LogError(
+                ex,
+                "尝试加载红果短剧排行榜时出错. Type: {Type}, Channel: {Channel}",
+                type,
+                channel
+            );
         }
-
-        IsPartitionLoading = false;
     }
 
-    private void TryAddVideos(IReadOnlyList<VideoInformation> videos, VideoCardStyle style)
+    private async Task LoadActorLeaderboardAsync(long requestId, CancellationToken ct)
     {
-        if (videos is not null)
+        if (!_hasMoreActor && _actorOffset > 0)
         {
-            foreach (var item in videos)
+            return;
+        }
+
+        try
+        {
+            var page = await _apiClient.GetActorLeaderboardAsync(
+                offset: _actorOffset,
+                cancellationToken: ct
+            );
+
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
             {
-                Videos.Add(new VideoItemViewModel(item, style));
+                return;
             }
+
+            _actorOffset = page.NextOffset;
+            _actorSessionId = page.SessionId;
+            _hasMoreActor = page.HasMore;
+
+            if (page.Items is { Count: > 0 })
+            {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    foreach (var item in page.Items)
+                    {
+                        var actorKey = !string.IsNullOrEmpty(item.ActorId) ? item.ActorId : item.UserId;
+                        if (string.IsNullOrWhiteSpace(actorKey) || Videos.Any(v => v.ActorId == actorKey))
+                        {
+                            continue;
+                        }
+
+                        var vm = new VideoItemViewModel(item)
+                        {
+                            Rank = item.Position > 0 ? item.Position : Videos.Count + 1,
+                        };
+                        Videos.Add(vm);
+                    }
+
+                    if (SelectedSection != null)
+                    {
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = Videos.ToList();
+                    }
+                });
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "尝试加载红果演员排行榜时出错.");
         }
     }
 }

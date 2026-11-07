@@ -25,13 +25,20 @@
 
     <Grid Padding="16,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <ContentControl VerticalAlignment="Center"
                         Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
                         ContentTemplateSelector="{StaticResource SectionSelector}"/>
-        <Button Grid.Column="1"
+        <SelectorBar x:Name="BoardSelector"
+                     Grid.Column="1"
+                     Margin="16,0"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Visibility="{x:Bind ViewModel.IsLeaderboardSection, Mode=OneWay}"/>
+        <Button Grid.Column="2"
                 VerticalAlignment="Center"
                 AutomationProperties.Name="{x:Bind strings:Resources.Refresh}"
                 Command="{x:Bind ViewModel.RefreshVideoCommand}">

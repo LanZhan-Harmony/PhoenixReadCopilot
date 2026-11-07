@@ -16,19 +16,31 @@ internal sealed partial class VideoCardTemplateSelector : DataTemplateSelector
 
     public DataTemplate RankTemplate { get; set; }
 
+    public DataTemplate? ActorTemplate { get; set; }
+
+    protected override DataTemplate SelectTemplateCore(object item)
+    {
+        return SelectTemplateCore(item, null!);
+    }
+
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
         if (item is VideoItemViewModel vm)
         {
+            if (vm.Actor != null && ActorTemplate != null)
+            {
+                return ActorTemplate;
+            }
+
             return vm.Style switch
             {
                 VideoCardStyle.Recommend => RecommendTemplate,
                 VideoCardStyle.Hot => HotTemplate,
                 VideoCardStyle.Rank => RankTemplate,
-                _ => default,
+                _ => RecommendTemplate,
             };
         }
 
-        return default;
+        return base.SelectTemplateCore(item, container);
     }
 }

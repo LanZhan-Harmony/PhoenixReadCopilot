@@ -36,7 +36,7 @@
         <base:EmptyHolder
             Description="{x:Bind strings:Resources.RequestPgcTimeLineFailed}"
             Emoji="&#x1F6F8;"
-            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}"/>
+            Visibility="{x:Bind ViewModel.ShowSideEmptyHolder, Mode=OneWay}"/>
 
         <components:SideBottomLoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}"
                 Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}"/>

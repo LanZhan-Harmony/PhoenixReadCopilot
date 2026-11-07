@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Richasy.BiliKernel.Models.Appearance;
+using PhoenixReadCopilot.Models;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -19,6 +19,16 @@ public sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
     public partial Condition? CurrentCondition { get; set; }
 
     /// <summary>
+    /// 维度标识键.
+    /// </summary>
+    public string Key => Data.Key;
+
+    /// <summary>
+    /// 维度显示名称.
+    /// </summary>
+    public string Name => Data.Name;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="IndexFilterViewModel"/> class.
     /// </summary>
     public IndexFilterViewModel(Filter filter, Action? reloadAction)
@@ -27,6 +37,11 @@ public sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
         Conditions = [.. filter.Conditions];
         CurrentCondition = Conditions.FirstOrDefault();
         _reloadAction = reloadAction;
+    }
+
+    partial void OnCurrentConditionChanged(Condition? value)
+    {
+        _reloadAction?.Invoke();
     }
 
     [RelayCommand]
@@ -38,6 +53,5 @@ public sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
         }
 
         CurrentCondition = condition;
-        _reloadAction?.Invoke();
     }
 }

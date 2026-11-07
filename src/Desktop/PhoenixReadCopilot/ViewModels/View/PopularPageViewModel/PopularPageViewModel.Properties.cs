@@ -5,31 +5,35 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Media;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 流行视频页面视图模型.
+/// 流行与榜单页面视图模型.
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
-    private readonly IVideoDiscoveryService _service;
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<PopularPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly Dictionary<
-        IPopularSectionItemViewModel,
-        List<VideoItemViewModel>
-    > _videoCache = new();
+    private readonly Dictionary<string, List<VideoItemViewModel>> _videoCache = new();
 
     private int _recommendOffset;
     private string? _recommendSessionId;
     private readonly HashSet<string> _seenDramaIds = new();
     private bool _hasMoreRecommendations = true;
+
+    private int _leaderboardOffset;
+    private string? _leaderboardSessionId;
+    private bool _hasMoreLeaderboard = true;
+
+    private int _actorOffset;
+    private string? _actorSessionId;
+    private bool _hasMoreActor = true;
+
+    private long _currentRequestId;
     private CancellationTokenSource? _cancellationTokenSource;
-    private long _hotOffset;
 
     [ObservableProperty]
     public partial bool IsPartitionLoading { get; set; }
@@ -38,25 +42,34 @@ public sealed partial class PopularPageViewModel
     public partial bool IsVideoLoading { get; set; }
 
     [ObservableProperty]
-    public partial IPopularSectionItemViewModel SelectedSection { get; set; }
+    public partial IPopularSectionItemViewModel? SelectedSection { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsLeaderboardSection { get; set; }
+
+    [ObservableProperty]
+    public partial ShortDramaLeaderboardChannel CurrentChannel { get; set; } = ShortDramaLeaderboardChannel.All;
+
+    [ObservableProperty]
+    public partial string? BoardTitle { get; set; }
 
     /// <summary>
     /// 区块加载完成.
     /// </summary>
-    public event EventHandler SectionInitialized;
+    public event EventHandler? SectionInitialized;
 
     /// <summary>
     /// 视频列表已完成更新.
     /// </summary>
-    public event EventHandler VideoListUpdated;
+    public event EventHandler? VideoListUpdated;
 
     /// <summary>
-    /// 分区列表.
+    /// 分区与榜单列表.
     /// </summary>
     public ObservableCollection<IPopularSectionItemViewModel> Sections { get; } = new();
 
     /// <summary>
-    /// 视频列表.
+    /// 短剧视频列表.
     /// </summary>
     public ObservableCollection<VideoItemViewModel> Videos { get; } = new();
 }

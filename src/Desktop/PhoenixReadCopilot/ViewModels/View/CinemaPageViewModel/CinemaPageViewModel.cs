@@ -1,19 +1,18 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 影院页面视图模型.
+/// 找剧 / 多维筛选页面视图模型 (原影院页面).
 /// </summary>
 public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
 {
@@ -21,7 +20,7 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="CinemaPageViewModel"/> class.
     /// </summary>
     public CinemaPageViewModel(
-        IEntertainmentDiscoveryService discoveryService,
+        PhoenixReadApiClient apiClient,
         ILogger<CinemaPageViewModel> logger,
         NavigationViewModel navigationViewModel,
         DispatcherQueue dispatcherQueue,
@@ -30,7 +29,7 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _service = discoveryService;
+        _apiClient = apiClient;
         _logger = logger;
         _navigationViewModel = navigationViewModel;
         _dispatcherQueue = dispatcherQueue;
@@ -51,31 +50,19 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
         Sections = new List<EntertainmentIndexViewModel>
         {
             new EntertainmentIndexViewModel(
-                PgcSectionType.Movie,
-                _service,
-                _dispatcherQueue,
-                _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
-            ),
-            new EntertainmentIndexViewModel(
                 PgcSectionType.TV,
-                _service,
-                _dispatcherQueue,
-                _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
-            ),
-            new EntertainmentIndexViewModel(
-                PgcSectionType.Documentary,
-                _service,
+                _apiClient,
                 _dispatcherQueue,
                 _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
             ),
         };
-        var lastType = _settings.CinemaPageLastSelectedSectionType;
-        var section = Sections.FirstOrDefault(p => p.SectionType == lastType);
+
+        var section = Sections.First();
         _dispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
             () =>
             {
-                SelectSection(section ?? Sections.First());
+                SelectSection(section);
                 SectionInitialized?.Invoke(this, EventArgs.Empty);
             }
         );
@@ -97,7 +84,7 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void ShowMyFavoriteCinema()
     {
-        _settings.LastSelectedFavoriteSection = $"pgc_{PgcFavoriteType.Cinema}";
+        _settings.LastSelectedFavoriteSection = "drama";
         _navigationViewModel.NavigateToOver(typeof(FavoritesPage));
     }
 }

@@ -25,6 +25,58 @@ public sealed partial class VideoItemViewModel
     public Drama? Drama { get; init; }
 
     /// <summary>
+    /// 演员数据实体 (如果是红果演员排行榜).
+    /// </summary>
+    public ActorLeaderboardItem? Actor { get; init; }
+
+    /// <summary>
+    /// 演员/用户标识 ID.
+    /// </summary>
+    public string? ActorId { get; init; }
+
+    /// <summary>
+    /// 排行榜名次.
+    /// </summary>
+    public int? Rank { get; init; }
+
+    /// <summary>
+    /// 是否有排名.
+    /// </summary>
+    public bool HasRank => Rank.HasValue && Rank.Value > 0;
+
+    /// <summary>
+    /// 排名文案 (如 TOP 1).
+    /// </summary>
+    public string? RankText => HasRank ? $"TOP {Rank}" : null;
+
+    /// <summary>
+    /// 纯排名数字字符串.
+    /// </summary>
+    public string RankDisplay => Rank.HasValue ? Rank.Value.ToString() : string.Empty;
+
+    /// <summary>
+    /// 是否为前三名.
+    /// </summary>
+    public bool IsTopRank => Rank.HasValue && Rank.Value >= 1 && Rank.Value <= 3;
+
+    /// <summary>
+    /// 演员副标题（作品数 · 追剧人数）.
+    /// </summary>
+    public string ActorSubtitles => Actor?.SubTitles is { Count: > 0 } ? string.Join(" · ", Actor.SubTitles) : string.Empty;
+
+    /// <summary>
+    /// 演员代表作.
+    /// </summary>
+    public string ActorRepresentativeWork => !string.IsNullOrEmpty(Actor?.RepresentativeWork)
+        ? (Actor.RepresentativeWork.StartsWith("《") ? Actor.RepresentativeWork : $"《{Actor.RepresentativeWork}》")
+        : string.Empty;
+
+    /// <summary>
+    /// 演员热度/人气文案.
+    /// </summary>
+    public string ActorPopularity => Actor?.Popularity ?? string.Empty;
+
+    /// <summary>
     /// 样式.
     /// </summary>
     public VideoCardStyle Style { get; }

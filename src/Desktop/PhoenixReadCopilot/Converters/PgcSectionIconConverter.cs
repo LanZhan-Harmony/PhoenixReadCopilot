@@ -10,10 +10,10 @@ internal sealed partial class PgcSectionIconConverter : IValueConverter
         var sectionType = (PgcSectionType)value;
         return sectionType switch
         {
-            PgcSectionType.Timeline => FluentIcons.Common.Symbol.Timeline,
+            PgcSectionType.Timeline => FluentIcons.Common.Symbol.Calendar,
             PgcSectionType.Anime => FluentIcons.Common.Symbol.Dust,
             PgcSectionType.Movie => FluentIcons.Common.Symbol.MoviesAndTv,
-            PgcSectionType.TV => FluentIcons.Common.Symbol.Tv,
+            PgcSectionType.TV => FluentIcons.Common.Symbol.SlideSearch,
             PgcSectionType.Documentary => FluentIcons.Common.Symbol.EarthLeaf,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };

@@ -12,6 +12,9 @@ namespace PhoenixReadCopilot.Controls.Popular;
 /// </summary>
 public sealed partial class PopularMainBody : PopularPageControlBase
 {
+    private readonly StackLayout _actorLayout = new() { Spacing = 10 };
+    private VirtualizingLayout? _defaultVideoLayout;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularMainBody"/> class.
     /// </summary>
@@ -21,9 +24,11 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     protected override void OnControlLoaded()
     {
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         VideoScrollView.ViewChanged += OnViewChanged;
         VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
 
+        UpdateLayoutMode();
         CheckVideoCount();
     }
 
@@ -32,8 +37,25 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     {
         VideoRepeater.ItemsSource = null;
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
+        ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         VideoScrollView.ViewChanged -= OnViewChanged;
         VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ViewModel.SelectedSection) || e.PropertyName == nameof(ViewModel.CurrentChannel))
+        {
+            UpdateLayoutMode();
+            VideoScrollView.ChangeView(null, 0, null, true);
+        }
+    }
+
+    private void UpdateLayoutMode()
+    {
+        _defaultVideoLayout ??= (VirtualizingLayout)Application.Current.Resources["VideoLayout"];
+        var isActor = ViewModel?.SelectedSection is PopularSectionItemViewModel { IsActorLeaderboard: true };
+        VideoRepeater.Layout = isActor ? _actorLayout : _defaultVideoLayout;
     }
 
     private async void OnVideoListUpdatedAsync(object? sender, EventArgs e)
@@ -45,16 +67,6 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        if (
-            (
-                ViewModel.SelectedSection is PopularSectionItemViewModel secItem
-                && secItem.Type == PopularSectionType.Rank
-            )
-            || ViewModel.SelectedSection is PopularRankPartitionViewModel
-        )
-        {
-            return;
-        }
 
         DispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
@@ -65,6 +77,7 @@ public sealed partial class PopularMainBody : PopularPageControlBase
                     - VideoScrollView.ViewportHeight
                     - VideoScrollView.VerticalOffset
                     <= 240
+                    && ViewModel is { IsVideoLoading: false }
                 )
                 {
                     ViewModel.LoadVideosCommand.Execute(default);
@@ -87,7 +100,7 @@ public sealed partial class PopularMainBody : PopularPageControlBase
             DispatcherQueuePriority.Low,
             () =>
             {
-                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is { IsVideoLoading: false } && ViewModel.Videos.Count > 0)
                 {
                     ViewModel.LoadVideosCommand.Execute(default);
                 }

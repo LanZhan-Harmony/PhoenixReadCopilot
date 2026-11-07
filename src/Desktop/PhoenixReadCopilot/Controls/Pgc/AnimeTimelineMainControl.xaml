@@ -28,7 +28,7 @@
 
         <base:EmptyHolder Description="{x:Bind strings:Resources.TimelineHasNoVideo}"
                           Emoji="&#x1F92A;"
-                          Visibility="{x:Bind ViewModel.SelectedTimeline.IsEmpty, Mode=OneWay}"/>
+                          Visibility="{x:Bind ViewModel.ShowTimelineEmptyHolder, Mode=OneWay}"/>
 
         <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}"/>
     </Grid>

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
@@ -8,13 +9,11 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 动漫页面视图模型.
+/// 上新日历页面视图模型 (原动漫页面).
 /// </summary>
 public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
 {
@@ -22,7 +21,7 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="AnimePageViewModel"/> class.
     /// </summary>
     public AnimePageViewModel(
-        IEntertainmentDiscoveryService discoveryService,
+        PhoenixReadApiClient apiClient,
         ILogger<AnimePageViewModel> logger,
         NavigationViewModel navigationViewModel,
         DispatcherQueue dispatcherQueue,
@@ -31,7 +30,7 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _service = discoveryService;
+        _apiClient = apiClient;
         _logger = logger;
         _navigationViewModel = navigationViewModel;
         _dispatcherQueue = dispatcherQueue;
@@ -52,24 +51,18 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
         Sections = new List<IPgcSectionDetailViewModel>
         {
             new AnimeTimelineViewModel(
-                _service,
-                _loggerFactory.CreateLogger<AnimeTimelineViewModel>()
-            ),
-            new EntertainmentIndexViewModel(
-                PgcSectionType.Anime,
-                _service,
+                _apiClient,
                 _dispatcherQueue,
-                _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
+                _loggerFactory.CreateLogger<AnimeTimelineViewModel>()
             ),
         };
 
-        var lastType = _settings.AnimePageLastSelectedSectionType;
-        var section = Sections.FirstOrDefault(p => p.SectionType == lastType);
+        var section = Sections.First();
         _dispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
             () =>
             {
-                SelectSection(section ?? Sections.First());
+                SelectSection(section);
                 SectionInitialized?.Invoke(this, EventArgs.Empty);
             }
         );
@@ -91,7 +84,7 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void ShowMyFavoriteAnime()
     {
-        _settings.LastSelectedFavoriteSection = $"pgc_{PgcFavoriteType.Anime}";
+        _settings.LastSelectedFavoriteSection = "drama";
         _navigationViewModel.NavigateToOver(typeof(FavoritesPage));
     }
 }
