@@ -5,7 +5,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Comment;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -14,7 +13,6 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class CommentDetailViewModel
 {
-    private readonly ICommentService? _service;
     private readonly ILogger<CommentDetailViewModel> _logger;
     private readonly Action<CommentDetailViewModel>? _showMoreAction;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -24,7 +22,6 @@ public sealed partial class CommentDetailViewModel
     private readonly string? _videoId;
 
     private bool _preventLoadMore;
-    private long _offset;
     private string _cursor = string.Empty;
     private CommentItemViewModel? _replyItem;
 
@@ -46,7 +43,7 @@ public sealed partial class CommentDetailViewModel
     public event EventHandler? ListUpdated;
 
     /// <summary>
-    /// 评论列表.
+    /// 评论回复列表.
     /// </summary>
     public ObservableCollection<CommentItemViewModel> Comments { get; } = new();
 }

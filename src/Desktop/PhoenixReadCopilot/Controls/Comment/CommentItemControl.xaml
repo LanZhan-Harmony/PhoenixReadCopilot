@@ -79,9 +79,11 @@
                            ToolTipService.ToolTip="{x:Bind ViewModel.ActualTime, Mode=OneWay}"/>
             </Grid>
             <Grid Grid.Row="1">
-                <comp:EmoteTextBlock x:Name="ReplyContentBlock"
-                                     HorizontalAlignment="Left"
-                                     Text="{x:Bind ViewModel.Content, Mode=OneWay}"/>
+                <TextBlock x:Name="ReplyContentBlock"
+                           HorizontalAlignment="Left"
+                           IsTextSelectionEnabled="True"
+                           Text="{x:Bind ViewModel.Text, Mode=OneWay}"
+                           TextWrapping="Wrap"/>
             </Grid>
             <Grid Grid.Row="2" ColumnSpacing="12">
                 <Grid.ColumnDefinitions>

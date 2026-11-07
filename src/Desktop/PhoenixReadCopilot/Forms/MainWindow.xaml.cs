@@ -58,11 +58,25 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     }
 
     /// <inheritdoc/>
-    public void EnterPlayerHostMode(PlayerDisplayMode mode) =>
+    public void EnterPlayerHostMode(PlayerDisplayMode mode)
+    {
         RootLayout.PrepareFullPlayerPresenter(mode);
+        if (mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay)
+        {
+            SetTitleBar(RootLayout.GetSecondaryTitleBar());
+        }
+        else
+        {
+            SetTitleBar(null);
+        }
+    }
 
     /// <inheritdoc/>
-    public void ExitPlayerHostMode() => RootLayout.ExitFullPlayerPresenter();
+    public void ExitPlayerHostMode()
+    {
+        RootLayout.ExitFullPlayerPresenter();
+        SetTitleBar(RootLayout.GetMainTitleBar());
+    }
 
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)

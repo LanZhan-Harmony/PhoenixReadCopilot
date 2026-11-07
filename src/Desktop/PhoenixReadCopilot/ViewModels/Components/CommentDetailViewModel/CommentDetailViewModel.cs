@@ -4,8 +4,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Comment;
-using Richasy.BiliKernel.Models;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -17,30 +15,11 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemViewModel>
 {
     /// <summary>
-    /// Bili 评论详情构造函数（保留兼容）.
-    /// </summary>
-    public CommentDetailViewModel(
-        CommentItemViewModel data,
-        Action<CommentDetailViewModel> showMoreAction,
-        ICommentService service,
-        DispatcherQueue dispatcherQueue,
-        ILogger<CommentDetailViewModel> logger
-    )
-        : base(data)
-    {
-        _service = service;
-        _dispatcherQueue = dispatcherQueue;
-        _logger = logger;
-        _showMoreAction = showMoreAction;
-    }
-
-    /// <summary>
     /// 红果短剧评论详情构造函数.
     /// </summary>
     public CommentDetailViewModel(
         CommentItemViewModel data,
-        Action<CommentDetailViewModel> showMoreAction,
-        ICommentService? service,
+        Action<CommentDetailViewModel>? showMoreAction,
         DispatcherQueue dispatcherQueue,
         ILogger<CommentDetailViewModel> logger,
         PhoenixReadApiClient? apiClient,
@@ -50,10 +29,9 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     )
         : base(data)
     {
-        _service = service;
+        _showMoreAction = showMoreAction;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
-        _showMoreAction = showMoreAction;
         _apiClient = apiClient;
         _appViewModel = appViewModel;
         _seriesId = seriesId;
@@ -74,100 +52,70 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        if (IsLoading || _preventLoadMore || IsEmpty)
+        if (IsLoading || _preventLoadMore || IsEmpty || _apiClient is null)
         {
             return;
         }
 
-        // 优先使用红果分集评论二级回复
-        if (
-            _apiClient is not null
-            && !string.IsNullOrEmpty(_seriesId)
-            && !string.IsNullOrEmpty(_videoId)
-        )
+        var effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
+        if (string.IsNullOrEmpty(effectiveSeriesId))
         {
-            try
+            return;
+        }
+
+        IsLoading = true;
+        try
+        {
+            CommentReplyPage replyPage;
+
+            // 剧评回复还是分集评论回复
+            if (Data.IsDramaReview || string.IsNullOrEmpty(_videoId))
             {
-                IsLoading = true;
-                var replyPage = await _apiClient.GetEpisodeCommentRepliesAsync(
-                    Data.Data.Id,
-                    _seriesId,
-                    _videoId,
+                replyPage = await _apiClient.GetDramaReviewRepliesAsync(
+                    commentId: Data.Id,
+                    seriesId: effectiveSeriesId,
                     count: 20,
                     cursor: _cursor
                 );
-
-                _cursor = replyPage.Cursor;
-                _preventLoadMore = !replyPage.HasMore;
-
-                foreach (var item in replyPage.Items)
-                {
-                    if (Comments.Any(p => p.Data.Id == item.Id))
-                    {
-                        continue;
-                    }
-
-                    Comments.Add(
-                        new CommentItemViewModel(
-                            item,
-                            _seriesId,
-                            _videoId,
-                            _apiClient,
-                            SetReplyTarget
-                        )
-                    );
-                }
-
-                ListUpdated?.Invoke(this, EventArgs.Empty);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "加载红果评论回复详情时出错");
-                _preventLoadMore = true;
-            }
-            finally
-            {
-                IsEmpty = Comments.Count == 0;
-                IsLoading = false;
+                replyPage = await _apiClient.GetEpisodeCommentRepliesAsync(
+                    commentId: Data.Id,
+                    seriesId: effectiveSeriesId,
+                    videoId: _videoId,
+                    count: 20,
+                    cursor: _cursor
+                );
             }
 
-            return;
-        }
+            _cursor = replyPage.Cursor;
+            _preventLoadMore = !replyPage.HasMore;
 
-        if (_service is null)
-        {
-            return;
-        }
-
-        try
-        {
-            IsLoading = true;
-            var targetId = Data.Data.CommentId;
-            var targetType = Data.Data.CommentType;
-            var view = await _service.GetDetailCommentsAsync(
-                targetId,
-                targetType,
-                CommentSortType.Time,
-                Data.Data.Id,
-                _offset
-            );
-            _offset = view.NextOffset;
-            _preventLoadMore = view.NextOffset == 0 || view.Comments is null;
-            foreach (var item in view.Comments)
+            foreach (var item in replyPage.Items)
             {
-                if (Comments.Any(p => p.Data.Equals(item)))
+                if (Comments.Any(p => p.Id == item.Id))
                 {
                     continue;
                 }
 
-                Comments.Add(new CommentItemViewModel(item, _service, SetReplyTarget));
+                Comments.Add(
+                    new CommentItemViewModel(
+                        item,
+                        effectiveSeriesId,
+                        _videoId,
+                        _apiClient,
+                        isDramaReview: Data.IsDramaReview,
+                        markReplyTargetAction: SetReplyTarget
+                    )
+                );
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载评论详情时出错");
+            _logger.LogError(ex, "加载红果评论回复详情时出错");
             _preventLoadMore = true;
         }
         finally
@@ -191,7 +139,6 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void Clear()
     {
         Comments.Clear();
-        _offset = 0;
         _cursor = string.Empty;
         _preventLoadMore = false;
         IsEmpty = false;
@@ -208,85 +155,75 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     [RelayCommand]
     private async Task SendReplyAsync(string content)
     {
-        if (IsReplying || string.IsNullOrEmpty(content))
+        if (IsReplying || string.IsNullOrWhiteSpace(content))
         {
             return;
         }
 
         content = content.Trim();
 
-        // 红果短剧回复
-        if (_apiClient is not null && !string.IsNullOrEmpty(_videoId))
+        if (_apiClient is null)
         {
-            if (!_apiClient.GetAuthenticationState().IsAuthenticated)
-            {
-                _appViewModel?.ShowTipCommand.Execute(("请先登录后再发表回复", InfoType.Warning));
-                return;
-            }
-
-            IsReplying = true;
-            try
-            {
-                var targetUserId =
-                    _replyItem?.Data.User?.User?.Id ?? Data.Data.User?.User?.Id ?? string.Empty;
-                var res = await _apiClient.SendEpisodeCommentReplyAsync(
-                    commentId: Data.Data.Id,
-                    seriesId: _seriesId,
-                    videoId: _videoId,
-                    text: content,
-                    replyToUserId: targetUserId
-                );
-
-                if (res.Succeeded)
-                {
-                    _appViewModel?.ShowTipCommand.Execute(("回复已发送", InfoType.Success));
-                    ResetReplyTarget();
-                    Refresh();
-                }
-                else
-                {
-                    _appViewModel?.ShowTipCommand.Execute(
-                        (res.Message ?? "发送失败", InfoType.Error)
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "发送红果评论回复失败");
-                _appViewModel?.ShowTipCommand.Execute(("发送回复失败", InfoType.Error));
-            }
-            finally
-            {
-                IsReplying = false;
-            }
-
             return;
         }
 
-        if (_service is null)
+        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        {
+            _appViewModel?.ShowTipCommand.Execute(("请先登录后再发表回复", InfoType.Warning));
+            return;
+        }
+
+        var effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
+        if (string.IsNullOrEmpty(effectiveSeriesId))
         {
             return;
         }
 
         IsReplying = true;
-        var targetIdBili = Data.Data.CommentId;
-        var rootId = _replyItem is null ? Data.Data.Id : _replyItem.Data.RootId;
-        var replyCommentId = _replyItem is null ? rootId : _replyItem.Data.Id;
         try
         {
-            await _service.SendTextCommentAsync(
-                content,
-                targetIdBili,
-                Data.Data.CommentType,
-                rootId,
-                replyCommentId
-            );
-            await Task.Delay(500);
-            Refresh();
+            var targetUserId = _replyItem?.UserId ?? Data.UserId;
+            PhoenixOperationResult res;
+
+            if (Data.IsDramaReview || string.IsNullOrEmpty(_videoId))
+            {
+                // 回复整剧剧评
+                res = await _apiClient.SendDramaReviewReplyAsync(
+                    commentId: Data.Id,
+                    seriesId: effectiveSeriesId,
+                    text: content,
+                    replyToUserId: targetUserId
+                );
+            }
+            else
+            {
+                // 回复分集评论
+                res = await _apiClient.SendEpisodeCommentReplyAsync(
+                    commentId: Data.Id,
+                    seriesId: effectiveSeriesId,
+                    videoId: _videoId,
+                    text: content,
+                    replyToUserId: targetUserId
+                );
+            }
+
+            if (res.Succeeded)
+            {
+                _appViewModel?.ShowTipCommand.Execute(("回复已发送", InfoType.Success));
+                ResetReplyTarget();
+                Refresh();
+            }
+            else
+            {
+                _appViewModel?.ShowTipCommand.Execute(
+                    (res.Message ?? "发送失败", InfoType.Error)
+                );
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "回复评论时出错");
+            _logger.LogError(ex, "发送红果评论回复失败");
+            _appViewModel?.ShowTipCommand.Execute(("发送回复失败", InfoType.Error));
         }
         finally
         {
@@ -298,12 +235,12 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void ResetReplyTarget()
     {
         _replyItem = default;
-        ReplyTarget = default!;
+        ReplyTarget = string.Empty;
     }
 
     private void SetReplyTarget(CommentItemViewModel item)
     {
         _replyItem = item;
-        ReplyTarget = item?.Data.User?.User?.Name ?? string.Empty;
+        ReplyTarget = item?.UserName ?? string.Empty;
     }
 }

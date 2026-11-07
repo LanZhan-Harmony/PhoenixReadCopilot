@@ -1,8 +1,8 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Components;
-using Richasy.BiliKernel.Models;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Comment;
@@ -120,24 +120,28 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
 
     private void CheckSortType()
     {
-        var selectedIndex = (int)ViewModel.SortType;
-        if (SortTypeComboBox.SelectedIndex != selectedIndex)
+        if (ViewModel is null)
         {
-            SortTypeComboBox.SelectedIndex = selectedIndex;
+            return;
+        }
+
+        var index = ViewModel.Sorts.IndexOf(ViewModel.SortType);
+        if (index >= 0 && SortTypeComboBox.SelectedIndex != index)
+        {
+            SortTypeComboBox.SelectedIndex = index;
         }
     }
 
     private void OnSortChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (!IsLoaded || SortTypeComboBox.SelectedIndex < 0)
+        if (!IsLoaded || SortTypeComboBox.SelectedIndex < 0 || ViewModel is null)
         {
             return;
         }
 
-        var sortType = (CommentSortType)SortTypeComboBox.SelectedIndex;
-        if (sortType != ViewModel.SortType)
+        if (SortTypeComboBox.SelectedItem is CommentSortOrder sortOrder && sortOrder != ViewModel.SortType)
         {
-            ViewModel.ChangeSortTypeCommand.Execute(sortType);
+            ViewModel.ChangeSortTypeCommand.Execute(sortOrder);
         }
     }
 }

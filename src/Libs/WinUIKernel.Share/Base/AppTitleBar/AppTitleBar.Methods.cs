@@ -256,20 +256,18 @@ public sealed partial class AppTitleBar
 
     private void UpdateDragRegion()
     {
+        if (Visibility == Visibility.Collapsed)
+        {
+            return;
+        }
+
         var islandEnv = XamlRoot?.ContentIslandEnvironment;
         if (islandEnv is not null)
         {
             var appWindowId = islandEnv.AppWindowId;
             var nonClientPointerSource = InputNonClientPointerSource.GetForWindowId(appWindowId);
             nonClientPointerSource.ClearRegionRects(NonClientRegionKind.Passthrough);
-            if (Visibility == Visibility.Collapsed)
-            {
-                nonClientPointerSource.SetRegionRects(
-                    NonClientRegionKind.Passthrough,
-                    [new(0, 0, (int)ActualWidth, (int)ActualHeight)]
-                );
-            }
-            else if (_interactableElementList.Count > 0)
+            if (_interactableElementList.Count > 0)
             {
                 var passthroughRects = new List<RectInt32>();
                 foreach (var element in _interactableElementList)

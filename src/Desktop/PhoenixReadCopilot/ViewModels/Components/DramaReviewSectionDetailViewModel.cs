@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -21,13 +22,15 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
     private readonly AppViewModel _appViewModel;
     private readonly ILogger _logger;
     private readonly string _seriesId;
+    private readonly Action<DramaReviewItemViewModel>? _showMoreAction;
 
     public DramaReviewItemViewModel(
         DramaComment comment,
         string seriesId,
         PhoenixReadApiClient apiClient,
         AppViewModel appViewModel,
-        ILogger logger
+        ILogger logger,
+        Action<DramaReviewItemViewModel>? showMoreAction = default
     )
         : base(comment)
     {
@@ -35,6 +38,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
         _apiClient = apiClient;
         _appViewModel = appViewModel;
         _logger = logger;
+        _showMoreAction = showMoreAction;
 
         Id = comment.Id;
         Text = comment.Text;
@@ -107,6 +111,9 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
             _logger.LogError(ex, "点赞剧评失败.");
         }
     }
+
+    [RelayCommand]
+    private void ShowMore() => _showMoreAction?.Invoke(this);
 }
 
 /// <summary>
@@ -174,6 +181,9 @@ public sealed partial class DramaReviewSectionDetailViewModel
 
     [ObservableProperty]
     public partial CommentSortOrder SortType { get; set; }
+
+    [ObservableProperty]
+    public partial CommentDetailViewModel? SelectedItem { get; set; }
 
     /// <summary>
     /// 是否有更多剧评可加载.
@@ -300,6 +310,32 @@ public sealed partial class DramaReviewSectionDetailViewModel
         }
     }
 
+    [RelayCommand]
+    private void BackToMain() => SelectedItem = default;
+
+    private void ShowReviewDetail(DramaReviewItemViewModel item)
+    {
+        var commentItemVm = new CommentItemViewModel(
+            item.Data,
+            SeriesId,
+            videoId: null,
+            _apiClient,
+            isDramaReview: true
+        );
+
+        SelectedItem = new CommentDetailViewModel(
+            commentItemVm,
+            showMoreAction: _ => { },
+            _dispatcherQueue,
+            Ioc.Default.GetRequiredService<ILogger<CommentDetailViewModel>>(),
+            _apiClient,
+            _appViewModel,
+            SeriesId,
+            videoId: null
+        );
+        SelectedItem.InitializeCommand.Execute(default);
+    }
+
     private async Task LoadItemsAsync()
     {
         if (string.IsNullOrEmpty(SeriesId) || IsLoading)
@@ -331,7 +367,8 @@ public sealed partial class DramaReviewSectionDetailViewModel
                             SeriesId,
                             _apiClient,
                             _appViewModel,
-                            _logger
+                            _logger,
+                            ShowReviewDetail
                         )
                     );
                 }
@@ -356,5 +393,6 @@ public sealed partial class DramaReviewSectionDetailViewModel
         _hasMore = true;
         Reviews.Clear();
         IsEmpty = false;
+        SelectedItem = default;
     }
 }

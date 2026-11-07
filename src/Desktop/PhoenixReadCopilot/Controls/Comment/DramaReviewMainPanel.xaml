@@ -14,6 +14,10 @@
                                 xmlns:strings="using:PhoenixReadCopilot.Strings"
                                 mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <converters:ChildCommentTextConverter x:Key="ChildCommentTextConverter"/>
+    </UserControl.Resources>
+
     <Grid Padding="0,12" RowSpacing="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -22,7 +26,7 @@
         </Grid.RowDefinitions>
 
         <!--  顶部剧评标题、评分与排序切换，与评论列表位置和样式完全一致  -->
-        <Grid Padding="12,0">
+        <Grid Padding="12,0" Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
@@ -63,8 +67,15 @@
             </ComboBox>
         </Grid>
 
+        <!--  二级回复面板返回按钮  -->
+        <HyperlinkButton Margin="12,0"
+                         HorizontalAlignment="Left"
+                         Command="{x:Bind ViewModel.BackToMainCommand, Mode=OneWay}"
+                         Content="{x:Bind strings:Resources.BackToPrevious}"
+                         Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+
         <!--  中间剧评列表，条目排版与 CommentItemControl 完全一致  -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
             <ScrollViewer x:Name="ReviewScrollView"
                           Padding="0"
                           Style="{StaticResource PageScrollViewerStyle}">
@@ -130,11 +141,12 @@
                                                        TextWrapping="Wrap"/>
                                         </Grid>
 
-                                        <!--  第三行：点赞按钮  -->
+                                        <!--  第三行：点赞、回复数、回复按钮  -->
                                         <Grid Grid.Row="2" ColumnSpacing="12">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <ToggleButton VerticalAlignment="Center"
                                                           Command="{x:Bind ToggleLikeCommand, Mode=OneWay}"
@@ -149,6 +161,24 @@
                                                                Text="{x:Bind LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
                                                 </StackPanel>
                                             </ToggleButton>
+
+                                            <!-- 回复条数链接 -->
+                                            <StackPanel Grid.Column="1"
+                                                        HorizontalAlignment="Left"
+                                                        Visibility="{x:Bind ReplyCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
+                                                <HyperlinkButton Command="{x:Bind ShowMoreCommand, Mode=OneWay}">
+                                                    <TextBlock FontSize="12" Text="{x:Bind ReplyCount, Converter={StaticResource ChildCommentTextConverter}, Mode=OneWay}"/>
+                                                </HyperlinkButton>
+                                            </StackPanel>
+
+                                            <!-- 回复按钮 -->
+                                            <Button Grid.Column="2"
+                                                    VerticalAlignment="Center"
+                                                    Command="{x:Bind ShowMoreCommand, Mode=OneWay}"
+                                                    Style="{StaticResource SmallIconButtonStyle}"
+                                                    ToolTipService.ToolTip="{x:Bind strings:Resources.Reply}">
+                                                <ic:SymbolIcon FontSize="12" Symbol="CommentMention"/>
+                                            </Button>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -168,12 +198,19 @@
             <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
         </Grid>
 
+        <!--  剧评二级回复面板（复用 CommentDetailPanel）  -->
+        <local:CommentDetailPanel Grid.Row="1"
+                                  Grid.RowSpan="2"
+                                  ViewModel="{x:Bind ViewModel.SelectedItem, Mode=OneWay}"
+                                  Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+
         <!--  底部发送剧评区域（带评分星级，与评论文本输入框风格统一）  -->
         <Border Grid.Row="2"
                 Margin="12,0"
                 Padding="8"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                CornerRadius="{StaticResource ControlCornerRadius}">
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
             <StackPanel Spacing="6">
                 <!--  评分星级  -->
                 <StackPanel Margin="4,2,0,2"
