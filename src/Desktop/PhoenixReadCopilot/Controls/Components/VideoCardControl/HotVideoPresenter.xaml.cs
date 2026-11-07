@@ -1,3 +1,5 @@
+using PhoenixReadCopilot.ViewModels.Items;
+
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
@@ -9,4 +11,11 @@ public sealed partial class HotVideoPresenter : VideoCardPresenter
     /// Initializes a new instance of the <see cref="HotVideoPresenter"/> class.
     /// </summary>
     public HotVideoPresenter() => InitializeComponent();
+
+    /// <inheritdoc/>
+    protected override void OnViewModelChanged(VideoItemViewModel? oldValue, VideoItemViewModel? newValue)
+    {
+        base.OnViewModelChanged(oldValue, newValue);
+        Bindings.Update();
+    }
 }

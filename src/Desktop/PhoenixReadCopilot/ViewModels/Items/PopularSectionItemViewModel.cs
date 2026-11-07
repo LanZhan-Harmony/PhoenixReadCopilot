@@ -1,10 +1,11 @@
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
 /// <summary>
-/// 流行视频区块项视图模型.
+/// 流行与榜单区块项视图模型.
 /// </summary>
 public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSectionItemViewModel
 {
@@ -14,12 +15,16 @@ public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSection
     public PopularSectionItemViewModel(
         FluentIcons.Common.Symbol symbol,
         string title,
-        PopularSectionType type
+        PopularSectionType type,
+        ShortDramaLeaderboardType? leaderboardType = null,
+        bool isActorLeaderboard = false
     )
     {
         Icon = symbol;
         Title = title;
         Type = type;
+        LeaderboardType = leaderboardType;
+        IsActorLeaderboard = isActorLeaderboard;
     }
 
     /// <summary>
@@ -36,6 +41,16 @@ public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSection
     /// 类型.
     /// </summary>
     public PopularSectionType Type { get; init; }
+
+    /// <summary>
+    /// 红果短剧榜单类型 (如果是短剧榜单).
+    /// </summary>
+    public ShortDramaLeaderboardType? LeaderboardType { get; init; }
+
+    /// <summary>
+    /// 是否为演员榜单.
+    /// </summary>
+    public bool IsActorLeaderboard { get; init; }
 
     /// <inheritdoc/>
     public override bool Equals(object? obj) =>

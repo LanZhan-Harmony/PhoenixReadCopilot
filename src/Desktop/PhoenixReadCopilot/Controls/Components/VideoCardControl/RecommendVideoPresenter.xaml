@@ -26,7 +26,7 @@
                 <Image.Source>
                     <BitmapImage DecodePixelType="Logical"
                                  DecodePixelWidth="336"
-                                 UriSource="{x:Bind ViewModel.Cover}"/>
+                                 UriSource="{x:Bind ViewModel.Cover, Mode=OneWay}"/>
                 </Image.Source>
             </Image>
         </Border>
@@ -39,10 +39,10 @@
                 VerticalAlignment="Bottom"
                 Background="#99000000"
                 CornerRadius="{StaticResource ControlCornerRadius}"
-                Visibility="{x:Bind ViewModel.HasEpisodeCount}">
+                Visibility="{x:Bind ViewModel.HasEpisodeCount, Mode=OneWay}">
             <TextBlock Foreground="White"
                        Style="{StaticResource CaptionTextBlockStyle}"
-                       Text="{x:Bind ViewModel.EpisodeCountText}"/>
+                       Text="{x:Bind ViewModel.EpisodeCountText, Mode=OneWay}"/>
         </Border>
 
         <!--  右下角：评分徽章  -->
@@ -53,12 +53,12 @@
                 VerticalAlignment="Bottom"
                 Background="#B0D32F2F"
                 CornerRadius="{StaticResource ControlCornerRadius}"
-                Visibility="{x:Bind ViewModel.HasScore}">
+                Visibility="{x:Bind ViewModel.HasScore, Mode=OneWay}">
             <StackPanel Orientation="Horizontal" Spacing="3">
                 <TextBlock FontWeight="Bold"
                            Foreground="Gold"
                            Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="{x:Bind ViewModel.Score}"/>
+                           Text="{x:Bind ViewModel.Score, Mode=OneWay}"/>
                 <ic:SymbolIcon FontSize="{StaticResource CaptionTextBlockFontSize}"
                                Foreground="Gold"
                                IconVariant="Filled"
@@ -78,7 +78,7 @@
             <TextBlock Grid.Row="0"
                        HorizontalAlignment="Left"
                        MaxLines="2"
-                       Text="{x:Bind ViewModel.Title}"
+                       Text="{x:Bind ViewModel.Title, Mode=OneWay}"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="Wrap"/>
 
@@ -93,16 +93,16 @@
                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                     IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                     Symbol="Tag"
-                                    Text="{x:Bind ViewModel.Author}"
-                                    Visibility="{x:Bind ViewModel.Author, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                    Text="{x:Bind ViewModel.Author, Mode=OneWay}"
+                                    Visibility="{x:Bind ViewModel.Author, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <!--  热度或播放量  -->
                 <base:IconTextBlock Grid.Column="1"
                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                     IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                     Symbol="PlayCircle"
-                                    Text="{x:Bind ViewModel.HeatOrPlayCountText}"
+                                    Text="{x:Bind ViewModel.HeatOrPlayCountText, Mode=OneWay}"
                                     ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"
-                                    Visibility="{x:Bind ViewModel.HeatOrPlayCountText, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                    Visibility="{x:Bind ViewModel.HeatOrPlayCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
             </Grid>
         </Grid>
     </Grid>

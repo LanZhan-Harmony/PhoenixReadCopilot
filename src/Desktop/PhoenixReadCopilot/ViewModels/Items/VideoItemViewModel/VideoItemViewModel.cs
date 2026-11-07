@@ -100,6 +100,52 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class from an <see cref="ActorLeaderboardItem"/>.
+    /// </summary>
+    public VideoItemViewModel(
+        ActorLeaderboardItem actor,
+        Action<VideoItemViewModel>? removeAction = default
+    )
+        : base(CreateActorInformation(actor))
+    {
+        _removeAction = removeAction;
+        Actor = actor;
+        ActorId = !string.IsNullOrEmpty(actor.ActorId) ? actor.ActorId : actor.UserId;
+        Style = VideoCardStyle.Rank;
+        Title = actor.Name;
+        Rank = actor.Position;
+        Author = !string.IsNullOrEmpty(actor.RepresentativeWork) ? $"代表作: 《{actor.RepresentativeWork}》" : "短剧演员";
+
+        string trendText = actor.RankChangeType switch
+        {
+            1 => $"↑ 上升 {actor.RankChangeValue}",
+            2 => $"↓ 下降 {actor.RankChangeValue}",
+            _ => "— 排名持平",
+        };
+        var subtitles = actor.SubTitles is { Count: > 0 } ? string.Join(" · ", actor.SubTitles) : null;
+        Subtitle = subtitles != null ? $"{subtitles} ({trendText})" : trendText;
+
+        if (!string.IsNullOrEmpty(actor.AvatarUrl) && Uri.TryCreate(actor.AvatarUrl, UriKind.Absolute, out var uri))
+        {
+            Cover = uri;
+            Avatar = uri;
+        }
+
+        Heat = actor.Popularity;
+        TagName = actor.Popularity;
+        IsUserValid = true;
+    }
+
+    private static VideoInformation CreateActorInformation(ActorLeaderboardItem actor)
+    {
+        var cover = !string.IsNullOrEmpty(actor.AvatarUrl) && Uri.TryCreate(actor.AvatarUrl, UriKind.Absolute, out var uri)
+            ? new BiliImage(uri)
+            : default;
+        var id = !string.IsNullOrEmpty(actor.ActorId) ? actor.ActorId : actor.UserId;
+        return new VideoInformation(new MediaIdentifier(id, actor.Name, cover), default);
+    }
+
     private static VideoInformation CreateVideoInformation(Drama drama)
     {
         var cover =
@@ -113,6 +159,12 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void Play()
     {
+        if (Actor is not null)
+        {
+            ShowUserSpace();
+            return;
+        }
+
         var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
@@ -127,7 +179,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             return;
         }
 
-        ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), new VideoSnapshot(Data));
+        ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), Drama ?? (object)new VideoSnapshot(Data));
     }
 
     [RelayCommand]
@@ -140,6 +192,12 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void ShowUserSpace()
     {
+        if (!string.IsNullOrEmpty(ActorId))
+        {
+            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), ActorId);
+            return;
+        }
+
         if (Data.Publisher?.User is not null)
         {
             ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);

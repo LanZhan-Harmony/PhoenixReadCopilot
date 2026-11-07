@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Forms;
@@ -41,6 +42,65 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         _removeAction = removeAction;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SeasonItemViewModel"/> class from a <see cref="DailyReleaseItem"/>.
+    /// </summary>
+    public SeasonItemViewModel(
+        DailyReleaseItem item,
+        SeasonCardStyle style = SeasonCardStyle.Timeline,
+        Action<SeasonItemViewModel>? removeAction = default
+    )
+        : base(CreateSeasonInformation(item.Drama, !string.IsNullOrWhiteSpace(item.Note) ? item.Note : (item.IsOnline ? "已上线" : "待播"), item.IsOnline ? "已上线" : "预告"))
+    {
+        Drama = item.Drama;
+        _removeAction = removeAction;
+        Style = style;
+        Title = item.Drama.Title;
+        if (!string.IsNullOrEmpty(item.Drama.CoverUrl) && Uri.TryCreate(item.Drama.CoverUrl, UriKind.Absolute, out var uri))
+        {
+            Cover = uri;
+        }
+        var status = item.IsOnline ? "已上线" : "待播";
+        Subtitle = !string.IsNullOrWhiteSpace(item.Note)
+            ? $"{status} · {item.Note}"
+            : (item.Drama.EpisodeCount > 0 ? $"{status} · 全 {item.Drama.EpisodeCount} 集" : status);
+        Highlight = item.IsOnline ? "已上线" : "预告";
+        Score = double.TryParse(item.Drama.Score, out var parsedScore) && parsedScore > 0 ? parsedScore : null;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SeasonItemViewModel"/> class from a <see cref="Drama"/>.
+    /// </summary>
+    public SeasonItemViewModel(
+        Drama drama,
+        SeasonCardStyle style = SeasonCardStyle.Index,
+        Action<SeasonItemViewModel>? removeAction = default
+    )
+        : base(CreateSeasonInformation(drama, drama.Remark, !string.IsNullOrWhiteSpace(drama.Score) ? $"{drama.Score}分" : null))
+    {
+        Drama = drama;
+        _removeAction = removeAction;
+        Style = style;
+        Title = drama.Title;
+        if (!string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri))
+        {
+            Cover = uri;
+        }
+        Subtitle = !string.IsNullOrWhiteSpace(drama.Remark)
+            ? drama.Remark
+            : (drama.EpisodeCount > 0 ? $"{drama.Category} · 全 {drama.EpisodeCount} 集" : drama.Category);
+        Highlight = !string.IsNullOrWhiteSpace(drama.Score) ? $"{drama.Score}分" : (drama.Tags.Count > 0 ? drama.Tags[0] : null);
+        Score = double.TryParse(drama.Score, out var parsedScore) && parsedScore > 0 ? parsedScore : null;
+    }
+
+    private static SeasonInformation CreateSeasonInformation(Drama drama, string? subtitle = null, string? highlight = null)
+    {
+        var cover = !string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri)
+            ? new Richasy.BiliKernel.Models.Appearance.BiliImage(uri)
+            : default;
+        return new SeasonInformation(new MediaIdentifier(drama.Id, drama.Title, cover));
+    }
+
     [RelayCommand]
     private void Play()
     {
@@ -58,8 +118,13 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
             return;
         }
 
-        var identifier = new MediaIdentifier("ss_" + Data.Identifier.Id, default, default);
-        ItemServices.Navigation.NavigateToOver(typeof(PgcPlayerPage), identifier);
+        if (Drama is not null)
+        {
+            ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), Drama);
+            return;
+        }
+
+        ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), Data.Identifier.Id);
     }
 
     [RelayCommand]

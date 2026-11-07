@@ -80,7 +80,11 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         }
 
         // 优先使用红果分集评论二级回复
-        if (_apiClient is not null && !string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(_videoId))
+        if (
+            _apiClient is not null
+            && !string.IsNullOrEmpty(_seriesId)
+            && !string.IsNullOrEmpty(_videoId)
+        )
         {
             try
             {
@@ -103,7 +107,15 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
                         continue;
                     }
 
-                    Comments.Add(new CommentItemViewModel(item, _seriesId, _videoId, _apiClient, SetReplyTarget));
+                    Comments.Add(
+                        new CommentItemViewModel(
+                            item,
+                            _seriesId,
+                            _videoId,
+                            _apiClient,
+                            SetReplyTarget
+                        )
+                    );
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -215,12 +227,14 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             IsReplying = true;
             try
             {
-                var targetUserId = _replyItem?.Data.User?.User?.Id ?? Data.Data.User?.User?.Id ?? string.Empty;
-                var res = await _apiClient.SendCommentReplyAsync(
-                    Data.Data.Id,
-                    _videoId,
-                    content,
-                    targetUserId
+                var targetUserId =
+                    _replyItem?.Data.User?.User?.Id ?? Data.Data.User?.User?.Id ?? string.Empty;
+                var res = await _apiClient.SendEpisodeCommentReplyAsync(
+                    commentId: Data.Data.Id,
+                    seriesId: _seriesId,
+                    videoId: _videoId,
+                    text: content,
+                    replyToUserId: targetUserId
                 );
 
                 if (res.Succeeded)
@@ -231,7 +245,9 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
                 }
                 else
                 {
-                    _appViewModel?.ShowTipCommand.Execute((res.Message ?? "发送失败", InfoType.Error));
+                    _appViewModel?.ShowTipCommand.Execute(
+                        (res.Message ?? "发送失败", InfoType.Error)
+                    );
                 }
             }
             catch (Exception ex)

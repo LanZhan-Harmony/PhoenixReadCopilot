@@ -1,7 +1,5 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
-using PhoenixReadCopilot.Core.Enums;
-using Richasy.BiliKernel.Models.Media;
 using Windows.Globalization;
 using WinUIKernel.Share.ViewModels;
 
@@ -10,7 +8,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 时间轴条目视图模型.
 /// </summary>
-public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInformation>
+public sealed partial class TimelineItemViewModel : ViewModelBase
 {
     [ObservableProperty]
     public partial List<SeasonItemViewModel>? Items { get; set; }
@@ -18,23 +16,18 @@ public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInform
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
 
+    [ObservableProperty]
+    public partial int Count { get; set; }
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimelineItemViewModel"/> class.
+    /// 目标日期.
     /// </summary>
-    public TimelineItemViewModel(TimelineInformation info)
-        : base(info)
-    {
-        var firstLan = ApplicationLanguages.Languages[0];
-        var culture = new CultureInfo(firstLan);
-        var targetDay = DateTimeOffset.FromUnixTimeSeconds(info.TimeStamp).ToLocalTime();
-        DayOfWeek = targetDay.ToString("ddd", culture);
-        Date = info.Date;
-        Count = info.Seasons.Count;
-        Items =
-            info.Seasons.Select(p => new SeasonItemViewModel(p, SeasonCardStyle.Timeline)).ToList()
-            ?? default;
-        IsEmpty = Items is null || Items.Count == 0;
-    }
+    public DateOnly TargetDate { get; }
+
+    /// <summary>
+    /// 是否为今天.
+    /// </summary>
+    public bool IsToday { get; }
 
     /// <summary>
     /// 星期几.
@@ -42,12 +35,23 @@ public sealed partial class TimelineItemViewModel : ViewModelBase<TimelineInform
     public string DayOfWeek { get; }
 
     /// <summary>
-    /// 日期.
+    /// 日期字符串 (MM-dd).
     /// </summary>
     public string Date { get; }
 
     /// <summary>
-    /// 剧集个数.
+    /// Initializes a new instance of the <see cref="TimelineItemViewModel"/> class from a <see cref="DateOnly"/>.
     /// </summary>
-    public int Count { get; }
+    public TimelineItemViewModel(DateOnly targetDate, bool isToday = false, List<SeasonItemViewModel>? items = null)
+    {
+        TargetDate = targetDate;
+        IsToday = isToday;
+        var firstLan = ApplicationLanguages.Languages.Count > 0 ? ApplicationLanguages.Languages[0] : "zh-CN";
+        var culture = new CultureInfo(firstLan);
+        DayOfWeek = isToday ? "今天" : targetDate.ToDateTime(TimeOnly.MinValue).ToString("ddd", culture);
+        Date = targetDate.ToString("MM-dd");
+        Items = items;
+        Count = items?.Count ?? 0;
+        IsEmpty = items != null && items.Count == 0;
+    }
 }

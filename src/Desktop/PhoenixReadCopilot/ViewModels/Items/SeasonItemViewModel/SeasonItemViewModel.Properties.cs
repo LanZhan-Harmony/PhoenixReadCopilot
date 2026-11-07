@@ -59,4 +59,9 @@ public sealed partial class SeasonItemViewModel
     /// 样式.
     /// </summary>
     public SeasonCardStyle Style { get; init; }
+
+    /// <summary>
+    /// 短剧数据实体 (如果是红果短剧).
+    /// </summary>
+    public PhoenixReadApi.Drama? Drama { get; init; }
 }

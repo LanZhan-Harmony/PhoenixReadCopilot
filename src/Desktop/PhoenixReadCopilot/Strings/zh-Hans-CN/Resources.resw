@@ -154,7 +154,10 @@
     <value>同时点赞</value>
   </data>
   <data name="Anime" xml:space="preserve">
-    <value>动漫</value>
+    <value>上新日历</value>
+  </data>
+  <data name="NewDramaCalendar" xml:space="preserve">
+    <value>上新日历</value>
   </data>
   <data name="Any" xml:space="preserve">
     <value>任意</value>
@@ -349,7 +352,10 @@
     <value>选择收藏夹</value>
   </data>
   <data name="Cinema" xml:space="preserve">
-    <value>影视</value>
+    <value>找剧</value>
+  </data>
+  <data name="DramaFilter" xml:space="preserve">
+    <value>找剧</value>
   </data>
   <data name="Clean" xml:space="preserve">
     <value>清除</value>
@@ -1945,7 +1951,64 @@
     <value>万</value>
   </data>
   <data name="TimeChart" xml:space="preserve">
-    <value>时间表</value>
+    <value>上新日历</value>
+  </data>
+  <data name="LeaderboardAll" xml:space="preserve">
+    <value>全剧热榜</value>
+  </data>
+  <data name="LeaderboardHuman" xml:space="preserve">
+    <value>真人短剧榜</value>
+  </data>
+  <data name="LeaderboardComic" xml:space="preserve">
+    <value>漫剧榜</value>
+  </data>
+  <data name="LeaderboardAi" xml:space="preserve">
+    <value>AI短剧榜</value>
+  </data>
+  <data name="LeaderboardSeries" xml:space="preserve">
+    <value>系列剧榜</value>
+  </data>
+  <data name="LeaderboardActor" xml:space="preserve">
+    <value>演员榜</value>
+  </data>
+  <data name="BoardDefault" xml:space="preserve">
+    <value>推荐榜</value>
+  </data>
+  <data name="BoardRecommend" xml:space="preserve">
+    <value>推荐榜</value>
+  </data>
+  <data name="BoardHotPlay" xml:space="preserve">
+    <value>热播榜</value>
+  </data>
+  <data name="BoardNewRelease" xml:space="preserve">
+    <value>新剧榜</value>
+  </data>
+  <data name="BoardHotSearch" xml:space="preserve">
+    <value>热搜榜</value>
+  </data>
+  <data name="BoardMustWatch" xml:space="preserve">
+    <value>必看榜</value>
+  </data>
+  <data name="BoardFollowed" xml:space="preserve">
+    <value>高追榜</value>
+  </data>
+  <data name="BoardPrestige" xml:space="preserve">
+    <value>臻果榜</value>
+  </data>
+  <data name="BoardSubscribe" xml:space="preserve">
+    <value>预约榜</value>
+  </data>
+  <data name="BoardChaseUpdate" xml:space="preserve">
+    <value>追更榜</value>
+  </data>
+  <data name="ChannelAll" xml:space="preserve">
+    <value>总榜</value>
+  </data>
+  <data name="ChannelFemale" xml:space="preserve">
+    <value>女频</value>
+  </data>
+  <data name="ChannelMale" xml:space="preserve">
+    <value>男频</value>
   </data>
   <data name="TimelineHasNoVideo" xml:space="preserve">
     <value>这一天没有新的内容</value>

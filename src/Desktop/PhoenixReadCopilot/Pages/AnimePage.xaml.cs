@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 动漫页面.
 /// </summary>
-public sealed partial class AnimePage : AnimePageBase
+public partial class AnimePage : AnimePageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AnimePage"/> class.

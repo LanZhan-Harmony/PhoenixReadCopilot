@@ -157,8 +157,8 @@ public sealed partial class AppViewModel : ViewModelBase
     private void MakeCurrentWindowEnterCompactOverlay()
     {
         var window = ActivatedWindow;
-        (window as WinUIKernel.Share.Base.WindowEx).MinHeight = 320;
-        (window as WinUIKernel.Share.Base.WindowEx).MinWidth = 560;
+        (window as WinUIEx.WindowEx).MinHeight = 320;
+        (window as WinUIEx.WindowEx).MinWidth = 560;
         window.SetWindowPresenter(AppWindowPresenterKind.CompactOverlay);
         window.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
         if (window is IPlayerHostWindow hostWindow)
@@ -171,8 +171,8 @@ public sealed partial class AppViewModel : ViewModelBase
     private void MakeCurrentWindowExitCompactOverlay()
     {
         var window = ActivatedWindow;
-        (window as WinUIKernel.Share.Base.WindowEx).MinHeight = 480;
-        (window as WinUIKernel.Share.Base.WindowEx).MinWidth = 640;
+        (window as WinUIEx.WindowEx).MinHeight = 480;
+        (window as WinUIEx.WindowEx).MinWidth = 640;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
         window.AppWindow.TitleBar.PreferredHeightOption =
             window is MainWindow ? TitleBarHeightOption.Tall : TitleBarHeightOption.Standard;

@@ -95,6 +95,14 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         {
             seriesId = id;
         }
+        else if (parameter is VideoItemViewModel videoVm)
+        {
+            seriesId = videoVm.Drama?.Id ?? videoVm.Data.Identifier.Id;
+        }
+        else if (parameter is SeasonItemViewModel seasonVm)
+        {
+            seriesId = seasonVm.Drama?.Id ?? seasonVm.Data.Identifier.Id;
+        }
 
         try
         {

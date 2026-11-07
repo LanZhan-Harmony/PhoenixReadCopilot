@@ -15,29 +15,41 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="102"/>
         </Grid.RowDefinitions>
-        <local:VideoCoverImage CornerRadius="4,4,0,0" Source="{x:Bind ViewModel.Cover}"/>
-        <Button x:Name="UserButton"
-                Margin="6"
+        <local:VideoCoverImage CornerRadius="4,4,0,0" Source="{x:Bind ViewModel.Cover, Mode=OneWay}"/>
+
+        <!--  排名徽章  -->
+        <Border Margin="6"
+                Padding="6,2"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Command="{x:Bind ViewModel.ShowUserSpaceCommand}"
-                Style="{StaticResource AvatarButtonStyle}">
-            <Grid>
-                <Ellipse Width="35"
-                         Height="35"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         Fill="Black"
-                         Opacity="0.7"/>
-                <PersonPicture Width="32"
-                               Height="32"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               DisplayName="{x:Bind ViewModel.Author}"
-                               ProfilePicture="{x:Bind ViewModel.Avatar, Converter={StaticResource BitmapConverter}}"
-                               ToolTipService.ToolTip="{x:Bind ViewModel.Author}"/>
-            </Grid>
-        </Button>
+                VerticalAlignment="Top"
+                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.HasRank, Mode=OneWay}">
+            <TextBlock FontSize="11"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       Text="{x:Bind ViewModel.RankText, Mode=OneWay}"/>
+        </Border>
+
+        <!--  评分徽章  -->
+        <Border Margin="6"
+                Padding="6,2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="#B0D32F2F"
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.HasScore, Mode=OneWay}">
+            <StackPanel Orientation="Horizontal" Spacing="2">
+                <TextBlock FontWeight="Bold"
+                           Foreground="Gold"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="★"/>
+                <TextBlock FontWeight="Bold"
+                           Foreground="White"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="{x:Bind ViewModel.Score, Mode=OneWay}"/>
+            </StackPanel>
+        </Border>
 
         <Grid Grid.Row="1"
               Padding="12,8,12,12"
@@ -56,21 +68,21 @@
                            FontSize="12"
                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                            MaxLines="1"
-                           Text="{x:Bind ViewModel.Author}"
+                           Text="{x:Bind ViewModel.Author, Mode=OneWay}"
                            TextTrimming="CharacterEllipsis"/>
                 <TextBlock Grid.Column="1"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                            Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="{x:Bind ViewModel.PublishRelativeTime}"
+                           Text="{x:Bind ViewModel.PublishRelativeTime, Mode=OneWay}"
                            TextTrimming="CharacterEllipsis"
                            TextWrapping="NoWrap"
-                           Visibility="{x:Bind ViewModel.PublishRelativeTime, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                           Visibility="{x:Bind ViewModel.PublishRelativeTime, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
             </Grid>
             <TextBlock Grid.Row="1"
                        HorizontalAlignment="Left"
-                       Text="{x:Bind ViewModel.Title}"
+                       Text="{x:Bind ViewModel.Title, Mode=OneWay}"
                        TextTrimming="CharacterEllipsis"/>
             <Grid Grid.Row="2" ColumnSpacing="12">
                 <Grid.ColumnDefinitions>
@@ -81,22 +93,21 @@
                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                            MaxLines="1"
                            Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="{x:Bind ViewModel.TagName}"
+                           Text="{x:Bind ViewModel.TagName, Mode=OneWay}"
                            TextTrimming="CharacterEllipsis"/>
                 <StackPanel Grid.Column="1"
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
-                            Spacing="4"
-                            ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}">
+                            Spacing="4">
                     <ic:SymbolIcon VerticalAlignment="Center"
                                    FontSize="10"
                                    Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
-                                   Symbol="PlayCircle"/>
+                                   Symbol="Fire"/>
                     <TextBlock VerticalAlignment="Center"
                                FontSize="10"
                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                Style="{StaticResource CaptionTextBlockStyle}"
-                               Text="{x:Bind ViewModel.PlayCount, Converter={StaticResource CountConverter}}"
+                               Text="{x:Bind ViewModel.HeatOrPlayCountText, Mode=OneWay}"
                                TextLineBounds="Tight"/>
                 </StackPanel>
             </Grid>
