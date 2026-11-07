@@ -12,7 +12,6 @@ using Richasy.BiliKernel.Authenticator;
 using Richasy.BiliKernel.Authorizers.TV;
 using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Bili.Search;
@@ -20,7 +19,6 @@ using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Http;
 using Richasy.BiliKernel.Resolvers.WinUIQRCode;
 using Richasy.BiliKernel.Services.Article;
-using Richasy.BiliKernel.Services.Comment;
 using Richasy.BiliKernel.Services.Media;
 using Richasy.BiliKernel.Services.Moment;
 using Richasy.BiliKernel.Services.Search;
@@ -84,7 +82,6 @@ internal class ServiceHelper
             .AddSingleton<IMessageService, MessageService>()
             .AddSingleton<IFavoriteService, FavoriteService>()
             .AddSingleton<IUserService, UserService>()
-            .AddSingleton<ICommentService, CommentService>()
             .AddSingleton<IVideoDiscoveryService, VideoDiscoveryService>()
             .AddSingleton<IEntertainmentDiscoveryService, EntertainmentDiscoveryService>()
             .AddSingleton<IMomentDiscoveryService, MomentDiscoveryService>()

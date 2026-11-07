@@ -32,6 +32,12 @@ public sealed partial class RootLayout : RootLayoutBase
     public AppTitleBar GetMainTitleBar() => MainTitleBar;
 
     /// <summary>
+    /// 获取二级标题栏.
+    /// </summary>
+    /// <returns><see cref="AppTitleBar"/>.</returns>
+    public AppTitleBar GetSecondaryTitleBar() => SecondaryTitleBar;
+
+    /// <summary>
     /// 准备隐藏除播放器外的其它控件.
     /// </summary>
     public void PrepareFullPlayerPresenter(PlayerDisplayMode mode)
@@ -42,14 +48,13 @@ public sealed partial class RootLayout : RootLayoutBase
         }
 
         MainTitleBar.Visibility = Visibility.Collapsed;
-        SecondaryTitleBar.Visibility =
-            mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-        SecondaryTitleBar.IsBackButtonVisible =
+        var isSecondaryTitleBarVisible =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
-        SecondaryTitleBar.IsBackEnabled =
-            mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
+        SecondaryTitleBar.Visibility = isSecondaryTitleBarVisible
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        SecondaryTitleBar.IsBackButtonVisible = isSecondaryTitleBarVisible;
+        SecondaryTitleBar.IsBackEnabled = isSecondaryTitleBarVisible;
         _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
             TitleBarHeightOption.Standard;
         NavView.IsPaneOpen = false;
@@ -67,7 +72,11 @@ public sealed partial class RootLayout : RootLayoutBase
             pPage.EnterPlayerHostMode();
         }
 
-        MainTitleBar.DelayUpdateAsync(100);
+        if (isSecondaryTitleBarVisible)
+        {
+            SecondaryTitleBar.UpdatePadding();
+            SecondaryTitleBar.DelayUpdateAsync(100);
+        }
     }
 
     /// <summary>
@@ -98,7 +107,8 @@ public sealed partial class RootLayout : RootLayoutBase
             pPage.ExitPlayerHostMode();
         }
 
-        MainTitleBar.DelayUpdateAsync(500);
+        MainTitleBar.UpdatePadding();
+        MainTitleBar.DelayUpdateAsync(100);
     }
 
     /// <summary>

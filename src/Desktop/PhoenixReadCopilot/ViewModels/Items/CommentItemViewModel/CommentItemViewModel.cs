@@ -2,11 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Pages.Overlay;
-using Richasy.BiliKernel.Bili.Comment;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Comment;
-using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -14,62 +9,27 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 评论项视图模型.
 /// </summary>
-public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformation>
+public sealed partial class CommentItemViewModel : ViewModelBase
 {
     private readonly PhoenixReadApiClient? _apiClient;
-    private readonly string? _seriesId;
-    private readonly string? _videoId;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CommentItemViewModel"/> class.
-    /// </summary>
-    public CommentItemViewModel(
-        CommentInformation data,
-        ICommentService service,
-        Action<CommentItemViewModel> markReplyTargetAction
-    )
-        : base(data)
-    {
-        _service = service;
-        IsTop = data.IsTop;
-        IsLiked = data.CommunityInformation?.IsLiked ?? false;
-        LikeCount = Convert.ToInt32(data.CommunityInformation?.LikeCount ?? 0);
-        RelativeTime = data.PublishTime.Humanize();
-        ActualTime = data.PublishTime.ToString("yyyy-MM-dd HH:mm:ss");
-        ChildCount = data.CommunityInformation?.ChildCount ?? 0;
-        Avatar = data.User?.User?.Avatar?.Uri;
-        UserName = data.User?.User?.Name ?? string.Empty;
-        Content = data.Content;
-        _markReplyTargetAction = markReplyTargetAction;
-    }
-
-    /// <summary>
-    /// 红果分集评论构造函数.
+    /// 红果评论构造函数（分集评论或整剧剧评）.
     /// </summary>
     public CommentItemViewModel(
         DramaComment comment,
         string seriesId,
-        string videoId,
+        string? videoId,
         PhoenixReadApiClient apiClient,
+        bool isDramaReview = false,
         Action<CommentItemViewModel>? markReplyTargetAction = default
     )
-        : base(
-            CreateCommentInfo(
-                comment.Id,
-                comment.Text,
-                comment.Author?.Id ?? string.Empty,
-                comment.Author?.Name ?? "匿名观众",
-                Uri.TryCreate(comment.Author?.AvatarUrl, UriKind.Absolute, out var uri)
-                    ? uri
-                    : default,
-                comment.CreatedAtUnixSeconds,
-                Convert.ToInt32(comment.LikeCount),
-                Convert.ToInt32(comment.ReplyCount)
-            )
-        )
     {
-        _seriesId = seriesId;
-        _videoId = videoId;
+        Id = comment.Id;
+        Text = comment.Text;
+        SeriesId = seriesId;
+        VideoId = videoId;
+        IsDramaReview = isDramaReview;
         _apiClient = apiClient;
         _markReplyTargetAction = markReplyTargetAction;
 
@@ -77,6 +37,9 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
         IsLiked = false;
         LikeCount = Convert.ToInt32(comment.LikeCount);
         ChildCount = Convert.ToInt32(comment.ReplyCount);
+
+        UserName = comment.Author?.Name ?? "匿名观众";
+        UserId = comment.Author?.Id ?? string.Empty;
 
         if (comment.CreatedAtUnixSeconds > 0)
         {
@@ -92,7 +55,6 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
             ActualTime = string.Empty;
         }
 
-        UserName = comment.Author?.Name ?? "匿名观众";
         if (
             !string.IsNullOrEmpty(comment.Author?.AvatarUrl)
             && Uri.TryCreate(comment.Author.AvatarUrl, UriKind.Absolute, out var avatarUri)
@@ -100,37 +62,25 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
         {
             Avatar = avatarUri;
         }
-
-        Content = new EmoteText(comment.Text, null, null);
     }
 
     /// <summary>
-    /// 红果评论回复构造函数.
+    /// 红果二级评论回复构造函数.
     /// </summary>
     public CommentItemViewModel(
         CommentReply reply,
         string seriesId,
-        string videoId,
+        string? videoId,
         PhoenixReadApiClient apiClient,
+        bool isDramaReview = false,
         Action<CommentItemViewModel>? markReplyTargetAction = default
     )
-        : base(
-            CreateCommentInfo(
-                reply.Id,
-                reply.Text,
-                reply.Author?.Id ?? string.Empty,
-                reply.Author?.Name ?? "匿名观众",
-                Uri.TryCreate(reply.Author?.AvatarUrl, UriKind.Absolute, out var uri)
-                    ? uri
-                    : default,
-                reply.CreatedAtUnixSeconds,
-                Convert.ToInt32(reply.LikeCount),
-                0
-            )
-        )
     {
-        _seriesId = seriesId;
-        _videoId = videoId;
+        Id = reply.Id;
+        Text = reply.Text;
+        SeriesId = seriesId;
+        VideoId = videoId;
+        IsDramaReview = isDramaReview;
         _apiClient = apiClient;
         _markReplyTargetAction = markReplyTargetAction;
 
@@ -138,6 +88,9 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
         IsLiked = false;
         LikeCount = Convert.ToInt32(reply.LikeCount);
         ChildCount = 0;
+
+        UserName = reply.Author?.Name ?? "匿名观众";
+        UserId = reply.Author?.Id ?? string.Empty;
 
         if (reply.CreatedAtUnixSeconds > 0)
         {
@@ -151,7 +104,6 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
             ActualTime = string.Empty;
         }
 
-        UserName = reply.Author?.Name ?? "匿名观众";
         if (
             !string.IsNullOrEmpty(reply.Author?.AvatarUrl)
             && Uri.TryCreate(reply.Author.AvatarUrl, UriKind.Absolute, out var avatarUri)
@@ -159,79 +111,48 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
         {
             Avatar = avatarUri;
         }
-
-        Content = new EmoteText(reply.Text, null, null);
-    }
-
-    private static CommentInformation CreateCommentInfo(
-        string id,
-        string text,
-        string userId,
-        string userName,
-        Uri? avatar,
-        long createdSeconds,
-        int likes,
-        int replies
-    )
-    {
-        var avatarImage = avatar != null ? new BiliImage(avatar) : default;
-        var userProfile = new Richasy.BiliKernel.Models.User.UserProfile(
-            userId,
-            userName,
-            avatarImage
-        );
-        var userDetail = new UserDetailProfile(userProfile, default, default, default, default);
-        var emote = new EmoteText(text, null, null);
-        var pubTime =
-            createdSeconds > 0
-                ? DateTimeOffset.FromUnixTimeSeconds(createdSeconds)
-                : DateTimeOffset.Now;
-        var community = new CommentCommunityInformation(id, (double)likes, replies, false);
-        return new CommentInformation(
-            id,
-            emote,
-            string.Empty,
-            false,
-            userDetail,
-            pubTime,
-            community
-        );
     }
 
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        var state = !IsLiked;
-        if (_apiClient is not null && !string.IsNullOrEmpty(_videoId))
+        if (_apiClient is null)
         {
-            try
-            {
-                var res = await _apiClient.SetCommentLikeAsync(Data.Id, _videoId, state);
-                if (res.Succeeded)
-                {
-                    IsLiked = state;
-                    LikeCount += state ? 1 : -1;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "点赞红果评论失败");
-            }
             return;
         }
 
+        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        {
+            return;
+        }
+
+        var state = !IsLiked;
         try
         {
-            if (_service is not null)
+            PhoenixOperationResult res;
+            if (IsDramaReview && !string.IsNullOrEmpty(SeriesId))
             {
-                await _service.ToggleLikeAsync(state, Data.Id, Data.CommentId, Data.CommentType);
+                res = await _apiClient.SetReviewLikeAsync(Id, SeriesId, state);
+            }
+            else
+            {
+                var targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : SeriesId;
+                if (string.IsNullOrEmpty(targetId))
+                {
+                    return;
+                }
+                res = await _apiClient.SetCommentLikeAsync(Id, targetId, state);
+            }
+
+            if (res.Succeeded)
+            {
                 IsLiked = state;
                 LikeCount += state ? 1 : -1;
             }
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "切换评论点赞状态时失败");
+            Logger.LogError(ex, "点赞评论失败");
         }
     }
 
@@ -241,9 +162,6 @@ public sealed partial class CommentItemViewModel : ViewModelBase<CommentInformat
     [RelayCommand]
     private void ShowUserSpace()
     {
-        if (Data.User?.User is not null)
-        {
-            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.User.User);
-        }
+        // 红果短剧暂无读者空间，预留空命令以防 XAML 绑定失败
     }
 }

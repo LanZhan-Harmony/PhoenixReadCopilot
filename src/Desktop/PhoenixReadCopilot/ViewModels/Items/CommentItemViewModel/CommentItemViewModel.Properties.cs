@@ -1,8 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Richasy.BiliKernel.Bili.Comment;
-using Richasy.BiliKernel.Models.Appearance;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -13,10 +10,9 @@ public sealed partial class CommentItemViewModel
 {
     private static ILogger<CommentItemViewModel>? _logger;
     private static ILogger<CommentItemViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<CommentItemViewModel>>();
+        _logger ??= CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<ILogger<CommentItemViewModel>>();
 
-    private readonly ICommentService _service;
-    private readonly Action<CommentItemViewModel> _markReplyTargetAction;
+    private readonly Action<CommentItemViewModel>? _markReplyTargetAction;
 
     [ObservableProperty]
     public partial bool IsLiked { get; set; }
@@ -25,19 +21,29 @@ public sealed partial class CommentItemViewModel
     public partial int LikeCount { get; set; }
 
     /// <summary>
-    /// 子评论条数.
+    /// 评论唯一标识.
+    /// </summary>
+    public string Id { get; init; } = string.Empty;
+
+    /// <summary>
+    /// 评论文本正文.
+    /// </summary>
+    public string Text { get; init; } = string.Empty;
+
+    /// <summary>
+    /// 子评论/回复条数.
     /// </summary>
     public int ChildCount { get; init; }
 
     /// <summary>
     /// 发布的相对时间.
     /// </summary>
-    public string RelativeTime { get; init; }
+    public string RelativeTime { get; init; } = string.Empty;
 
     /// <summary>
     /// 发布的实际时间.
     /// </summary>
-    public string ActualTime { get; init; }
+    public string ActualTime { get; init; } = string.Empty;
 
     /// <summary>
     /// 用户头像.
@@ -47,7 +53,27 @@ public sealed partial class CommentItemViewModel
     /// <summary>
     /// 用户名.
     /// </summary>
-    public string UserName { get; init; }
+    public string UserName { get; init; } = string.Empty;
+
+    /// <summary>
+    /// 用户 ID.
+    /// </summary>
+    public string UserId { get; init; } = string.Empty;
+
+    /// <summary>
+    /// 所属剧集 ID.
+    /// </summary>
+    public string? SeriesId { get; init; }
+
+    /// <summary>
+    /// 所属分集视频 ID.
+    /// </summary>
+    public string? VideoId { get; init; }
+
+    /// <summary>
+    /// 是否为整剧剧评（false 则为分集评论）.
+    /// </summary>
+    public bool IsDramaReview { get; init; }
 
     /// <summary>
     /// 是否为置顶评论.
@@ -55,7 +81,12 @@ public sealed partial class CommentItemViewModel
     public bool IsTop { get; init; }
 
     /// <summary>
-    /// 内容.
+    /// 数据本身引用（保留向后兼容）.
     /// </summary>
-    public EmoteText Content { get; init; }
+    public CommentItemViewModel Data => this;
+
+    /// <summary>
+    /// 文本内容（保留向后兼容）.
+    /// </summary>
+    public string Content => Text;
 }

@@ -7,10 +7,10 @@
                             xmlns:components1="using:PhoenixReadCopilot.ViewModels.Components"
                             xmlns:converters="using:PhoenixReadCopilot.Converters"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:api="using:PhoenixReadApi"
                             xmlns:strings="using:PhoenixReadCopilot.Strings"
                             xmlns:local="using:PhoenixReadCopilot.Controls.Comment"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            xmlns:models="using:Richasy.BiliKernel.Models"
                             mc:Ignorable="d">
 
     <Grid Padding="0,12" RowSpacing="12">
@@ -39,7 +39,7 @@
                       SelectedItem="{x:Bind ViewModel.SortType, Mode=OneWay}"
                       SelectionChanged="OnSortChanged">
                 <ComboBox.ItemTemplate>
-                    <DataTemplate x:DataType="models:CommentSortType">
+                    <DataTemplate x:DataType="api:CommentSortOrder">
                         <TextBlock Text="{x:Bind Converter={StaticResource SortTypeTextConverter}}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

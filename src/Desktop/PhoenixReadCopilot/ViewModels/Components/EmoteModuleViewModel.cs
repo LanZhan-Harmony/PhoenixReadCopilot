@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Richasy.BiliKernel.Bili.Comment;
 using Richasy.BiliKernel.Models.Appearance;
 using WinUIKernel.Share.ViewModels;
 
@@ -12,7 +11,6 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class EmoteModuleViewModel : ViewModelBase
 {
-    private readonly ICommentService _service;
     private readonly ILogger<EmoteModuleViewModel> _logger;
 
     [ObservableProperty]
@@ -24,9 +22,8 @@ public sealed partial class EmoteModuleViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteModuleViewModel"/> class.
     /// </summary>
-    public EmoteModuleViewModel(ICommentService service, ILogger<EmoteModuleViewModel> logger)
+    public EmoteModuleViewModel(ILogger<EmoteModuleViewModel> logger)
     {
-        _service = service;
         _logger = logger;
     }
 
@@ -38,18 +35,7 @@ public sealed partial class EmoteModuleViewModel : ViewModelBase
             return;
         }
 
-        try
-        {
-            IsLoading = true;
-            Packages = [.. await _service.GetEmotePackagesAsync()];
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "获取表情包时出现错误.");
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        await Task.CompletedTask;
+        Packages = [];
     }
 }

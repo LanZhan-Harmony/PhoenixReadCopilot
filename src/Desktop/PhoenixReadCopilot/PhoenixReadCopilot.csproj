@@ -85,7 +85,6 @@
     <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUIQRCode" />
     <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUIToken" />
     <PackageReference Include="Richasy.BiliKernel.Services.Article" />
-    <PackageReference Include="Richasy.BiliKernel.Services.Comment" />
     <PackageReference Include="Richasy.BiliKernel.Services.Media" />
     <PackageReference Include="Richasy.BiliKernel.Services.Moment" />
     <PackageReference Include="Richasy.BiliKernel.Services.Search" />

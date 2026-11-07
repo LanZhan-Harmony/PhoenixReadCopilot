@@ -5,9 +5,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
-using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Comment;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -16,7 +13,6 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class CommentMainViewModel
 {
-    private readonly ICommentService _service;
     private readonly ILogger<CommentMainViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILoggerFactory _loggerFactory;
@@ -24,12 +20,10 @@ public sealed partial class CommentMainViewModel
     private readonly AppViewModel? _appViewModel;
 
     private bool _preventLoadMore;
-    private CommentTargetType _targetType;
-    private long _offset;
     private string _cursor = string.Empty;
     private string _seriesId = string.Empty;
     private string _videoId = string.Empty;
-    private CommentItemViewModel? _replyItem;
+    private Items.CommentItemViewModel? _replyItem;
 
     [ObservableProperty]
     public partial CommentDetailViewModel? TopItem { get; set; }
@@ -47,13 +41,13 @@ public sealed partial class CommentMainViewModel
     public partial bool IsLoggedIn { get; set; }
 
     [ObservableProperty]
-    public partial List<CommentSortType> Sorts { get; set; }
+    public partial List<CommentSortOrder> Sorts { get; set; } = [CommentSortOrder.Hot, CommentSortOrder.Latest];
 
     [ObservableProperty]
-    public partial CommentSortType SortType { get; set; }
+    public partial CommentSortOrder SortType { get; set; } = CommentSortOrder.Hot;
 
     [ObservableProperty]
-    public partial string ReplyTarget { get; set; }
+    public partial string ReplyTarget { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsReplying { get; set; }
