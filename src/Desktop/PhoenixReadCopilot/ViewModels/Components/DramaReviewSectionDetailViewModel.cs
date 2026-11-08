@@ -6,6 +6,7 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
@@ -288,13 +289,14 @@ public sealed partial class DramaReviewSectionDetailViewModel
 
         IsSending = true;
         OnPropertyChanged(nameof(CanSendReview));
+        var formatted = EmojiHelper.FormatEmojiText(content.Trim());
         try
         {
             var sendRating = Math.Clamp(Math.Round(Rating * 2.0) / 2.0, 0.5, 5.0);
             var result = await _apiClient.SendDramaReviewAsync(
                 SeriesId,
                 sendRating,
-                content.Trim()
+                formatted
             );
             if (result.Succeeded)
             {

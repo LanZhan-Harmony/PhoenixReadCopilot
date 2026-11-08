@@ -3,6 +3,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
+using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -51,7 +52,7 @@ public sealed partial class VideoPlayerPageViewModel
     private void InitializePlaybackMedias(IReadOnlyList<PlaybackMedia> mediaList)
     {
         Downloader.Clear();
-        Downloader.InitializeDrama(_seriesId, Title, Cover?.ToString() ?? string.Empty);
+        Downloader.InitializeDrama(_seriesId, Title, Cover?.ToString() ?? string.Empty, _episodes, _currentEpisode);
 
         // 按清晰度文案去重，每种清晰度只保留一条，优先保留带解密密钥与高码率的
         var distinctMedias = mediaList
@@ -74,7 +75,6 @@ public sealed partial class VideoPlayerPageViewModel
         Downloader.InitializeMetas(
             GetWebLink(),
             Formats.Select(p => p.Data).ToList(),
-            default,
             partIndex >= 0 ? partIndex + 1 : 1
         );
 
@@ -244,6 +244,88 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         return default;
+    }
+
+    private object? FindPreviousVideo()
+    {
+        var isListLoop = CurrentLoop == VideoLoopType.List;
+
+        if (_episodes is not null && _currentEpisode is not null)
+        {
+            var list = _episodes.ToList();
+            var index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
+            if (index > 0)
+            {
+                return list[index - 1];
+            }
+
+            if (isListLoop && list.Count > 0)
+            {
+                return list[^1];
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 后台轻量预加载下一集媒体播放元数据，不启动播放器实例，实现秒切并保持低内存.
+    /// </summary>
+    private void PreloadNextEpisodeMedia()
+    {
+        var next = FindNextVideo();
+        if (next is not Episode nextEpisode || string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(nextEpisode.VideoId))
+        {
+            return;
+        }
+
+        if (_preloadedEpisodeVideoId == nextEpisode.VideoId && _preloadedMediaList is { Count: > 0 })
+        {
+            return;
+        }
+
+        _preloadCancellationTokenSource?.Cancel();
+        _preloadCancellationTokenSource?.Dispose();
+        _preloadCancellationTokenSource = new CancellationTokenSource();
+        var token = _preloadCancellationTokenSource.Token;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                // 等待 1 秒避开当前集起播的网络高峰
+                await Task.Delay(1000, token);
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                var mediaList = await _apiClient.ResolveMediaAsync(_seriesId, nextEpisode.VideoId, token);
+                if (mediaList is { Count: > 0 } && !token.IsCancellationRequested)
+                {
+                    _preloadedEpisodeVideoId = nextEpisode.VideoId;
+                    _preloadedMediaList = mediaList;
+
+                    // 进一步在后台预载下一集 FFmpegMediaSource（提前解析 demuxer 与解密密钥，实现 0 秒瞬播）
+                    var targetQuality = _settings.LastSelectedVideoQuality;
+                    PlaybackMedia? matchedMedia = null;
+                    if (targetQuality > 0)
+                    {
+                        matchedMedia = mediaList.FirstOrDefault(m => PlayerFormatItemViewModel.GetQualityScore(m) == targetQuality);
+                    }
+                    matchedMedia ??= mediaList.OrderByDescending(PlayerFormatItemViewModel.GetQualityScore).FirstOrDefault();
+
+                    if (matchedMedia is not null && !string.IsNullOrEmpty(matchedMedia.Url) && Player is FFmpegPlayerViewModel ffmpegVm)
+                    {
+                        await ffmpegVm.PreloadSourceAsync(matchedMedia.Url, matchedMedia.DecryptionKey, matchedMedia.Referer);
+                    }
+                }
+            }
+            catch
+            {
+                // 预载异常静默忽略，不影响主流程
+            }
+        }, token);
     }
 
     private void InitializeNextVideo()

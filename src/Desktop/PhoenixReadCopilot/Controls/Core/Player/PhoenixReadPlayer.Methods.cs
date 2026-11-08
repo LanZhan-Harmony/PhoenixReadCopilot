@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// 播放器.
 /// </summary>
-public sealed partial class BiliPlayer
+public sealed partial class PhoenixReadPlayer
 {
     private void MeasureTransportTriggerRect()
     {
@@ -120,7 +120,12 @@ public sealed partial class BiliPlayer
             var shouldShow = isInStayArea;
             if (!isInStayArea)
             {
-                if (ViewModel.IsPaused)
+                if (_transportControl.Visibility == Visibility.Collapsed && _mtcStayTime >= 2)
+                {
+                    // 原本已处于隐藏状态且鼠标未活动，保持隐藏，切集流转时不闪现弹出
+                    shouldShow = false;
+                }
+                else if (ViewModel.IsPaused)
                 {
                     shouldShow = true;
                 }
@@ -211,6 +216,24 @@ public sealed partial class BiliPlayer
         ManipulationCompletedRoutedEventArgs e
     )
     {
+        // 检查短剧垂直手势切集:
+        // 向上滑 (Y轴向上位移，_manipulationDeltaY > 0) -> 下一集
+        // 向下滑 (Y轴向下位移，_manipulationDeltaY < 0) -> 上一集
+        if (
+            Math.Abs(_manipulationDeltaY) > 60
+            && Math.Abs(_manipulationDeltaY) > Math.Abs(_manipulationDeltaX) * 1.2
+        )
+        {
+            if (_manipulationDeltaY > 0)
+            {
+                ViewModel?.PlayNextCommand?.Execute(default);
+            }
+            else
+            {
+                ViewModel?.PlayPreviousCommand?.Execute(default);
+            }
+        }
+
         _manipulationVolume = 0;
         _manipulationProgress = 0;
         _manipulationDeltaX = 0;
@@ -223,6 +246,40 @@ public sealed partial class BiliPlayer
         }
 
         _manipulationBeforeIsPlay = false;
+    }
+
+    private void OnInteractionControlPointerWheelChanged(object sender, PointerRoutedEventArgs e)
+    {
+        var point = e.GetCurrentPoint((UIElement)sender);
+        var delta = point.Properties.MouseWheelDelta;
+        if (delta == 0)
+        {
+            return;
+        }
+
+        // 限制两次切集的最短间隔（500ms），防止惯性滚轮飞速连跳
+        if (DateTimeOffset.Now - _lastWheelTriggerTime < TimeSpan.FromMilliseconds(500))
+        {
+            e.Handled = true;
+            return;
+        }
+
+        _wheelDeltaAccumulator += delta;
+
+        if (_wheelDeltaAccumulator >= 120)
+        {
+            _wheelDeltaAccumulator = 0;
+            _lastWheelTriggerTime = DateTimeOffset.Now;
+            ViewModel?.PlayPreviousCommand?.Execute(default);
+            e.Handled = true;
+        }
+        else if (_wheelDeltaAccumulator <= -120)
+        {
+            _wheelDeltaAccumulator = 0;
+            _lastWheelTriggerTime = DateTimeOffset.Now;
+            ViewModel?.PlayNextCommand?.Execute(default);
+            e.Handled = true;
+        }
     }
 
     private void OnInteractionControlManipulationDelta(
@@ -241,27 +298,14 @@ public sealed partial class BiliPlayer
         {
             if (_manipulationType == PlayerManipulationType.None)
             {
-                var isVolume = Math.Abs(_manipulationDeltaY) > Math.Abs(_manipulationDeltaX);
-                _manipulationType = isVolume
-                    ? PlayerManipulationType.Volume
-                    : PlayerManipulationType.Progress;
+                var isHorizontal = Math.Abs(_manipulationDeltaX) >= Math.Abs(_manipulationDeltaY);
+                if (isHorizontal)
+                {
+                    _manipulationType = PlayerManipulationType.Progress;
+                }
             }
 
-            if (_manipulationType == PlayerManipulationType.Volume)
-            {
-                var volume = _manipulationVolume + (_manipulationDeltaY / 2.0);
-                if (volume > 100)
-                {
-                    volume = 100;
-                }
-                else if (volume < 0)
-                {
-                    volume = 0;
-                }
-
-                ViewModel.SetVolumeCommand.Execute(Convert.ToInt32(volume));
-            }
-            else
+            if (_manipulationType == PlayerManipulationType.Progress)
             {
                 var progress =
                     _manipulationProgress + (_manipulationDeltaX * _manipulationUnitLength);

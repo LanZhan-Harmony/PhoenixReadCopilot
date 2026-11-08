@@ -176,6 +176,7 @@ public sealed partial class VideoPlayerPageViewModel
         var nextPart = FindNextVideo();
         if (nextPart is null)
         {
+            _appViewModel.ShowTipCommand.Execute(("已经是最后一集了", InfoType.Information));
             Player.BackToDefaultModeCommand.Execute(default);
             return;
         }
@@ -193,6 +194,29 @@ public sealed partial class VideoPlayerPageViewModel
         else
         {
             Player.BackToDefaultModeCommand.Execute(default);
+        }
+    }
+
+    [RelayCommand]
+    private async Task PlayPreviousVideoAsync()
+    {
+        if (IsPageLoading || Player.IsPlayerDataLoading)
+        {
+            return;
+        }
+
+        var prevPart = FindPreviousVideo();
+        if (prevPart is null)
+        {
+            _appViewModel.ShowTipCommand.Execute(("已经是第一集了", InfoType.Information));
+            return;
+        }
+
+        _initialProgress = 0;
+
+        if (prevPart is Episode episode)
+        {
+            ChangePart(episode);
         }
     }
 
@@ -276,6 +300,7 @@ public sealed partial class VideoPlayerPageViewModel
 
         _currentEpisode = episode;
         _currentVideoId = episode.VideoId;
+        Downloader.CurrentEpisode = episode;
         Player.CancelNotification();
 
         Danmaku?.ResetData(_seriesId, episode.VideoId);

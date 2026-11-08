@@ -189,18 +189,32 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShowTipAsync((string, InfoType) data)
     {
-        if (ActivatedWindow is ITipWindow tipWindow)
+        var tipWindow = ActivatedWindow as ITipWindow ?? Windows.OfType<ITipWindow>().FirstOrDefault();
+        if (tipWindow is null)
         {
-            await tipWindow.ShowTipAsync(data.Item1, data.Item2);
+            return;
         }
-        else
+
+        if (tipWindow is Window window && !window.DispatcherQueue.HasThreadAccess)
         {
-            var firstWindow = Windows.OfType<ITipWindow>().FirstOrDefault();
-            if (firstWindow is not null)
+            var tcs = new TaskCompletionSource();
+            window.DispatcherQueue.TryEnqueue(async () =>
             {
-                await firstWindow.ShowTipAsync(data.Item1, data.Item2);
-            }
+                try
+                {
+                    await tipWindow.ShowTipAsync(data.Item1, data.Item2);
+                    tcs.TrySetResult();
+                }
+                catch (Exception ex)
+                {
+                    tcs.TrySetException(ex);
+                }
+            });
+            await tcs.Task;
+            return;
         }
+
+        await tipWindow.ShowTipAsync(data.Item1, data.Item2);
     }
 
     [RelayCommand]

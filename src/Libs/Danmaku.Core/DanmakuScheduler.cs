@@ -288,7 +288,6 @@ internal sealed class DanmakuScheduler : IDisposable
                     // 检查是否长时间暂停或重启
                     if (currentTimeMs < _lastTimeMs || currentTimeMs - _lastTimeMs > 5000)
                     {
-                        Logger.Log("Reseek after a long time suspension");
                         Seek(currentTimeMs);
                         continue;
                     }
@@ -338,10 +337,6 @@ internal sealed class DanmakuScheduler : IDisposable
         catch (Exception ex)
         {
             Logger.Log($"DanmakuScheduler error: {ex.Message}");
-        }
-        finally
-        {
-            Logger.Log("DanmakuScheduler exited");
         }
     }
 

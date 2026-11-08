@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadCopilot.Forms;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Models;
 using WinUIKernel.Share.Base;
 
@@ -58,17 +59,31 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         set => SetValue(TextProperty, value);
     }
 
-    protected override void OnControlUnloaded() => Gallery?.ItemsSource = default;
+    /// <inheritdoc/>
+    protected override void OnControlLoaded()
+    {
+        base.OnControlLoaded();
+        if (Text != null && (RichBlock?.Blocks.Count == 0))
+        {
+            InitializeContent();
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void OnControlUnloaded()
+    {
+        base.OnControlUnloaded();
+        Gallery?.ItemsSource = default;
+    }
 
     private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var instance = d as EmoteTextBlock;
-        if (e.NewValue != null)
+        if (instance != null)
         {
             instance.InitializeContent();
+            instance.FlyoutRichBlock?.Blocks?.Clear();
         }
-
-        instance.FlyoutRichBlock?.Blocks?.Clear();
     }
 
     private void InitializeContent()
@@ -76,7 +91,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         if (RichBlock != null)
         {
             RichBlock.Blocks.Clear();
-            Paragraph para = null;
+            Paragraph? para = null;
             if (Text != null)
             {
                 para = ParseText();
@@ -95,11 +110,14 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
             CheckTextTrim();
         }
 
-        if (Text.Pictures?.Count > 0)
+        if (Text?.Pictures?.Count > 0)
         {
             var gallery = FindName("Gallery") as ItemsRepeater;
-            gallery.ItemsSource = Text.Pictures;
-            gallery.Visibility = Visibility.Visible;
+            if (gallery != null)
+            {
+                gallery.ItemsSource = Text.Pictures;
+                gallery.Visibility = Visibility.Visible;
+            }
         }
         else if (Gallery is not null)
         {
@@ -113,7 +131,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
 
     private Paragraph? ParseText()
     {
-        if (string.IsNullOrEmpty(Text.Text))
+        if (string.IsNullOrEmpty(Text?.Text))
         {
             return default;
         }
@@ -122,44 +140,51 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         var emotes = Text.Emotes;
         var para = new Paragraph();
 
-        if (emotes != null && emotes.Count > 0)
+        var emojiRegex = new Regex(@"(\[.*?\])");
+        var splitContents = emojiRegex.Split(text).Where(p => p.Length > 0).ToArray();
+        foreach (var content in splitContents)
         {
-            // 有表情存在，进行处理.
-            var emojiRegex = new Regex(@"(\[.*?\])");
-            var splitContents = emojiRegex.Split(text).Where(p => p.Length > 0).ToArray();
-            foreach (var content in splitContents)
+            if (emojiRegex.IsMatch(content))
             {
-                if (emojiRegex.IsMatch(content))
+                if (EmojiHelper.TryGetEmoji(content, out var localEmoji) && localEmoji?.Uri is not null)
                 {
-                    _ = emotes.TryGetValue(content, out var emoji);
-                    if (emoji != null && emoji.Uri is not null)
+                    var inlineCon = new InlineUIContainer();
+                    var img = new Image()
                     {
-                        var inlineCon = new InlineUIContainer();
-                        var img = new Image()
-                        {
-                            Width = 20,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Margin = new Thickness(2, 0, 2, -4),
-                        };
-                        var bitmap = new BitmapImage(emoji.Uri) { DecodePixelWidth = 40 };
-                        img.Source = bitmap;
-                        inlineCon.Child = img;
-                        para.Inlines.Add(inlineCon);
-                    }
-                    else
+                        Width = 20,
+                        Height = 20,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(2, 0, 2, -4),
+                    };
+                    var bitmap = new BitmapImage(localEmoji.Uri) { DecodePixelWidth = 40 };
+                    img.Source = bitmap;
+                    inlineCon.Child = img;
+                    para.Inlines.Add(inlineCon);
+                }
+                else if (emotes != null && emotes.TryGetValue(content, out var emoji) && emoji?.Uri is not null)
+                {
+                    var inlineCon = new InlineUIContainer();
+                    var img = new Image()
                     {
-                        para.Inlines.Add(new Run { Text = content });
-                    }
+                        Width = 20,
+                        Height = 20,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(2, 0, 2, -4),
+                    };
+                    var bitmap = new BitmapImage(emoji.Uri) { DecodePixelWidth = 40 };
+                    img.Source = bitmap;
+                    inlineCon.Child = img;
+                    para.Inlines.Add(inlineCon);
                 }
                 else
                 {
                     para.Inlines.Add(new Run { Text = content });
                 }
             }
-        }
-        else
-        {
-            para.Inlines.Add(new Run { Text = text });
+            else
+            {
+                para.Inlines.Add(new Run { Text = content });
+            }
         }
 
         return para;
@@ -174,8 +199,8 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
 
     private void OnImageTapped(object sender, TappedRoutedEventArgs e)
     {
-        var image = (sender as Image).DataContext as AppImage;
-        if (image is not null)
+        var image = (sender as Image)?.DataContext as AppImage;
+        if (image is not null && Text?.Pictures is not null)
         {
             new GalleryWindow(image, [.. Text.Pictures]).Activate();
         }

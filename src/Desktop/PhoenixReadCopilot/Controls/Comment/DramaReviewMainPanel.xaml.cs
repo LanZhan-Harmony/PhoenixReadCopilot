@@ -21,6 +21,7 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
     {
         ReviewScrollView.ViewChanged += OnViewChanged;
         ReviewScrollView.SizeChanged += OnScrollViewSizeChanged;
+        ReviewCommentBox?.UpdateLoginState();
         if (ViewModel is null)
         {
             return;
@@ -96,6 +97,7 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
     {
         CheckSortType();
         CheckReviewCount();
+        ReviewCommentBox?.UpdateLoginState();
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -145,18 +147,6 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
         {
             ViewModel.ChangeSortTypeCommand.Execute(sortOrder);
         }
-    }
-
-    private async void OnSendReviewClick(object sender, RoutedEventArgs e)
-    {
-        var text = ReviewInputBox.Text?.Trim();
-        if (string.IsNullOrWhiteSpace(text) || ViewModel is null)
-        {
-            return;
-        }
-
-        await ViewModel.SendReviewCommand.ExecuteAsync(text);
-        ReviewInputBox.Text = string.Empty;
     }
 }
 

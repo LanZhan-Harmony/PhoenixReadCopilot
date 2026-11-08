@@ -32,6 +32,9 @@ public sealed partial class VideoPlayerPageViewModel
 
     private CancellationTokenSource? _pageLoadCancellationTokenSource;
     private CancellationTokenSource? _dashLoadCancellationTokenSource;
+    private CancellationTokenSource? _preloadCancellationTokenSource;
+    private string? _preloadedEpisodeVideoId;
+    private IReadOnlyList<PlaybackMedia>? _preloadedMediaList;
 
     private int _initialProgress;
     private bool _isFormatChanging;

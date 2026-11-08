@@ -53,6 +53,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         Player.SetEndAction(PlayerMediaEnded);
         Player.SetReloadAction(ReloadPart);
         Player.SetSpeedAction(PlayerSpeedChanged);
+        Player.SetPlayNextAction(() => PlayNextVideoCommand.Execute(default));
+        Player.SetPlayPreviousAction(() => PlayPreviousVideoCommand.Execute(default));
     }
 
     /// <summary>
@@ -168,26 +170,45 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             CancelDashLoad();
         }
 
-        IsMediaLoading = true;
+        var isPreloadHit = _preloadedEpisodeVideoId == episode.VideoId && _preloadedMediaList is { Count: > 0 };
+        if (!isPreloadHit)
+        {
+            IsMediaLoading = true;
+        }
+
         try
         {
             _dashLoadCancellationTokenSource = new CancellationTokenSource();
             _currentVideoId = episode.VideoId;
 
-            // 解析红果短剧媒体源（包含各清晰度与 AES-128 CENC 解密密钥）
-            var mediaList = await _apiClient.ResolveMediaAsync(
-                _seriesId,
-                episode.VideoId,
-                _dashLoadCancellationTokenSource.Token
-            );
+            IReadOnlyList<PlaybackMedia>? mediaList = null;
+
+            // 优先检查下一集预载缓存
+            if (isPreloadHit)
+            {
+                mediaList = _preloadedMediaList;
+                _preloadedEpisodeVideoId = null;
+                _preloadedMediaList = null;
+            }
+            else
+            {
+                // 解析红果短剧媒体源（包含各清晰度与 AES-128 CENC 解密密钥）
+                mediaList = await _apiClient.ResolveMediaAsync(
+                    _seriesId,
+                    episode.VideoId,
+                    _dashLoadCancellationTokenSource.Token
+                );
+            }
 
             if (mediaList is null || mediaList.Count == 0)
             {
+                IsMediaLoading = false;
                 return;
             }
 
             _currentMediaList = mediaList;
             InitializePlaybackMedias(mediaList);
+            IsMediaLoading = false;
         }
         catch (Exception ex)
         {
@@ -287,6 +308,9 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         // 重置初始进度，避免影响其它视频
         _initialProgress = 0;
         _isFormatChanging = false;
+
+        // 后台轻量预载下一集，保持低内存且无缝秒切
+        PreloadNextEpisodeMedia();
     }
 
     [RelayCommand]

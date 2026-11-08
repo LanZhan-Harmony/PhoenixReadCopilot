@@ -1,60 +1,54 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Components;
-using Richasy.BiliKernel.Models.Appearance;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 表情面板.
 /// </summary>
-public sealed partial class EmotePanel : EmotePanelBase
+public sealed partial class EmotePanel : UserControl
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmotePanel"/> class.
+    /// 表情列表.
     /// </summary>
-    public EmotePanel() => InitializeComponent();
+    public IReadOnlyList<EmojiItem> Emojis => EmojiHelper.Emojis;
+
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public EmoteModuleViewModel ViewModel { get; }
 
     /// <summary>
     /// 表情被选中.
     /// </summary>
-    public event EventHandler<string> ItemClick;
+    public event EventHandler<string>? ItemClick;
 
-    /// <inheritdoc/>
-    protected override async void OnControlLoaded()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EmotePanel"/> class.
+    /// </summary>
+    public EmotePanel()
     {
-        await ViewModel.InitializeCommand.ExecuteAsync(default);
-        await Task.Delay(400);
-        PackageView.Select(0);
+        ViewModel = Ioc.Default.GetRequiredService<EmoteModuleViewModel>();
+        InitializeComponent();
+        Loaded += OnLoaded;
     }
 
-    protected override void OnControlUnloaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        PackageView.ItemsSource = null;
-        EmoteView.ItemsSource = null;
-    }
-
-    private void OnPackageChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
-    {
-        var package = sender.SelectedItem as EmotePackage;
-        EmoteView.ItemsSource = package?.Images;
+        if (EmoteView.ItemsSource is null)
+        {
+            EmoteView.ItemsSource = Emojis;
+        }
     }
 
     private void OnEmoteViewItemInvoked(ItemsView sender, ItemsViewItemInvokedEventArgs args)
     {
-        var emote = args.InvokedItem as Emote;
-        ItemClick?.Invoke(this, emote?.Key ?? string.Empty);
+        if (args.InvokedItem is EmojiItem emoji)
+        {
+            ItemClick?.Invoke(this, emoji.Key);
+        }
     }
-}
-
-/// <summary>
-/// 表情面板基类.
-/// </summary>
-public abstract class EmotePanelBase : LayoutUserControlBase<EmoteModuleViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmotePanelBase"/> class.
-    /// </summary>
-    protected EmotePanelBase() => ViewModel = Ioc.Default.GetRequiredService<EmoteModuleViewModel>();
 }

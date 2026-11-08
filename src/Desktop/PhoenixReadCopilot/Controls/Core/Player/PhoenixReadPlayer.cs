@@ -13,7 +13,7 @@ using Windows.Foundation;
 
 namespace PhoenixReadCopilot.Controls.Core;
 
-public sealed partial class BiliPlayer : PlayerControlBase
+public sealed partial class PhoenixReadPlayer : PlayerControlBase
 {
     private readonly AppSettings _settings;
 
@@ -39,11 +39,13 @@ public sealed partial class BiliPlayer : PlayerControlBase
     private DateTimeOffset? _lastPressedTime;
     private DateTimeOffset? _lastRightArrowPressedTime;
     private bool? _isPointerHasPressed;
+    private int _wheelDeltaAccumulator;
+    private DateTimeOffset _lastWheelTriggerTime = DateTimeOffset.MinValue;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BiliPlayer"/> class.
+    /// Initializes a new instance of the <see cref="PhoenixReadPlayer"/> class.
     /// </summary>
-    public BiliPlayer()
+    public PhoenixReadPlayer()
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
         InitializeComponent();
@@ -110,14 +112,12 @@ public sealed partial class BiliPlayer : PlayerControlBase
         ViewModel.SetIsTextBoxFocusedFunc(IsTextBoxFocused);
         SizeChanged += OnSizeChanged;
 
-        SetTransportVisibility(true);
         DispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
             () =>
             {
                 ArrangeSubtitleSize();
                 MeasureTransportTriggerRect();
-                SetTransportVisibility(false);
             }
         );
 
@@ -223,6 +223,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
         _interactionControl.ManipulationStarted += OnInteractionControlManipulationStarted;
         _interactionControl.ManipulationDelta += OnInteractionControlManipulationDelta;
         _interactionControl.ManipulationCompleted += OnInteractionControlManipulationCompleted;
+        _interactionControl.PointerWheelChanged += OnInteractionControlPointerWheelChanged;
     }
 
     private void UnhookInteractionControlEvents()
@@ -233,6 +234,7 @@ public sealed partial class BiliPlayer : PlayerControlBase
             _interactionControl.ManipulationStarted -= OnInteractionControlManipulationStarted;
             _interactionControl.ManipulationDelta -= OnInteractionControlManipulationDelta;
             _interactionControl.ManipulationCompleted -= OnInteractionControlManipulationCompleted;
+            _interactionControl.PointerWheelChanged -= OnInteractionControlPointerWheelChanged;
         }
     }
 

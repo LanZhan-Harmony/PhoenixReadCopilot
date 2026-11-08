@@ -81,6 +81,25 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
+        if (!DispatcherQueue.HasThreadAccess)
+        {
+            var tcs = new TaskCompletionSource();
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                try
+                {
+                    await ShowTipAsync(text, type);
+                    tcs.TrySetResult();
+                }
+                catch (Exception ex)
+                {
+                    tcs.TrySetException(ex);
+                }
+            });
+            await tcs.Task;
+            return;
+        }
+
         var popup = new TipPopup() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);

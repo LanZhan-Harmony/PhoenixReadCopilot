@@ -23,9 +23,9 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
     public VideoPlayerPage()
     {
         InitializeComponent();
-        BiliPlayer.InjectDanmakuControlFunc(CreateDanmakuPanel);
-        BiliPlayer.InjectTransportControlFunc(CreateTransportControl);
-        BiliPlayer.InjectSubtitleControlFunc(CreateSubtitleControl);
+        PhoenixReadPlayer.InjectDanmakuControlFunc(CreateDanmakuPanel);
+        PhoenixReadPlayer.InjectTransportControlFunc(CreateTransportControl);
+        PhoenixReadPlayer.InjectSubtitleControlFunc(CreateSubtitleControl);
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
             return false;
         }
 
-        BiliPlayer.MarkRightArrowKeyPressedTime();
+        PhoenixReadPlayer.MarkRightArrowKeyPressedTime();
         return true;
     }
 
@@ -65,7 +65,7 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
             return false;
         }
 
-        BiliPlayer.CancelRightArrowKey();
+        PhoenixReadPlayer.CancelRightArrowKey();
         return true;
     }
 

@@ -62,7 +62,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
             DownloadFlyout.Items.Add(menuItem);
         }
 
-        if (ViewModel.Parts is not null || ViewModel.Episodes is not null)
+        if (ViewModel.Episodes is { Count: > 0 })
         {
             DownloadFlyout.Items.Add(new MenuFlyoutSeparator());
             var partHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;

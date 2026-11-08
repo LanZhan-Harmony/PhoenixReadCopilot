@@ -34,10 +34,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             _configState.RollingSpeed = (float)(config.RollingSpeedBase.Value * 0.02f * _scale);
         }
 
-        Logger.Log(
-            $"Initialize: LogicalSize={CanvasWidth}x{CanvasHeight}, Scale={_scale}, DPI={_dpi}"
-        );
-
         // 🚀 优化 #5：纹理缓存 + 自动清理
         // 策略：弹幕在屏幕上时使用缓存，消失后立即释放
         // 优点：保留性能优势，同时避免内存累积
@@ -86,8 +82,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
 
         // 订阅 CompositionTarget.Rendering 作为渲染时机信号
         CompositionTarget.Rendering += OnRenderingSignal;
-
-        Logger.Log("DanmakuDirectXRender is created (Hybrid Rendering Mode)");
     }
 
     /// <summary>
@@ -116,8 +110,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 }
             }
         );
-
-        Logger.Log($"Configuration updated");
     }
 
     /// <summary>
@@ -143,8 +135,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         _dpi = 96.0f * _scale;
         CanvasWidth = _resourceManager.CanvasWidth;
         CanvasHeight = _resourceManager.CanvasHeight;
-
-        Logger.Log($"Scale changed: {_scale}, DPI={_dpi}, Canvas={CanvasWidth}x{CanvasHeight}");
     }
 
     private void OnResourceManagerSizeChanged(object? sender, (double Width, double Height) size)
@@ -162,8 +152,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             _renderLayerList[i]
                 .UpdateYSlotManagerLength((uint)CanvasHeight, _configState.RollingAreaRatio);
         }
-
-        Logger.Log($"Size changed: Canvas={CanvasWidth}x{CanvasHeight}");
     }
 
     public void RenderDanmakuItem(uint layerId, DanmakuItem danmakuItem)
@@ -725,8 +713,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         {
             _renderLayerList[i].Clear(_resourceManager.ObjectPool);
         }
-
-        Debug.WriteLine("DanmakuDirectXRender is cleared");
     }
 
     public void Start()
@@ -737,15 +723,12 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
 
         // 启动游戏循环调度器（用于渲染）
         _gameLoopThread?.StartDispatcher();
-
-        Debug.WriteLine("DanmakuDirectXRender is started (Hybrid Rendering Mode)");
     }
 
     public void Pause()
     {
         _isPaused = true;
         _frameStopwatch.Stop();
-        Debug.WriteLine("DanmakuDirectXRender is paused");
     }
 
     public void Stop()
@@ -756,7 +739,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         _gameLoopThread?.StopDispatcher();
 
         Clear();
-        Logger.Log("DanmakuDirectXRender is stopped");
     }
 
     public void Dispose()
@@ -803,8 +785,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
 
         // 10. 最后释放资源管理器（包含 DirectX 资源）
         _resourceManager?.Dispose();
-
-        Logger.Log("DanmakuDirectXRender is disposed");
     }
 
     private void RenderDebugInfo(int totalCount)
@@ -853,18 +833,12 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
     /// <summary>
     /// 游戏循环启动时调用.
     /// </summary>
-    void IGameLoopClient.OnGameLoopStarting()
-    {
-        Logger.Log("Game loop thread started");
-    }
+    void IGameLoopClient.OnGameLoopStarting() { }
 
     /// <summary>
     /// 游戏循环停止时调用.
     /// </summary>
-    void IGameLoopClient.OnGameLoopStopped()
-    {
-        Logger.Log("Game loop thread stopped");
-    }
+    void IGameLoopClient.OnGameLoopStopped() { }
 
     #endregion
 

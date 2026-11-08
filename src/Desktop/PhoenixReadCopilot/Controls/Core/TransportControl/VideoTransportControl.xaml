@@ -36,6 +36,8 @@
                         IsThumbToolTipEnabled="False"
                         Maximum="{x:Bind ViewModel.Duration, Mode=OneWay}"
                         ValueChanged="OnProgressSliderValueChanged"
+                        PointerReleased="OnProgressSliderPointerReleased"
+                        PointerCaptureLost="OnProgressSliderPointerCaptureLost"
                         Value="{x:Bind ViewModel.Position, Mode=OneWay}"/>
                 <TextBlock x:Name="DurationText"
                            Grid.Column="2"

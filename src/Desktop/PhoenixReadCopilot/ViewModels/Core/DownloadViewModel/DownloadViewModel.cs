@@ -3,8 +3,9 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Services;
-using Richasy.BiliKernel.Models.Media;
+using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -50,24 +51,30 @@ public sealed partial class DownloadViewModel : ViewModelBase
     public void InitializeMetas(
         string url,
         IReadOnlyCollection<PlayerFormatInformation>? formats,
-        IReadOnlyCollection<VideoPart>? parts = default,
         int currentPart = 1
     )
     {
         _currentPartIndex = currentPart;
         Formats = formats is null ? [] : [.. formats];
-        Parts = parts is null ? default : [.. parts];
         MetaInitialized?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
     /// 初始化红果短剧元数据.
     /// </summary>
-    public void InitializeDrama(string seriesId, string title, string coverUrl)
+    public void InitializeDrama(
+        string seriesId,
+        string title,
+        string coverUrl,
+        IReadOnlyList<Episode>? episodes = default,
+        Episode? currentEpisode = default
+    )
     {
         _seriesId = seriesId;
         _seriesTitle = title;
         _coverUrl = coverUrl;
+        Episodes = episodes is not null ? [.. episodes] : null;
+        CurrentEpisode = currentEpisode;
     }
 
     /// <summary>
@@ -79,9 +86,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
         _seriesTitle = string.Empty;
         _coverUrl = string.Empty;
         _currentPartIndex = 0;
-        Formats = null;
-        Parts = null;
         Episodes = null;
+        CurrentEpisode = null;
+        Formats = null;
     }
 
     /// <summary>
@@ -90,20 +97,33 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private async Task DownloadWithFormatAsync(PlayerFormatInformation? format = default)
     {
-        var part =
-            Parts?.FirstOrDefault(p => p.Index == _currentPartIndex) ?? Parts?.FirstOrDefault();
-        if (part is null)
+        if (CurrentEpisode is not null)
         {
-            _appViewModel.ShowTipCommand.Execute(("未能获取当前分集信息", InfoType.Warning));
+            var ep = CurrentEpisode;
+            await DownloadSingleEpisodeAsync(
+                _seriesId,
+                ep.VideoId,
+                ep.Number,
+                string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
+                format
+            );
             return;
         }
 
-        await DownloadSingleEpisodeAsync(
-            _seriesId,
-            part.Identifier.Id,
-            part.Index,
-            part.Identifier.Title
-        );
+        if (Episodes is { Count: > 0 })
+        {
+            var ep = Episodes.FirstOrDefault(e => e.Number == _currentPartIndex) ?? Episodes[0];
+            await DownloadSingleEpisodeAsync(
+                _seriesId,
+                ep.VideoId,
+                ep.Number,
+                string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
+                format
+            );
+            return;
+        }
+
+        _appViewModel.ShowTipCommand.Execute(("未能获取当前分集信息", InfoType.Warning));
     }
 
     /// <summary>
@@ -143,9 +163,17 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private async Task DownloadDanmakuAsync()
     {
-        var part =
-            Parts?.FirstOrDefault(p => p.Index == _currentPartIndex) ?? Parts?.FirstOrDefault();
-        if (part is null || string.IsNullOrEmpty(_seriesId))
+        string? videoId = CurrentEpisode?.VideoId;
+        int epNumber = CurrentEpisode?.Number ?? _currentPartIndex;
+
+        if (string.IsNullOrEmpty(videoId) && Episodes is { Count: > 0 })
+        {
+            var ep = Episodes.FirstOrDefault(e => e.Number == _currentPartIndex) ?? Episodes[0];
+            videoId = ep.VideoId;
+            epNumber = ep.Number;
+        }
+
+        if (string.IsNullOrEmpty(videoId) || string.IsNullOrEmpty(_seriesId))
         {
             _appViewModel.ShowTipCommand.Execute(("无可用弹幕数据", InfoType.Warning));
             return;
@@ -153,21 +181,16 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         try
         {
-            var danmakuPage = await _apiClient.GetDanmakuAsync(
-                _seriesId,
-                part.Identifier.Id,
-                0,
-                3600000
-            );
-            var fileName = $"{SanitizeFileName(_seriesTitle)}_第{part.Index}集_弹幕.xml";
+            var danmakuPage = await _apiClient.GetDanmakuAsync(_seriesId, videoId, 0, 3600000);
+            var fileName = $"{SanitizeFileName(_seriesTitle)}_第{epNumber}集_弹幕.xml";
             var savePath = Path.Combine(_downloadPath, fileName);
 
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             sb.AppendLine("<i>");
-            sb.AppendLine($"<chatserver>phoenixread</chatserver>");
-            sb.AppendLine($"<chatid>{part.Identifier.Id}</chatid>");
-            sb.AppendLine($"<mission>0</mission>");
+            sb.AppendLine("<chatserver>phoenixread</chatserver>");
+            sb.AppendLine($"<chatid>{videoId}</chatid>");
+            sb.AppendLine("<mission>0</mission>");
             sb.AppendLine($"<maxlimit>{danmakuPage.Items.Count}</maxlimit>");
 
             foreach (var item in danmakuPage.Items)
@@ -199,24 +222,25 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private async Task BatchDownloadAllPartsAsync()
     {
-        if (Parts is null || Parts.Count == 0 || string.IsNullOrEmpty(_seriesId))
+        if (string.IsNullOrEmpty(_seriesId) || Episodes is not { Count: > 0 })
         {
             _appViewModel.ShowTipCommand.Execute(("无分集可下载", InfoType.Warning));
             return;
         }
 
+        var episodesToDownload = Episodes.ToList();
         _appViewModel.ShowTipCommand.Execute(
-            ($"开始后台批量下载全部 {Parts.Count} 集...", InfoType.Information)
+            ($"开始后台批量下载全部 {episodesToDownload.Count} 集...", InfoType.Information)
         );
         _ = Task.Run(async () =>
         {
-            foreach (var part in Parts)
+            foreach (var ep in episodesToDownload)
             {
                 await DownloadSingleEpisodeAsync(
                     _seriesId,
-                    part.Identifier.Id,
-                    part.Index,
-                    part.Identifier.Title,
+                    ep.VideoId,
+                    ep.Number,
+                    string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
                     silent: true
                 );
             }
@@ -234,12 +258,13 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private async Task BatchDownloadSelectedPartsAsync(string selection)
     {
-        if (Parts is null || Parts.Count == 0 || string.IsNullOrEmpty(_seriesId))
+        if (string.IsNullOrEmpty(_seriesId) || Episodes is not { Count: > 0 })
         {
             return;
         }
 
-        var indices = ParseSelection(selection, Parts.Count);
+        var totalCount = Episodes.Count;
+        var indices = ParseSelection(selection, totalCount);
         if (indices.Count == 0)
         {
             _appViewModel.ShowTipCommand.Execute(
@@ -255,14 +280,14 @@ public sealed partial class DownloadViewModel : ViewModelBase
         {
             foreach (var idx in indices)
             {
-                var part = Parts.FirstOrDefault(p => p.Index == idx);
-                if (part is not null)
+                var ep = Episodes.FirstOrDefault(e => e.Number == idx);
+                if (ep is not null)
                 {
                     await DownloadSingleEpisodeAsync(
                         _seriesId,
-                        part.Identifier.Id,
-                        part.Index,
-                        part.Identifier.Title,
+                        ep.VideoId,
+                        ep.Number,
+                        string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
                         silent: true
                     );
                 }
@@ -280,6 +305,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         string videoId,
         int index,
         string title,
+        PlayerFormatInformation? preferFormat = default,
         bool silent = false
     )
     {
@@ -288,13 +314,12 @@ public sealed partial class DownloadViewModel : ViewModelBase
             if (!silent)
             {
                 _appViewModel.ShowTipCommand.Execute(
-                    ($"正在解析并下载第 {index} 集...", InfoType.Information)
+                    ($"正在解析第 {index} 集直链地址...", InfoType.Information)
                 );
             }
 
             var mediaList = await _apiClient.ResolveMediaAsync(seriesId, videoId);
-            var media = mediaList?.FirstOrDefault();
-            if (media is null || string.IsNullOrEmpty(media.Url))
+            if (mediaList is null || mediaList.Count == 0)
             {
                 if (!silent)
                 {
@@ -305,51 +330,156 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 return;
             }
 
+            // 如果指定了画质，优先匹配指定清晰度；否则取最高画质
+            PlaybackMedia? media = null;
+            if (preferFormat is not null)
+            {
+                media = mediaList.FirstOrDefault(m =>
+                    PlayerFormatItemViewModel.GetQualityScore(m) == preferFormat.Quality
+                );
+            }
+            media ??= mediaList
+                .OrderByDescending(PlayerFormatItemViewModel.GetQualityScore)
+                .FirstOrDefault();
+
+            if (media is null || string.IsNullOrEmpty(media.Url))
+            {
+                if (!silent)
+                {
+                    _appViewModel.ShowTipCommand.Execute(
+                        ($"第 {index} 集视频直链不存在", InfoType.Error)
+                    );
+                }
+                return;
+            }
+
             var fileName = $"{SanitizeFileName(_seriesTitle)} - 第{index}集.mp4";
             var outputPath = Path.Combine(_downloadPath, fileName);
+            var tempPath = Path.Combine(_downloadPath, $".temp_{index}_{Guid.NewGuid():N}.mp4");
 
-            // 检查 ffmpeg 工具路径
-            var ffmpegExe = File.Exists(_ffmpegPath) ? _ffmpegPath : "ffmpeg";
-            var referer = !string.IsNullOrEmpty(media.Referer)
-                ? media.Referer
-                : "https://novel.snssdk.com";
-
-            // 组装 FFmpeg 命令 (利用 -decryption_key 解密流)
-            var args = new System.Text.StringBuilder();
-            args.Append("-y ");
-            if (!string.IsNullOrEmpty(media.DecryptionKey))
+            try
             {
-                args.Append($"-decryption_key {media.DecryptionKey} ");
-            }
-            args.Append($"-referer \"{referer}\" ");
-            args.Append($"-i \"{media.Url}\" -c copy \"{outputPath}\"");
-
-            var startInfo = new ProcessStartInfo(ffmpegExe, args.ToString())
-            {
-                CreateNoWindow = true,
-                UseShellExecute = false,
-            };
-
-            using var process = Process.Start(startInfo);
-            if (process != null)
-            {
-                await process.WaitForExitAsync();
-                if (process.ExitCode == 0)
+                if (!silent)
                 {
+                    _appViewModel.ShowTipCommand.Execute(
+                        ($"正在高速下载第 {index} 集数据...", InfoType.Information)
+                    );
+                }
+
+                // 统一通过 HttpClient 下载媒体原始数据流，避免 FFmpeg 访问网络因 UA/握手被 CDN 返回 403 / EIO -5
+                using var request = new HttpRequestMessage(HttpMethod.Get, media.Url);
+                var referer = !string.IsNullOrEmpty(media.Referer) ? media.Referer : "https://novel.snssdk.com";
+                request.Headers.Referrer = new Uri(referer);
+                request.Headers.TryAddWithoutValidation(
+                    "User-Agent",
+                    "com.phoenix.read/73532 (Linux; U; Android 16; zh_CN; 25053RT47C; Build/BP2A.250605.031.A3; Cronet/TTNetVersion:04657795 2026-01-23 QuicVersion:c67e9834 2025-09-08)"
+                );
+
+                using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode();
+                    await using var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                    await response.Content.CopyToAsync(fs);
+                }
+
+                // 1. 无 CENC 加密，直接将临时文件移动为正式输出文件
+                if (string.IsNullOrEmpty(media.DecryptionKey))
+                {
+                    if (File.Exists(outputPath))
+                    {
+                        File.Delete(outputPath);
+                    }
+                    File.Move(tempPath, outputPath);
+
                     if (!silent)
                     {
                         _appViewModel.ShowTipCommand.Execute(
-                            ($"第 {index} 集已成功下载解密至: {outputPath}", InfoType.Success)
+                            ($"第 {index} 集已成功下载至: {outputPath}", InfoType.Success)
                         );
                         if (_openFolderAfterDownload)
                         {
                             Process.Start("explorer.exe", $"/select,\"{outputPath}\"");
                         }
                     }
+                    return;
                 }
-                else
+
+                // 2. 包含 CENC AES-128 加密密钥，调用本地 FFmpeg 对本地文件进行极速解密解包 (无网络依赖，毫秒级完成)
+                var ffmpegExe = ResolveFFmpegPath();
+                if (string.IsNullOrEmpty(ffmpegExe))
                 {
-                    _logger.LogWarning($"FFmpeg 下载第 {index} 集退出码非零: {process.ExitCode}");
+                    _appViewModel.ShowTipCommand.Execute(
+                        (
+                            $"第 {index} 集数据已下载，但包含 CENC 加密，未在系统环境变量或应用目录找到 ffmpeg.exe，无法自动解密",
+                            InfoType.Error
+                        )
+                    );
+                    return;
+                }
+
+                if (!silent)
+                {
+                    _appViewModel.ShowTipCommand.Execute(
+                        ($"正在通过 FFmpeg 本地解密第 {index} 集...", InfoType.Information)
+                    );
+                }
+
+                var args = new System.Text.StringBuilder();
+                args.Append("-y ");
+                args.Append($"-decryption_key {media.DecryptionKey} ");
+                args.Append($"-i \"{tempPath}\" -c copy \"{outputPath}\"");
+
+                var startInfo = new ProcessStartInfo(ffmpegExe, args.ToString())
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                };
+
+                using var process = Process.Start(startInfo);
+                if (process != null)
+                {
+                    var errorOutput = await process.StandardError.ReadToEndAsync();
+                    await process.WaitForExitAsync();
+                    if (process.ExitCode == 0)
+                    {
+                        if (File.Exists(tempPath))
+                        {
+                            try { File.Delete(tempPath); } catch { }
+                        }
+
+                        if (!silent)
+                        {
+                            _appViewModel.ShowTipCommand.Execute(
+                                ($"第 {index} 集已成功解密下载至: {outputPath}", InfoType.Success)
+                            );
+                            if (_openFolderAfterDownload)
+                            {
+                                Process.Start("explorer.exe", $"/select,\"{outputPath}\"");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogError($"FFmpeg 本地解密第 {index} 集失败 (exit code {process.ExitCode}): {errorOutput}");
+                        if (!silent)
+                        {
+                            _appViewModel.ShowTipCommand.Execute(
+                                (
+                                    $"第 {index} 集解密失败 (FFmpeg 退出代码: {process.ExitCode})",
+                                    InfoType.Error
+                                )
+                            );
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (File.Exists(tempPath) && File.Exists(outputPath))
+                {
+                    try { File.Delete(tempPath); } catch { }
                 }
             }
         }
@@ -363,6 +493,38 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 );
             }
         }
+    }
+
+    private string? ResolveFFmpegPath()
+    {
+        if (File.Exists(_ffmpegPath))
+        {
+            return _ffmpegPath;
+        }
+
+        var appBaseFfmpeg = Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe");
+        if (File.Exists(appBaseFfmpeg))
+        {
+            return appBaseFfmpeg;
+        }
+
+        // 探测系统 PATH 中是否存在 ffmpeg
+        var pathEnv = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+        var paths = pathEnv.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var p in paths)
+        {
+            try
+            {
+                var candidate = Path.Combine(p, "ffmpeg.exe");
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
+            catch { }
+        }
+
+        return null;
     }
 
     private static List<int> ParseSelection(string selection, int max)
@@ -404,23 +566,6 @@ public sealed partial class DownloadViewModel : ViewModelBase
             new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
         var regex = new Regex($"[{Regex.Escape(invalid)}]");
         return regex.Replace(name, "_");
-    }
-
-    /// <summary>
-    /// 初始化基础数据 (PGC 兼容).
-    /// </summary>
-    public void InitializeMetas(
-        string epUrl,
-        string ssUrl,
-        IReadOnlyCollection<PlayerFormatInformation>? formats,
-        IReadOnlyCollection<EpisodeInformation>? episodes = default,
-        int currentEpisode = 1
-    )
-    {
-        _currentPartIndex = currentEpisode;
-        Formats = formats is null ? [] : [.. formats];
-        Episodes = episodes is null ? default : [.. episodes];
-        MetaInitialized?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>

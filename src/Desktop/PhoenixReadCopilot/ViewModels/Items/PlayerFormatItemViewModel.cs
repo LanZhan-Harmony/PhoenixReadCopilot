@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadApi;
-using Richasy.BiliKernel.Models.Media;
+using PhoenixReadCopilot.Core.Models;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -32,12 +32,14 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     /// 使用红果 PlaybackMedia 初始化画质项.
     /// </summary>
     public PlayerFormatItemViewModel(PlaybackMedia media)
-        : base(new PlayerFormatInformation(
-            GetQualityScore(media),
-            FormatDescription(media),
-            needVip: false,
-            needLogin: false
-        ))
+        : base(
+            new PlayerFormatInformation(
+                GetQualityScore(media),
+                FormatDescription(media),
+                NeedVip: false,
+                NeedLogin: false
+            )
+        )
     {
         PlaybackMedia = media;
         IsEnabled = true;
@@ -126,9 +128,10 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
                 MediaDefinition.P540 => "540P 高清",
                 MediaDefinition.P480 => "480P 标清",
                 MediaDefinition.P360 => "360P 流畅",
-                _ => !string.IsNullOrWhiteSpace(media.QualityName) && !media.QualityName.Equals("normal", StringComparison.OrdinalIgnoreCase)
+                _ => !string.IsNullOrWhiteSpace(media.QualityName)
+                && !media.QualityName.Equals("normal", StringComparison.OrdinalIgnoreCase)
                     ? media.QualityName
-                    : "标清"
+                    : "标清",
             };
         }
 
