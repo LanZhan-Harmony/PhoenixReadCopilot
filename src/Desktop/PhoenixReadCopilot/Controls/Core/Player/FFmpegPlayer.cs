@@ -1,5 +1,7 @@
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 
@@ -32,11 +34,18 @@ public sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewMod
     protected override void OnApplyTemplate()
     {
         var rootGrid = GetTemplateChild("RootGrid") as Grid;
-        _playerElement = new MediaPlayerElement();
-        _playerElement.HorizontalAlignment = HorizontalAlignment.Stretch;
-        _playerElement.VerticalAlignment = VerticalAlignment.Stretch;
-        _playerElement.AreTransportControlsEnabled = false;
-        rootGrid.Children.Add(_playerElement);
+        _playerElement = new MediaPlayerElement
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            AreTransportControlsEnabled = false,
+            Background = new SolidColorBrush(Colors.Black),
+        };
+        if (rootGrid is not null)
+        {
+            rootGrid.Background = new SolidColorBrush(Colors.Black);
+            rootGrid.Children.Add(_playerElement);
+        }
     }
 
     /// <inheritdoc/>

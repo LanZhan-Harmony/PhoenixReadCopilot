@@ -55,6 +55,11 @@ public abstract partial class PlayerViewModelBase
     protected abstract Task OnSeekAsync(TimeSpan position);
 
     /// <summary>
+    /// 执行暂停操作.
+    /// </summary>
+    protected virtual Task OnPauseAsync() => Task.CompletedTask;
+
+    /// <summary>
     /// 设置音量.
     /// </summary>
     protected abstract void OnSetVolume(int value);
@@ -76,6 +81,17 @@ public abstract partial class PlayerViewModelBase
     {
         await SeekAsync(0);
         await ForcePlayAsync();
+    }
+
+    /// <summary>
+    /// 暂停播放.
+    /// </summary>
+    public async Task PauseAsync()
+    {
+        if (IsMediaLoaded())
+        {
+            await OnPauseAsync();
+        }
     }
 
     [RelayCommand]
@@ -371,4 +387,10 @@ public abstract partial class PlayerViewModelBase
 
         _reloadAction?.Invoke();
     }
+
+    [RelayCommand]
+    private void PlayNext() => _playNextAction?.Invoke();
+
+    [RelayCommand]
+    private void PlayPrevious() => _playPreviousAction?.Invoke();
 }

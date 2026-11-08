@@ -2,6 +2,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -81,7 +82,8 @@ public sealed partial class ChatMessageSectionDetailViewModel
         {
             IsSending = true;
             var now = DateTimeOffset.Now;
-            var msg = await _service.SendChatMessageAsync(InputText, Data.User);
+            var formatted = EmojiHelper.FormatEmojiText(InputText);
+            var msg = await _service.SendChatMessageAsync(formatted, Data.User);
             if (msg is not null)
             {
                 Messages.Add(new ChatMessageItemViewModel(msg));

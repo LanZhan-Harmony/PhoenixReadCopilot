@@ -81,7 +81,7 @@
                           MinHeight="200"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch">
-                        <core:BiliPlayer x:Name="BiliPlayer" ViewModel="{x:Bind ViewModel.Player, Mode=OneWay}"/>
+                        <core:PhoenixReadPlayer x:Name="PhoenixReadPlayer" ViewModel="{x:Bind ViewModel.Player, Mode=OneWay}"/>
                     </Grid>
                 </Grid>
 

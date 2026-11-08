@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Helpers;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Comment;
@@ -136,7 +137,8 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
             return;
         }
 
-        var finalText = string.IsNullOrEmpty(ReplyTip) ? Text : $"回复 @{ReplyTip} : {Text}";
+        var formattedText = EmojiHelper.FormatEmojiText(Text);
+        var finalText = string.IsNullOrEmpty(ReplyTip) ? formattedText : $"回复 @{ReplyTip} : {formattedText}";
         await SendCommand.ExecuteAsync(finalText);
         Text = string.Empty;
     }

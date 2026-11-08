@@ -60,4 +60,14 @@ public abstract partial class PlayerViewModelBase
             _displayRequest = null;
         });
     }
+
+    /// <summary>
+    /// 设置播放下一集动作.
+    /// </summary>
+    public void SetPlayNextAction(Action action) => _playNextAction = action;
+
+    /// <summary>
+    /// 设置播放上一集动作.
+    /// </summary>
+    public void SetPlayPreviousAction(Action action) => _playPreviousAction = action;
 }

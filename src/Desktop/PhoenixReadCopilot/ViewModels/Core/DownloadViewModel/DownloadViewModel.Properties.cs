@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Models.Settings;
-using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -26,13 +26,13 @@ public sealed partial class DownloadViewModel
     private string _coverUrl = string.Empty;
 
     [ObservableProperty]
-    public partial List<PlayerFormatInformation> Formats { get; set; }
+    public partial List<PlayerFormatInformation>? Formats { get; set; }
 
     [ObservableProperty]
-    public partial List<VideoPart>? Parts { get; set; }
+    public partial List<Episode>? Episodes { get; set; }
 
     [ObservableProperty]
-    public partial List<EpisodeInformation>? Episodes { get; set; }
+    public partial Episode? CurrentEpisode { get; set; }
 
     [ObservableProperty]
     public partial bool HasAvailableSubtitle { get; set; }
@@ -40,5 +40,5 @@ public sealed partial class DownloadViewModel
     /// <summary>
     /// 元数据初始化完成事件.
     /// </summary>
-    public event EventHandler MetaInitialized;
+    public event EventHandler? MetaInitialized;
 }

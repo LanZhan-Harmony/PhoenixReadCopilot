@@ -1,6 +1,3 @@
-using System.Net;
-using System.Net.Sockets;
-using System.Security;
 using System.Text;
 using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
@@ -20,7 +17,7 @@ public sealed partial class FFmpegPlayerViewModel
     /// <inheritdoc/>
     protected override Task OnCloseAsync()
     {
-        StopManifestServer();
+        DisposePreloadedSource();
 
         if (Player is null && _ffmpegSource is null)
         {
@@ -83,6 +80,21 @@ public sealed partial class FFmpegPlayerViewModel
         && (_ffmpegSource is not null || Player.PlaybackSession is not null);
 
     /// <inheritdoc/>
+    protected override Task OnPauseAsync()
+    {
+        if (Player is not null)
+        {
+            try
+            {
+                Player.Pause();
+            }
+            catch { }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc/>
     protected override Task OnTogglePlayPauseAsync()
     {
         if (!IsMediaLoaded() || Player?.PlaybackSession is null)
@@ -121,14 +133,22 @@ public sealed partial class FFmpegPlayerViewModel
             return Task.CompletedTask;
         }
 
-        if (Player.PlaybackSession?.CanSeek == false && !Player.CanSeek)
+        try
         {
-            _appViewModel.ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
-            return Task.CompletedTask;
+            if (Player.PlaybackSession?.CanSeek == false && !Player.CanSeek)
+            {
+                _appViewModel.ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
+                return Task.CompletedTask;
+            }
+
+            _hasEnded = false;
+            Player.Position = position;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "执行 Seek 失败.");
         }
 
-        _hasEnded = false;
-        Player.Position = position;
         return Task.CompletedTask;
     }
 
@@ -176,27 +196,99 @@ public sealed partial class FFmpegPlayerViewModel
     /// <inheritdoc/>
     protected override async Task OnLoadPlayDataAsync()
     {
-        if (Player is not null)
+        // 1. 无缝秒切：若命中预载源且已有 Player，直接替换 Player.Source，不销毁 Player、不解绑 Element，0 延迟无缝瞬播
+        if (
+            Player is not null
+            && !string.IsNullOrEmpty(_videoUrl)
+            && TryConsumePreloadedSource(_videoUrl, out var preloaded)
+        )
         {
-            await OnCloseAsync();
+            try
+            {
+                if (_ffmpegSource is not null)
+                {
+                    try
+                    {
+                        _ffmpegSource.PlaybackSession = null;
+                        _ffmpegSource.Dispose();
+                    }
+                    catch { }
+                    _ffmpegSource = null;
+                }
+
+                _ffmpegSource = preloaded;
+                if (_ffmpegSource.Duration > TimeSpan.Zero)
+                {
+                    Duration = Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
+                }
+
+                var playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
+                Player.Source = playbackItem;
+                if (_autoPlay)
+                {
+                    Player.Play();
+                }
+
+                _logger.LogInformation("命中下一集后台预载源，实现 0 秒无缝瞬播！");
+                return;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "无缝应用预载源失败，回退常规加载流程.");
+            }
         }
 
-        Player = CreatePlayer();
-        Player.AutoPlay = _autoPlay;
+        // 2. 常规加载流程（首次播放或未命中预载）
+        if (Player is null)
+        {
+            Player = CreatePlayer();
+            Player.AutoPlay = _autoPlay;
 
-        try
-        {
-            await LoadMediaSourceAsync();
-            _element?.SetMediaPlayer(Player);
+            try
+            {
+                await LoadMediaSourceAsync();
+                _element?.SetMediaPlayer(Player);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "FFmpeg 加载媒体失败.");
+                UpdateState(PlayerState.Failed);
+            }
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError(ex, "FFmpeg 加载媒体失败.");
-            UpdateState(PlayerState.Failed);
+            // 复用已有 Player，直接替换媒体源，避免黑屏与重新挂载开销
+            if (_ffmpegSource is not null)
+            {
+                try
+                {
+                    _ffmpegSource.PlaybackSession = null;
+                    _ffmpegSource.Dispose();
+                }
+                catch { }
+                _ffmpegSource = null;
+            }
+
+            try
+            {
+                await LoadMediaSourceAsync();
+                if (_autoPlay)
+                {
+                    Player.Play();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "FFmpeg 加载媒体失败.");
+                UpdateState(PlayerState.Failed);
+            }
         }
     }
 
-    private MediaSourceConfig CreateMediaSourceConfig()
+    private MediaSourceConfig CreateMediaSourceConfig(
+        string? decryptionKey = null,
+        string? referer = null
+    )
     {
         var config = new MediaSourceConfig();
         config.Video.VideoDecoderMode = VideoDecoderMode.Automatic;
@@ -205,21 +297,22 @@ public sealed partial class FFmpegPlayerViewModel
         config.General.ReadAheadBufferDuration = TimeSpan.FromSeconds(15);
         config.General.ReadAheadBufferSize = 16 * 1024 * 1024;
 
+        var refUrl = !string.IsNullOrEmpty(referer) ? referer : CustomReferer;
         var headerSb = new StringBuilder();
-        var referer = CustomReferer;
-        headerSb.Append($"Referer: {referer}\r\n");
+        headerSb.Append($"Referer: {refUrl}\r\n");
 
         var headerStr = headerSb.ToString();
         config.FFmpegOptions["headers"] = headerStr;
-        config.FFmpegOptions["referer"] = referer;
+        config.FFmpegOptions["referer"] = refUrl;
         config.FFmpegOptions["protocol_whitelist"] = "file,http,https,tcp,tls,crypto";
         config.FFmpegOptions["reconnect"] = 1;
         config.FFmpegOptions["reconnect_streamed"] = 1;
         config.FFmpegOptions["reconnect_on_network_error"] = 1;
 
-        if (!string.IsNullOrEmpty(DecryptionKey))
+        var key = !string.IsNullOrEmpty(decryptionKey) ? decryptionKey : DecryptionKey;
+        if (!string.IsNullOrEmpty(key))
         {
-            config.FFmpegOptions["decryption_key"] = DecryptionKey;
+            config.FFmpegOptions["decryption_key"] = key;
         }
 
         return config;
@@ -229,90 +322,10 @@ public sealed partial class FFmpegPlayerViewModel
     {
         var config = CreateMediaSourceConfig();
 
-        var onlyVideo = !string.IsNullOrEmpty(_videoUrl) && string.IsNullOrEmpty(_audioUrl);
-        var onlyAudio = string.IsNullOrEmpty(_videoUrl) && !string.IsNullOrEmpty(_audioUrl);
-
-        if (_videoSegment is not null || _audioSegment is not null)
+        var fallbackUrl = string.IsNullOrEmpty(_videoUrl) ? _audioUrl : _videoUrl;
+        if (!string.IsNullOrEmpty(fallbackUrl))
         {
-            var mpdFileName =
-                onlyVideo ? "DashVideoWithoutAudioTemplate.xml"
-                : onlyAudio ? "DashAudioWithoutVideoTemplate.xml"
-                : "DashVideoTemplate.xml";
-            var mpdFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", mpdFileName);
-            var mpdStr = File.Exists(mpdFilePath)
-                ? await File.ReadAllTextAsync(mpdFilePath)
-                : string.Empty;
-
-            var videoStr = string.Empty;
-            if (_videoSegment is not null && !string.IsNullOrEmpty(_videoUrl))
-            {
-                videoStr = $"""
-                    <Representation bandwidth="{_videoSegment.Bandwidth}" codecs="{_videoSegment.Codecs}" height="{_videoSegment.Height}" mimeType="{_videoSegment.MimeType}" id="{_videoSegment.Id}" width="{_videoSegment.Width}" startWithSap="1">
-                        <BaseURL>{SecurityElement.Escape(_videoUrl)}</BaseURL>
-                        <SegmentBase indexRange="{_videoSegment.IndexRange}">
-                            <Initialization range="{_videoSegment.Initialization}" />
-                        </SegmentBase>
-                    </Representation>
-                    """;
-            }
-
-            var audioStr = string.Empty;
-            if (_audioSegment is not null && !string.IsNullOrEmpty(_audioUrl))
-            {
-                audioStr = $"""
-                    <Representation bandwidth="{_audioSegment.Bandwidth}" codecs="{_audioSegment.Codecs}" mimeType="{_audioSegment.MimeType}" id="{_audioSegment.Id}">
-                        <BaseURL>{SecurityElement.Escape(_audioUrl)}</BaseURL>
-                        <SegmentBase indexRange="{_audioSegment.IndexRange}">
-                            <Initialization range="{_audioSegment.Initialization}" />
-                        </SegmentBase>
-                    </Representation>
-                    """;
-            }
-
-            videoStr = videoStr.Trim();
-            audioStr = audioStr.Trim();
-            mpdStr = mpdStr
-                .Replace("{video}", videoStr)
-                .Replace("{audio}", audioStr)
-                .Replace("{bufferTime}", "PT4S");
-
-            var durationSeconds = _customDuration > 0 ? _customDuration : Duration;
-            if (durationSeconds > 0)
-            {
-                mpdStr = mpdStr.Replace(
-                    "<MPD ",
-                    $"<MPD mediaPresentationDuration=\"PT{durationSeconds}S\" "
-                );
-            }
-
-            var port = StartManifestServer(mpdStr);
-            var manifestUrl = $"http://127.0.0.1:{port}/manifest.mpd";
-
-            try
-            {
-                _ffmpegSource = await FFmpegMediaSource.CreateFromUriAsync(manifestUrl, config);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "FFmpeg 打开 DASH MPD 失败，回退到直接加载流 URL.");
-                var fallbackUrl = string.IsNullOrEmpty(_videoUrl) ? _audioUrl : _videoUrl;
-                if (!string.IsNullOrEmpty(fallbackUrl))
-                {
-                    _ffmpegSource = await FFmpegMediaSource.CreateFromUriAsync(fallbackUrl, config);
-                }
-                else
-                {
-                    throw;
-                }
-            }
-        }
-        else
-        {
-            var fallbackUrl = string.IsNullOrEmpty(_videoUrl) ? _audioUrl : _videoUrl;
-            if (!string.IsNullOrEmpty(fallbackUrl))
-            {
-                _ffmpegSource = await FFmpegMediaSource.CreateFromUriAsync(fallbackUrl, config);
-            }
+            _ffmpegSource = await FFmpegMediaSource.CreateFromUriAsync(fallbackUrl, config);
         }
 
         if (_ffmpegSource is not null)
@@ -321,116 +334,9 @@ public sealed partial class FFmpegPlayerViewModel
             {
                 Duration = Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
             }
-            else if (_customDuration > 0)
-            {
-                Duration = _customDuration;
-            }
 
             var playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
             Player.Source = playbackItem;
-        }
-    }
-
-    private int StartManifestServer(string mpdContent)
-    {
-        StopManifestServer();
-
-        _manifestServerCts = new CancellationTokenSource();
-        var ct = _manifestServerCts.Token;
-
-        _manifestListener = new TcpListener(IPAddress.Loopback, 0);
-        _manifestListener.Start();
-        var port = ((IPEndPoint)_manifestListener.LocalEndpoint).Port;
-
-        var mpdBytes = Encoding.UTF8.GetBytes(mpdContent);
-        var listener = _manifestListener;
-
-        _ = Task.Run(
-            async () =>
-            {
-                try
-                {
-                    while (!ct.IsCancellationRequested)
-                    {
-                        var client = await listener.AcceptTcpClientAsync(ct).ConfigureAwait(false);
-                        _ = Task.Run(
-                            async () =>
-                            {
-                                try
-                                {
-                                    using (client)
-                                    using (var networkStream = client.GetStream())
-                                    {
-                                        var buffer = new byte[2048];
-                                        var read = await networkStream
-                                            .ReadAsync(buffer, ct)
-                                            .ConfigureAwait(false);
-                                        if (read <= 0)
-                                        {
-                                            return;
-                                        }
-
-                                        var header =
-                                            $"HTTP/1.1 200 OK\r\nContent-Type: application/dash+xml\r\nContent-Length: {mpdBytes.Length}\r\nConnection: close\r\n\r\n";
-                                        var headerBytes = Encoding.UTF8.GetBytes(header);
-                                        await networkStream
-                                            .WriteAsync(headerBytes, ct)
-                                            .ConfigureAwait(false);
-                                        await networkStream
-                                            .WriteAsync(mpdBytes, ct)
-                                            .ConfigureAwait(false);
-                                        await networkStream.FlushAsync(ct).ConfigureAwait(false);
-                                    }
-                                }
-                                catch
-                                {
-                                    // 忽略单个连接读写异常.
-                                }
-                            },
-                            ct
-                        );
-                    }
-                }
-                catch
-                {
-                    // 监听器已停止或取消.
-                }
-            },
-            ct
-        );
-
-        return port;
-    }
-
-    private void StopManifestServer()
-    {
-        if (_manifestServerCts is not null)
-        {
-            try
-            {
-                _manifestServerCts.Cancel();
-                _manifestServerCts.Dispose();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogDebug(ex, "取消清单服务令牌失败.");
-            }
-
-            _manifestServerCts = null;
-        }
-
-        if (_manifestListener is not null)
-        {
-            try
-            {
-                _manifestListener.Stop();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogDebug(ex, "停止清单监听服务失败.");
-            }
-
-            _manifestListener = null;
         }
     }
 }

@@ -46,7 +46,7 @@ public sealed partial class PgcPlayerPageViewModel
         _videoSegments = info.Videos;
         _audioSegments = info.Audios;
         Downloader.Clear();
-        Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(p)).ToList();
+        // Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(new PhoenixReadCopilot.Core.Models.PlayerFormatInformation(p.Quality, p.Description, p.NeedVip, p.NeedLogin))).ToList();
 
         var preferFormatSetting = _settings.PreferQuality;
         var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
@@ -74,13 +74,13 @@ public sealed partial class PgcPlayerPageViewModel
         }
 
         var episodeIndex = _view.Episodes.IndexOf(_episode);
-        Downloader.InitializeMetas(
+        /*Downloader.InitializeMetas(
             GetEpisodeUrl(),
             GetSeasonUrl(),
             info.Formats.AsReadOnly(),
             _view.Episodes?.Count > 1 ? _view.Episodes.AsReadOnly() : default,
             episodeIndex
-        );
+        );*/
 
         ChangeFormatCommand.Execute(selectedFormat);
     }

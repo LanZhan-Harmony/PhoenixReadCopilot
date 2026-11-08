@@ -42,6 +42,8 @@ public abstract partial class PlayerViewModelBase
     protected Action<double> _speedAction;
     protected Action _endAction;
     protected Action _reloadAction;
+    protected Action? _playNextAction;
+    protected Action? _playPreviousAction;
     protected Action _windowStateChangeAction;
     protected DisplayRequest _displayRequest;
     protected Func<bool> _isTextBoxFocusedFunc;

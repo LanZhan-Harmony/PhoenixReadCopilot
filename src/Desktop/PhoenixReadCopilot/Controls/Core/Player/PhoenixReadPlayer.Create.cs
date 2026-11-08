@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// Bili 播放器.
 /// </summary>
-public sealed partial class BiliPlayer
+public sealed partial class PhoenixReadPlayer
 {
     private Func<DanmakuControlBase> _createDanmakuControlFunc;
     private Func<FrameworkElement> _createTransportControlFunc;
@@ -240,18 +240,18 @@ public sealed partial class BiliPlayer
     private Grid CreateHiddenControlsContainer()
     {
         var grid = new Grid();
-        var increaseVolumeBtn = CreateHiddenButton(VirtualKey.Up, ViewModel.IncreaseVolumeCommand);
-        var decreaseVolumeBtn = CreateHiddenButton(
+        var playPreviousBtn = CreateHiddenButton(VirtualKey.Up, ViewModel.PlayPreviousCommand);
+        var playNextBtn = CreateHiddenButton(
             VirtualKey.Down,
-            ViewModel.DecreaseVolumeCommand
+            ViewModel.PlayNextCommand
         );
         var backwardBtn = CreateHiddenButton(VirtualKey.Left, ViewModel.BackwardSkipCommand);
         var miniBtn = CreateHiddenButton(VirtualKey.F9, ViewModel.ToggleCompactOverlayCommand);
         var fullBtn = CreateHiddenButton(VirtualKey.F11, ViewModel.ToggleFullScreenCommand);
         var fullWindowBtn = CreateHiddenButton(VirtualKey.F10, ViewModel.ToggleFullWindowCommand);
         var backBtn = CreateHiddenButton(VirtualKey.Escape, ViewModel.BackToDefaultModeCommand);
-        grid.Children.Add(increaseVolumeBtn);
-        grid.Children.Add(decreaseVolumeBtn);
+        grid.Children.Add(playPreviousBtn);
+        grid.Children.Add(playNextBtn);
         grid.Children.Add(backwardBtn);
         grid.Children.Add(miniBtn);
         grid.Children.Add(fullBtn);

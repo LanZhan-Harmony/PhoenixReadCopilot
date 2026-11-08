@@ -98,9 +98,9 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             }
         }
 
-        if (IsMediaLoaded() && !IsPaused)
+        if (IsMediaLoaded())
         {
-            await TogglePlayPauseAsync();
+            await PauseAsync();
         }
 
         _videoUrl = videoUrl;

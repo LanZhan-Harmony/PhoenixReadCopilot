@@ -22,9 +22,9 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
     public PgcPlayerPage()
     {
         InitializeComponent();
-        BiliPlayer.InjectDanmakuControlFunc(CreateDanmakuPanel);
-        BiliPlayer.InjectTransportControlFunc(CreateTransportControl);
-        BiliPlayer.InjectSubtitleControlFunc(CreateSubtitleControl);
+        PhoenixReadPlayer.InjectDanmakuControlFunc(CreateDanmakuPanel);
+        PhoenixReadPlayer.InjectTransportControlFunc(CreateTransportControl);
+        PhoenixReadPlayer.InjectSubtitleControlFunc(CreateSubtitleControl);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
             return false;
         }
 
-        BiliPlayer.MarkRightArrowKeyPressedTime();
+        PhoenixReadPlayer.MarkRightArrowKeyPressedTime();
         return true;
     }
 
@@ -64,7 +64,7 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
             return false;
         }
 
-        BiliPlayer.CancelRightArrowKey();
+        PhoenixReadPlayer.CancelRightArrowKey();
         return true;
     }
 

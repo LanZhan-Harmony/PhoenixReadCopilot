@@ -1,10 +1,8 @@
-using System.Net.Sockets;
 using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using Windows.Media.Playback;
@@ -25,14 +23,92 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         : base(settingsService, appViewModel, logger, dispatcherQueue) { }
 
     private MediaPlayerElement? _element;
-    private MediaSegmentInformation? _videoSegment;
-    private MediaSegmentInformation? _audioSegment;
-    private int _customDuration;
     private FFmpegMediaSource? _ffmpegSource;
-    private TcpListener? _manifestListener;
-    private CancellationTokenSource? _manifestServerCts;
+    private FFmpegMediaSource? _preloadedSource;
+    private string? _preloadedUrl;
+    private readonly SemaphoreSlim _preloadLock = new(1, 1);
     private bool _isDisposed;
     private bool _hasEnded;
+
+    /// <summary>
+    /// 后台预加载下一集 FFmpeg 媒体源 (提前进行网络探测与解密初始化，实现 0 秒无缝秒播).
+    /// </summary>
+    public async Task PreloadSourceAsync(string videoUrl, string? decryptionKey, string? referer)
+    {
+        if (string.IsNullOrEmpty(videoUrl) || videoUrl == _preloadedUrl || videoUrl == _videoUrl)
+        {
+            return;
+        }
+
+        await _preloadLock.WaitAsync();
+        try
+        {
+            if (videoUrl == _preloadedUrl)
+            {
+                return;
+            }
+
+            DisposePreloadedSource();
+
+            var config = CreateMediaSourceConfig(decryptionKey, referer);
+            var source = await FFmpegMediaSource.CreateFromUriAsync(videoUrl, config);
+            _preloadedSource = source;
+            _preloadedUrl = videoUrl;
+            _logger.LogInformation("下一集 FFmpegMediaSource 后台预加载就绪.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "预加载下一集 FFmpegMediaSource 失败.");
+            DisposePreloadedSource();
+        }
+        finally
+        {
+            _preloadLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// 检查并消费已预载的媒体源.
+    /// </summary>
+    public bool TryConsumePreloadedSource(string videoUrl, out FFmpegMediaSource? source)
+    {
+        _preloadLock.Wait();
+        try
+        {
+            if (_preloadedSource is not null && _preloadedUrl == videoUrl)
+            {
+                source = _preloadedSource;
+                _preloadedSource = null;
+                _preloadedUrl = null;
+                return true;
+            }
+
+            source = null;
+            return false;
+        }
+        finally
+        {
+            _preloadLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// 释放预载的媒体源.
+    /// </summary>
+    public void DisposePreloadedSource()
+    {
+        if (_preloadedSource is not null)
+        {
+            try
+            {
+                _preloadedSource.PlaybackSession = null;
+                _preloadedSource.Dispose();
+            }
+            catch { }
+            _preloadedSource = null;
+            _preloadedUrl = null;
+        }
+    }
 
     /// <summary>
     /// CENC 解密密钥.
@@ -61,26 +137,6 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         _isInitialized = true;
         RaiseInitializedEvent();
         await TryLoadPlayDataAsync();
-    }
-
-    /// <summary>
-    /// 注入播放片段.
-    /// </summary>
-    public void InjectSegments(
-        MediaSegmentInformation? video,
-        MediaSegmentInformation? audio,
-        int duration = 0
-    )
-    {
-        _videoSegment = video;
-        _audioSegment = audio;
-        _customDuration = duration;
-        if (duration > 0)
-        {
-            Duration = duration;
-        }
-
-        UpdateState(PlayerState.None);
     }
 
     private MediaPlayer CreatePlayer()
@@ -150,6 +206,12 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 return;
             }
 
+            try
+            {
+                sender.Pause();
+            }
+            catch { }
+
             _hasEnded = true;
             ReachEnd();
         });
@@ -196,7 +258,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         _dispatcherQueue.TryEnqueue(() =>
         {
             _hasEnded = false;
-            Windows.Media.Playback.MediaPlaybackSession? session = null;
+            MediaPlaybackSession? session = null;
             try
             {
                 session = sender.PlaybackSession;
@@ -220,8 +282,12 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
             }
             catch { }
 
-            sender.PlaybackSession.PlaybackRate = _settings.PlayerSpeed;
-            _speedAction?.Invoke(sender.PlaybackSession.PlaybackRate);
+            try
+            {
+                session.PlaybackRate = _settings.PlayerSpeed;
+                _speedAction?.Invoke(session.PlaybackRate);
+            }
+            catch { }
 
             double duration = 0;
             try
@@ -240,11 +306,6 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 duration = _ffmpegSource.Duration.TotalSeconds;
             }
 
-            if (duration <= 0 && _customDuration > 0)
-            {
-                duration = _customDuration;
-            }
-
             if (duration > 0)
             {
                 UpdatePosition(Position, Convert.ToInt32(duration));
@@ -252,13 +313,21 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 
             if (Position > 0)
             {
-                session.Position = TimeSpan.FromSeconds(Position);
+                try
+                {
+                    session.Position = TimeSpan.FromSeconds(Position);
+                }
+                catch { }
             }
 
-            session.PositionChanged -= OnMediaPositionChanged;
-            session.PositionChanged += OnMediaPositionChanged;
-            session.NaturalDurationChanged -= OnMediaNaturalDurationChanged;
-            session.NaturalDurationChanged += OnMediaNaturalDurationChanged;
+            try
+            {
+                session.PositionChanged -= OnMediaPositionChanged;
+                session.PositionChanged += OnMediaPositionChanged;
+                session.NaturalDurationChanged -= OnMediaNaturalDurationChanged;
+                session.NaturalDurationChanged += OnMediaNaturalDurationChanged;
+            }
+            catch { }
         });
     }
 
@@ -266,36 +335,38 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            double duration = 0;
-            double position = 0;
             try
             {
-                if (sender.PlaybackState == MediaPlaybackState.None)
+                if (_isDisposed || Player is null)
                 {
                     return;
                 }
 
-                duration = sender.NaturalDuration.TotalSeconds;
-                position = sender.Position.TotalSeconds;
-            }
-            catch
-            {
-                return;
-            }
-            if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
-            {
-                duration = _ffmpegSource.Duration.TotalSeconds;
-            }
+                double duration = 0;
+                try
+                {
+                    if (sender.PlaybackState == MediaPlaybackState.None)
+                    {
+                        return;
+                    }
 
-            if (duration <= 0 && _customDuration > 0)
-            {
-                duration = _customDuration;
-            }
+                    duration = sender.NaturalDuration.TotalSeconds;
+                }
+                catch
+                {
+                    return;
+                }
+                if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
+                {
+                    duration = _ffmpegSource.Duration.TotalSeconds;
+                }
 
-            if (duration > 0)
-            {
-                UpdatePosition(Position, Convert.ToInt32(duration));
+                if (duration > 0)
+                {
+                    UpdatePosition(Position, Convert.ToInt32(duration));
+                }
             }
+            catch { }
         });
     }
 
@@ -303,57 +374,62 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            if (_isDisposed || Player is null)
-            {
-                return;
-            }
-
-            double duration = 0;
-            double position = 0;
             try
             {
-                if (sender.PlaybackState == MediaPlaybackState.None)
+                if (_isDisposed || Player is null)
                 {
                     return;
                 }
 
-                duration = sender.NaturalDuration.TotalSeconds;
-                position = sender.Position.TotalSeconds;
-            }
-            catch
-            {
-                return;
-            }
-            if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
-            {
-                duration = _ffmpegSource.Duration.TotalSeconds;
-            }
-
-            if (duration <= 0 && _customDuration > 0)
-            {
-                duration = _customDuration;
-            }
-
-            if (duration <= 0 && Duration > 0)
-            {
-                duration = Duration;
-            }
-
-            if (duration > 0 && position >= duration)
-            {
-                if (!_hasEnded)
+                double duration = 0;
+                double position = 0;
+                try
                 {
-                    _hasEnded = true;
-                    UpdatePosition(Convert.ToInt32(duration), Convert.ToInt32(duration));
-                    ReachEnd();
-                }
-                return;
-            }
+                    if (sender.PlaybackState == MediaPlaybackState.None)
+                    {
+                        return;
+                    }
 
-            UpdatePosition(
-                Convert.ToInt32(position),
-                duration > 0 ? Convert.ToInt32(duration) : default
-            );
+                    duration = sender.NaturalDuration.TotalSeconds;
+                    position = sender.Position.TotalSeconds;
+                }
+                catch
+                {
+                    return;
+                }
+                if (duration <= 0 && _ffmpegSource?.Duration.TotalSeconds > 0)
+                {
+                    duration = _ffmpegSource.Duration.TotalSeconds;
+                }
+
+                if (duration <= 0 && Duration > 0)
+                {
+                    duration = Duration;
+                }
+
+                if (duration > 0 && position >= duration)
+                {
+                    if (!_hasEnded)
+                    {
+                        try
+                        {
+                            Player?.Pause();
+                        }
+                        catch { }
+
+                        _hasEnded = true;
+                        UpdatePosition(Convert.ToInt32(duration), Convert.ToInt32(duration));
+                        ReachEnd();
+                    }
+                    return;
+                }
+
+                UpdatePosition(
+                    Convert.ToInt32(position),
+                    duration > 0 ? Convert.ToInt32(duration) : default
+                );
+            }
+            catch { }
         });
     }
 }

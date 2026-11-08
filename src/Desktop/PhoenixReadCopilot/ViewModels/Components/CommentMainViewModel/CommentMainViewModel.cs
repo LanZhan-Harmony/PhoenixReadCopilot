@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
@@ -192,7 +193,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             return;
         }
 
-        content = content.Trim();
+        content = EmojiHelper.FormatEmojiText(content.Trim());
 
         if (
             _apiClient is null

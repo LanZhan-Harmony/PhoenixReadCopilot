@@ -135,8 +135,7 @@
 
                                         <!--  第二行：正文内容  -->
                                         <Grid Grid.Row="1">
-                                            <comp:EmoteTextBlock HorizontalAlignment="Left"
-                                                                 Text="{x:Bind Content, Mode=OneWay}"/>
+                                            <comp:EmoteTextBlock HorizontalAlignment="Left" Text="{x:Bind Content, Mode=OneWay}"/>
                                         </Grid>
 
                                         <!--  第三行：点赞、回复数、回复按钮  -->
@@ -160,7 +159,7 @@
                                                 </StackPanel>
                                             </ToggleButton>
 
-                                            <!-- 回复条数链接 -->
+                                            <!--  回复条数链接  -->
                                             <StackPanel Grid.Column="1"
                                                         HorizontalAlignment="Left"
                                                         Visibility="{x:Bind ReplyCount, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
@@ -169,7 +168,7 @@
                                                 </HyperlinkButton>
                                             </StackPanel>
 
-                                            <!-- 回复按钮 -->
+                                            <!--  回复按钮  -->
                                             <Button Grid.Column="2"
                                                     VerticalAlignment="Center"
                                                     Command="{x:Bind ShowMoreCommand, Mode=OneWay}"
@@ -202,7 +201,7 @@
                                   ViewModel="{x:Bind ViewModel.SelectedItem, Mode=OneWay}"
                                   Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
 
-        <!--  底部发送剧评区域（带评分星级，与评论文本输入框风格统一）  -->
+        <!--  底部发送剧评区域（带评分星级与统一的 CommentTextBox）  -->
         <Border Grid.Row="2"
                 Margin="12,0"
                 Padding="8"
@@ -231,29 +230,9 @@
                 </StackPanel>
 
                 <!--  输入框与发送按钮  -->
-                <Grid ColumnSpacing="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="ReviewInputBox"
-                             MaxHeight="80"
-                             Padding="12,8"
-                             AcceptsReturn="False"
-                             IsEnabled="{x:Bind ViewModel.CanSendReview, Mode=OneWay}"
-                             PlaceholderText="{x:Bind ViewModel.ReviewPlaceholderText, Mode=OneWay}"
-                             TextWrapping="Wrap"/>
-                    <Button Grid.Column="1"
-                            VerticalAlignment="Bottom"
-                            Click="OnSendReviewClick"
-                            IsEnabled="{x:Bind ViewModel.CanSendReview, Mode=OneWay}"
-                            Style="{StaticResource AccentButtonStyle}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <ic:SymbolIcon FontSize="12" Symbol="Send"/>
-                            <TextBlock Text="发送"/>
-                        </StackPanel>
-                    </Button>
-                </Grid>
+                <local:CommentTextBox x:Name="ReviewCommentBox"
+                                      IsEnabled="{x:Bind ViewModel.CanSendReview, Mode=OneWay}"
+                                      SendCommand="{x:Bind ViewModel.SendReviewCommand, Mode=OneWay}"/>
             </StackPanel>
         </Border>
     </Grid>

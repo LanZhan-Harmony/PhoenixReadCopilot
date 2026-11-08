@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Richasy.BiliKernel.Models.Appearance;
+using PhoenixReadCopilot.Helpers;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -16,8 +16,10 @@ public sealed partial class EmoteModuleViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
 
-    [ObservableProperty]
-    public partial List<EmotePackage>? Packages { get; set; }
+    /// <summary>
+    /// 红果表情列表.
+    /// </summary>
+    public IReadOnlyList<EmojiItem> Emojis => EmojiHelper.Emojis;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteModuleViewModel"/> class.
@@ -30,12 +32,6 @@ public sealed partial class EmoteModuleViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        if (IsLoading || Packages is not null)
-        {
-            return;
-        }
-
         await Task.CompletedTask;
-        Packages = [];
     }
 }

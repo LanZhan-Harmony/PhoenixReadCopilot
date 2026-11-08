@@ -33,6 +33,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             return;
         }
 
+        EnsureRendererCreated();
         ResetDanmakuStyle();
     }
 
@@ -101,29 +102,17 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         );
     }
 
-    private async void OnDanmakuListAddedAsync(object? sender, IReadOnlyList<DanmakuItem> e)
+    private void OnDanmakuListAddedAsync(object? sender, IReadOnlyList<DanmakuItem> e)
     {
-        var isFirstLoad = _cachedDanmakus.Count == 0;
         _cachedDanmakus = [.. _cachedDanmakus.Concat(e).DistinctBy(x => x.Id)];
-        if (isFirstLoad)
-        {
-            await Task.Delay(250);
-            Redraw(true);
-        }
-        else
-        {
-            _danmakuRenderer?.AddDanmakuList(e as List<DanmakuItem> ?? e.ToList());
-        }
+        EnsureRendererCreated();
+        _danmakuRenderer?.AddDanmakuList(e as List<DanmakuItem> ?? e.ToList());
     }
 
     private void OnRequestClearDanmaku(object? sender, EventArgs e)
     {
-        if (ViewModel.IsShowDanmaku)
-        {
-            _cachedDanmakus.Clear();
-            _lastProgress = 0;
-        }
-
+        _cachedDanmakus.Clear();
+        _lastProgress = 0;
         _danmakuRenderer?.Clear();
     }
 
@@ -198,9 +187,25 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         );
     }
 
+    private void EnsureRendererCreated()
+    {
+        if (_danmakuRenderer is not null)
+        {
+            return;
+        }
+
+        if (RootGrid is null || RootGrid.XamlRoot is null)
+        {
+            return;
+        }
+
+        _danmakuRenderer = new DanmakuRenderer(RootGrid, _danmakuLogger);
+        ResetDanmakuStyle();
+    }
+
     private void Redraw(bool force = false)
     {
-        if (!force && (_danmakuRenderer is null || ViewModel is null))
+        if (ViewModel is null)
         {
             return;
         }
@@ -209,8 +214,14 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             DispatcherQueuePriority.Low,
             () =>
             {
-                _danmakuRenderer?.Dispose();
-                _danmakuRenderer = new DanmakuRenderer(RootGrid, _danmakuLogger);
+                if (_danmakuRenderer is null)
+                {
+                    EnsureRendererCreated();
+                }
+                else
+                {
+                    _danmakuRenderer.Clear();
+                }
 
                 if (_cachedDanmakus.Count != 0)
                 {
