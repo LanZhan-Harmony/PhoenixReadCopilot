@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.Models;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -86,7 +87,7 @@ public sealed partial class CommentItemViewModel
     public CommentItemViewModel Data => this;
 
     /// <summary>
-    /// 文本内容（保留向后兼容）.
+    /// 富文本内容（包含文字和附图）.
     /// </summary>
-    public string Content => Text;
+    public EmoteText Content { get; init; }
 }

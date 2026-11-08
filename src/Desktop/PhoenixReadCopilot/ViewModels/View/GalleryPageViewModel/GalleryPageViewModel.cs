@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Windows.Storage.Pickers;
 using PhoenixReadCopilot.Helpers;
+using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Models.Appearance;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -21,17 +21,17 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPageViewModel"/> class.
     /// </summary>
-    public GalleryPageViewModel(BiliImage image, List<BiliImage>? images, AppViewModel appViewModel)
+    public GalleryPageViewModel(AppImage image, List<AppImage>? images, AppViewModel appViewModel)
     {
         SelectedImage = image;
-        Images = images ?? new List<BiliImage> { image };
+        Images = images ?? new List<AppImage> { image };
         IsGroup = Images?.Count > 1;
         IsMenuHide = false;
         _appViewModel = appViewModel;
     }
 
     [RelayCommand]
-    private void ChangeImage(BiliImage image)
+    private void ChangeImage(AppImage image)
     {
         if (image == null || SelectedImage == image)
         {
@@ -76,8 +76,8 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         }
 
         var dp = new DataPackage();
-        dp.SetWebLink(SelectedImage.SourceUri);
-        dp.SetBitmap(RandomAccessStreamReference.CreateFromUri(SelectedImage.SourceUri));
+        dp.SetWebLink(SelectedImage.Uri);
+        dp.SetBitmap(RandomAccessStreamReference.CreateFromUri(SelectedImage.Uri));
         Clipboard.SetContent(dp);
         _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
@@ -90,7 +90,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
             return;
         }
 
-        var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
+        var fileName = Path.GetFileName(SelectedImage.Uri.ToString());
         var extension = Path.GetExtension(fileName);
         var savePicker = new FileSavePicker(_appViewModel.ActivatedWindow.AppWindow.Id)
         {
@@ -107,7 +107,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         using var client = new HttpClient();
         using var response = await client.GetAsync(
-            SelectedImage.SourceUri,
+            SelectedImage.Uri,
             HttpCompletionOption.ResponseHeadersRead
         );
         await using var fileStream = new FileStream(
@@ -131,13 +131,13 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         }
 
         var profileSettings = UserProfilePersonalizationSettings.Current;
-        var fileName = Path.GetFileName(SelectedImage.SourceUri.ToString());
+        var fileName = Path.GetFileName(SelectedImage.Uri.ToString());
         var tempFolder = Path.Combine(PathHelper.TempFolderPath, "TempImages");
         Directory.CreateDirectory(tempFolder);
         var filePath = Path.Combine(tempFolder, fileName);
         using var client = new HttpClient();
         using var response = await client.GetAsync(
-            SelectedImage.SourceUri,
+            SelectedImage.Uri,
             HttpCompletionOption.ResponseHeadersRead
         );
         await using var fileStream = new FileStream(

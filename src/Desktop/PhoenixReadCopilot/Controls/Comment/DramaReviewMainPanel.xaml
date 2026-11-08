@@ -135,10 +135,8 @@
 
                                         <!--  第二行：正文内容  -->
                                         <Grid Grid.Row="1">
-                                            <TextBlock HorizontalAlignment="Left"
-                                                       IsTextSelectionEnabled="True"
-                                                       Text="{x:Bind Text, Mode=OneWay}"
-                                                       TextWrapping="Wrap"/>
+                                            <comp:EmoteTextBlock HorizontalAlignment="Left"
+                                                                 Text="{x:Bind Content, Mode=OneWay}"/>
                                         </Grid>
 
                                         <!--  第三行：点赞、回复数、回复按钮  -->

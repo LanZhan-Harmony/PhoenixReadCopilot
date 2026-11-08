@@ -3,9 +3,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Models.Appearance;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages;
@@ -26,7 +26,7 @@ public sealed partial class GalleryPage : GalleryPageBase
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
-        if (e.Parameter is (BiliImage image, List<BiliImage> list))
+        if (e.Parameter is (AppImage image, List<AppImage> list))
         {
             ViewModel = new GalleryPageViewModel(
                 image,
@@ -79,7 +79,7 @@ public sealed partial class GalleryPage : GalleryPageBase
 
     private void OnImageSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var image = sender.SelectedItem as BiliImage;
+        var image = sender.SelectedItem as AppImage;
         ViewModel.ChangeImageCommand.Execute(image);
     }
 }

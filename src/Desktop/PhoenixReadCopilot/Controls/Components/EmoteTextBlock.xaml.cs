@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadCopilot.Forms;
-using Richasy.BiliKernel.Models.Appearance;
+using PhoenixReadCopilot.Models;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;
@@ -174,7 +174,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
 
     private void OnImageTapped(object sender, TappedRoutedEventArgs e)
     {
-        var image = (sender as Image).DataContext as BiliImage;
+        var image = (sender as Image).DataContext as AppImage;
         if (image is not null)
         {
             new GalleryWindow(image, [.. Text.Pictures]).Activate();
