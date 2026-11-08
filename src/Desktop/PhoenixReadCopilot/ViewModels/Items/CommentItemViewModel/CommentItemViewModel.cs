@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Models;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -62,6 +63,14 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         {
             Avatar = avatarUri;
         }
+
+        var pictures = comment.Images?.Count > 0
+            ? comment.Images
+                .Where(img => !string.IsNullOrEmpty(img.Url) && Uri.TryCreate(img.Url, UriKind.Absolute, out _))
+                .Select(img => new AppImage(img))
+                .ToList()
+            : null;
+        Content = new EmoteText(comment.Text, pictures);
     }
 
     /// <summary>
@@ -111,6 +120,14 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         {
             Avatar = avatarUri;
         }
+
+        var pictures = reply.Images?.Count > 0
+            ? reply.Images
+                .Where(img => !string.IsNullOrEmpty(img.Url) && Uri.TryCreate(img.Url, UriKind.Absolute, out _))
+                .Select(img => new AppImage(img))
+                .ToList()
+            : null;
+        Content = new EmoteText(reply.Text, pictures);
     }
 
     [RelayCommand]

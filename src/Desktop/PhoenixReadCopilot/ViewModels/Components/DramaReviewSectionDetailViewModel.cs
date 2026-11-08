@@ -6,6 +6,7 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
@@ -67,10 +68,19 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
             RelativeTime = "刚刚";
             ActualTime = string.Empty;
         }
+
+        var pictures = comment.Images?.Count > 0
+            ? comment.Images
+                .Where(img => !string.IsNullOrEmpty(img.Url) && Uri.TryCreate(img.Url, UriKind.Absolute, out _))
+                .Select(img => new AppImage(img))
+                .ToList()
+            : null;
+        Content = new EmoteText(comment.Text, pictures);
     }
 
     public string Id { get; }
     public string Text { get; }
+    public EmoteText Content { get; }
     public string UserName { get; }
     public Uri? Avatar { get; }
     public string RelativeTime { get; }

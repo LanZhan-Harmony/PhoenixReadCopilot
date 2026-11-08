@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Models.Appearance;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -12,7 +12,7 @@ public sealed partial class GalleryPageViewModel
     private readonly AppViewModel _appViewModel;
 
     [ObservableProperty]
-    public partial List<BiliImage>? Images { get; set; }
+    public partial List<AppImage>? Images { get; set; }
 
     [ObservableProperty]
     public partial bool IsGroup { get; set; }
@@ -21,5 +21,5 @@ public sealed partial class GalleryPageViewModel
     public partial bool IsMenuHide { get; set; }
 
     [ObservableProperty]
-    public partial BiliImage SelectedImage { get; set; }
+    public partial AppImage SelectedImage { get; set; }
 }

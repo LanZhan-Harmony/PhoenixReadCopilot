@@ -1,11 +1,11 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Models.Appearance;
 using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -27,7 +27,7 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryWindow"/> class.
     /// </summary>
-    public GalleryWindow(BiliImage image, List<BiliImage> list = default)
+    public GalleryWindow(AppImage image, List<AppImage>? list = default)
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
         _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
@@ -41,7 +41,7 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
         MinHeight = 500;
         SetTitleBar(TitleBar);
 
-        MainFrame.Navigate(typeof(GalleryPage), (image, list));
+        MainFrame.Navigate(typeof(GalleryPage), (image, list ?? [image]));
         _appViewModel.Windows.Add(this);
 
         MoveAndResize();
