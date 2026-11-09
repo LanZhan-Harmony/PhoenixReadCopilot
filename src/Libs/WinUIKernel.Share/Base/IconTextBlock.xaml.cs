@@ -15,7 +15,7 @@ public sealed partial class IconTextBlock : LayoutUserControlBase
         nameof(Symbol),
         typeof(FluentIcons.Common.Symbol),
         typeof(IconTextBlock),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -25,7 +25,7 @@ public sealed partial class IconTextBlock : LayoutUserControlBase
         nameof(Text),
         typeof(string),
         typeof(IconTextBlock),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -35,7 +35,7 @@ public sealed partial class IconTextBlock : LayoutUserControlBase
         nameof(IconBrush),
         typeof(Brush),
         typeof(IconTextBlock),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     public static readonly DependencyProperty TextTrimmingProperty = DependencyProperty.Register(

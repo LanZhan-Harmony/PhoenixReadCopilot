@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
@@ -76,10 +75,10 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     [RelayCommand]
     private void Clear()
     {
-        _offset = default;
+        _offset = null;
         IsEmpty = false;
         _preventLoadMore = false;
-        Items = new ObservableCollection<MomentItemViewModel>();
+        Items = [];
     }
 
     [RelayCommand]
@@ -93,7 +92,11 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         try
         {
             IsLoading = true;
-            var (moments, offset, hasMore) = _isVideo
+            (
+                IReadOnlyList<Richasy.BiliKernel.Models.Moment.MomentInformation>? moments,
+                string? offset,
+                bool hasMore
+            ) = _isVideo
                 ? await _service.GetUserVideoMomentsAsync(_user, _offset)
                 : await _service.GetUserComprehensiveMomentsAsync(_user, _offset);
             _offset = offset;
@@ -101,7 +104,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             if (moments is not null)
             {
                 foreach (
-                    var item in moments.Select(p => new MomentItemViewModel(
+                    MomentItemViewModel? item in moments.Select(p => new MomentItemViewModel(
                         p,
                         _isVideo ? MomentCardStyle.Video : MomentCardStyle.Comprehensive,
                         _showCommentAction

@@ -38,7 +38,7 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
             return;
         }
 
-        var item = sender.SelectedItem.Tag as UserMomentDetailViewModel;
+        UserMomentDetailViewModel? item = sender.SelectedItem.Tag as UserMomentDetailViewModel;
         if (item is not null && item != ViewModel.SelectedSection)
         {
             ViewModel.SelectSectionCommand.Execute(item);
@@ -50,13 +50,9 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
         Selector.Items.Clear();
         if (ViewModel.Sections is not null)
         {
-            foreach (var item in ViewModel.Sections)
+            foreach (UserMomentDetailViewModel item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem()
-                {
-                    Text = item.Title,
-                    Tag = item
-                });
+                Selector.Items.Add(new SelectorBarItem() { Text = item.Title, Tag = item });
             }
         }
 

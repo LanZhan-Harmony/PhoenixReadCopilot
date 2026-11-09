@@ -84,7 +84,7 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
     private async Task RefreshAsync()
     {
         Sections.Clear();
-        _chatSessionOffset = default;
+        _chatSessionOffset = null;
         _preventLoadMore = false;
         await InitializeAsync();
     }
@@ -97,7 +97,7 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        var sectionSettingValue = string.Empty;
+        string sectionSettingValue = string.Empty;
         if (vm is NotifyMessageSectionDetailViewModel nfVM)
         {
             sectionSettingValue = $"nf_{nfVM.Type}";
@@ -109,8 +109,8 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
 
         _settings.LastSelectedMessageSection = sectionSettingValue;
         CurrentSection = vm;
-        await CurrentSection.InitializeCommand.ExecuteAsync(default);
-        _accountViewModel.UpdateUnreadCommand.Execute(default);
+        await CurrentSection.InitializeCommand.ExecuteAsync(null);
+        _accountViewModel.UpdateUnreadCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -118,8 +118,12 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
     {
         try
         {
-            var unread = await _service.GetUnreadInformationAsync();
-            foreach (var item in Sections.OfType<NotifyMessageSectionDetailViewModel>().ToList())
+            UnreadInformation unread = await _service.GetUnreadInformationAsync();
+            foreach (
+                NotifyMessageSectionDetailViewModel? item in Sections
+                    .OfType<NotifyMessageSectionDetailViewModel>()
+                    .ToList()
+            )
             {
                 if (item.Type == NotifyMessageType.Like)
                 {
@@ -152,14 +156,13 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         try
         {
             IsChatSessionLoading = true;
-            var (sessions, offset, hasMore) = await _service.GetChatSessionsAsync(
-                _chatSessionOffset
-            );
+            (IReadOnlyList<ChatSession>? sessions, long offset, bool hasMore) =
+                await _service.GetChatSessionsAsync(_chatSessionOffset);
             _preventLoadMore = !hasMore;
             _chatSessionOffset = offset;
             if (sessions is not null)
             {
-                foreach (var item in sessions)
+                foreach (ChatSession item in sessions)
                 {
                     Sections.Add(
                         new ChatMessageSectionDetailViewModel(
@@ -191,24 +194,24 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = _settings.LastSelectedMessageSection;
-        UpdateUnreadCountCommand.Execute(default);
+        string lastSelectedSection = _settings.LastSelectedMessageSection;
+        UpdateUnreadCountCommand.Execute(null);
         if (string.IsNullOrEmpty(lastSelectedSection))
         {
             SelectSectionCommand.Execute(Sections.First());
             return;
         }
 
-        var isSelected = false;
+        bool isSelected = false;
         if (lastSelectedSection.StartsWith("nf"))
         {
-            var isSuccess = Enum.TryParse<NotifyMessageType>(
+            bool isSuccess = Enum.TryParse<NotifyMessageType>(
                 lastSelectedSection.Replace("nf_", string.Empty),
-                out var type
+                out NotifyMessageType type
             );
             if (isSuccess)
             {
-                var section = Sections
+                NotifyMessageSectionDetailViewModel? section = Sections
                     .OfType<NotifyMessageSectionDetailViewModel>()
                     .FirstOrDefault(p => p.Type == type);
                 if (section is not null)
@@ -220,8 +223,8 @@ public sealed partial class MessagePageViewModel : LayoutPageViewModelBase
         }
         else if (lastSelectedSection.StartsWith("chat"))
         {
-            var id = lastSelectedSection.Replace("chat_", string.Empty);
-            var section = Sections
+            string id = lastSelectedSection.Replace("chat_", string.Empty);
+            ChatMessageSectionDetailViewModel? section = Sections
                 .OfType<ChatMessageSectionDetailViewModel>()
                 .FirstOrDefault(p => p.Data.User.Id == id);
             if (section is not null)

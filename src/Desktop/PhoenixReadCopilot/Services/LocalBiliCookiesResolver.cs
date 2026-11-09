@@ -23,7 +23,7 @@ public sealed class LocalBiliCookiesResolver : IBiliCookiesResolver
         {
             if (File.Exists(_filePath))
             {
-                var json = File.ReadAllText(_filePath);
+                string json = File.ReadAllText(_filePath);
                 _cacheCookies = JsonAotSerializer.Deserialize<Dictionary<string, string>>(json);
             }
         }
@@ -32,13 +32,13 @@ public sealed class LocalBiliCookiesResolver : IBiliCookiesResolver
             _cacheCookies = null;
         }
 
-        return _cacheCookies ?? new Dictionary<string, string>();
+        return _cacheCookies ?? [];
     }
 
     /// <inheritdoc/>
     public string GetCookieString()
     {
-        var cookies = GetCookies();
+        IDictionary<string, string> cookies = GetCookies();
         if (cookies == null || cookies.Count == 0)
         {
             return string.Empty;
@@ -50,13 +50,11 @@ public sealed class LocalBiliCookiesResolver : IBiliCookiesResolver
     /// <inheritdoc/>
     public void SaveCookies(IDictionary<string, string> cookies)
     {
-        _cacheCookies = cookies is Dictionary<string, string> dict
-            ? dict
-            : new Dictionary<string, string>(cookies);
+        _cacheCookies = cookies is Dictionary<string, string> dict ? dict : [with(cookies)];
         try
         {
             Directory.CreateDirectory(PathHelper.SettingsFolderPath);
-            var json = JsonAotSerializer.Serialize(_cacheCookies);
+            string json = JsonAotSerializer.Serialize(_cacheCookies);
             File.WriteAllText(_filePath, json);
         }
         catch { }

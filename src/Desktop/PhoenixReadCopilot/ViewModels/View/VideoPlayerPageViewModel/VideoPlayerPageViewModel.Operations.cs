@@ -23,11 +23,11 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            var firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
+            DramaCredit? firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
             if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
             {
-                var state = !IsFollow;
-                var res = await _apiClient.SetFollowAsync(user.Id, state);
+                bool state = !IsFollow;
+                PhoenixOperationResult res = await _apiClient.SetFollowAsync(user.Id, state);
                 if (res.Succeeded)
                 {
                     IsFollow = state;
@@ -45,11 +45,11 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-            var state = !IsLiked;
+            string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+            bool state = !IsLiked;
             if (!string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(targetVideoId))
             {
-                var res = await _apiClient.SetDramaEpisodeLikeAsync(
+                PhoenixOperationResult res = await _apiClient.SetDramaEpisodeLikeAsync(
                     _seriesId,
                     targetVideoId,
                     state
@@ -78,11 +78,15 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            var state = !IsFavorited;
+            bool state = !IsFavorited;
             if (!string.IsNullOrEmpty(_seriesId))
             {
-                var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-                var res = await _apiClient.SetFavoriteAsync(_seriesId, targetVideoId, state);
+                string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+                PhoenixOperationResult res = await _apiClient.SetFavoriteAsync(
+                    _seriesId,
+                    targetVideoId,
+                    state
+                );
                 if (res.Succeeded)
                 {
                     IsFavorited = state;
@@ -110,13 +114,13 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-            var shareInfo = await _apiClient.CreateShareLinkAsync(_seriesId, targetVideoId);
-            var url = !string.IsNullOrEmpty(shareInfo.Url)
+            string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+            ShareLink shareInfo = await _apiClient.CreateShareLinkAsync(_seriesId, targetVideoId);
+            string url = !string.IsNullOrEmpty(shareInfo.Url)
                 ? shareInfo.Url
                 : (!string.IsNullOrEmpty(shareInfo.ShortUrl) ? shareInfo.ShortUrl : GetWebLink());
 
-            var package = new DataPackage();
+            DataPackage package = new();
             package.SetText(url);
             package.SetWebLink(new Uri(url));
             Clipboard.SetContent(package);
@@ -129,13 +133,13 @@ public sealed partial class VideoPlayerPageViewModel
     }
 
     [RelayCommand]
-    private void ShareVideoUrl() => ShareCommand.Execute(default);
+    private void ShareVideoUrl() => ShareCommand.Execute(null);
 
     [RelayCommand]
     private void CopyVideoUrl()
     {
-        var url = GetWebLink();
-        var dp = new DataPackage();
+        string url = GetWebLink();
+        DataPackage dp = new();
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
@@ -149,7 +153,7 @@ public sealed partial class VideoPlayerPageViewModel
         {
             if (!string.IsNullOrEmpty(_seriesId))
             {
-                var targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+                string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
                 await _apiClient.SetFavoriteAsync(_seriesId, targetVideoId, true);
                 IsFavorited = true;
                 _appViewModel.ShowTipCommand.Execute(("已加入追剧列表", InfoType.Success));
@@ -173,11 +177,11 @@ public sealed partial class VideoPlayerPageViewModel
             return;
         }
 
-        var nextPart = FindNextVideo();
+        object? nextPart = FindNextVideo();
         if (nextPart is null)
         {
             _appViewModel.ShowTipCommand.Execute(("已经是最后一集了", InfoType.Information));
-            Player.BackToDefaultModeCommand.Execute(default);
+            Player.BackToDefaultModeCommand.Execute(null);
             return;
         }
 
@@ -193,7 +197,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
         else
         {
-            Player.BackToDefaultModeCommand.Execute(default);
+            Player.BackToDefaultModeCommand.Execute(null);
         }
     }
 
@@ -205,7 +209,7 @@ public sealed partial class VideoPlayerPageViewModel
             return;
         }
 
-        var prevPart = FindPreviousVideo();
+        object? prevPart = FindPreviousVideo();
         if (prevPart is null)
         {
             _appViewModel.ShowTipCommand.Execute(("已经是第一集了", InfoType.Information));
@@ -223,7 +227,7 @@ public sealed partial class VideoPlayerPageViewModel
     [RelayCommand]
     private void OpenUserSpace()
     {
-        var firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
+        DramaCredit? firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
         if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
         {
             _navigationViewModel.NavigateToOver(typeof(UserSpacePage), user.Id);
@@ -231,39 +235,25 @@ public sealed partial class VideoPlayerPageViewModel
     }
 
     [RelayCommand]
-
     private void OpenInNewWindow()
-
     {
-
         if (Player.Position > 0)
-
         {
-
             ReportProgressCommand.Execute(Player.Position);
-
         }
-
-
 
         if (!Player.IsPaused)
-
         {
-
-            Player.TogglePlayPauseCommand.Execute(default);
-
+            Player.TogglePlayPauseCommand.Execute(null);
         }
 
-
-
         new PlayerWindow().OpenDrama(_seriesId);
-
     }
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(
+        PinItem pinItem = new(
             _seriesId,
             Title,
             Cover?.ToString() ?? string.Empty,
@@ -275,7 +265,7 @@ public sealed partial class VideoPlayerPageViewModel
     [RelayCommand]
     private void CopyTitle()
     {
-        var dp = new DataPackage();
+        DataPackage dp = new();
         dp.SetText(Title);
         Clipboard.SetContent(dp);
         _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
@@ -308,17 +298,17 @@ public sealed partial class VideoPlayerPageViewModel
 
         // 加载分集媒体
         InitializeDashMediaCommand.Execute(episode);
-        Subtitle.InitializeCommand.Execute(default);
+        Subtitle.InitializeCommand.Execute(null);
 
         // 切换分集评论
         _comments.Initialize(_seriesId, episode.VideoId, CommentSortOrder.Hot);
         if (SelectedSection == _comments)
         {
-            _comments.TryFirstLoadCommand.Execute(default);
+            _comments.TryFirstLoadCommand.Execute(null);
         }
 
         InitializeNextVideo();
-        var partSection =
+        VideoPlayerPartSectionDetailViewModel? partSection =
             Sections?.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
             as VideoPlayerPartSectionDetailViewModel;
         partSection?.UpdateSelectedPartCommand.Execute(episode);
@@ -377,16 +367,16 @@ public sealed partial class VideoPlayerPageViewModel
             // 单视频循环.
             if (CurrentLoop == VideoLoopType.Single)
             {
-                Player.RestartCommand.Execute(default);
+                Player.RestartCommand.Execute(null);
                 return;
             }
 
-            var next = FindNextVideo();
+            object? next = FindNextVideo();
             if (next is null)
             {
                 if (!_isFormatChanging)
                 {
-                    Player.BackToDefaultModeCommand.Execute(default);
+                    Player.BackToDefaultModeCommand.Execute(null);
                 }
                 return;
             }
@@ -406,7 +396,7 @@ public sealed partial class VideoPlayerPageViewModel
             {
                 if (!_isFormatChanging)
                 {
-                    Player.BackToDefaultModeCommand.Execute(default);
+                    Player.BackToDefaultModeCommand.Execute(null);
                 }
                 return;
             }
@@ -417,7 +407,7 @@ public sealed partial class VideoPlayerPageViewModel
             }
 
             // 直接播放下一集或下一个短剧，无需触发倒计时浮层弹窗
-            PlayNextVideoCommand.Execute(default);
+            PlayNextVideoCommand.Execute(null);
         });
     }
 }

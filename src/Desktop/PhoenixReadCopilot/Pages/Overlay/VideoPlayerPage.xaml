@@ -71,33 +71,18 @@
 
                 <Grid x:Name="VideoContainer"
                       Grid.Row="2"
-                      Background="Black"
                       Margin="0,0,-6,0">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid x:Name="PlayerContainer"
-                          Background="Black"
                           MinHeight="200"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch">
                         <core:PhoenixReadPlayer x:Name="PhoenixReadPlayer" ViewModel="{x:Bind ViewModel.Player, Mode=OneWay}"/>
                     </Grid>
                 </Grid>
-
-                <InfoBar Grid.Row="2"
-                         Margin="8"
-                         HorizontalAlignment="Stretch"
-                         VerticalAlignment="Top"
-                         IsIconVisible="True"
-                         IsOpen="{x:Bind ViewModel.IsInteractionVideo, Mode=OneWay}"
-                         Message="{x:Bind strings:Resources.InteractionNotSupportTip}"
-                         Severity="Warning">
-                    <InfoBar.ActionButton>
-                        <HyperlinkButton Command="{x:Bind ViewModel.OpenInBroswerCommand, Mode=OneWay}" Content="{x:Bind strings:Resources.OpenInBrowser}"/>
-                    </InfoBar.ActionButton>
-                </InfoBar>
 
                 <Grid x:Name="SideHeader"
                       Grid.Column="2"

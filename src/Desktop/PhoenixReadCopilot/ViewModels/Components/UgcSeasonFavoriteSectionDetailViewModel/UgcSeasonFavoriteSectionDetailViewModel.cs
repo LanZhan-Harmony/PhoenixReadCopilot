@@ -62,13 +62,14 @@ public sealed partial class UgcSeasonFavoriteSectionDetailViewModel
         try
         {
             IsLoading = true;
-            var (detail, total, nextPn) = await _service.GetUgcSeasonVideosAsync(Data, _pageNumber);
+            (IReadOnlyList<VideoInformation>? detail, int total, int? nextPn) =
+                await _service.GetUgcSeasonVideosAsync(Data, _pageNumber);
             _preventLoadMore = detail is null || nextPn is null;
             _pageNumber = nextPn ?? 0;
             TotalCount = total;
             if (!_preventLoadMore || detail.Count > 0)
             {
-                foreach (var item in detail)
+                foreach (VideoInformation item in detail)
                 {
                     Items.Add(new VideoItemViewModel(item, VideoCardStyle.Favorite));
                 }

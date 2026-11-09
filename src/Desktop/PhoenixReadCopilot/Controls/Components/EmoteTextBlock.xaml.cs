@@ -33,7 +33,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         nameof(Text),
         typeof(EmoteText),
         typeof(EmoteTextBlock),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnTextChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnTextChanged))
     );
 
     /// <summary>
@@ -73,12 +73,12 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     protected override void OnControlUnloaded()
     {
         base.OnControlUnloaded();
-        Gallery?.ItemsSource = default;
+        Gallery?.ItemsSource = null;
     }
 
     private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as EmoteTextBlock;
+        EmoteTextBlock? instance = d as EmoteTextBlock;
         if (instance != null)
         {
             instance.InitializeContent();
@@ -112,7 +112,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
 
         if (Text?.Pictures?.Count > 0)
         {
-            var gallery = FindName("Gallery") as ItemsRepeater;
+            ItemsRepeater? gallery = FindName("Gallery") as ItemsRepeater;
             if (gallery != null)
             {
                 gallery.ItemsSource = Text.Pictures;
@@ -121,7 +121,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         }
         else if (Gallery is not null)
         {
-            Gallery.ItemsSource = default;
+            Gallery.ItemsSource = null;
             Gallery.Visibility = Visibility.Collapsed;
         }
     }
@@ -133,45 +133,52 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     {
         if (string.IsNullOrEmpty(Text?.Text))
         {
-            return default;
+            return null;
         }
 
-        var text = Text.Text;
-        var emotes = Text.Emotes;
-        var para = new Paragraph();
+        string text = Text.Text;
+        Dictionary<string, AppImage>? emotes = Text.Emotes;
+        Paragraph para = new();
 
-        var emojiRegex = new Regex(@"(\[.*?\])");
-        var splitContents = emojiRegex.Split(text).Where(p => p.Length > 0).ToArray();
-        foreach (var content in splitContents)
+        Regex emojiRegex = new(@"(\[.*?\])");
+        string[] splitContents = emojiRegex.Split(text).Where(p => p.Length > 0).ToArray();
+        foreach (string content in splitContents)
         {
             if (emojiRegex.IsMatch(content))
             {
-                if (EmojiHelper.TryGetEmoji(content, out var localEmoji) && localEmoji?.Uri is not null)
+                if (
+                    EmojiHelper.TryGetEmoji(content, out EmojiItem? localEmoji)
+                    && localEmoji?.Uri is not null
+                )
                 {
-                    var inlineCon = new InlineUIContainer();
-                    var img = new Image()
+                    InlineUIContainer inlineCon = new();
+                    Image img = new()
                     {
                         Width = 20,
                         Height = 20,
                         VerticalAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(2, 0, 2, -4),
                     };
-                    var bitmap = new BitmapImage(localEmoji.Uri) { DecodePixelWidth = 40 };
+                    BitmapImage bitmap = new(localEmoji.Uri) { DecodePixelWidth = 40 };
                     img.Source = bitmap;
                     inlineCon.Child = img;
                     para.Inlines.Add(inlineCon);
                 }
-                else if (emotes != null && emotes.TryGetValue(content, out var emoji) && emoji?.Uri is not null)
+                else if (
+                    emotes != null
+                    && emotes.TryGetValue(content, out AppImage? emoji)
+                    && emoji?.Uri is not null
+                )
                 {
-                    var inlineCon = new InlineUIContainer();
-                    var img = new Image()
+                    InlineUIContainer inlineCon = new();
+                    Image img = new()
                     {
                         Width = 20,
                         Height = 20,
                         VerticalAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(2, 0, 2, -4),
                     };
-                    var bitmap = new BitmapImage(emoji.Uri) { DecodePixelWidth = 40 };
+                    BitmapImage bitmap = new(emoji.Uri) { DecodePixelWidth = 40 };
                     img.Source = bitmap;
                     inlineCon.Child = img;
                     para.Inlines.Add(inlineCon);
@@ -199,7 +206,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
 
     private void OnImageTapped(object sender, TappedRoutedEventArgs e)
     {
-        var image = (sender as Image)?.DataContext as AppImage;
+        AppImage? image = (sender as Image)?.DataContext as AppImage;
         if (image is not null && Text?.Pictures is not null)
         {
             new GalleryWindow(image, [.. Text.Pictures]).Activate();
@@ -213,7 +220,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
             return;
         }
 
-        var para = ParseText();
+        Paragraph? para = ParseText();
         if (para != null)
         {
             FlyoutRichBlock.Blocks.Add(para);

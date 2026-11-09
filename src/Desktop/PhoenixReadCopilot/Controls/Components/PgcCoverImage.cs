@@ -44,20 +44,20 @@ public sealed partial class PgcCoverImage : ImageExBase
     /// <inheritdoc/>
     protected override void DrawImage(CanvasBitmap canvasBitmap)
     {
-        var width = canvasBitmap.Size.Width;
-        var height = canvasBitmap.Size.Height;
-        var destRect = new Rect(0, 0, DecodeWidth, DecodeHeight);
-        var sourceRect = new Rect(0, 0, width, height);
+        double width = canvasBitmap.Size.Width;
+        double height = canvasBitmap.Size.Height;
+        Rect destRect = new(0, 0, DecodeWidth, DecodeHeight);
+        Rect sourceRect = new(0, 0, width, height);
         DrawBlurImage(canvasBitmap, destRect, sourceRect);
     }
 
     private void DrawBlurImage(CanvasBitmap canvasBitmap, Rect destinationRect, Rect sourceRect)
     {
-        var crossfadeOffset = CanvasImageSource.ConvertDipsToPixels(
+        int crossfadeOffset = CanvasImageSource.ConvertDipsToPixels(
             (float)(DecodeHeight - (DecodeHeight * BlurRatio)),
             CanvasDpiRounding.Round
         );
-        var crossfadeLength = CanvasImageSource.ConvertDipsToPixels(68, CanvasDpiRounding.Round);
+        int crossfadeLength = CanvasImageSource.ConvertDipsToPixels(68, CanvasDpiRounding.Round);
 
         _blurEffect.Source = canvasBitmap;
         _blurEffect.BlurAmount = CanvasImageSource.ConvertDipsToPixels(28, CanvasDpiRounding.Round);
@@ -66,7 +66,7 @@ public sealed partial class PgcCoverImage : ImageExBase
         _blurEffect.SourceRectangle = sourceRect;
         _blurEffect.DestinationRectangle = destinationRect;
 
-        using var ds = CanvasImageSource.CreateDrawingSession(ClearColor);
+        using CanvasDrawingSession ds = CanvasImageSource.CreateDrawingSession(ClearColor);
         ds.DrawImage(_blurEffect, destinationRect, destinationRect);
     }
 }

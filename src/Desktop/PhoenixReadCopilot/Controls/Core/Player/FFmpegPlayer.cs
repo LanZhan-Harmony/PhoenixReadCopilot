@@ -33,7 +33,7 @@ public sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewMod
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
-        var rootGrid = GetTemplateChild("RootGrid") as Grid;
+        Grid? rootGrid = GetTemplateChild("RootGrid") as Grid;
         _playerElement = new MediaPlayerElement
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,

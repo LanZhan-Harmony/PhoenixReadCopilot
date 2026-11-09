@@ -20,7 +20,7 @@ public sealed partial class NotificationViewModel
     [RelayCommand]
     private async Task TrySendVideoMomentNotificationsAsync()
     {
-        var isVideoNotifyEnabled = Settings.IsVideoMomentNotificationEnabled;
+        bool isVideoNotifyEnabled = Settings.IsVideoMomentNotificationEnabled;
         if (!isVideoNotifyEnabled)
         {
             return;
@@ -28,9 +28,9 @@ public sealed partial class NotificationViewModel
 
         try
         {
-            var lastMoments = await _momentService.GetVideoMomentsAsync(
-                default,
-                default,
+            MomentView? lastMoments = await _momentService.GetVideoMomentsAsync(
+                null,
+                null,
                 new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token
             );
             if (lastMoments is null || lastMoments.Moments.Count == 0)
@@ -41,20 +41,20 @@ public sealed partial class NotificationViewModel
             LoadLastTenMomentIds();
 
             // 只取最新的三个动态.
-            var newMoments = lastMoments.Moments.Take(3).ToList();
-            foreach (var moment in newMoments)
+            List<MomentInformation> newMoments = lastMoments.Moments.Take(3).ToList();
+            foreach (MomentInformation? moment in newMoments)
             {
                 if (_momentIds.Contains(moment.Id))
                 {
                     continue;
                 }
 
-                var title = string.Empty;
-                var cover = string.Empty;
-                var avatar = string.Empty;
-                var publisher = string.Empty;
-                var pageType = string.Empty;
-                var arguments = string.Empty;
+                string? title = string.Empty;
+                string cover = string.Empty;
+                string avatar = string.Empty;
+                string? publisher = string.Empty;
+                string? pageType = string.Empty;
+                string arguments = string.Empty;
                 if (moment.Data is VideoInformation vinfo)
                 {
                     title = vinfo.Identifier.Title;
@@ -67,13 +67,13 @@ public sealed partial class NotificationViewModel
                     title = einfo.Identifier.Title;
                     cover = einfo.Identifier.Cover.Uri.ToString();
                     pageType = typeof(PgcPlayerPage).FullName;
-                    var hasEpid = einfo.Identifier.Id != "0";
+                    bool hasEpid = einfo.Identifier.Id != "0";
                     if (hasEpid)
                     {
-                        var identifier = new MediaIdentifier(
+                        MediaIdentifier identifier = new(
                             "ep_" + einfo.Identifier.Id,
-                            default,
-                            default
+                            null,
+                            null
                         );
                         arguments = JsonAotSerializer.Serialize(identifier);
                     }
@@ -85,7 +85,7 @@ public sealed partial class NotificationViewModel
 
                 avatar = moment.User.Avatar.Uri.ToString();
                 publisher = moment.User.Name;
-                var notification = new AppNotificationBuilder()
+                AppNotification notification = new AppNotificationBuilder()
                     .AddArgument("page", pageType)
                     .AddArgument("args", arguments)
                     .AddText(title)
@@ -106,16 +106,16 @@ public sealed partial class NotificationViewModel
             }
 
             // 尝试提取最新的10个动态id，如果不足10个，则从 _momentIds 中补充.
-            var newMomentIds = newMoments.Select(p => p.Id).ToList();
-            var momentIds = new List<string>();
-            momentIds.AddRange(newMomentIds);
-            momentIds.AddRange(
-                _momentIds.Where(p => !newMomentIds.Contains(p)).Take(10 - newMomentIds.Count)
-            );
+            List<string> newMomentIds = newMoments.Select(p => p.Id).ToList();
+            List<string> momentIds =
+            [
+                .. newMomentIds,
+                .. _momentIds.Where(p => !newMomentIds.Contains(p)).Take(10 - newMomentIds.Count),
+            ];
 
             SaveLastTenMomentIds(momentIds);
 
-            var lastFiveMoments = lastMoments.Moments.Take(5).ToList();
+            List<MomentInformation> lastFiveMoments = lastMoments.Moments.Take(5).ToList();
             UpdateMomentTiles(lastFiveMoments);
         }
         catch (Exception ex)
@@ -130,10 +130,10 @@ public sealed partial class NotificationViewModel
     /// </summary>
     private void LoadLastTenMomentIds()
     {
-        var lastTenMomentIds = Settings.LastTenMomentIds;
+        string lastTenMomentIds = Settings.LastTenMomentIds;
         if (string.IsNullOrEmpty(lastTenMomentIds))
         {
-            _momentIds = new List<string>();
+            _momentIds = [];
             return;
         }
 
@@ -143,7 +143,7 @@ public sealed partial class NotificationViewModel
     private void SaveLastTenMomentIds(List<string> momentIds)
     {
         _momentIds = momentIds;
-        var lastTenMomentIds = string.Join(',', momentIds);
+        string lastTenMomentIds = string.Join(',', momentIds);
         Settings.LastTenMomentIds = lastTenMomentIds;
     }
 
@@ -154,10 +154,10 @@ public sealed partial class NotificationViewModel
             return;
         }
 
-        foreach (var d in moments)
+        foreach (MomentInformation d in moments)
         {
-            var title = string.Empty;
-            var cover = string.Empty;
+            string? title = string.Empty;
+            string cover = string.Empty;
             if (d.Data is VideoInformation videoInfo)
             {
                 title = videoInfo.Identifier.Title;
@@ -169,39 +169,39 @@ public sealed partial class NotificationViewModel
                 cover = episodeInfo.Identifier.Cover.SourceUri.ToString();
             }
 
-            var avatar = d.User.Avatar.Uri;
-            var publisher = d.User.Name;
+            Uri avatar = d.User.Avatar.Uri;
+            string? publisher = d.User.Name;
 
-            var xmlContent = $"""
-                              <?xml version="1.0" encoding="utf-8"?>
-                              <tile>
-                                  <visual>
-                                      <binding template="TileMedium" branding="name">
-                                          <image src="{cover}" placement="background" hint-overlay="60" />
-                                          <image src="{avatar}" placement="peek" hint-crop="circle" />
-                                          <text hint-style="caption" hint-wrap="true">{SecurityElement.Escape(
-                                              title
-                                          )}</text>
-                                      </binding>
-                                      <binding template="TileWide" branding="nameAndLogo">
-                                          <image src="{cover}" placement="background" hint-overlay="60" />
-                                          <text hint-maxLines="2" hint-style="base" hint-wrap="true">{SecurityElement.Escape(
-                                              title
-                                          )}</text>
-                                          <text hint-style="caption">{SecurityElement.Escape(publisher)}</text>
-                                      </binding>
-                                      <binding template="TileLarge" branding="nameAndLogo">
-                                          <image src="{cover}" placement="background" hint-overlay="60" />
-                                          <text hint-style="subtitle" hint-wrap="true">{SecurityElement.Escape(
-                                              title
-                                          )}</text>
-                                          <text hint-style="base"></text>
-                                          <text hint-style="base">{SecurityElement.Escape(publisher)}</text>
-                                      </binding>
-                                  </visual>
-                              </tile>
-                              """;
-            var xml = new XmlDocument();
+            string xmlContent = $"""
+                                 <?xml version="1.0" encoding="utf-8"?>
+                                 <tile>
+                                     <visual>
+                                         <binding template="TileMedium" branding="name">
+                                             <image src="{cover}" placement="background" hint-overlay="60" />
+                                             <image src="{avatar}" placement="peek" hint-crop="circle" />
+                                             <text hint-style="caption" hint-wrap="true">{SecurityElement.Escape(
+                                                 title
+                                             )}</text>
+                                         </binding>
+                                         <binding template="TileWide" branding="nameAndLogo">
+                                             <image src="{cover}" placement="background" hint-overlay="60" />
+                                             <text hint-maxLines="2" hint-style="base" hint-wrap="true">{SecurityElement.Escape(
+                                                 title
+                                             )}</text>
+                                             <text hint-style="caption">{SecurityElement.Escape(publisher)}</text>
+                                         </binding>
+                                         <binding template="TileLarge" branding="nameAndLogo">
+                                             <image src="{cover}" placement="background" hint-overlay="60" />
+                                             <text hint-style="subtitle" hint-wrap="true">{SecurityElement.Escape(
+                                                 title
+                                             )}</text>
+                                             <text hint-style="base"></text>
+                                             <text hint-style="base">{SecurityElement.Escape(publisher)}</text>
+                                         </binding>
+                                     </visual>
+                                 </tile>
+                                 """;
+            XmlDocument xml = new();
             xml.LoadXml(xmlContent);
             TileUpdateManager
                 .CreateTileUpdaterForApplication()

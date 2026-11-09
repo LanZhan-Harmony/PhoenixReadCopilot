@@ -71,9 +71,9 @@ public sealed partial class AnimeSideHeader : AnimePageControlBase
             return;
         }
 
-        foreach (var vm in ViewModel.Sections)
+        foreach (IPgcSectionDetailViewModel vm in ViewModel.Sections)
         {
-            var item = SectionTemplate.LoadContent() as SelectorBarItem;
+            SelectorBarItem? item = SectionTemplate.LoadContent() as SelectorBarItem;
             item.DataContext = vm;
             SectionSelector.Items.Add(item);
         }

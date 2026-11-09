@@ -65,7 +65,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// </summary>
     public void ResetData()
     {
-        ReloadFontsCommand.Execute(default);
+        ReloadFontsCommand.Execute(null);
         ResetOptions();
     }
 
@@ -150,15 +150,15 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         _loadCancellationTokenSource?.Cancel();
         _loadCancellationTokenSource?.Dispose();
         _loadCancellationTokenSource = new CancellationTokenSource();
-        var token = _loadCancellationTokenSource.Token;
+        CancellationToken token = _loadCancellationTokenSource.Token;
 
         IsLoading = true;
         _duration = duration;
 
         try
         {
-            var durationMs = duration > 0 ? duration * 1000L : 3600000L;
-            var page = await _apiClient.GetDanmakuAsync(
+            long durationMs = duration > 0 ? duration * 1000L : 3600000L;
+            DanmakuPage page = await _apiClient.GetDanmakuAsync(
                 _seriesId,
                 _videoId,
                 0,
@@ -168,8 +168,8 @@ public sealed partial class DanmakuViewModel : ViewModelBase
 
             if (page.Items is { Count: > 0 })
             {
-                var danmakus = page.Items
-                    .Select(item => new DanmakuCoreItem
+                List<DanmakuCoreItem> danmakus = page
+                    .Items.Select(item => new DanmakuCoreItem
                     {
                         Id = item.Id,
                         Text = item.Text,
@@ -201,14 +201,18 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     [RelayCommand]
     private async Task SendDanmakuAsync(string text)
     {
-        if (string.IsNullOrWhiteSpace(text) || string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(_videoId))
+        if (
+            string.IsNullOrWhiteSpace(text)
+            || string.IsNullOrEmpty(_seriesId)
+            || string.IsNullOrEmpty(_videoId)
+        )
         {
             return;
         }
 
         try
         {
-            var result = await _apiClient.SendDanmakuAsync(
+            PhoenixOperationResult result = await _apiClient.SendDanmakuAsync(
                 _seriesId,
                 _videoId,
                 text.Trim()
@@ -221,7 +225,9 @@ public sealed partial class DanmakuViewModel : ViewModelBase
             }
             else
             {
-                _appViewModel.ShowTipCommand.Execute((result.Message ?? "弹幕发送失败", InfoType.Warning));
+                _appViewModel.ShowTipCommand.Execute(
+                    (result.Message ?? "弹幕发送失败", InfoType.Warning)
+                );
             }
         }
         catch (Exception ex)
@@ -261,9 +267,9 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     [RelayCommand]
     private async Task ReloadFontsAsync()
     {
-        var fonts = await _fontToolkit.GetFontsAsync();
+        IReadOnlyList<string> fonts = await _fontToolkit.GetFontsAsync();
         Fonts = fonts.ToList();
-        var localFont = _settings.DanmakuFontFamily;
+        string localFont = _settings.DanmakuFontFamily;
         if (!Fonts.Contains(localFont))
         {
             DanmakuFontFamily = "Segoe UI";

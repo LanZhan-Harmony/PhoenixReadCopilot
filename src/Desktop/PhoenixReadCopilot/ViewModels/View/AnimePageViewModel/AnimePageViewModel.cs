@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
@@ -48,16 +47,16 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        Sections = new List<IPgcSectionDetailViewModel>
-        {
+        Sections =
+        [
             new AnimeTimelineViewModel(
                 _apiClient,
                 _dispatcherQueue,
                 _loggerFactory.CreateLogger<AnimeTimelineViewModel>()
             ),
-        };
+        ];
 
-        var section = Sections.First();
+        IPgcSectionDetailViewModel section = Sections.First();
         _dispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
             () =>
@@ -78,7 +77,7 @@ public sealed partial class AnimePageViewModel : LayoutPageViewModelBase
 
         SelectedSection = section;
         _settings.AnimePageLastSelectedSectionType = section.SectionType;
-        section.InitializeCommand.Execute(default);
+        section.InitializeCommand.Execute(null);
     }
 
     [RelayCommand]

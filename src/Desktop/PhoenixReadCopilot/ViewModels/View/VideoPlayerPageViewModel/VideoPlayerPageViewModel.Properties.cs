@@ -28,7 +28,6 @@ public sealed partial class VideoPlayerPageViewModel
     private IReadOnlyList<PlaybackMedia>? _currentMediaList;
     private IReadOnlyList<Episode>? _episodes;
     private Episode? _currentEpisode;
-    private IList<Drama>? _dramaPlaylist;
 
     private CancellationTokenSource? _pageLoadCancellationTokenSource;
     private CancellationTokenSource? _dashLoadCancellationTokenSource;
@@ -79,16 +78,10 @@ public sealed partial class VideoPlayerPageViewModel
     public partial double PlayCount { get; set; }
 
     [ObservableProperty]
-    public partial double DanmakuCount { get; set; }
-
-    [ObservableProperty]
     public partial double CommentCount { get; set; }
 
     [ObservableProperty]
     public partial double LikeCount { get; set; }
-
-    [ObservableProperty]
-    public partial double CoinCount { get; set; }
 
     [ObservableProperty]
     public partial double FavoriteCount { get; set; }
@@ -110,9 +103,6 @@ public sealed partial class VideoPlayerPageViewModel
 
     [ObservableProperty]
     public partial bool IsPrivatePlay { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsInteractionVideo { get; set; }
 
     [ObservableProperty]
     public partial VideoLoopType CurrentLoop { get; set; }

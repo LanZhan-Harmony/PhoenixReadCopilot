@@ -17,11 +17,11 @@ public sealed partial class PopularPageViewModel
     private readonly ILogger<PopularPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly Dictionary<string, List<VideoItemViewModel>> _videoCache = new();
+    private readonly Dictionary<string, List<VideoItemViewModel>> _videoCache = [];
 
     private int _recommendOffset;
     private string? _recommendSessionId;
-    private readonly HashSet<string> _seenDramaIds = new();
+    private readonly HashSet<string> _seenDramaIds = [];
     private bool _hasMoreRecommendations = true;
 
     private int _leaderboardOffset;
@@ -48,7 +48,8 @@ public sealed partial class PopularPageViewModel
     public partial bool IsLeaderboardSection { get; set; }
 
     [ObservableProperty]
-    public partial ShortDramaLeaderboardChannel CurrentChannel { get; set; } = ShortDramaLeaderboardChannel.All;
+    public partial ShortDramaLeaderboardChannel CurrentChannel { get; set; } =
+        ShortDramaLeaderboardChannel.All;
 
     [ObservableProperty]
     public partial string? BoardTitle { get; set; }
@@ -66,10 +67,10 @@ public sealed partial class PopularPageViewModel
     /// <summary>
     /// 分区与榜单列表.
     /// </summary>
-    public ObservableCollection<IPopularSectionItemViewModel> Sections { get; } = new();
+    public ObservableCollection<IPopularSectionItemViewModel> Sections { get; } = [];
 
     /// <summary>
     /// 短剧视频列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Videos { get; } = new();
+    public ObservableCollection<VideoItemViewModel> Videos { get; } = [];
 }

@@ -71,7 +71,7 @@ public sealed partial class VideoCoverImage : ImageExBase
     {
         if (d is VideoCoverImage control)
         {
-            var ratio = (double)e.NewValue;
+            double ratio = (double)e.NewValue;
             if (ratio > 0)
             {
                 control.DecodeHeight = Math.Max(1, Math.Round(control.DecodeWidth / ratio));
@@ -98,7 +98,7 @@ public sealed partial class VideoCoverImage : ImageExBase
             return;
         }
 
-        if (Source != null && _aspectRatioCache.TryGetValue(Source, out var cachedRatio))
+        if (Source != null && _aspectRatioCache.TryGetValue(Source, out double cachedRatio))
         {
             if (Math.Abs(AspectRatio - cachedRatio) > 0.01)
             {
@@ -116,7 +116,7 @@ public sealed partial class VideoCoverImage : ImageExBase
             return new Size(Width, Height);
         }
 
-        var ratio = AspectRatio > 0 ? AspectRatio : (16.0 / 9.0);
+        double ratio = AspectRatio > 0 ? AspectRatio : (16.0 / 9.0);
 
         // 仅显式设置了 Width
         if (!double.IsNaN(Width))
@@ -133,24 +133,24 @@ public sealed partial class VideoCoverImage : ImageExBase
         // 高度无限制（例如 StaggeredLayout 或 RowDefinition Height="Auto"），极速返回尺寸，避开模板遍历
         if (double.IsPositiveInfinity(availableSize.Height))
         {
-            var targetWidth =
+            double targetWidth =
                 double.IsPositiveInfinity(availableSize.Width) || availableSize.Width <= 0
                     ? DecodeWidth
                     : availableSize.Width;
-            var targetHeight = targetWidth / ratio;
+            double targetHeight = targetWidth / ratio;
             return new Size(targetWidth, targetHeight);
         }
 
         // 宽度无限制（例如水平滚动列表），根据高度自适应宽度
         if (double.IsPositiveInfinity(availableSize.Width))
         {
-            var targetHeight = availableSize.Height <= 0 ? DecodeHeight : availableSize.Height;
-            var targetWidth = targetHeight * ratio;
+            double targetHeight = availableSize.Height <= 0 ? DecodeHeight : availableSize.Height;
+            double targetWidth = targetHeight * ratio;
             return new Size(targetWidth, targetHeight);
         }
 
         // 两个方向都有约束时才走基类测量
-        var baseSize = base.MeasureOverride(availableSize);
+        Size baseSize = base.MeasureOverride(availableSize);
         if (baseSize.Width <= 0 || baseSize.Height <= 0)
         {
             return availableSize;
@@ -162,12 +162,12 @@ public sealed partial class VideoCoverImage : ImageExBase
     /// <inheritdoc/>
     protected override void DrawImage(CanvasBitmap canvasBitmap)
     {
-        var bitmapWidth = canvasBitmap.SizeInPixels.Width;
-        var bitmapHeight = canvasBitmap.SizeInPixels.Height;
+        uint bitmapWidth = canvasBitmap.SizeInPixels.Width;
+        uint bitmapHeight = canvasBitmap.SizeInPixels.Height;
 
         if (bitmapWidth > 0 && bitmapHeight > 0)
         {
-            var realRatio = (double)bitmapWidth / bitmapHeight;
+            double realRatio = (double)bitmapWidth / bitmapHeight;
             // 限制极端比例，避免瀑布流中过长或过扁的异常卡片影响体验 (0.5 ~ 2.0，涵盖 9:16 到 2:1)
             realRatio = Math.Clamp(realRatio, 0.5, 2.0);
 
@@ -187,8 +187,8 @@ public sealed partial class VideoCoverImage : ImageExBase
             }
         }
 
-        var targetWidth = (float)DecodeWidth;
-        var targetHeight = (float)DecodeHeight;
+        float targetWidth = (float)DecodeWidth;
+        float targetHeight = (float)DecodeHeight;
 
         // 确保 CanvasImageSource 具有与当前 DecodeWidth / DecodeHeight 匹配的分辨率
         if (
@@ -197,7 +197,7 @@ public sealed partial class VideoCoverImage : ImageExBase
             || Math.Abs(CanvasImageSource.Size.Height - targetHeight) > 0.5
         )
         {
-            var device = CanvasDevice.GetSharedDevice();
+            CanvasDevice device = CanvasDevice.GetSharedDevice();
             CanvasImageSource = new CanvasImageSource(
                 device,
                 targetWidth,
@@ -207,11 +207,13 @@ public sealed partial class VideoCoverImage : ImageExBase
             );
         }
 
-        var sourceRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-        var destRect = new Rect(0, 0, targetWidth, targetHeight);
-        var cropRect = GetCenterCropRect(destRect, sourceRect);
+        Rect sourceRect = new(0, 0, bitmapWidth, bitmapHeight);
+        Rect destRect = new(0, 0, targetWidth, targetHeight);
+        Rect cropRect = GetCenterCropRect(destRect, sourceRect);
 
-        using var drawingSession = CanvasImageSource.CreateDrawingSession(ClearColor);
+        using CanvasDrawingSession drawingSession = CanvasImageSource.CreateDrawingSession(
+            ClearColor
+        );
         drawingSession.DrawImage(canvasBitmap, destRect, cropRect);
     }
 }

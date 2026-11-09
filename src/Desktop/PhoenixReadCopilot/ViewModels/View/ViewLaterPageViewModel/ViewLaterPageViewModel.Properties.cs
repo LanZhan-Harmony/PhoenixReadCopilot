@@ -37,5 +37,5 @@ public sealed partial class ViewLaterPageViewModel
     /// <summary>
     /// 视频列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Videos { get; } = new();
+    public ObservableCollection<VideoItemViewModel> Videos { get; } = [];
 }

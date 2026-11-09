@@ -46,5 +46,5 @@ public sealed partial class VideoSearchSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Items { get; } = new();
+    public ObservableCollection<VideoItemViewModel> Items { get; } = [];
 }

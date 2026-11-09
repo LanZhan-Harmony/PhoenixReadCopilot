@@ -42,5 +42,5 @@ public sealed partial class VideoMomentSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<MomentItemViewModel> Items { get; } = new();
+    public ObservableCollection<MomentItemViewModel> Items { get; } = [];
 }

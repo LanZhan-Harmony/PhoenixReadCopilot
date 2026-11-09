@@ -27,7 +27,7 @@ internal sealed partial class AppToolkit : IAppToolkit
     /// <inheritdoc/>
     public ApplicationTheme GetCurrentTheme()
     {
-        var localTheme = _settings.AppTheme;
+        ElementTheme localTheme = _settings.AppTheme;
         return localTheme == ElementTheme.Default ? Application.Current.RequestedTheme
             : localTheme == ElementTheme.Light ? ApplicationTheme.Light
             : ApplicationTheme.Dark;
@@ -38,11 +38,11 @@ internal sealed partial class AppToolkit : IAppToolkit
     {
         if (RuntimeHelper.IsMSIX)
         {
-            var appVersion = Package.Current.Id.Version;
+            PackageVersion appVersion = Package.Current.Id.Version;
             return $"{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}.{appVersion.Revision}";
         }
 
-        var version =
+        Version? version =
             Assembly.GetEntryAssembly()?.GetName().Version
             ?? Assembly.GetExecutingAssembly().GetName().Version;
         return $"{version?.Major}.{version?.Minor}.{version?.Build}.{version?.Revision}";
@@ -72,12 +72,12 @@ internal sealed partial class AppToolkit : IAppToolkit
 
         if (count >= 100_000_000)
         {
-            var unit = Strings.Resources.Billion;
+            string unit = Strings.Resources.Billion;
             return Math.Round(count / 100_000_000d, 2) + unit;
         }
         else if (count >= 10_000)
         {
-            var unit = Strings.Resources.TenThousands;
+            string unit = Strings.Resources.TenThousands;
             return Math.Round(count / 10_000d, 2) + unit;
         }
 
@@ -97,12 +97,12 @@ internal sealed partial class AppToolkit : IAppToolkit
             hexCode = hexCode[1..];
         }
 
-        if (int.TryParse(hexCode, out var intValue))
+        if (int.TryParse(hexCode, out int intValue))
         {
             hexCode = intValue.ToString("X2");
         }
 
-        var color = default(Color);
+        Color color = default(Color);
         if (hexCode.Length == 4)
         {
             hexCode = "00" + hexCode;
@@ -133,7 +133,7 @@ internal sealed partial class AppToolkit : IAppToolkit
     /// <returns>解码标识符.</returns>
     public static string GetPreferCodecId()
     {
-        var preferCodec = ItemServices.Settings.PreferCodec;
+        PreferCodecType preferCodec = ItemServices.Settings.PreferCodec;
         return preferCodec switch
         {
             PreferCodecType.H265 => "hev",

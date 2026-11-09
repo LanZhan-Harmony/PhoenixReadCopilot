@@ -53,19 +53,9 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         Player.SetEndAction(PlayerMediaEnded);
         Player.SetReloadAction(ReloadPart);
         Player.SetSpeedAction(PlayerSpeedChanged);
-        Player.SetPlayNextAction(() => PlayNextVideoCommand.Execute(default));
-        Player.SetPlayPreviousAction(() => PlayPreviousVideoCommand.Execute(default));
+        Player.SetPlayNextAction(() => PlayNextVideoCommand.Execute(null));
+        Player.SetPlayPreviousAction(() => PlayPreviousVideoCommand.Execute(null));
     }
-
-    /// <summary>
-    /// 注入播放列表.
-    /// </summary>
-    public void InjectPlaylist(IList<Drama> playlist) => _dramaPlaylist = playlist;
-
-    /// <summary>
-    /// 注入播放列表 (兼容老调用).
-    /// </summary>
-    public void InjectPlaylist(object? playlist) { }
 
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(VideoPlayerPage);
@@ -122,7 +112,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _seriesId = seriesId;
 
             // 获取红果短剧详情与分集
-            var details = await _apiClient.GetDramaDetailsAsync(
+            DramaDetails details = await _apiClient.GetDramaDetailsAsync(
                 _seriesId,
                 _pageLoadCancellationTokenSource.Token
             );
@@ -130,8 +120,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _episodes = details.Episodes;
 
             InitializeDramaView(details);
-            var initialPart =
-                FindInitialPart(default) ?? throw new Exception("无法找到短剧的分集信息.");
+            Episode initialPart =
+                FindInitialPart(null) ?? throw new Exception("无法找到短剧的分集信息.");
             _currentEpisode = initialPart;
 
             // 初始化整剧剧评与分集评论
@@ -151,10 +141,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 IsPageLoadFailed = true;
                 _logger.LogError(ex, $"尝试获取短剧 {seriesId} 详情时失败.");
             }
-            else
-            {
-                return;
-            }
         }
         finally
         {
@@ -170,7 +156,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             CancelDashLoad();
         }
 
-        var isPreloadHit = _preloadedEpisodeVideoId == episode.VideoId && _preloadedMediaList is { Count: > 0 };
+        bool isPreloadHit =
+            _preloadedEpisodeVideoId == episode.VideoId && _preloadedMediaList is { Count: > 0 };
         if (!isPreloadHit)
         {
             IsMediaLoading = true;
@@ -181,7 +168,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _dashLoadCancellationTokenSource = new CancellationTokenSource();
             _currentVideoId = episode.VideoId;
 
-            IReadOnlyList<PlaybackMedia>? mediaList = null;
+            IReadOnlyList<PlaybackMedia>? mediaList;
 
             // 优先检查下一集预载缓存
             if (isPreloadHit)
@@ -219,10 +206,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                     ex,
                     $"尝试获取短剧 {_seriesId} 的第 {episode.Number} 分集媒体时失败."
                 );
-            }
-            else
-            {
-                return;
             }
         }
         finally
@@ -264,18 +247,18 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         _isFormatChanging = true;
-        var isFirstSet = SelectedFormat == default;
+        bool isFirstSet = SelectedFormat == null;
         SelectedFormat = vm;
-        var media = vm.PlaybackMedia ?? _currentMediaList?.FirstOrDefault();
+        PlaybackMedia? media = vm.PlaybackMedia ?? _currentMediaList?.FirstOrDefault();
         if (media == null)
         {
             _isFormatChanging = false;
             return;
         }
 
-        var videoUrl = media.Url;
+        string videoUrl = media.Url;
 
-        var isAutoPlay = !isFirstSet || _settings.ShouldAutoPlay;
+        bool isAutoPlay = !isFirstSet || _settings.ShouldAutoPlay;
 
         // 切换清晰度时保持当前播放进度
         if (_initialProgress == 0 && Player.Position != 0)
@@ -332,13 +315,13 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         SelectedSection = section;
-        SelectedSection.TryFirstLoadCommand.Execute(default);
+        SelectedSection.TryFirstLoadCommand.Execute(null);
     }
 
     [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
-        var shouldReport = _settings.ShouldReportProgress;
+        bool shouldReport = _settings.ShouldReportProgress;
         if (
             !shouldReport
             || IsPrivatePlay
@@ -353,7 +336,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         try
         {
-            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+            CancellationTokenSource cancellationToken = new(TimeSpan.FromSeconds(2));
             await _apiClient.ReportProgressAsync(
                 new ProgressUpdate
                 {

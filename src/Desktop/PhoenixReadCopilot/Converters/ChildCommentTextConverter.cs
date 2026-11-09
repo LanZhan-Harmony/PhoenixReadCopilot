@@ -7,7 +7,7 @@ internal sealed partial class ChildCommentTextConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var count = (int)value;
+        int count = (int)value;
         return string.Format(Resources.MoreReplyDisplay, count);
     }
 

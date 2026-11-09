@@ -57,8 +57,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
     /// <returns>结果.</returns>
     public bool IsTextBoxFocused() =>
         _overlayContainer is not null
-            ? FocusManager.GetFocusedElement(_overlayContainer.XamlRoot) is TextBox
-            : false;
+        && FocusManager.GetFocusedElement(_overlayContainer.XamlRoot) is TextBox;
 
     /// <summary>
     /// 标记右箭头按下时间.
@@ -87,10 +86,10 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             || DateTimeOffset.Now - _lastPressedTime < TimeSpan.FromSeconds(1)
         )
         {
-            ViewModel.ForwardSkipCommand.Execute(default);
+            ViewModel.ForwardSkipCommand.Execute(null);
         }
 
-        _lastRightArrowPressedTime = default;
+        _lastRightArrowPressedTime = null;
     }
 
     /// <inheritdoc/>
@@ -136,8 +135,8 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             ViewModel.Initialized -= OnViewModelInitialized;
         }
 
-        ViewModel = default;
-        PlayerPresenter.ViewModel = default;
+        ViewModel = null;
+        PlayerPresenter.ViewModel = null;
     }
 
     /// <inheritdoc/>
@@ -148,7 +147,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
     {
         if (newValue is null)
         {
-            PlayerPresenter.ViewModel = default;
+            PlayerPresenter.ViewModel = null;
             return;
         }
 
@@ -198,7 +197,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             _lastSpeed = _lastSpeed == 0 ? 1.0 : _lastSpeed;
             ViewModel.SetSpeedCommand.Execute(_lastSpeed);
             _lastSpeed = 0;
-            _lastPressedTime = default;
+            _lastPressedTime = null;
         }
     }
 
@@ -246,7 +245,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
         {
             _cursorTimer.Tick -= OnCursorTimerTick;
             _cursorTimer.Stop();
-            _cursorTimer = default;
+            _cursorTimer = null;
         }
 
         UnhookInteractionControlEvents();
@@ -259,12 +258,12 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
     )
     {
         RestoreCursor();
-        var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
+        bool isManual = _settings.MTCBehavior == MTCBehavior.Manual;
         if (!isManual)
         {
             if (forceHideTransportControls)
             {
-                _lastPointerPoint = default;
+                _lastPointerPoint = null;
                 _mtcStayTime = 0;
                 SetTransportVisibility(false);
                 return;
@@ -279,7 +278,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
     {
         _notificationContainer.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
         _notificationContainer.Children.Clear();
-        var control = new PlayerNotificationControl();
+        PlayerNotificationControl control = new();
         control.ViewModel = e;
         e.IsNotificationVisible = true;
         _notificationContainer.Children.Add(control);
@@ -292,7 +291,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             && _notificationContainer.Children.FirstOrDefault() is PlayerNotificationControl control
         )
         {
-            control.ViewModel.CancelCommand.Execute(default);
+            control.ViewModel.CancelCommand.Execute(null);
             _notificationContainer.Children.Clear();
         }
     }
@@ -317,18 +316,18 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
         }
 
         _isDoubleTapped = true;
-        var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
+        bool isManual = _settings.MTCBehavior == MTCBehavior.Manual;
         if (isManual)
         {
-            ViewModel.TogglePlayPauseCommand.Execute(default);
+            ViewModel.TogglePlayPauseCommand.Execute(null);
         }
         else
         {
-            ViewModel.ToggleFullScreenCommand.Execute(default);
+            ViewModel.ToggleFullScreenCommand.Execute(null);
 
             if (ViewModel.IsPaused)
             {
-                ViewModel.TogglePlayPauseCommand.Execute(default);
+                ViewModel.TogglePlayPauseCommand.Execute(null);
             }
         }
     }
@@ -342,6 +341,15 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
 
         if (ViewModel != null && e.PropertyName == "IsPaused" && _transportControl is not null)
         {
+            if (
+                _transportControl.Visibility == Visibility.Collapsed
+                && (ViewModel.IsPlayerDataLoading || _mtcStayTime >= 2)
+            )
+            {
+                // 控制器此前已处于隐藏状态，在切集加载或未活动时保持隐藏，避免闪现弹出
+                return;
+            }
+
             SetTransportVisibility(ViewModel.IsPaused);
         }
     }

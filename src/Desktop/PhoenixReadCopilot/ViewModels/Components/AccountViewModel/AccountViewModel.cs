@@ -7,6 +7,7 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models.User;
 using Windows.System;
 using WinUIKernel.Share.ViewModels;
 
@@ -53,15 +54,15 @@ public sealed partial class AccountViewModel : ViewModelBase
                 ? Resources.NoSelfIntroduce
                 : MyProfile.Introduce;
             _appViewModel.IsInitialLoading = false;
-            _appViewModel.CheckUpateCommand.Execute(default);
-            UpdateUnreadCommand.Execute(default);
+            _appViewModel.CheckUpateCommand.Execute(null);
+            UpdateUnreadCommand.Execute(null);
         }
         catch (Exception ex)
         {
             _logger.LogCritical(ex, "无法获取登录用户的资料");
 
             // 用户可能更改了密码，提醒用户是否需要重新登录.
-            var dialog = new ContentDialog()
+            ContentDialog dialog = new()
             {
                 Title = Resources.LoginExpiredTitle,
                 Content = Resources.LoginExpiredDescription,
@@ -71,7 +72,7 @@ public sealed partial class AccountViewModel : ViewModelBase
                 XamlRoot = _appViewModel.ActivatedWindow.Content.XamlRoot,
             };
 
-            var result = await dialog.ShowAsync();
+            ContentDialogResult result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
                 await SignOutAsync();
@@ -95,11 +96,12 @@ public sealed partial class AccountViewModel : ViewModelBase
 
         try
         {
-            var communityInformation = await _myProfileService.GetMyCommunityInformationAsync();
+            UserCommunityInformation communityInformation =
+                await _myProfileService.GetMyCommunityInformationAsync();
             MomentCount = communityInformation.MomentCount ?? 0;
             FollowCount = communityInformation.FollowCount ?? 0;
             FansCount = communityInformation.FansCount ?? 0;
-            UpdateUnreadCommand.Execute(default);
+            UpdateUnreadCommand.Execute(null);
         }
         catch (Exception ex)
         {
@@ -112,7 +114,7 @@ public sealed partial class AccountViewModel : ViewModelBase
     {
         await _authService.SignOutAsync().ConfigureAwait(false);
         MyProfile = null;
-        _appViewModel.RestartCommand.Execute(default);
+        _appViewModel.RestartCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -150,7 +152,7 @@ public sealed partial class AccountViewModel : ViewModelBase
     {
         try
         {
-            var unreadInfo = await _messageService.GetUnreadInformationAsync();
+            UnreadInformation unreadInfo = await _messageService.GetUnreadInformationAsync();
             _navService
                 .FooterItems.First(p => p.PageKey == typeof(MessagePage).FullName)
                 .ShowUnread = unreadInfo.Total > 0;

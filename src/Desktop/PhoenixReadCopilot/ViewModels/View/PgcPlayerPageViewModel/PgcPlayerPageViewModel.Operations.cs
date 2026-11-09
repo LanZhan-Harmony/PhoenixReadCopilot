@@ -26,11 +26,11 @@ public sealed partial class PgcPlayerPageViewModel
     {
         try
         {
-            var state = !IsLiked;
-            var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+            bool state = !IsLiked;
+            string aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
             await _service.ToggleVideoLikeAsync(aid, state);
             IsLiked = state;
-            ReloadEpisodeOpeartionCommand.Execute(default);
+            ReloadEpisodeOpeartionCommand.Execute(null);
         }
         catch (Exception ex)
         {
@@ -43,7 +43,7 @@ public sealed partial class PgcPlayerPageViewModel
     {
         try
         {
-            var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+            string aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
             await _service.CoinVideoAsync(aid, count, IsCoinAlsoLike);
             IsCoined = true;
             if (IsCoinAlsoLike && !IsLiked)
@@ -51,7 +51,7 @@ public sealed partial class PgcPlayerPageViewModel
                 IsLiked = true;
             }
 
-            ReloadEpisodeOpeartionCommand.Execute(default);
+            ReloadEpisodeOpeartionCommand.Execute(null);
         }
         catch (Exception ex)
         {
@@ -64,12 +64,12 @@ public sealed partial class PgcPlayerPageViewModel
     {
         try
         {
-            var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+            string aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
             await _service.TripleVideoAsync(aid);
             IsLiked = true;
             IsCoined = true;
             IsFavorited = true;
-            ReloadEpisodeOpeartionCommand.Execute(default);
+            ReloadEpisodeOpeartionCommand.Execute(null);
         }
         catch (Exception ex)
         {
@@ -87,8 +87,9 @@ public sealed partial class PgcPlayerPageViewModel
 
         try
         {
-            var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
-            var (folders, ids) = await _favoriteService.GetPlayingVideoFavoriteFoldersAsync(aid);
+            string aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+            (IReadOnlyList<VideoFavoriteFolder>? folders, IReadOnlyList<string>? ids) =
+                await _favoriteService.GetPlayingVideoFavoriteFoldersAsync(aid);
             FavoriteFolders = folders
                 .Select(p => new PlayerFavoriteFolderViewModel(p, ids.Contains(p.Id)))
                 .ToList();
@@ -107,21 +108,21 @@ public sealed partial class PgcPlayerPageViewModel
             return;
         }
 
-        var selectedFolders = FavoriteFolders
+        List<string>? selectedFolders = FavoriteFolders
             ?.Where(p => p.IsSelected)
             .Select(p => p.Data.Id)
             .ToList();
-        var unselectedFolders = FavoriteFolders
+        List<string>? unselectedFolders = FavoriteFolders
             ?.Where(p => !p.IsSelected)
             .Select(p => p.Data.Id)
             .ToList();
         try
         {
-            var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+            string aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
             await _service.FavoriteVideoAsync(aid, selectedFolders, unselectedFolders);
             IsFavorited = selectedFolders.Count != 0;
-            FavoriteFolders = default;
-            ReloadEpisodeOpeartionCommand.Execute(default);
+            FavoriteFolders = null;
+            ReloadEpisodeOpeartionCommand.Execute(null);
         }
         catch (Exception ex)
         {
@@ -132,8 +133,8 @@ public sealed partial class PgcPlayerPageViewModel
     [RelayCommand]
     private void CopyEpisodeUrl()
     {
-        var url = GetEpisodeUrl();
-        var dp = new DataPackage();
+        string url = GetEpisodeUrl();
+        DataPackage dp = new();
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
@@ -143,8 +144,8 @@ public sealed partial class PgcPlayerPageViewModel
     [RelayCommand]
     private void CopySeasonUrl()
     {
-        var url = GetSeasonUrl();
-        var dp = new DataPackage();
+        string url = GetSeasonUrl();
+        DataPackage dp = new();
         dp.SetText(url);
         dp.SetWebLink(new Uri(url));
         Clipboard.SetContent(dp);
@@ -154,15 +155,15 @@ public sealed partial class PgcPlayerPageViewModel
     [RelayCommand]
     private void ShareEpisodeUrl()
     {
-        var handle = _appViewModel.ActivatedWindow.GetWindowHandle();
-        var transferManager = DataTransferManagerInterop.GetForWindow(handle);
+        nint handle = _appViewModel.ActivatedWindow.GetWindowHandle();
+        DataTransferManager transferManager = DataTransferManagerInterop.GetForWindow(handle);
         transferManager.DataRequested += OnTransferDataRequested;
         DataTransferManagerInterop.ShowShareUIForWindow(handle);
 
         void OnTransferDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
         {
-            var url = GetEpisodeUrl();
-            var dp = new DataPackage();
+            string url = GetEpisodeUrl();
+            DataPackage dp = new();
             dp.SetText(url);
             dp.SetWebLink(new Uri(url));
             dp.Properties.Title = EpisodeTitle;
@@ -178,7 +179,7 @@ public sealed partial class PgcPlayerPageViewModel
     [RelayCommand]
     private async Task OpenInBroswerAsync()
     {
-        var url = GetEpisodeUrl();
+        string url = GetEpisodeUrl();
         await Launcher.LaunchUriAsync(new Uri(url)).AsTask();
     }
 
@@ -192,10 +193,10 @@ public sealed partial class PgcPlayerPageViewModel
 
         if (!Player.IsPaused)
         {
-            Player.TogglePlayPauseCommand.Execute(default);
+            Player.TogglePlayPauseCommand.Execute(null);
         }
 
-        var identifier = new MediaIdentifier(
+        MediaIdentifier identifier = new(
             "ep_" + _episode.Identifier.Id,
             _episode.Identifier.Title,
             _episode.Identifier.Cover
@@ -211,10 +212,10 @@ public sealed partial class PgcPlayerPageViewModel
             return;
         }
 
-        var nextPart = FindNextEpisode();
+        object? nextPart = FindNextEpisode();
         if (nextPart is null)
         {
-            Player.BackToDefaultModeCommand.Execute(default);
+            Player.BackToDefaultModeCommand.Execute(null);
             return;
         }
 
@@ -228,7 +229,7 @@ public sealed partial class PgcPlayerPageViewModel
         }
         else
         {
-            Player.BackToDefaultModeCommand.Execute(default);
+            Player.BackToDefaultModeCommand.Execute(null);
         }
     }
 
@@ -242,9 +243,8 @@ public sealed partial class PgcPlayerPageViewModel
 
         try
         {
-            var operation = await _service.GetEpisodeOperationInformationAsync(
-                _episode.Identifier.Id
-            );
+            VideoOperationInformation operation =
+                await _service.GetEpisodeOperationInformationAsync(_episode.Identifier.Id);
             IsLiked = operation.IsLiked;
             IsCoined = operation.IsCoined;
             IsFavorited = operation.IsFavorited;
@@ -260,7 +260,7 @@ public sealed partial class PgcPlayerPageViewModel
     {
         try
         {
-            var state = !IsFollow;
+            bool state = !IsFollow;
             if (state)
             {
                 await _discoveryService.FollowAsync(_view.Information.Identifier.Id);
@@ -285,7 +285,7 @@ public sealed partial class PgcPlayerPageViewModel
             _initialProgress = -1;
         }
 
-        var isFirstSet = _episode is null;
+        bool isFirstSet = _episode is null;
         _episode = episode;
         if (isFirstSet)
         {
@@ -302,21 +302,21 @@ public sealed partial class PgcPlayerPageViewModel
         EpisodeId = episode.Identifier.Id;
         EpisodeTitle = SeasonTitle + " - " + episode.Identifier.Title;
         Player.Title = EpisodeTitle;
-        var aid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
-        var cid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid).ToString();
+        string aid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+        string cid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid).ToString();
         _comments.Initialize(aid, CommentTargetType.Video, CommentSortType.Hot);
         Subtitle?.ResetData(aid, cid);
         CalcPlayerHeight();
-        ReloadEpisodeOpeartionCommand.Execute(default);
+        ReloadEpisodeOpeartionCommand.Execute(null);
         InitializeDashMediaCommand.Execute(episode);
-        Subtitle.InitializeCommand.Execute(default);
+        Subtitle.InitializeCommand.Execute(null);
         InitializeNextEpisode();
     }
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(
+        PinItem pinItem = new(
             $"ss_{_view.Information.Identifier.Id}",
             _view.Information.Identifier.Title,
             _view.Information.Identifier.Cover.Uri.ToString(),
@@ -329,8 +329,8 @@ public sealed partial class PgcPlayerPageViewModel
     {
         if (progress < duration && progress > 1 && (Danmaku?.IsEmpty() ?? false))
         {
-            var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
-            var cid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid).ToString();
+            string aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+            string cid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid).ToString();
             Danmaku.ResetData(aid, cid);
             Danmaku.LoadDanmakusCommand.Execute(duration);
         }
@@ -377,10 +377,10 @@ public sealed partial class PgcPlayerPageViewModel
 
             ReportProgressCommand.Execute(Player.Duration);
 
-            var autoNext = _settings.AutoPlayNext;
+            bool autoNext = _settings.AutoPlayNext;
             if ((!autoNext || !HasNextEpisode) && !_isFormatChanging)
             {
-                Player.BackToDefaultModeCommand.Execute(default);
+                Player.BackToDefaultModeCommand.Execute(null);
                 return;
             }
 
@@ -389,7 +389,7 @@ public sealed partial class PgcPlayerPageViewModel
                 return;
             }
 
-            var next = FindNextEpisode();
+            object? next = FindNextEpisode();
             if (next is null)
             {
                 return;

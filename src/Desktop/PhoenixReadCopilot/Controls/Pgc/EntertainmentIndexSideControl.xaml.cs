@@ -10,5 +10,5 @@ public sealed partial class EntertainmentIndexSideControl : EntertainmentIndexCo
     /// </summary>
     public EntertainmentIndexSideControl() => InitializeComponent();
 
-    protected override void OnControlUnloaded() => FilterRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => FilterRepeater.ItemsSource = null;
 }

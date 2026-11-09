@@ -7,14 +7,11 @@ internal sealed partial class PgcFavoriteIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var type = (PgcFavoriteType)value;
+        PgcFavoriteType type = (PgcFavoriteType)value;
         return type switch
         {
             PgcFavoriteType.Anime => FluentIcons.Common.Symbol.Dust,
-            PgcFavoriteType.Cinema => FluentIcons
-                .Common
-                .Symbol
-                .MoviesAndTv,
+            PgcFavoriteType.Cinema => FluentIcons.Common.Symbol.MoviesAndTv,
             _ => throw new Exception("Unknown type."),
         };
     }

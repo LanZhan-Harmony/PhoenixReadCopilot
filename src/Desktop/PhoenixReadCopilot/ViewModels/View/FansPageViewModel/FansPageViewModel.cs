@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -18,7 +19,8 @@ public sealed partial class FansPageViewModel : ViewModelBase
     public FansPageViewModel(
         IRelationshipService service,
         ILogger<FansPageViewModel> logger,
-        DispatcherQueue dispatcherQueue)
+        DispatcherQueue dispatcherQueue
+    )
     {
         _service = service;
         _logger = logger;
@@ -42,15 +44,14 @@ public sealed partial class FansPageViewModel : ViewModelBase
         IsEmpty = false;
         _pageNumber = 0;
         TotalCount = 0;
-        _dispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    Users.Clear();
-                    await InitializeAsync();
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Users.Clear();
+                await InitializeAsync();
+            }
+        );
     }
 
     [RelayCommand]
@@ -64,7 +65,8 @@ public sealed partial class FansPageViewModel : ViewModelBase
         IsUserLoading = true;
         try
         {
-            var (users, totalCount, nextPage) = await _service.GetMyFansAsync(_pageNumber);
+            (IReadOnlyList<UserCard>? users, int totalCount, int nextPage) =
+                await _service.GetMyFansAsync(_pageNumber);
             if (Users.Count == 0 && (users.Count == 0 || totalCount == 0))
             {
                 IsEmpty = true;
@@ -73,7 +75,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
             {
                 _pageNumber = nextPage;
                 TotalCount = totalCount;
-                foreach (var item in users)
+                foreach (UserCard item in users)
                 {
                     Users.Add(new UserItemViewModel(item));
                 }

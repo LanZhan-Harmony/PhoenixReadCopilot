@@ -35,7 +35,10 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
-    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnViewModelPropertyChanged(
+        object? sender,
+        System.ComponentModel.PropertyChangedEventArgs e
+    )
     {
         if (e.PropertyName == nameof(ViewModel.SelectedSection))
         {
@@ -61,13 +64,14 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
             BoardSelector.Items.Clear();
             SelectorBarItem? targetItem = null;
 
-            foreach (var (title, channel) in PopularPageViewModel.Channels)
+            foreach (
+                (
+                    string? title,
+                    PhoenixReadApi.ShortDramaLeaderboardChannel channel
+                ) in PopularPageViewModel.Channels
+            )
             {
-                var item = new SelectorBarItem
-                {
-                    Text = title,
-                    Tag = channel.ToString(),
-                };
+                SelectorBarItem item = new() { Text = title, Tag = channel.ToString() };
                 BoardSelector.Items.Add(item);
 
                 if (channel == ViewModel.CurrentChannel)
@@ -92,8 +96,10 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
             return;
         }
 
-        var currentTag = ViewModel.CurrentChannel.ToString();
-        var match = BoardSelector.Items.FirstOrDefault(item => item.Tag as string == currentTag);
+        string currentTag = ViewModel.CurrentChannel.ToString();
+        SelectorBarItem? match = BoardSelector.Items.FirstOrDefault(item =>
+            item.Tag as string == currentTag
+        );
         if (match != null && BoardSelector.SelectedItem != match)
         {
             try
@@ -110,7 +116,10 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
         }
     }
 
-    private void OnBoardSelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnBoardSelectionChanged(
+        SelectorBar sender,
+        SelectorBarSelectionChangedEventArgs args
+    )
     {
         if (_isUpdatingBoardItems)
         {

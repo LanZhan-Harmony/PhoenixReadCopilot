@@ -14,7 +14,7 @@ namespace WinUIKernel.Share.Base;
 public abstract partial class ImageExBase
 {
     // 用于去重,避免重复请求同一个URL
-    private static readonly Dictionary<string, Task<byte[]?>> _pendingRequests = new();
+    private static readonly Dictionary<string, Task<byte[]?>> _pendingRequests = [];
     private static readonly Lock _pendingRequestsLock = new();
 
     // 调试统计信息
@@ -93,10 +93,22 @@ public abstract partial class ImageExBase
         string Message
     ) CheckConnectionPoolPressure()
     {
-        var stats = GetRequestStats();
-        var pendingUrls = stats.PendingUrls;
+        (
+            int ActiveRequests,
+            int QueuedRequests,
+            int PendingUrls,
+            int TotalStarted,
+            int TotalCompleted,
+            int TotalFailed,
+            int TotalCancelled,
+            int FromCache,
+            int Deduplicated,
+            int LocalDecodes,
+            int ActiveLocalDecodes
+        ) stats = GetRequestStats();
+        int pendingUrls = stats.PendingUrls;
 
-        var message = pendingUrls switch
+        string message = pendingUrls switch
         {
             >= 100 => $"⚠️ 大量待处理请求！({pendingUrls} 个 URL)",
             >= 50 => $"⚠️ 较多待处理请求 ({pendingUrls} 个 URL)",
@@ -104,8 +116,8 @@ public abstract partial class ImageExBase
             _ => $"✅ 请求正常 ({pendingUrls} 个 URL)",
         };
 
-        var isUnderPressure = pendingUrls >= 50;
-        var usagePercentage = Math.Min(100, pendingUrls);
+        bool isUnderPressure = pendingUrls >= 50;
+        int usagePercentage = Math.Min(100, pendingUrls);
 
         return (isUnderPressure, usagePercentage, message);
     }
@@ -116,8 +128,21 @@ public abstract partial class ImageExBase
     public static void PrintConnectionPoolDiagnostics()
     {
 #if DEBUG
-        var stats = GetRequestStats();
-        var pressure = CheckConnectionPoolPressure();
+        (
+            int ActiveRequests,
+            int QueuedRequests,
+            int PendingUrls,
+            int TotalStarted,
+            int TotalCompleted,
+            int TotalFailed,
+            int TotalCancelled,
+            int FromCache,
+            int Deduplicated,
+            int LocalDecodes,
+            int ActiveLocalDecodes
+        ) stats = GetRequestStats();
+        (bool IsUnderPressure, double UsagePercentage, string Message) pressure =
+            CheckConnectionPoolPressure();
 
         Debug.WriteLine("========== ImageEx 连接池诊断 ==========");
         Debug.WriteLine($"连接池状态: {pressure.Message}");
@@ -177,7 +202,19 @@ public abstract partial class ImageExBase
             return;
         }
 
-        var stats = GetRequestStats();
+        (
+            int ActiveRequests,
+            int QueuedRequests,
+            int PendingUrls,
+            int TotalStarted,
+            int TotalCompleted,
+            int TotalFailed,
+            int TotalCancelled,
+            int FromCache,
+            int Deduplicated,
+            int LocalDecodes,
+            int ActiveLocalDecodes
+        ) stats = GetRequestStats();
         Debug.WriteLine($"[ImageEx] {context}");
         Debug.WriteLine($"  去重URL数: {stats.PendingUrls}");
         Debug.WriteLine(
@@ -193,8 +230,8 @@ public abstract partial class ImageExBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as ImageExBase;
-        var uri = e.NewValue as Uri;
+        ImageExBase? instance = d as ImageExBase;
+        Uri? uri = e.NewValue as Uri;
         if (uri is null && instance.HolderImage is Uri holderUri)
         {
             uri = holderUri;
@@ -229,8 +266,8 @@ public abstract partial class ImageExBase
         }
 
         _lastUri = uri;
-        _backgroundBrush.ImageSource = default;
-        var (requestId, cancellationToken) = BeginNewRequest();
+        _backgroundBrush.ImageSource = null;
+        (long requestId, CancellationToken cancellationToken) = BeginNewRequest();
         await LoadImageInternalAsync(requestId, cancellationToken);
     }
 
@@ -260,12 +297,12 @@ public abstract partial class ImageExBase
 
         // ⚠️ 在进入后台线程之前，先捕获所有依赖属性和可能不安全的实例成员的值
         // 因为依赖属性只能在 UI 线程访问，后台线程访问会触发 COM 线程错误
-        var enableDiskCache = EnableDiskCache; // 依赖属性
-        var currentUri = _lastUri; // URI 引用 - 保存当前要加载的URI用于后续验证
-        var headers = GetHeaders(); // 虚方法可能访问依赖属性
-        var cacheSubFolder = GetCacheSubFolder(); // 虚方法可能访问依赖属性
+        bool enableDiskCache = EnableDiskCache; // 依赖属性
+        Uri currentUri = _lastUri; // URI 引用 - 保存当前要加载的URI用于后续验证
+        Dictionary<string, string> headers = GetHeaders(); // 虚方法可能访问依赖属性
+        string cacheSubFolder = GetCacheSubFolder(); // 虚方法可能访问依赖属性
 
-        CanvasBitmap? bitmap = default;
+        CanvasBitmap? bitmap = null;
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -408,7 +445,7 @@ public abstract partial class ImageExBase
             // Ignore the cancellation exception, as it is expected when the control is unloaded
             // or when a new request is made before the previous one has completed.
 #if DEBUG
-            var canceledUrl = currentUri?.ToString() ?? _lastUri?.ToString() ?? "unknown";
+            string canceledUrl = currentUri?.ToString() ?? _lastUri?.ToString() ?? "unknown";
             Debug.WriteLine(
                 $"[ImageEx] 图片加载已取消: {canceledUrl.Substring(Math.Max(0, canceledUrl.Length - 50))}"
             );
@@ -449,7 +486,7 @@ public abstract partial class ImageExBase
 
         try
         {
-            var sharedDevice = CanvasDevice.GetSharedDevice();
+            CanvasDevice sharedDevice = CanvasDevice.GetSharedDevice();
             sharedDevice.DeviceLost -= OnSharedDeviceLost;
             sharedDevice.DeviceLost += OnSharedDeviceLost;
             CreateCanvasImageSource(sharedDevice);
@@ -477,8 +514,8 @@ public abstract partial class ImageExBase
 
         sender.DeviceLost -= OnSharedDeviceLost;
 
-        var currentDeviceLostTime = DateTime.Now;
-        var lastLostTime = _lastDeviceLostTime;
+        DateTime currentDeviceLostTime = DateTime.Now;
+        DateTime lastLostTime = _lastDeviceLostTime;
 
         _lastDeviceLostTime = currentDeviceLostTime;
         _compositionTargetSequenceNumber = CompositionTargetMonitor.UninitializedValue;
@@ -493,7 +530,7 @@ public abstract partial class ImageExBase
     {
         if (CanvasImageSource is Microsoft.Graphics.Canvas.UI.Xaml.CanvasImageSource imageSource)
         {
-            _backgroundBrush.ImageSource = default;
+            _backgroundBrush.ImageSource = null;
             imageSource.Recreate(device);
         }
         else
@@ -511,9 +548,7 @@ public abstract partial class ImageExBase
     private HttpClient GetHttpClient()
     {
         // 不能标记为 static,因为调用了虚方法 GetCustomHttpClient()
-#pragma warning disable CA1822 // Mark members as static
         return GetCustomHttpClient() ?? _httpClient;
-#pragma warning restore CA1822 // Mark members as static
     }
 
     /// <summary>
@@ -530,7 +565,7 @@ public abstract partial class ImageExBase
 
         lock (_pendingRequestsLock)
         {
-            if (_pendingRequests.TryGetValue(url, out var existingTask))
+            if (_pendingRequests.TryGetValue(url, out Task<byte[]?>? existingTask))
             {
                 // 如果已经有相同URL的请求在进行,返回该任务(在lock外await)
                 task = existingTask;
@@ -540,7 +575,7 @@ public abstract partial class ImageExBase
             else
             {
                 // 创建新的请求任务包装器,不使用 Task.Run 避免线程切换
-                var tcs = new TaskCompletionSource<byte[]?>();
+                TaskCompletionSource<byte[]?> tcs = new();
                 task = tcs.Task;
                 _pendingRequests[url] = task;
 
@@ -570,7 +605,7 @@ public abstract partial class ImageExBase
         Interlocked.Increment(ref _totalRequestsStarted);
         try
         {
-            var result = await requestFactory();
+            byte[]? result = await requestFactory();
             Interlocked.Increment(ref _totalRequestsCompleted);
             tcs.TrySetResult(result);
         }
@@ -615,8 +650,8 @@ public abstract partial class ImageExBase
             return null;
         }
 
-        var requestUri = uri;
-        CanvasBitmap? canvasBitmap = default;
+        Uri requestUri = uri;
+        CanvasBitmap? canvasBitmap = null;
 
         if (IsRequestObsolete())
         {
@@ -630,7 +665,7 @@ public abstract partial class ImageExBase
         }
         else if (enableDiskCache)
         {
-            var cacheFile = await GetCacheFilePathAsync(uri.ToString(), cacheSubFolder);
+            string? cacheFile = await GetCacheFilePathAsync(uri.ToString(), cacheSubFolder);
             if (cacheFile != null)
             {
                 Interlocked.Increment(ref _totalRequestsFromCache);
@@ -642,8 +677,8 @@ public abstract partial class ImageExBase
                     return null;
                 }
 
-                var file = await StorageFile.GetFileFromPathAsync(cacheFile);
-                using var stream = await file.OpenReadAsync();
+                StorageFile file = await StorageFile.GetFileFromPathAsync(cacheFile);
+                using IRandomAccessStreamWithContentType stream = await file.OpenReadAsync();
 
                 // 使用独立设备解码以避免竞争共享设备
                 canvasBitmap = await LoadBitmapAsync(stream, cancellationToken);
@@ -651,8 +686,8 @@ public abstract partial class ImageExBase
             else
             {
                 // 使用去重机制避免重复请求
-                var url = uri.ToString();
-                var content = await GetOrCreateRequestAsync(
+                string url = uri.ToString();
+                byte[]? content = await GetOrCreateRequestAsync(
                     url,
                     async () =>
                     {
@@ -665,12 +700,12 @@ public abstract partial class ImageExBase
                             return null;
                         }
 
-                        var response = await GetHttpClient()
+                        HttpResponseMessage response = await GetHttpClient()
                             .GetAsync(uri, cancellationToken)
                             .ConfigureAwait(false);
                         if (response.IsSuccessStatusCode)
                         {
-                            var data = await response.Content.ReadAsByteArrayAsync(
+                            byte[] data = await response.Content.ReadAsByteArrayAsync(
                                 cancellationToken
                             );
                             if (data.Length > 0)
@@ -736,8 +771,8 @@ public abstract partial class ImageExBase
 
                 if (content != null && content.Length > 0 && !IsRequestObsolete())
                 {
-                    await using var memoryStream = new MemoryStream(content);
-                    using var randomStream = memoryStream.AsRandomAccessStream();
+                    await using MemoryStream memoryStream = new(content);
+                    using IRandomAccessStream randomStream = memoryStream.AsRandomAccessStream();
 
                     // 使用独立设备解码以避免竞争共享设备
                     canvasBitmap = await LoadBitmapAsync(randomStream, cancellationToken);
@@ -747,21 +782,25 @@ public abstract partial class ImageExBase
         else
         {
             // 没有启用磁盘缓存的情况,同样使用去重机制
-            var url = uri.ToString();
-            var content = await GetOrCreateRequestAsync(
+            string url = uri.ToString();
+            byte[]? content = await GetOrCreateRequestAsync(
                 url,
                 async () =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
                     CheckImageHeaders(uri, headers);
-                    var initialCapacity = 32 * 1024;
-                    using var bufferWriter = new ArrayPoolBufferWriter<byte>(initialCapacity);
-                    using var imageStream = await GetHttpClient()
+                    int initialCapacity = 32 * 1024;
+                    using ArrayPoolBufferWriter<byte> bufferWriter = new(initialCapacity);
+                    using Stream imageStream = await GetHttpClient()
                         .GetStreamAsync(uri, cancellationToken)
                         .ConfigureAwait(false);
-                    await using var streamForRead = imageStream.AsInputStream().AsStreamForRead();
-                    await using var streamForWrite = IBufferWriterExtensions.AsStream(bufferWriter);
+                    await using Stream streamForRead = imageStream
+                        .AsInputStream()
+                        .AsStreamForRead();
+                    await using Stream streamForWrite = IBufferWriterExtensions.AsStream(
+                        bufferWriter
+                    );
 
                     await streamForRead.CopyToAsync(streamForWrite, cancellationToken);
 
@@ -772,8 +811,8 @@ public abstract partial class ImageExBase
 
             if (content != null && content.Length > 0 && !IsRequestObsolete())
             {
-                await using var memoryStream = new MemoryStream(content);
-                using var randomStream = memoryStream.AsRandomAccessStream();
+                await using MemoryStream memoryStream = new(content);
+                using IRandomAccessStream randomStream = memoryStream.AsRandomAccessStream();
 
                 // 使用独立设备解码以避免竞争共享设备
                 canvasBitmap = await LoadBitmapAsync(randomStream, cancellationToken);
@@ -783,7 +822,7 @@ public abstract partial class ImageExBase
         if (uri != requestUri || IsRequestObsolete())
         {
             canvasBitmap?.Dispose();
-            canvasBitmap = default;
+            canvasBitmap = null;
         }
 
         return canvasBitmap;
@@ -797,8 +836,8 @@ public abstract partial class ImageExBase
                     return;
                 }
 
-                var file = await StorageFile.GetFileFromPathAsync(uri.LocalPath);
-                using var stream = await file.OpenReadAsync();
+                StorageFile file = await StorageFile.GetFileFromPathAsync(uri.LocalPath);
+                using IRandomAccessStreamWithContentType stream = await file.OpenReadAsync();
 
                 // 使用独立设备解码以避免竞争共享设备
                 canvasBitmap = await LoadBitmapAsync(stream, cancellationToken);
@@ -844,8 +883,8 @@ public abstract partial class ImageExBase
             (tempDevice, tempBitmap) = await Task.Run(
                 async () =>
                 {
-                    var device = new CanvasDevice();
-                    var bitmap = await CanvasBitmap.LoadAsync(device, stream).AsTask();
+                    CanvasDevice device = new();
+                    CanvasBitmap bitmap = await CanvasBitmap.LoadAsync(device, stream).AsTask();
                     return (device, bitmap);
                 },
                 cancellationToken
@@ -853,13 +892,13 @@ public abstract partial class ImageExBase
 
             // 将解码后的位图数据复制到共享设备
             // 这个操作很快，不会造成明显阻塞
-            var sharedDevice = CanvasDevice.GetSharedDevice();
+            CanvasDevice sharedDevice = CanvasDevice.GetSharedDevice();
 
             // 优化：使用 using 确保像素数据尽快释放
-            var pixelBytes = tempBitmap.GetPixelBytes();
+            byte[] pixelBytes = tempBitmap.GetPixelBytes();
             try
             {
-                var finalBitmap = CanvasBitmap.CreateFromBytes(
+                CanvasBitmap finalBitmap = CanvasBitmap.CreateFromBytes(
                     sharedDevice,
                     pixelBytes,
                     (int)tempBitmap.SizeInPixels.Width,
@@ -885,10 +924,10 @@ public abstract partial class ImageExBase
 
     private void CheckImageHeaders(Uri uri, Dictionary<string, string> headers)
     {
-        var client = GetHttpClient();
+        HttpClient client = GetHttpClient();
         if (headers.Count > 0)
         {
-            foreach (var header in headers)
+            foreach (KeyValuePair<string, string> header in headers)
             {
                 if (client.DefaultRequestHeaders.Contains(header.Key))
                 {
@@ -905,7 +944,7 @@ public abstract partial class ImageExBase
         }
         else
         {
-            client.DefaultRequestHeaders.Referrer = default;
+            client.DefaultRequestHeaders.Referrer = null;
         }
     }
 }

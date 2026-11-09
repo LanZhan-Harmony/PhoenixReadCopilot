@@ -40,5 +40,5 @@ public sealed partial class PgcSearchSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<SeasonItemViewModel> Items { get; } = new();
+    public ObservableCollection<SeasonItemViewModel> Items { get; } = [];
 }

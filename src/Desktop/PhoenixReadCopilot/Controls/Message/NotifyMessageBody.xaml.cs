@@ -52,7 +52,7 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
         }
 
         newValue.ListUpdated += OnMessageListUpdatedAsync;
-        MessageScrollView?.ChangeView(0, 0, default);
+        MessageScrollView?.ChangeView(0, 0, null);
     }
 
     private async void OnMessageListUpdatedAsync(object? sender, EventArgs e)
@@ -74,7 +74,7 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
                     <= 240
                 )
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );
@@ -96,7 +96,7 @@ public sealed partial class NotifyMessageBody : NotifyMessageControlBase
             {
                 if (MessageScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );

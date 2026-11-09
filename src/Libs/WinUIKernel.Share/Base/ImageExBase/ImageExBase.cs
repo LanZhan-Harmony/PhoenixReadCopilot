@@ -14,7 +14,7 @@ namespace WinUIKernel.Share.Base;
 public abstract partial class ImageExBase : LayoutControlBase, IDisposable
 {
     private static readonly HttpClient _httpClient = CreateHttpClientIgnoringCertificateErrors();
-    private static readonly ConditionalWeakTable<ImageExBase, object?> _allInstances = new();
+    private static readonly ConditionalWeakTable<ImageExBase, object?> _allInstances = [];
     private Uri? _lastUri;
     private static readonly ConditionalWeakTable<CanvasDevice, StrongBox<int>> LostDevicesMap = [];
     private DateTime _lastDeviceLostTime = DateTime.MinValue;
@@ -52,8 +52,8 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
     /// </remarks>
     protected static Rect GetCenterCropRect(Rect targetRect, Rect sourceRect)
     {
-        var targetAspectRatio = targetRect.Width / targetRect.Height;
-        var sourceAspectRatio = sourceRect.Width / sourceRect.Height;
+        double targetAspectRatio = targetRect.Width / targetRect.Height;
+        double sourceAspectRatio = sourceRect.Width / sourceRect.Height;
 
         double scaleFactor;
         double scaledWidth,
@@ -106,8 +106,8 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
             }
         }
 
-        var offsetX = (sourceRect.Width - scaledWidth) / 2;
-        var offsetY = (sourceRect.Height - scaledHeight) / 2;
+        double offsetX = (sourceRect.Width - scaledWidth) / 2;
+        double offsetY = (sourceRect.Height - scaledHeight) / 2;
 
         return new Rect(sourceRect.X + offsetX, sourceRect.Y + offsetY, scaledWidth, scaledHeight);
     }
@@ -131,7 +131,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
     /// 获取 <see cref="HttpClient"/> 实例.
     /// </summary>
     /// <returns></returns>
-    protected virtual HttpClient? GetCustomHttpClient() => default;
+    protected virtual HttpClient? GetCustomHttpClient() => null;
 
     /// <summary>
     /// 获取缓存子目录.
@@ -148,7 +148,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
-        var rootBorder =
+        Panel rootBorder =
             GetTemplateChild("Root") as Panel
             ?? throw new InvalidOperationException("TemplateRoot not found.");
         if (rootBorder.Background is ImageBrush brush)
@@ -180,9 +180,9 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
         _allInstances.Remove(this);
         CompositionTarget.SurfaceContentsLost -= OnCompositionTargetSurfaceContentsLost;
         ActualThemeChanged -= OnActualThemeChangedAsync;
-        CanvasImageSource = default;
+        CanvasImageSource = null;
         ResetCancellationTokenSource();
-        _backgroundBrush?.ImageSource = default;
+        _backgroundBrush?.ImageSource = null;
         _backgroundBrush = null;
     }
 
@@ -194,7 +194,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
 
     private static HttpClient CreateHttpClientIgnoringCertificateErrors()
     {
-        var clientHandler = new HttpClientHandler
+        HttpClientHandler clientHandler = new()
         {
             ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
             AllowAutoRedirect = true,
@@ -220,7 +220,7 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
 
     private async void OnActualThemeChangedAsync(FrameworkElement sender, object args)
     {
-        _lastUri = default;
+        _lastUri = null;
         UpdateHolderImage();
         await RedrawAsync();
     }
@@ -260,12 +260,12 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
     public static void CancelAllLoading(Func<ImageExBase, bool>? predicate)
     {
 #if DEBUG
-        var count = 0;
-        var markedCount = 0;
+        int count = 0;
+        int markedCount = 0;
 #endif
-        foreach (var kvp in _allInstances)
+        foreach (KeyValuePair<ImageExBase, object?> kvp in _allInstances)
         {
-            var instance = kvp.Key;
+            ImageExBase instance = kvp.Key;
 
             // 应用筛选条件
             if (predicate is not null && !predicate(instance))
@@ -307,14 +307,14 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
     public static async void RestoreCancelledImages()
     {
 #if DEBUG
-        var count = 0;
-        var totalCancelled = 0;
-        var notLoaded = 0;
-        var noSource = 0;
+        int count = 0;
+        int totalCancelled = 0;
+        int notLoaded = 0;
+        int noSource = 0;
 #endif
-        foreach (var kvp in _allInstances)
+        foreach (KeyValuePair<ImageExBase, object?> kvp in _allInstances)
         {
-            var instance = kvp.Key;
+            ImageExBase instance = kvp.Key;
 #if DEBUG
             if (instance._wasCancelledGlobally)
             {

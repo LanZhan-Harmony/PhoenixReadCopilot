@@ -16,7 +16,7 @@ public sealed partial class AnimeTimelineViewModel
     private readonly PhoenixReadApiClient _apiClient;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILogger<AnimeTimelineViewModel> _logger;
-    private readonly Dictionary<DateOnly, List<SeasonItemViewModel>> _dateCache = new();
+    private readonly Dictionary<DateOnly, List<SeasonItemViewModel>> _dateCache = [];
     private CancellationTokenSource? _cancellationTokenSource;
 
     [ObservableProperty]

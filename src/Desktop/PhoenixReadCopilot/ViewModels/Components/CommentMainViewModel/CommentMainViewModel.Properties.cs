@@ -41,7 +41,8 @@ public sealed partial class CommentMainViewModel
     public partial bool IsLoggedIn { get; set; }
 
     [ObservableProperty]
-    public partial List<CommentSortOrder> Sorts { get; set; } = [CommentSortOrder.Hot, CommentSortOrder.Latest];
+    public partial List<CommentSortOrder> Sorts { get; set; } =
+    [CommentSortOrder.Hot, CommentSortOrder.Latest];
 
     [ObservableProperty]
     public partial CommentSortOrder SortType { get; set; } = CommentSortOrder.Hot;
@@ -65,7 +66,7 @@ public sealed partial class CommentMainViewModel
     /// <summary>
     /// 评论列表.
     /// </summary>
-    public ObservableCollection<CommentDetailViewModel> Comments { get; } = new();
+    public ObservableCollection<CommentDetailViewModel> Comments { get; } = [];
 
     /// <summary>
     /// 标识符.

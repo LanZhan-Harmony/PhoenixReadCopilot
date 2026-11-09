@@ -31,7 +31,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        View.ItemsSource = default;
+        View.ItemsSource = null;
         if (ViewModel is not null)
         {
             ViewModel.PartChanged -= OnPartChanged;
@@ -73,7 +73,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
     {
         if (ViewModel?.SelectedPart is Episode episode && ViewModel.Parts is not null)
         {
-            var index = ViewModel.Parts.ToList().IndexOf(episode);
+            int index = ViewModel.Parts.ToList().IndexOf(episode);
             if (index >= 0)
             {
                 View.Select(index);
@@ -85,7 +85,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
     {
         if (ViewModel?.SelectedPart is Episode episode && ViewModel.Parts is not null)
         {
-            var index = ViewModel.Parts.ToList().IndexOf(episode);
+            int index = ViewModel.Parts.ToList().IndexOf(episode);
             if (index >= 0)
             {
                 await Task.Delay(100);

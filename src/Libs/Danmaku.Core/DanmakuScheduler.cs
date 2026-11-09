@@ -10,7 +10,7 @@ internal sealed class DanmakuScheduler : IDisposable
 {
     private readonly Queue<uint> _updateTimeQueue = new();
     private readonly AutoResetEvent _updateEvent = new(false);
-    private List<DanmakuItem> _danmakuList = new();
+    private List<DanmakuItem> _danmakuList = [];
     private volatile bool _isSeeking;
     private volatile bool _isClosing;
     private volatile int _lastIndex;
@@ -223,7 +223,7 @@ internal sealed class DanmakuScheduler : IDisposable
         Clear();
         lock (_danmakuList)
         {
-            _danmakuList = danmakuList ?? new List<DanmakuItem>();
+            _danmakuList = danmakuList ?? [];
         }
     }
 
@@ -236,11 +236,13 @@ internal sealed class DanmakuScheduler : IDisposable
         {
             if (_danmakuList == null)
             {
-                _danmakuList = danmakuList ?? new List<DanmakuItem>();
+                _danmakuList = danmakuList ?? [];
             }
             else
             {
-                var items = danmakuList.Where(p => !_danmakuList.Any(v => v.Id == p.Id));
+                IEnumerable<DanmakuItem> items = danmakuList.Where(p =>
+                    !_danmakuList.Any(v => v.Id == p.Id)
+                );
                 _danmakuList.AddRange(items);
             }
         }
@@ -304,7 +306,7 @@ internal sealed class DanmakuScheduler : IDisposable
                             break;
                         }
 
-                        var item = _danmakuList[_lastIndex];
+                        DanmakuItem item = _danmakuList[_lastIndex];
                         bool skip = false;
 
                         if (item.IsRealtime)
@@ -315,7 +317,7 @@ internal sealed class DanmakuScheduler : IDisposable
 
                         if (!skip)
                         {
-                            var shouldShow = item.Mode switch
+                            bool shouldShow = item.Mode switch
                             {
                                 DanmakuMode.Bottom => _isBottomEnabled,
                                 DanmakuMode.Top => _isTopEnabled,

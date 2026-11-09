@@ -13,11 +13,11 @@ public sealed partial class SubtitleButton : SubtitleControlBase
     /// </summary>
     public SubtitleButton() => InitializeComponent();
 
-    protected override void OnControlUnloaded() => SubtitleView.ItemsSource = default;
+    protected override void OnControlUnloaded() => SubtitleView.ItemsSource = null;
 
     private void OnMetaChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var meta = sender.SelectedItem as SubtitleMeta;
+        SubtitleMeta? meta = sender.SelectedItem as SubtitleMeta;
         if (meta != null)
         {
             if (ViewModel.SelectedMeta != meta)
@@ -27,7 +27,7 @@ public sealed partial class SubtitleButton : SubtitleControlBase
         }
         else
         {
-            ViewModel.DeselectSubtitleCommand.Execute(default);
+            ViewModel.DeselectSubtitleCommand.Execute(null);
         }
     }
 
@@ -39,7 +39,7 @@ public sealed partial class SubtitleButton : SubtitleControlBase
             return;
         }
 
-        var index = ViewModel.Metas.ToList().IndexOf(ViewModel.SelectedMeta);
+        int index = ViewModel.Metas.ToList().IndexOf(ViewModel.SelectedMeta);
         if (index == -1)
         {
             return;

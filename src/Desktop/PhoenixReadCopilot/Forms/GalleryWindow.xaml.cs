@@ -27,7 +27,7 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryWindow"/> class.
     /// </summary>
-    public GalleryWindow(AppImage image, List<AppImage>? list = default)
+    public GalleryWindow(AppImage image, List<AppImage>? list = null)
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
         _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
@@ -50,7 +50,7 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
     /// <inheritdoc/>
     public async Task ShowTipAsync(string text, InfoType type = InfoType.Error)
     {
-        var popup = new TipPopup() { Text = text };
+        TipPopup popup = new() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);
@@ -60,8 +60,8 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 
     private PointInt32 GetSavedWindowPosition()
     {
-        var left = _settings.GalleryWindowPositionLeft;
-        var top = _settings.GalleryWindowPositionTop;
+        int left = _settings.GalleryWindowPositionLeft;
+        int top = _settings.GalleryWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -74,13 +74,13 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 
         if (!_isActivated)
         {
-            var isMaximized = _settings.IsGalleryWindowMaximized;
+            bool isMaximized = _settings.IsGalleryWindowMaximized;
             if (isMaximized)
             {
                 (AppWindow.Presenter as OverlappedPresenter).Maximize();
             }
 
-            var localTheme = _settings.AppTheme;
+            ElementTheme localTheme = _settings.AppTheme;
             _appViewModel.ChangeThemeCommand.Execute(localTheme);
         }
 
@@ -95,11 +95,11 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
 
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
-        var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = _settings.GalleryWindowWidth;
-        var previousHeight = _settings.GalleryWindowHeight;
-        var width = Convert.ToInt32(previousWidth * scaleFactor);
-        var height = Convert.ToInt32(previousHeight * scaleFactor);
+        double scaleFactor = this.GetDpiForWindow() / 96d;
+        double previousWidth = _settings.GalleryWindowWidth;
+        double previousHeight = _settings.GalleryWindowHeight;
+        int width = Convert.ToInt32(previousWidth * scaleFactor);
+        int height = Convert.ToInt32(previousHeight * scaleFactor);
 
         // Ensure the window is not larger than the work area.
         if (height > workArea.Height - 20)
@@ -107,29 +107,29 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
             height = workArea.Height - 20;
         }
 
-        var lastPoint = GetSavedWindowPosition();
-        var isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
-        var isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
-        var left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
-        var top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
+        PointInt32 lastPoint = GetSavedWindowPosition();
+        bool isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
+        bool isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
+        double left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
+        double top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
         return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
     }
 
     private void MoveAndResize()
     {
-        var lastPoint = GetSavedWindowPosition();
-        var displayArea =
+        PointInt32 lastPoint = GetSavedWindowPosition();
+        DisplayArea displayArea =
             DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary) ?? DisplayArea.Primary;
 
-        var rect = GetRenderRect(displayArea.WorkArea);
+        RectInt32 rect = GetRenderRect(displayArea.WorkArea);
         AppWindow.MoveAndResize(rect);
     }
 
     private void SaveCurrentWindowStats()
     {
-        var left = AppWindow.Position.X;
-        var top = AppWindow.Position.Y;
-        var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
+        int left = AppWindow.Position.X;
+        int top = AppWindow.Position.Y;
+        BOOL isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
         _settings.IsGalleryWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)

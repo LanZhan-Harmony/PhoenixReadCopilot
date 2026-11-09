@@ -20,14 +20,16 @@ public sealed partial class ChatMessageBox : ChatMessageControlBase
     {
         if (e.Key == VirtualKey.Enter)
         {
-            var shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift);
-            var isShiftDown =
+            CoreVirtualKeyStates shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(
+                VirtualKey.Shift
+            );
+            bool isShiftDown =
                 shiftState == CoreVirtualKeyStates.Down
                 || shiftState == (CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked);
             if (!isShiftDown)
             {
                 e.Handled = true;
-                ViewModel.SendMessageCommand.Execute(default);
+                ViewModel.SendMessageCommand.Execute(null);
             }
         }
     }

@@ -15,7 +15,7 @@ public sealed partial class TopNavigationItem : LayoutUserControlBase
         nameof(IsSelected),
         typeof(bool),
         typeof(TopNavigationItem),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -25,7 +25,7 @@ public sealed partial class TopNavigationItem : LayoutUserControlBase
         nameof(Symbol),
         typeof(FluentIcons.Common.Symbol),
         typeof(TopNavigationItem),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

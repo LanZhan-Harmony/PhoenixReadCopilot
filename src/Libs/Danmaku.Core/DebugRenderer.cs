@@ -1,3 +1,4 @@
+using Vortice;
 using Vortice.Direct2D1;
 using Vortice.DirectWrite;
 
@@ -16,7 +17,7 @@ public sealed class DebugRenderer : IDisposable
 
     private readonly ID2D1DeviceContext _d2dContext;
     private readonly IDWriteFactory _dwriteFactory;
-    
+
     // 缓存资源，避免每帧重新创建
     private IDWriteTextFormat? _cachedTextFormat;
     private ID2D1SolidColorBrush? _cachedBackgroundBrush;
@@ -35,12 +36,14 @@ public sealed class DebugRenderer : IDisposable
     public void RenderDebugInfo(DebugInfo debugInfo, double scale)
     {
         if (_d2dContext == null)
+        {
             return;
+        }
 
         try
         {
-            var lines = new[]
-            {
+            string[] lines =
+            [
                 "弹幕调试信息:",
                 $"缓冲区大小: {debugInfo.BufferWidth}x{debugInfo.BufferHeight}",
                 $"逻辑大小: {debugInfo.LogicalWidth:F1}x{debugInfo.LogicalHeight:F1}",
@@ -48,7 +51,7 @@ public sealed class DebugRenderer : IDisposable
                 $"弹幕数量: {debugInfo.DanmakuCount}",
                 $"运行时间: {debugInfo.RunningTime:mm\\:ss}",
                 $"帧率: {debugInfo.FrameRate:F1} FPS",
-            };
+            ];
 
             DrawDebugPanel(lines, scale);
         }
@@ -63,8 +66,8 @@ public sealed class DebugRenderer : IDisposable
     /// </summary>
     private void DrawDebugPanel(string[] lines, double scale)
     {
-        var floatScale = (float)scale;
-        
+        float floatScale = (float)scale;
+
         // 如果缩放变化，重新创建资源
         if (Math.Abs(_lastScale - floatScale) > 0.01f)
         {
@@ -75,32 +78,39 @@ public sealed class DebugRenderer : IDisposable
 
         // 如果资源创建失败，直接返回
         if (_cachedTextFormat == null || _cachedBackgroundBrush == null || _cachedTextBrush == null)
+        {
             return;
+        }
 
         // 应用缩放因子到面板大小和位置
-        var scaledPadding = PanelPadding * floatScale;
-        var scaledLineSpacing = LineSpacing * floatScale;
-        var scaledCornerRadius = CornerRadius * floatScale;
+        float scaledPadding = PanelPadding * floatScale;
+        float scaledLineSpacing = LineSpacing * floatScale;
+        float scaledCornerRadius = CornerRadius * floatScale;
 
         // 计算面板大小（应用缩放）
-        var panelWidth = 250f * floatScale;
-        var panelHeight = lines.Length * scaledLineSpacing + scaledPadding * 2;
+        float panelWidth = 250f * floatScale;
+        float panelHeight = lines.Length * scaledLineSpacing + scaledPadding * 2;
 
         // 绘制背景（应用缩放）
-        var backgroundRect = new Vortice.Direct2D1.RoundedRectangle
+        RoundedRectangle backgroundRect = new()
         {
-            Rect = new Vortice.RawRectF(scaledPadding, scaledPadding, scaledPadding + panelWidth, scaledPadding + panelHeight),
+            Rect = new Vortice.RawRectF(
+                scaledPadding,
+                scaledPadding,
+                scaledPadding + panelWidth,
+                scaledPadding + panelHeight
+            ),
             RadiusX = scaledCornerRadius,
-            RadiusY = scaledCornerRadius
+            RadiusY = scaledCornerRadius,
         };
 
         _d2dContext.FillRoundedRectangle(backgroundRect, _cachedBackgroundBrush);
 
         // 绘制文本（应用缩放）
-        var textY = scaledPadding + scaledPadding / 2;
-        foreach (var line in lines)
+        float textY = scaledPadding + scaledPadding / 2;
+        foreach (string line in lines)
         {
-            var textRect = new Vortice.RawRectF(
+            RawRectF textRect = new(
                 scaledPadding + (scaledPadding / 2),
                 textY,
                 scaledPadding + panelWidth - (scaledPadding / 2),
@@ -119,23 +129,26 @@ public sealed class DebugRenderer : IDisposable
     {
         try
         {
-            var scaledFontSize = DebugFontSize * scale;
+            float scaledFontSize = DebugFontSize * scale;
 
             // 创建文本格式
             _cachedTextFormat = _dwriteFactory.CreateTextFormat(
-                "Consolas", 
-                FontWeight.Bold, 
-                FontStyle.Normal, 
-                FontStretch.Normal, 
-                scaledFontSize);
+                "Consolas",
+                FontWeight.Bold,
+                FontStyle.Normal,
+                FontStretch.Normal,
+                scaledFontSize
+            );
 
             // 创建背景刷子
             _cachedBackgroundBrush = _d2dContext.CreateSolidColorBrush(
-                new Vortice.Mathematics.Color((byte)0, (byte)0, (byte)0, BackgroundOpacity));
+                new Vortice.Mathematics.Color((byte)0, (byte)0, (byte)0, BackgroundOpacity)
+            );
 
             // 创建文本刷子
             _cachedTextBrush = _d2dContext.CreateSolidColorBrush(
-                new Vortice.Mathematics.Color((byte)255, (byte)255, (byte)255, (byte)255));
+                new Vortice.Mathematics.Color((byte)255, (byte)255, (byte)255, (byte)255)
+            );
         }
         catch
         {

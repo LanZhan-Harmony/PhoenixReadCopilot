@@ -16,7 +16,7 @@ public sealed partial class UpSectionControl : LayoutUserControlBase
         nameof(UserName),
         typeof(string),
         typeof(UpSectionControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -26,7 +26,7 @@ public sealed partial class UpSectionControl : LayoutUserControlBase
         nameof(Avatar),
         typeof(Uri),
         typeof(UpSectionControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -36,7 +36,7 @@ public sealed partial class UpSectionControl : LayoutUserControlBase
         nameof(IsFollow),
         typeof(bool),
         typeof(UpSectionControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -46,7 +46,7 @@ public sealed partial class UpSectionControl : LayoutUserControlBase
         nameof(ActiveCommand),
         typeof(ICommand),
         typeof(UpSectionControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -57,7 +57,7 @@ public sealed partial class UpSectionControl : LayoutUserControlBase
             nameof(ToggleFollowCommand),
             typeof(ICommand),
             typeof(UpSectionControl),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -67,7 +67,7 @@ public sealed partial class UpSectionControl : LayoutUserControlBase
         nameof(Subtitle),
         typeof(string),
         typeof(UpSectionControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

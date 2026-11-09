@@ -40,5 +40,5 @@ public sealed partial class UserSearchSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<UserItemViewModel> Items { get; } = new();
+    public ObservableCollection<UserItemViewModel> Items { get; } = [];
 }

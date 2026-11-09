@@ -21,6 +21,6 @@ internal sealed partial class PopularSectionTemplateSelector : DataTemplateSelec
             return PartitionTemplate;
         }
 
-        return default;
+        return null;
     }
 }

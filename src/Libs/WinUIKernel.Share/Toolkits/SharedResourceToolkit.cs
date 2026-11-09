@@ -15,7 +15,7 @@ public class SharedResourceToolkit : IResourceToolkit
     public string GetLocalizedString(string stringName)
     {
         _loader ??= new ResourceLoader(ResourceLoader.GetDefaultResourceFilePath(), "Resources");
-        var str = _loader.GetString(stringName);
+        string str = _loader.GetString(stringName);
         return string.IsNullOrEmpty(str) ? stringName : str;
     }
 

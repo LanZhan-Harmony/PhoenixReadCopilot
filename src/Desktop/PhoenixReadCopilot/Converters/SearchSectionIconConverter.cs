@@ -7,7 +7,7 @@ internal sealed partial class SearchSectionIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var sectionType = (SearchSectionType)value;
+        SearchSectionType sectionType = (SearchSectionType)value;
         return sectionType switch
         {
             SearchSectionType.Video => FluentIcons.Common.Symbol.VideoClip,

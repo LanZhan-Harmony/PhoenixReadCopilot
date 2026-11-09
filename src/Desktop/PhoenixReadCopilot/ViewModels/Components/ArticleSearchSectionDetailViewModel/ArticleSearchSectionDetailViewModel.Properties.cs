@@ -40,5 +40,5 @@ public sealed partial class ArticleSearchSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<ArticleItemViewModel> Items { get; } = new();
+    public ObservableCollection<ArticleItemViewModel> Items { get; } = [];
 }

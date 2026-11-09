@@ -21,7 +21,7 @@ public partial class ItemContentPresenterDataCollection
             if (field != value)
             {
                 field = value;
-                foreach (var item in this)
+                foreach (ItemContentPresenterData item in this)
                 {
                     item.ContentTemplate = value;
                 }
@@ -40,7 +40,7 @@ public partial class ItemContentPresenterDataCollection
             if (field != value)
             {
                 field = value;
-                foreach (var item in this)
+                foreach (ItemContentPresenterData item in this)
                 {
                     item.ContentTemplateSelector = value;
                 }
@@ -62,9 +62,9 @@ public partial class ItemContentPresenterDataCollection
     /// <inheritdoc/>
     protected override void OnItemsUpdated()
     {
-        for (var i = 0; i < Count; i++)
+        for (int i = 0; i < Count; i++)
         {
-            var data = this[i];
+            ItemContentPresenterData data = this[i];
             data.SizeOfSet = Count;
             data.PositionInSet = i + 1;
         }
@@ -78,8 +78,7 @@ public partial class ItemContentPresenterDataCollection
     )
     {
         existingConvertedValue.Content = sourceValue;
-        result = default;
+        result = null;
         return false;
     }
-#pragma warning restore CS9264 // Non-nullable property must contain a non-null value when exiting constructor. Consider adding the 'required' modifier, or declaring the property as nullable, or safely handling the case where 'field' is null in the 'get' accessor.
 }

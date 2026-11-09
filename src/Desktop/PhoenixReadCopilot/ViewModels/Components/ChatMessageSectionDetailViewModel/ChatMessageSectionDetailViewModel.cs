@@ -42,7 +42,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
         UserName = session.User?.Name;
         UnreadCount = session.UnreadCount;
         LastMessage = Data.LastMessage;
-        LastMessageTime = Data.Time.Humanize(default, new CultureInfo("zh-CN"));
+        LastMessageTime = Data.Time.Humanize(null, new CultureInfo("zh-CN"));
     }
 
     [RelayCommand]
@@ -53,7 +53,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
             return;
         }
 
-        Messages = new();
+        Messages = [];
         await LoadMessagesAsync();
     }
 
@@ -64,7 +64,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        Messages = new();
+        Messages = [];
         _preventLoadMore = false;
         IsEmpty = false;
         await LoadMessagesAsync();
@@ -81,9 +81,9 @@ public sealed partial class ChatMessageSectionDetailViewModel
         try
         {
             IsSending = true;
-            var now = DateTimeOffset.Now;
-            var formatted = EmojiHelper.FormatEmojiText(InputText);
-            var msg = await _service.SendChatMessageAsync(formatted, Data.User);
+            DateTimeOffset now = DateTimeOffset.Now;
+            string formatted = EmojiHelper.FormatEmojiText(InputText);
+            ChatMessage? msg = await _service.SendChatMessageAsync(formatted, Data.User);
             if (msg is not null)
             {
                 Messages.Add(new ChatMessageItemViewModel(msg));
@@ -91,7 +91,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
             }
 
             LastMessage = msg.Content.Text;
-            LastMessageTime = now.Humanize(default, new CultureInfo("zh-CN"));
+            LastMessageTime = now.Humanize(null, new CultureInfo("zh-CN"));
             RequestScrollToBottom?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
@@ -116,10 +116,11 @@ public sealed partial class ChatMessageSectionDetailViewModel
         try
         {
             IsLoading = true;
-            var (messages, maxCount, hasMore) = await _service.GetChatMessagesAsync(Data.User);
+            (IReadOnlyList<ChatMessage>? messages, long maxCount, bool hasMore) =
+                await _service.GetChatMessagesAsync(Data.User);
             if (messages is not null)
             {
-                foreach (var item in messages)
+                foreach (ChatMessage item in messages)
                 {
                     Messages.Add(new ChatMessageItemViewModel(item));
                 }
@@ -129,7 +130,7 @@ public sealed partial class ChatMessageSectionDetailViewModel
                     LastMessage = messages.Last().Content.Text;
                     LastMessageTime = messages
                         .Last()
-                        .Time.Humanize(default, new CultureInfo("zh-CN"));
+                        .Time.Humanize(null, new CultureInfo("zh-CN"));
                 }
 
                 RequestScrollToBottom?.Invoke(this, EventArgs.Empty);

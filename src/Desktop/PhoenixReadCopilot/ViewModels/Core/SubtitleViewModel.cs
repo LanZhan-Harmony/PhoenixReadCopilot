@@ -81,7 +81,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
             return;
         }
 
-        var subtitle = _subtitles.FirstOrDefault(p =>
+        SubtitleInformation? subtitle = _subtitles.FirstOrDefault(p =>
             p.StartPosition <= _position && p.EndPosition >= _position
         );
         CurrentSubtitle = subtitle?.Content;
@@ -90,19 +90,19 @@ public sealed partial class SubtitleViewModel : ViewModelBase
     /// <summary>
     /// 清除字幕.
     /// </summary>
-    public void ClearSubtitle() => CurrentSubtitle = default;
+    public void ClearSubtitle() => CurrentSubtitle = null;
 
     /// <summary>
     /// 清除所有数据.
     /// </summary>
     public void ClearAll()
     {
-        _aid = default;
-        _cid = default;
-        _subtitles = default;
-        SelectedMeta = default;
+        _aid = null;
+        _cid = null;
+        _subtitles = null;
+        SelectedMeta = null;
         _position = 0;
-        Metas = default;
+        Metas = null;
     }
 
     [RelayCommand]
@@ -117,7 +117,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
         {
             Metas = [.. await _service.GetSubtitleMetasAsync(_aid, _cid)];
             IsAvailable = Metas?.Count > 0;
-            var firstMeta = GetInitialMeta();
+            SubtitleMeta? firstMeta = GetInitialMeta();
             if (firstMeta is not null)
             {
                 ChangeSubtitleCommand.Execute(firstMeta);
@@ -134,7 +134,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
     [RelayCommand]
     private void DeselectSubtitle()
     {
-        SelectedMeta = default;
+        SelectedMeta = null;
         CurrentSubtitle = string.Empty;
     }
 
@@ -148,7 +148,9 @@ public sealed partial class SubtitleViewModel : ViewModelBase
 
         try
         {
-            var subtitles = await _service.GetSubtitleDetailAsync(meta);
+            IReadOnlyList<SubtitleInformation>? subtitles = await _service.GetSubtitleDetailAsync(
+                meta
+            );
             if (subtitles is not null)
             {
                 _subtitles = [.. subtitles];
@@ -164,13 +166,13 @@ public sealed partial class SubtitleViewModel : ViewModelBase
 
     private SubtitleMeta? GetInitialMeta()
     {
-        var firstNonAIMeta = Metas?.FirstOrDefault(p => !p.IsAI);
+        SubtitleMeta? firstNonAIMeta = Metas?.FirstOrDefault(p => !p.IsAI);
         if (firstNonAIMeta is not null)
         {
             return firstNonAIMeta;
         }
 
-        return default;
+        return null;
     }
 
     partial void OnIsEnabledChanged(bool value)

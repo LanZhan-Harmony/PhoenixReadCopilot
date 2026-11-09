@@ -63,7 +63,7 @@ public sealed partial class PgcFavoriteHeader : PgcFavoriteControlBase
             return;
         }
 
-        var status = (PgcFavoriteStatus)(StatusComboBox.SelectedIndex + 1);
+        PgcFavoriteStatus status = (PgcFavoriteStatus)(StatusComboBox.SelectedIndex + 1);
         ViewModel.ChangeStatusCommand.Execute(status);
     }
 }

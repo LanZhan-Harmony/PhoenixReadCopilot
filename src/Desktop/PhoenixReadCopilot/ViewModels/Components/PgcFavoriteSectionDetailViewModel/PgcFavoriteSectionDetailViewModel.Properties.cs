@@ -14,8 +14,8 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
 {
     private readonly IFavoriteService _service;
     private readonly ILogger<PgcFavoriteSectionDetailViewModel> _logger;
-    private readonly Dictionary<PgcFavoriteStatus, List<SeasonItemViewModel>> _cache = new();
-    private readonly Dictionary<PgcFavoriteStatus, (int, bool)> _offsetCache = new();
+    private readonly Dictionary<PgcFavoriteStatus, List<SeasonItemViewModel>> _cache = [];
+    private readonly Dictionary<PgcFavoriteStatus, (int, bool)> _offsetCache = [];
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
@@ -37,7 +37,7 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<SeasonItemViewModel> Items { get; } = new();
+    public ObservableCollection<SeasonItemViewModel> Items { get; } = [];
 
     /// <summary>
     /// 类型.

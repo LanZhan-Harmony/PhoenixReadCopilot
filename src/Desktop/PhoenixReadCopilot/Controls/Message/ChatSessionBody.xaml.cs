@@ -22,7 +22,7 @@ public sealed partial class ChatSessionBody : ChatMessageControlBase
             return;
         }
 
-        OnRequestScrollToBottom(default, default);
+        OnRequestScrollToBottom(null, null);
     }
 
     /// <inheritdoc/>

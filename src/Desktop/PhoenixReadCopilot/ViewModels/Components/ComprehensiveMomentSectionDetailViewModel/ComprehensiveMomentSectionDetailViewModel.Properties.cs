@@ -40,5 +40,5 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     /// <summary>
     /// 推荐的用户列表.
     /// </summary>
-    public ObservableCollection<MomentUperSectionViewModel> Upers { get; } = new();
+    public ObservableCollection<MomentUperSectionViewModel> Upers { get; } = [];
 }

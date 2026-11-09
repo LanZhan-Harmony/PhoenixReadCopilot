@@ -19,24 +19,9 @@ public static class IdToolkit
     /// <returns>BVId.</returns>
     public static string Av2Bv(long aid)
     {
-        var bytes = new char[]
-        {
-            'B',
-            'V',
-            '1',
-            '0',
-            '0',
-            '0',
-            '0',
-            '0',
-            '0',
-            '0',
-            '0',
-            '0',
-            '0'
-        };
-        var bvIndex = bytes.Length - 1;
-        var tmp = (MAX_AID | aid) ^ XOR_CODE;
+        char[] bytes = ['B', 'V', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
+        int bvIndex = bytes.Length - 1;
+        long tmp = (MAX_AID | aid) ^ XOR_CODE;
 
         while (tmp > 0)
         {
@@ -58,12 +43,12 @@ public static class IdToolkit
     /// <returns>AVId.</returns>
     public static long Bv2Av(string bvid)
     {
-        var bvidArr = bvid.ToArray();
+        char[] bvidArr = bvid.ToArray();
         Swap(ref bvidArr[3], ref bvidArr[9]);
         Swap(ref bvidArr[4], ref bvidArr[7]);
         bvidArr = bvidArr.Skip(3).ToArray();
 
-        var tmp = bvidArr.Aggregate(0L, (pre, bvidChar) => (pre * BASE) + DATA.IndexOf(bvidChar));
+        long tmp = bvidArr.Aggregate(0L, (pre, bvidChar) => (pre * BASE) + DATA.IndexOf(bvidChar));
 
         return (tmp & MASK_CODE) ^ XOR_CODE;
     }

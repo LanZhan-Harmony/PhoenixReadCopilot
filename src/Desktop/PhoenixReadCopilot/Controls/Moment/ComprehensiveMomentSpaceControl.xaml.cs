@@ -52,7 +52,7 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
                     <= 240
                 )
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );
@@ -74,7 +74,7 @@ public sealed partial class ComprehensiveMomentSpaceControl : UserMomentDetailCo
             {
                 if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );

@@ -84,7 +84,7 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
                     <= 240
                 )
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );
@@ -112,7 +112,7 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
             {
                 if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );
@@ -125,7 +125,7 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
             return;
         }
 
-        var index = ViewModel.Sorts.IndexOf(ViewModel.SortType);
+        int index = ViewModel.Sorts.IndexOf(ViewModel.SortType);
         if (index >= 0 && SortTypeComboBox.SelectedIndex != index)
         {
             SortTypeComboBox.SelectedIndex = index;

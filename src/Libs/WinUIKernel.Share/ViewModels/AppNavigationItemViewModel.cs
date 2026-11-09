@@ -35,7 +35,7 @@ public sealed partial class AppNavigationItemViewModel : ViewModelBase
         INavServiceViewModel navService,
         Type pageType,
         string title,
-        FluentIcons.Common.Symbol? symbol = default,
+        FluentIcons.Common.Symbol? symbol = null,
         bool isSelected = false,
         string accessKey = "",
         bool isVisible = true
@@ -63,5 +63,5 @@ public sealed partial class AppNavigationItemViewModel : ViewModelBase
     public override int GetHashCode() => HashCode.Combine(PageKey);
 
     [RelayCommand]
-    private void Navigate(object? parameter = default) => _navigateAction?.Invoke(parameter);
+    private void Navigate(object? parameter = null) => _navigateAction?.Invoke(parameter);
 }

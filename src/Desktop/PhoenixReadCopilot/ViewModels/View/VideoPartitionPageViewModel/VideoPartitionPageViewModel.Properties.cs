@@ -16,7 +16,7 @@ public sealed partial class VideoPartitionPageViewModel
     private readonly IVideoDiscoveryService _service;
     private readonly ILogger<VideoPartitionPageViewModel> _logger;
     private readonly ILoggerFactory _loggerFactory;
-    private readonly Dictionary<Partition, VideoPartitionDetailViewModel> _partitionCache = new();
+    private readonly Dictionary<Partition, VideoPartitionDetailViewModel> _partitionCache = [];
 
     [ObservableProperty]
     public partial bool IsPartitionLoading { get; set; }
@@ -32,5 +32,5 @@ public sealed partial class VideoPartitionPageViewModel
     /// <summary>
     /// 主分区.
     /// </summary>
-    public ObservableCollection<PartitionViewModel> Partitions { get; } = new();
+    public ObservableCollection<PartitionViewModel> Partitions { get; } = [];
 }

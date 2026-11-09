@@ -35,5 +35,5 @@ public sealed partial class FansPageViewModel
     /// <summary>
     /// 用户列表.
     /// </summary>
-    public ObservableCollection<UserItemViewModel> Users { get; } = new();
+    public ObservableCollection<UserItemViewModel> Users { get; } = [];
 }

@@ -20,7 +20,7 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
     /// <inheritdoc/>
     protected override async void OnControlLoaded() => await CheckSelectedItemAsync();
 
-    protected override void OnControlUnloaded() => View.ItemsSource = default;
+    protected override void OnControlUnloaded() => View.ItemsSource = null;
 
     /// <inheritdoc/>
     protected override async void OnViewModelChanged(
@@ -30,7 +30,7 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
 
     private void OnVideoSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var item = sender.SelectedItem as VideoItemViewModel;
+        VideoItemViewModel? item = sender.SelectedItem as VideoItemViewModel;
         if (item is not null && ViewModel.SelectedItem != item)
         {
             ViewModel.SelectedItem = item;
@@ -46,7 +46,7 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
             return;
         }
 
-        var index = ViewModel.Items.ToList().IndexOf(ViewModel.SelectedItem);
+        int index = ViewModel.Items.ToList().IndexOf(ViewModel.SelectedItem);
         View.Select(index);
         View.StartBringItemIntoView(
             index,

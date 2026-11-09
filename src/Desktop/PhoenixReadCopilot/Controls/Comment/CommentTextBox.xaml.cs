@@ -21,7 +21,7 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         nameof(Text),
         typeof(string),
         typeof(CommentTextBox),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -31,7 +31,7 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         nameof(SendCommand),
         typeof(IAsyncRelayCommand),
         typeof(CommentTextBox),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -41,7 +41,7 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         nameof(ReplyTip),
         typeof(string),
         typeof(CommentTextBox),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -52,7 +52,7 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
             nameof(ResetSelectedCommand),
             typeof(ICommand),
             typeof(CommentTextBox),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -75,8 +75,8 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
     /// </summary>
     public void UpdateLoginState()
     {
-        var apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
-        var isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        PhoenixReadApiClient? apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
         ReplyBox.IsEnabled = isAuthenticated;
         ReplyBox.PlaceholderText = isAuthenticated
             ? Strings.Resources.ReplyPlaceholderText
@@ -124,8 +124,8 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         AutoSuggestBoxQuerySubmittedEventArgs args
     )
     {
-        var apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
-        var isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        PhoenixReadApiClient? apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
         if (!isAuthenticated)
         {
             UpdateLoginState();
@@ -137,8 +137,10 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
             return;
         }
 
-        var formattedText = EmojiHelper.FormatEmojiText(Text);
-        var finalText = string.IsNullOrEmpty(ReplyTip) ? formattedText : $"回复 @{ReplyTip} : {formattedText}";
+        string formattedText = EmojiHelper.FormatEmojiText(Text);
+        string finalText = string.IsNullOrEmpty(ReplyTip)
+            ? formattedText
+            : $"回复 @{ReplyTip} : {formattedText}";
         await SendCommand.ExecuteAsync(finalText);
         Text = string.Empty;
     }

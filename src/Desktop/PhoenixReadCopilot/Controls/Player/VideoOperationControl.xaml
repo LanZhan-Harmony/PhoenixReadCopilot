@@ -26,6 +26,19 @@
             <local:ShareButton Command="{x:Bind ViewModel.ShareCommand, Mode=OneWay}"/>
         </StackPanel>
 
+        <ComboBox x:Name="LoopComboBox"
+                  HorizontalAlignment="Stretch"
+                  ItemsSource="{x:Bind ViewModel.LoopTypes, Mode=OneWay}"
+                  SelectedItem="{x:Bind ViewModel.CurrentLoop, Mode=OneWay}"
+                  SelectionChanged="OnLoopSelectionChanged">
+            <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="constants:VideoLoopType">
+                    <TextBlock Text="{x:Bind Converter={StaticResource LoopTypeConverter}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <local:DownloadButton ViewModel="{x:Bind ViewModel.Downloader, Mode=OneWay}"/>
+
         <!--  制作名单  -->
         <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.Credits, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
             <TextBlock FontSize="14"
@@ -67,18 +80,7 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <ComboBox x:Name="LoopComboBox"
-                      HorizontalAlignment="Stretch"
-                      ItemsSource="{x:Bind ViewModel.LoopTypes, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.CurrentLoop, Mode=OneWay}"
-                      SelectionChanged="OnLoopSelectionChanged">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate x:DataType="constants:VideoLoopType">
-                        <TextBlock Text="{x:Bind Converter={StaticResource LoopTypeConverter}}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-            <local:DownloadButton ViewModel="{x:Bind ViewModel.Downloader, Mode=OneWay}"/>
+
         </StackPanel>
     </StackPanel>
 </local:VideoPlayerPageControlBase>

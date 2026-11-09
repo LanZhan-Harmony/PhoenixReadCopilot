@@ -77,18 +77,18 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
             Player.CancelNotification();
             _pageLoadCancellationTokenSource = new CancellationTokenSource();
             Player.IsSeparatorWindowPlayer = IsSeparatorWindowPlayer;
-            var id = identifier.Id;
-            var isEpisode = id.StartsWith("ep");
+            string id = identifier.Id;
+            bool isEpisode = id.StartsWith("ep");
             id = id[3..];
-            var seasonId = isEpisode ? default : id;
-            var episodeId = isEpisode ? id : default;
-            var view = await _service.GetPgcPageDetailAsync(
+            string? seasonId = isEpisode ? null : id;
+            string? episodeId = isEpisode ? id : null;
+            PgcPlayerView view = await _service.GetPgcPageDetailAsync(
                 seasonId,
                 episodeId,
                 cancellationToken: _pageLoadCancellationTokenSource.Token
             );
             InitializeView(view);
-            var initialEpisode = FindInitialEpisode(episodeId);
+            EpisodeInformation? initialEpisode = FindInitialEpisode(episodeId);
             ChangeEpisode(initialEpisode);
             InitializeSections();
             InitializeNextEpisode();
@@ -124,11 +124,11 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         try
         {
             _dashLoadCancellationTokenSource = new CancellationTokenSource();
-            var cid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid);
-            var seasonType = episode.GetExtensionIfNotNull<string>(
+            long cid = episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid);
+            string? seasonType = episode.GetExtensionIfNotNull<string>(
                 EpisodeExtensionDataId.SeasonType
             );
-            var info = await _service.GetPgcPlayDetailAsync(
+            DashMediaInformation info = await _service.GetPgcPlayDetailAsync(
                 cid.ToString(),
                 episode.Identifier.Id,
                 seasonType,
@@ -190,20 +190,22 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         _isFormatChanging = true;
-        var isFirstSet = SelectedFormat == default;
+        bool isFirstSet = SelectedFormat == null;
         SelectedFormat = vm;
-        var maxAudioQuality = _audioSegments?.Max(p => Convert.ToInt32(p.Id));
-        var preferCodec = AppToolkit.GetPreferCodecId();
-        var vSeg =
+        int? maxAudioQuality = _audioSegments?.Max(p => Convert.ToInt32(p.Id));
+        string preferCodec = AppToolkit.GetPreferCodecId();
+        DashSegmentInformation? vSeg =
             _videoSegments?.FirstOrDefault(p =>
                 p.Id == vm.Data.Quality.ToString() && p.Codecs.Contains(preferCodec)
             )
             ?? _videoSegments?.FirstOrDefault(p => p.Id == vm.Data.Quality.ToString());
-        var aSeg = _audioSegments?.FirstOrDefault(p => p.Id == maxAudioQuality.ToString());
-        var videoUrl = vSeg?.BaseUrl;
-        var audioUrl = aSeg?.BaseUrl;
+        DashSegmentInformation? aSeg = _audioSegments?.FirstOrDefault(p =>
+            p.Id == maxAudioQuality.ToString()
+        );
+        string? videoUrl = vSeg?.BaseUrl;
+        string? audioUrl = aSeg?.BaseUrl;
 
-        var isAutoPlay = !isFirstSet;
+        bool isAutoPlay = !isFirstSet;
         if (isFirstSet)
         {
             isAutoPlay = _settings.ShouldAutoPlay;
@@ -257,13 +259,13 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         SelectedSection = section;
-        SelectedSection.TryFirstLoadCommand.Execute(default);
+        SelectedSection.TryFirstLoadCommand.Execute(null);
     }
 
     [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
-        var shouldReport = _settings.ShouldReportProgress;
+        bool shouldReport = _settings.ShouldReportProgress;
         if (
             !shouldReport
             || _view is null
@@ -278,9 +280,9 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
 
         try
         {
-            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-            var aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid);
-            var cid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid);
+            CancellationTokenSource cancellationToken = new(TimeSpan.FromSeconds(2));
+            long aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid);
+            long cid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Cid);
             await _service.ReportEpisodeProgressAsync(
                 aid.ToString(),
                 cid.ToString(),

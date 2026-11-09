@@ -24,7 +24,7 @@ public sealed partial class StatusTip : LayoutUserControlBase
         nameof(Status),
         typeof(InfoType),
         typeof(StatusTip),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnStatusChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnStatusChanged))
     );
 
     /// <summary>
@@ -55,7 +55,7 @@ public sealed partial class StatusTip : LayoutUserControlBase
 
     private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as StatusTip;
+        StatusTip? instance = d as StatusTip;
         instance.ChangeStatus();
     }
 

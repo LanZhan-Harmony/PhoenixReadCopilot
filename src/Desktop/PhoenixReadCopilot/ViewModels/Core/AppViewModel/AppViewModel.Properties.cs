@@ -30,7 +30,7 @@ public sealed partial class AppViewModel : ViewModelBase
     /// <summary>
     /// 已创建的窗口列表.
     /// </summary>
-    public List<Window> Windows { get; } = new();
+    public List<Window> Windows { get; } = [];
 
     /// <summary>
     /// FFmpeg 路径.

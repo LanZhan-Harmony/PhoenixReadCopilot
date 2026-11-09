@@ -386,7 +386,7 @@ public sealed partial class AppSettings : ObservableObject
     /// </summary>
     public bool GetPageVisible(Type pageType)
     {
-        var name = pageType.Name;
+        string name = pageType.Name;
         return name switch
         {
             "PopularPage" => IsPopularPageVisible,
@@ -404,7 +404,7 @@ public sealed partial class AppSettings : ObservableObject
     /// </summary>
     public void SetPageVisible(Type pageType, bool isVisible)
     {
-        var name = pageType.Name;
+        string name = pageType.Name;
         switch (name)
         {
             case "PopularPage":

@@ -22,7 +22,7 @@ public sealed partial class CardControl : Button
     private static readonly TimeSpan _restShadowDuration = TimeSpan.FromMilliseconds(250);
 
     // 共享资源池
-    private static readonly object _sharedResourceLock = new();
+    private static readonly Lock _sharedResourceLock = new();
     private static SharedShadowResources? _sharedResources;
     private static int _instanceCount;
 
@@ -86,7 +86,7 @@ public sealed partial class CardControl : Button
         lock (_sharedResourceLock)
         {
             // 创建初始阴影配置
-            var initialConfig = new ShadowConfig
+            ShadowConfig initialConfig = new()
             {
                 BlurRadius = 8f,
                 Opacity = 0.02f,
@@ -94,7 +94,7 @@ public sealed partial class CardControl : Button
             };
 
             // 创建鼠标悬停配置
-            var pointerOverConfig = new ShadowConfig
+            ShadowConfig pointerOverConfig = new()
             {
                 BlurRadius = 12f,
                 Opacity = 0.14f,
@@ -102,7 +102,7 @@ public sealed partial class CardControl : Button
             };
 
             // 创建按下配置
-            var pressedConfig = new ShadowConfig
+            ShadowConfig pressedConfig = new()
             {
                 BlurRadius = 2f,
                 Opacity = 0.09f,
@@ -110,7 +110,7 @@ public sealed partial class CardControl : Button
             };
 
             // 创建静止配置
-            var restConfig = new ShadowConfig
+            ShadowConfig restConfig = new()
             {
                 BlurRadius = 6f,
                 Opacity = 0.02f,
@@ -168,7 +168,7 @@ public sealed partial class CardControl : Button
         }
 
         _loaded = false;
-        _initialShadow = default;
+        _initialShadow = null;
         DestroyShadow();
 
         // 减少实例计数，如果是最后一个实例，清理共享资源
@@ -212,11 +212,13 @@ public sealed partial class CardControl : Button
         }
 
         Effects.SetShadow(_shadowContainer, _initialShadow);
-        var shadowContext = _initialShadow?.GetElementContext(_shadowContainer);
+        AttachedShadowElementContext? shadowContext = _initialShadow?.GetElementContext(
+            _shadowContainer
+        );
         if (shadowContext?.Shadow is DropShadow dropShadow)
         {
-            var sharedResources = GetOrCreateSharedResources();
-            var config = sharedResources.InitialConfig;
+            SharedShadowResources sharedResources = GetOrCreateSharedResources();
+            ShadowConfig config = sharedResources.InitialConfig;
             dropShadow.Offset = config.Offset;
             dropShadow.BlurRadius = config.BlurRadius;
             dropShadow.Opacity = config.Opacity;
@@ -233,7 +235,7 @@ public sealed partial class CardControl : Button
         }
 
         _shadowCreated = false;
-        Effects.SetShadow(_shadowContainer, default);
+        Effects.SetShadow(_shadowContainer, null);
     }
 
     private void ApplyShadowAnimation()
@@ -248,20 +250,18 @@ public sealed partial class CardControl : Button
             return;
         }
 
-        var duration =
+        TimeSpan duration =
             IsPressed ? _pressedShadowDuration
             : IsPointerOver ? _pointerOverShadowDuration
             : _restShadowDuration;
-        var offset =
+        float offset =
             IsPressed ? -2f
             : IsPointerOver ? PointerOverOffsetY
             : 0f;
-#pragma warning disable VSTHRD103 // Call async methods when in an async method
         AnimationBuilder
             .Create()
             .Translation(Axis.Y, offset, duration: duration, easingMode: EasingMode.EaseInOut)
             .Start(this);
-#pragma warning restore VSTHRD103 // Call async methods when in an async method
 
         // 如果未启用阴影，跳过阴影动画
         if (!WinUIKernelShareExtensions.IsCardShadowEnabled)
@@ -269,15 +269,15 @@ public sealed partial class CardControl : Button
             return;
         }
 
-        var sharedResources = GetOrCreateSharedResources();
-        var config =
+        SharedShadowResources sharedResources = GetOrCreateSharedResources();
+        ShadowConfig config =
             IsPressed ? sharedResources.PressedConfig
             : IsPointerOver ? sharedResources.PointerOverConfig
             : sharedResources.RestConfig;
 
-        var shadowOpacity = config.Opacity;
-        var shadowRadius = config.BlurRadius;
-        var shadowOffset = config.Offset;
+        float shadowOpacity = config.Opacity;
+        float shadowRadius = config.BlurRadius;
+        Vector3 shadowOffset = config.Offset;
 
         _shouldDestroyShadow = shadowOpacity <= 0;
         if (!_shouldDestroyShadow)
@@ -285,11 +285,15 @@ public sealed partial class CardControl : Button
             CreateShadow();
         }
 
-        var shadowContext = _initialShadow?.GetElementContext(_shadowContainer);
+        AttachedShadowElementContext? shadowContext = _initialShadow?.GetElementContext(
+            _shadowContainer
+        );
         if (shadowContext?.Shadow is DropShadow dropShadow)
         {
-            using var batch = _compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
-            var shadowAnimationGroup = _compositor.CreateAnimationGroup();
+            using CompositionScopedBatch batch = _compositor.CreateScopedBatch(
+                CompositionBatchTypes.Animation
+            );
+            CompositionAnimationGroup shadowAnimationGroup = _compositor.CreateAnimationGroup();
             shadowAnimationGroup.Add(
                 _compositor.CreateScalarKeyFrameAnimation(
                     nameof(DropShadow.BlurRadius),

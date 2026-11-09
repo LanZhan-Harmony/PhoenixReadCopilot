@@ -54,7 +54,7 @@ public sealed partial class MomentUperSectionViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<MomentItemViewModel> Items { get; } = new();
+    public ObservableCollection<MomentItemViewModel> Items { get; } = [];
 
     /// <inheritdoc/>
     public override bool Equals(object? obj) =>

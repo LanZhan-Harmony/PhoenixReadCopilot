@@ -11,7 +11,7 @@ internal sealed partial class UriToBitmapConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         return value is string url ? new BitmapImage(new Uri(url))
-            : value is null ? default
+            : value is null ? null
             : new BitmapImage((Uri)value);
     }
 

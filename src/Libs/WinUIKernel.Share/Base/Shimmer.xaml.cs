@@ -36,7 +36,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
     private const float InitialStartPointX = -7.92f;
 
     // 共享资源池
-    private static readonly object _sharedResourceLock = new();
+    private static readonly Lock _sharedResourceLock = new();
     private static SharedResources? _sharedResources;
     private static int _instanceCount;
 
@@ -118,7 +118,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
         lock (_sharedResourceLock)
         {
             // 创建深色主题渐变色配置
-            var darkConfig = new GradientStopConfig
+            GradientStopConfig darkConfig = new()
             {
                 Color1 = Color.FromArgb((byte)(255 * 6.05 / 100), 255, 255, 255),
                 Color2 = Color.FromArgb((byte)(255 * 3.26 / 100), 255, 255, 255),
@@ -127,7 +127,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
             };
 
             // 创建浅色主题渐变色配置
-            var lightConfig = new GradientStopConfig
+            GradientStopConfig lightConfig = new()
             {
                 Color1 = Color.FromArgb((byte)(255 * 5.37 / 100), 0, 0, 0),
                 Color2 = Color.FromArgb((byte)(255 * 2.89 / 100), 0, 0, 0),
@@ -154,7 +154,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
         TimeSpan duration
     )
     {
-        var animation = compositor.CreateVector2KeyFrameAnimation();
+        Vector2KeyFrameAnimation animation = compositor.CreateVector2KeyFrameAnimation();
         animation.Duration = duration;
         animation.IterationBehavior = AnimationIterationBehavior.Forever;
         animation.InsertKeyFrame(0.0f, new Vector2(InitialStartPointX, 0.0f));
@@ -170,7 +170,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
         TimeSpan duration
     )
     {
-        var animation = compositor.CreateVector2KeyFrameAnimation();
+        Vector2KeyFrameAnimation animation = compositor.CreateVector2KeyFrameAnimation();
         animation.Duration = duration;
         animation.IterationBehavior = AnimationIterationBehavior.Forever;
         animation.InsertKeyFrame(0.0f, new Vector2(1.0f, 0.0f));
@@ -220,7 +220,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
 
     private static void PropertyChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
     {
-        var self = (Shimmer)s;
+        Shimmer self = (Shimmer)s;
         if (self.IsActive)
         {
             self.StopAnimation();
@@ -254,10 +254,10 @@ public sealed partial class Shimmer : LayoutUserControlBase
             return false;
         }
 
-        var compositor = RootShape.GetVisual().Compositor;
+        Compositor compositor = RootShape.GetVisual().Compositor;
 
         // 初始化或获取共享资源
-        var sharedResources = GetOrCreateSharedResources(compositor);
+        SharedResources sharedResources = GetOrCreateSharedResources(compositor);
 
         _rectangleGeometry = compositor.CreateRoundedRectangleGeometry();
         _shapeVisual = compositor.CreateShapeVisual();
@@ -270,7 +270,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
         _shimmerMaskGradient.EndPoint = new Vector2(0.0f, 1.0f);
 
         _rectangleGeometry.CornerRadius = new Vector2((float)CornerRadius.TopLeft);
-        var spriteShape = compositor.CreateSpriteShape(_rectangleGeometry);
+        CompositionSpriteShape spriteShape = compositor.CreateSpriteShape(_rectangleGeometry);
         spriteShape.FillBrush = _shimmerMaskGradient;
         _shapeVisual.Shapes.Add(spriteShape);
         ElementCompositionPreview.SetElementChildVisual(RootShape, _shapeVisual);
@@ -281,26 +281,26 @@ public sealed partial class Shimmer : LayoutUserControlBase
 
     private void SetGradientStops(SharedResources sharedResources)
     {
-        var config =
+        GradientStopConfig config =
             ActualTheme == ElementTheme.Light
                 ? sharedResources.LightThemeConfig
                 : sharedResources.DarkThemeConfig;
 
-        var compositor = sharedResources.Compositor;
+        Compositor compositor = sharedResources.Compositor;
 
-        var gradientStop1 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop1 = compositor.CreateColorGradientStop();
         gradientStop1.Offset = GradientStopConfig.Offset1;
         gradientStop1.Color = config.Color1;
 
-        var gradientStop2 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop2 = compositor.CreateColorGradientStop();
         gradientStop2.Offset = GradientStopConfig.Offset2;
         gradientStop2.Color = config.Color2;
 
-        var gradientStop3 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop3 = compositor.CreateColorGradientStop();
         gradientStop3.Offset = GradientStopConfig.Offset3;
         gradientStop3.Color = config.Color3;
 
-        var gradientStop4 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop4 = compositor.CreateColorGradientStop();
         gradientStop4.Offset = GradientStopConfig.Offset4;
         gradientStop4.Color = config.Color4;
 
@@ -317,7 +317,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
             return;
         }
 
-        var config =
+        GradientStopConfig config =
             ActualTheme == ElementTheme.Light
                 ? _sharedResources.LightThemeConfig
                 : _sharedResources.DarkThemeConfig;
@@ -325,21 +325,21 @@ public sealed partial class Shimmer : LayoutUserControlBase
         // 清除现有的渐变色停止点
         _shimmerMaskGradient.ColorStops.Clear();
 
-        var compositor = _sharedResources.Compositor;
+        Compositor compositor = _sharedResources.Compositor;
 
-        var gradientStop1 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop1 = compositor.CreateColorGradientStop();
         gradientStop1.Offset = GradientStopConfig.Offset1;
         gradientStop1.Color = config.Color1;
 
-        var gradientStop2 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop2 = compositor.CreateColorGradientStop();
         gradientStop2.Offset = GradientStopConfig.Offset2;
         gradientStop2.Color = config.Color2;
 
-        var gradientStop3 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop3 = compositor.CreateColorGradientStop();
         gradientStop3.Offset = GradientStopConfig.Offset3;
         gradientStop3.Color = config.Color3;
 
-        var gradientStop4 = compositor.CreateColorGradientStop();
+        CompositionColorGradientStop gradientStop4 = compositor.CreateColorGradientStop();
         gradientStop4.Offset = GradientStopConfig.Offset4;
         gradientStop4.Color = config.Color4;
 
@@ -362,7 +362,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
             return;
         }
 
-        var rootVisual = RootShape.GetVisual();
+        Visual rootVisual = RootShape.GetVisual();
         _sizeAnimation = rootVisual.GetReference().Size;
         _shapeVisual.StartAnimation(nameof(ShapeVisual.Size), _sizeAnimation);
         _rectangleGeometry.StartAnimation(
@@ -370,14 +370,20 @@ public sealed partial class Shimmer : LayoutUserControlBase
             _sizeAnimation
         );
 
-        var compositor = rootVisual.Compositor;
-        var gradientStartPointAnimation = CreateGradientStartPointAnimation(compositor, Duration);
+        Compositor compositor = rootVisual.Compositor;
+        Vector2KeyFrameAnimation gradientStartPointAnimation = CreateGradientStartPointAnimation(
+            compositor,
+            Duration
+        );
         _shimmerMaskGradient!.StartAnimation(
             nameof(CompositionLinearGradientBrush.StartPoint),
             gradientStartPointAnimation
         );
 
-        var gradientEndPointAnimation = CreateGradientEndPointAnimation(compositor, Duration);
+        Vector2KeyFrameAnimation gradientEndPointAnimation = CreateGradientEndPointAnimation(
+            compositor,
+            Duration
+        );
         _shimmerMaskGradient.StartAnimation(
             nameof(CompositionLinearGradientBrush.EndPoint),
             gradientEndPointAnimation

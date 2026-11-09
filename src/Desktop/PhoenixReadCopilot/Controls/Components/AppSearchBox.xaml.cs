@@ -26,7 +26,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     {
         if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
         {
-            ViewModel.ReloadSuggestionsCommand.Execute(default);
+            ViewModel.ReloadSuggestionsCommand.Execute(null);
         }
     }
 
@@ -40,15 +40,15 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     }
 
     private void OnHotSearchFlyoutOpened(object sender, object e) =>
-        ViewModel.LoadHotSearchCommand.Execute(default);
+        ViewModel.LoadHotSearchCommand.Execute(null);
 
     private void OnHotSearchItemInvoked(ItemsView sender, ItemsViewItemInvokedEventArgs args)
     {
-        var context = args.InvokedItem as HotSearchItem;
+        HotSearchItem? context = args.InvokedItem as HotSearchItem;
         if (context is not null)
         {
             ViewModel.Keyword = context.Keyword;
-            var vm = new SearchSuggestItemViewModel(
+            SearchSuggestItemViewModel vm = new(
                 new SearchSuggestItem(context.Keyword, context.Keyword)
             );
             ViewModel.SearchCommand.Execute(vm);
@@ -65,13 +65,13 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
         }
         else if (!string.IsNullOrEmpty(args.QueryText))
         {
-            var vm = new SearchSuggestItemViewModel(
+            SearchSuggestItemViewModel vm = new(
                 new SearchSuggestItem(args.QueryText, args.QueryText)
             );
             ViewModel.SearchCommand.Execute(vm);
         }
 
-        ViewModel.TryCancelSuggestCommand.Execute(default);
+        ViewModel.TryCancelSuggestCommand.Execute(null);
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, ViewModel.Suggestion.Clear);
     }
 }

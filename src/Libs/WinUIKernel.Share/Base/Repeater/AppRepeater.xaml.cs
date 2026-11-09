@@ -39,7 +39,7 @@ public sealed partial class AppRepeater : UserControl
             nameof(ItemTemplateSelector),
             typeof(DataTemplateSelector),
             typeof(AppRepeater),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed partial class AppRepeater : UserControl
         nameof(ItemTemplate),
         typeof(DataTemplate),
         typeof(AppRepeater),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -60,7 +60,7 @@ public sealed partial class AppRepeater : UserControl
             nameof(ItemContainerTemplate),
             typeof(DataTemplate),
             typeof(AppRepeater),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -70,7 +70,7 @@ public sealed partial class AppRepeater : UserControl
         nameof(Layout),
         typeof(VirtualizingLayout),
         typeof(AppRepeater),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -139,7 +139,7 @@ public sealed partial class AppRepeater : UserControl
         DependencyPropertyChangedEventArgs e
     )
     {
-        var list = (AppRepeater)d;
+        AppRepeater list = (AppRepeater)d;
 
         list.UpdateCanLoadMoreItems();
         list.SetCollection();
@@ -147,7 +147,7 @@ public sealed partial class AppRepeater : UserControl
 
     private void UpdateCanLoadMoreItems(bool forceUpdate = false)
     {
-        var canLoadMoreItems = ItemsSource is ISupportIncrementalLoading { HasMoreItems: true };
+        bool canLoadMoreItems = ItemsSource is ISupportIncrementalLoading { HasMoreItems: true };
 
         if (canLoadMoreItems != _canLoadMoreItems || forceUpdate)
         {

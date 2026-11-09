@@ -24,7 +24,7 @@ public sealed partial class PopularSideBody : PopularPageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        SectionView.ItemsSource = default;
+        SectionView.ItemsSource = null;
         ViewModel.SectionInitialized -= OnSectionInitialized;
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
@@ -36,7 +36,7 @@ public sealed partial class PopularSideBody : PopularPageControlBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        var item = sender.SelectedItem as IPopularSectionItemViewModel;
+        IPopularSectionItemViewModel? item = sender.SelectedItem as IPopularSectionItemViewModel;
         ViewModel.SelectSectionCommand.Execute(item);
     }
 

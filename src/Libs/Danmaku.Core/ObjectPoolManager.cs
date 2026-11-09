@@ -28,11 +28,11 @@ internal sealed class ObjectPoolManager : IDisposable
     public ObjectPoolManager()
     {
         // 创建 DanmakuItem 对象池（使用默认策略）
-        var danmakuItemPolicy = new DefaultObjectPoolProvider { MaximumRetained = 2000 };
+        DefaultObjectPoolProvider danmakuItemPolicy = new() { MaximumRetained = 2000 };
         _danmakuItemPool = danmakuItemPolicy.Create(new DanmakuItemPoolPolicy());
 
         // 创建 RenderItem 对象池（使用默认策略）
-        var renderItemPolicy = new DefaultObjectPoolProvider { MaximumRetained = 2000 };
+        DefaultObjectPoolProvider renderItemPolicy = new() { MaximumRetained = 2000 };
         _renderItemPool = renderItemPolicy.Create(new RenderItemPoolPolicy());
 
         // 纹理缓存（不使用对象池，因为纹理生命周期复杂）
@@ -67,7 +67,9 @@ internal sealed class ObjectPoolManager : IDisposable
         {
             // 重置对象状态
             if (obj == null)
+            {
                 return false;
+            }
 
             obj.Id = null;
             obj.StartMs = 0;
@@ -144,7 +146,9 @@ internal sealed class ObjectPoolManager : IDisposable
         public bool Return(DanmakuDirectXRenderItem obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
 
             // 🔧 修复：释放 TextLayout
             // 每个 RenderItem 都有自己的 TextLayout，必须释放
@@ -163,7 +167,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     public DanmakuDirectXRenderItem RentRenderItem(DanmakuItem item)
     {
-        var renderItem = _renderItemPool.Get();
+        DanmakuDirectXRenderItem renderItem = _renderItemPool.Get();
         renderItem.Initialize(item);
         return renderItem;
     }
@@ -186,10 +190,12 @@ internal sealed class ObjectPoolManager : IDisposable
     public void ReturnRenderItemAndClearTexture(DanmakuDirectXRenderItem? item)
     {
         if (item == null)
+        {
             return;
+        }
 
         // 先清理纹理缓存
-        var key = new TextureCacheKey(
+        TextureCacheKey key = new(
             item.Item.Text,
             item.Item.TextColor,
             item.Item.OutlineColor,
@@ -247,7 +253,7 @@ internal sealed class ObjectPoolManager : IDisposable
         out float height
     )
     {
-        if (_textureCache.TryGetValue(key, out var entry) && entry.Bitmap != null)
+        if (_textureCache.TryGetValue(key, out TexturePoolEntry? entry) && entry.Bitmap != null)
         {
             bitmap = entry.Bitmap;
             width = entry.Width;
@@ -280,7 +286,7 @@ internal sealed class ObjectPoolManager : IDisposable
     {
         // � 优化：弹幕已去重，不需要缓存共享
         // 弹幕消失后立即释放 Bitmap，避免进入 Gen2
-        if (_textureCache.TryRemove(key, out var entry))
+        if (_textureCache.TryRemove(key, out TexturePoolEntry? entry))
         {
             entry.Bitmap?.Dispose();
             entry.Bitmap = null;
@@ -292,8 +298,8 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     public (int Total, int InUse) GetTextureStats()
     {
-        var total = _textureCache.Count;
-        var inUse = _textureCache.Values.Count(e => e.RefCount > 0);
+        int total = _textureCache.Count;
+        int inUse = _textureCache.Values.Count(e => e.RefCount > 0);
         return (total, inUse);
     }
 
@@ -311,19 +317,21 @@ internal sealed class ObjectPoolManager : IDisposable
     public void Dispose()
     {
         if (_isDisposed)
+        {
             return;
+        }
 
         _isDisposed = true;
 
         // 清空纹理缓存
-        foreach (var entry in _textureCache.Values)
+        foreach (TexturePoolEntry entry in _textureCache.Values)
         {
             entry.Bitmap?.Dispose();
         }
         _textureCache.Clear();
 
         // 清空 TextLayout 缓存
-        foreach (var layout in _textLayoutCache.Values)
+        foreach (IDWriteTextLayout layout in _textLayoutCache.Values)
         {
             layout?.Dispose();
         }

@@ -8,7 +8,7 @@ internal sealed partial class PgcSectionTextConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var sectionType = (PgcSectionType)value;
+        PgcSectionType sectionType = (PgcSectionType)value;
         return sectionType switch
         {
             PgcSectionType.Timeline => Resources.TimeChart,

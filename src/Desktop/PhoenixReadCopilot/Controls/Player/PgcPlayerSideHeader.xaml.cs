@@ -61,7 +61,8 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
             return;
         }
 
-        var item = sender.SelectedItem.Tag as IPlayerSectionDetailViewModel;
+        IPlayerSectionDetailViewModel? item =
+            sender.SelectedItem.Tag as IPlayerSectionDetailViewModel;
         ViewModel.SelectSectionCommand.Execute(item);
     }
 
@@ -70,14 +71,10 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
         Selector.Items.Clear();
         if (ViewModel.Sections is not null)
         {
-            foreach (var item in ViewModel.Sections)
+            foreach (IPlayerSectionDetailViewModel item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = item.Title ?? default,
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = item.Title ?? null, Tag = item }
                 );
             }
         }

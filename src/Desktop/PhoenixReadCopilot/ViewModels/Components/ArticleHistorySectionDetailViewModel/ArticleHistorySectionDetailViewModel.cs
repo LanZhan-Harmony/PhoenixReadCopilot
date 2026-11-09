@@ -1,9 +1,10 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models.Article;
+using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -43,7 +44,7 @@ public sealed partial class ArticleHistorySectionDetailViewModel
     {
         IsEmpty = false;
         _isPreventLoadMore = false;
-        Items = new ObservableCollection<ArticleItemViewModel>();
+        Items = [];
         _offset = 0;
         await LoadItemsAsync();
     }
@@ -59,12 +60,12 @@ public sealed partial class ArticleHistorySectionDetailViewModel
         try
         {
             IsLoading = true;
-            var group = await _service.GetViewHistoryAsync(Type, _offset);
+            ViewHistoryGroup? group = await _service.GetViewHistoryAsync(Type, _offset);
             _offset = group.Offset ?? 0;
             _isPreventLoadMore = group is null || _offset == 0;
             if (group.Articles is not null)
             {
-                foreach (var article in group.Articles)
+                foreach (ArticleInformation article in group.Articles)
                 {
                     Items.Add(
                         new ArticleItemViewModel(

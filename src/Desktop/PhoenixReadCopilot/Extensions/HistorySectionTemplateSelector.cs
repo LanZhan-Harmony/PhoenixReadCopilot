@@ -23,6 +23,6 @@ internal sealed partial class HistorySectionTemplateSelector : DataTemplateSelec
             };
         }
 
-        return default;
+        return null;
     }
 }

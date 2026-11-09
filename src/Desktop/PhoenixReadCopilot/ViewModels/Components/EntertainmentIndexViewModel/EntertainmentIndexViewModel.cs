@@ -44,20 +44,21 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            var ct = _cancellationTokenSource.Token;
+            CancellationToken ct = _cancellationTokenSource.Token;
 
-            var rows = await _apiClient.GetShortDramaFilterPanelAsync(ShortDramaGenre.ShortPlay, ct);
-            var filterList = new List<IndexFilterViewModel>();
-            foreach (var row in rows)
+            IReadOnlyList<ShortDramaFilterRow> rows =
+                await _apiClient.GetShortDramaFilterPanelAsync(ShortDramaGenre.ShortPlay, ct);
+            List<IndexFilterViewModel> filterList = [];
+            foreach (ShortDramaFilterRow row in rows)
             {
-                var dimName = row.Name.StartsWith("全部") ? row.Name.Substring(2) : row.Name;
-                var conditions = new List<Condition>
-                {
+                string dimName = row.Name.StartsWith("全部") ? row.Name.Substring(2) : row.Name;
+                List<Condition> conditions =
+                [
                     new(row.Name, string.Empty),
-                };
-                conditions.AddRange(row.Options.Select(opt => new Condition(opt.Name, opt.Value)));
+                    .. row.Options.Select(opt => new Condition(opt.Name, opt.Value)),
+                ];
 
-                var filter = new Filter(row.Key, dimName, conditions);
+                Filter filter = new(row.Key, dimName, conditions);
                 filterList.Add(new IndexFilterViewModel(filter, RequestForConditionChanged));
             }
 
@@ -68,9 +69,7 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
 
             await RequestIndexAsync();
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "尝试请求红果短剧筛选维度面板时失败.");
@@ -86,12 +85,15 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     {
         _offset = 0;
         _hasMore = true;
-        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
-        {
-            Items.Clear();
-            Filters = default;
-            await InitializeAsync();
-        });
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                Items.Clear();
+                Filters = null;
+                await InitializeAsync();
+            }
+        );
 
         return Task.CompletedTask;
     }
@@ -115,21 +117,24 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            var ct = _cancellationTokenSource.Token;
+            CancellationToken ct = _cancellationTokenSource.Token;
 
-            var selections = new Dictionary<string, IReadOnlyList<string>>();
+            Dictionary<string, IReadOnlyList<string>> selections = [];
             if (Filters != null)
             {
-                foreach (var f in Filters)
+                foreach (IndexFilterViewModel f in Filters)
                 {
-                    if (f.CurrentCondition is not null && !string.IsNullOrEmpty(f.CurrentCondition.Value))
+                    if (
+                        f.CurrentCondition is not null
+                        && !string.IsNullOrEmpty(f.CurrentCondition.Value)
+                    )
                     {
                         selections[f.Key] = [f.CurrentCondition.Value];
                     }
                 }
             }
 
-            var query = new ShortDramaFilterQuery
+            ShortDramaFilterQuery query = new()
             {
                 Genre = ShortDramaGenre.ShortPlay,
                 Selections = selections,
@@ -137,14 +142,14 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
                 SessionId = _sessionId,
             };
 
-            var page = await _apiClient.FilterShortDramasAsync(query, ct);
+            ShortDramaFilterPage page = await _apiClient.FilterShortDramasAsync(query, ct);
             _offset = page.NextOffset;
             _hasMore = page.HasMore;
             _sessionId = page.SessionId;
 
             _dispatcherQueue.TryEnqueue(() =>
             {
-                foreach (var drama in page.Items)
+                foreach (Drama drama in page.Items)
                 {
                     Items.Add(new SeasonItemViewModel(drama, SeasonCardStyle.Index));
                 }
@@ -152,9 +157,7 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
                 ItemsUpdated?.Invoke(this, EventArgs.Empty);
             });
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "尝试加载红果短剧筛选结果时失败.");
@@ -169,10 +172,13 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     {
         _offset = 0;
         _hasMore = true;
-        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
-        {
-            Items.Clear();
-            _ = RequestIndexAsync();
-        });
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            () =>
+            {
+                Items.Clear();
+                _ = RequestIndexAsync();
+            }
+        );
     }
 }

@@ -30,8 +30,8 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
 
     protected override void OnControlUnloaded()
     {
-        DefaultView.ItemsSource = default;
-        IndexView.ItemsSource = default;
+        DefaultView.ItemsSource = null;
+        IndexView.ItemsSource = null;
     }
 
     private void OnEpisodeSelectionChanged(

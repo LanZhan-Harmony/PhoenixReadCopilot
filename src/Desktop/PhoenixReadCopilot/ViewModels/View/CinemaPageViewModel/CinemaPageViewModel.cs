@@ -47,17 +47,17 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        Sections = new List<EntertainmentIndexViewModel>
-        {
-            new EntertainmentIndexViewModel(
+        Sections =
+        [
+            new(
                 PgcSectionType.TV,
                 _apiClient,
                 _dispatcherQueue,
                 _loggerFactory.CreateLogger<EntertainmentIndexViewModel>()
             ),
-        };
+        ];
 
-        var section = Sections.First();
+        EntertainmentIndexViewModel section = Sections.First();
         _dispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
             () =>
@@ -78,7 +78,7 @@ public sealed partial class CinemaPageViewModel : LayoutPageViewModelBase
 
         SelectedSection = section;
         _settings.CinemaPageLastSelectedSectionType = section.SectionType;
-        section.InitializeCommand.Execute(default);
+        section.InitializeCommand.Execute(null);
     }
 
     [RelayCommand]

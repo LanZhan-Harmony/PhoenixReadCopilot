@@ -25,7 +25,7 @@ public sealed partial class ChatMessageItemViewModel : ViewModelBase<ChatMessage
         IsWithdrawn = data.Type == ChatMessageType.Withdrawn;
         if (data.Type == ChatMessageType.Unknown)
         {
-            Content = new EmoteText(Resources.NotSupportContent, default);
+            Content = new EmoteText(Resources.NotSupportContent, null);
         }
     }
 }

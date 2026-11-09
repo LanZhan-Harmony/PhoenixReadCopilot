@@ -14,10 +14,10 @@ public sealed partial class PlayerNotificationControl : PlayerNotificationContro
     public PlayerNotificationControl() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded() => ViewModel.StartCommand.Execute(default);
+    protected override void OnControlLoaded() => ViewModel.StartCommand.Execute(null);
 
     /// <inheritdoc/>
-    protected override void OnControlUnloaded() => ViewModel.CancelCommand.Execute(default);
+    protected override void OnControlUnloaded() => ViewModel.CancelCommand.Execute(null);
 }
 
 /// <summary>

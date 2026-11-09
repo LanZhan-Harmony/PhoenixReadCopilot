@@ -15,7 +15,7 @@ public sealed partial class BoolToIconVariantConverter : IValueConverter
             return FluentIcons.Common.IconVariant.Regular;
         }
 
-        var isFilled = (bool)value;
+        bool isFilled = (bool)value;
         return isFilled
             ? FluentIcons.Common.IconVariant.Filled
             : FluentIcons.Common.IconVariant.Regular;

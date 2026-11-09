@@ -63,9 +63,9 @@ public sealed partial class WebPlayerPage : LayoutPageBase
     {
         ShowLoading();
 
-        var env = await CoreWebView2Environment.CreateWithOptionsAsync(
-            default,
-            default,
+        CoreWebView2Environment env = await CoreWebView2Environment.CreateWithOptionsAsync(
+            null,
+            null,
             new CoreWebView2EnvironmentOptions
             {
                 AreBrowserExtensionsEnabled = true,
@@ -107,14 +107,14 @@ public sealed partial class WebPlayerPage : LayoutPageBase
 
     private void OnContainsFullScreenElementChanged(CoreWebView2 sender, object args)
     {
-        var appVM = _appViewModel;
+        AppViewModel appVM = _appViewModel;
         if (sender.ContainsFullScreenElement)
         {
-            appVM.MakeCurrentWindowEnterFullScreenCommand.Execute(default);
+            appVM.MakeCurrentWindowEnterFullScreenCommand.Execute(null);
         }
         else
         {
-            appVM.MakeCurrentWindowExitFullScreenCommand.Execute(default);
+            appVM.MakeCurrentWindowExitFullScreenCommand.Execute(null);
         }
     }
 
@@ -124,18 +124,18 @@ public sealed partial class WebPlayerPage : LayoutPageBase
     )
     {
         HideLoading();
-        var scriptPath = Path.Combine(AppContext.BaseDirectory, "Assets", "WebPlayer.js");
+        string scriptPath = Path.Combine(AppContext.BaseDirectory, "Assets", "WebPlayer.js");
         if (!File.Exists(scriptPath))
         {
             return;
         }
 
-        var preferDisplayMode = _settings.DefaultPlayerDisplayMode;
-        var isFullWindow =
+        PlayerDisplayMode preferDisplayMode = _settings.DefaultPlayerDisplayMode;
+        bool isFullWindow =
             preferDisplayMode is PlayerDisplayMode.FullWindow or PlayerDisplayMode.NewWindow;
-        var isFullScreen = preferDisplayMode == PlayerDisplayMode.FullScreen;
-        var isMiniView = preferDisplayMode == PlayerDisplayMode.CompactOverlay;
-        var script = await File.ReadAllTextAsync(scriptPath);
+        bool isFullScreen = preferDisplayMode == PlayerDisplayMode.FullScreen;
+        bool isMiniView = preferDisplayMode == PlayerDisplayMode.CompactOverlay;
+        string script = await File.ReadAllTextAsync(scriptPath);
         script = script
             .Replace("`isFullWindow`", isFullWindow.ToString().ToLower())
             .Replace("`isFullScreen`", isFullScreen.ToString().ToLower())
@@ -157,10 +157,10 @@ public sealed partial class WebPlayerPage : LayoutPageBase
 
     private async Task TryLoadExtensionAsync()
     {
-        var extensionFolder = Path.Combine(PathHelper.RootFolderPath, "Extensions");
+        string extensionFolder = Path.Combine(PathHelper.RootFolderPath, "Extensions");
         Directory.CreateDirectory(extensionFolder);
-        var bewlyFolderPath = Path.Combine(extensionFolder, "BewlyBewly");
-        var localVersion = _settings.BewlyExtensionVersion;
+        string bewlyFolderPath = Path.Combine(extensionFolder, "BewlyBewly");
+        string localVersion = _settings.BewlyExtensionVersion;
         if (localVersion != BewlyVersion)
         {
             if (Directory.Exists(bewlyFolderPath))
@@ -171,7 +171,7 @@ public sealed partial class WebPlayerPage : LayoutPageBase
             if (!Directory.Exists(bewlyFolderPath))
             {
                 Directory.CreateDirectory(bewlyFolderPath);
-                var bewlyZipPath = Path.Combine(
+                string bewlyZipPath = Path.Combine(
                     AppContext.BaseDirectory,
                     "Assets",
                     "BewlyBewly.zip"

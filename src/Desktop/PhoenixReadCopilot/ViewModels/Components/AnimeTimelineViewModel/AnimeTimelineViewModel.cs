@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -46,39 +45,42 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            var ct = _cancellationTokenSource.Token;
+            CancellationToken ct = _cancellationTokenSource.Token;
 
-            var page = await _apiClient.GetDailyReleasesAsync(
+            DailyReleasePage page = await _apiClient.GetDailyReleasesAsync(
                 targetDate: null,
                 offset: 0,
                 sessionId: null,
                 cancellationToken: ct
             );
 
-            var initialItems = page.Items.Select(item => new SeasonItemViewModel(item)).ToList();
+            List<SeasonItemViewModel> initialItems = page
+                .Items.Select(item => new SeasonItemViewModel(item))
+                .ToList();
             _dateCache[page.Date] = initialItems;
 
-            var dates = page.AvailableDates is { Count: > 0 }
+            IReadOnlyList<DateOnly> dates = page.AvailableDates is { Count: > 0 }
                 ? page.AvailableDates
                 : Enumerable.Range(-7, 15).Select(offset => page.Date.AddDays(offset)).ToList();
 
-            var viewModels = new List<TimelineItemViewModel>();
-            foreach (var date in dates)
+            List<TimelineItemViewModel> viewModels = [];
+            foreach (DateOnly date in dates)
             {
-                var isToday = date == page.Date;
-                var items = isToday ? initialItems : null;
+                bool isToday = date == page.Date;
+                List<SeasonItemViewModel>? items = isToday ? initialItems : null;
                 viewModels.Add(new TimelineItemViewModel(date, isToday, items));
             }
 
             _dispatcherQueue.TryEnqueue(() =>
             {
                 Timelines.Clear();
-                foreach (var vm in viewModels)
+                foreach (TimelineItemViewModel vm in viewModels)
                 {
                     Timelines.Add(vm);
                 }
 
-                var todayItem = Timelines.FirstOrDefault(p => p.IsToday) ?? Timelines.FirstOrDefault();
+                TimelineItemViewModel? todayItem =
+                    Timelines.FirstOrDefault(p => p.IsToday) ?? Timelines.FirstOrDefault();
                 if (todayItem != null)
                 {
                     SelectTimeline(todayItem);
@@ -136,7 +138,7 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
 
         if (vm.Items == null)
         {
-            if (_dateCache.TryGetValue(vm.TargetDate, out var cached))
+            if (_dateCache.TryGetValue(vm.TargetDate, out List<SeasonItemViewModel>? cached))
             {
                 vm.Items = cached;
                 vm.Count = cached.Count;
@@ -163,16 +165,18 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            var ct = _cancellationTokenSource.Token;
+            CancellationToken ct = _cancellationTokenSource.Token;
 
-            var page = await _apiClient.GetDailyReleasesAsync(
+            DailyReleasePage page = await _apiClient.GetDailyReleasesAsync(
                 targetDate: vm.TargetDate,
                 offset: 0,
                 sessionId: null,
                 cancellationToken: ct
             );
 
-            var items = page.Items.Select(item => new SeasonItemViewModel(item)).ToList();
+            List<SeasonItemViewModel> items = page
+                .Items.Select(item => new SeasonItemViewModel(item))
+                .ToList();
             _dateCache[vm.TargetDate] = items;
 
             _dispatcherQueue.TryEnqueue(() =>
@@ -183,9 +187,7 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
                 UpdateVisibilityStates();
             });
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "获取指定日期 ({Date}) 上新短剧失败.", vm.TargetDate);
@@ -204,7 +206,8 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
 
     private void UpdateVisibilityStates()
     {
-        ShowSideEmptyHolder = !IsTimelineLoading && (IsError || (_isInitialized && Timelines.Count == 0));
+        ShowSideEmptyHolder =
+            !IsTimelineLoading && (IsError || (_isInitialized && Timelines.Count == 0));
         ShowTimelineEmptyHolder = !IsTimelineLoading && (SelectedTimeline is { IsEmpty: true });
         IsEmpty = ShowSideEmptyHolder;
     }

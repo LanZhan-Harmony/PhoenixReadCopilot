@@ -19,7 +19,7 @@ public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMes
     public NotifyMessageItemViewModel(NotifyMessage data)
         : base(data)
     {
-        PublishRelativeTime = data.PublishTime.Humanize(default, new CultureInfo("zh-CN"));
+        PublishRelativeTime = data.PublishTime.Humanize(null, new CultureInfo("zh-CN"));
         FirstUserAvatar = data.Users?.First().Avatar.Uri;
         FirstUserName = data.Users?.First().Name;
         IsMultipleUsers = data.Users.Count > 1;
@@ -27,7 +27,7 @@ public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMes
         SourceContent = data.SourceContent;
         if (data.Type == NotifyMessageType.Like)
         {
-            var count = data.Properties["Count"];
+            string count = data.Properties["Count"];
             Subtitle = IsMultipleUsers
                 ? string.Format(
                     Resources.LikeMessageMultipleDescription,
@@ -47,7 +47,7 @@ public sealed partial class NotifyMessageItemViewModel : ViewModelBase<NotifyMes
     [RelayCommand]
     private async Task ActiveAsync()
     {
-        var sourceId = Data.SourceId;
+        string? sourceId = Data.SourceId;
         if (string.IsNullOrEmpty(sourceId))
         {
             return;

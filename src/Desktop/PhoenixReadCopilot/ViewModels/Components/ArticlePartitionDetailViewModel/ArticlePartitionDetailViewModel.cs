@@ -44,8 +44,8 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         if (Data.Children is not null)
         {
-            var children = Data.Children.ToList();
-            var rcmdPartition = new Partition(Data.Data.Id, Resources.RecommendArticle);
+            List<PartitionViewModel> children = Data.Children.ToList();
+            Partition rcmdPartition = new(Data.Data.Id, Resources.RecommendArticle);
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
         }
@@ -142,16 +142,19 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
                 Articles.Clear();
                 if (IsRecommend && _recommendCache?.Count > 0)
                 {
-                    foreach (var item in _recommendCache)
+                    foreach (ArticleItemViewModel item in _recommendCache)
                     {
                         Articles.Add(item);
                     }
                 }
                 else if (
-                    _childPartitionArticleCache.TryGetValue(CurrentPartition.Data.Id, out var cache)
+                    _childPartitionArticleCache.TryGetValue(
+                        CurrentPartition.Data.Id,
+                        out List<ArticleItemViewModel>? cache
+                    )
                 )
                 {
-                    foreach (var item in cache)
+                    foreach (ArticleItemViewModel item in cache)
                     {
                         Articles.Add(item);
                     }
@@ -203,11 +206,12 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     {
         try
         {
-            var (articles, offset) = await _service.GetPartitionArticlesAsync(
-                CurrentPartition.Data,
-                ArticleSortType.Default,
-                _recommendOffset
-            );
+            (IReadOnlyList<ArticleInformation>? articles, int offset) =
+                await _service.GetPartitionArticlesAsync(
+                    CurrentPartition.Data,
+                    ArticleSortType.Default,
+                    _recommendOffset
+                );
             _recommendOffset = offset;
             TryAddArticles(articles);
         }
@@ -221,22 +225,23 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     {
         try
         {
-            var pn = 0;
+            int pn = 0;
             if (
                 _childPartitionOffsetCache.TryGetValue(
                     CurrentPartition.Data.Id,
-                    out var offsetCache
+                    out int offsetCache
                 )
             )
             {
                 pn = offsetCache;
             }
 
-            var (articles, nextPn) = await _service.GetPartitionArticlesAsync(
-                CurrentPartition.Data,
-                SelectedSortType,
-                pn
-            );
+            (IReadOnlyList<ArticleInformation>? articles, int nextPn) =
+                await _service.GetPartitionArticlesAsync(
+                    CurrentPartition.Data,
+                    SelectedSortType,
+                    pn
+                );
             _childPartitionOffsetCache[CurrentPartition.Data.Id] = nextPn;
             TryAddArticles(articles);
         }
@@ -254,11 +259,11 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         try
         {
             // 将榜单所有文章全部加载.
-            var categories = await _service.GetHotCategoriesAsync();
-            var articles = new List<ArticleInformation>();
-            foreach (var cate in categories)
+            Dictionary<int, string> categories = await _service.GetHotCategoriesAsync();
+            List<ArticleInformation> articles = [];
+            foreach (KeyValuePair<int, string> cate in categories)
             {
-                var d = await _service.GetHotArticlesAsync(cate.Key);
+                IReadOnlyList<ArticleInformation> d = await _service.GetHotArticlesAsync(cate.Key);
                 articles.AddRange(d);
             }
 
@@ -277,7 +282,11 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     {
         try
         {
-            var (articles, _, offset) = await _service.GetRecommendArticlesAsync(_recommendOffset);
+            (
+                IReadOnlyList<ArticleInformation>? articles,
+                IReadOnlyList<ArticleInformation> _,
+                int offset
+            ) = await _service.GetRecommendArticlesAsync(_recommendOffset);
             _recommendOffset = offset;
             TryAddArticles(articles);
         }
@@ -291,7 +300,7 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
     {
         if (articles is not null)
         {
-            foreach (var item in articles)
+            foreach (ArticleInformation item in articles)
             {
                 if (Articles.Any(p => p.Data.Equals(item)))
                 {

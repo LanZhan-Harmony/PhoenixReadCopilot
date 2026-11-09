@@ -14,7 +14,7 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
         nameof(IsHide),
         typeof(bool),
         typeof(SideSplitButton),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnIsHideChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnIsHideChanged))
     );
 
     /// <summary>
@@ -25,7 +25,7 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
             nameof(IsInvertDirection),
             typeof(bool),
             typeof(SideSplitButton),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -56,7 +56,7 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
 
     private static void OnIsHideChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as SideSplitButton;
+        SideSplitButton? instance = d as SideSplitButton;
         instance?.SymbolControl.Symbol = instance.GetSymbol();
     }
 

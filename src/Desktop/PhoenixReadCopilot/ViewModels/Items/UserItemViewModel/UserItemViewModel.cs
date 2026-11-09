@@ -4,6 +4,7 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
+using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -39,7 +40,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(
+        PinItem pinItem = new(
             Data.Profile.User.Id,
             Data.Profile.User.Name,
             Data.Profile.User.Avatar.Uri.ToString(),
@@ -51,7 +52,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     [RelayCommand]
     private async Task ToggleFollowAsync()
     {
-        var relationService = ItemServices.Relationship;
+        IRelationshipService relationService = ItemServices.Relationship;
         if (IsFollowed)
         {
             try

@@ -62,7 +62,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
             await _authenticationService.SignInAsync(
                 cancellationToken: _cancellationTokenSource.Token
             );
-            var isSignedIn = await CheckAuthorizeStatusAsync();
+            bool isSignedIn = await CheckAuthorizeStatusAsync();
             if (isSignedIn)
             {
                 ExitCommand.Execute(true);
@@ -92,7 +92,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
 
         if (shouldRestart)
         {
-            _appViewModel.RestartCommand.Execute(default);
+            _appViewModel.RestartCommand.Execute(null);
         }
     }
 
@@ -106,8 +106,8 @@ public sealed partial class StartupPageViewModel : ViewModelBase
 
         _dispatcherQueue.TryEnqueue(async () =>
         {
-            using var stream = new MemoryStream(imageData);
-            var bitmap = new BitmapImage();
+            using MemoryStream stream = new(imageData);
+            BitmapImage bitmap = new();
             await bitmap.SetSourceAsync(stream.AsRandomAccessStream()).AsTask();
             QRCodeImage.Source = bitmap;
             IsQRCodeLoading = false;
@@ -116,11 +116,11 @@ public sealed partial class StartupPageViewModel : ViewModelBase
 
     private async Task<bool> CheckAuthorizeStatusAsync()
     {
-        var tokenResolver = _authenticationService;
+        IAuthenticationService tokenResolver = _authenticationService;
         try
         {
             await tokenResolver
-                .EnsureTokenAsync(_cancellationTokenSource?.Token ?? default)
+                .EnsureTokenAsync(_cancellationTokenSource?.Token ?? CancellationToken.None)
                 .ConfigureAwait(false);
             return true;
         }

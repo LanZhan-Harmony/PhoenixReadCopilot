@@ -15,7 +15,7 @@ public partial class AnimePage : AnimePageBase
     public AnimePage() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
 }
 
 /// <summary>

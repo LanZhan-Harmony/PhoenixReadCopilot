@@ -5,10 +5,12 @@
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:local="using:PhoenixReadCopilot.Controls.Danmaku"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          RequestedTheme="Dark"
                           Background="Transparent"
                           mc:Ignorable="d">
 
     <Grid x:Name="RootGrid"
+          RequestedTheme="Dark"
           Background="Transparent"
           Visibility="{x:Bind ViewModel.IsShowDanmaku, Mode=OneWay}"/>
 </local:DanmakuControlBase>

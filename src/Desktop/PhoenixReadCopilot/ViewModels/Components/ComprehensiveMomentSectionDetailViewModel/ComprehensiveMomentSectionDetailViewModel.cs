@@ -5,6 +5,7 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
+using Richasy.BiliKernel.Models.Moment;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -49,7 +50,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         IsLoading = true;
         Upers.Add(
             new MomentUperSectionViewModel(
-                default,
+                null,
                 data => _momentPageViewModel.ShowCommentCommand.Execute(data)
             )
         );
@@ -71,14 +72,14 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
                 async () =>
                 {
                     SelectedUper?.Items?.Clear();
-                    SelectedUper = default;
+                    SelectedUper = null;
                     await InitializeAsync();
                 }
             );
         }
         else
         {
-            SelectedUper.RefreshCommand.Execute(default);
+            SelectedUper.RefreshCommand.Execute(null);
         }
     }
 
@@ -91,18 +92,18 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         }
 
         SelectedUper = item;
-        SelectedUper.InitializeCommand.Execute(default);
+        SelectedUper.InitializeCommand.Execute(null);
     }
 
     private async Task LoadUpersAsync()
     {
         try
         {
-            var response = await _service.GetComprehensiveMomentsAsync();
-            var upers = response.Users;
+            MomentView response = await _service.GetComprehensiveMomentsAsync();
+            IReadOnlyList<MomentProfile>? upers = response.Users;
             if (upers?.Count > 0)
             {
-                foreach (var item in upers)
+                foreach (MomentProfile item in upers)
                 {
                     Upers.Add(
                         new MomentUperSectionViewModel(
@@ -113,7 +114,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
                 }
             }
 
-            var total = Upers.First();
+            MomentUperSectionViewModel total = Upers.First();
             total.InjectFirstPageData(response);
         }
         catch (Exception ex)

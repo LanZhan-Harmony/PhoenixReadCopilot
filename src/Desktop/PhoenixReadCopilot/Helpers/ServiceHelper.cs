@@ -37,7 +37,7 @@ internal class ServiceHelper
     /// </summary>
     public static void ConfigureServices()
     {
-        var loggerPath = PathHelper.LogFolderPath;
+        string loggerPath = PathHelper.LogFolderPath;
         Directory.CreateDirectory(loggerPath);
         Log.Logger = new LoggerConfiguration()
             .WriteTo.File(Path.Combine(loggerPath, $"log-{DateTimeOffset.Now:yyyy-MM-dd}.txt"))
@@ -56,7 +56,10 @@ internal class ServiceHelper
             // 4. 红果客户端单例 (双轨并存)
             .AddSingleton<PhoenixReadApiClient>(_ =>
             {
-                var sessionPath = Path.Combine(PathHelper.AuthFolderPath, "phoenix_session.json");
+                string sessionPath = Path.Combine(
+                    PathHelper.AuthFolderPath,
+                    "phoenix_session.json"
+                );
                 return new PhoenixReadApiClient(
                     new PhoenixReadApiOptions
                     {
@@ -141,7 +144,7 @@ internal class ServiceHelper
 
     private static Task RenderQRCodeAsync(byte[] imageData)
     {
-        var vm = Ioc.Default.GetRequiredService<StartupPageViewModel>();
+        StartupPageViewModel vm = Ioc.Default.GetRequiredService<StartupPageViewModel>();
         vm.RenderQRCodeCommand.Execute(imageData);
         return Task.CompletedTask;
     }

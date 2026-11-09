@@ -14,7 +14,7 @@ public sealed partial class LoadingWidget : LayoutUserControlBase
         nameof(Text),
         typeof(string),
         typeof(LoadingWidget),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

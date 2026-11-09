@@ -1,3 +1,5 @@
+using Microsoft.UI;
+using Microsoft.UI.Content;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -42,10 +44,10 @@ public sealed partial class AppTitleBar : LayoutControlBase
         _leftPaddingColumn = GetTemplateChild(LeftPaddingColumnName) as ColumnDefinition;
         _rightPaddingColumn = GetTemplateChild(RightPaddingColumnName) as ColumnDefinition;
 
-        var islandEnv = XamlRoot?.ContentIslandEnvironment;
+        ContentIslandEnvironment? islandEnv = XamlRoot?.ContentIslandEnvironment;
         if (islandEnv is not null)
         {
-            var appWindowId = islandEnv.AppWindowId;
+            WindowId appWindowId = islandEnv.AppWindowId;
             _inputActivationListener = InputActivationListener.GetForWindowId(appWindowId);
             _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
         }
@@ -80,7 +82,7 @@ public sealed partial class AppTitleBar : LayoutControlBase
         if (_inputActivationListener is not null)
         {
             _inputActivationListener.InputActivationChanged -= OnInputActivationChanged;
-            _inputActivationListener = default;
+            _inputActivationListener = null;
         }
 
         _backButton?.Click -= OnBackButtonClick;
@@ -96,7 +98,7 @@ public sealed partial class AppTitleBar : LayoutControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateBackButtonAsync();
     }
 
@@ -105,7 +107,7 @@ public sealed partial class AppTitleBar : LayoutControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateInteractableElementsList();
     }
 
@@ -114,7 +116,7 @@ public sealed partial class AppTitleBar : LayoutControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdatePaneToggleButton();
     }
 
@@ -123,25 +125,25 @@ public sealed partial class AppTitleBar : LayoutControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateIcon();
     }
 
     private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateTitle();
     }
 
     private static void OnSubtitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateSubtitle();
     }
 
     private static void OnHeaderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateHeader();
     }
 
@@ -150,13 +152,13 @@ public sealed partial class AppTitleBar : LayoutControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateLeftEdge();
     }
 
     private static void OnContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateContent();
     }
 
@@ -165,13 +167,13 @@ public sealed partial class AppTitleBar : LayoutControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateCenterContent();
     }
 
     private static void OnFooterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as AppTitleBar;
+        AppTitleBar? instance = d as AppTitleBar;
         instance?.UpdateFooter();
     }
 
@@ -207,7 +209,7 @@ public sealed partial class AppTitleBar : LayoutControlBase
         InputActivationListenerActivationChangedEventArgs args
     )
     {
-        var isDeactivated = sender.State == InputActivationState.Deactivated;
+        bool isDeactivated = sender.State == InputActivationState.Deactivated;
 
         if (IsBackButtonVisible && IsBackEnabled)
         {
@@ -300,7 +302,7 @@ public sealed class AppTitleBarTemplateSettings : DependencyObject
         nameof(IconElement),
         typeof(IconElement),
         typeof(AppTitleBarTemplateSettings),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

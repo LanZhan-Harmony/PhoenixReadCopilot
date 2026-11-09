@@ -15,7 +15,7 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
         nameof(IsHide),
         typeof(bool),
         typeof(ColumnSplitter),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -25,7 +25,7 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
         nameof(ColumnWidth),
         typeof(double),
         typeof(ColumnSplitter),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -67,7 +67,7 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
             nameof(IsInvertDirection),
             typeof(bool),
             typeof(ColumnSplitter),
-            new PropertyMetadata(default, new PropertyChangedCallback(OnInvertDirectionChanged))
+            new PropertyMetadata(null, new PropertyChangedCallback(OnInvertDirectionChanged))
         );
 
     /// <summary>
@@ -98,7 +98,7 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
             nameof(AlwaysShowButtonWhenCollapsed),
             typeof(bool),
             typeof(ColumnSplitter),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -210,7 +210,7 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as ColumnSplitter;
+        ColumnSplitter? instance = d as ColumnSplitter;
         instance.OnControlLoaded();
     }
 }

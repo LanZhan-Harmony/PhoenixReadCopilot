@@ -8,7 +8,7 @@ internal sealed partial class MTCBehaviorConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var behavior = (MTCBehavior)value;
+        MTCBehavior behavior = (MTCBehavior)value;
         return behavior switch
         {
             MTCBehavior.Automatic => Resources.Automatic,

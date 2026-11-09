@@ -16,7 +16,7 @@ public sealed partial class ObjectToVisibilityConverter : IValueConverter
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var isShow = true;
+        bool isShow = true;
         if (value == null)
         {
             isShow = false;

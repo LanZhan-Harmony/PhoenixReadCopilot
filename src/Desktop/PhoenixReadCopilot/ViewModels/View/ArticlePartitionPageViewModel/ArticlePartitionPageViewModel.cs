@@ -46,12 +46,12 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
         }
 
         IsPartitionLoading = true;
-        var hotPartition = new Partition("-", Resources.HotArticle);
+        Partition hotPartition = new("-", Resources.HotArticle);
         Partitions.Add(new PartitionViewModel(hotPartition));
-        var partitions = await _service.GetPartitionsAsync();
+        IReadOnlyList<Partition> partitions = await _service.GetPartitionsAsync();
         if (partitions != null)
         {
-            foreach (var item in partitions)
+            foreach (Partition item in partitions)
             {
                 Partitions.Add(new PartitionViewModel(item));
             }
@@ -62,12 +62,12 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
             DispatcherQueuePriority.Low,
             () =>
             {
-                var lastSelectedPartitionId = string.IsNullOrEmpty(
+                string lastSelectedPartitionId = string.IsNullOrEmpty(
                     _settings.ArticlePartitionPageLastSelectedPartitionId
                 )
                     ? Partitions.First().Data.Id
                     : _settings.ArticlePartitionPageLastSelectedPartitionId;
-                var partition =
+                PartitionViewModel partition =
                     Partitions.FirstOrDefault(p => p.Data.Id == lastSelectedPartitionId)
                     ?? Partitions.First();
                 SelectPartition(partition);
@@ -84,13 +84,15 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
             return;
         }
 
-        if (_partitionCache.TryGetValue(partition.Data, out var detail))
+        if (
+            _partitionCache.TryGetValue(partition.Data, out ArticlePartitionDetailViewModel? detail)
+        )
         {
             SelectedPartition = detail;
         }
         else
         {
-            var vm = new ArticlePartitionDetailViewModel(
+            ArticlePartitionDetailViewModel vm = new(
                 partition,
                 _service,
                 _dispatcherQueue,
@@ -98,7 +100,7 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
             );
             _partitionCache.Add(partition.Data, vm);
             SelectedPartition = vm;
-            vm.InitializeCommand.Execute(default);
+            vm.InitializeCommand.Execute(null);
         }
 
         _settings.ArticlePartitionPageLastSelectedPartitionId = partition.Data.Id;

@@ -83,7 +83,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     {
         if (!DispatcherQueue.HasThreadAccess)
         {
-            var tcs = new TaskCompletionSource();
+            TaskCompletionSource tcs = new();
             DispatcherQueue.TryEnqueue(async () =>
             {
                 try
@@ -100,7 +100,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
             return;
         }
 
-        var popup = new TipPopup() { Text = text };
+        TipPopup popup = new() { Text = text };
         TipContainer.Visibility = Visibility.Visible;
         TipContainer.Children.Add(popup);
         await popup.ShowAsync(type);
@@ -110,8 +110,8 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
 
     private PointInt32 GetSavedWindowPosition()
     {
-        var left = _settings.MainWindowPositionLeft;
-        var top = _settings.MainWindowPositionTop;
+        int left = _settings.MainWindowPositionLeft;
+        int top = _settings.MainWindowPositionTop;
         return new PointInt32(left, top);
     }
 
@@ -120,7 +120,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         InputActivationListenerActivationChangedEventArgs args
     )
     {
-        var isDeactivated = sender.State == InputActivationState.Deactivated;
+        bool isDeactivated = sender.State == InputActivationState.Deactivated;
         if (isDeactivated)
         {
             GlobalHook.KeyDown -= OnWindowKeyDown;
@@ -148,13 +148,13 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         }
 
         MoveAndResize();
-        var isMaximized = _settings.IsMainWindowMaximized;
+        bool isMaximized = _settings.IsMainWindowMaximized;
         if (isMaximized)
         {
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        var localTheme = _settings.AppTheme;
+        ElementTheme localTheme = _settings.AppTheme;
         _appViewModel.ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }
@@ -163,7 +163,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     {
         if (!_shouldExit)
         {
-            var hideWhenClose = _settings.HideWhenCloseWindow;
+            bool hideWhenClose = _settings.HideWhenCloseWindow;
             if (hideWhenClose)
             {
                 e.Handled = true;
@@ -181,7 +181,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
 
             _appViewModel.IsClosed = true;
             RootLayout.ViewModel.Back();
-            foreach (var item in _appViewModel.Windows.ToList())
+            foreach (Window? item in _appViewModel.Windows.ToList())
             {
                 if (item is not MainWindow)
                 {
@@ -204,7 +204,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         {
             if (e.Key == VirtualKey.Space)
             {
-                var focusEle = FocusManager.GetFocusedElement(RootLayout.XamlRoot);
+                object focusEle = FocusManager.GetFocusedElement(RootLayout.XamlRoot);
                 if (focusEle is TextBox)
                 {
                     return;
@@ -215,7 +215,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         }
         else if (e.Key == VirtualKey.Right)
         {
-            var focusEle = FocusManager.GetFocusedElement(RootLayout.XamlRoot);
+            object focusEle = FocusManager.GetFocusedElement(RootLayout.XamlRoot);
             if (focusEle is TextBox)
             {
                 return;
@@ -229,7 +229,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
     {
         if (e.Key == VirtualKey.Right)
         {
-            var focusEle = FocusManager.GetFocusedElement(RootLayout.XamlRoot);
+            object focusEle = FocusManager.GetFocusedElement(RootLayout.XamlRoot);
             if (focusEle is TextBox)
             {
                 return;
@@ -241,11 +241,11 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
 
     private RectInt32 GetRenderRect(RectInt32 workArea)
     {
-        var scaleFactor = this.GetDpiForWindow() / 96d;
-        var previousWidth = _settings.MainWindowWidth;
-        var previousHeight = _settings.MainWindowHeight;
-        var width = Convert.ToInt32(previousWidth * scaleFactor);
-        var height = Convert.ToInt32(previousHeight * scaleFactor);
+        double scaleFactor = this.GetDpiForWindow() / 96d;
+        double previousWidth = _settings.MainWindowWidth;
+        double previousHeight = _settings.MainWindowHeight;
+        int width = Convert.ToInt32(previousWidth * scaleFactor);
+        int height = Convert.ToInt32(previousHeight * scaleFactor);
 
         // Ensure the window is not larger than the work area.
         if (height > workArea.Height - 20)
@@ -253,28 +253,28 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
             height = workArea.Height - 20;
         }
 
-        var lastPoint = GetSavedWindowPosition();
-        var isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
-        var isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
-        var left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
-        var top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
+        PointInt32 lastPoint = GetSavedWindowPosition();
+        bool isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
+        bool isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
+        double left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
+        double top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
         return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
     }
 
     private void MoveAndResize()
     {
-        var lastPoint = GetSavedWindowPosition();
-        var displayArea =
+        PointInt32 lastPoint = GetSavedWindowPosition();
+        DisplayArea displayArea =
             DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary) ?? DisplayArea.Primary;
-        var rect = GetRenderRect(displayArea.WorkArea);
+        RectInt32 rect = GetRenderRect(displayArea.WorkArea);
         AppWindow.MoveAndResize(rect);
     }
 
     private void SaveCurrentWindowStats()
     {
-        var left = AppWindow.Position.X;
-        var top = AppWindow.Position.Y;
-        var isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
+        int left = AppWindow.Position.X;
+        int top = AppWindow.Position.Y;
+        BOOL isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
         _settings.IsMainWindowMaximized = (bool)isMaximized;
 
         if (!isMaximized)
@@ -292,7 +292,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
 
     private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
     {
-        var point = e.GetCurrentPoint((UIElement)sender);
+        PointerPoint point = e.GetCurrentPoint((UIElement)sender);
         if (point.Properties.IsXButton1Pressed || point.Properties.IsXButton2Pressed)
         {
             e.Handled = true;
@@ -331,8 +331,8 @@ internal static class GlobalHook
 
     private static UnhookWindowsHookExSafeHandle SetHook(HOOKPROC proc, WINDOWS_HOOK_ID hookId)
     {
-        using var curProcess = Process.GetCurrentProcess();
-        using var curModule = curProcess.MainModule;
+        using Process curProcess = Process.GetCurrentProcess();
+        using ProcessModule? curModule = curProcess.MainModule;
         return PInvoke.SetWindowsHookEx(
             hookId,
             proc,
@@ -345,9 +345,9 @@ internal static class GlobalHook
     {
         if (nCode >= 0 && wParam.Value == WM_KEYDOWN)
         {
-            var vkCode = Marshal.ReadInt32(lParam);
-            var isCtrlPressed = (PInvoke.GetKeyState((int)VirtualKey.Control) & 0x8000) != 0;
-            var args = new PlayerKeyboardEventArgs(vkCode, isCtrlPressed);
+            int vkCode = Marshal.ReadInt32(lParam);
+            bool isCtrlPressed = (PInvoke.GetKeyState((int)VirtualKey.Control) & 0x8000) != 0;
+            PlayerKeyboardEventArgs args = new(vkCode, isCtrlPressed);
             KeyDown?.Invoke(null, args);
             if (args.Handled)
             {
@@ -356,9 +356,9 @@ internal static class GlobalHook
         }
         else if (nCode >= 0 && wParam.Value == WM_KEYUP)
         {
-            var vkCode = Marshal.ReadInt32(lParam);
-            var isCtrlPressed = (PInvoke.GetKeyState((int)VirtualKey.Control) & 0x8000) != 0;
-            var args = new PlayerKeyboardEventArgs(vkCode, isCtrlPressed);
+            int vkCode = Marshal.ReadInt32(lParam);
+            bool isCtrlPressed = (PInvoke.GetKeyState((int)VirtualKey.Control) & 0x8000) != 0;
+            PlayerKeyboardEventArgs args = new(vkCode, isCtrlPressed);
             KeyUp?.Invoke(null, args);
             if (args.Handled)
             {

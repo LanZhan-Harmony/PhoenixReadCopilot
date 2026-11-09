@@ -1,5 +1,7 @@
+using System.Numerics;
 using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
+using SharpGen.Runtime;
 using Vortice.Direct2D1;
 using Vortice.DirectWrite;
 using Windows.UI;
@@ -23,11 +25,16 @@ internal partial class DanmakuDirectXRender
     /// <returns>DirectWrite 文本格式.</returns>
     private IDWriteTextFormat? GetOrCreateTextFormat(string fontFamily, float fontSize, bool isBold)
     {
-        var key = $"{fontFamily}_{fontSize:F1}_{isBold}";
+        string key = $"{fontFamily}_{fontSize:F1}_{isBold}";
 
         lock (_resourceManager.CacheLock)
         {
-            if (!_resourceManager.TextFormatCache.TryGetValue(key, out var textFormat))
+            if (
+                !_resourceManager.TextFormatCache.TryGetValue(
+                    key,
+                    out IDWriteTextFormat? textFormat
+                )
+            )
             {
                 textFormat = _resourceManager.DWriteFactory.CreateTextFormat(
                     fontFamily,
@@ -57,11 +64,11 @@ internal partial class DanmakuDirectXRender
     /// <returns>D2D1 纯色画刷.</returns>
     private ID2D1SolidColorBrush? GetOrCreateBrush(Color color)
     {
-        var colorKey = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
+        uint colorKey = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
 
         lock (_resourceManager.CacheLock)
         {
-            if (!_resourceManager.BrushCache.TryGetValue(colorKey, out var brush))
+            if (!_resourceManager.BrushCache.TryGetValue(colorKey, out ID2D1SolidColorBrush? brush))
             {
                 brush = _resourceManager.D2DContext.CreateSolidColorBrush(
                     new Vortice.Mathematics.Color(color.R, color.G, color.B, color.A)
@@ -106,35 +113,38 @@ internal partial class DanmakuDirectXRender
         {
             if (renderItem.Item is null)
             {
-                return default;
+                return null;
             }
 
             // 计算位图尺寸，需要为描边预留额外空间
-            var outlinePadding = renderItem.Item.HasOutline
+            float outlinePadding = renderItem.Item.HasOutline
                 ? (float)_configState.OutlineSize * 2
                 : 0;
-            var width = (int)Math.Ceiling(renderItem.Width + outlinePadding);
-            var height = (int)Math.Ceiling(renderItem.Height + outlinePadding);
+            int width = (int)Math.Ceiling(renderItem.Width + outlinePadding);
+            int height = (int)Math.Ceiling(renderItem.Height + outlinePadding);
 
             if (width <= 0 || height <= 0 || width > 4096 || height > 4096)
+            {
                 return null;
+            }
 
             // 使用 CompatibleRenderTarget 而不是直接创建位图
             // 这样可以避免 BeginDraw/EndDraw 嵌套问题
-            var compatibleTarget = _resourceManager.D2DContext.CreateCompatibleRenderTarget(
-                new Vortice.Mathematics.SizeI(width, height)
-            );
+            ID2D1BitmapRenderTarget compatibleTarget =
+                _resourceManager.D2DContext.CreateCompatibleRenderTarget(
+                    new Vortice.Mathematics.SizeI(width, height)
+                );
 
             compatibleTarget.BeginDraw();
             compatibleTarget.Clear(_clearColor); // 🚀 优化：使用预分配的 Color4
 
             // 计算描边偏移（让文本居中，避免边缘截断）
-            var offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
+            float offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
 
             // 绘制描边（创建临时 Brush，使用完全不透明的颜色）
             if (renderItem.Item.HasOutline && _configState.OutlineSize > 0)
             {
-                var outlineColor =
+                Color outlineColor =
                     renderItem.Item.TextColor.R
                         + renderItem.Item.TextColor.G
                         + renderItem.Item.TextColor.B
@@ -144,7 +154,7 @@ internal partial class DanmakuDirectXRender
                 // 使用完全不透明（Alpha = 255），透明度将在绘制位图时应用
                 outlineColor.A = 255;
 
-                using var outlineBrush = compatibleTarget.CreateSolidColorBrush(
+                using ID2D1SolidColorBrush outlineBrush = compatibleTarget.CreateSolidColorBrush(
                     new Vortice.Mathematics.Color4(
                         outlineColor.R / 255f,
                         outlineColor.G / 255f,
@@ -153,10 +163,10 @@ internal partial class DanmakuDirectXRender
                     )
                 ); // Alpha = 1.0 (完全不透明)
 
-                var strokeWidth = (float)_configState.OutlineSize;
+                float strokeWidth = (float)_configState.OutlineSize;
                 for (int i = 0; i < _outlineOffsets.Length; i++)
                 {
-                    var outlineOffset = _outlineOffsets[i] * strokeWidth;
+                    Vector2 outlineOffset = _outlineOffsets[i] * strokeWidth;
                     _reusableVector2.X = offset + outlineOffset.X;
                     _reusableVector2.Y = offset + outlineOffset.Y;
                     compatibleTarget.DrawTextLayout(
@@ -169,7 +179,7 @@ internal partial class DanmakuDirectXRender
             }
 
             // 绘制主文本（创建临时 Brush，使用完全不透明的颜色）
-            using var textBrush = compatibleTarget.CreateSolidColorBrush(
+            using ID2D1SolidColorBrush textBrush = compatibleTarget.CreateSolidColorBrush(
                 new Vortice.Mathematics.Color4(
                     renderItem.Item.TextColor.R / 255f,
                     renderItem.Item.TextColor.G / 255f,
@@ -187,7 +197,7 @@ internal partial class DanmakuDirectXRender
                 DrawTextOptions.EnableColorFont
             ); // 启用彩色字体支持（关键：显示彩色 Emoji）
 
-            var result = compatibleTarget.EndDraw(out _, out _);
+            Result result = compatibleTarget.EndDraw(out _, out _);
             if (result.Failure)
             {
                 Logger.Log($"CreateTextBitmap EndDraw failed: {result}");
@@ -196,10 +206,10 @@ internal partial class DanmakuDirectXRender
             }
 
             // 获取位图（CompatibleRenderTarget.Bitmap 返回 ID2D1Bitmap，需要转换）
-            var bitmap = compatibleTarget.Bitmap;
+            ID2D1Bitmap bitmap = compatibleTarget.Bitmap;
 
             // 转换为 ID2D1Bitmap1（通过 QueryInterface）
-            var bitmap1 = bitmap.QueryInterface<ID2D1Bitmap1>();
+            ID2D1Bitmap1 bitmap1 = bitmap.QueryInterface<ID2D1Bitmap1>();
 
             // 释放原始位图引用（避免内存泄漏）
             bitmap.Dispose();
@@ -296,12 +306,12 @@ internal partial class DanmakuDirectXRender
     /// <param name="y">Y 坐标.</param>
     private void DrawDanmakuTextDirect(DanmakuDirectXRenderItem renderItem, float x, float y)
     {
-        var rect = new Vortice.Mathematics.Rect(x, y, renderItem.Width, renderItem.Height);
+        Vortice.Mathematics.Rect rect = new(x, y, renderItem.Width, renderItem.Height);
 
         // Draw border if needed (for debugging)
         if (renderItem.Item.HasBorder || DebugMode)
         {
-            var borderBrush = GetOrCreateBrush(_configState.BorderColor);
+            ID2D1SolidColorBrush? borderBrush = GetOrCreateBrush(_configState.BorderColor);
             if (borderBrush != null)
             {
                 _resourceManager.D2DContext.DrawRectangle(rect, borderBrush, 2f);
@@ -311,7 +321,7 @@ internal partial class DanmakuDirectXRender
         // Draw outline (优化版本 - 4方向，使用预计算偏移)
         if (renderItem.Item.HasOutline && _configState.OutlineSize > 0)
         {
-            var outlineColor =
+            Color outlineColor =
                 renderItem.Item.TextColor.R
                     + renderItem.Item.TextColor.G
                     + renderItem.Item.TextColor.B
@@ -319,13 +329,13 @@ internal partial class DanmakuDirectXRender
                     ? Microsoft.UI.Colors.White
                     : renderItem.Item.OutlineColor;
 
-            var outlineBrush = GetOrCreateBrush(outlineColor);
-            var strokeWidth = (float)_configState.OutlineSize;
+            ID2D1SolidColorBrush? outlineBrush = GetOrCreateBrush(outlineColor);
+            float strokeWidth = (float)_configState.OutlineSize;
 
             // 使用预计算的偏移量（🚀 优化：重用 Vector2，避免每次分配）
             for (int i = 0; i < _outlineOffsets.Length; i++)
             {
-                var offset = _outlineOffsets[i] * strokeWidth;
+                Vector2 offset = _outlineOffsets[i] * strokeWidth;
                 _reusableVector2.X = x + offset.X;
                 _reusableVector2.Y = y + offset.Y;
                 _resourceManager.D2DContext.DrawTextLayout(
@@ -338,7 +348,7 @@ internal partial class DanmakuDirectXRender
         }
 
         // Draw main text with color font support (for emoji)
-        var textBrush = GetOrCreateBrush(renderItem.Item.TextColor);
+        ID2D1SolidColorBrush? textBrush = GetOrCreateBrush(renderItem.Item.TextColor);
         _reusableVector2.X = x;
         _reusableVector2.Y = y;
         _resourceManager.D2DContext.DrawTextLayout(
@@ -358,26 +368,28 @@ internal partial class DanmakuDirectXRender
     /// <returns>如果成功使用缓存绘制返回 true，否则返回 false.</returns>
     private bool TryDrawCachedTexture(DanmakuDirectXRenderItem renderItem, float x, float y)
     {
-        var cacheKey = GetTextureCacheKey(renderItem);
+        TextureCacheKey cacheKey = GetTextureCacheKey(renderItem);
 
         // 从对象池获取纹理
         if (
             _resourceManager.ObjectPool.TryGetTexture(
                 cacheKey,
-                out var cachedBitmap,
-                out var width,
-                out var height
+                out ID2D1Bitmap1? cachedBitmap,
+                out float width,
+                out float height
             )
         )
         {
             if (cachedBitmap == null)
+            {
                 return false;
+            }
 
             // 保存当前变换矩阵
-            var prevTransform = _resourceManager.D2DContext.Transform;
+            Matrix3x2 prevTransform = _resourceManager.D2DContext.Transform;
 
             // 计算绘制位置（需要减去描边偏移）
-            var offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
+            float offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
 
             // 设置到目标位置（🚀 优化：重用 Matrix3x2，避免分配）
             _reusableMatrix.M11 = 1;
@@ -417,15 +429,15 @@ internal partial class DanmakuDirectXRender
     /// <param name="y">Y 坐标.</param>
     private void DrawAndCacheTexture(DanmakuDirectXRenderItem renderItem, float x, float y)
     {
-        var cacheKey = GetTextureCacheKey(renderItem);
+        TextureCacheKey cacheKey = GetTextureCacheKey(renderItem);
 
         // 尝试从对象池获取
         if (
             _resourceManager.ObjectPool.TryGetTexture(
                 cacheKey,
-                out var cachedBitmap,
-                out var width,
-                out var height
+                out ID2D1Bitmap1? cachedBitmap,
+                out float width,
+                out float height
             )
             && cachedBitmap != null
         )
@@ -436,7 +448,7 @@ internal partial class DanmakuDirectXRender
         else
         {
             // 纹理不存在，创建并缓存到对象池
-            var newBitmap = CreateTextBitmap(renderItem);
+            ID2D1Bitmap1? newBitmap = CreateTextBitmap(renderItem);
             if (newBitmap != null)
             {
                 // 添加到对象池（PreRenderTexture 会将 RefCount 初始化为 1）
@@ -478,10 +490,10 @@ internal partial class DanmakuDirectXRender
         }
 
         // 保存当前变换矩阵
-        var prevTransform = _resourceManager.D2DContext.Transform;
+        Matrix3x2 prevTransform = _resourceManager.D2DContext.Transform;
 
         // 计算绘制位置（需要减去描边偏移）
-        var offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
+        float offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
 
         // 设置到目标位置（🚀 优化：重用 Matrix3x2）
         _reusableMatrix.M11 = 1;

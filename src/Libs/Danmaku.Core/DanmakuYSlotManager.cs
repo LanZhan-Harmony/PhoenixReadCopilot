@@ -39,7 +39,7 @@ internal sealed class DanmakuYSlotManager
             uint index = 0;
             while (index + height < _ySlotArray.Length)
             {
-                var found = true;
+                bool found = true;
                 for (uint i = 0; i < height; i++)
                 {
                     if (_ySlotArray[index + i].Length > 0)
@@ -85,7 +85,7 @@ internal sealed class DanmakuYSlotManager
     {
         lock (_ySlotArray)
         {
-            for (var i = 0; i < _ySlotArray.Length; i++)
+            for (int i = 0; i < _ySlotArray.Length; i++)
             {
                 _ySlotArray[i].Id = 0;
                 _ySlotArray[i].Length = 0;

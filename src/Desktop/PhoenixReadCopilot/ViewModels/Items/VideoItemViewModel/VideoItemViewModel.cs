@@ -30,14 +30,14 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     public VideoItemViewModel(
         VideoInformation info,
         VideoCardStyle style,
-        Action<VideoItemViewModel> removeAction = default,
-        VideoFavoriteFolder? favFolder = default
+        Action<VideoItemViewModel> removeAction = null,
+        VideoFavoriteFolder? favFolder = null
     )
         : base(info)
     {
         _removeAction = removeAction;
         _favFolder = favFolder;
-        var primaryLan = ApplicationLanguages.Languages[0];
+        string primaryLan = ApplicationLanguages.Languages[0];
         Style = style;
         Title = info.Identifier.Title;
         Cover = info.Identifier.Cover?.Uri;
@@ -50,9 +50,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         TagName = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.TagName);
         Subtitle = info.GetExtensionIfNotNull<string?>(VideoExtensionDataId.Subtitle);
         CollectTime = info.GetExtensionIfNotNull<DateTimeOffset>(VideoExtensionDataId.CollectTime)
-            .Humanize(default, new CultureInfo("zh-CN"));
+            .Humanize(null, new CultureInfo("zh-CN"));
         IsUserValid = info.Publisher?.User is not null;
-        var progress = info.GetExtensionIfNotNull<int?>(VideoExtensionDataId.Progress);
+        int? progress = info.GetExtensionIfNotNull<int?>(VideoExtensionDataId.Progress);
         if (progress is not null)
         {
             ProgressText = AppToolkit.FormatDuration(TimeSpan.FromSeconds(progress.Value));
@@ -65,7 +65,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     public VideoItemViewModel(
         Drama drama,
         VideoCardStyle style = VideoCardStyle.Recommend,
-        Action<VideoItemViewModel>? removeAction = default
+        Action<VideoItemViewModel>? removeAction = null
     )
         : base(CreateVideoInformation(drama))
     {
@@ -77,7 +77,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 
         if (
             !string.IsNullOrEmpty(drama.CoverUrl)
-            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var coverUri)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? coverUri)
         )
         {
             Cover = coverUri;
@@ -94,7 +94,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             ? drama.Category
             : (drama.Credits.FirstOrDefault()?.User?.Name ?? string.Empty);
         TagName = Tags.Count > 0 ? Tags[0] : drama.Category;
-        if (double.TryParse(drama.Views, out var vc))
+        if (double.TryParse(drama.Views, out double vc))
         {
             PlayCount = vc;
         }
@@ -105,7 +105,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     /// </summary>
     public VideoItemViewModel(
         ActorLeaderboardItem actor,
-        Action<VideoItemViewModel>? removeAction = default
+        Action<VideoItemViewModel>? removeAction = null
     )
         : base(CreateActorInformation(actor))
     {
@@ -115,7 +115,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         Style = VideoCardStyle.Rank;
         Title = actor.Name;
         Rank = actor.Position;
-        Author = !string.IsNullOrEmpty(actor.RepresentativeWork) ? $"代表作: 《{actor.RepresentativeWork}》" : "短剧演员";
+        Author = !string.IsNullOrEmpty(actor.RepresentativeWork)
+            ? $"代表作: 《{actor.RepresentativeWork}》"
+            : "短剧演员";
 
         string trendText = actor.RankChangeType switch
         {
@@ -123,10 +125,15 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             2 => $"↓ 下降 {actor.RankChangeValue}",
             _ => "— 排名持平",
         };
-        var subtitles = actor.SubTitles is { Count: > 0 } ? string.Join(" · ", actor.SubTitles) : null;
+        string? subtitles = actor.SubTitles is { Count: > 0 }
+            ? string.Join(" · ", actor.SubTitles)
+            : null;
         Subtitle = subtitles != null ? $"{subtitles} ({trendText})" : trendText;
 
-        if (!string.IsNullOrEmpty(actor.AvatarUrl) && Uri.TryCreate(actor.AvatarUrl, UriKind.Absolute, out var uri))
+        if (
+            !string.IsNullOrEmpty(actor.AvatarUrl)
+            && Uri.TryCreate(actor.AvatarUrl, UriKind.Absolute, out Uri? uri)
+        )
         {
             Cover = uri;
             Avatar = uri;
@@ -139,21 +146,23 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 
     private static VideoInformation CreateActorInformation(ActorLeaderboardItem actor)
     {
-        var cover = !string.IsNullOrEmpty(actor.AvatarUrl) && Uri.TryCreate(actor.AvatarUrl, UriKind.Absolute, out var uri)
-            ? new BiliImage(uri)
-            : default;
-        var id = !string.IsNullOrEmpty(actor.ActorId) ? actor.ActorId : actor.UserId;
-        return new VideoInformation(new MediaIdentifier(id, actor.Name, cover), default);
+        BiliImage? cover =
+            !string.IsNullOrEmpty(actor.AvatarUrl)
+            && Uri.TryCreate(actor.AvatarUrl, UriKind.Absolute, out Uri? uri)
+                ? new BiliImage(uri)
+                : null;
+        string id = !string.IsNullOrEmpty(actor.ActorId) ? actor.ActorId : actor.UserId;
+        return new VideoInformation(new MediaIdentifier(id, actor.Name, cover), null);
     }
 
     private static VideoInformation CreateVideoInformation(Drama drama)
     {
-        var cover =
+        BiliImage? cover =
             !string.IsNullOrEmpty(drama.CoverUrl)
-            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? uri)
                 ? new BiliImage(uri)
-                : default;
-        return new VideoInformation(new MediaIdentifier(drama.Id, drama.Title, cover), default);
+                : null;
+        return new VideoInformation(new MediaIdentifier(drama.Id, drama.Title, cover), null);
     }
 
     [RelayCommand]
@@ -165,21 +174,24 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             return;
         }
 
-        var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
+        PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
-            OpenInNewWindowCommand.Execute(default);
+            OpenInNewWindowCommand.Execute(null);
             return;
         }
 
-        var preferPlayer = ItemServices.Settings.PlayerType;
+        PlayerType preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), GetWebUri().ToString());
             return;
         }
 
-        ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), Drama ?? (object)new VideoSnapshot(Data));
+        ItemServices.Navigation.NavigateToOver(
+            typeof(VideoPlayerPage),
+            Drama ?? (object)new VideoSnapshot(Data)
+        );
     }
 
     [RelayCommand]
@@ -281,7 +293,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void CopyUri()
     {
-        var dp = new DataPackage();
+        DataPackage dp = new();
         dp.SetText(GetWebUri().ToString());
         dp.SetWebLink(GetWebUri());
         Clipboard.SetContent(dp);
@@ -291,8 +303,8 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void Pin()
     {
-        var coverUri = Cover?.ToString() ?? Data.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
-        var pinItem = new PinItem(
+        string coverUri = Cover?.ToString() ?? Data.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
+        PinItem pinItem = new(
             Data.Identifier.Id,
             Data.Identifier.Title,
             coverUri,
@@ -308,7 +320,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             return new Uri($"https://hongguoduanju.com/drama/{Drama.Id}");
         }
 
-        var shortLink = Data.GetExtensionIfNotNull<string>(VideoExtensionDataId.ShortLink);
+        string? shortLink = Data.GetExtensionIfNotNull<string>(VideoExtensionDataId.ShortLink);
         return string.IsNullOrEmpty(shortLink)
             ? new Uri($"https://www.bilibili.com/video/av{Data.Identifier.Id}")
             : new Uri(shortLink);

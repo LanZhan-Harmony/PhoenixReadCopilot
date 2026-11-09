@@ -56,20 +56,20 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         double lineHeight = 1.5
     )
     {
-        var path = Path.Combine(AppContext.BaseDirectory, "Assets", "Reader");
-        var theme = _settings.AppTheme.ToString();
+        string path = Path.Combine(AppContext.BaseDirectory, "Assets", "Reader");
+        string theme = _settings.AppTheme.ToString();
         if (theme == "Default")
         {
             theme = App.Current.RequestedTheme.ToString();
         }
 
-        var localHtml = await File.ReadAllTextAsync(Path.Combine(path, "ShowPage.html"));
-        var localCss = await File.ReadAllTextAsync(Path.Combine(path, $"{theme}.css"));
+        string localHtml = await File.ReadAllTextAsync(Path.Combine(path, "ShowPage.html"));
+        string localCss = await File.ReadAllTextAsync(Path.Combine(path, $"{theme}.css"));
         localCss = localCss
             .Replace("$FontFamily$", fontFamily)
             .Replace("$FontSize$", $"{fontSize}")
             .Replace("$LineHeight$", $"{lineHeight}");
-        var html = localHtml
+        string html = localHtml
             .Replace("$theme$", theme.ToLower())
             .Replace("$style$", localCss)
             .Replace("$title$", article.Identifier.Title)
@@ -121,7 +121,7 @@ public sealed partial class ArticleReader : LayoutUserControlBase
         }
         else if (args.ContextMenuTarget.Kind == CoreWebView2ContextMenuTargetKind.Image)
         {
-            for (var i = args.MenuItems.Count - 1; i >= 0; i--)
+            for (int i = args.MenuItems.Count - 1; i >= 0; i--)
             {
                 if (
                     args.MenuItems[i].Name == "back"
@@ -153,12 +153,12 @@ public sealed partial class ArticleReader : LayoutUserControlBase
     )
     {
         _ = this;
-        var json = args.WebMessageAsJson;
-        var jsonEle = JsonDocument.Parse(json).RootElement;
-        if (jsonEle.TryGetProperty("Name", out var nameEle))
+        string json = args.WebMessageAsJson;
+        JsonElement jsonEle = JsonDocument.Parse(json).RootElement;
+        if (jsonEle.TryGetProperty("Name", out JsonElement nameEle))
         {
-            var name = nameEle.GetString();
-            var data = jsonEle.GetProperty("Data").GetString();
+            string? name = nameEle.GetString();
+            string? data = jsonEle.GetProperty("Data").GetString();
             switch (name)
             {
                 case "LinkClick":
@@ -175,7 +175,7 @@ public sealed partial class ArticleReader : LayoutUserControlBase
             return;
         }
 
-        var uri = new Uri($"https://cn.bing.com/search?q={Uri.EscapeDataString(_selectedText)}");
+        Uri uri = new($"https://cn.bing.com/search?q={Uri.EscapeDataString(_selectedText)}");
         await Launcher.LaunchUriAsync(uri).AsTask();
     }
 
@@ -186,7 +186,7 @@ public sealed partial class ArticleReader : LayoutUserControlBase
             return;
         }
 
-        var dp = new DataPackage();
+        DataPackage dp = new();
         dp.SetText(_selectedText);
         Clipboard.SetContent(dp);
         _appViewModel.ShowTipCommand.Execute((Strings.Resources.Copied, InfoType.Success));

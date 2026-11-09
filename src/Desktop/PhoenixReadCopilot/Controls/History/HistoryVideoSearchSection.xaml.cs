@@ -52,7 +52,7 @@ public sealed partial class HistoryVideoSearchSection : HistoryPageControlBase
                     <= 240
                 )
                 {
-                    ViewModel.LoadMoreSearchResultCommand.Execute(default);
+                    ViewModel.LoadMoreSearchResultCommand.Execute(null);
                 }
             }
         );
@@ -74,7 +74,7 @@ public sealed partial class HistoryVideoSearchSection : HistoryPageControlBase
             {
                 if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadMoreSearchResultCommand.Execute(default);
+                    ViewModel.LoadMoreSearchResultCommand.Execute(null);
                 }
             }
         );

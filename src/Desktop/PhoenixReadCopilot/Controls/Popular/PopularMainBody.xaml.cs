@@ -1,7 +1,6 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share;
 
@@ -42,9 +41,15 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
-    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnViewModelPropertyChanged(
+        object? sender,
+        System.ComponentModel.PropertyChangedEventArgs e
+    )
     {
-        if (e.PropertyName == nameof(ViewModel.SelectedSection) || e.PropertyName == nameof(ViewModel.CurrentChannel))
+        if (
+            e.PropertyName == nameof(ViewModel.SelectedSection)
+            || e.PropertyName == nameof(ViewModel.CurrentChannel)
+        )
         {
             UpdateLayoutMode();
             VideoScrollView.ChangeView(null, 0, null, true);
@@ -54,7 +59,8 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     private void UpdateLayoutMode()
     {
         _defaultVideoLayout ??= (VirtualizingLayout)Application.Current.Resources["VideoLayout"];
-        var isActor = ViewModel?.SelectedSection is PopularSectionItemViewModel { IsActorLeaderboard: true };
+        bool isActor =
+            ViewModel?.SelectedSection is PopularSectionItemViewModel { IsActorLeaderboard: true };
         VideoRepeater.Layout = isActor ? _actorLayout : _defaultVideoLayout;
     }
 
@@ -74,13 +80,13 @@ public sealed partial class PopularMainBody : PopularPageControlBase
             {
                 if (
                     VideoScrollView.ExtentHeight
-                    - VideoScrollView.ViewportHeight
-                    - VideoScrollView.VerticalOffset
-                    <= 240
+                        - VideoScrollView.ViewportHeight
+                        - VideoScrollView.VerticalOffset
+                        <= 240
                     && ViewModel is { IsVideoLoading: false }
                 )
                 {
-                    ViewModel.LoadVideosCommand.Execute(default);
+                    ViewModel.LoadVideosCommand.Execute(null);
                 }
             }
         );
@@ -100,9 +106,13 @@ public sealed partial class PopularMainBody : PopularPageControlBase
             DispatcherQueuePriority.Low,
             () =>
             {
-                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is { IsVideoLoading: false } && ViewModel.Videos.Count > 0)
+                if (
+                    VideoScrollView.ScrollableHeight <= 240
+                    && ViewModel is { IsVideoLoading: false }
+                    && ViewModel.Videos.Count > 0
+                )
                 {
-                    ViewModel.LoadVideosCommand.Execute(default);
+                    ViewModel.LoadVideosCommand.Execute(null);
                 }
             }
         );

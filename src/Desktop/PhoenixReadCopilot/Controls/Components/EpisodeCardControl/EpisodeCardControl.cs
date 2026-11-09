@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.ViewModels.Items;
+using Windows.Foundation;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;
@@ -45,10 +46,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -58,10 +56,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -71,12 +66,8 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
         if (ContextFlyout is null)
         {
             CreateContextFlyout();
-            args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this,
-                new FlyoutShowOptions
-                {
-                    Position = point
-                });
+            args.TryGetPosition(this, out Point point);
+            ContextFlyout.ShowAt(this, new FlyoutShowOptions { Position = point });
         }
 
         RelocateCommands();
@@ -85,7 +76,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
 
     private void CreateContextFlyout()
     {
-        var flyout = new MenuFlyout();
+        MenuFlyout flyout = new();
         flyout.Items.Add(CreateOpenInNewWindowItem());
         flyout.Items.Add(CreateOpenInBroswerItem());
         flyout.Items.Add(CreatePinItem());
@@ -99,7 +90,7 @@ public sealed partial class EpisodeCardControl : LayoutControlBase<EpisodeItemVi
             return;
         }
 
-        foreach (var item in flyout.Items.OfType<MenuFlyoutItem>())
+        foreach (MenuFlyoutItem item in flyout.Items.OfType<MenuFlyoutItem>())
         {
             switch (item.Tag.ToString())
             {

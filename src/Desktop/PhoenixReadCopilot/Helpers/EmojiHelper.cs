@@ -98,9 +98,10 @@ public static class EmojiHelper
         "送花",
     ];
 
-    private static readonly Dictionary<string, EmojiItem> EmojiLookup = new(
-        StringComparer.OrdinalIgnoreCase
-    );
+    private static readonly Dictionary<string, EmojiItem> EmojiLookup =
+    [
+        with(StringComparer.OrdinalIgnoreCase),
+    ];
     private static readonly List<EmojiItem> AllEmojis = [];
 
     // 常见 Unicode Emoji 到红果表情代码的反向映射表
@@ -172,10 +173,10 @@ public static class EmojiHelper
 
     static EmojiHelper()
     {
-        var baseDir = AppContext.BaseDirectory;
-        foreach (var name in EmojiNames)
+        string baseDir = AppContext.BaseDirectory;
+        foreach (string name in EmojiNames)
         {
-            var localFile = Path.Combine(baseDir, "Assets", "Emoji", $"{name}.webp");
+            string localFile = Path.Combine(baseDir, "Assets", "Emoji", $"{name}.webp");
             Uri uri;
             if (File.Exists(localFile))
             {
@@ -186,7 +187,7 @@ public static class EmojiHelper
                 uri = new Uri($"ms-appx:///Assets/Emoji/{name}.webp");
             }
 
-            var item = new EmojiItem(name, uri);
+            EmojiItem item = new(name, uri);
             AllEmojis.Add(item);
 
             // 同时支持带中括号与不带中括号的索引
@@ -211,7 +212,7 @@ public static class EmojiHelper
             return false;
         }
 
-        var trimmed = keyOrName.Trim();
+        string trimmed = keyOrName.Trim();
         if (EmojiLookup.TryGetValue(trimmed, out emoji))
         {
             return true;
@@ -220,7 +221,7 @@ public static class EmojiHelper
         // 去掉可能包含的首尾括号
         if (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
         {
-            var inner = trimmed.Substring(1, trimmed.Length - 2);
+            string inner = trimmed.Substring(1, trimmed.Length - 2);
             return EmojiLookup.TryGetValue(inner, out emoji);
         }
 
@@ -238,7 +239,7 @@ public static class EmojiHelper
             return string.Empty;
         }
 
-        var result = text;
+        string result = text;
 
         // 1. 替换 HTML 图片标签形式的表情 (如 <img ... alt="微笑">)
         result = Regex.Replace(
@@ -248,7 +249,7 @@ public static class EmojiHelper
         );
 
         // 2. 替换 Unicode Emoji 到 [表情名]
-        foreach (var (unicode, code) in UnicodeToEmojiMap)
+        foreach ((string? unicode, string? code) in UnicodeToEmojiMap)
         {
             if (result.Contains(unicode))
             {

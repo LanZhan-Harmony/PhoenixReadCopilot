@@ -60,7 +60,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     /// <summary>
     /// 底部条目列表.
     /// </summary>
-    public ObservableCollection<AppNavigationItemViewModel> FooterItems { get; } = new();
+    public ObservableCollection<AppNavigationItemViewModel> FooterItems { get; } = [];
 
     /// <inheritdoc/>
     public void NavigateTo(Type pageType, object? parameter = null)
@@ -71,7 +71,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         ActiveMainWindow();
-        var lastSelectedPage = _settings.LastSelectedFeaturePage;
+        string lastSelectedPage = _settings.LastSelectedFeaturePage;
         if (IsOverlayOpen)
         {
             IsOverlayOpen = false;
@@ -149,7 +149,9 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     /// </summary>
     public void SetNavItemVisibility(Type pageType, bool isVisible)
     {
-        var item = MenuItems.FirstOrDefault(p => p.PageKey == pageType.FullName);
+        AppNavigationItemViewModel? item = MenuItems.FirstOrDefault(p =>
+            p.PageKey == pageType.FullName
+        );
         item?.IsVisible = isVisible;
     }
 
@@ -173,7 +175,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     /// </summary>
     public void Back()
     {
-        for (var i = _overFrame.BackStack.Count - 1; i >= 0; i--)
+        for (int i = _overFrame.BackStack.Count - 1; i >= 0; i--)
         {
             if (_overFrame.BackStack[i].SourcePageType.FullName == typeof(Page).FullName)
             {
@@ -189,7 +191,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         {
             _overFrame.Navigate(typeof(Page));
             _overFrame.BackStack.Clear();
-            _overFrame.Content = default;
+            _overFrame.Content = null;
             IsOverlayOpen = false;
             _navFrame.Focus(FocusState.Programmatic);
         }
@@ -214,7 +216,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
         MenuItems = [.. GetMenuItems()];
 
-        foreach (var item in GetFooterItems())
+        foreach (AppNavigationItemViewModel item in GetFooterItems())
         {
             FooterItems.Add(item);
         }
@@ -222,11 +224,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     private IReadOnlyList<AppNavigationItemViewModel> GetMenuItems()
     {
-        var lastSelectedPage = string.IsNullOrEmpty(_settings.LastSelectedFeaturePage)
+        string? lastSelectedPage = string.IsNullOrEmpty(_settings.LastSelectedFeaturePage)
             ? typeof(PopularPage).FullName
             : _settings.LastSelectedFeaturePage;
-        var list = new List<AppNavigationItemViewModel>
-        {
+        List<AppNavigationItemViewModel> list =
+        [
             GetItem<PopularPage>(Resources.PopularSlim, FluentIcons.Common.Symbol.Rocket),
             GetItem<MomentPage>(Resources.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
             GetItem<VideoPartitionPage>(Resources.Video, FluentIcons.Common.Symbol.VideoClip),
@@ -236,9 +238,9 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
                 Resources.Article,
                 FluentIcons.Common.Symbol.DocumentBulletList
             ),
-        };
+        ];
 
-        foreach (var item in list)
+        foreach (AppNavigationItemViewModel item in list)
         {
             item.IsSelected = item.PageKey == lastSelectedPage && item.IsVisible;
         }
@@ -253,12 +255,12 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     private IReadOnlyList<AppNavigationItemViewModel> GetFooterItems()
     {
-        var list = new List<AppNavigationItemViewModel>
-        {
+        List<AppNavigationItemViewModel> list =
+        [
             // GetItem<DownloadPage>(Resources.Download, FluentIcons.Common.Symbol.CloudArrowDown),
             GetItem<MessagePage>(Resources.Message, FluentIcons.Common.Symbol.Chat),
             GetItem<SettingsPage>(Resources.Settings, FluentIcons.Common.Symbol.Settings),
-        };
+        ];
         return list;
     }
 
@@ -269,7 +271,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     )
         where TPage : Page
     {
-        var isVisible = _settings.GetPageVisible(typeof(TPage));
+        bool isVisible = _settings.GetPageVisible(typeof(TPage));
         return new AppNavigationItemViewModel(
             this,
             typeof(TPage),
@@ -289,7 +291,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
     private void CheckSubPageStatus()
     {
-        var overPageType = _overFrame.Content?.GetType();
+        Type? overPageType = _overFrame.Content?.GetType();
         IsFavoritesPage = IsOverlayOpen && overPageType == typeof(FavoritesPage);
         IsHistoryPage = IsOverlayOpen && overPageType == typeof(HistoryPage);
         IsViewLaterPage = IsOverlayOpen && overPageType == typeof(ViewLaterPage);

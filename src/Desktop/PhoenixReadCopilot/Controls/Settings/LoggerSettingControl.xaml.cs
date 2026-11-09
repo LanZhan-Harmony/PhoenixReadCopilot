@@ -22,7 +22,9 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
 
     private async void OnOpenLoggerFolderButtonClickAsync(object sender, RoutedEventArgs e)
     {
-        var folder = await StorageFolder.GetFolderFromPathAsync(PathHelper.LogFolderPath).AsTask();
+        StorageFolder folder = await StorageFolder
+            .GetFolderFromPathAsync(PathHelper.LogFolderPath)
+            .AsTask();
         _ = await Launcher.LaunchFolderAsync(folder).AsTask();
     }
 
@@ -30,7 +32,7 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
     {
         if (Directory.Exists(PathHelper.LogFolderPath))
         {
-            foreach (var file in Directory.GetFiles(PathHelper.LogFolderPath))
+            foreach (string file in Directory.GetFiles(PathHelper.LogFolderPath))
             {
                 try
                 {

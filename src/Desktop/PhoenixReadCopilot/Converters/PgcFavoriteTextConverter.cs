@@ -8,7 +8,7 @@ internal sealed partial class PgcFavoriteTextConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var type = (PgcFavoriteType)value;
+        PgcFavoriteType type = (PgcFavoriteType)value;
         return type switch
         {
             PgcFavoriteType.Anime => Resources.MyFavoriteAnime,

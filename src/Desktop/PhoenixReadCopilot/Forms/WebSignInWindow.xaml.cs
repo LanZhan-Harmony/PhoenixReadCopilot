@@ -7,6 +7,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 using Richasy.BiliKernel.Bili;
 using Richasy.BiliKernel.Bili.Authorization;
+using Richasy.BiliKernel.Models.Authorization;
 using WinUIEx;
 
 namespace PhoenixReadCopilot.Forms;
@@ -49,7 +50,7 @@ public sealed partial class WebSignInWindow : WindowEx
     }
 
     private void OnActivated(object sender, WindowActivatedEventArgs args) =>
-        _startupViewModel.ExitCommand.Execute(default);
+        _startupViewModel.ExitCommand.Execute(false);
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
@@ -57,15 +58,15 @@ public sealed partial class WebSignInWindow : WindowEx
         {
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = default;
+            _cancellationTokenSource = null;
         }
 
         Activated -= OnActivated;
         Closed -= OnClosed;
-        var localToken = _tokenResolver.GetToken();
+        BiliToken? localToken = _tokenResolver.GetToken();
         if (localToken != null)
         {
-            _appViewModel.RestartCommand.Execute(default);
+            _appViewModel.RestartCommand.Execute(null);
         }
     }
 
@@ -88,20 +89,18 @@ public sealed partial class WebSignInWindow : WindowEx
         }
         else if (sender.CoreWebView2.Source.StartsWith("https://www.bilibili.com"))
         {
-            var cookies = await sender.CoreWebView2.CookieManager.GetCookiesAsync(
-                sender.Source.AbsoluteUri
-            );
-            var cookieDict = cookies.Select(p => (p.Name, p.Value)).ToDictionary();
+            IReadOnlyList<CoreWebView2Cookie> cookies =
+                await sender.CoreWebView2.CookieManager.GetCookiesAsync(sender.Source.AbsoluteUri);
+            Dictionary<string, string> cookieDict = cookies
+                .Select(p => (p.Name, p.Value))
+                .ToDictionary();
             if (cookieDict.Count > 0)
             {
                 await _authService.SignInAsync(
-                    new AuthorizeExecutionSettings
-                    {
-                        Cookies = cookieDict
-                    },
+                    new AuthorizeExecutionSettings { Cookies = cookieDict },
                     _cancellationTokenSource.Token
                 );
-                _cancellationTokenSource = default;
+                _cancellationTokenSource = null;
                 Close();
             }
         }

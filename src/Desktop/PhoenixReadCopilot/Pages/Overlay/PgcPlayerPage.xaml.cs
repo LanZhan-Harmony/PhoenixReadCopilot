@@ -84,36 +84,18 @@ public sealed partial class PgcPlayerPage : PgcPlayerPageBase
 
     /// <inheritdoc/>
     protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
-        ViewModel.CleanCommand.Execute(default);
+        ViewModel.CleanCommand.Execute(null);
 
     private DanmakuControlBase CreateDanmakuPanel() =>
-        new VideoDanmakuPanel()
-        {
-            ViewModel = ViewModel.Danmaku
-        };
+        new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };
 
     private FrameworkElement CreateTransportControl()
     {
-        var leftPanel = new PgcPlayerTransportLeftPanel()
-        {
-            ViewModel = ViewModel
-        };
-        var danmakuBox = new DanmakuBox()
-        {
-            ViewModel = ViewModel.Danmaku
-        };
-        var rightPanel = new StackPanel()
-        {
-            Orientation = Orientation.Horizontal
-        };
-        var formatButton = new PgcPlayerFormatButton()
-        {
-            ViewModel = ViewModel
-        };
-        var subtitleButton = new SubtitleButton()
-        {
-            ViewModel = ViewModel.Subtitle
-        };
+        PgcPlayerTransportLeftPanel leftPanel = new() { ViewModel = ViewModel };
+        DanmakuBox danmakuBox = new() { ViewModel = ViewModel.Danmaku };
+        StackPanel rightPanel = new() { Orientation = Orientation.Horizontal };
+        PgcPlayerFormatButton formatButton = new() { ViewModel = ViewModel };
+        SubtitleButton subtitleButton = new() { ViewModel = ViewModel.Subtitle };
         rightPanel.Children.Add(formatButton);
         rightPanel.Children.Add(subtitleButton);
         danmakuBox.InputGotFocus += OnDanmakuInputGotFocus;
@@ -155,5 +137,6 @@ public abstract class PgcPlayerPageBase : LayoutPageBase<PgcPlayerPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerPageBase"/> class.
     /// </summary>
-    protected PgcPlayerPageBase() => ViewModel = Ioc.Default.GetRequiredService<PgcPlayerPageViewModel>();
+    protected PgcPlayerPageBase() =>
+        ViewModel = Ioc.Default.GetRequiredService<PgcPlayerPageViewModel>();
 }

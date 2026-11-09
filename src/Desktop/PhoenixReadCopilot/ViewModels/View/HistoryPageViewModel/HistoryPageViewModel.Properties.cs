@@ -55,5 +55,5 @@ public sealed partial class HistoryPageViewModel
     /// <summary>
     /// 搜索视频结果.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> SearchVideos { get; } = new();
+    public ObservableCollection<VideoItemViewModel> SearchVideos { get; } = [];
 }

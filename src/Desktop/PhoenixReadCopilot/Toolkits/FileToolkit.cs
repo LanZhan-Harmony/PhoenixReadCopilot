@@ -16,7 +16,7 @@ internal sealed class FileToolkit : IFileToolkit
     /// <returns>结果.</returns>
     public static bool IsLocalDataExist(string fileName, string folderName = "")
     {
-        var path = string.IsNullOrEmpty(folderName)
+        string path = string.IsNullOrEmpty(folderName)
             ? Path.Combine(PathHelper.RootFolderPath, fileName)
             : Path.Combine(PathHelper.RootFolderPath, folderName, fileName);
         return File.Exists(path);
@@ -112,16 +112,16 @@ internal sealed class FileToolkit : IFileToolkit
         string folderName = ""
     )
     {
-        var targetFolder = string.IsNullOrEmpty(folderName)
+        string targetFolder = string.IsNullOrEmpty(folderName)
             ? PathHelper.RootFolderPath
             : Path.Combine(PathHelper.RootFolderPath, folderName);
-        var filePath = Path.Combine(targetFolder, fileName);
-        var content = defaultValue;
+        string filePath = Path.Combine(targetFolder, fileName);
+        string content = defaultValue;
         try
         {
             if (File.Exists(filePath))
             {
-                var fileContent = await File.ReadAllTextAsync(filePath);
+                string fileContent = await File.ReadAllTextAsync(filePath);
                 if (!string.IsNullOrEmpty(fileContent))
                 {
                     content = fileContent;
@@ -140,14 +140,14 @@ internal sealed class FileToolkit : IFileToolkit
     /// <inheritdoc/>
     public async Task WriteLocalDataAsync<T>(string fileName, T data, string folderName = "")
     {
-        var targetFolder = string.IsNullOrEmpty(folderName)
+        string targetFolder = string.IsNullOrEmpty(folderName)
             ? PathHelper.RootFolderPath
             : Path.Combine(PathHelper.RootFolderPath, folderName);
         Directory.CreateDirectory(targetFolder);
 
-        var filePath = Path.Combine(targetFolder, fileName);
-        var writeContent = data is string ? data.ToString() : JsonAotSerializer.Serialize(data);
-        var tmpPath = filePath + ".tmp";
+        string filePath = Path.Combine(targetFolder, fileName);
+        string? writeContent = data is string ? data.ToString() : JsonAotSerializer.Serialize(data);
+        string tmpPath = filePath + ".tmp";
         await File.WriteAllTextAsync(tmpPath, writeContent);
         File.Move(tmpPath, filePath, true);
     }
@@ -155,10 +155,10 @@ internal sealed class FileToolkit : IFileToolkit
     /// <inheritdoc/>
     public Task DeleteLocalDataAsync(string fileName, string folderName = "")
     {
-        var targetFolder = string.IsNullOrEmpty(folderName)
+        string targetFolder = string.IsNullOrEmpty(folderName)
             ? PathHelper.RootFolderPath
             : Path.Combine(PathHelper.RootFolderPath, folderName);
-        var filePath = Path.Combine(targetFolder, fileName);
+        string filePath = Path.Combine(targetFolder, fileName);
         if (File.Exists(filePath))
         {
             File.Delete(filePath);

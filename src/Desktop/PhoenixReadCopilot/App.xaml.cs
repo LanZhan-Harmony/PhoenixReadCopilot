@@ -50,17 +50,17 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        var instance = AppInstance.FindOrRegisterForKey(Id);
+        AppInstance instance = AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
         {
             instance.Activated += OnInstanceActivated;
-            Ioc.Default.GetRequiredService<AppViewModel>().LaunchCommand.Execute(default);
-            var mainWindow = GetMainWindow();
+            Ioc.Default.GetRequiredService<AppViewModel>().LaunchCommand.Execute(null);
+            MainWindow? mainWindow = GetMainWindow();
             mainWindow?.Closed += OnMainWindowClosed;
         }
         else
         {
-            var activatedArgs = instance.GetActivatedEventArgs();
+            AppActivationArguments activatedArgs = instance.GetActivatedEventArgs();
             _ = instance
                 .RedirectActivationToAsync(activatedArgs)
                 .AsTask()
@@ -70,7 +70,7 @@ public partial class App : Application
 
     private static MainWindow? GetMainWindow() =>
         Ioc.Default.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow)
-            as MainWindow;
+        as MainWindow;
 
     private void OnMainWindowClosed(object sender, WindowEventArgs args)
     {
@@ -110,7 +110,7 @@ public partial class App : Application
         {
             Ioc.Default.GetRequiredService<ISettingsService>().Settings.LastSelectedFeaturePage =
                 string.Empty;
-            Ioc.Default.GetRequiredService<AppViewModel>().RestartCommand.Execute(default);
+            Ioc.Default.GetRequiredService<AppViewModel>().RestartCommand.Execute(null);
         }
     }
 
@@ -119,9 +119,9 @@ public partial class App : Application
         AppNotificationActivatedEventArgs args
     )
     {
-        if (args.Arguments.TryGetValue("page", out var type))
+        if (args.Arguments.TryGetValue("page", out string? type))
         {
-            var argsStr = args.Arguments.TryGetValue("args", out var a) ? a : string.Empty;
+            string argsStr = args.Arguments.TryGetValue("args", out string? a) ? a : string.Empty;
             if (string.IsNullOrEmpty(argsStr))
             {
                 return;
@@ -129,11 +129,13 @@ public partial class App : Application
 
             _dispatcherQueue.TryEnqueue(() =>
             {
-                var identifier = JsonAotSerializer.Deserialize<MediaIdentifier>(argsStr);
-                var obj = type.Contains("VideoPlayer")
-                    ? (object)new VideoSnapshot(new VideoInformation(identifier, default))
+                MediaIdentifier identifier = JsonAotSerializer.Deserialize<MediaIdentifier>(
+                    argsStr
+                );
+                object obj = type.Contains("VideoPlayer")
+                    ? (object)new VideoSnapshot(new VideoInformation(identifier, null))
                     : identifier;
-                var pageType = Type.GetType(type);
+                Type? pageType = Type.GetType(type);
                 Ioc.Default.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);
             });
         }

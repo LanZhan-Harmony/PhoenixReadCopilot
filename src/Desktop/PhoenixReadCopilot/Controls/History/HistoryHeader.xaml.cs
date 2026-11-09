@@ -51,7 +51,8 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
             return;
         }
 
-        var item = sender.SelectedItem.Tag as IHistorySectionDetailViewModel;
+        IHistorySectionDetailViewModel? item =
+            sender.SelectedItem.Tag as IHistorySectionDetailViewModel;
         if (item is not null)
         {
             ViewModel.SelectSectionCommand.Execute(item);
@@ -63,14 +64,10 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
         Selector.Items.Clear();
         if (ViewModel.Sections is not null)
         {
-            foreach (var item in ViewModel.Sections)
+            foreach (IHistorySectionDetailViewModel item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = GetSectionName(item.Type),
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = GetSectionName(item.Type), Tag = item }
                 );
             }
         }

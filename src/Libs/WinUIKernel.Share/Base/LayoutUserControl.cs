@@ -75,7 +75,7 @@ public abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
         nameof(ViewModel),
         typeof(TViewModel),
         typeof(LayoutUserControlBase),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnViewModelChangedInternal))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnViewModelChangedInternal))
     );
 
     /// <summary>
@@ -97,7 +97,7 @@ public abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as LayoutUserControlBase<TViewModel>;
+        LayoutUserControlBase<TViewModel>? instance = d as LayoutUserControlBase<TViewModel>;
         instance?.OnViewModelChanged((TViewModel?)e.OldValue, (TViewModel?)e.NewValue);
     }
 }

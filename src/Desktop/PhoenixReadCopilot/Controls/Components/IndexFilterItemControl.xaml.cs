@@ -25,7 +25,7 @@ public sealed partial class IndexFilterItemControl : IndexFilterItemControlBase
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        var condition = ConditionComboBox.SelectedItem as Condition;
+        Condition? condition = ConditionComboBox.SelectedItem as Condition;
         if (condition is not null)
         {
             ViewModel.ChangeConditionCommand.Execute(condition);

@@ -15,7 +15,7 @@ public sealed partial class MessagePage : MessagePageBase
     public MessagePage() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
 }
 
 /// <summary>

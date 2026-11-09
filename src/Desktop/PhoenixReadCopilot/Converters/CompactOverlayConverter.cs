@@ -10,7 +10,7 @@ internal sealed partial class CompactOverlayConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var isCompact = (bool)value;
+        bool isCompact = (bool)value;
 
         if (targetType == typeof(FluentIcons.Common.Symbol))
         {

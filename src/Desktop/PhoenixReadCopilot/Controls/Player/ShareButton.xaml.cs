@@ -16,7 +16,7 @@ public sealed partial class ShareButton : LayoutUserControlBase
         nameof(Command),
         typeof(ICommand),
         typeof(ShareButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

@@ -162,7 +162,7 @@ internal sealed class DanmakuConfigurationState
     /// </summary>
     public static DanmakuConfigurationState FromConfiguration(DanmakuConfiguration config)
     {
-        var state = new DanmakuConfigurationState();
+        DanmakuConfigurationState state = new();
         state.ApplyConfiguration(config);
         return state;
     }
@@ -180,25 +180,39 @@ internal sealed class DanmakuConfigurationState
     )
     {
         if (config == null)
+        {
             return;
+        }
 
         if (config.AutoControlDensity.HasValue)
+        {
             AutoControlDensity = config.AutoControlDensity.Value;
+        }
 
         if (config.IsTextBold.HasValue)
+        {
             IsTextBold = config.IsTextBold.Value;
+        }
 
         if (config.NoOverlapSubtitle.HasValue)
+        {
             NoOverlapSubtitle = config.NoOverlapSubtitle.Value;
+        }
 
         if (config.EnableParallelUpdate.HasValue)
+        {
             EnableParallelUpdate = config.EnableParallelUpdate.Value;
+        }
 
         if (config.RollingDensity.HasValue)
+        {
             RollingDensity = config.RollingDensity.Value;
+        }
 
         if (config.FontSizeScale.HasValue)
+        {
             FontSizeScale = config.FontSizeScale.Value;
+        }
 
         if (config.RollingAreaRatio.HasValue)
         {
@@ -212,15 +226,23 @@ internal sealed class DanmakuConfigurationState
         }
 
         if (config.TextOpacity.HasValue)
+        {
             TextOpacity = config.TextOpacity.Value;
+        }
 
         if (config.OutlineSize.HasValue)
+        {
             OutlineSize = config.OutlineSize.Value;
+        }
 
         if (config.BorderColor.HasValue)
+        {
             BorderColor = config.BorderColor.Value;
+        }
 
         if (!string.IsNullOrEmpty(config.FontFamilyName))
+        {
             FontFamilyName = config.FontFamilyName;
+        }
     }
 }

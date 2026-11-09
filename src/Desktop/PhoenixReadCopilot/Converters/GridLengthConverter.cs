@@ -7,7 +7,7 @@ internal sealed partial class GridLengthConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var v = (double)value;
+        double v = (double)value;
         return v <= 0 ? GridLength.Auto : new GridLength(v);
     }
 

@@ -24,7 +24,7 @@ public sealed partial class SearchSideBody : SearchPageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        SectionView.ItemsSource = default;
+        SectionView.ItemsSource = null;
         ViewModel.SectionInitialized -= OnSectionInitialized;
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
@@ -36,7 +36,7 @@ public sealed partial class SearchSideBody : SearchPageControlBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        var item = sender.SelectedItem as ISearchSectionDetailViewModel;
+        ISearchSectionDetailViewModel? item = sender.SelectedItem as ISearchSectionDetailViewModel;
         ViewModel.SelectSectionCommand.Execute(item);
     }
 

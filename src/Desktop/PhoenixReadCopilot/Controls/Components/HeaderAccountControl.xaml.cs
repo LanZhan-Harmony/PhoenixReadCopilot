@@ -15,10 +15,10 @@ public sealed partial class HeaderAccountControl : HeaderAccountControlBase
     public HeaderAccountControl() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(null);
 
     private void OnFlyoutOpened(object sender, object e) =>
-        ViewModel.UpdateCommunityInformationCommand.Execute(default);
+        ViewModel.UpdateCommunityInformationCommand.Execute(null);
 }
 
 /// <summary>

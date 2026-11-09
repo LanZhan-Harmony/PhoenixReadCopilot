@@ -27,6 +27,6 @@ internal sealed partial class FavoriteSectionTemplateSelector : DataTemplateSele
             return UgcTemplate;
         }
 
-        return default;
+        return null;
     }
 }

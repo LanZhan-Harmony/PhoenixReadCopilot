@@ -17,11 +17,11 @@ public sealed partial class PhoenixReadPlayer
     {
         if (_transportControl is FrameworkElement frameEle)
         {
-            var width = frameEle.ActualWidth;
-            var height = frameEle.ActualHeight;
+            double width = frameEle.ActualWidth;
+            double height = frameEle.ActualHeight;
 
             // 测量 frameEle 相对于 Player 的位置.
-            var transform = frameEle
+            Point transform = frameEle
                 .TransformToVisual(_overlayContainer)
                 .TransformPoint(new Point(0, 0));
 
@@ -51,16 +51,16 @@ public sealed partial class PhoenixReadPlayer
                 const int initialPaddingTop = 12;
 
                 // 根据实际宽度调整字幕大小，线性增长，每增加100px，字体大小增加3，横向边距增加8，纵向边距增加6.
-                var width = ActualWidth;
+                double width = ActualWidth;
                 _subtitlePresenter.FontSize = Math.Max(
                     12,
                     (double)(initialFontSize + ((width - initialWidth) / 100 * 1.5))
                 );
-                var horizontalPadding = Math.Max(
+                double horizontalPadding = Math.Max(
                     8,
                     initialPaddingLeft + ((width - initialWidth) / 100 * 2.5)
                 );
-                var verticalPadding = Math.Max(
+                double verticalPadding = Math.Max(
                     8,
                     initialPaddingTop + ((width - initialWidth) / 100 * 1)
                 );
@@ -74,9 +74,9 @@ public sealed partial class PhoenixReadPlayer
         );
     }
 
-    private void CheckTransportControlVisibility(PointerRoutedEventArgs? args = default)
+    private void CheckTransportControlVisibility(PointerRoutedEventArgs? args = null)
     {
-        var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
+        bool isManual = _settings.MTCBehavior == MTCBehavior.Manual;
         if (
             isManual
             || _transportControl is null
@@ -110,14 +110,14 @@ public sealed partial class PhoenixReadPlayer
                 return;
             }
 
-            var isInStayArea =
+            bool isInStayArea =
                 _lastRelativeMTCPoint != null
                 && _lastRelativeMTCPoint.Value.X >= 0
                 && _lastRelativeMTCPoint.Value.Y >= 0
                 && _lastRelativeMTCPoint.Value.X <= _transportControl.ActualWidth
                 && _lastRelativeMTCPoint.Value.Y <= _transportControl.ActualHeight;
 
-            var shouldShow = isInStayArea;
+            bool shouldShow = isInStayArea;
             if (!isInStayArea)
             {
                 if (_transportControl.Visibility == Visibility.Collapsed && _mtcStayTime >= 2)
@@ -146,7 +146,7 @@ public sealed partial class PhoenixReadPlayer
             return;
         }
 
-        var visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+        Visibility visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
         ViewModel?.CheckBottomProgressVisibility(!isVisible);
         if (_transportControl.Visibility == visibility)
         {
@@ -226,11 +226,11 @@ public sealed partial class PhoenixReadPlayer
         {
             if (_manipulationDeltaY > 0)
             {
-                ViewModel?.PlayNextCommand?.Execute(default);
+                ViewModel?.PlayNextCommand?.Execute(null);
             }
             else
             {
-                ViewModel?.PlayPreviousCommand?.Execute(default);
+                ViewModel?.PlayPreviousCommand?.Execute(null);
             }
         }
 
@@ -242,7 +242,7 @@ public sealed partial class PhoenixReadPlayer
 
         if (_manipulationBeforeIsPlay && ViewModel.IsPaused && !ViewModel.IsBuffering)
         {
-            ViewModel.TogglePlayPauseCommand.Execute(default);
+            ViewModel.TogglePlayPauseCommand.Execute(null);
         }
 
         _manipulationBeforeIsPlay = false;
@@ -250,8 +250,8 @@ public sealed partial class PhoenixReadPlayer
 
     private void OnInteractionControlPointerWheelChanged(object sender, PointerRoutedEventArgs e)
     {
-        var point = e.GetCurrentPoint((UIElement)sender);
-        var delta = point.Properties.MouseWheelDelta;
+        PointerPoint point = e.GetCurrentPoint((UIElement)sender);
+        int delta = point.Properties.MouseWheelDelta;
         if (delta == 0)
         {
             return;
@@ -270,14 +270,14 @@ public sealed partial class PhoenixReadPlayer
         {
             _wheelDeltaAccumulator = 0;
             _lastWheelTriggerTime = DateTimeOffset.Now;
-            ViewModel?.PlayPreviousCommand?.Execute(default);
+            ViewModel?.PlayPreviousCommand?.Execute(null);
             e.Handled = true;
         }
         else if (_wheelDeltaAccumulator <= -120)
         {
             _wheelDeltaAccumulator = 0;
             _lastWheelTriggerTime = DateTimeOffset.Now;
-            ViewModel?.PlayNextCommand?.Execute(default);
+            ViewModel?.PlayNextCommand?.Execute(null);
             e.Handled = true;
         }
     }
@@ -298,7 +298,7 @@ public sealed partial class PhoenixReadPlayer
         {
             if (_manipulationType == PlayerManipulationType.None)
             {
-                var isHorizontal = Math.Abs(_manipulationDeltaX) >= Math.Abs(_manipulationDeltaY);
+                bool isHorizontal = Math.Abs(_manipulationDeltaX) >= Math.Abs(_manipulationDeltaY);
                 if (isHorizontal)
                 {
                     _manipulationType = PlayerManipulationType.Progress;
@@ -307,7 +307,7 @@ public sealed partial class PhoenixReadPlayer
 
             if (_manipulationType == PlayerManipulationType.Progress)
             {
-                var progress =
+                double progress =
                     _manipulationProgress + (_manipulationDeltaX * _manipulationUnitLength);
                 if (progress > ViewModel.Duration)
                 {
@@ -341,15 +341,15 @@ public sealed partial class PhoenixReadPlayer
         if (ViewModel.Duration > 0)
         {
             // 获取单位像素对应的时长
-            var unit = ViewModel.Duration / ActualWidth;
+            double unit = ViewModel.Duration / ActualWidth;
             _manipulationUnitLength = unit / 1.5;
         }
     }
 
     private void OnRootPointerCanceled(object sender, PointerRoutedEventArgs e)
     {
-        _lastPressedTime = default;
-        _lastRightArrowPressedTime = default;
+        _lastPressedTime = null;
+        _lastRightArrowPressedTime = null;
         if (_isHolding)
         {
             ToggleTripleSpeed(false);
@@ -360,10 +360,10 @@ public sealed partial class PhoenixReadPlayer
 
     private void OnRootPointerPressed(object sender, PointerRoutedEventArgs e)
     {
-        var point = e.GetCurrentPoint((UIElement)sender);
+        PointerPoint point = e.GetCurrentPoint((UIElement)sender);
         if (point.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
         {
-            var options = new FlyoutShowOptions { Position = point.Position };
+            FlyoutShowOptions options = new() { Position = point.Position };
             _contextFlyout.ShowAt(_interactionControl, options);
             return;
         }
@@ -380,8 +380,8 @@ public sealed partial class PhoenixReadPlayer
 
     private void OnRootPointerExited(object sender, PointerRoutedEventArgs e)
     {
-        _lastPressedTime = default;
-        _lastRightArrowPressedTime = default;
+        _lastPressedTime = null;
+        _lastRightArrowPressedTime = null;
         if (_isHolding)
         {
             ToggleTripleSpeed(false);
@@ -407,9 +407,9 @@ public sealed partial class PhoenixReadPlayer
             return;
         }
 
-        _isPointerHasPressed = default;
-        _lastPressedTime = default;
-        _lastRightArrowPressedTime = default;
+        _isPointerHasPressed = null;
+        _lastPressedTime = null;
+        _lastRightArrowPressedTime = null;
         if (_isHolding)
         {
             ToggleTripleSpeed(false);
@@ -422,7 +422,7 @@ public sealed partial class PhoenixReadPlayer
                 return;
             }
 
-            var isManual = _settings.MTCBehavior == MTCBehavior.Manual;
+            bool isManual = _settings.MTCBehavior == MTCBehavior.Manual;
             if (isManual)
             {
                 if (_transportControl is not null)
@@ -432,7 +432,7 @@ public sealed partial class PhoenixReadPlayer
             }
             else if (!_isHolding)
             {
-                ViewModel?.TogglePlayPauseCommand.Execute(default);
+                ViewModel?.TogglePlayPauseCommand.Execute(null);
             }
         }
     }

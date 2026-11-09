@@ -17,7 +17,7 @@ public sealed partial class CommentItemControl : CommentItemControlBase
         nameof(ShowMoreCommand),
         typeof(ICommand),
         typeof(CommentItemControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
