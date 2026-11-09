@@ -105,11 +105,19 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             )
         );
 
-        var lastSelectedSectionId = _settings.PopularPageLastSelectedSectionId;
+        string lastSelectedSectionId = _settings.PopularPageLastSelectedSectionId;
         IPopularSectionItemViewModel? targetSection = null;
-        if (!string.IsNullOrEmpty(lastSelectedSectionId) && Enum.TryParse<PopularSectionType>(lastSelectedSectionId, out var sectionType))
+        if (
+            !string.IsNullOrEmpty(lastSelectedSectionId)
+            && Enum.TryParse<PopularSectionType>(
+                lastSelectedSectionId,
+                out PopularSectionType sectionType
+            )
+        )
         {
-            targetSection = Sections.OfType<PopularSectionItemViewModel>().FirstOrDefault(p => p.Type == sectionType);
+            targetSection = Sections
+                .OfType<PopularSectionItemViewModel>()
+                .FirstOrDefault(p => p.Type == sectionType);
         }
 
         SelectSectionCommand.Execute(targetSection ?? Sections.First());
@@ -144,10 +152,13 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             IsLeaderboardSection = false;
         }
 
-        var cacheKey = GetCacheKey(vm, CurrentChannel);
-        if (_videoCache.TryGetValue(cacheKey, out var cacheVideos) && cacheVideos.Count > 0)
+        string cacheKey = GetCacheKey(vm, CurrentChannel);
+        if (
+            _videoCache.TryGetValue(cacheKey, out List<VideoItemViewModel>? cacheVideos)
+            && cacheVideos.Count > 0
+        )
         {
-            foreach (var video in cacheVideos)
+            foreach (VideoItemViewModel video in cacheVideos)
             {
                 Videos.Add(video);
             }
@@ -164,7 +175,12 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task ChangeChannelAsync(string channelName)
     {
-        if (!Enum.TryParse<ShortDramaLeaderboardChannel>(channelName, out var channel))
+        if (
+            !Enum.TryParse<ShortDramaLeaderboardChannel>(
+                channelName,
+                out ShortDramaLeaderboardChannel channel
+            )
+        )
         {
             return;
         }
@@ -186,10 +202,13 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         if (SelectedSection != null)
         {
-            var cacheKey = GetCacheKey(SelectedSection, CurrentChannel);
-            if (_videoCache.TryGetValue(cacheKey, out var cacheVideos) && cacheVideos.Count > 0)
+            string cacheKey = GetCacheKey(SelectedSection, CurrentChannel);
+            if (
+                _videoCache.TryGetValue(cacheKey, out List<VideoItemViewModel>? cacheVideos)
+                && cacheVideos.Count > 0
+            )
             {
-                foreach (var video in cacheVideos)
+                foreach (VideoItemViewModel video in cacheVideos)
                 {
                     Videos.Add(video);
                 }
@@ -218,11 +237,11 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
 
         IsVideoLoading = true;
-        var requestId = ++_currentRequestId;
+        long requestId = ++_currentRequestId;
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-        var ct = _cancellationTokenSource.Token;
+        CancellationToken ct = _cancellationTokenSource.Token;
 
         try
         {
@@ -234,7 +253,12 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
                 }
                 else if (section.LeaderboardType.HasValue)
                 {
-                    await LoadDramaLeaderboardAsync(section.LeaderboardType.Value, CurrentChannel, requestId, ct);
+                    await LoadDramaLeaderboardAsync(
+                        section.LeaderboardType.Value,
+                        CurrentChannel,
+                        requestId,
+                        ct
+                    );
                 }
                 else if (section.IsActorLeaderboard)
                 {
@@ -247,7 +271,10 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             if (requestId == _currentRequestId)
             {
                 VideoListUpdated?.Invoke(this, EventArgs.Empty);
-                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => IsVideoLoading = false);
+                _dispatcherQueue.TryEnqueue(
+                    DispatcherQueuePriority.Low,
+                    () => IsVideoLoading = false
+                );
             }
         }
     }
@@ -296,7 +323,10 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         }
     }
 
-    private static string GetCacheKey(IPopularSectionItemViewModel section, ShortDramaLeaderboardChannel channel)
+    private static string GetCacheKey(
+        IPopularSectionItemViewModel section,
+        ShortDramaLeaderboardChannel channel
+    )
     {
         if (section is PopularSectionItemViewModel pSection)
         {
@@ -319,7 +349,10 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// 短剧排行榜受众频道列表.
     /// </summary>
-    public static readonly IReadOnlyList<(string Title, ShortDramaLeaderboardChannel Channel)> Channels =
+    public static readonly IReadOnlyList<(
+        string Title,
+        ShortDramaLeaderboardChannel Channel
+    )> Channels =
     [
         (Resources.ChannelAll, ShortDramaLeaderboardChannel.All),
         (Resources.ChannelFemale, ShortDramaLeaderboardChannel.Female),
@@ -329,7 +362,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void PlayCuratedList()
     {
-        var first = Videos.FirstOrDefault();
+        VideoItemViewModel? first = Videos.FirstOrDefault();
         if (first?.Drama != null)
         {
             _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), first.Drama);

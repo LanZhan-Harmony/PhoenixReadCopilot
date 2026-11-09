@@ -19,11 +19,9 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
     /// </summary>
     protected ConvertingCollectionProxy()
     {
-#pragma warning disable CA2214 // 不要在构造函数中调用可重写的方法
         _convertFunc =
             GetConvertFunc()
             ?? throw new InvalidOperationException("GetConvertFunc() must not return null");
-#pragma warning restore CA2214 // 不要在构造函数中调用可重写的方法
     }
 
     /// <summary>
@@ -66,7 +64,7 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
                 base.ClearItems();
                 if (field != null)
                 {
-                    foreach (var item in field)
+                    foreach (TSource? item in field)
                     {
                         base.InsertItem(Count, _convertFunc(item));
                     }
@@ -132,7 +130,7 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
                 break;
             case NotifyCollectionChangedAction.Remove:
                 _suppressCollectionChanged = true;
-                var removedItems = new List<T>(e.OldItems!.Count);
+                List<T> removedItems = new(e.OldItems!.Count);
                 for (int i = e.OldItems.Count - 1; i >= 0; i--)
                 {
                     removedItems.Insert(0, this[i + e.OldStartingIndex]);
@@ -154,7 +152,7 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
                         ConvertOrUpdate(
                             (TSource)e.NewItems[i]!,
                             this[i + e.OldStartingIndex],
-                            out var convertedResult
+                            out T? convertedResult
                         )
                     )
                     {
@@ -196,16 +194,13 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
         }
     }
 
-#pragma warning disable CA1859 // 尽可能使用具体类型以提高性能
     private IList GetRangeOfItems(int index, int count)
-#pragma warning restore CA1859 // 尽可能使用具体类型以提高性能
     {
         return this.Skip(index).Take(count).ToList();
     }
 
     #region ObservableCollection overrides
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     protected override void InsertItem(int index, T item)
     {
         throw new NotImplementedException("Cannot insert items into ConvertingCollectionProxy");
@@ -230,7 +225,6 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
     {
         throw new NotImplementedException("Cannot set items in ConvertingCollectionProxy");
     }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
     #endregion
 }

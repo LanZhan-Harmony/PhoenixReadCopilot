@@ -55,32 +55,31 @@ public sealed partial class VideoSearchSectionDetailViewModel
     {
         _canRequest = true;
         _currentPage = initialOffset;
-        _dispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                () =>
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            () =>
+            {
+                Items.Clear();
+                _isPreventLoadMore = videos is null || videos.Count == 0;
+
+                if (!_isPreventLoadMore)
                 {
-                    Items.Clear();
-                    _isPreventLoadMore = videos is null || videos.Count == 0;
-
-                    if (!_isPreventLoadMore)
+                    foreach (VideoInformation item in videos)
                     {
-                        foreach (var item in videos)
+                        if (Items.Any(p => p.Data.Equals(item)))
                         {
-                            if (Items.Any(p => p.Data.Equals(item)))
-                            {
-                                continue;
-                            }
-
-                            Items.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
+                            continue;
                         }
 
-                        ListUpdated?.Invoke(this, EventArgs.Empty);
+                        Items.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
                     }
 
-                    IsEmpty = Items.Count == 0;
+                    ListUpdated?.Invoke(this, EventArgs.Empty);
                 }
-            );
+
+                IsEmpty = Items.Count == 0;
+            }
+        );
     }
 
     [RelayCommand]
@@ -97,14 +96,11 @@ public sealed partial class VideoSearchSectionDetailViewModel
         try
         {
             IsLoading = true;
-            var (videos, nextOffset) = await _service.GetComprehensiveSearchResultAsync(
-                _keyword,
-                _currentPage,
-                Sort
-            );
+            (IReadOnlyList<VideoInformation>? videos, int? nextOffset) =
+                await _service.GetComprehensiveSearchResultAsync(_keyword, _currentPage, Sort);
             _currentPage = nextOffset;
             _canRequest = _currentPage != null;
-            foreach (var item in videos)
+            foreach (VideoInformation item in videos)
             {
                 if (Items.Any(p => p.Data.Equals(item)))
                 {
@@ -131,19 +127,18 @@ public sealed partial class VideoSearchSectionDetailViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        _dispatcherQueue
-            .TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    var keyword = _keyword;
-                    _currentPage = 1;
-                    Clear();
-                    _keyword = keyword;
-                    _canRequest = true;
-                    await LoadItemsAsync();
-                }
-            );
+        _dispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            async () =>
+            {
+                string keyword = _keyword;
+                _currentPage = 1;
+                Clear();
+                _keyword = keyword;
+                _canRequest = true;
+                await LoadItemsAsync();
+            }
+        );
 
         await Task.CompletedTask;
     }
@@ -157,6 +152,6 @@ public sealed partial class VideoSearchSectionDetailViewModel
         }
 
         Sort = type;
-        RefreshCommand.Execute(default);
+        RefreshCommand.Execute(null);
     }
 }

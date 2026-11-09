@@ -6,6 +6,7 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
+using PhoenixReadCopilot.ViewModels.Core;
 using Richasy.BiliKernel.Models.Article;
 using Windows.Globalization;
 using Windows.System;
@@ -25,11 +26,11 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     public ArticleItemViewModel(
         ArticleInformation data,
         ArticleCardStyle style,
-        Action<ArticleItemViewModel>? removeAction = default
+        Action<ArticleItemViewModel>? removeAction = null
     )
         : base(data)
     {
-        var primaryLan = ApplicationLanguages.Languages[0];
+        string primaryLan = ApplicationLanguages.Languages[0];
         Title = data.Identifier.Title.Trim();
         Subtitle = data.GetExtensionIfNotNull<string>(ArticleExtensionDataId.Subtitle);
         Cover = data.Identifier.Cover?.Uri;
@@ -38,7 +39,7 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
         PublishRelativeTime = data.PublishDateTime.Humanize(culture: new CultureInfo(primaryLan));
         LikeCount = data.CommunityInformation?.LikeCount;
         Style = style;
-        var collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(
+        DateTimeOffset? collectTime = data.GetExtensionIfNotNull<DateTimeOffset?>(
             ArticleExtensionDataId.CollectTime
         );
         if (collectTime is not null)
@@ -52,7 +53,7 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     [RelayCommand]
     private void OpenReader()
     {
-        var navVM = ItemServices.Navigation;
+        NavigationViewModel navVM = ItemServices.Navigation;
         navVM.NavigateToOver(typeof(ArticleReaderPage), Data.Identifier);
     }
 
@@ -63,7 +64,7 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     [RelayCommand]
     private async Task OpenInBroswerAsync()
     {
-        var url = $"https://www.bilibili.com/read/cv{Data.Identifier.Id}";
+        string url = $"https://www.bilibili.com/read/cv{Data.Identifier.Id}";
         await Launcher.LaunchUriAsync(new Uri(url));
     }
 
@@ -87,7 +88,7 @@ public sealed partial class ArticleItemViewModel : ViewModelBase<ArticleInformat
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(
+        PinItem pinItem = new(
             Data.Identifier.Id,
             Data.Identifier.Title,
             Data.Identifier.Cover.Uri.ToString(),

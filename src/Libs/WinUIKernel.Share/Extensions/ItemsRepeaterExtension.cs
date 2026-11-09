@@ -59,7 +59,7 @@ public static partial class ItemsRepeaterExtension
         /// The target ItemsRepeater.
         /// </summary>
         public ItemsRepeater? ItemsRepeater =>
-            _itemsRepeaterReference?.TryGetTarget(out var itemsRepeater) is true
+            _itemsRepeaterReference?.TryGetTarget(out ItemsRepeater? itemsRepeater) is true
                 ? itemsRepeater
                 : null;
 
@@ -170,7 +170,7 @@ public static partial class ItemsRepeaterExtension
         DependencyPropertyChangedEventArgs e
     )
     {
-        var itemsRepeater = (ItemsRepeater)d;
+        ItemsRepeater itemsRepeater = (ItemsRepeater)d;
         // If the ItemsRepeater's ItemsSource is already a CollectionConnector, we can reuse it.
         if (itemsRepeater.ItemsSource is CollectionConnector existingConnector)
         {
@@ -201,7 +201,7 @@ public static partial class ItemsRepeaterExtension
 
     private static void ItemsRepeater_Loaded(object sender, RoutedEventArgs e)
     {
-        var itemsRepeater = (ItemsRepeater)sender;
+        ItemsRepeater itemsRepeater = (ItemsRepeater)sender;
         if (itemsRepeater.ItemsSource is CollectionConnector connector)
         {
             connector.ConnectSource();
@@ -210,7 +210,7 @@ public static partial class ItemsRepeaterExtension
 
     private static void ItemsRepeater_Unloaded(object sender, RoutedEventArgs e)
     {
-        var itemsRepeater = (ItemsRepeater)sender;
+        ItemsRepeater itemsRepeater = (ItemsRepeater)sender;
         if (itemsRepeater.ItemsSource is CollectionConnector connector)
         {
             connector.DisconnectSource();

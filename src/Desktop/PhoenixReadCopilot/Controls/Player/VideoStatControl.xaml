@@ -1,44 +1,32 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:VideoPlayerPageControlBase
-    x:Class="PhoenixReadCopilot.Controls.Player.VideoStatControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:comp="using:PhoenixReadCopilot.Controls.Components"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:strings="using:PhoenixReadCopilot.Strings"
-    xmlns:local="using:PhoenixReadCopilot.Controls.Player"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:base="using:WinUIKernel.Share.Base"
-    mc:Ignorable="d">
+<local:VideoPlayerPageControlBase x:Class="PhoenixReadCopilot.Controls.Player.VideoStatControl"
+                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                  xmlns:base="using:WinUIKernel.Share.Base"
+                                  xmlns:comp="using:PhoenixReadCopilot.Controls.Components"
+                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                  xmlns:local="using:PhoenixReadCopilot.Controls.Player"
+                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                  xmlns:strings="using:PhoenixReadCopilot.Strings"
+                                  mc:Ignorable="d">
 
-    <StackPanel Orientation="Horizontal"
-            Spacing="12">
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
-            Symbol="PlayCircle"
-            Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"/>
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
-            Symbol="Comment"
-            Text="{x:Bind ViewModel.CommentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{x:Bind strings:Resources.ReplyCount}"/>
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
-            Symbol="TextBulletList"
-            Text="{x:Bind ViewModel.DanmakuCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-            ToolTipService.ToolTip="{x:Bind strings:Resources.DanmakuCount}"/>
-        <base:IconTextBlock
-            VerticalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
-            Symbol="Eye"
-            Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay}"/>
+    <StackPanel Orientation="Horizontal" Spacing="12">
+        <base:IconTextBlock VerticalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                            Symbol="PlayCircle"
+                            Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
+                            ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"/>
+        <base:IconTextBlock VerticalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
+                            Symbol="Comment"
+                            Text="{x:Bind ViewModel.CommentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
+                            ToolTipService.ToolTip="{x:Bind strings:Resources.ReplyCount}"/>
+        <base:IconTextBlock VerticalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            IconBrush="{ThemeResource TextFillColorSecondaryBrush}"
+                            Symbol="Fire"
+                            Text="{x:Bind ViewModel.OnlineCountText, Mode=OneWay}"/>
     </StackPanel>
 </local:VideoPlayerPageControlBase>

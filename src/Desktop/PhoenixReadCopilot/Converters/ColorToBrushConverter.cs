@@ -8,7 +8,7 @@ internal sealed partial class ColorToBrushConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var color = (Color)value;
+        Color color = (Color)value;
         return new SolidColorBrush(color);
     }
 

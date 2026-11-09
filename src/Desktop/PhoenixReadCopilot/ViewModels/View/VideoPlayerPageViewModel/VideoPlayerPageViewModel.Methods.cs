@@ -15,19 +15,19 @@ public sealed partial class VideoPlayerPageViewModel
 {
     private void InitializeDramaView(DramaDetails details)
     {
-        var drama = details.Drama;
+        Drama drama = details.Drama;
         _seriesId = drama.Id;
         Title = drama.Title;
         Description = drama.Description;
         Cover =
             !string.IsNullOrEmpty(drama.CoverUrl)
-            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var coverUri)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? coverUri)
                 ? coverUri
-                : default;
+                : null;
         PlayCount =
             drama.PlayCount > 0
                 ? drama.PlayCount
-                : (double.TryParse(drama.Views, out var vc) ? vc : 0);
+                : (double.TryParse(drama.Views, out double vc) ? vc : 0);
         LikeCount = drama.DiggCount;
         FavoriteCount = drama.FollowCount;
         OnlineCountText = !string.IsNullOrEmpty(drama.Heat)
@@ -52,10 +52,16 @@ public sealed partial class VideoPlayerPageViewModel
     private void InitializePlaybackMedias(IReadOnlyList<PlaybackMedia> mediaList)
     {
         Downloader.Clear();
-        Downloader.InitializeDrama(_seriesId, Title, Cover?.ToString() ?? string.Empty, _episodes, _currentEpisode);
+        Downloader.InitializeDrama(
+            _seriesId,
+            Title,
+            Cover?.ToString() ?? string.Empty,
+            _episodes,
+            _currentEpisode
+        );
 
         // 按清晰度文案去重，每种清晰度只保留一条，优先保留带解密密钥与高码率的
-        var distinctMedias = mediaList
+        List<PlaybackMedia> distinctMedias = mediaList
             .GroupBy(PlayerFormatItemViewModel.GetFormatKey)
             .Select(g =>
                 g.OrderByDescending(m => !string.IsNullOrEmpty(m.DecryptionKey))
@@ -67,7 +73,7 @@ public sealed partial class VideoPlayerPageViewModel
 
         Formats = distinctMedias.Select(m => new PlayerFormatItemViewModel(m)).ToList();
 
-        var partIndex =
+        int partIndex =
             _episodes is not null && _currentEpisode is not null
                 ? _episodes.ToList().FindIndex(e => e.VideoId == _currentEpisode.VideoId)
                 : 0;
@@ -79,11 +85,13 @@ public sealed partial class VideoPlayerPageViewModel
         );
 
         // 选择最佳画质或用户偏好画质
-        var selectedFormat = Formats.FirstOrDefault();
-        var lastSelectedQuality = _settings.LastSelectedVideoQuality;
+        PlayerFormatItemViewModel? selectedFormat = Formats.FirstOrDefault();
+        int lastSelectedQuality = _settings.LastSelectedVideoQuality;
         if (lastSelectedQuality > 0)
         {
-            var matched = Formats.Find(p => p.Data.Quality == lastSelectedQuality);
+            PlayerFormatItemViewModel? matched = Formats.Find(p =>
+                p.Data.Quality == lastSelectedQuality
+            );
             if (matched != null)
             {
                 selectedFormat = matched;
@@ -100,10 +108,10 @@ public sealed partial class VideoPlayerPageViewModel
             return;
         }
 
-        var sections = new List<IPlayerSectionDetailViewModel>
-        {
+        List<IPlayerSectionDetailViewModel> sections =
+        [
             new VideoPlayerInfoSectionDetailViewModel(this),
-        };
+        ];
 
         // 1. 分集列表（网格序号模式）
         if (_episodes?.Count > 1)
@@ -127,7 +135,9 @@ public sealed partial class VideoPlayerPageViewModel
         // 4. 专属关联好剧推荐（调用红果推荐接口）
         try
         {
-            var rec = await _apiClient.GetSeriesRecommendationsAsync(_seriesId);
+            DramaRelatedRecommendations rec = await _apiClient.GetSeriesRecommendationsAsync(
+                _seriesId
+            );
             if (rec?.Items is { Count: > 0 } recItems)
             {
                 sections.Add(new VideoPlayerRecommendSectionDetailViewModel(recItems));
@@ -147,23 +157,21 @@ public sealed partial class VideoPlayerPageViewModel
     private void ClearView()
     {
         IsPageLoadFailed = false;
-        _episodes = default;
-        _currentEpisode = default;
-        _dramaDetails = default;
+        _episodes = null;
+        _currentEpisode = null;
+        _dramaDetails = null;
         _initialProgress = -1;
-        Tags = default;
+        Tags = null;
         IsFollow = false;
         IsMyVideo = false;
         PlayCount = 0;
-        DanmakuCount = 0;
         CommentCount = 0;
         LikeCount = 0;
-        CoinCount = 0;
         FavoriteCount = 0;
         IsLiked = false;
         IsFavorited = false;
-        FavoriteFolders = default;
-        SelectedFormat = default;
+        FavoriteFolders = null;
+        SelectedFormat = null;
         Sections?.Clear();
     }
 
@@ -175,8 +183,8 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         // 红果短剧默认为 9:16 竖屏短剧
-        var ratioWidth = 9.0;
-        var ratioHeight = 16.0;
+        double ratioWidth = 9.0;
+        double ratioHeight = 16.0;
         if (_currentEpisode?.IsVertical == false)
         {
             ratioWidth = 16.0;
@@ -186,14 +194,14 @@ public sealed partial class VideoPlayerPageViewModel
         PlayerHeight = PlayerWidth * ratioHeight / ratioWidth;
     }
 
-    private Episode? FindInitialPart(string? initialVideoId = default)
+    private Episode? FindInitialPart(string? initialVideoId = null)
     {
         if (_episodes?.Count == 1)
         {
             return _episodes.First();
         }
 
-        Episode? part = default;
+        Episode? part = null;
         if (!string.IsNullOrEmpty(initialVideoId) && _episodes is not null)
         {
             part = _episodes.FirstOrDefault(p => p.VideoId == initialVideoId);
@@ -202,7 +210,7 @@ public sealed partial class VideoPlayerPageViewModel
         return part ?? _episodes?.FirstOrDefault();
     }
 
-    private void LoadInitialProgress(int? progress = default)
+    private void LoadInitialProgress(int? progress = null)
     {
         _initialProgress = 0;
         if (progress is not null)
@@ -213,13 +221,13 @@ public sealed partial class VideoPlayerPageViewModel
 
     private object? FindNextVideo()
     {
-        var isListLoop = CurrentLoop == VideoLoopType.List;
+        bool isListLoop = CurrentLoop == VideoLoopType.List;
 
         // 1. 先检查分集列表中是否有下一集.
         if (_episodes is not null && _currentEpisode is not null)
         {
-            var list = _episodes.ToList();
-            var index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
+            List<Episode> list = _episodes.ToList();
+            int index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
             if (index >= 0 && index < list.Count - 1)
             {
                 return list[index + 1];
@@ -232,28 +240,28 @@ public sealed partial class VideoPlayerPageViewModel
         }
 
         // 2. 检查推荐好剧中是否有下一个短剧.
-        var isAutoPlayRecommendVideo = _settings.AutoPlayNextRecommendVideo;
+        bool isAutoPlayRecommendVideo = _settings.AutoPlayNextRecommendVideo;
         if (
             isAutoPlayRecommendVideo
             && Sections?.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault()
                 is VideoPlayerRecommendSectionDetailViewModel recommendSection
         )
         {
-            var firstItem = recommendSection.Items.FirstOrDefault();
+            VideoItemViewModel? firstItem = recommendSection.Items.FirstOrDefault();
             return firstItem?.Drama ?? (object?)firstItem?.Data;
         }
 
-        return default;
+        return null;
     }
 
     private object? FindPreviousVideo()
     {
-        var isListLoop = CurrentLoop == VideoLoopType.List;
+        bool isListLoop = CurrentLoop == VideoLoopType.List;
 
         if (_episodes is not null && _currentEpisode is not null)
         {
-            var list = _episodes.ToList();
-            var index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
+            List<Episode> list = _episodes.ToList();
+            int index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
             if (index > 0)
             {
                 return list[index - 1];
@@ -273,13 +281,20 @@ public sealed partial class VideoPlayerPageViewModel
     /// </summary>
     private void PreloadNextEpisodeMedia()
     {
-        var next = FindNextVideo();
-        if (next is not Episode nextEpisode || string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(nextEpisode.VideoId))
+        object? next = FindNextVideo();
+        if (
+            next is not Episode nextEpisode
+            || string.IsNullOrEmpty(_seriesId)
+            || string.IsNullOrEmpty(nextEpisode.VideoId)
+        )
         {
             return;
         }
 
-        if (_preloadedEpisodeVideoId == nextEpisode.VideoId && _preloadedMediaList is { Count: > 0 })
+        if (
+            _preloadedEpisodeVideoId == nextEpisode.VideoId
+            && _preloadedMediaList is { Count: > 0 }
+        )
         {
             return;
         }
@@ -287,50 +302,69 @@ public sealed partial class VideoPlayerPageViewModel
         _preloadCancellationTokenSource?.Cancel();
         _preloadCancellationTokenSource?.Dispose();
         _preloadCancellationTokenSource = new CancellationTokenSource();
-        var token = _preloadCancellationTokenSource.Token;
+        CancellationToken token = _preloadCancellationTokenSource.Token;
 
-        _ = Task.Run(async () =>
-        {
-            try
+        _ = Task.Run(
+            async () =>
             {
-                // 等待 1 秒避开当前集起播的网络高峰
-                await Task.Delay(1000, token);
-                if (token.IsCancellationRequested)
+                try
                 {
-                    return;
-                }
+                    // 等待 1 秒避开当前集起播的网络高峰
+                    await Task.Delay(1000, token);
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
 
-                var mediaList = await _apiClient.ResolveMediaAsync(_seriesId, nextEpisode.VideoId, token);
-                if (mediaList is { Count: > 0 } && !token.IsCancellationRequested)
+                    IReadOnlyList<PlaybackMedia> mediaList = await _apiClient.ResolveMediaAsync(
+                        _seriesId,
+                        nextEpisode.VideoId,
+                        token
+                    );
+                    if (mediaList is { Count: > 0 } && !token.IsCancellationRequested)
+                    {
+                        _preloadedEpisodeVideoId = nextEpisode.VideoId;
+                        _preloadedMediaList = mediaList;
+
+                        // 进一步在后台预载下一集 FFmpegMediaSource（提前解析 demuxer 与解密密钥，实现 0 秒瞬播）
+                        int targetQuality = _settings.LastSelectedVideoQuality;
+                        PlaybackMedia? matchedMedia = null;
+                        if (targetQuality > 0)
+                        {
+                            matchedMedia = mediaList.FirstOrDefault(m =>
+                                PlayerFormatItemViewModel.GetQualityScore(m) == targetQuality
+                            );
+                        }
+                        matchedMedia ??= mediaList
+                            .OrderByDescending(PlayerFormatItemViewModel.GetQualityScore)
+                            .FirstOrDefault();
+
+                        if (
+                            matchedMedia is not null
+                            && !string.IsNullOrEmpty(matchedMedia.Url)
+                            && Player is FFmpegPlayerViewModel ffmpegVm
+                        )
+                        {
+                            await ffmpegVm.PreloadSourceAsync(
+                                matchedMedia.Url,
+                                matchedMedia.DecryptionKey,
+                                matchedMedia.Referer
+                            );
+                        }
+                    }
+                }
+                catch
                 {
-                    _preloadedEpisodeVideoId = nextEpisode.VideoId;
-                    _preloadedMediaList = mediaList;
-
-                    // 进一步在后台预载下一集 FFmpegMediaSource（提前解析 demuxer 与解密密钥，实现 0 秒瞬播）
-                    var targetQuality = _settings.LastSelectedVideoQuality;
-                    PlaybackMedia? matchedMedia = null;
-                    if (targetQuality > 0)
-                    {
-                        matchedMedia = mediaList.FirstOrDefault(m => PlayerFormatItemViewModel.GetQualityScore(m) == targetQuality);
-                    }
-                    matchedMedia ??= mediaList.OrderByDescending(PlayerFormatItemViewModel.GetQualityScore).FirstOrDefault();
-
-                    if (matchedMedia is not null && !string.IsNullOrEmpty(matchedMedia.Url) && Player is FFmpegPlayerViewModel ffmpegVm)
-                    {
-                        await ffmpegVm.PreloadSourceAsync(matchedMedia.Url, matchedMedia.DecryptionKey, matchedMedia.Referer);
-                    }
+                    // 预载异常静默忽略，不影响主流程
                 }
-            }
-            catch
-            {
-                // 预载异常静默忽略，不影响主流程
-            }
-        }, token);
+            },
+            token
+        );
     }
 
     private void InitializeNextVideo()
     {
-        var next = FindNextVideo();
+        object? next = FindNextVideo();
         HasNextVideo = next is not null;
         if (next is Episode episode)
         {
@@ -362,16 +396,15 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void SyncDownloadAndSubtitle()
     {
-        var isAISubtitleFiltered = _settings.FilterAISubtitle;
+        bool isAISubtitleFiltered = _settings.FilterAISubtitle;
         Downloader.HasAvailableSubtitle =
-            Subtitle.IsAvailable
-            && (isAISubtitleFiltered ? Subtitle.Metas.Any(p => !p.IsAI) : true);
+            Subtitle.IsAvailable && (!isAISubtitleFiltered || Subtitle.Metas.Any(p => !p.IsAI));
     }
 
     private void InitializeLoops()
     {
-        var currentType = CurrentLoop;
-        var loops = new List<VideoLoopType> { VideoLoopType.None, VideoLoopType.Single };
+        VideoLoopType currentType = CurrentLoop;
+        List<VideoLoopType> loops = [VideoLoopType.None, VideoLoopType.Single];
         if (_episodes?.Count > 1)
         {
             loops.Add(VideoLoopType.List);

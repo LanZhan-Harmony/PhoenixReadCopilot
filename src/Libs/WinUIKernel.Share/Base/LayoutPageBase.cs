@@ -75,7 +75,7 @@ public abstract class LayoutPageBase<TViewModel> : LayoutPageBase
         nameof(ViewModel),
         typeof(TViewModel),
         typeof(LayoutPageBase),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnViewModelChangedInternal))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnViewModelChangedInternal))
     );
 
     /// <summary>
@@ -97,7 +97,7 @@ public abstract class LayoutPageBase<TViewModel> : LayoutPageBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        var instance = d as LayoutPageBase<TViewModel>;
+        LayoutPageBase<TViewModel>? instance = d as LayoutPageBase<TViewModel>;
         instance?.OnViewModelChanged((TViewModel?)e.OldValue, (TViewModel?)e.NewValue);
     }
 }

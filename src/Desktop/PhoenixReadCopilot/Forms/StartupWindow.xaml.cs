@@ -6,6 +6,7 @@ using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 using Richasy.BiliKernel.Bili.Authorization;
+using Richasy.BiliKernel.Models.Authorization;
 using WinUIEx;
 
 namespace PhoenixReadCopilot.Forms;
@@ -44,7 +45,7 @@ public sealed partial class StartupWindow : WindowEx
         SetTitleBar(TitleBar);
         _appViewModel.Windows.Add(this);
 
-        RootFrame.Navigate(typeof(StartupPage), default, new SuppressNavigationTransitionInfo());
+        RootFrame.Navigate(typeof(StartupPage), null, new SuppressNavigationTransitionInfo());
 
         Activated += OnActivated;
         Closed += OnClosed;
@@ -52,10 +53,10 @@ public sealed partial class StartupWindow : WindowEx
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-        var localToken = _tokenResolver.GetToken();
+        BiliToken? localToken = _tokenResolver.GetToken();
         if (localToken is null)
         {
-            _startupViewModel.ExitCommand.Execute(default);
+            _startupViewModel.ExitCommand.Execute(false);
         }
     }
 
@@ -67,6 +68,6 @@ public sealed partial class StartupWindow : WindowEx
             return;
         }
 
-        _startupViewModel.ReloadQRCodeCommand.Execute(default);
+        _startupViewModel.ReloadQRCodeCommand.Execute(null);
     }
 }

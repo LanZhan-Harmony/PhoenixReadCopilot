@@ -53,7 +53,7 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
             return;
         }
 
-        SeasonScrollView?.ChangeView(0, 0, default, true);
+        SeasonScrollView?.ChangeView(0, 0, null, true);
         newValue.ItemsUpdated += OnItemsUpdatedAsync;
     }
 
@@ -77,7 +77,7 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
                     <= 240
                 )
                 {
-                    ViewModel.RequestIndexCommand.Execute(default);
+                    ViewModel.RequestIndexCommand.Execute(null);
                 }
             }
         );
@@ -99,7 +99,7 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
             {
                 if (SeasonScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.RequestIndexCommand.Execute(default);
+                    ViewModel.RequestIndexCommand.Execute(null);
                 }
             }
         );

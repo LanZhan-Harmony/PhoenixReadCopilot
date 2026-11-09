@@ -8,7 +8,7 @@ internal sealed partial class NotifyMessageTextConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var type = (NotifyMessageType)value;
+        NotifyMessageType type = (NotifyMessageType)value;
         return type switch
         {
             NotifyMessageType.Reply => Resources.ReplyMe,

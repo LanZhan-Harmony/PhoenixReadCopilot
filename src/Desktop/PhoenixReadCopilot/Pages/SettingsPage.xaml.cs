@@ -18,7 +18,7 @@ public sealed partial class SettingsPage : SettingsPageBase
     /// <inheritdoc/>
     protected override void OnPageLoaded()
     {
-        ViewModel.InitializeCommand.Execute(default);
+        ViewModel.InitializeCommand.Execute(null);
         GenericContainer.Visibility = Visibility.Visible;
     }
 }

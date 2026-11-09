@@ -45,5 +45,5 @@ public sealed partial class CommentDetailViewModel
     /// <summary>
     /// 评论回复列表.
     /// </summary>
-    public ObservableCollection<CommentItemViewModel> Comments { get; } = new();
+    public ObservableCollection<CommentItemViewModel> Comments { get; } = [];
 }

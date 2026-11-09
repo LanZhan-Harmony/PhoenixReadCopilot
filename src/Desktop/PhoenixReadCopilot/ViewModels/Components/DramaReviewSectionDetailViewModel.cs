@@ -32,7 +32,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
         PhoenixReadApiClient apiClient,
         AppViewModel appViewModel,
         ILogger logger,
-        Action<DramaReviewItemViewModel>? showMoreAction = default
+        Action<DramaReviewItemViewModel>? showMoreAction = null
     )
         : base(comment)
     {
@@ -47,7 +47,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
         UserName = comment.Author?.Name ?? "匿名观众";
         if (
             !string.IsNullOrEmpty(comment.Author?.AvatarUrl)
-            && Uri.TryCreate(comment.Author.AvatarUrl, UriKind.Absolute, out var avatarUri)
+            && Uri.TryCreate(comment.Author.AvatarUrl, UriKind.Absolute, out Uri? avatarUri)
         )
         {
             Avatar = avatarUri;
@@ -58,7 +58,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
 
         if (comment.CreatedAtUnixSeconds > 0)
         {
-            var time = DateTimeOffset
+            DateTimeOffset time = DateTimeOffset
                 .FromUnixTimeSeconds(comment.CreatedAtUnixSeconds)
                 .ToLocalTime();
             RelativeTime = time.Humanize();
@@ -70,12 +70,16 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
             ActualTime = string.Empty;
         }
 
-        var pictures = comment.Images?.Count > 0
-            ? comment.Images
-                .Where(img => !string.IsNullOrEmpty(img.Url) && Uri.TryCreate(img.Url, UriKind.Absolute, out _))
-                .Select(img => new AppImage(img))
-                .ToList()
-            : null;
+        List<AppImage>? pictures =
+            comment.Images?.Count > 0
+                ? comment
+                    .Images.Where(img =>
+                        !string.IsNullOrEmpty(img.Url)
+                        && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
+                    )
+                    .Select(img => new AppImage(img))
+                    .ToList()
+                : null;
         Content = new EmoteText(comment.Text, pictures);
     }
 
@@ -105,8 +109,8 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
 
         try
         {
-            var next = !IsLiked;
-            var res = await _apiClient.SetReviewLikeAsync(Id, _seriesId, next);
+            bool next = !IsLiked;
+            PhoenixOperationResult res = await _apiClient.SetReviewLikeAsync(Id, _seriesId, next);
             if (res.Succeeded)
             {
                 IsLiked = next;
@@ -289,11 +293,11 @@ public sealed partial class DramaReviewSectionDetailViewModel
 
         IsSending = true;
         OnPropertyChanged(nameof(CanSendReview));
-        var formatted = EmojiHelper.FormatEmojiText(content.Trim());
+        string formatted = EmojiHelper.FormatEmojiText(content.Trim());
         try
         {
-            var sendRating = Math.Clamp(Math.Round(Rating * 2.0) / 2.0, 0.5, 5.0);
-            var result = await _apiClient.SendDramaReviewAsync(
+            double sendRating = Math.Clamp(Math.Round(Rating * 2.0) / 2.0, 0.5, 5.0);
+            PhoenixOperationResult result = await _apiClient.SendDramaReviewAsync(
                 SeriesId,
                 sendRating,
                 formatted
@@ -323,11 +327,11 @@ public sealed partial class DramaReviewSectionDetailViewModel
     }
 
     [RelayCommand]
-    private void BackToMain() => SelectedItem = default;
+    private void BackToMain() => SelectedItem = null;
 
     private void ShowReviewDetail(DramaReviewItemViewModel item)
     {
-        var commentItemVm = new CommentItemViewModel(
+        CommentItemViewModel commentItemVm = new(
             item.Data,
             SeriesId,
             videoId: null,
@@ -345,7 +349,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
             SeriesId,
             videoId: null
         );
-        SelectedItem.InitializeCommand.Execute(default);
+        SelectedItem.InitializeCommand.Execute(null);
     }
 
     private async Task LoadItemsAsync()
@@ -359,7 +363,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         UpdateLoginState();
         try
         {
-            var page = await _apiClient.GetDramaReviewsAsync(
+            CommentPage page = await _apiClient.GetDramaReviewsAsync(
                 SeriesId,
                 count: 20,
                 cursor: _cursor,
@@ -369,7 +373,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
             _hasMore = page.HasMore;
             TotalCount = page.Total;
 
-            foreach (var item in page.Items)
+            foreach (DramaComment item in page.Items)
             {
                 if (!Reviews.Any(r => r.Id == item.Id))
                 {
@@ -405,6 +409,6 @@ public sealed partial class DramaReviewSectionDetailViewModel
         _hasMore = true;
         Reviews.Clear();
         IsEmpty = false;
-        SelectedItem = default;
+        SelectedItem = null;
     }
 }

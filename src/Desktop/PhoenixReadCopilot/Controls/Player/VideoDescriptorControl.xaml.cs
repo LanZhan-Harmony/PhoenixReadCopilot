@@ -21,7 +21,7 @@ public sealed partial class VideoDescriptorControl : VideoPlayerPageControlBase
 
     private void OnTagButtonClick(object sender, RoutedEventArgs e)
     {
-        var data = (sender as FrameworkElement).DataContext as string;
+        string? data = (sender as FrameworkElement).DataContext as string;
         _searchBoxViewModel.SearchCommand.Execute(data);
     }
 }

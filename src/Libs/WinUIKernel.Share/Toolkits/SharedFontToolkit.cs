@@ -17,7 +17,7 @@ public sealed class SharedFontToolkit : IFontToolkit
         {
             await Task.Run(() =>
             {
-                var fonts = new InstalledFontCollection();
+                InstalledFontCollection fonts = new();
                 _fonts.AddRange(
                     fonts
                         .Families.Where(p => p.IsStyleAvailable(FontStyle.Regular))

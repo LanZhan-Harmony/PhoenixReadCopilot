@@ -43,8 +43,8 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
 
         await LoadGroupsAsync();
         await Task.Delay(200);
-        var lastSelectedGroupId = _settings.FollowsPageLastSelectedGroupId;
-        var group =
+        string lastSelectedGroupId = _settings.FollowsPageLastSelectedGroupId;
+        UserGroup group =
             Groups.FirstOrDefault(p => p.Id == lastSelectedGroupId)
             ?? Groups.FirstOrDefault(p => p.TotalCount > 0)
             ?? Groups.First();
@@ -73,9 +73,9 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
             async () =>
             {
                 Users.Clear();
-                if (_userCache.TryGetValue(group, out var list))
+                if (_userCache.TryGetValue(group, out List<UserItemViewModel>? list))
                 {
-                    foreach (var user in list)
+                    foreach (UserItemViewModel user in list)
                     {
                         Users.Add(user);
                     }
@@ -108,20 +108,18 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         IsUserLoading = true;
         try
         {
-            var pn = 0;
-            if (_offsetCache.TryGetValue(SelectedGroup, out var value))
+            int pn = 0;
+            if (_offsetCache.TryGetValue(SelectedGroup, out int value))
             {
                 pn = value;
             }
 
-            var (users, nextOffset) = await _service.GetMyFollowUserGroupDetailAsync(
-                SelectedGroup.Id,
-                pn
-            );
+            (IReadOnlyList<UserCard>? users, int nextOffset) =
+                await _service.GetMyFollowUserGroupDetailAsync(SelectedGroup.Id, pn);
             _offsetCache[SelectedGroup] = nextOffset;
             if (users != null)
             {
-                foreach (var item in users)
+                foreach (UserCard item in users)
                 {
                     Users.Add(new UserItemViewModel(item));
                 }
@@ -148,7 +146,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
                 Groups.Clear();
                 _userCache.Clear();
                 _offsetCache.Clear();
-                SelectedGroup = default;
+                SelectedGroup = null;
                 await InitializeAsync();
             }
         );
@@ -159,10 +157,10 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         IsGroupLoading = true;
         try
         {
-            var groups = await _service.GetMyFollowUserGroupsAsync();
+            IReadOnlyList<UserGroup> groups = await _service.GetMyFollowUserGroupsAsync();
             if (groups != null)
             {
-                foreach (var item in groups)
+                foreach (UserGroup item in groups)
                 {
                     Groups.Add(item);
                 }

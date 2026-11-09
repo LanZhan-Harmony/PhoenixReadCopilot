@@ -25,7 +25,7 @@ public sealed partial class ComprehensiveSideBody : ComprehensiveSectionControlB
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        SectionView.ItemsSource = default;
+        SectionView.ItemsSource = null;
         ViewModel?.Initialized -= OnInitialized;
 
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
@@ -38,7 +38,7 @@ public sealed partial class ComprehensiveSideBody : ComprehensiveSectionControlB
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        var item = sender.SelectedItem as MomentUperSectionViewModel;
+        MomentUperSectionViewModel? item = sender.SelectedItem as MomentUperSectionViewModel;
         ViewModel?.SelectUperCommand.Execute(item);
     }
 

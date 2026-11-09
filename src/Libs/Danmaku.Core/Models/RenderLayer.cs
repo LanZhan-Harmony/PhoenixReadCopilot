@@ -24,7 +24,7 @@ internal sealed class RenderLayer
     /// <summary>
     /// 渲染项列表.
     /// </summary>
-    public readonly List<DanmakuDirectXRenderItem> RenderList = new();
+    public readonly List<DanmakuDirectXRenderItem> RenderList = [];
 
     /// <summary>
     /// Y 轴槽位管理器.
@@ -53,13 +53,18 @@ internal sealed class RenderLayer
     /// <param name="rollingLayerAreaRatio">滚动图层区域比例.</param>
     public void UpdateYSlotManagerLength(uint newLength, float rollingLayerAreaRatio)
     {
-        if (_layerId == DanmakuDefaultLayerDef.RollingLayerId || _layerId == DanmakuDefaultLayerDef.ReverseRollingLayerId)
+        if (
+            _layerId == DanmakuDefaultLayerDef.RollingLayerId
+            || _layerId == DanmakuDefaultLayerDef.ReverseRollingLayerId
+        )
         {
             YSlotManager.UpdateLength((uint)Math.Floor(newLength * rollingLayerAreaRatio));
         }
         else if (_layerId == DanmakuDefaultLayerDef.TopLayerId)
         {
-            YSlotManager.UpdateLength((uint)Math.Floor(newLength * System.Math.Min(rollingLayerAreaRatio, 0.75)));
+            YSlotManager.UpdateLength(
+                (uint)Math.Floor(newLength * System.Math.Min(rollingLayerAreaRatio, 0.75))
+            );
         }
         else if (_layerId == DanmakuDefaultLayerDef.BottomLayerId)
         {

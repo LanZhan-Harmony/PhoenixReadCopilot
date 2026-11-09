@@ -22,8 +22,8 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         ILogger<CommentMainViewModel> logger,
         DispatcherQueue dispatcherQueue,
         ILoggerFactory loggerFactory,
-        PhoenixReadApiClient? apiClient = default,
-        AppViewModel? appViewModel = default
+        PhoenixReadApiClient? apiClient = null,
+        AppViewModel? appViewModel = null
     )
     {
         _logger = logger;
@@ -88,10 +88,10 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        var targetSeriesId = _seriesId;
-        var targetVideoId = _videoId;
-        var targetId = Id;
-        var sortType = SortType;
+        string targetSeriesId = _seriesId;
+        string targetVideoId = _videoId;
+        string targetId = Id;
+        CommentSortOrder sortType = SortType;
 
         Clear();
 
@@ -106,7 +106,13 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        if (string.IsNullOrEmpty(Id) || IsLoading || _preventLoadMore || IsEmpty || _apiClient is null)
+        if (
+            string.IsNullOrEmpty(Id)
+            || IsLoading
+            || _preventLoadMore
+            || IsEmpty
+            || _apiClient is null
+        )
         {
             return;
         }
@@ -121,7 +127,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         try
         {
             IsLoading = true;
-            var page = await _apiClient.GetEpisodeCommentsAsync(
+            CommentPage page = await _apiClient.GetEpisodeCommentsAsync(
                 _seriesId,
                 _videoId,
                 count: 20,
@@ -132,14 +138,14 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             _preventLoadMore = !page.HasMore;
             TopItem = null;
 
-            foreach (var item in page.Items)
+            foreach (DramaComment item in page.Items)
             {
                 if (Comments.Any(p => p.Data.Id == item.Id))
                 {
                     continue;
                 }
 
-                var itemVm = new CommentItemViewModel(
+                CommentItemViewModel itemVm = new(
                     item,
                     _seriesId,
                     _videoId,
@@ -183,7 +189,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     }
 
     [RelayCommand]
-    private void BackToMain() => SelectedItem = default;
+    private void BackToMain() => SelectedItem = null;
 
     [RelayCommand]
     private async Task SendReplyAsync(string content)
@@ -195,11 +201,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         content = EmojiHelper.FormatEmojiText(content.Trim());
 
-        if (
-            _apiClient is null
-            || string.IsNullOrEmpty(_seriesId)
-            || string.IsNullOrEmpty(_videoId)
-        )
+        if (_apiClient is null || string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(_videoId))
         {
             return;
         }
@@ -270,12 +272,12 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
     private void Clear()
     {
-        TopItem?.ClearCommand.Execute(default);
+        TopItem?.ClearCommand.Execute(null);
         if (Comments is not null)
         {
-            foreach (var item in Comments)
+            foreach (CommentDetailViewModel item in Comments)
             {
-                item.ClearCommand.Execute(default);
+                item.ClearCommand.Execute(null);
             }
         }
 
@@ -286,8 +288,8 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         _seriesId = string.Empty;
         _videoId = string.Empty;
         IsEmpty = false;
-        TopItem = default;
-        SelectedItem = default;
+        TopItem = null;
+        SelectedItem = null;
         ResetReplyTarget();
     }
 }

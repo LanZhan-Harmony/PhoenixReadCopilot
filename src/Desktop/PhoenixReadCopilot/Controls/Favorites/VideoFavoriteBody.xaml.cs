@@ -75,7 +75,7 @@ public sealed partial class VideoFavoriteBody : VideoFavoriteControlBase
                     <= 240
                 )
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );
@@ -97,7 +97,7 @@ public sealed partial class VideoFavoriteBody : VideoFavoriteControlBase
             {
                 if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );

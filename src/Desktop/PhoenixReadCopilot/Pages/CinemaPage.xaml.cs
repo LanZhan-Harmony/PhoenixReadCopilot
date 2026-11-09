@@ -15,7 +15,7 @@ public partial class CinemaPage : CinemaPageBase
     public CinemaPage() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
 }
 
 /// <summary>

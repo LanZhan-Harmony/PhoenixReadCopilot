@@ -16,7 +16,7 @@ public sealed partial class AppTitleBar
         nameof(Header),
         typeof(object),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnHeaderChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnHeaderChanged))
     );
 
     /// <summary>
@@ -26,7 +26,7 @@ public sealed partial class AppTitleBar
         nameof(LeftEdgeElement),
         typeof(object),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnLeftEdgeElementChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnLeftEdgeElementChanged))
     );
 
     /// <summary>
@@ -36,7 +36,7 @@ public sealed partial class AppTitleBar
         nameof(IconElement),
         typeof(IconElement),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnIconElementChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnIconElementChanged))
     );
 
     /// <summary>
@@ -46,7 +46,7 @@ public sealed partial class AppTitleBar
         nameof(Title),
         typeof(string),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnTitleChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnTitleChanged))
     );
 
     /// <summary>
@@ -56,7 +56,7 @@ public sealed partial class AppTitleBar
         nameof(Subtitle),
         typeof(string),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnSubtitleChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnSubtitleChanged))
     );
 
     /// <summary>
@@ -66,7 +66,7 @@ public sealed partial class AppTitleBar
         nameof(Content),
         typeof(object),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnContentChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnContentChanged))
     );
 
     /// <summary>
@@ -76,7 +76,7 @@ public sealed partial class AppTitleBar
         nameof(Footer),
         typeof(object),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnFooterChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnFooterChanged))
     );
 
     /// <summary>
@@ -97,7 +97,7 @@ public sealed partial class AppTitleBar
         nameof(IsBackButtonVisible),
         typeof(bool),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnIsBackEnabledChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnIsBackEnabledChanged))
     );
 
     /// <summary>
@@ -109,7 +109,7 @@ public sealed partial class AppTitleBar
             typeof(bool),
             typeof(AppTitleBar),
             new PropertyMetadata(
-                default,
+                null,
                 new PropertyChangedCallback(OnIsPaneToggleButtonVisibleChanged)
             )
         );
@@ -122,7 +122,7 @@ public sealed partial class AppTitleBar
             nameof(TemplateSettings),
             typeof(AppTitleBarTemplateSettings),
             typeof(AppTitleBar),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -142,7 +142,7 @@ public sealed partial class AppTitleBar
         nameof(CenterContent),
         typeof(object),
         typeof(AppTitleBar),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnCenterContentChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnCenterContentChanged))
     );
 
     /// <summary>
@@ -152,7 +152,7 @@ public sealed partial class AppTitleBar
         nameof(TitleForeground),
         typeof(Brush),
         typeof(AppTitleBar),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

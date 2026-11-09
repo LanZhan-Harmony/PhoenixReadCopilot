@@ -84,7 +84,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        var state = !IsLiked;
+        bool state = !IsLiked;
         try
         {
             if (state)
@@ -115,7 +115,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             if (!TryOpenInNewWindowIfPreferred() && !TryOpenInWebPlayerIfPreferred())
             {
-                var snapshot = new VideoSnapshot(vinfo);
+                VideoSnapshot snapshot = new(vinfo);
                 ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), snapshot);
             }
         }
@@ -123,34 +123,30 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             if (!TryOpenInNewWindowIfPreferred() && !TryOpenInWebPlayerIfPreferred())
             {
-                var hasEpid = einfo.Identifier.Id != "0";
+                bool hasEpid = einfo.Identifier.Id != "0";
                 if (hasEpid)
                 {
-                    var identifier = new MediaIdentifier(
-                        "ep_" + einfo.Identifier.Id,
-                        default,
-                        default
-                    );
+                    MediaIdentifier identifier = new("ep_" + einfo.Identifier.Id, null, null);
                     ItemServices.Navigation.NavigateToOver(typeof(PgcPlayerPage), identifier);
                 }
                 else
                 {
                     // 出差番剧，使用网页打开.
-                    OpenInBroswerCommand.Execute(default);
+                    OpenInBroswerCommand.Execute(null);
                 }
             }
         }
         else if (FindInnerContent<IEnumerable<BiliImage>>() is not IEnumerable<BiliImage>)
         {
-            OpenInBroswerCommand.Execute(default);
+            OpenInBroswerCommand.Execute(null);
         }
 
         bool TryOpenInNewWindowIfPreferred()
         {
-            var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
+            PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
-                OpenInNewWindowCommand.Execute(default);
+                OpenInNewWindowCommand.Execute(null);
                 return true;
             }
 
@@ -159,10 +155,10 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         bool TryOpenInWebPlayerIfPreferred()
         {
-            var preferPlayer = ItemServices.Settings.PlayerType;
+            PlayerType preferPlayer = ItemServices.Settings.PlayerType;
             if (preferPlayer == PlayerType.Web)
             {
-                var webUrl = GetMediaUrl();
+                string? webUrl = GetMediaUrl();
                 if (webUrl is not null)
                 {
                     ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), webUrl);
@@ -182,24 +178,24 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     [RelayCommand]
     private void PlayInPrivate()
     {
-        var vinfo = FindInnerContent<VideoInformation>();
+        VideoInformation? vinfo = FindInnerContent<VideoInformation>();
         if (vinfo is null)
         {
             return;
         }
 
-        var snapshot = new VideoSnapshot(vinfo, true);
+        VideoSnapshot snapshot = new(vinfo, true);
         ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), snapshot);
     }
 
     [RelayCommand]
     private async Task AddToViewLaterAsync()
     {
-        var vinfo = FindInnerContent<VideoInformation>();
-        var aid = string.Empty;
+        VideoInformation? vinfo = FindInnerContent<VideoInformation>();
+        string aid = string.Empty;
         if (vinfo is null)
         {
-            var einfo = FindInnerContent<EpisodeInformation>();
+            EpisodeInformation? einfo = FindInnerContent<EpisodeInformation>();
             if (einfo is null)
             {
                 return;
@@ -229,7 +225,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     [RelayCommand]
     private async Task OpenInBroswerAsync()
     {
-        var url = GetMediaUrl() ?? $"https://t.bilibili.com/{Data.Id}";
+        string url = GetMediaUrl() ?? $"https://t.bilibili.com/{Data.Id}";
         await Launcher.LaunchUriAsync(new Uri(url));
     }
 
@@ -248,15 +244,15 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                 new PlayerWindow().OpenPgc(
                     new MediaIdentifier(
                         $"ss_{einfo.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.SeasonId)}",
-                        default,
-                        default
+                        null,
+                        null
                     )
                 );
             }
             else
             {
                 new PlayerWindow().OpenPgc(
-                    new MediaIdentifier($"ep_{einfo.Identifier.Id}", default, default)
+                    new MediaIdentifier($"ep_{einfo.Identifier.Id}", null, null)
                 );
             }
         }
@@ -265,10 +261,10 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     [RelayCommand]
     private void CopyUrl()
     {
-        var url = GetMediaUrl();
+        string? url = GetMediaUrl();
         if (url is not null)
         {
-            var dataPackage = new DataPackage();
+            DataPackage dataPackage = new();
             dataPackage.SetText(url);
             dataPackage.SetWebLink(new Uri(url));
             Clipboard.SetContent(dataPackage);
@@ -279,7 +275,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     [RelayCommand]
     private void Pin()
     {
-        PinItem pinItem = default;
+        PinItem pinItem = null;
         if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
         {
             pinItem = new PinItem(
@@ -324,7 +320,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             if (episodeInformation.Identifier.Id == "0")
             {
                 // 出差番剧.
-                var ssid = episodeInformation.GetExtensionIfNotNull<long>(
+                long ssid = episodeInformation.GetExtensionIfNotNull<long>(
                     EpisodeExtensionDataId.SeasonId
                 );
                 return $"https://www.bilibili.com/bangumi/play/ss{ssid}";
@@ -333,7 +329,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             return $"https://www.bilibili.com/bangumi/play/ep{episodeInformation.Identifier.Id}";
         }
 
-        return default;
+        return null;
     }
 
     private T? FindInnerContent<T>()
@@ -348,6 +344,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             return info2;
         }
 
-        return default;
+        return null;
     }
 }

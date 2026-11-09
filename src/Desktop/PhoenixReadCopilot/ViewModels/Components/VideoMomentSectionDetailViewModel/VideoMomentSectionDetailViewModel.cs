@@ -6,6 +6,7 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
 using Richasy.BiliKernel.Bili.Moment;
+using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -50,8 +51,8 @@ public sealed partial class VideoMomentSectionDetailViewModel
     [RelayCommand]
     private void Refresh()
     {
-        _offset = default;
-        _baseline = default;
+        _offset = null;
+        _baseline = null;
         IsEmpty = false;
         _preventLoadMore = false;
         Items.Clear();
@@ -76,14 +77,14 @@ public sealed partial class VideoMomentSectionDetailViewModel
         try
         {
             IsLoading = true;
-            var view = await _service.GetVideoMomentsAsync(_offset, _baseline);
+            MomentView? view = await _service.GetVideoMomentsAsync(_offset, _baseline);
             if (view is not null)
             {
                 _offset = view.Offset;
                 _baseline = view.UpdateBaseline;
                 _preventLoadMore = view.HasMoreMoments != true;
                 foreach (
-                    var item in view.Moments.Select(p => new MomentItemViewModel(
+                    MomentItemViewModel? item in view.Moments.Select(p => new MomentItemViewModel(
                         p,
                         MomentCardStyle.Video,
                         ShowComment
@@ -113,8 +114,8 @@ public sealed partial class VideoMomentSectionDetailViewModel
 
     private void SaveLastTenMomentIds()
     {
-        var momentIds = Items.Take(10).Select(p => p.Data.Id).ToList();
-        var lastTenMomentIds = string.Join(',', momentIds);
+        List<string> momentIds = Items.Take(10).Select(p => p.Data.Id).ToList();
+        string lastTenMomentIds = string.Join(',', momentIds);
         _settings.LastTenMomentIds = lastTenMomentIds;
     }
 }

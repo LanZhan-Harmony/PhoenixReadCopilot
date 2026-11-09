@@ -68,7 +68,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         {
             if (string.IsNullOrEmpty(_extraRegionId))
             {
-                var isRecommendEnabled = _settings.ShowSearchRecommend;
+                bool isRecommendEnabled = _settings.ShowSearchRecommend;
                 if (!isRecommendEnabled)
                 {
                     _recommendItems.Clear();
@@ -78,7 +78,8 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
                 if (_recommendItems.Count == 0)
                 {
-                    var recommends = await _searchService.GetSearchRecommendsAsync();
+                    IReadOnlyList<SearchRecommendItem> recommends =
+                        await _searchService.GetSearchRecommendsAsync();
                     _recommendItems.AddRange(recommends);
                 }
 
@@ -88,7 +89,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 }
 
                 Suggestion.Clear();
-                foreach (var item in _recommendItems)
+                foreach (SearchRecommendItem item in _recommendItems)
                 {
                     Suggestion.Add(new(new SearchSuggestItem(item.Text, item.Keyword)));
                 }
@@ -108,13 +109,14 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 {
                     Suggestion.Clear();
                     _cancellationTokenSource = new CancellationTokenSource();
-                    var suggests = await _searchService.GetSearchSuggestsAsync(
-                        Keyword,
-                        _cancellationTokenSource.Token
-                    );
+                    IReadOnlyList<SearchSuggestItem>? suggests =
+                        await _searchService.GetSearchSuggestsAsync(
+                            Keyword,
+                            _cancellationTokenSource.Token
+                        );
                     if (suggests is not null)
                     {
-                        foreach (var item in suggests)
+                        foreach (SearchSuggestItem item in suggests)
                         {
                             Suggestion.Add(new(item));
                         }
@@ -127,7 +129,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
             }
             else
             {
-                foreach (var item in Suggestion)
+                foreach (SearchSuggestItemViewModel item in Suggestion)
                 {
                     item.SearchContent = Keyword;
                     item.Keyword = Keyword;
@@ -147,8 +149,10 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         IsHotSearchLoading = true;
         try
         {
-            var hotSearches = await _searchService.GetTotalHotSearchAsync(30);
-            foreach (var item in hotSearches)
+            IReadOnlyList<HotSearchItem> hotSearches = await _searchService.GetTotalHotSearchAsync(
+                30
+            );
+            foreach (HotSearchItem item in hotSearches)
             {
                 HotSearchItems.Add(item);
             }
@@ -175,7 +179,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     [RelayCommand]
     private void Search(SearchSuggestItemViewModel vm)
     {
-        var keyword = vm.Keyword;
+        string keyword = vm.Keyword;
         if (string.IsNullOrEmpty(keyword))
         {
             return;

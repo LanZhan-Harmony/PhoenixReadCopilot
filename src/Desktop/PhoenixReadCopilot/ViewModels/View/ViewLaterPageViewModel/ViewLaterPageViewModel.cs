@@ -9,6 +9,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -66,7 +67,8 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         IsLoading = true;
         try
         {
-            var (videos, totalCount, nextPage) = await _service.GetViewLaterSetAsync(_pageNumber);
+            (IReadOnlyList<VideoInformation>? videos, int totalCount, int nextPage) =
+                await _service.GetViewLaterSetAsync(_pageNumber);
             if (Videos.Count == 0 && (videos is null || videos.Count == 0 || totalCount == 0))
             {
                 IsEmpty = true;
@@ -75,7 +77,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
             {
                 _pageNumber = nextPage;
                 TotalCount = totalCount;
-                foreach (var item in videos)
+                foreach (VideoInformation item in videos)
                 {
                     if (Videos.Any(p => p.Data.Identifier.Id == item.Identifier.Id))
                     {
@@ -123,10 +125,10 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private void PlayAll()
     {
-        var preferDisplayMode = _settings.DefaultPlayerDisplayMode;
+        PlayerDisplayMode preferDisplayMode = _settings.DefaultPlayerDisplayMode;
         if (Videos.Count == 1)
         {
-            var video = Videos.First();
+            VideoItemViewModel video = Videos.First();
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
                 new PlayerWindow().OpenVideo(new VideoSnapshot(video.Data));
@@ -140,7 +142,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         }
         else
         {
-            var data = (
+            (List<VideoInformation>, VideoSnapshot) data = (
                 Videos.Select(p => p.Data).ToList(),
                 new VideoSnapshot(Videos.First().Data)
             );

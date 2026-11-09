@@ -8,6 +8,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -92,7 +93,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        var sectionSettingValue = string.Empty;
+        string sectionSettingValue = string.Empty;
         if (vm is PgcFavoriteSectionDetailViewModel pgcVM)
         {
             sectionSettingValue = $"pgc_{pgcVM.Type}";
@@ -108,28 +109,28 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
 
         _settings.LastSelectedFavoriteSection = sectionSettingValue;
         CurrentSection = vm;
-        CurrentSection.TryFirstLoadCommand.Execute(default);
+        CurrentSection.TryFirstLoadCommand.Execute(null);
     }
 
     private void RestoreSelection()
     {
-        var lastSelectedSection = _settings.LastSelectedFavoriteSection;
+        string lastSelectedSection = _settings.LastSelectedFavoriteSection;
         if (string.IsNullOrEmpty(lastSelectedSection))
         {
             SelectSection(Sections.First());
             return;
         }
 
-        var isSelected = false;
+        bool isSelected = false;
         if (lastSelectedSection.StartsWith("pgc"))
         {
-            var isSuccess = Enum.TryParse<PgcFavoriteType>(
+            bool isSuccess = Enum.TryParse<PgcFavoriteType>(
                 lastSelectedSection.Replace("pgc_", string.Empty),
-                out var type
+                out PgcFavoriteType type
             );
             if (isSuccess)
             {
-                var section = Sections
+                PgcFavoriteSectionDetailViewModel? section = Sections
                     .OfType<PgcFavoriteSectionDetailViewModel>()
                     .FirstOrDefault(p => p.Type == type);
                 if (section is not null)
@@ -141,8 +142,8 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         }
         else if (lastSelectedSection.StartsWith("video"))
         {
-            var id = lastSelectedSection.Replace("video_", string.Empty);
-            var section = Sections
+            string id = lastSelectedSection.Replace("video_", string.Empty);
+            VideoFavoriteSectionDetailViewModel? section = Sections
                 .OfType<VideoFavoriteSectionDetailViewModel>()
                 .FirstOrDefault(p => p.Data.Id == id);
             if (section is not null)
@@ -153,8 +154,8 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         }
         else if (lastSelectedSection.StartsWith("ugc"))
         {
-            var id = lastSelectedSection.Replace("ugc_", string.Empty);
-            var section = Sections
+            string id = lastSelectedSection.Replace("ugc_", string.Empty);
+            UgcSeasonFavoriteSectionDetailViewModel? section = Sections
                 .OfType<UgcSeasonFavoriteSectionDetailViewModel>()
                 .FirstOrDefault(p => p.Data.Id == id);
             if (section is not null)
@@ -174,8 +175,11 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     {
         try
         {
-            var (groups, defaultGroup) = await _service.GetVideoFavoriteGroupsAsync();
-            var defaultGroupVM = new VideoFavoriteSectionDetailViewModel(
+            (
+                IReadOnlyList<VideoFavoriteFolderGroup>? groups,
+                VideoFavoriteFolderDetail? defaultGroup
+            ) = await _service.GetVideoFavoriteGroupsAsync();
+            VideoFavoriteSectionDetailViewModel defaultGroupVM = new(
                 defaultGroup.Folder,
                 _service,
                 _navigationViewModel,
@@ -185,18 +189,18 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             defaultGroupVM.InjectFirstPageData(defaultGroup);
             Sections.Add(defaultGroupVM);
 
-            foreach (var group in groups)
+            foreach (VideoFavoriteFolderGroup group in groups)
             {
-                foreach (var folder in group.Folders)
+                foreach (VideoFavoriteFolder folder in group.Folders)
                 {
-                    var folderVM =
+                    IFavoriteSectionDetailViewModel folderVM =
                         folder.IsUgcSeason == true
                             ? (IFavoriteSectionDetailViewModel)
-                            new UgcSeasonFavoriteSectionDetailViewModel(
-                                folder,
-                                _service,
-                                _loggerFactory.CreateLogger<UgcSeasonFavoriteSectionDetailViewModel>()
-                            )
+                                new UgcSeasonFavoriteSectionDetailViewModel(
+                                    folder,
+                                    _service,
+                                    _loggerFactory.CreateLogger<UgcSeasonFavoriteSectionDetailViewModel>()
+                                )
                             : new VideoFavoriteSectionDetailViewModel(
                                 folder,
                                 _service,

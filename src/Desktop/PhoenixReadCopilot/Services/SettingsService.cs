@@ -85,7 +85,7 @@ public sealed class SettingsService : ISettingsService, IDisposable
 
     public async Task FlushAsync()
     {
-        var executed = await _writeSettingsDebouncer.FlushAsync();
+        bool executed = await _writeSettingsDebouncer.FlushAsync();
         if (!executed)
         {
             await SaveToDiskInternalAsync();

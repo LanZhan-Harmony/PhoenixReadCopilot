@@ -14,9 +14,9 @@ public sealed partial class VideoPartitionDetailViewModel
 {
     private readonly ILogger<VideoPartitionDetailViewModel> _logger;
     private readonly IVideoDiscoveryService _service;
-    private readonly Dictionary<string, List<VideoItemViewModel>> _childPartitionVideoCache = new();
+    private readonly Dictionary<string, List<VideoItemViewModel>> _childPartitionVideoCache = [];
     private readonly Dictionary<string, (long Offset, int PageNumber)> _childPartitionOffsetCache =
-        new();
+    [];
 
     private List<VideoItemViewModel> _recommendVideoCache;
     private long _recommendOffset;
@@ -52,5 +52,5 @@ public sealed partial class VideoPartitionDetailViewModel
     /// <summary>
     /// 显示的视频列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Videos { get; } = new();
+    public ObservableCollection<VideoItemViewModel> Videos { get; } = [];
 }

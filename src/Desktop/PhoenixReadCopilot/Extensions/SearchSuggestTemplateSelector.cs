@@ -15,7 +15,7 @@ internal sealed partial class SearchSuggestTemplateSelector : DataTemplateSelect
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
-        var data = item as SearchSuggestItemViewModel;
+        SearchSuggestItemViewModel? data = item as SearchSuggestItemViewModel;
         return string.IsNullOrEmpty(data.RegionId) ? BasicTemplate : RegionTemplate;
     }
 }

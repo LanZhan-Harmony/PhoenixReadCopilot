@@ -20,7 +20,7 @@ public sealed partial class VideoSeasonSection : VideoSeasonSectionBase
     /// <inheritdoc/>
     protected override void OnControlLoaded() => CheckSelectedItem();
 
-    protected override void OnControlUnloaded() => View.ItemsSource = default;
+    protected override void OnControlUnloaded() => View.ItemsSource = null;
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(
@@ -30,14 +30,14 @@ public sealed partial class VideoSeasonSection : VideoSeasonSectionBase
 
     private void OnSeasonChanged(object sender, SelectionChangedEventArgs e)
     {
-        var season = SeasonComboBox.SelectedItem as VideoSeason;
+        VideoSeason? season = SeasonComboBox.SelectedItem as VideoSeason;
         ViewModel.ChangeSeasonCommand.Execute(season);
         CheckSelectedItem();
     }
 
     private void OnVideoSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var item = sender.SelectedItem as VideoItemViewModel;
+        VideoItemViewModel? item = sender.SelectedItem as VideoItemViewModel;
         if (item is not null && ViewModel.SelectedItem != item)
         {
             ViewModel.SelectedItem = item;
@@ -52,7 +52,7 @@ public sealed partial class VideoSeasonSection : VideoSeasonSectionBase
             return;
         }
 
-        var index = ViewModel.Items.ToList().IndexOf(ViewModel.SelectedItem);
+        int index = ViewModel.Items.ToList().IndexOf(ViewModel.SelectedItem);
         View.Select(index);
     }
 }

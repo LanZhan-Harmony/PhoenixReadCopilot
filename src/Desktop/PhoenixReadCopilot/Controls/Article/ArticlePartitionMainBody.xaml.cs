@@ -75,7 +75,7 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
                     <= 240
                 )
                 {
-                    ViewModel.LoadArticlesCommand.Execute(default);
+                    ViewModel.LoadArticlesCommand.Execute(null);
                 }
             }
         );
@@ -97,7 +97,7 @@ public sealed partial class ArticlePartitionMainBody : ArticlePartitionDetailCon
             {
                 if (ArticleScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadArticlesCommand.Execute(default);
+                    ViewModel.LoadArticlesCommand.Execute(null);
                 }
             }
         );

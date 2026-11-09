@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Controls.Pgc;
@@ -71,9 +72,9 @@ public sealed partial class CinemaSideHeader : CinemaPageControlBase
             return;
         }
 
-        foreach (var vm in ViewModel.Sections)
+        foreach (EntertainmentIndexViewModel vm in ViewModel.Sections)
         {
-            var item = SectionTemplate.LoadContent() as SelectorBarItem;
+            SelectorBarItem? item = SectionTemplate.LoadContent() as SelectorBarItem;
             item.DataContext = vm;
             SectionSelector.Items.Add(item);
         }

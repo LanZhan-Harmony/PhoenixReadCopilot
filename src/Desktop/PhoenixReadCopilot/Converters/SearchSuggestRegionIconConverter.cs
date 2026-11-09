@@ -6,7 +6,7 @@ internal sealed partial class SearchSuggestRegionIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var id = value as string;
+        string? id = value as string;
         return id switch
         {
             "space" => FluentIcons.Common.Symbol.Person,

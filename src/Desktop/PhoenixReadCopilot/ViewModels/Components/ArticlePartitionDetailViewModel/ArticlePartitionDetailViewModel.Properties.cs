@@ -16,8 +16,8 @@ public sealed partial class ArticlePartitionDetailViewModel
     private readonly ILogger<ArticlePartitionDetailViewModel> _logger;
     private readonly IArticleDiscoveryService _service;
     private readonly Dictionary<string, List<ArticleItemViewModel>> _childPartitionArticleCache =
-        new();
-    private readonly Dictionary<string, int> _childPartitionOffsetCache = new();
+    [];
+    private readonly Dictionary<string, int> _childPartitionOffsetCache = [];
     private readonly bool _isRecommendPartition;
     private readonly bool _isHotPartition;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -57,5 +57,5 @@ public sealed partial class ArticlePartitionDetailViewModel
     /// <summary>
     /// 显示的文章列表.
     /// </summary>
-    public ObservableCollection<ArticleItemViewModel> Articles { get; } = new();
+    public ObservableCollection<ArticleItemViewModel> Articles { get; } = [];
 }

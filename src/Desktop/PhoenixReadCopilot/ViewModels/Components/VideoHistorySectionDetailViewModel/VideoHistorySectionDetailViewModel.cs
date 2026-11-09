@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
+using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -58,12 +59,12 @@ public sealed partial class VideoHistorySectionDetailViewModel
         try
         {
             IsLoading = true;
-            var group = await _service.GetViewHistoryAsync(Type, _offset);
+            ViewHistoryGroup? group = await _service.GetViewHistoryAsync(Type, _offset);
             _offset = group.Offset ?? 0;
             _isPreventLoadMore = group is null || _offset == 0;
             if (group.Videos is not null)
             {
-                foreach (var video in group.Videos)
+                foreach (VideoInformation video in group.Videos)
                 {
                     Items.Add(
                         new VideoItemViewModel(

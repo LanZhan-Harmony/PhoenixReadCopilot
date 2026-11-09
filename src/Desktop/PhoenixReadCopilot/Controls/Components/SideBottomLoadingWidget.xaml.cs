@@ -15,7 +15,7 @@ public sealed partial class SideBottomLoadingWidget : UserControl
         nameof(Text),
         typeof(string),
         typeof(SideBottomLoadingWidget),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

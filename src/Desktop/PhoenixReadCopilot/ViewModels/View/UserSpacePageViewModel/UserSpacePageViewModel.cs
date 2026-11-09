@@ -11,6 +11,8 @@ using Richasy.BiliKernel.Bili.Moment;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Media;
+using Richasy.BiliKernel.Models.Moment;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -54,7 +56,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     private async Task InitializeAsync(UserProfile profile)
     {
         _profile = profile;
-        Card = default;
+        Card = null;
         UserName = profile.Name;
         if (IsSearchMode)
         {
@@ -63,23 +65,23 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         if (Sections is null)
         {
-            Sections = new List<UserMomentDetailViewModel>
-            {
-                new UserMomentDetailViewModel(
+            Sections =
+            [
+                new(
                     _momentDiscoveryService,
                     _loggerFactory.CreateLogger<UserMomentDetailViewModel>()
                 ),
-                new UserMomentDetailViewModel(
+                new(
                     _momentDiscoveryService,
                     _loggerFactory.CreateLogger<UserMomentDetailViewModel>()
                 ),
-            };
+            ];
 
             Sections.ElementAt(0).SetIsVideo(true);
             Sections.ElementAt(1).SetIsVideo(false);
         }
 
-        foreach (var item in Sections)
+        foreach (UserMomentDetailViewModel item in Sections)
         {
             item.SetShowCommentAction(ShowComment);
             item.ResetCommand.Execute(profile);
@@ -87,13 +89,15 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         if (SelectedSection is null)
         {
-            var isLastVideoSection = _settings.LastUserSpaceSectionIsVideo;
-            var section = isLastVideoSection ? Sections.First() : Sections.Last();
+            bool isLastVideoSection = _settings.LastUserSpaceSectionIsVideo;
+            UserMomentDetailViewModel section = isLastVideoSection
+                ? Sections.First()
+                : Sections.Last();
             SelectSection(section);
         }
         else
         {
-            SelectedSection.InitializeCommand.Execute(default);
+            SelectedSection.InitializeCommand.Execute(null);
         }
 
         await InitializeRelationAsync();
@@ -107,7 +111,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         ExitSearch();
         SearchKeyword = text;
         IsSearchMode = true;
-        LoadMoreSearchResultCommand.Execute(default);
+        LoadMoreSearchResultCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -115,12 +119,12 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     {
         if (IsSearchMode)
         {
-            var keyword = SearchKeyword;
+            string keyword = SearchKeyword;
             SearchCommand.Execute(keyword);
             return;
         }
 
-        await SelectedSection?.RefreshCommand.ExecuteAsync(default);
+        await SelectedSection?.RefreshCommand.ExecuteAsync(null);
     }
 
     [RelayCommand]
@@ -133,7 +137,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         SelectedSection = section;
         _settings.LastUserSpaceSectionIsVideo = SelectedSection.IsVideo();
-        SelectedSection.InitializeCommand.Execute(default);
+        SelectedSection.InitializeCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -176,7 +180,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(
+        PinItem pinItem = new(
             _profile.Id,
             _profile.Name,
             _profile.Avatar.Uri.ToString(),
@@ -218,16 +222,17 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             IsSearching = true;
             _searchCancellationTokenSource = new CancellationTokenSource();
-            var (videos, total, hasMore) = await _searchService.SearchUserVideosAsync(
-                _profile.Id,
-                SearchKeyword,
-                _searchPn,
-                _searchCancellationTokenSource.Token
-            );
+            (IReadOnlyList<VideoInformation>? videos, int total, bool hasMore) =
+                await _searchService.SearchUserVideosAsync(
+                    _profile.Id,
+                    SearchKeyword,
+                    _searchPn,
+                    _searchCancellationTokenSource.Token
+                );
             _preventLoadMoreSearch = !hasMore || videos is null || videos.Count == 0;
             if (videos is not null)
             {
-                foreach (var item in videos)
+                foreach (VideoInformation item in videos)
                 {
                     SearchVideos.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
                 }
@@ -274,7 +279,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     {
         try
         {
-            var state = await _relationshipService.GetRelationshipAsync(_profile.Id);
+            UserRelationStatus state = await _relationshipService.GetRelationshipAsync(_profile.Id);
             IsFollowed =
                 state != UserRelationStatus.Unknown && state != UserRelationStatus.Unfollow;
         }
@@ -289,7 +294,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
     private void ShowComment(MomentItemViewModel data)
     {
-        var moment = data.Data;
+        MomentInformation moment = data.Data;
         if (CommentModule.Id == moment.CommentId)
         {
             return;
@@ -297,7 +302,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         IsCommentsOpened = true;
         CommentModule.Initialize(moment.CommentId, moment.CommentType!.Value, CommentSortType.Hot);
-        CommentModule.RefreshCommand.Execute(default);
+        CommentModule.RefreshCommand.Execute(null);
     }
 
     private void CancelSearch()

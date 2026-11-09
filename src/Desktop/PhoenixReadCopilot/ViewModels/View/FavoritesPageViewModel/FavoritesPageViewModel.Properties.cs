@@ -35,5 +35,5 @@ public sealed partial class FavoritesPageViewModel
     /// <summary>
     /// 分区列表.
     /// </summary>
-    public ObservableCollection<IFavoriteSectionDetailViewModel> Sections { get; } = new();
+    public ObservableCollection<IFavoriteSectionDetailViewModel> Sections { get; } = [];
 }

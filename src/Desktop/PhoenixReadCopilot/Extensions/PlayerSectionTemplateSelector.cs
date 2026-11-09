@@ -65,6 +65,6 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
             return InfoTemplate;
         }
 
-        return default;
+        return null;
     }
 }

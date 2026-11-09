@@ -42,13 +42,20 @@ public sealed partial class TimelineItemViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="TimelineItemViewModel"/> class from a <see cref="DateOnly"/>.
     /// </summary>
-    public TimelineItemViewModel(DateOnly targetDate, bool isToday = false, List<SeasonItemViewModel>? items = null)
+    public TimelineItemViewModel(
+        DateOnly targetDate,
+        bool isToday = false,
+        List<SeasonItemViewModel>? items = null
+    )
     {
         TargetDate = targetDate;
         IsToday = isToday;
-        var firstLan = ApplicationLanguages.Languages.Count > 0 ? ApplicationLanguages.Languages[0] : "zh-CN";
-        var culture = new CultureInfo(firstLan);
-        DayOfWeek = isToday ? "今天" : targetDate.ToDateTime(TimeOnly.MinValue).ToString("ddd", culture);
+        string firstLan =
+            ApplicationLanguages.Languages.Count > 0 ? ApplicationLanguages.Languages[0] : "zh-CN";
+        CultureInfo culture = new(firstLan);
+        DayOfWeek = isToday
+            ? "今天"
+            : targetDate.ToDateTime(TimeOnly.MinValue).ToString("ddd", culture);
         Date = targetDate.ToString("MM-dd");
         Items = items;
         Count = items?.Count ?? 0;

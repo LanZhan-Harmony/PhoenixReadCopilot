@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -79,14 +77,14 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
             {
                 if (
                     ReviewScrollView.ExtentHeight
-                    - ReviewScrollView.ViewportHeight
-                    - ReviewScrollView.VerticalOffset
+                        - ReviewScrollView.ViewportHeight
+                        - ReviewScrollView.VerticalOffset
                     <= 240
                 )
                 {
                     if (ViewModel is not null && ViewModel.HasMore && !ViewModel.IsLoading)
                     {
-                        ViewModel.LoadMoreCommand.Execute(default);
+                        ViewModel.LoadMoreCommand.Execute(null);
                     }
                 }
             }
@@ -114,9 +112,14 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
             DispatcherQueuePriority.Low,
             () =>
             {
-                if (ReviewScrollView.ScrollableHeight <= 240 && ViewModel is not null && ViewModel.HasMore && !ViewModel.IsLoading)
+                if (
+                    ReviewScrollView.ScrollableHeight <= 240
+                    && ViewModel is not null
+                    && ViewModel.HasMore
+                    && !ViewModel.IsLoading
+                )
                 {
-                    ViewModel.LoadMoreCommand.Execute(default);
+                    ViewModel.LoadMoreCommand.Execute(null);
                 }
             }
         );
@@ -129,7 +132,7 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
             return;
         }
 
-        var index = ViewModel.Sorts.IndexOf(ViewModel.SortType);
+        int index = ViewModel.Sorts.IndexOf(ViewModel.SortType);
         if (index >= 0 && SortTypeComboBox.SelectedIndex != index)
         {
             SortTypeComboBox.SelectedIndex = index;
@@ -143,7 +146,10 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
             return;
         }
 
-        if (SortTypeComboBox.SelectedItem is CommentSortOrder sortOrder && sortOrder != ViewModel.SortType)
+        if (
+            SortTypeComboBox.SelectedItem is CommentSortOrder sortOrder
+            && sortOrder != ViewModel.SortType
+        )
         {
             ViewModel.ChangeSortTypeCommand.Execute(sortOrder);
         }
@@ -153,4 +159,5 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
 /// <summary>
 /// 剧评主面板基类.
 /// </summary>
-public abstract class DramaReviewMainPanelBase : LayoutUserControlBase<DramaReviewSectionDetailViewModel> { }
+public abstract class DramaReviewMainPanelBase
+    : LayoutUserControlBase<DramaReviewSectionDetailViewModel> { }

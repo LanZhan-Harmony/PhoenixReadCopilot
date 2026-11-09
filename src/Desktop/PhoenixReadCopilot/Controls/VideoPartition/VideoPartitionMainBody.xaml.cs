@@ -75,7 +75,7 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
                     <= 240
                 )
                 {
-                    ViewModel.LoadVideosCommand.Execute(default);
+                    ViewModel.LoadVideosCommand.Execute(null);
                 }
             }
         );
@@ -97,7 +97,7 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
             {
                 if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadVideosCommand.Execute(default);
+                    ViewModel.LoadVideosCommand.Execute(null);
                 }
             }
         );

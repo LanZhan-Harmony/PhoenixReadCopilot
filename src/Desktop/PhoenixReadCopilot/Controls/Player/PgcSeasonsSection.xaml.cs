@@ -24,7 +24,7 @@ public sealed partial class PgcSeasonsSection : PgcSeasonsSectionBase
         }
     }
 
-    protected override void OnControlUnloaded() => View.ItemsSource = default;
+    protected override void OnControlUnloaded() => View.ItemsSource = null;
 
     private void OnSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
@@ -34,7 +34,7 @@ public sealed partial class PgcSeasonsSection : PgcSeasonsSectionBase
             && season != ViewModel.SelectedItem
         )
         {
-            season.PlayCommand.Execute(default);
+            season.PlayCommand.Execute(null);
         }
     }
 }

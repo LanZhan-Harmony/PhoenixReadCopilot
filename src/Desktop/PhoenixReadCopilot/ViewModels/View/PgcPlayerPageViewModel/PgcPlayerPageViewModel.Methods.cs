@@ -48,12 +48,12 @@ public sealed partial class PgcPlayerPageViewModel
         Downloader.Clear();
         // Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(new PhoenixReadCopilot.Core.Models.PlayerFormatInformation(p.Quality, p.Description, p.NeedVip, p.NeedLogin))).ToList();
 
-        var preferFormatSetting = _settings.PreferQuality;
-        var availableFormats = Formats.Where(p => p.IsEnabled).ToList();
-        PlayerFormatItemViewModel? selectedFormat = default;
+        PreferQualityType preferFormatSetting = _settings.PreferQuality;
+        List<PlayerFormatItemViewModel> availableFormats = Formats.Where(p => p.IsEnabled).ToList();
+        PlayerFormatItemViewModel? selectedFormat = null;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
-            var lastSelectedFormat = _settings.LastSelectedPgcQuality;
+            int lastSelectedFormat = _settings.LastSelectedPgcQuality;
             selectedFormat = availableFormats.Find(p => p.Data.Quality == lastSelectedFormat);
         }
         else if (preferFormatSetting == PreferQualityType.UHD)
@@ -69,11 +69,11 @@ public sealed partial class PgcPlayerPageViewModel
 
         if (selectedFormat is null)
         {
-            var maxQuality = availableFormats.Max(p => p.Data.Quality);
+            int maxQuality = availableFormats.Max(p => p.Data.Quality);
             selectedFormat = availableFormats.Find(p => p.Data.Quality == maxQuality);
         }
 
-        var episodeIndex = _view.Episodes.IndexOf(_episode);
+        int episodeIndex = _view.Episodes.IndexOf(_episode);
         /*Downloader.InitializeMetas(
             GetEpisodeUrl(),
             GetSeasonUrl(),
@@ -92,10 +92,10 @@ public sealed partial class PgcPlayerPageViewModel
             return;
         }
 
-        var sections = new List<IPlayerSectionDetailViewModel>
-        {
+        List<IPlayerSectionDetailViewModel> sections =
+        [
             new PgcPlayerInfoSectionDetailViewModel(this),
-        };
+        ];
 
         if (_view.Episodes?.Count > 1)
         {
@@ -129,12 +129,12 @@ public sealed partial class PgcPlayerPageViewModel
     private void ClearView()
     {
         IsPageLoadFailed = false;
-        _view = default;
-        _videoSegments = default;
-        _audioSegments = default;
+        _view = null;
+        _videoSegments = null;
+        _audioSegments = null;
         _initialProgress = -1;
-        Cover = default;
-        SeasonTitle = default;
+        Cover = null;
+        SeasonTitle = null;
         IsFollow = false;
         PlayCount = 0;
         DanmakuCount = 0;
@@ -147,19 +147,19 @@ public sealed partial class PgcPlayerPageViewModel
         IsCoined = false;
         IsFavorited = false;
         IsCoinAlsoLike = true;
-        FavoriteFolders = default;
+        FavoriteFolders = null;
         HasNextEpisode = false;
 
-        Formats = default;
-        SelectedFormat = default;
+        Formats = null;
+        SelectedFormat = null;
 
-        Sections = default;
-        SelectedSection = default;
+        Sections = null;
+        SelectedSection = null;
     }
 
     private EpisodeInformation? FindInitialEpisode(string? initialEpisodeId)
     {
-        EpisodeInformation? playEpisode = default;
+        EpisodeInformation? playEpisode = null;
         if (!string.IsNullOrEmpty(initialEpisodeId))
         {
             playEpisode = _view.Episodes.FirstOrDefault(p => p.Identifier.Id == initialEpisodeId);
@@ -167,8 +167,8 @@ public sealed partial class PgcPlayerPageViewModel
 
         if (playEpisode == null)
         {
-            var historyEpisodeId = _view.Progress?.Cid;
-            var autoLoadHistory = _settings.AutoLoadHistory;
+            string? historyEpisodeId = _view.Progress?.Cid;
+            bool autoLoadHistory = _settings.AutoLoadHistory;
             if (!string.IsNullOrEmpty(historyEpisodeId) && autoLoadHistory)
             {
                 playEpisode = _view.Episodes.FirstOrDefault(p =>
@@ -184,7 +184,7 @@ public sealed partial class PgcPlayerPageViewModel
     {
         if (Sections is null)
         {
-            return default;
+            return null;
         }
 
         if (
@@ -192,19 +192,19 @@ public sealed partial class PgcPlayerPageViewModel
             is PgcPlayerEpisodeSectionDetailViewModel episodeSection
         )
         {
-            var index = episodeSection.Episodes.Select(p => p.Data).ToList().IndexOf(_episode);
+            int index = episodeSection.Episodes.Select(p => p.Data).ToList().IndexOf(_episode);
             if (index < episodeSection.Episodes.Count - 1)
             {
                 return episodeSection.Episodes.ElementAt(index + 1).Data;
             }
         }
 
-        return default;
+        return null;
     }
 
     private void InitializeNextEpisode()
     {
-        var next = FindNextEpisode();
+        object? next = FindNextEpisode();
         HasNextEpisode = next is not null;
         if (next is EpisodeInformation part)
         {
@@ -222,7 +222,7 @@ public sealed partial class PgcPlayerPageViewModel
         }
     }
 
-    private void LoadInitialProgress(int? progress = default)
+    private void LoadInitialProgress(int? progress = null)
     {
         _initialProgress = 0;
         if (progress is not null)
@@ -231,7 +231,7 @@ public sealed partial class PgcPlayerPageViewModel
         }
         else if (_view.Progress is not null && _view.Progress.Cid == _episode.Identifier.Id)
         {
-            var p = Convert.ToInt32(_view.Progress.Progress);
+            int p = Convert.ToInt32(_view.Progress.Progress);
             if (p < _episode.Duration - 5)
             {
                 _initialProgress = p;
@@ -246,7 +246,7 @@ public sealed partial class PgcPlayerPageViewModel
             return;
         }
 
-        var ratio = _episode.GetExtensionIfNotNull<MediaAspectRatio>(
+        MediaAspectRatio ratio = _episode.GetExtensionIfNotNull<MediaAspectRatio>(
             EpisodeExtensionDataId.AspectRatio
         );
         if (ratio.Width == 0)

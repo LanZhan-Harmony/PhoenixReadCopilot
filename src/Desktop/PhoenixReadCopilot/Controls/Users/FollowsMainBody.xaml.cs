@@ -52,7 +52,7 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
                     <= 240
                 )
                 {
-                    ViewModel.LoadUsersCommand.Execute(default);
+                    ViewModel.LoadUsersCommand.Execute(null);
                 }
             }
         );
@@ -74,7 +74,7 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
             {
                 if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadUsersCommand.Execute(default);
+                    ViewModel.LoadUsersCommand.Execute(null);
                 }
             }
         );

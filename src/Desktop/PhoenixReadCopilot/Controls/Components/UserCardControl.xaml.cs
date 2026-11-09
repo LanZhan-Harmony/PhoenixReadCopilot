@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.ViewModels.Items;
+using Windows.Foundation;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;
@@ -18,7 +19,7 @@ public sealed partial class UserCardControl : UserCardControlBase
     /// </summary>
     public UserCardControl()
     {
-        this.InitializeComponent();
+        InitializeComponent();
     }
 
     /// <inheritdoc/>
@@ -85,7 +86,7 @@ public sealed partial class UserCardControl : UserCardControlBase
         if (ContextFlyout is null)
         {
             CreateContextFlyout();
-            args.TryGetPosition(this, out var point);
+            args.TryGetPosition(this, out Point point);
             ContextFlyout.ShowAt(this, new FlyoutShowOptions { Position = point });
         }
 
@@ -95,7 +96,7 @@ public sealed partial class UserCardControl : UserCardControlBase
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout() { ShouldConstrainToRootBounds = false };
+        MenuFlyout menuFlyout = new() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreatePinItem());
         ContextFlyout = menuFlyout;
     }
@@ -107,7 +108,7 @@ public sealed partial class UserCardControl : UserCardControlBase
             return;
         }
 
-        foreach (var item in flyout.Items.OfType<MenuFlyoutItem>())
+        foreach (MenuFlyoutItem item in flyout.Items.OfType<MenuFlyoutItem>())
         {
             switch (item.Tag.ToString())
             {

@@ -21,7 +21,7 @@ public sealed partial class ObjectToBoolConverter : IValueConverter
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var result = false;
+        bool result = false;
         if (value != null)
         {
             if (value is string str)

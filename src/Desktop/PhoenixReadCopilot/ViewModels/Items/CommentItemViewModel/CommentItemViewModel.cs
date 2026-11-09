@@ -23,7 +23,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         string? videoId,
         PhoenixReadApiClient apiClient,
         bool isDramaReview = false,
-        Action<CommentItemViewModel>? markReplyTargetAction = default
+        Action<CommentItemViewModel>? markReplyTargetAction = null
     )
     {
         Id = comment.Id;
@@ -44,7 +44,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
 
         if (comment.CreatedAtUnixSeconds > 0)
         {
-            var time = DateTimeOffset
+            DateTimeOffset time = DateTimeOffset
                 .FromUnixTimeSeconds(comment.CreatedAtUnixSeconds)
                 .ToLocalTime();
             RelativeTime = time.Humanize();
@@ -58,18 +58,22 @@ public sealed partial class CommentItemViewModel : ViewModelBase
 
         if (
             !string.IsNullOrEmpty(comment.Author?.AvatarUrl)
-            && Uri.TryCreate(comment.Author.AvatarUrl, UriKind.Absolute, out var avatarUri)
+            && Uri.TryCreate(comment.Author.AvatarUrl, UriKind.Absolute, out Uri? avatarUri)
         )
         {
             Avatar = avatarUri;
         }
 
-        var pictures = comment.Images?.Count > 0
-            ? comment.Images
-                .Where(img => !string.IsNullOrEmpty(img.Url) && Uri.TryCreate(img.Url, UriKind.Absolute, out _))
-                .Select(img => new AppImage(img))
-                .ToList()
-            : null;
+        List<AppImage>? pictures =
+            comment.Images?.Count > 0
+                ? comment
+                    .Images.Where(img =>
+                        !string.IsNullOrEmpty(img.Url)
+                        && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
+                    )
+                    .Select(img => new AppImage(img))
+                    .ToList()
+                : null;
         Content = new EmoteText(comment.Text, pictures);
     }
 
@@ -82,7 +86,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         string? videoId,
         PhoenixReadApiClient apiClient,
         bool isDramaReview = false,
-        Action<CommentItemViewModel>? markReplyTargetAction = default
+        Action<CommentItemViewModel>? markReplyTargetAction = null
     )
     {
         Id = reply.Id;
@@ -103,7 +107,9 @@ public sealed partial class CommentItemViewModel : ViewModelBase
 
         if (reply.CreatedAtUnixSeconds > 0)
         {
-            var time = DateTimeOffset.FromUnixTimeSeconds(reply.CreatedAtUnixSeconds).ToLocalTime();
+            DateTimeOffset time = DateTimeOffset
+                .FromUnixTimeSeconds(reply.CreatedAtUnixSeconds)
+                .ToLocalTime();
             RelativeTime = time.Humanize();
             ActualTime = time.ToString("yyyy-MM-dd HH:mm:ss");
         }
@@ -115,18 +121,22 @@ public sealed partial class CommentItemViewModel : ViewModelBase
 
         if (
             !string.IsNullOrEmpty(reply.Author?.AvatarUrl)
-            && Uri.TryCreate(reply.Author.AvatarUrl, UriKind.Absolute, out var avatarUri)
+            && Uri.TryCreate(reply.Author.AvatarUrl, UriKind.Absolute, out Uri? avatarUri)
         )
         {
             Avatar = avatarUri;
         }
 
-        var pictures = reply.Images?.Count > 0
-            ? reply.Images
-                .Where(img => !string.IsNullOrEmpty(img.Url) && Uri.TryCreate(img.Url, UriKind.Absolute, out _))
-                .Select(img => new AppImage(img))
-                .ToList()
-            : null;
+        List<AppImage>? pictures =
+            reply.Images?.Count > 0
+                ? reply
+                    .Images.Where(img =>
+                        !string.IsNullOrEmpty(img.Url)
+                        && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
+                    )
+                    .Select(img => new AppImage(img))
+                    .ToList()
+                : null;
         Content = new EmoteText(reply.Text, pictures);
     }
 
@@ -143,7 +153,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
             return;
         }
 
-        var state = !IsLiked;
+        bool state = !IsLiked;
         try
         {
             PhoenixOperationResult res;
@@ -153,7 +163,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
             }
             else
             {
-                var targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : SeriesId;
+                string? targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : SeriesId;
                 if (string.IsNullOrEmpty(targetId))
                 {
                     return;

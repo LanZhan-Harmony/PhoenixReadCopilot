@@ -42,14 +42,14 @@ public sealed partial class AppViewModel : ViewModelBase
     private static void Restart()
     {
         Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().UnregisterKey();
-        Microsoft.Windows.AppLifecycle.AppInstance.Restart(default);
+        Microsoft.Windows.AppLifecycle.AppInstance.Restart(null);
     }
 
     [RelayCommand]
     private Task InitializeExternalAsync()
     {
-        var architecture = RuntimeInformation.ProcessArchitecture;
-        var identifier = architecture == Architecture.Arm64 ? "arm64" : "x64";
+        Architecture architecture = RuntimeInformation.ProcessArchitecture;
+        string identifier = architecture == Architecture.Arm64 ? "arm64" : "x64";
 
         FFmpegPath = Path.Combine(
             AppContext.BaseDirectory,
@@ -74,7 +74,7 @@ public sealed partial class AppViewModel : ViewModelBase
             catch { }
         }
 
-        var hasToken = false;
+        bool hasToken = false;
         try
         {
             hasToken = _tokenResolver.GetToken() is not null;
@@ -88,7 +88,7 @@ public sealed partial class AppViewModel : ViewModelBase
         {
             IsInitialLoading = true;
             new MainWindow().Activate();
-            InitializeExternalCommand.Execute(default);
+            InitializeExternalCommand.Execute(null);
         }
         else
         {
@@ -99,7 +99,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void ChangeTheme(ElementTheme theme)
     {
-        foreach (var window in Windows)
+        foreach (Window window in Windows)
         {
             (window.Content as FrameworkElement).RequestedTheme = theme;
         }
@@ -108,7 +108,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void MakeCurrentWindowEnterFullScreen()
     {
-        var window = ActivatedWindow;
+        Window window = ActivatedWindow;
         window.SetWindowPresenter(AppWindowPresenterKind.FullScreen);
         if (window is IPlayerHostWindow hostWindow)
         {
@@ -119,7 +119,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void MakeCurrentWindowExitFullScreen()
     {
-        var window = ActivatedWindow;
+        Window window = ActivatedWindow;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
         if (window is IPlayerHostWindow hostWindow)
         {
@@ -130,7 +130,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void MakeCurrentWindowEnterOverlap()
     {
-        var window = ActivatedWindow;
+        Window window = ActivatedWindow;
         if (window.AppWindow.Presenter is not OverlappedPresenter)
         {
             window.SetWindowPresenter(AppWindowPresenterKind.Overlapped);
@@ -145,7 +145,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void MakeCurrentWindowExitOverlap()
     {
-        var window = ActivatedWindow;
+        Window window = ActivatedWindow;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
         if (window is IPlayerHostWindow hostWindow)
         {
@@ -156,7 +156,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void MakeCurrentWindowEnterCompactOverlay()
     {
-        var window = ActivatedWindow;
+        Window window = ActivatedWindow;
         (window as WinUIEx.WindowEx).MinHeight = 320;
         (window as WinUIEx.WindowEx).MinWidth = 560;
         window.SetWindowPresenter(AppWindowPresenterKind.CompactOverlay);
@@ -170,7 +170,7 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void MakeCurrentWindowExitCompactOverlay()
     {
-        var window = ActivatedWindow;
+        Window window = ActivatedWindow;
         (window as WinUIEx.WindowEx).MinHeight = 480;
         (window as WinUIEx.WindowEx).MinWidth = 640;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
@@ -189,7 +189,8 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShowTipAsync((string, InfoType) data)
     {
-        var tipWindow = ActivatedWindow as ITipWindow ?? Windows.OfType<ITipWindow>().FirstOrDefault();
+        ITipWindow? tipWindow =
+            ActivatedWindow as ITipWindow ?? Windows.OfType<ITipWindow>().FirstOrDefault();
         if (tipWindow is null)
         {
             return;
@@ -197,7 +198,7 @@ public sealed partial class AppViewModel : ViewModelBase
 
         if (tipWindow is Window window && !window.DispatcherQueue.HasThreadAccess)
         {
-            var tcs = new TaskCompletionSource();
+            TaskCompletionSource tcs = new();
             window.DispatcherQueue.TryEnqueue(async () =>
             {
                 try
@@ -220,8 +221,8 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private void CheckUpate()
     {
-        var localVersion = _settings.AppVersion;
-        var currentVersion = _appToolkit.GetPackageVersion();
+        string localVersion = _settings.AppVersion;
+        string currentVersion = _appToolkit.GetPackageVersion();
         if (localVersion != currentVersion)
         {
             _settings.AppVersion = currentVersion;
@@ -235,8 +236,8 @@ public sealed partial class AppViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShowUpdateAsync()
     {
-        var packVersion = _appToolkit.GetPackageVersion();
-        var url = $"https://github.com/Richasy/Bili.Copilot/releases/tag/v{packVersion}";
+        string packVersion = _appToolkit.GetPackageVersion();
+        string url = $"https://github.com/Richasy/Bili.Copilot/releases/tag/v{packVersion}";
         await Launcher.LaunchUriAsync(new Uri(url));
         HideUpdate();
     }

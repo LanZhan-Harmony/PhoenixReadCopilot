@@ -20,7 +20,7 @@ internal static partial class RuntimeHelper
     {
         get
         {
-            var length = 0;
+            int length = 0;
             return GetCurrentPackageFullName(ref length, nint.Zero) != 15700; // APPMODEL_ERROR_NO_PACKAGE = 15700
         }
     }

@@ -15,6 +15,6 @@ internal sealed partial class PlayerTemplateSelector : DataTemplateSelector
             return FFmpegTemplate;
         }
 
-        return default;
+        return null;
     }
 }

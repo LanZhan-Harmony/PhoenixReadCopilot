@@ -1,3 +1,5 @@
+using System.Collections.Specialized;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using Windows.Storage;
@@ -14,7 +16,7 @@ public partial class ImageExBase
     /// <returns>总字节数.</returns>
     public async ValueTask<long> GetAllCacheSizeAsync()
     {
-        var cacheFolder = await GetCacheFolderAsync();
+        StorageFolder cacheFolder = await GetCacheFolderAsync();
         if (cacheFolder == null)
         {
             return 0L;
@@ -34,7 +36,7 @@ public partial class ImageExBase
     /// <returns><see cref="Task"/>.</returns>
     public async Task ClearCacheAsync()
     {
-        var cacheFolder = await GetCacheFolderAsync();
+        StorageFolder cacheFolder = await GetCacheFolderAsync();
         if (cacheFolder != null)
         {
             await cacheFolder.DeleteAsync(StorageDeleteOption.PermanentDelete);
@@ -54,17 +56,17 @@ public partial class ImageExBase
             return null;
         }
 
-        var cacheFolder = await GetCacheFolderAsync(cacheSubFolder);
-        var cacheFileName = GetCacheFileName(key);
-        var cacheFilePath = Path.Combine(cacheFolder.Path, cacheFileName);
+        StorageFolder cacheFolder = await GetCacheFolderAsync(cacheSubFolder);
+        string cacheFileName = GetCacheFileName(key);
+        string cacheFilePath = Path.Combine(cacheFolder.Path, cacheFileName);
         string? result = null;
 
         if (File.Exists(cacheFilePath))
         {
             try
             {
-                var fileInfo = new FileInfo(cacheFilePath);
-                var createTime = fileInfo.CreationTimeUtc;
+                FileInfo fileInfo = new(cacheFilePath);
+                DateTime createTime = fileInfo.CreationTimeUtc;
                 if (DateTimeOffset.UtcNow - createTime > WinUIKernelShareExtensions.ImageCacheTime)
                 {
                     File.Delete(cacheFilePath);
@@ -105,9 +107,9 @@ public partial class ImageExBase
             return;
         }
 
-        var cacheFolder = await GetCacheFolderAsync(cacheSubFolder);
-        var cacheFileName = GetCacheFileName(key);
-        var cacheFilePath = Path.Combine(cacheFolder.Path, cacheFileName);
+        StorageFolder cacheFolder = await GetCacheFolderAsync(cacheSubFolder);
+        string cacheFileName = GetCacheFileName(key);
+        string cacheFilePath = Path.Combine(cacheFolder.Path, cacheFileName);
 
         // Write the data to the file
         await File.WriteAllBytesAsync(cacheFilePath, data, cancellationToken);
@@ -116,8 +118,8 @@ public partial class ImageExBase
     private static string GetCacheFileName(string key)
     {
         key = NormalizeKey(key);
-        using var md5 = System.Security.Cryptography.MD5.Create();
-        var hash = Convert.ToHexStringLower(md5.ComputeHash(Encoding.UTF8.GetBytes(key)));
+        using MD5 md5 = System.Security.Cryptography.MD5.Create();
+        string hash = Convert.ToHexStringLower(md5.ComputeHash(Encoding.UTF8.GetBytes(key)));
         return hash;
     }
 
@@ -130,14 +132,14 @@ public partial class ImageExBase
 
         if (key.StartsWith("http", StringComparison.OrdinalIgnoreCase))
         {
-            var uri = new Uri(key);
+            Uri uri = new(key);
             // 统一转为小写（根据需求决定是否保留大小写敏感性）
-            var normalizedUrl = uri.AbsoluteUri.ToLowerInvariant();
+            string normalizedUrl = uri.AbsoluteUri.ToLowerInvariant();
             // 可选：对查询参数排序（如果参数顺序不影响内容）
             if (!string.IsNullOrEmpty(uri.Query))
             {
-                var queryParams = HttpUtility.ParseQueryString(uri.Query);
-                var sortedQuery = string.Join(
+                NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
+                string sortedQuery = string.Join(
                     "&",
                     queryParams.AllKeys.OrderBy(k => k).Select(k => $"{k}={queryParams[k]}")
                 );
@@ -152,13 +154,13 @@ public partial class ImageExBase
 
     private async Task<StorageFolder> GetCacheFolderAsync(string? cacheSubFolder = null)
     {
-        var baseCache = Path.Combine(
+        string baseCache = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "PhoenixReadCopilot",
             "Cache"
         );
-        var cacheFolderPath = Path.Combine(baseCache, CacheFolderName);
-        var subFolder = cacheSubFolder ?? GetCacheSubFolder();
+        string cacheFolderPath = Path.Combine(baseCache, CacheFolderName);
+        string subFolder = cacheSubFolder ?? GetCacheSubFolder();
         if (!string.IsNullOrEmpty(subFolder))
         {
             cacheFolderPath = Path.Combine(cacheFolderPath, subFolder);

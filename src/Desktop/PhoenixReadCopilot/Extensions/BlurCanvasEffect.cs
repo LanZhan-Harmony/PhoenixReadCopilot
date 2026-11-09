@@ -173,9 +173,9 @@ public readonly partial struct NoiseShader(float amount) : ID2D1PixelShader
     /// <inheritdoc/>
     public float4 Execute()
     {
-        var position = (int2)D2D.GetScenePosition().XY;
-        var hash = Hlsl.Frac(Hlsl.Sin(Hlsl.Dot(position, new float2(41, 289))) * 45758.5453f);
-        var alpha = Hlsl.Lerp(0, amount, hash);
+        int2 position = (int2)D2D.GetScenePosition().XY;
+        float hash = Hlsl.Frac(Hlsl.Sin(Hlsl.Dot(position, new float2(41, 289))) * 45758.5453f);
+        float alpha = Hlsl.Lerp(0, amount, hash);
         return new(0, 0, 0, alpha);
     }
 }
@@ -209,10 +209,10 @@ public readonly partial struct CrossFadeShader : ID2D1PixelShader
     /// <inheritdoc/>
     public float4 Execute()
     {
-        var offsetY = (int)D2D.GetScenePosition().Y;
-        var factor = Hlsl.Saturate((offsetY - _offsetStartY) / (float)_offsetLengthY);
-        var easing = Hlsl.Sin(factor * 1.57f);
-        var blend = Hlsl.Lerp(D2D.GetInput(0).XYZ, D2D.GetInput(1).XYZ, easing);
+        int offsetY = (int)D2D.GetScenePosition().Y;
+        float factor = Hlsl.Saturate((offsetY - _offsetStartY) / (float)_offsetLengthY);
+        float easing = Hlsl.Sin(factor * 1.57f);
+        float3 blend = Hlsl.Lerp(D2D.GetInput(0).XYZ, D2D.GetInput(1).XYZ, easing);
 
         return new(blend, 1);
     }

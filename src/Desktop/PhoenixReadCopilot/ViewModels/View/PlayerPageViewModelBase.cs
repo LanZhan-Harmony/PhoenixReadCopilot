@@ -28,7 +28,7 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
     {
         _settingsService = settingsService;
         _appViewModel = appViewModel;
-        var playerType = _settings.PlayerType;
+        PlayerType playerType = _settings.PlayerType;
 
         Player = playerType switch
         {

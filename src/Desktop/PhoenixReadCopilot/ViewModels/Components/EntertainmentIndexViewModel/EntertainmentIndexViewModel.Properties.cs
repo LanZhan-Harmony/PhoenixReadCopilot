@@ -41,5 +41,5 @@ public sealed partial class EntertainmentIndexViewModel
     /// <summary>
     /// 短剧剧集列表.
     /// </summary>
-    public ObservableCollection<SeasonItemViewModel> Items { get; } = new();
+    public ObservableCollection<SeasonItemViewModel> Items { get; } = [];
 }

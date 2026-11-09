@@ -40,15 +40,15 @@ public sealed partial class GalleryPage : GalleryPageBase
     protected override void OnPageLoaded()
     {
         FactoryBlock.Text = 1.ToString("p00");
-        ImageScrollView.ZoomTo(0.8f, default);
+        ImageScrollView.ZoomTo(0.8f, null);
         ImageView.ScrollView.VerticalScrollMode = ScrollingScrollMode.Disabled;
         ImageView.ScrollView.HorizontalScrollMode = ScrollingScrollMode.Auto;
         ImageView.ScrollView.HorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Auto;
-        var index = ViewModel.Images.ToList().IndexOf(ViewModel.SelectedImage);
+        int index = ViewModel.Images.ToList().IndexOf(ViewModel.SelectedImage);
         ImageView.Select(index);
     }
 
-    protected override void OnPageUnloaded() => ImageView.ItemsSource = default;
+    protected override void OnPageUnloaded() => ImageView.ItemsSource = null;
 
     private void OnScrollViewTapped(object sender, TappedRoutedEventArgs e) =>
         ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
@@ -66,10 +66,10 @@ public sealed partial class GalleryPage : GalleryPageBase
     }
 
     private void OnZoomInButtonClick(object sender, RoutedEventArgs e) =>
-        ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor + 0.1f, default);
+        ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor + 0.1f, null);
 
     private void OnZoomOutButtonClick(object sender, RoutedEventArgs e) =>
-        ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor - 0.1f, default);
+        ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor - 0.1f, null);
 
     private void OnSettingToBackgroundClickAsync(object sender, RoutedEventArgs e) =>
         ViewModel.SetWallPaperOrLockScreenCommand.Execute(true);
@@ -79,7 +79,7 @@ public sealed partial class GalleryPage : GalleryPageBase
 
     private void OnImageSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var image = sender.SelectedItem as AppImage;
+        AppImage? image = sender.SelectedItem as AppImage;
         ViewModel.ChangeImageCommand.Execute(image);
     }
 }

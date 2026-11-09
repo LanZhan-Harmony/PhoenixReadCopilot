@@ -19,7 +19,7 @@ public sealed partial class PopularPageViewModel
 
         try
         {
-            var page = await _apiClient.GetRecommendationsAsync(
+            RecommendationPage page = await _apiClient.GetRecommendationsAsync(
                 RecommendationGenre.ShortDrama,
                 offset: _recommendOffset,
                 sessionId: _recommendSessionId,
@@ -45,7 +45,7 @@ public sealed partial class PopularPageViewModel
                         return;
                     }
 
-                    foreach (var item in page.Items)
+                    foreach (Drama item in page.Items)
                     {
                         if (string.IsNullOrWhiteSpace(item.Id))
                         {
@@ -90,7 +90,7 @@ public sealed partial class PopularPageViewModel
 
         try
         {
-            var page = await _apiClient.GetShortDramaLeaderboardAsync(
+            ShortDramaLeaderboardPage page = await _apiClient.GetShortDramaLeaderboardAsync(
                 type: type,
                 channel: channel,
                 offset: _leaderboardOffset,
@@ -117,14 +117,17 @@ public sealed partial class PopularPageViewModel
                         return;
                     }
 
-                    foreach (var item in page.Items)
+                    foreach (Drama item in page.Items)
                     {
-                        if (string.IsNullOrWhiteSpace(item.Id) || Videos.Any(v => v.Drama?.Id == item.Id))
+                        if (
+                            string.IsNullOrWhiteSpace(item.Id)
+                            || Videos.Any(v => v.Drama?.Id == item.Id)
+                        )
                         {
                             continue;
                         }
 
-                        var vm = new VideoItemViewModel(item, VideoCardStyle.Rank)
+                        VideoItemViewModel vm = new(item, VideoCardStyle.Rank)
                         {
                             Rank = Videos.Count + 1,
                         };
@@ -138,9 +141,7 @@ public sealed partial class PopularPageViewModel
                 });
             }
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(
@@ -161,7 +162,7 @@ public sealed partial class PopularPageViewModel
 
         try
         {
-            var page = await _apiClient.GetActorLeaderboardAsync(
+            ActorLeaderboardPage page = await _apiClient.GetActorLeaderboardAsync(
                 offset: _actorOffset,
                 cancellationToken: ct
             );
@@ -184,15 +185,20 @@ public sealed partial class PopularPageViewModel
                         return;
                     }
 
-                    foreach (var item in page.Items)
+                    foreach (ActorLeaderboardItem item in page.Items)
                     {
-                        var actorKey = !string.IsNullOrEmpty(item.ActorId) ? item.ActorId : item.UserId;
-                        if (string.IsNullOrWhiteSpace(actorKey) || Videos.Any(v => v.ActorId == actorKey))
+                        string actorKey = !string.IsNullOrEmpty(item.ActorId)
+                            ? item.ActorId
+                            : item.UserId;
+                        if (
+                            string.IsNullOrWhiteSpace(actorKey)
+                            || Videos.Any(v => v.ActorId == actorKey)
+                        )
                         {
                             continue;
                         }
 
-                        var vm = new VideoItemViewModel(item)
+                        VideoItemViewModel vm = new(item)
                         {
                             Rank = item.Position > 0 ? item.Position : Videos.Count + 1,
                         };
@@ -206,9 +212,7 @@ public sealed partial class PopularPageViewModel
                 });
             }
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             _logger.LogError(ex, "尝试加载红果演员排行榜时出错.");

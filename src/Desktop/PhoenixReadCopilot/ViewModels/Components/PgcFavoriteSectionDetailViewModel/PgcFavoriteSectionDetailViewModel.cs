@@ -4,6 +4,7 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -62,10 +63,10 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
 
         _cache[CurrentStatus] = Items.ToList();
         CurrentStatus = status;
-        if (_cache.TryGetValue(status, out var list))
+        if (_cache.TryGetValue(status, out List<SeasonItemViewModel>? list))
         {
             Items.Clear();
-            foreach (var item in list)
+            foreach (SeasonItemViewModel item in list)
             {
                 Items.Add(item);
             }
@@ -83,7 +84,7 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        var (pn, isPrevent) = _offsetCache.GetValueOrDefault(CurrentStatus, (0, false));
+        (int pn, bool isPrevent) = _offsetCache.GetValueOrDefault(CurrentStatus, (0, false));
         if (IsEmpty || IsLoading || isPrevent)
         {
             return;
@@ -92,19 +93,16 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
         try
         {
             IsLoading = true;
-            var (seasons, totalCount, nextPage) = await _service.GetPgcFavoritesAsync(
-                Type,
-                CurrentStatus,
-                pn
-            );
-            var isPreventLoadMore =
+            (IReadOnlyList<SeasonInformation>? seasons, int totalCount, int? nextPage) =
+                await _service.GetPgcFavoritesAsync(Type, CurrentStatus, pn);
+            bool isPreventLoadMore =
                 seasons is null
                 || nextPage == 0
                 || (seasons.Count + Items.Count >= totalCount && totalCount > 0);
             _offsetCache[CurrentStatus] = (nextPage ?? 0, isPreventLoadMore);
             if (seasons is not null)
             {
-                foreach (var item in seasons)
+                foreach (SeasonInformation item in seasons)
                 {
                     Items.Add(
                         new SeasonItemViewModel(

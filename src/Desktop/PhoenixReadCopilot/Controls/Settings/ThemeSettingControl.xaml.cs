@@ -26,7 +26,7 @@ public sealed partial class ThemeSettingControl : SettingsPageControlBase
 
     private void OnThemeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        var theme = ThemePicker.SelectedIndex switch
+        ElementTheme theme = ThemePicker.SelectedIndex switch
         {
             0 => ElementTheme.Light,
             1 => ElementTheme.Dark,

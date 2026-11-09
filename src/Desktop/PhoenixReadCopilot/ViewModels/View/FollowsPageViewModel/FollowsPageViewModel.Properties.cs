@@ -16,8 +16,8 @@ public sealed partial class FollowsPageViewModel
     private readonly IRelationshipService _service;
     private readonly ILogger<FollowsPageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly Dictionary<UserGroup, List<UserItemViewModel>> _userCache = new();
-    private readonly Dictionary<UserGroup, int> _offsetCache = new();
+    private readonly Dictionary<UserGroup, List<UserItemViewModel>> _userCache = [];
+    private readonly Dictionary<UserGroup, int> _offsetCache = [];
 
     [ObservableProperty]
     public partial bool IsGroupLoading { get; set; }
@@ -44,10 +44,10 @@ public sealed partial class FollowsPageViewModel
     /// <summary>
     /// 分组.
     /// </summary>
-    public ObservableCollection<UserGroup> Groups { get; } = new();
+    public ObservableCollection<UserGroup> Groups { get; } = [];
 
     /// <summary>
     /// 显示的用户列表.
     /// </summary>
-    public ObservableCollection<UserItemViewModel> Users { get; } = new();
+    public ObservableCollection<UserItemViewModel> Users { get; } = [];
 }

@@ -1,7 +1,6 @@
 using System.Drawing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using PhoenixReadCopilot.Forms;
 using Richasy.BiliKernel.Models.Appearance;
 using WinUIKernel.Share.Base;
 
@@ -19,7 +18,7 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
         nameof(ItemsSource),
         typeof(object),
         typeof(MomentImageGallery),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -36,13 +35,13 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
         set => SetValue(ItemsSourceProperty, value);
     }
 
-    protected override void OnControlUnloaded() => ImageRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => ImageRepeater.ItemsSource = null;
 
     private void OnImageTapped(object sender, TappedRoutedEventArgs e)
     {
         e.Handled = true;
-        var image = (sender as Image).Tag as BiliImage;
-        var itemsSource = ItemsSource as List<BiliImage>;
+        BiliImage? image = (sender as Image).Tag as BiliImage;
+        List<BiliImage>? itemsSource = ItemsSource as List<BiliImage>;
         // new GalleryWindow(image, itemsSource).Activate();
     }
 }

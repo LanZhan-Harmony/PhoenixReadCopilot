@@ -35,7 +35,7 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
         // 重置状态
         IsFirstRenderTimeSet = false;
         HasIncrementedCacheRef = false;
-        FirstRenderTime = default;
+        FirstRenderTime = TimeSpan.Zero;
         Width = 0;
         Height = 0;
         X = 0;

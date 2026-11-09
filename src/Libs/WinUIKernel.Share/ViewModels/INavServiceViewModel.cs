@@ -8,5 +8,5 @@ public interface INavServiceViewModel
     /// <summary>
     /// 导航到指定页面.
     /// </summary>
-    void NavigateTo(Type pageType, object? parameter = default);
+    void NavigateTo(Type pageType, object? parameter = null);
 }

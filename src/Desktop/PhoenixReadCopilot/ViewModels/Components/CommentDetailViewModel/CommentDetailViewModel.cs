@@ -47,7 +47,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             return;
         }
 
-        LoadItemsCommand.Execute(default);
+        LoadItemsCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -58,7 +58,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             return;
         }
 
-        var effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
+        string? effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
         if (string.IsNullOrEmpty(effectiveSeriesId))
         {
             return;
@@ -93,7 +93,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             _cursor = replyPage.Cursor;
             _preventLoadMore = !replyPage.HasMore;
 
-            foreach (var item in replyPage.Items)
+            foreach (CommentReply item in replyPage.Items)
             {
                 if (Comments.Any(p => p.Id == item.Id))
                 {
@@ -150,7 +150,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void ShowMore()
     {
         _showMoreAction?.Invoke(this);
-        InitializeCommand.Execute(default);
+        InitializeCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -174,7 +174,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             return;
         }
 
-        var effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
+        string? effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
         if (string.IsNullOrEmpty(effectiveSeriesId))
         {
             return;
@@ -183,7 +183,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         IsReplying = true;
         try
         {
-            var targetUserId = _replyItem?.UserId ?? Data.UserId;
+            string targetUserId = _replyItem?.UserId ?? Data.UserId;
             PhoenixOperationResult res;
 
             if (Data.IsDramaReview || string.IsNullOrEmpty(_videoId))
@@ -216,9 +216,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             }
             else
             {
-                _appViewModel?.ShowTipCommand.Execute(
-                    (res.Message ?? "发送失败", InfoType.Error)
-                );
+                _appViewModel?.ShowTipCommand.Execute((res.Message ?? "发送失败", InfoType.Error));
             }
         }
         catch (Exception ex)
@@ -235,7 +233,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     [RelayCommand]
     private void ResetReplyTarget()
     {
-        _replyItem = default;
+        _replyItem = null;
         ReplyTarget = string.Empty;
     }
 

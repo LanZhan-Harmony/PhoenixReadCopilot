@@ -31,7 +31,7 @@ public sealed partial class StartupPage : StartupPageBase
 
     private void OnWebSignInButtonClick(object sender, RoutedEventArgs e)
     {
-        var window = _appViewModel.Windows.FirstOrDefault(p => p is WebSignInWindow);
+        Window? window = _appViewModel.Windows.FirstOrDefault(p => p is WebSignInWindow);
         if (window is not null)
         {
             window.Activate();
@@ -49,7 +49,7 @@ public sealed partial class StartupPage : StartupPageBase
         await Launcher.LaunchUriAsync(new Uri("https://space.bilibili.com/5992670"));
 
     private void OnRefreshQRButtonClick(object sender, RoutedEventArgs e) =>
-        ViewModel.ReloadQRCodeCommand.Execute(default);
+        ViewModel.ReloadQRCodeCommand.Execute(null);
 }
 
 /// <summary>

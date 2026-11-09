@@ -16,7 +16,7 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
         nameof(Symbol),
         typeof(FluentIcons.Common.Symbol),
         typeof(AppNavigationViewItem),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -26,7 +26,7 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
         nameof(ShowUnread),
         typeof(bool),
         typeof(AppNavigationViewItem),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -68,7 +68,7 @@ public sealed partial class AppNavigationViewItemPresenter : NavigationViewItemP
         nameof(Symbol),
         typeof(FluentIcons.Common.Symbol),
         typeof(AppNavigationViewItemPresenter),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

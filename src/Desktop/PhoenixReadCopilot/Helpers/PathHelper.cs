@@ -65,11 +65,11 @@ internal static class PathHelper
             return ApplicationData.GetDefault().LocalPath;
         }
 
-        var portablePath = Path.Combine(AppContext.BaseDirectory, "AppData");
+        string portablePath = Path.Combine(AppContext.BaseDirectory, "AppData");
         try
         {
             Directory.CreateDirectory(portablePath);
-            using var fs = File.Create(
+            using FileStream fs = File.Create(
                 Path.Combine(portablePath, Path.GetRandomFileName()),
                 1,
                 FileOptions.DeleteOnClose
@@ -78,7 +78,7 @@ internal static class PathHelper
         }
         catch
         {
-            var appDataPath = Path.Combine(
+            string appDataPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "PhoenixReadCopilot"
             );

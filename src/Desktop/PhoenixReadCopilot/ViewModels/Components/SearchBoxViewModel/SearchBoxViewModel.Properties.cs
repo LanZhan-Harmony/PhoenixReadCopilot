@@ -18,7 +18,7 @@ public sealed partial class SearchBoxViewModel
     private readonly ILogger<SearchBoxViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly AppSettings _settings;
-    private readonly List<SearchRecommendItem> _recommendItems = new();
+    private readonly List<SearchRecommendItem> _recommendItems = [];
     private CancellationTokenSource? _cancellationTokenSource;
     private string _extraRegionId = string.Empty;
     private string _extraRegionName = string.Empty;
@@ -32,10 +32,10 @@ public sealed partial class SearchBoxViewModel
     /// <summary>
     /// 搜索建议.
     /// </summary>
-    public ObservableCollection<SearchSuggestItemViewModel> Suggestion { get; } = new();
+    public ObservableCollection<SearchSuggestItemViewModel> Suggestion { get; } = [];
 
     /// <summary>
     /// 热搜列表.
     /// </summary>
-    public ObservableCollection<HotSearchItem> HotSearchItems { get; } = new();
+    public ObservableCollection<HotSearchItem> HotSearchItems { get; } = [];
 }

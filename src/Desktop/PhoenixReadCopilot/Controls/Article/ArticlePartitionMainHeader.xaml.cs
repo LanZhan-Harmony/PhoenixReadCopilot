@@ -73,7 +73,7 @@ public sealed partial class ArticlePartitionMainHeader : ArticlePartitionDetailC
             return;
         }
 
-        var item = sender.SelectedItem.Tag as PartitionViewModel;
+        PartitionViewModel? item = sender.SelectedItem.Tag as PartitionViewModel;
         if (item is not null && item != ViewModel.CurrentPartition)
         {
             ViewModel.ChangeChildPartitionCommand.Execute(item);
@@ -85,14 +85,10 @@ public sealed partial class ArticlePartitionMainHeader : ArticlePartitionDetailC
         Selector.Items.Clear();
         if (ViewModel.Children is not null)
         {
-            foreach (var item in ViewModel.Children)
+            foreach (PartitionViewModel item in ViewModel.Children)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = item.Title ?? default,
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = item.Title ?? null, Tag = item }
                 );
             }
         }

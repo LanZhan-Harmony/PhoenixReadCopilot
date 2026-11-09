@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
+using Windows.Foundation;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 
@@ -70,10 +71,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -83,10 +81,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.Follow,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Heart
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Heart },
             Tag = nameof(ViewModel.FollowCommand),
         };
     }
@@ -96,10 +91,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -109,10 +101,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.MarkWantWatch,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Thinking
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Thinking },
             Tag = nameof(ViewModel.MarkWantWatchCommand),
         };
     }
@@ -122,10 +111,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.MarkWatching,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Eye
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Eye },
             Tag = nameof(ViewModel.MarkWatchingCommand),
         };
     }
@@ -164,12 +150,8 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         if (ContextFlyout is null)
         {
             CreateContextFlyout();
-            args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this,
-                new FlyoutShowOptions
-                {
-                    Position = point
-                });
+            args.TryGetPosition(this, out Point point);
+            ContextFlyout.ShowAt(this, new FlyoutShowOptions { Position = point });
         }
 
         RelocateCommands();
@@ -178,10 +160,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout()
-        {
-            ShouldConstrainToRootBounds = false
-        };
+        MenuFlyout menuFlyout = new() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
         menuFlyout.Items.Add(CreateOpenInBroswerItem());
         if (ViewModel.Style != SeasonCardStyle.Favorite)
@@ -208,7 +187,7 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
             return;
         }
 
-        foreach (var item in flyout.Items.OfType<MenuFlyoutItem>())
+        foreach (MenuFlyoutItem item in flyout.Items.OfType<MenuFlyoutItem>())
         {
             switch (item.Tag.ToString())
             {

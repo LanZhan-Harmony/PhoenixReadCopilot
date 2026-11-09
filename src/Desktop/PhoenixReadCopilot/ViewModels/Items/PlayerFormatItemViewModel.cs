@@ -24,7 +24,7 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     public PlayerFormatItemViewModel(PlayerFormatInformation data)
         : base(data)
     {
-        var userIsVip = ItemServices.Account.MyProfile?.IsVip ?? false;
+        bool userIsVip = ItemServices.Account.MyProfile?.IsVip ?? false;
         IsEnabled = !data.NeedVip || (data.NeedVip && userIsVip);
     }
 
@@ -50,7 +50,7 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     /// </summary>
     public static int GetQualityScore(PlaybackMedia media)
     {
-        var res = GetEffectiveResolution(media);
+        int res = GetEffectiveResolution(media);
         if (res > 0)
         {
             return res;
@@ -87,7 +87,7 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     /// </summary>
     public static string GetFormatKey(PlaybackMedia media)
     {
-        var desc = FormatDescription(media);
+        string desc = FormatDescription(media);
         return desc;
     }
 
@@ -96,7 +96,7 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     /// </summary>
     public static string FormatDescription(PlaybackMedia media)
     {
-        var res = GetEffectiveResolution(media);
+        int res = GetEffectiveResolution(media);
         string text;
 
         if (res >= 1080)

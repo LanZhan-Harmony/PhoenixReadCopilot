@@ -25,7 +25,7 @@ public abstract partial class PlayerViewModelBase
             return false;
         }
 
-        TogglePlayPauseCommand.Execute(default);
+        TogglePlayPauseCommand.Execute(null);
         IsPaused = !IsPaused;
         return true;
     }
@@ -170,7 +170,7 @@ public abstract partial class PlayerViewModelBase
         if (Speed != speed)
         {
             Speed = speed;
-            var isShareSpeed = _settings.IsPlayerSpeedShare;
+            bool isShareSpeed = _settings.IsPlayerSpeedShare;
             if (isShareSpeed)
             {
                 _settings.PlayerSpeed = speed;
@@ -184,11 +184,11 @@ public abstract partial class PlayerViewModelBase
         IsFullScreen = !IsFullScreen;
         if (IsFullScreen)
         {
-            _appViewModel.MakeCurrentWindowEnterFullScreenCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowEnterFullScreenCommand.Execute(null);
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitFullScreenCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowExitFullScreenCommand.Execute(null);
         }
 
         _windowStateChangeAction?.Invoke();
@@ -200,11 +200,11 @@ public abstract partial class PlayerViewModelBase
         IsFullWindow = !IsFullWindow;
         if (IsFullWindow)
         {
-            _appViewModel.MakeCurrentWindowEnterOverlapCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowEnterOverlapCommand.Execute(null);
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitOverlapCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowExitOverlapCommand.Execute(null);
         }
 
         _windowStateChangeAction?.Invoke();
@@ -216,11 +216,11 @@ public abstract partial class PlayerViewModelBase
         IsCompactOverlay = !IsCompactOverlay;
         if (IsCompactOverlay)
         {
-            _appViewModel.MakeCurrentWindowEnterCompactOverlayCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowEnterCompactOverlayCommand.Execute(null);
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitCompactOverlayCommand.Execute(default);
+            _appViewModel.MakeCurrentWindowExitCompactOverlayCommand.Execute(null);
         }
 
         _windowStateChangeAction?.Invoke();
@@ -229,7 +229,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void IncreaseSpeed()
     {
-        var speed = Speed + 0.5;
+        double speed = Speed + 0.5;
         if (speed > MaxSpeed)
         {
             speed = MaxSpeed;
@@ -241,7 +241,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void DecreaseSpeed()
     {
-        var speed = Speed - 0.5;
+        double speed = Speed - 0.5;
         if (speed < 0.5)
         {
             speed = 0.5;
@@ -253,7 +253,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void IncreaseVolume()
     {
-        var volume = Volume + 5;
+        int volume = Volume + 5;
         if (volume > 100)
         {
             volume = 100;
@@ -265,7 +265,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void DecreaseVolume()
     {
-        var volume = Volume - 5;
+        int volume = Volume - 5;
         if (volume < 0)
         {
             volume = 0;
@@ -294,7 +294,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void ForwardSkip()
     {
-        var seconds = _settings.SingleFastForwardAndRewindSpan;
+        double seconds = _settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -316,7 +316,7 @@ public abstract partial class PlayerViewModelBase
     [RelayCommand]
     private void BackwardSkip()
     {
-        var seconds = _settings.SingleFastForwardAndRewindSpan;
+        double seconds = _settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
         {
             return;
@@ -340,8 +340,8 @@ public abstract partial class PlayerViewModelBase
     {
         try
         {
-            var fileName = DateTimeOffset.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".png";
-            var path = Path.Combine(GetScreenshotFolderPath(), fileName);
+            string fileName = DateTimeOffset.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".png";
+            string path = Path.Combine(GetScreenshotFolderPath(), fileName);
             if (!Directory.Exists(GetScreenshotFolderPath()))
             {
                 Directory.CreateDirectory(GetScreenshotFolderPath());
@@ -350,11 +350,11 @@ public abstract partial class PlayerViewModelBase
             await OnTakeScreenshotAsync(path);
             if (File.Exists(path))
             {
-                var file = await StorageFile.GetFileFromPathAsync(path);
-                var shouldCopyToClipboard = _settings.CopyAfterScreenshot;
+                StorageFile file = await StorageFile.GetFileFromPathAsync(path);
+                bool shouldCopyToClipboard = _settings.CopyAfterScreenshot;
                 if (shouldCopyToClipboard)
                 {
-                    var dp = new DataPackage();
+                    DataPackage dp = new();
                     dp.SetBitmap(
                         RandomAccessStreamReference.CreateFromFile(
                             await StorageFile.GetFileFromPathAsync(path)
@@ -364,7 +364,7 @@ public abstract partial class PlayerViewModelBase
                     _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
                 }
 
-                var shouldOpenFile = _settings.OpenAfterScreenshot;
+                bool shouldOpenFile = _settings.OpenAfterScreenshot;
                 if (shouldOpenFile)
                 {
                     await Launcher.LaunchFileAsync(file).AsTask();

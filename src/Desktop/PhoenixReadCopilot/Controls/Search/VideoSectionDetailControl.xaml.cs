@@ -56,7 +56,7 @@ public sealed partial class VideoSectionDetailControl : VideoSectionDetailContro
                     <= 240
                 )
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );
@@ -78,7 +78,7 @@ public sealed partial class VideoSectionDetailControl : VideoSectionDetailContro
             {
                 if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadItemsCommand.Execute(default);
+                    ViewModel.LoadItemsCommand.Execute(null);
                 }
             }
         );

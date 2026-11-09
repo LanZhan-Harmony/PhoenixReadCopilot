@@ -26,34 +26,34 @@ public sealed partial class Pinner : PinnerBase
     public Pinner() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(null);
 
     protected override void OnControlUnloaded() => Repeater.ItemsSource = null;
 
     private void OnItemClick(object sender, RoutedEventArgs e)
     {
-        var item = (sender as FrameworkElement)?.DataContext as PinItem;
-        var navVM = _navigationViewModel;
+        PinItem? item = (sender as FrameworkElement)?.DataContext as PinItem;
+        NavigationViewModel navVM = _navigationViewModel;
         if (item.Type == PinContentType.User)
         {
-            var user = new UserProfile(item.Id, item.Title, new BiliImage(new Uri(item.Cover)));
+            UserProfile user = new(item.Id, item.Title, new BiliImage(new Uri(item.Cover)));
             navVM.NavigateToOver(typeof(UserSpacePage), user);
         }
         else if (item.Type == PinContentType.Pgc)
         {
-            var identifier = new MediaIdentifier(item.Id, item.Title, default);
+            MediaIdentifier identifier = new(item.Id, item.Title, null);
             navVM.NavigateToOver(typeof(PgcPlayerPage), identifier);
         }
         else if (item.Type == PinContentType.Video)
         {
-            var snapshot = new VideoSnapshot(
-                new VideoInformation(new MediaIdentifier(item.Id, item.Title, default), default)
+            VideoSnapshot snapshot = new(
+                new VideoInformation(new MediaIdentifier(item.Id, item.Title, null), null)
             );
             navVM.NavigateToOver(typeof(VideoPlayerPage), snapshot);
         }
         else if (item.Type == PinContentType.Article)
         {
-            var identifier = new ArticleIdentifier(item.Id, item.Title, default, default);
+            ArticleIdentifier identifier = new(item.Id, item.Title, null, null);
             navVM.NavigateToOver(typeof(ArticleReaderPage), identifier);
         }
 
@@ -62,7 +62,7 @@ public sealed partial class Pinner : PinnerBase
 
     private void OnRemoveItemClick(object sender, RoutedEventArgs e)
     {
-        var isLastItem = ViewModel.Items.Count == 1;
+        bool isLastItem = ViewModel.Items.Count == 1;
         ViewModel.RemoveItemCommand.Execute((sender as FrameworkElement)?.DataContext as PinItem);
         if (isLastItem)
         {

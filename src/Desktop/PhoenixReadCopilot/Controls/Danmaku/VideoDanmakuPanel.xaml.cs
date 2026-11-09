@@ -118,7 +118,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void OnRequestAddSingleDanmaku(object? sender, string e)
     {
-        var model = new DanmakuItem
+        DanmakuItem model = new()
         {
             StartMs = Convert.ToUInt32(_lastProgress * 1000),
             Mode = (DanmakuMode)((int)ViewModel.Location),
@@ -159,7 +159,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             _danmakuRenderer.Pause();
         }
 
-        var config = DanmakuConfiguration.CreateDefault();
+        DanmakuConfiguration config = DanmakuConfiguration.CreateDefault();
         config.TextOpacity = ViewModel.DanmakuOpacity;
         config.FontSizeScale = ViewModel.DanmakuFontSize;
         config.RollingAreaRatio = (float)ViewModel.DanmakuArea;
@@ -178,12 +178,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void ResetSpeed()
     {
-        var finalSpeed = ViewModel.DanmakuSpeed * 5 * ViewModel.ExtraSpeed;
+        double finalSpeed = ViewModel.DanmakuSpeed * 5 * ViewModel.ExtraSpeed;
         _danmakuRenderer?.UpdateConfiguration(
-            new DanmakuConfiguration
-            {
-                RollingSpeedBase = (float)finalSpeed
-            }
+            new DanmakuConfiguration { RollingSpeedBase = (float)finalSpeed }
         );
     }
 

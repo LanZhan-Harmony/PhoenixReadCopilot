@@ -36,7 +36,7 @@ public sealed partial class NotifyMessageSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<NotifyMessageItemViewModel> Items { get; } = new();
+    public ObservableCollection<NotifyMessageItemViewModel> Items { get; } = [];
 
     /// <summary>
     /// 通知消息类型.

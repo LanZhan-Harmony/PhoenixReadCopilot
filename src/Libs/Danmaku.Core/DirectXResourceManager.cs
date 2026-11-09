@@ -6,6 +6,7 @@ using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
+using Vortice.Mathematics;
 using WinRT;
 using AlphaMode = Vortice.DXGI.AlphaMode;
 
@@ -26,7 +27,7 @@ internal sealed class DirectXResourceManager : IDisposable
 
     private bool _isDisposed;
     private CancellationTokenSource _delayedResizeCts;
-    private readonly object _resizeLock = new object();
+    private readonly Lock _resizeLock = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DirectXResourceManager"/> class.
@@ -176,11 +177,14 @@ internal sealed class DirectXResourceManager : IDisposable
         {
             if (D3DDevice != null && D3DContext != null && SwapChain != null)
             {
-                var transparent = new Vortice.Mathematics.Color4(0, 0, 0, 0);
+                Color4 transparent = new(0, 0, 0, 0);
                 for (int i = 0; i < 2; i++)
                 {
-                    using var backBuffer = SwapChain.GetBuffer<ID3D11Texture2D>(0);
-                    using var rtv = D3DDevice.CreateRenderTargetView(backBuffer, null);
+                    using ID3D11Texture2D backBuffer = SwapChain.GetBuffer<ID3D11Texture2D>(0);
+                    using ID3D11RenderTargetView rtv = D3DDevice.CreateRenderTargetView(
+                        backBuffer,
+                        null
+                    );
                     D3DContext.ClearRenderTargetView(rtv, transparent);
                     SwapChain.Present(0, PresentFlags.None);
                 }
@@ -201,17 +205,17 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void CreateD3DDevice()
     {
-        var creationFlags = DeviceCreationFlags.BgraSupport;
+        DeviceCreationFlags creationFlags = DeviceCreationFlags.BgraSupport;
 #if DEBUG
         creationFlags |= DeviceCreationFlags.Debug;
 #endif
 
-        var featureLevels = new[]
-        {
+        Vortice.Direct3D.FeatureLevel[] featureLevels =
+        [
             Vortice.Direct3D.FeatureLevel.Level_11_1,
             Vortice.Direct3D.FeatureLevel.Level_11_0,
             Vortice.Direct3D.FeatureLevel.Level_10_1,
-        };
+        ];
 
         ID3D11Device device;
         ID3D11DeviceContext context;
@@ -233,15 +237,15 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void CreateSwapChain()
     {
-        using var dxgiDevice = D3DDevice.QueryInterface<IDXGIDevice>();
-        using var dxgiAdapter = dxgiDevice.GetAdapter();
-        using var dxgiFactory = dxgiAdapter.GetParent<IDXGIFactory2>();
+        using IDXGIDevice dxgiDevice = D3DDevice.QueryInterface<IDXGIDevice>();
+        using IDXGIAdapter dxgiAdapter = dxgiDevice.GetAdapter();
+        using IDXGIFactory2 dxgiFactory = dxgiAdapter.GetParent<IDXGIFactory2>();
 
         // 超采样模式：使用物理像素大小创建 SwapChain 以获得更清晰的渲染效果
-        var bufferWidth = (uint)Math.Max(1, (int)_canvasWidth);
-        var bufferHeight = (uint)Math.Max(1, (int)_canvasHeight);
+        uint bufferWidth = (uint)Math.Max(1, (int)_canvasWidth);
+        uint bufferHeight = (uint)Math.Max(1, (int)_canvasHeight);
 
-        var swapChainDesc = new SwapChainDescription1
+        SwapChainDescription1 swapChainDesc = new()
         {
             Width = bufferWidth,
             Height = bufferHeight,
@@ -268,13 +272,13 @@ internal sealed class DirectXResourceManager : IDisposable
         SharpGen.Runtime.Result setSwapChainResult;
         unsafe
         {
-            var winrtObj = _swapChainPanel.As<IWinRTObject>();
-            var objRef = winrtObj.NativeObject;
-            var panelPtr = objRef.ThisPtr;
+            IWinRTObject winrtObj = _swapChainPanel.As<IWinRTObject>();
+            IObjectReference objRef = winrtObj.NativeObject;
+            nint panelPtr = objRef.ThisPtr;
 
-            var guid = typeof(ISwapChainPanelNative).GUID;
+            Guid guid = typeof(ISwapChainPanelNative).GUID;
             void* nativePanelPtr;
-            var hr = (
+            int hr = (
                 (delegate* unmanaged[Stdcall]<IntPtr, Guid*, void**, int>)(*(void***)panelPtr)[0]
             )(panelPtr, &guid, &nativePanelPtr);
             if (hr < 0)
@@ -290,7 +294,7 @@ internal sealed class DirectXResourceManager : IDisposable
 
             try
             {
-                var setSwapChainFunc = (
+                delegate* unmanaged[Stdcall]<void*, nint, int> setSwapChainFunc = (
                     (delegate* unmanaged[Stdcall]<void*, IntPtr, int>)(*(void***)nativePanelPtr)[3]
                 );
                 hr = setSwapChainFunc(nativePanelPtr, SwapChain.NativePointer);
@@ -327,10 +331,10 @@ internal sealed class DirectXResourceManager : IDisposable
             // 超采样渲染：SwapChain 是物理像素，需要缩小到逻辑像素以匹配 SwapChainPanel
             // 例如：200% DPI 下，SwapChain=1920x1080(物理)，SwapChainPanel=960x540(逻辑)
             // MatrixTransform = (0.5, 0.5) 将物理坐标映射到逻辑坐标
-            var matrix = new Matrix3x2 { M11 = (float)(1.0 / _scale), M22 = (float)(1.0 / _scale) };
+            Matrix3x2 matrix = new() { M11 = (float)(1.0 / _scale), M22 = (float)(1.0 / _scale) };
 
             // AOT 兼容：直接使用 QueryInterface 而不是 As<T>()
-            using var swapChain2 = SwapChain.QueryInterface<IDXGISwapChain2>();
+            using IDXGISwapChain2 swapChain2 = SwapChain.QueryInterface<IDXGISwapChain2>();
             swapChain2.MatrixTransform = matrix;
         }
     }
@@ -340,7 +344,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void CreateRenderTargetView()
     {
-        using var backBuffer = SwapChain.GetBuffer<ID3D11Texture2D>(0);
+        using ID3D11Texture2D backBuffer = SwapChain.GetBuffer<ID3D11Texture2D>(0);
         RenderTargetView = D3DDevice.CreateRenderTargetView(backBuffer, null);
     }
 
@@ -351,7 +355,7 @@ internal sealed class DirectXResourceManager : IDisposable
     {
         D2DFactory = D2D1.D2D1CreateFactory<ID2D1Factory1>();
 
-        using var dxgiDevice = D3DDevice.QueryInterface<IDXGIDevice>();
+        using IDXGIDevice dxgiDevice = D3DDevice.QueryInterface<IDXGIDevice>();
         D2DDevice = D2DFactory.CreateDevice(dxgiDevice);
 
         D2DContext = D2DDevice.CreateDeviceContext(
@@ -367,11 +371,11 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void CreateD2DRenderTarget()
     {
-        using var dxgiBackBuffer = SwapChain.GetBuffer<IDXGISurface>(0);
+        using IDXGISurface dxgiBackBuffer = SwapChain.GetBuffer<IDXGISurface>(0);
 
         // 🔑 关键修复：使用标准 96 DPI，因为 CanvasWidth/Height 已经是物理像素
         // 这样 D2D 的逻辑坐标就直接对应物理像素，避免"双重缩放"问题
-        var bitmapProperties = new BitmapProperties1(
+        BitmapProperties1 bitmapProperties = new(
             new Vortice.DCommon.PixelFormat(
                 Format.B8G8R8A8_UNorm,
                 Vortice.DCommon.AlphaMode.Premultiplied
@@ -401,8 +405,8 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void CreateCaches()
     {
-        TextFormatCache = new Dictionary<string, IDWriteTextFormat>();
-        BrushCache = new Dictionary<uint, ID2D1SolidColorBrush>();
+        TextFormatCache = [];
+        BrushCache = [];
         ObjectPool = new ObjectPoolManager();
     }
 
@@ -445,7 +449,9 @@ internal sealed class DirectXResourceManager : IDisposable
     public void ResizeSwapChain(float width, float height)
     {
         if (SwapChain == null)
+        {
             return;
+        }
 
         // 更新画布大小（物理像素，用于超采样渲染）
         _canvasWidth = width * _scale;
@@ -458,8 +464,8 @@ internal sealed class DirectXResourceManager : IDisposable
         RenderTargetView = null;
 
         // 超采样模式：SwapChain 使用物理像素大小
-        var physicalWidth = (uint)Math.Max(1, (int)_canvasWidth);
-        var physicalHeight = (uint)Math.Max(1, (int)_canvasHeight);
+        uint physicalWidth = (uint)Math.Max(1, (int)_canvasWidth);
+        uint physicalHeight = (uint)Math.Max(1, (int)_canvasHeight);
 
         SwapChain.ResizeBuffers(
             2,
@@ -482,9 +488,11 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void OnCompositionScaleChanged(SwapChainPanel sender, object args)
     {
-        var newScale = (float)(sender.CompositionScaleX + sender.CompositionScaleY) / 2f;
+        float newScale = (float)(sender.CompositionScaleX + sender.CompositionScaleY) / 2f;
         if (Math.Abs(newScale - _scale) < 0.001f)
+        {
             return;
+        }
 
         _scale = newScale;
         _dpi = 96.0f * _scale;
@@ -507,26 +515,34 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void OnSizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs e)
     {
-        var newWidth = (float)e.NewSize.Width * _scale;
-        var newHeight = (float)e.NewSize.Height * _scale;
+        float newWidth = (float)e.NewSize.Width * _scale;
+        float newHeight = (float)e.NewSize.Height * _scale;
         if (Math.Abs(newWidth - _canvasWidth) < 0.1f && Math.Abs(newHeight - _canvasHeight) < 0.1f)
+        {
             return;
+        }
 
         _canvasWidth = newWidth;
         _canvasHeight = newHeight;
         _logicalWidth = e.NewSize.Width;
         _logicalHeight = e.NewSize.Height;
 
-        _swapChainPanel.DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
-
-                // 触发尺寸变化事件
-                SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
-            }
-        );
+        if (_swapChainPanel.DispatcherQueue.HasThreadAccess)
+        {
+            ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
+            SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
+        }
+        else
+        {
+            _swapChainPanel.DispatcherQueue.TryEnqueue(
+                DispatcherQueuePriority.Normal,
+                () =>
+                {
+                    ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
+                    SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
+                }
+            );
+        }
 
         // 启动延迟 resize 机制
         ScheduleDelayedResize();
@@ -544,9 +560,9 @@ internal sealed class DirectXResourceManager : IDisposable
             _delayedResizeCts?.Dispose();
             _delayedResizeCts = new CancellationTokenSource();
 
-            var cts = _delayedResizeCts;
-            var width = _logicalWidth;
-            var height = _logicalHeight;
+            CancellationTokenSource cts = _delayedResizeCts;
+            double width = _logicalWidth;
+            double height = _logicalHeight;
 
             // 异步执行延迟 resize
             _ = Task.Run(
@@ -564,7 +580,7 @@ internal sealed class DirectXResourceManager : IDisposable
                                 if (!_isDisposed && !cts.IsCancellationRequested)
                                 {
                                     // 检查并更新 RasterizationScale
-                                    var rasterizationScale = _swapChainPanel
+                                    double? rasterizationScale = _swapChainPanel
                                         .XamlRoot
                                         ?.RasterizationScale;
                                     if (
@@ -612,14 +628,14 @@ internal sealed class DirectXResourceManager : IDisposable
         lock (CacheLock)
         {
             // 清空文本格式缓存
-            foreach (var format in TextFormatCache.Values)
+            foreach (IDWriteTextFormat format in TextFormatCache.Values)
             {
                 format?.Dispose();
             }
             TextFormatCache.Clear();
 
             // 清空画刷缓存
-            foreach (var brush in BrushCache.Values)
+            foreach (ID2D1SolidColorBrush brush in BrushCache.Values)
             {
                 brush?.Dispose();
             }
@@ -635,7 +651,9 @@ internal sealed class DirectXResourceManager : IDisposable
     public void Dispose()
     {
         if (_isDisposed)
+        {
             return;
+        }
 
         _isDisposed = true;
 

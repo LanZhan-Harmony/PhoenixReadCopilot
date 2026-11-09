@@ -16,7 +16,7 @@ public sealed partial class BoolToVisibilityConverter : IValueConverter
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var vis = Visibility.Collapsed;
+        Visibility vis = Visibility.Collapsed;
         if (value is bool v)
         {
             vis = IsReverse

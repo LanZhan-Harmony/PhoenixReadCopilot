@@ -21,6 +21,6 @@ internal sealed partial class MessageSectionTemplateSelector : DataTemplateSelec
             return ChatTemplate;
         }
 
-        return default;
+        return null;
     }
 }

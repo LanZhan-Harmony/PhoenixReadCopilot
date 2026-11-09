@@ -35,7 +35,7 @@ public sealed class DanmakuRenderer : IDisposable
     /// <param name="initialConfig">初始配置（可选）.</param>
     public DanmakuRenderer(
         Grid rootGrid,
-        ILogger<DanmakuRenderer> logger = default,
+        ILogger<DanmakuRenderer> logger = null,
         DanmakuConfiguration initialConfig = null
     )
     {
@@ -61,6 +61,7 @@ public sealed class DanmakuRenderer : IDisposable
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
+            Opacity = 0,
         };
         _rootGrid.Children.Add(_swapChainPanel);
 
@@ -177,6 +178,7 @@ public sealed class DanmakuRenderer : IDisposable
     {
         _scheduler?.Clear();
         _render?.Clear();
+        _swapChainPanel?.DispatcherQueue?.TryEnqueue(() => _swapChainPanel?.Opacity = 0);
     }
 
     /// <summary>
@@ -200,7 +202,7 @@ public sealed class DanmakuRenderer : IDisposable
     /// </summary>
     public List<DanmakuItem> GetDanmakuList()
     {
-        return _scheduler?.GetDanmakuList() ?? new List<DanmakuItem>();
+        return _scheduler?.GetDanmakuList() ?? [];
     }
 
     /// <summary>

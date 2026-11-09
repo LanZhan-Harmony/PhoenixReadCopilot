@@ -21,10 +21,10 @@ internal sealed partial class MomentSectionTemplateSelector : DataTemplateSelect
 
         if (item is not IMomentSectionDetailViewModel)
         {
-            return default;
+            return null;
         }
 
-        var vm = (IMomentSectionDetailViewModel)item;
+        IMomentSectionDetailViewModel vm = (IMomentSectionDetailViewModel)item;
         return vm.SectionType == MomentSectionType.Video ? VideoTemplate : ComprehensiveTemplate;
     }
 }

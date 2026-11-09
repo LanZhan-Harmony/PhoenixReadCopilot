@@ -59,17 +59,17 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 
         if (keyword.StartsWith("av", StringComparison.InvariantCultureIgnoreCase))
         {
-            var videoId = keyword[2..];
+            string videoId = keyword[2..];
 
             // videoId should be a number.
-            if (long.TryParse(videoId, out var id))
+            if (long.TryParse(videoId, out long id))
             {
                 _navigationViewModel.Back();
-                var video = new VideoInformation(
-                    new MediaIdentifier(videoId, default, default),
-                    default
+                VideoInformation video = new(
+                    new MediaIdentifier(videoId, null, null),
+                    null
                 );
-                new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(default);
+                new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(null);
                 return;
             }
         }
@@ -77,12 +77,12 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         {
             try
             {
-                var video = new VideoInformation(
-                    new MediaIdentifier(IdToolkit.Bv2Av(keyword).ToString(), default, default),
-                    default
+                VideoInformation video = new(
+                    new MediaIdentifier(IdToolkit.Bv2Av(keyword).ToString(), null, null),
+                    null
                 );
                 _navigationViewModel.Back();
-                new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(default);
+                new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(null);
                 return;
             }
             catch (Exception)
@@ -92,23 +92,22 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         }
 
         Keyword = keyword;
-        Sections = default;
-        SelectedSection = default;
+        Sections = null;
+        SelectedSection = null;
 
         try
         {
             IsSearching = true;
-            var (videos, nextVideoOffset) = await _service.GetComprehensiveSearchResultAsync(
-                keyword
-            );
-            var sections = new List<ISearchSectionDetailViewModel>
-            {
+            (IReadOnlyList<VideoInformation>? videos, int? nextVideoOffset) =
+                await _service.GetComprehensiveSearchResultAsync(keyword);
+            List<ISearchSectionDetailViewModel> sections =
+            [
                 CreateVideoSection(videos, nextVideoOffset),
                 CreateSection(SearchSectionType.Anime),
                 CreateSection(SearchSectionType.Cinema),
                 CreateSection(SearchSectionType.User),
                 CreateSection(SearchSectionType.Article),
-            };
+            ];
             Sections = [.. sections];
             SelectSection(Sections.FirstOrDefault());
             SectionInitialized?.Invoke(this, EventArgs.Empty);
@@ -135,7 +134,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection = section;
-        section.TryFirstLoadCommand.Execute(default);
+        section.TryFirstLoadCommand.Execute(null);
     }
 
     private VideoSearchSectionDetailViewModel CreateVideoSection(
@@ -143,7 +142,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         int? page
     )
     {
-        var newSection = new VideoSearchSectionDetailViewModel(
+        VideoSearchSectionDetailViewModel newSection = new(
             _service,
             _dispatcherQueue,
             _loggerFactory.CreateLogger<VideoSearchSectionDetailViewModel>()
@@ -155,7 +154,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 
     private ISearchSectionDetailViewModel CreateSection(SearchSectionType type)
     {
-        var sectionDetail = type switch
+        ISearchSectionDetailViewModel? sectionDetail = type switch
         {
             SearchSectionType.Anime or SearchSectionType.Cinema => (ISearchSectionDetailViewModel)
                 new PgcSearchSectionDetailViewModel(
@@ -173,16 +172,16 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
                 _dispatcherQueue,
                 _loggerFactory.CreateLogger<ArticleSearchSectionDetailViewModel>()
             ),
-            _ => default,
+            _ => null,
         };
 
-        var partition = type switch
+        SearchPartition? partition = type switch
         {
             SearchSectionType.Anime => new SearchPartition(7, Resources.Anime),
             SearchSectionType.Cinema => new SearchPartition(8, Resources.Cinema),
             SearchSectionType.User => new SearchPartition(2, Resources.User),
             SearchSectionType.Article => new SearchPartition(6, Resources.Article),
-            _ => default,
+            _ => null,
         };
 
         sectionDetail?.Initialize(Keyword, partition);

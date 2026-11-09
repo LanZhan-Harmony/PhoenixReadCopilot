@@ -33,6 +33,6 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
             };
         }
 
-        return default;
+        return null;
     }
 }

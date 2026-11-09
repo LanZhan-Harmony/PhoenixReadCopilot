@@ -25,7 +25,7 @@ public sealed partial class FFmpegPlayerViewModel
         }
 
         _isDisposed = true;
-        _element?.SetMediaPlayer(default);
+        _element?.SetMediaPlayer(null);
 
         if (Player is not null)
         {
@@ -183,7 +183,7 @@ public sealed partial class FFmpegPlayerViewModel
             return;
         }
 
-        var renderTarget = new CanvasRenderTarget(
+        CanvasRenderTarget renderTarget = new(
             CanvasDevice.GetSharedDevice(),
             Player.PlaybackSession.NaturalVideoWidth,
             Player.PlaybackSession.NaturalVideoHeight,
@@ -200,7 +200,7 @@ public sealed partial class FFmpegPlayerViewModel
         if (
             Player is not null
             && !string.IsNullOrEmpty(_videoUrl)
-            && TryConsumePreloadedSource(_videoUrl, out var preloaded)
+            && TryConsumePreloadedSource(_videoUrl, out FFmpegMediaSource? preloaded)
         )
         {
             try
@@ -222,7 +222,7 @@ public sealed partial class FFmpegPlayerViewModel
                     Duration = Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
                 }
 
-                var playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
+                MediaPlaybackItem playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
                 Player.Source = playbackItem;
                 if (_autoPlay)
                 {
@@ -290,18 +290,18 @@ public sealed partial class FFmpegPlayerViewModel
         string? referer = null
     )
     {
-        var config = new MediaSourceConfig();
+        MediaSourceConfig config = new();
         config.Video.VideoDecoderMode = VideoDecoderMode.Automatic;
         config.General.FastSeek = true;
         config.General.ReadAheadBufferEnabled = true;
         config.General.ReadAheadBufferDuration = TimeSpan.FromSeconds(15);
         config.General.ReadAheadBufferSize = 16 * 1024 * 1024;
 
-        var refUrl = !string.IsNullOrEmpty(referer) ? referer : CustomReferer;
-        var headerSb = new StringBuilder();
+        string? refUrl = !string.IsNullOrEmpty(referer) ? referer : CustomReferer;
+        StringBuilder headerSb = new();
         headerSb.Append($"Referer: {refUrl}\r\n");
 
-        var headerStr = headerSb.ToString();
+        string headerStr = headerSb.ToString();
         config.FFmpegOptions["headers"] = headerStr;
         config.FFmpegOptions["referer"] = refUrl;
         config.FFmpegOptions["protocol_whitelist"] = "file,http,https,tcp,tls,crypto";
@@ -309,7 +309,7 @@ public sealed partial class FFmpegPlayerViewModel
         config.FFmpegOptions["reconnect_streamed"] = 1;
         config.FFmpegOptions["reconnect_on_network_error"] = 1;
 
-        var key = !string.IsNullOrEmpty(decryptionKey) ? decryptionKey : DecryptionKey;
+        string? key = !string.IsNullOrEmpty(decryptionKey) ? decryptionKey : DecryptionKey;
         if (!string.IsNullOrEmpty(key))
         {
             config.FFmpegOptions["decryption_key"] = key;
@@ -320,9 +320,9 @@ public sealed partial class FFmpegPlayerViewModel
 
     private async Task LoadMediaSourceAsync()
     {
-        var config = CreateMediaSourceConfig();
+        MediaSourceConfig config = CreateMediaSourceConfig();
 
-        var fallbackUrl = string.IsNullOrEmpty(_videoUrl) ? _audioUrl : _videoUrl;
+        string? fallbackUrl = string.IsNullOrEmpty(_videoUrl) ? _audioUrl : _videoUrl;
         if (!string.IsNullOrEmpty(fallbackUrl))
         {
             _ffmpegSource = await FFmpegMediaSource.CreateFromUriAsync(fallbackUrl, config);
@@ -335,7 +335,7 @@ public sealed partial class FFmpegPlayerViewModel
                 Duration = Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
             }
 
-            var playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
+            MediaPlaybackItem playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
             Player.Source = playbackItem;
         }
     }

@@ -19,7 +19,7 @@ public sealed partial class VideoTransportControl : PlayerControlBase
         nameof(LeftContent),
         typeof(object),
         typeof(VideoTransportControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -29,7 +29,7 @@ public sealed partial class VideoTransportControl : PlayerControlBase
         nameof(MiddleContent),
         typeof(object),
         typeof(VideoTransportControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -39,7 +39,7 @@ public sealed partial class VideoTransportControl : PlayerControlBase
         nameof(RightContent),
         typeof(object),
         typeof(VideoTransportControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -123,7 +123,7 @@ public sealed partial class VideoTransportControl : PlayerControlBase
         _seekDebounceTimer?.Stop();
         if (_pendingSeekPosition >= 0)
         {
-            var target = _pendingSeekPosition;
+            double target = _pendingSeekPosition;
             _pendingSeekPosition = -1;
             ViewModel?.SeekCommand.Execute(Convert.ToInt32(target));
         }

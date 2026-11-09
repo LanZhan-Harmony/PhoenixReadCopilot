@@ -13,11 +13,11 @@ public sealed partial class VideoPlayerFormatButton : VideoPlayerPageControlBase
     /// </summary>
     public VideoPlayerFormatButton() => InitializeComponent();
 
-    protected override void OnControlUnloaded() => FormatView.ItemsSource = default;
+    protected override void OnControlUnloaded() => FormatView.ItemsSource = null;
 
     private void OnFlyoutOpened(object sender, object e)
     {
-        var index = ViewModel.Formats.ToList().IndexOf(ViewModel.SelectedFormat);
+        int index = ViewModel.Formats.ToList().IndexOf(ViewModel.SelectedFormat);
         if (index != -1)
         {
             FormatView.Select(index);
@@ -26,7 +26,7 @@ public sealed partial class VideoPlayerFormatButton : VideoPlayerPageControlBase
 
     private void OnFormatSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var format = sender.SelectedItem as PlayerFormatItemViewModel;
+        PlayerFormatItemViewModel? format = sender.SelectedItem as PlayerFormatItemViewModel;
         ViewModel.ChangeFormatCommand.Execute(format);
     }
 }

@@ -174,6 +174,16 @@ internal partial class DanmakuDirectXRender
     /// </summary>
     private readonly DanmakuDirectXRenderItem[][] _renderSnapshots;
 
+    /// <summary>
+    /// 是否已成功呈现第一帧弹幕.
+    /// </summary>
+    private volatile bool _isFirstFramePresented;
+
+    /// <summary>
+    /// 上一帧绘制的弹幕总数.
+    /// </summary>
+    private int _lastDanmakuCount;
+
     #endregion
 
     #region 静态构造函数

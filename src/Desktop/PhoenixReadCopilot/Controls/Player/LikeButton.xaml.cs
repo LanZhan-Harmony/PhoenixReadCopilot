@@ -17,7 +17,7 @@ public sealed partial class LikeButton : LayoutUserControlBase
         nameof(IsLiked),
         typeof(bool),
         typeof(LikeButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -27,7 +27,7 @@ public sealed partial class LikeButton : LayoutUserControlBase
         nameof(LikeButton),
         typeof(string),
         typeof(LikeButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -37,7 +37,7 @@ public sealed partial class LikeButton : LayoutUserControlBase
         nameof(Command),
         typeof(ICommand),
         typeof(LikeButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -47,7 +47,7 @@ public sealed partial class LikeButton : LayoutUserControlBase
         nameof(TripleCommand),
         typeof(ICommand),
         typeof(LikeButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

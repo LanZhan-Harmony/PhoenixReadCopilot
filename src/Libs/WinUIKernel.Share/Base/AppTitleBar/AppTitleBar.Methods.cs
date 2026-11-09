@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using Microsoft.UI;
+using Microsoft.UI.Content;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Graphics;
 
@@ -68,7 +70,7 @@ public sealed partial class AppTitleBar
 
     private void UpdateHeight()
     {
-        var stateName =
+        string stateName =
             CenterContent is null
             && Content is null
             && LeftEdgeElement is null
@@ -84,13 +86,13 @@ public sealed partial class AppTitleBar
     /// </summary>
     public void UpdatePadding()
     {
-        var islandEnv = XamlRoot?.ContentIslandEnvironment;
+        ContentIslandEnvironment? islandEnv = XamlRoot?.ContentIslandEnvironment;
         if (islandEnv is not null)
         {
-            var appWindowId = islandEnv.AppWindowId;
-            var appWindow = AppWindow.GetFromWindowId(appWindowId);
-            var titleBar = appWindow.TitleBar;
-            var scale = XamlRoot!.RasterizationScale;
+            WindowId appWindowId = islandEnv.AppWindowId;
+            AppWindow appWindow = AppWindow.GetFromWindowId(appWindowId);
+            AppWindowTitleBar titleBar = appWindow.TitleBar;
+            double scale = XamlRoot!.RasterizationScale;
             Debug.WriteLine(
                 $"TitleBar LeftInset: {titleBar.LeftInset}, RightInset: {titleBar.RightInset}, Scale: {scale}"
             );
@@ -107,12 +109,12 @@ public sealed partial class AppTitleBar
 
     private void UpdateTheme()
     {
-        var islandEnv = XamlRoot?.ContentIslandEnvironment;
+        ContentIslandEnvironment? islandEnv = XamlRoot?.ContentIslandEnvironment;
         if (islandEnv is not null && AutoUpdateTitleBarButtonColor)
         {
-            var appWindowId = islandEnv.AppWindowId;
-            var appWindow = AppWindow.GetFromWindowId(appWindowId);
-            var titleBar = appWindow.TitleBar;
+            WindowId appWindowId = islandEnv.AppWindowId;
+            AppWindow appWindow = AppWindow.GetFromWindowId(appWindowId);
+            AppWindowTitleBar titleBar = appWindow.TitleBar;
             titleBar.ButtonBackgroundColor = Colors.Transparent;
             titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
             if (ActualTheme != ElementTheme.Default)
@@ -130,11 +132,11 @@ public sealed partial class AppTitleBar
             }
             else
             {
-                titleBar.ButtonHoverBackgroundColor = default;
-                titleBar.ButtonInactiveForegroundColor = default;
-                titleBar.ButtonForegroundColor = default;
-                titleBar.ButtonHoverForegroundColor = default;
-                titleBar.ButtonPressedForegroundColor = default;
+                titleBar.ButtonHoverBackgroundColor = null;
+                titleBar.ButtonInactiveForegroundColor = null;
+                titleBar.ButtonForegroundColor = null;
+                titleBar.ButtonHoverForegroundColor = null;
+                titleBar.ButtonPressedForegroundColor = null;
             }
         }
     }
@@ -261,30 +263,31 @@ public sealed partial class AppTitleBar
             return;
         }
 
-        var islandEnv = XamlRoot?.ContentIslandEnvironment;
+        ContentIslandEnvironment? islandEnv = XamlRoot?.ContentIslandEnvironment;
         if (islandEnv is not null)
         {
-            var appWindowId = islandEnv.AppWindowId;
-            var nonClientPointerSource = InputNonClientPointerSource.GetForWindowId(appWindowId);
+            WindowId appWindowId = islandEnv.AppWindowId;
+            InputNonClientPointerSource nonClientPointerSource =
+                InputNonClientPointerSource.GetForWindowId(appWindowId);
             nonClientPointerSource.ClearRegionRects(NonClientRegionKind.Passthrough);
             if (_interactableElementList.Count > 0)
             {
-                var passthroughRects = new List<RectInt32>();
-                foreach (var element in _interactableElementList)
+                List<RectInt32> passthroughRects = [];
+                foreach (FrameworkElement element in _interactableElementList)
                 {
-                    var transformBounds = element.TransformToVisual(this);
-                    var width =
+                    GeneralTransform transformBounds = element.TransformToVisual(this);
+                    double width =
                         element.Visibility == Visibility.Collapsed ? 0d : element.ActualWidth;
-                    var height = element.ActualHeight;
-                    var bounds = transformBounds.TransformBounds(new Rect(0, 0, width, height));
+                    double height = element.ActualHeight;
+                    Rect bounds = transformBounds.TransformBounds(new Rect(0, 0, width, height));
 
                     if (bounds.X < 0 || bounds.Y < 0)
                     {
                         continue;
                     }
 
-                    var scale = XamlRoot.RasterizationScale;
-                    var transparentRect = new RectInt32(
+                    double scale = XamlRoot.RasterizationScale;
+                    RectInt32 transparentRect = new(
                         Convert.ToInt32(bounds.X * scale),
                         Convert.ToInt32(bounds.Y * scale),
                         Convert.ToInt32(bounds.Width * scale),

@@ -1,9 +1,9 @@
-using System.Diagnostics;
 using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using SharpGen.Runtime;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
 
@@ -26,7 +26,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         CanvasHeight = (float)_swapChainPanel.ActualHeight * _scale;
 
         // 初始化配置状态（使用传入的配置或默认配置）
-        var config = initialConfig ?? DanmakuConfiguration.CreateDefault();
+        DanmakuConfiguration config = initialConfig ?? DanmakuConfiguration.CreateDefault();
         _configState = DanmakuConfigurationState.FromConfiguration(config);
         // 确保滚动速度使用正确的 scale
         if (config.RollingSpeedBase.HasValue)
@@ -91,7 +91,9 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
     public void UpdateConfiguration(DanmakuConfiguration config)
     {
         if (config == null)
+        {
             return;
+        }
 
         // 应用配置，传入回调用于更新 Y 轴槽管理器
         _configState.ApplyConfiguration(
@@ -206,7 +208,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             string fontFamily = string.IsNullOrWhiteSpace(renderItem.Item.FontFamilyName)
                 ? _configState.FontFamilyName
                 : renderItem.Item.FontFamilyName;
-            var textFormat = GetOrCreateTextFormat(fontFamily, fontSize, isBold);
+            IDWriteTextFormat? textFormat = GetOrCreateTextFormat(fontFamily, fontSize, isBold);
 
             // Create text layout
             textLayout = _resourceManager.DWriteFactory.CreateTextLayout(
@@ -216,7 +218,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 CanvasHeight
             );
 
-            var textMetrics = textLayout.Metrics;
+            TextMetrics textMetrics = textLayout.Metrics;
             renderItem.Width = textMetrics.Width + 8f;
             renderItem.Height = textMetrics.Height;
 
@@ -446,7 +448,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         if (_configState.EnableParallelUpdate)
         {
             // 并行处理每一层
-            System.Threading.Tasks.Parallel.For(
+            Parallel.For(
                 0,
                 _renderLayerList.Length,
                 layerId => UpdateLayerDanmaku((uint)layerId, elapsedMs, totalTime)
@@ -469,7 +471,9 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
     {
         // 关键修复：在更新前检查停止标志，避免在 UI 事件期间继续处理
         if (_isStopped)
+        {
             return;
+        }
 
         DanmakuYSlotManager ySlotManager = _renderLayerList[layerId].YSlotManager;
         List<DanmakuDirectXRenderItem> renderList = _renderLayerList[layerId].RenderList;
@@ -480,9 +484,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             {
                 // 每次迭代都检查停止标志
                 if (_isStopped)
+                {
                     return;
+                }
 
-                var renderItem = renderList[i];
+                DanmakuDirectXRenderItem renderItem = renderList[i];
                 if (!renderItem.IsFirstRenderTimeSet)
                 {
                     renderItem.FirstRenderTime = totalTime;
@@ -561,7 +567,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 if (removeItem)
                 {
                     // 🚀 对象池优化：归还 RenderItem 到对象池
-                    var key = GetTextureCacheKey(renderItem);
+                    TextureCacheKey key = GetTextureCacheKey(renderItem);
                     _resourceManager.ObjectPool.MarkTextureUnused(key);
                     _resourceManager.ObjectPool.ReturnRenderItem(renderItem);
 
@@ -580,7 +586,9 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             || CanvasHeight <= 0
             || _isStopped
         )
+        {
             return;
+        }
 
         try
         {
@@ -592,11 +600,15 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             for (uint layerId = 0; layerId < _renderLayerList.Length; layerId++)
             {
                 if (!_renderLayerList[layerId].IsEnabled)
+                {
                     continue;
+                }
 
                 List<DanmakuDirectXRenderItem> renderList = _renderLayerList[layerId].RenderList;
                 if (renderList.Count == 0)
+                {
                     continue;
+                }
 
                 // 🚀 GC 优化：使用预分配数组替代 ToArray()，避免每帧分配
                 int count;
@@ -617,10 +629,12 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 // 🎯 无锁渲染快照（不阻塞更新线程）
                 for (int i = 0; i < count; i++)
                 {
-                    var renderItem = _renderSnapshots[layerId][i];
+                    DanmakuDirectXRenderItem renderItem = _renderSnapshots[layerId][i];
 
                     if (_isStopped || !renderItem.IsFirstRenderTimeSet)
+                    {
                         continue;
+                    }
 
                     totalCount++;
 
@@ -668,7 +682,9 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 RenderDebugInfo(totalCount);
             }
 
-            var result = _resourceManager.D2DContext.EndDraw(out _, out _);
+            _lastDanmakuCount = totalCount;
+
+            Result result = _resourceManager.D2DContext.EndDraw(out _, out _);
             if (result.Failure)
             {
                 Logger.Log($"EndDraw failed: {result}");
@@ -706,8 +722,15 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
 
     public void Clear()
     {
+        _isFirstFramePresented = false;
+        _lastDanmakuCount = 0;
+
+        _swapChainPanel?.DispatcherQueue?.TryEnqueue(() => _swapChainPanel?.Opacity = 0);
+
         if (_renderLayerList == null)
+        {
             return;
+        }
 
         for (int i = 0; i < _renderLayerList.Length; i++)
         {
@@ -798,7 +821,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             _resourceManager.D2DContext,
             _resourceManager.DWriteFactory
         );
-        var debugInfo = new DebugInfo
+        DebugInfo debugInfo = new()
         {
             BufferWidth = (int)CanvasWidth,
             BufferHeight = (int)CanvasHeight,
@@ -823,7 +846,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         if (elapsedTime.TotalSeconds > 0)
         {
             // 计算当前帧率（使用指数移动平均平滑处理）
-            var currentFps = 1.0 / elapsedTime.TotalSeconds;
+            double currentFps = 1.0 / elapsedTime.TotalSeconds;
             _currentFrameRate = _currentFrameRate * 0.9 + currentFps * 0.1;
         }
     }
@@ -864,8 +887,8 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
 
         try
         {
-            var currentTime = _frameStopwatch.Elapsed;
-            var elapsedTime = currentTime - _lastFrameTime;
+            TimeSpan currentTime = _frameStopwatch.Elapsed;
+            TimeSpan elapsedTime = currentTime - _lastFrameTime;
             _lastFrameTime = currentTime;
             _totalTime += elapsedTime;
 
@@ -873,7 +896,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             UpdatePerformanceStats(elapsedTime);
 
             // 🚀 GC 优化：尝试进入 NoGC 区域以确保流畅渲染
-            var enteredNoGCRegion = false;
+            bool enteredNoGCRegion = false;
             if (!_isInNoGCRegion)
             {
                 try
@@ -899,8 +922,18 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 // 渲染弹幕
                 RenderDanmaku();
 
-                var presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
-                if (presentResult.HasValue && presentResult.Value.Failure)
+                Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
+                if (presentResult.HasValue && !presentResult.Value.Failure)
+                {
+                    if (!_isFirstFramePresented && _lastDanmakuCount > 0)
+                    {
+                        _isFirstFramePresented = true;
+                        _swapChainPanel?.DispatcherQueue?.TryEnqueue(() =>
+                            _swapChainPanel?.Opacity = 1.0
+                        );
+                    }
+                }
+                else if (presentResult.HasValue && presentResult.Value.Failure)
                 {
                     Logger.Log($"Present failed: {presentResult.Value}");
                 }

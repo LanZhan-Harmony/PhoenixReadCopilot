@@ -15,7 +15,7 @@ public sealed partial class VideoPartitionPage : VideoPartitionPageBase
     public VideoPartitionPage() => InitializeComponent();
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(default);
+    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
 }
 
 /// <summary>

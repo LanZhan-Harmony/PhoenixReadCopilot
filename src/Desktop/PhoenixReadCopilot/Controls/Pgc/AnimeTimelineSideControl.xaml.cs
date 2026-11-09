@@ -17,7 +17,7 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
     protected override void OnControlLoaded()
     {
         ViewModel.TimelineInitialized += OnTimelineInitialized;
-        ViewModel.InitializeCommand.Execute(default);
+        ViewModel.InitializeCommand.Execute(null);
         TimelineView.SelectionChanged += OnTimelineSelectionChanged;
         CheckTimelineSelection();
     }
@@ -25,7 +25,7 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        TimelineView.ItemsSource = default;
+        TimelineView.ItemsSource = null;
         TimelineView.SelectionChanged -= OnTimelineSelectionChanged;
         ViewModel.TimelineInitialized -= OnTimelineInitialized;
     }
@@ -39,7 +39,7 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
             return;
         }
 
-        var index = ViewModel.Timelines.IndexOf(ViewModel.SelectedTimeline);
+        int index = ViewModel.Timelines.IndexOf(ViewModel.SelectedTimeline);
         TimelineView.Select(index);
     }
 

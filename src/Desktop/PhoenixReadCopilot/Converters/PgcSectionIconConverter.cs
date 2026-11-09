@@ -7,7 +7,7 @@ internal sealed partial class PgcSectionIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var sectionType = (PgcSectionType)value;
+        PgcSectionType sectionType = (PgcSectionType)value;
         return sectionType switch
         {
             PgcSectionType.Timeline => FluentIcons.Common.Symbol.Calendar,

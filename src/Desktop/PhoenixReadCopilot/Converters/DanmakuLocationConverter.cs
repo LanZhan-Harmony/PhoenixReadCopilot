@@ -12,7 +12,7 @@ internal sealed partial class DanmakuLocationConverter : IValueConverter
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var result = string.Empty;
+        string result = string.Empty;
         switch ((DanmakuLocation)value)
         {
             case DanmakuLocation.Scroll:

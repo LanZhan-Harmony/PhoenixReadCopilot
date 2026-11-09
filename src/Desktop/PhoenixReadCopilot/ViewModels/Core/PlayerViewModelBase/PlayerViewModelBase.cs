@@ -47,7 +47,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             Cover = new Uri(cover);
         }
 
-        var updater = _smtc.DisplayUpdater;
+        SystemMediaTransportControlsDisplayUpdater updater = _smtc.DisplayUpdater;
         updater.ClearAll();
         updater.Type = MediaPlaybackType.Video;
         if (!string.IsNullOrEmpty(cover))
@@ -68,14 +68,14 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         string? audioUrl,
         bool isAutoPlay,
         int position = 0,
-        string? contentType = default,
-        string? extraOptions = default
+        string? contentType = null,
+        string? extraOptions = null
     )
     {
         _isClosed = false;
         if (_smtc is null)
         {
-            var currentWindow = _appViewModel.ActivatedWindow.GetWindowHandle();
+            nint currentWindow = _appViewModel.ActivatedWindow.GetWindowHandle();
             _smtc = SystemMediaTransportControlsInterop.GetForWindow(currentWindow);
             _smtc.IsEnabled = true;
             _smtc.IsPlayEnabled = true;
@@ -83,18 +83,18 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             _smtc.ButtonPressed += OnSystemControlsButtonPressedAsync;
 
             // 独立窗口播放时默认全窗口播放.
-            var defaultDisplay = _settings.DefaultPlayerDisplayMode;
+            PlayerDisplayMode defaultDisplay = _settings.DefaultPlayerDisplayMode;
             if (!IsFullScreen && defaultDisplay == PlayerDisplayMode.FullScreen)
             {
-                ToggleFullScreenCommand.Execute(default);
+                ToggleFullScreenCommand.Execute(null);
             }
             else if (!IsCompactOverlay && defaultDisplay == PlayerDisplayMode.CompactOverlay)
             {
-                ToggleCompactOverlayCommand.Execute(default);
+                ToggleCompactOverlayCommand.Execute(null);
             }
             else if (!IsFullWindow && defaultDisplay == PlayerDisplayMode.FullWindow)
             {
-                ToggleFullWindowCommand.Execute(default);
+                ToggleFullWindowCommand.Execute(null);
             }
         }
 
@@ -112,11 +112,11 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
 
         CancelNotification();
 
-        var isSpeedShare = _settings.IsPlayerSpeedShare;
-        var localSpeed = _settings.PlayerSpeed;
+        bool isSpeedShare = _settings.IsPlayerSpeedShare;
+        double localSpeed = _settings.PlayerSpeed;
         Volume = _settings.PlayerVolume;
         Speed = isSpeedShare ? localSpeed : 1.0;
-        var isSpeedEnhancement = _settings.IsPlayerSpeedEnhancement;
+        bool isSpeedEnhancement = _settings.IsPlayerSpeedEnhancement;
         MaxSpeed = isSpeedEnhancement ? 6.0 : 3.0;
         SpeedStep = isSpeedEnhancement ? 0.1 : 0.25;
 
@@ -169,13 +169,13 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     public Task CloseAsync()
     {
         _isClosed = true;
-        AttachedWindow = default;
+        AttachedWindow = null;
         if (_smtc is not null)
         {
             _smtc.DisplayUpdater.ClearAll();
             _smtc.IsEnabled = false;
             _smtc.ButtonPressed -= OnSystemControlsButtonPressedAsync;
-            _smtc = default;
+            _smtc = null;
         }
 
         ReleaseDisplay();
@@ -187,7 +187,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// </summary>
     public void ShowNotification(PlayerNotification notification)
     {
-        var item = new PlayerNotificationItemViewModel(notification);
+        PlayerNotificationItemViewModel item = new(notification);
         RequestShowNotification?.Invoke(this, item);
     }
 
@@ -202,7 +202,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <param name="shouldShow">是否需要显示.</param>
     public void CheckBottomProgressVisibility(bool shouldShow)
     {
-        var isEnabled = _settings.IsBottomProgressVisible;
+        bool isEnabled = _settings.IsBottomProgressVisible;
         IsBottomProgressVisible = isEnabled && shouldShow;
     }
 

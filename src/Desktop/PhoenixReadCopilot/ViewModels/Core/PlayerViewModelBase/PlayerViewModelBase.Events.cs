@@ -11,7 +11,7 @@ public abstract partial class PlayerViewModelBase
     /// <summary>
     /// 更新进度.
     /// </summary>
-    protected virtual void UpdatePosition(int position, int? duration = default)
+    protected virtual void UpdatePosition(int position, int? duration = null)
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
@@ -87,7 +87,7 @@ public abstract partial class PlayerViewModelBase
             case SystemMediaTransportControlsButton.Pause:
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    TogglePlayPauseCommand.Execute(default);
+                    TogglePlayPauseCommand.Execute(null);
                 });
                 break;
             default:

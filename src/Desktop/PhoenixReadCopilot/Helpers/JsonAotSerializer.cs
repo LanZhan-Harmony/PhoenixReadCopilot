@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Models.Settings;
-using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Authorization;
 using Richasy.BiliKernel.Models.Media;
 

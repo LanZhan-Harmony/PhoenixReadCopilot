@@ -17,7 +17,7 @@ public abstract partial class ImageExBase
         nameof(Source),
         typeof(Uri),
         typeof(ImageExBase),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnSourceChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnSourceChanged))
     );
 
     /// <summary>
@@ -38,7 +38,7 @@ public abstract partial class ImageExBase
         nameof(IsImageLoading),
         typeof(bool),
         typeof(ImageExBase),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -78,7 +78,7 @@ public abstract partial class ImageExBase
         nameof(HolderImage),
         typeof(Uri),
         typeof(ImageExBase),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

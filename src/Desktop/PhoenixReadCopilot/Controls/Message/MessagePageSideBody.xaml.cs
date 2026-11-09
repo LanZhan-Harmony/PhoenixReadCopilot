@@ -27,7 +27,7 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        SectionView.ItemsSource = default;
+        SectionView.ItemsSource = null;
         ViewModel.SectionInitialized -= OnSectionInitialized;
         ViewModel.ChatSessionsUpdated -= OnChatSessionsUpdatedAsync;
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
@@ -41,7 +41,8 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        var item = sender.SelectedItem as IMessageSectionDetailViewModel;
+        IMessageSectionDetailViewModel? item =
+            sender.SelectedItem as IMessageSectionDetailViewModel;
         ViewModel.SelectSectionCommand.Execute(item);
     }
 
@@ -53,12 +54,12 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
             {
                 if (
                     SectionView.ScrollView.ExtentHeight
-                    - SectionView.ScrollView.ViewportHeight
-                    - SectionView.ScrollView.VerticalOffset
+                        - SectionView.ScrollView.ViewportHeight
+                        - SectionView.ScrollView.VerticalOffset
                     <= 240
                 )
                 {
-                    ViewModel.LoadChatSessionsCommand.Execute(default);
+                    ViewModel.LoadChatSessionsCommand.Execute(null);
                 }
             }
         );
@@ -86,7 +87,7 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
             {
                 if (SectionView.ScrollView.ScrollableHeight <= 240 && ViewModel is not null)
                 {
-                    ViewModel.LoadChatSessionsCommand.Execute(default);
+                    ViewModel.LoadChatSessionsCommand.Execute(null);
                 }
             }
         );

@@ -17,7 +17,7 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
         nameof(IsFavorited),
         typeof(bool),
         typeof(FavoriteButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -27,7 +27,7 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
         nameof(FavoriteButton),
         typeof(string),
         typeof(FavoriteButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -37,7 +37,7 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
         nameof(Command),
         typeof(ICommand),
         typeof(FavoriteButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -48,7 +48,7 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
             nameof(FavoriteButton),
             typeof(ICommand),
             typeof(FavoriteButton),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
         nameof(ItemsSource),
         typeof(object),
         typeof(FavoriteButton),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -111,17 +111,17 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
         set => SetValue(ItemsSourceProperty, value);
     }
 
-    protected override void OnControlUnloaded() => FavoriteRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => FavoriteRepeater.ItemsSource = null;
 
     private void OnFavoriteButtonClick(object sender, RoutedEventArgs e)
     {
         if (ItemsSource is null)
         {
-            Command?.Execute(default);
+            Command?.Execute(null);
             return;
         }
 
-        InitializeCommand?.Execute(default);
+        InitializeCommand?.Execute(null);
         FavoriteTip.IsOpen = true;
     }
 
@@ -143,7 +143,7 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
 
     private void OnConfirmButtonClick(TeachingTip sender, object args)
     {
-        Command?.Execute(default);
+        Command?.Execute(null);
         FavoriteTip.IsOpen = false;
     }
 }

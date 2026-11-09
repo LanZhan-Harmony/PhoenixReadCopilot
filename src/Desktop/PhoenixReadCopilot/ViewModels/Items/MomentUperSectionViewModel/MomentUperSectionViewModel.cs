@@ -40,7 +40,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
             () =>
             {
                 Items.Clear();
-                foreach (var item in momentView.Moments)
+                foreach (MomentInformation item in momentView.Moments)
                 {
                     Items.Add(
                         new MomentItemViewModel(item, MomentCardStyle.Comprehensive, ShowComment)
@@ -71,8 +71,8 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
             throw new Exception("请在外层视图模型中刷新综合动态，以便更新 UP 列表");
         }
 
-        _offset = default;
-        _baseline = default;
+        _offset = null;
+        _baseline = null;
         IsEmpty = false;
         _preventLoadMore = false;
         Items.Clear();
@@ -124,14 +124,14 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
 
     private async Task LoadComprehensiveItemsAsync()
     {
-        var view = await Service.GetComprehensiveMomentsAsync(_offset, _baseline);
+        MomentView? view = await Service.GetComprehensiveMomentsAsync(_offset, _baseline);
         if (view is not null)
         {
             _offset = view.Offset;
             _baseline = view.UpdateBaseline;
             _preventLoadMore = view.HasMoreMoments != true;
             foreach (
-                var item in view.Moments.Select(p => new MomentItemViewModel(
+                MomentItemViewModel? item in view.Moments.Select(p => new MomentItemViewModel(
                     p,
                     MomentCardStyle.Comprehensive,
                     ShowComment
@@ -147,13 +147,14 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
 
     private async Task LoadUperItemsAsync()
     {
-        var (moments, offset, hasMore) = await Service.GetUserMomentsAsync(Data.User, _offset);
+        (IReadOnlyList<MomentInformation>? moments, string? offset, bool hasMore) =
+            await Service.GetUserMomentsAsync(Data.User, _offset);
         _offset = offset;
         _preventLoadMore = !hasMore || string.IsNullOrEmpty(offset);
         if (moments is not null)
         {
             foreach (
-                var item in moments.Select(p => new MomentItemViewModel(
+                MomentItemViewModel? item in moments.Select(p => new MomentItemViewModel(
                     p,
                     MomentCardStyle.Comprehensive,
                     ShowComment

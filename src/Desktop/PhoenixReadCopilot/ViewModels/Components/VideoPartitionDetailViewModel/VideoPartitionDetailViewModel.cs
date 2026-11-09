@@ -39,8 +39,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
         if (Data.Children is not null)
         {
-            var children = Data.Children.ToList();
-            var rcmdPartition = new Partition(Data.Data.Id, Resources.Recommend);
+            List<PartitionViewModel> children = Data.Children.ToList();
+            Partition rcmdPartition = new(Data.Data.Id, Resources.Recommend);
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
         }
@@ -109,14 +109,19 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         Videos.Clear();
         if (IsRecommend && _recommendVideoCache is not null && _recommendVideoCache.Count > 0)
         {
-            foreach (var item in _recommendVideoCache)
+            foreach (VideoItemViewModel item in _recommendVideoCache)
             {
                 Videos.Add(item);
             }
         }
-        else if (_childPartitionVideoCache.TryGetValue(CurrentPartition.Data.Id, out var cache))
+        else if (
+            _childPartitionVideoCache.TryGetValue(
+                CurrentPartition.Data.Id,
+                out List<VideoItemViewModel>? cache
+            )
+        )
         {
-            foreach (var item in cache)
+            foreach (VideoItemViewModel item in cache)
             {
                 Videos.Add(item);
             }
@@ -158,10 +163,8 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     {
         try
         {
-            var (videos, offset) = await _service.GetPartitionRecommendVideoListAsync(
-                Data.Data,
-                _recommendOffset
-            );
+            (IReadOnlyList<VideoInformation>? videos, long offset) =
+                await _service.GetPartitionRecommendVideoListAsync(Data.Data, _recommendOffset);
             _recommendOffset = offset;
             TryAddVideos(videos, VideoCardStyle.Partition);
         }
@@ -175,12 +178,12 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     {
         try
         {
-            var offset = 0L;
-            var pn = 0;
+            long offset = 0L;
+            int pn = 0;
             if (
                 _childPartitionOffsetCache.TryGetValue(
                     CurrentPartition.Data.Id,
-                    out var offsetCache
+                    out (long Offset, int PageNumber) offsetCache
                 )
             )
             {
@@ -188,12 +191,13 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
                 pn = offsetCache.PageNumber;
             }
 
-            var (videos, nextOffset, nextPn) = await _service.GetChildPartitionVideoListAsync(
-                CurrentPartition.Data,
-                offset,
-                pn,
-                SelectedSortType
-            );
+            (IReadOnlyList<VideoInformation>? videos, long nextOffset, int nextPn) =
+                await _service.GetChildPartitionVideoListAsync(
+                    CurrentPartition.Data,
+                    offset,
+                    pn,
+                    SelectedSortType
+                );
             _childPartitionOffsetCache[CurrentPartition.Data.Id] = (nextOffset, nextPn);
             TryAddVideos(videos, VideoCardStyle.Partition);
         }
@@ -210,7 +214,7 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
     {
         if (videos is not null)
         {
-            foreach (var item in videos)
+            foreach (VideoInformation item in videos)
             {
                 Videos.Add(new VideoItemViewModel(item, style));
             }

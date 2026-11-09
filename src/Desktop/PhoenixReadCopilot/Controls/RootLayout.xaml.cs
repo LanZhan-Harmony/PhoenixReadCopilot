@@ -48,7 +48,7 @@ public sealed partial class RootLayout : RootLayoutBase
         }
 
         MainTitleBar.Visibility = Visibility.Collapsed;
-        var isSecondaryTitleBarVisible =
+        bool isSecondaryTitleBarVisible =
             mode == PlayerDisplayMode.FullWindow || mode == PlayerDisplayMode.CompactOverlay;
         SecondaryTitleBar.Visibility = isSecondaryTitleBarVisible
             ? Visibility.Visible
@@ -122,15 +122,15 @@ public sealed partial class RootLayout : RootLayoutBase
             return false;
         }
 
-        var isHandled = false;
+        bool isHandled = false;
         if (OverlayFrame.Content is VideoPlayerPage vPage)
         {
-            vPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
+            vPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
             isHandled = true;
         }
         else if (OverlayFrame.Content is PgcPlayerPage pPage)
         {
-            pPage.ViewModel.Player.BackToDefaultModeCommand.Execute(default);
+            pPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
             isHandled = true;
         }
 
@@ -210,18 +210,20 @@ public sealed partial class RootLayout : RootLayoutBase
     protected override void OnControlLoaded()
     {
         ViewModel.Initialize(MainFrame, OverlayFrame);
-        var selectedItem = ViewModel.MenuItems.FirstOrDefault(p => p.IsSelected);
+        AppNavigationItemViewModel? selectedItem = ViewModel.MenuItems.FirstOrDefault(p =>
+            p.IsSelected
+        );
         if (selectedItem is not null)
         {
             NavView.SelectedItem = selectedItem;
-            selectedItem.NavigateCommand.Execute(default);
+            selectedItem.NavigateCommand.Execute(null);
         }
     }
 
     private void OnNavViewBackRequested(
         NavigationView sender,
         NavigationViewBackRequestedEventArgs args
-    ) => OnBackRequested(default, default);
+    ) => OnBackRequested(null, null);
 
     private void OnNavViewItemInvoked(
         NavigationView sender,
@@ -229,27 +231,27 @@ public sealed partial class RootLayout : RootLayoutBase
     )
     {
         _ = this;
-        var item = args.InvokedItemContainer as AppNavigationViewItem;
-        var context = item?.Tag as AppNavigationItemViewModel;
-        context?.NavigateCommand.Execute(default);
+        AppNavigationViewItem? item = args.InvokedItemContainer as AppNavigationViewItem;
+        AppNavigationItemViewModel? context = item?.Tag as AppNavigationItemViewModel;
+        context?.NavigateCommand.Execute(null);
     }
 
     private void OnBackRequested(object sender, EventArgs e) => ViewModel.Back();
 
     private void OnUpdateActionButtonClick(TeachingTip sender, object args) =>
-        _appViewModel.ShowUpdateCommand.Execute(default);
+        _appViewModel.ShowUpdateCommand.Execute(null);
 
     private void OnUpdateCloseButtonClick(TeachingTip sender, object args) =>
-        _appViewModel.HideUpdateCommand.Execute(default);
+        _appViewModel.HideUpdateCommand.Execute(null);
 
     private void OnFavoriteButtonClick(object sender, EventArgs e) =>
-        ViewModel.NavigateToOver(typeof(FavoritesPage), default);
+        ViewModel.NavigateToOver(typeof(FavoritesPage), null);
 
     private void OnViewLaterButtonClick(object sender, EventArgs e) =>
-        ViewModel.NavigateToOver(typeof(ViewLaterPage), default);
+        ViewModel.NavigateToOver(typeof(ViewLaterPage), null);
 
     private void OnHistoryButtonClick(object sender, EventArgs e) =>
-        ViewModel.NavigateToOver(typeof(HistoryPage), default);
+        ViewModel.NavigateToOver(typeof(HistoryPage), null);
 
     private void OnVideoBackRequested(object sender, EventArgs e) =>
         TryBackToDefaultIfPlayerHostMode();

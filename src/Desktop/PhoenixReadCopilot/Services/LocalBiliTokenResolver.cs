@@ -24,7 +24,7 @@ public sealed class LocalBiliTokenResolver : IBiliTokenResolver
         {
             if (File.Exists(_filePath))
             {
-                var json = File.ReadAllText(_filePath);
+                string json = File.ReadAllText(_filePath);
                 _cacheToken = JsonAotSerializer.Deserialize<BiliToken>(json);
             }
         }
@@ -43,7 +43,7 @@ public sealed class LocalBiliTokenResolver : IBiliTokenResolver
         try
         {
             Directory.CreateDirectory(PathHelper.SettingsFolderPath);
-            var json = JsonAotSerializer.Serialize(token);
+            string json = JsonAotSerializer.Serialize(token);
             File.WriteAllText(_filePath, json);
         }
         catch { }

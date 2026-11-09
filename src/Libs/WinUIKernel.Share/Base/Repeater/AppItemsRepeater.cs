@@ -17,7 +17,7 @@ public partial class AppItemsRepeater : ItemsRepeater
         nameof(Stretch),
         typeof(bool),
         typeof(AppItemsRepeater),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     private Size _measureSize;

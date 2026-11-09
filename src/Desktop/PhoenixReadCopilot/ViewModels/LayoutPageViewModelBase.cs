@@ -27,10 +27,8 @@ public abstract partial class LayoutPageViewModelBase : ViewModelBase
     protected LayoutPageViewModelBase(ISettingsService settingsService)
     {
         _settings = settingsService.Settings;
-#pragma warning disable CA2214
         NavColumnWidth = _settings.GetNavColumnWidth(GetPageKey(), GetDefaultNavColumnWidth());
         IsNavColumnManualHide = _settings.GetNavColumnManualHide(GetPageKey(), false);
-#pragma warning restore CA2214
     }
 
     /// <summary>

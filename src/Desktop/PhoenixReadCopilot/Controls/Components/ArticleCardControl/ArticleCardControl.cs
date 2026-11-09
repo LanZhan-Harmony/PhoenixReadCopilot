@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
+using Windows.Foundation;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 
@@ -57,10 +58,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Globe
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
             Tag = nameof(ViewModel.OpenInBroswerCommand),
         };
     }
@@ -70,10 +68,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.EnterUserSpace,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Person
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
             Tag = nameof(ViewModel.ShowUserSpaceCommand),
         };
     }
@@ -83,10 +78,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         return new MenuFlyoutItem()
         {
             Text = Strings.Resources.FixContent,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Pin
-            },
+            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
         };
     }
@@ -112,12 +104,8 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
         if (ContextFlyout is null)
         {
             CreateContextFlyout();
-            args.TryGetPosition(this, out var point);
-            ContextFlyout.ShowAt(this,
-                new FlyoutShowOptions
-                {
-                    Position = point
-                });
+            args.TryGetPosition(this, out Point point);
+            ContextFlyout.ShowAt(this, new FlyoutShowOptions { Position = point });
         }
 
         RelocateCommands();
@@ -126,10 +114,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
 
     private void CreateContextFlyout()
     {
-        var menuFlyout = new MenuFlyout()
-        {
-            ShouldConstrainToRootBounds = false
-        };
+        MenuFlyout menuFlyout = new() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateOpenInBroswerItem());
         menuFlyout.Items.Add(CreateEnterUserSpaceItem());
         menuFlyout.Items.Add(CreatePinItem());
@@ -148,7 +133,7 @@ public sealed partial class ArticleCardControl : LayoutControlBase<ArticleItemVi
             return;
         }
 
-        foreach (var item in flyout.Items.OfType<MenuFlyoutItem>())
+        foreach (MenuFlyoutItem item in flyout.Items.OfType<MenuFlyoutItem>())
         {
             switch (item.Tag.ToString())
             {

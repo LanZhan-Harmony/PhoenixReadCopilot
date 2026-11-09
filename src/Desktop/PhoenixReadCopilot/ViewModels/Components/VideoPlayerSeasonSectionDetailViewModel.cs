@@ -45,7 +45,7 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel
         Page = page;
         Seasons = seasons.ToList();
         _videoId = videoId;
-        var selectedSeason = Seasons.FirstOrDefault(p =>
+        VideoSeason? selectedSeason = Seasons.FirstOrDefault(p =>
             p.Videos.Any(q => q.Identifier.Id == _videoId)
         );
         ChangeSeason(selectedSeason);

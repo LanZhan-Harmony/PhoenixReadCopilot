@@ -10,6 +10,6 @@ public sealed partial class PlayerSeasonPresenter : SeasonCardPresenter
     /// </summary>
     public PlayerSeasonPresenter()
     {
-        this.InitializeComponent();
+        InitializeComponent();
     }
 }

@@ -10,6 +10,6 @@ public sealed partial class PersonalFullMomentPresenter : MomentCardPresenter
     /// </summary>
     public PersonalFullMomentPresenter()
     {
-        this.InitializeComponent();
+        InitializeComponent();
     }
 }

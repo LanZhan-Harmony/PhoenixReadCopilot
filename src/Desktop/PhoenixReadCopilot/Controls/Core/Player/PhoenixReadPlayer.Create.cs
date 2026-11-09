@@ -55,9 +55,9 @@ public sealed partial class PhoenixReadPlayer
 
     private void CreateOverlayContainer()
     {
-        var rootGrid = new CursorGrid();
+        CursorGrid rootGrid = new();
 
-        _danmakuControl = _createDanmakuControlFunc?.Invoke() ?? default;
+        _danmakuControl = _createDanmakuControlFunc?.Invoke() ?? null;
 
         if (_danmakuControl is not null)
         {
@@ -83,7 +83,7 @@ public sealed partial class PhoenixReadPlayer
         };
         rootGrid.Children.Add(_progressBar);
 
-        var contextFlyout = new MenuFlyout();
+        MenuFlyout contextFlyout = new();
         contextFlyout.Items.Add(
             new MenuFlyoutItem
             {
@@ -134,14 +134,14 @@ public sealed partial class PhoenixReadPlayer
             VerticalAlignment = VerticalAlignment.Bottom,
         };
 
-        _subtitlePresenter = _createSubtitleControlFunc?.Invoke() ?? default;
+        _subtitlePresenter = _createSubtitleControlFunc?.Invoke() ?? null;
         if (_subtitlePresenter is not null)
         {
             _subtitlePresenter.HorizontalAlignment = HorizontalAlignment.Stretch;
             _operationContainer.Children.Add(_subtitlePresenter);
         }
 
-        _transportControl = _createTransportControlFunc?.Invoke() ?? default;
+        _transportControl = _createTransportControlFunc?.Invoke() ?? null;
         if (_transportControl is not null)
         {
             _transportControl.MinHeight = 16;
@@ -239,17 +239,17 @@ public sealed partial class PhoenixReadPlayer
 
     private Grid CreateHiddenControlsContainer()
     {
-        var grid = new Grid();
-        var playPreviousBtn = CreateHiddenButton(VirtualKey.Up, ViewModel.PlayPreviousCommand);
-        var playNextBtn = CreateHiddenButton(
-            VirtualKey.Down,
-            ViewModel.PlayNextCommand
+        Grid grid = new();
+        Button playPreviousBtn = CreateHiddenButton(VirtualKey.Up, ViewModel.PlayPreviousCommand);
+        Button playNextBtn = CreateHiddenButton(VirtualKey.Down, ViewModel.PlayNextCommand);
+        Button backwardBtn = CreateHiddenButton(VirtualKey.Left, ViewModel.BackwardSkipCommand);
+        Button miniBtn = CreateHiddenButton(VirtualKey.F9, ViewModel.ToggleCompactOverlayCommand);
+        Button fullBtn = CreateHiddenButton(VirtualKey.F11, ViewModel.ToggleFullScreenCommand);
+        Button fullWindowBtn = CreateHiddenButton(
+            VirtualKey.F10,
+            ViewModel.ToggleFullWindowCommand
         );
-        var backwardBtn = CreateHiddenButton(VirtualKey.Left, ViewModel.BackwardSkipCommand);
-        var miniBtn = CreateHiddenButton(VirtualKey.F9, ViewModel.ToggleCompactOverlayCommand);
-        var fullBtn = CreateHiddenButton(VirtualKey.F11, ViewModel.ToggleFullScreenCommand);
-        var fullWindowBtn = CreateHiddenButton(VirtualKey.F10, ViewModel.ToggleFullWindowCommand);
-        var backBtn = CreateHiddenButton(VirtualKey.Escape, ViewModel.BackToDefaultModeCommand);
+        Button backBtn = CreateHiddenButton(VirtualKey.Escape, ViewModel.BackToDefaultModeCommand);
         grid.Children.Add(playPreviousBtn);
         grid.Children.Add(playNextBtn);
         grid.Children.Add(backwardBtn);
@@ -264,12 +264,12 @@ public sealed partial class PhoenixReadPlayer
             VirtualKeyModifiers modifiers = VirtualKeyModifiers.None
         )
         {
-            var accelerator = new KeyboardAccelerator();
+            KeyboardAccelerator accelerator = new();
             accelerator.Key = key;
             accelerator.Modifiers = modifiers;
             accelerator.IsEnabled = true;
 
-            var btn = new Button
+            Button btn = new()
             {
                 Background = new SolidColorBrush(Colors.Transparent),
                 Width = 1,

@@ -7,7 +7,7 @@ internal sealed partial class FullWindowConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var isFullWindow = (bool)value;
+        bool isFullWindow = (bool)value;
 
         if (targetType == typeof(FluentIcons.Common.Symbol))
         {

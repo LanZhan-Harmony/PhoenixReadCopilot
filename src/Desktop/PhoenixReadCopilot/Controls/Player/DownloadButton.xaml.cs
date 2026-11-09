@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 
@@ -47,15 +48,16 @@ public sealed partial class DownloadButton : DownloadButtonBase
             return;
         }
 
-        var formatHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
+        MenuFlyoutSeparator? formatHeader =
+            MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
         formatHeader.Tag = Strings.Resources.Quality;
         DownloadFlyout.Items.Add(formatHeader);
-        foreach (var item in ViewModel.Formats)
+        foreach (PlayerFormatInformation item in ViewModel.Formats)
         {
-            var menuItem = new MenuFlyoutItem()
+            MenuFlyoutItem menuItem = new()
             {
                 Text = item.Description,
-                MinWidth = this.ActualWidth,
+                MinWidth = ActualWidth,
                 Command = ViewModel.DownloadWithFormatCommand,
                 CommandParameter = item,
             };
@@ -65,17 +67,18 @@ public sealed partial class DownloadButton : DownloadButtonBase
         if (ViewModel.Episodes is { Count: > 0 })
         {
             DownloadFlyout.Items.Add(new MenuFlyoutSeparator());
-            var partHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
+            MenuFlyoutSeparator? partHeader =
+                MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
             partHeader.Tag = Strings.Resources.BatchDownload;
-            var allPartsItem = new MenuFlyoutItem
+            MenuFlyoutItem allPartsItem = new()
             {
-                MinWidth = this.ActualWidth,
+                MinWidth = ActualWidth,
                 Command = ViewModel.BatchDownloadAllPartsCommand,
                 Text = Strings.Resources.DownloadAllParts,
             };
-            var selectPartsItem = new MenuFlyoutItem
+            MenuFlyoutItem selectPartsItem = new()
             {
-                MinWidth = this.ActualWidth,
+                MinWidth = ActualWidth,
                 Text = Strings.Resources.SelectPartsDownload,
             };
             selectPartsItem.Click += (_, _) => ShowPartsSelectionTip();
@@ -85,18 +88,19 @@ public sealed partial class DownloadButton : DownloadButtonBase
         }
 
         DownloadFlyout.Items.Add(new MenuFlyoutSeparator());
-        var extraHeader = MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
+        MenuFlyoutSeparator? extraHeader =
+            MenuFlyoutItemHeader.LoadContent() as MenuFlyoutSeparator;
         extraHeader.Tag = Strings.Resources.Extra;
         DownloadFlyout.Items.Add(extraHeader);
-        var downloadCoverItem = new MenuFlyoutItem
+        MenuFlyoutItem downloadCoverItem = new()
         {
-            MinWidth = this.ActualWidth,
+            MinWidth = ActualWidth,
             Text = Strings.Resources.DownloadCover,
             Command = ViewModel.DownloadCoverCommand,
         };
-        var downloadDanmakuItem = new MenuFlyoutItem
+        MenuFlyoutItem downloadDanmakuItem = new()
         {
-            MinWidth = this.ActualWidth,
+            MinWidth = ActualWidth,
             Text = Strings.Resources.DownloadDanmaku,
             Command = ViewModel.DownloadDanmakuCommand,
         };
@@ -106,9 +110,9 @@ public sealed partial class DownloadButton : DownloadButtonBase
 
         if (ViewModel.HasAvailableSubtitle)
         {
-            var downloadSubtitleItem = new MenuFlyoutItem
+            MenuFlyoutItem downloadSubtitleItem = new()
             {
-                MinWidth = this.ActualWidth,
+                MinWidth = ActualWidth,
                 Text = Strings.Resources.DownloadSubtitle,
                 Command = ViewModel.DownloadSubtitleCommand,
             };
@@ -128,7 +132,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
         AutoSuggestBoxQuerySubmittedEventArgs args
     )
     {
-        var text = args.QueryText;
+        string text = args.QueryText;
         if (string.IsNullOrEmpty(text))
         {
             return;

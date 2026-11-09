@@ -50,8 +50,8 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 
             DisposePreloadedSource();
 
-            var config = CreateMediaSourceConfig(decryptionKey, referer);
-            var source = await FFmpegMediaSource.CreateFromUriAsync(videoUrl, config);
+            MediaSourceConfig config = CreateMediaSourceConfig(decryptionKey, referer);
+            FFmpegMediaSource source = await FFmpegMediaSource.CreateFromUriAsync(videoUrl, config);
             _preloadedSource = source;
             _preloadedUrl = videoUrl;
             _logger.LogInformation("下一集 FFmpegMediaSource 后台预加载就绪.");
@@ -142,7 +142,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     private MediaPlayer CreatePlayer()
     {
         _isDisposed = false;
-        var player = new MediaPlayer();
+        MediaPlayer player = new();
         player.CommandManager.IsEnabled = false;
         player.MediaOpened += OnMediaPlayerOpened;
         player.CurrentStateChanged += OnMediaPlayerStateChanged;
@@ -171,7 +171,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 return;
             }
 
-            var message = string.Empty;
+            string message = string.Empty;
             switch (args.Error)
             {
                 case MediaPlayerError.Aborted:
@@ -229,7 +229,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
             PlayerState state = PlayerState.None;
             try
             {
-                var session = sender.PlaybackSession;
+                MediaPlaybackSession? session = sender.PlaybackSession;
                 if (session is null)
                 {
                     return;
@@ -426,7 +426,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 
                 UpdatePosition(
                     Convert.ToInt32(position),
-                    duration > 0 ? Convert.ToInt32(duration) : default
+                    duration > 0 ? Convert.ToInt32(duration) : 0
                 );
             }
             catch { }

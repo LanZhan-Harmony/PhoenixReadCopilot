@@ -67,7 +67,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         PlayerTypeCollection = [.. Enum.GetValues<PlayerType>()];
         MTCBehaviorCollection = [.. Enum.GetValues<MTCBehavior>()];
 
-        var copyrightTemplate = Resources.Copyright;
+        string copyrightTemplate = Resources.Copyright;
         Copyright = string.Format(copyrightTemplate, 2026);
         PackageVersion = _appToolkit.GetPackageVersion();
 
@@ -77,7 +77,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ChooseDownloadFolderAsync()
     {
-        var folderPath = await _fileToolkit.PickFolderAsync(
+        string? folderPath = await _fileToolkit.PickFolderAsync(
             _appViewModel.ActivatedWindow.AppWindow.Id
         );
         if (folderPath != null)

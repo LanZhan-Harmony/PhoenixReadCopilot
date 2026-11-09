@@ -76,7 +76,7 @@ public sealed partial class PlayerNotificationItemViewModel : ViewModelBase<Play
 
     private void OnTimerTick(object? sender, object e)
     {
-        var p = (int)(DateTimeOffset.Now - _startTime).TotalMilliseconds;
+        int p = (int)(DateTimeOffset.Now - _startTime).TotalMilliseconds;
         if (p >= DurationInMilliseconds)
         {
             IsProgressVisible = false;

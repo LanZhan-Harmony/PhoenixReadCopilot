@@ -38,21 +38,21 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
+        PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
-            OpenInNewWindowCommand.Execute(default);
+            OpenInNewWindowCommand.Execute(null);
             return;
         }
 
-        var preferPlayer = ItemServices.Settings.PlayerType;
+        PlayerType preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
             return;
         }
 
-        var id = new MediaIdentifier("ep_" + Data.Identifier.Id, default, default);
+        MediaIdentifier id = new("ep_" + Data.Identifier.Id, null, null);
         ItemServices.Navigation.NavigateToOver(typeof(PgcPlayerPage), id);
     }
 
@@ -62,13 +62,13 @@ public sealed partial class EpisodeItemViewModel : ViewModelBase<EpisodeInformat
     [RelayCommand]
     private void OpenInNewWindow() =>
         new PlayerWindow().OpenPgc(
-            new MediaIdentifier("ep_" + Data.Identifier.Id, default, default)
+            new MediaIdentifier("ep_" + Data.Identifier.Id, null, null)
         );
 
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(
+        PinItem pinItem = new(
             $"ep_{Data.Identifier.Id}",
             Data.Identifier.Title,
             Data.Identifier.Cover.Uri.ToString(),

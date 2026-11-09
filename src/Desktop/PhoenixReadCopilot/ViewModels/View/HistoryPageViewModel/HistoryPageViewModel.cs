@@ -9,6 +9,7 @@ using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -52,13 +53,13 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             return;
         }
 
-        var types = Enum.GetValues<ViewHistoryTabType>()
+        List<ViewHistoryTabType> types = Enum.GetValues<ViewHistoryTabType>()
             .Where(p => p != ViewHistoryTabType.All)
             .ToList();
-        var sections = new List<IHistorySectionDetailViewModel>();
-        foreach (var type in types)
+        List<IHistorySectionDetailViewModel> sections = [];
+        foreach (ViewHistoryTabType type in types)
         {
-            var vm = type switch
+            IHistorySectionDetailViewModel? vm = type switch
             {
                 ViewHistoryTabType.Video => (IHistorySectionDetailViewModel)
                     new VideoHistorySectionDetailViewModel(
@@ -89,7 +90,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         ExitSearch();
         SearchKeyword = text;
         IsSearchMode = true;
-        LoadMoreSearchResultCommand.Execute(default);
+        LoadMoreSearchResultCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -97,7 +98,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
     {
         if (IsSearchMode)
         {
-            var keyword = SearchKeyword;
+            string keyword = SearchKeyword;
             SearchCommand.Execute(keyword);
             return;
         }
@@ -148,15 +149,16 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             IsSearching = true;
             CancelSearch();
             _searchCancellationTokenSource = new CancellationTokenSource();
-            var (videos, total, hasMore) = await _searchService.SearchHistoryVideosAsync(
-                SearchKeyword,
-                _searchPn,
-                _searchCancellationTokenSource.Token
-            );
+            (IReadOnlyList<VideoInformation>? videos, int total, bool hasMore) =
+                await _searchService.SearchHistoryVideosAsync(
+                    SearchKeyword,
+                    _searchPn,
+                    _searchCancellationTokenSource.Token
+                );
             _preventLoadMoreSearch = !hasMore || videos is null || videos.Count == 0;
             if (videos is not null)
             {
-                foreach (var item in videos)
+                foreach (VideoInformation item in videos)
                 {
                     SearchVideos.Add(
                         new VideoItemViewModel(item, VideoCardStyle.History, RemoveSearchVideo)

@@ -49,7 +49,8 @@ public sealed partial class MomentHeader : MomentHeaderBase
             return;
         }
 
-        var item = sender.SelectedItem.Tag as IMomentSectionDetailViewModel;
+        IMomentSectionDetailViewModel? item =
+            sender.SelectedItem.Tag as IMomentSectionDetailViewModel;
         if (item is not null && item != ViewModel.SelectedSection)
         {
             ViewModel.SelectSectionCommand.Execute(item);
@@ -61,14 +62,10 @@ public sealed partial class MomentHeader : MomentHeaderBase
         Selector.Items.Clear();
         if (ViewModel.Sections is not null)
         {
-            foreach (var item in ViewModel.Sections)
+            foreach (IMomentSectionDetailViewModel item in ViewModel.Sections)
             {
                 Selector.Items.Add(
-                    new SelectorBarItem()
-                    {
-                        Text = GetSectionName(item.SectionType),
-                        Tag = item
-                    }
+                    new SelectorBarItem() { Text = GetSectionName(item.SectionType), Tag = item }
                 );
             }
         }

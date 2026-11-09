@@ -14,7 +14,7 @@ public sealed partial class EmptyHolder : LayoutUserControlBase
         nameof(Title),
         typeof(string),
         typeof(EmptyHolder),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -24,7 +24,7 @@ public sealed partial class EmptyHolder : LayoutUserControlBase
         nameof(Description),
         typeof(string),
         typeof(EmptyHolder),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -34,7 +34,7 @@ public sealed partial class EmptyHolder : LayoutUserControlBase
         nameof(Emoji),
         typeof(string),
         typeof(EmptyHolder),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>
@@ -44,7 +44,7 @@ public sealed partial class EmptyHolder : LayoutUserControlBase
         nameof(ActionElement),
         typeof(object),
         typeof(EmptyHolder),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

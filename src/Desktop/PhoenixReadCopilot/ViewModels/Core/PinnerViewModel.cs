@@ -49,13 +49,13 @@ public sealed partial class PinnerViewModel : ViewModelBase
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<PinItem> Items { get; } = new();
+    public ObservableCollection<PinItem> Items { get; } = [];
 
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        var currentUserId = _tokenResolver.GetToken().UserId;
-        var data = await _fileToolkit.ReadLocalDataAsync<List<PinItem>>(
+        long currentUserId = _tokenResolver.GetToken().UserId;
+        List<PinItem> data = await _fileToolkit.ReadLocalDataAsync<List<PinItem>>(
             string.Format(PinFileName, currentUserId),
             "[]",
             PinFolderName

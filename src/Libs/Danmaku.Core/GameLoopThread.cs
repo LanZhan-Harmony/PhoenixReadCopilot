@@ -1,5 +1,5 @@
-using Microsoft.UI.Dispatching;
 using System.Collections.Concurrent;
+using Microsoft.UI.Dispatching;
 
 namespace Danmaku.Core;
 
@@ -84,7 +84,7 @@ internal sealed class GameLoopThread : IGameLoopThread
         {
             Name = "DanmakuGameLoopThread",
             IsBackground = true,
-            Priority = ThreadPriority.Normal
+            Priority = ThreadPriority.Normal,
         };
         _thread.Start(swapChainPanel);
 
@@ -126,9 +126,7 @@ internal sealed class GameLoopThread : IGameLoopThread
             if (_dispatcherStarted && _dispatcherQueue != null)
             {
                 // 退出事件循环
-#pragma warning disable VSTHRD110 // Observe result of async calls
                 // _dispatcherQueue.TryEnqueue(() => _dispatcherQueueController?.ShutdownQueueAsync());
-#pragma warning restore VSTHRD110 // Observe result of async calls
             }
 
             Monitor.PulseAll(_lock);
@@ -145,30 +143,29 @@ internal sealed class GameLoopThread : IGameLoopThread
             return Task.CompletedTask;
         }
 
-        var tcs = new TaskCompletionSource<bool>();
-        var pendingAction = new PendingAction
-        {
-            Action = action,
-            CompletionSource = tcs
-        };
+        TaskCompletionSource<bool> tcs = new();
+        PendingAction pendingAction = new() { Action = action, CompletionSource = tcs };
 
         lock (_lock)
         {
             if (_startDispatcher && _dispatcherQueue != null)
             {
                 // 调度器模式：通过 DispatcherQueue 排队
-                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
-                {
-                    try
+                _dispatcherQueue.TryEnqueue(
+                    DispatcherQueuePriority.Normal,
+                    () =>
                     {
-                        action?.Invoke();
-                        tcs.TrySetResult(true);
+                        try
+                        {
+                            action?.Invoke();
+                            tcs.TrySetResult(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            tcs.TrySetException(ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        tcs.TrySetException(ex);
-                    }
-                });
+                );
             }
             else
             {
@@ -291,7 +288,10 @@ internal sealed class GameLoopThread : IGameLoopThread
             {
                 try
                 {
-                    _dispatcherQueueController.ShutdownQueueAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
+                    _dispatcherQueueController
+                        .ShutdownQueueAsync()
+                        .AsTask()
+                        .Wait(TimeSpan.FromSeconds(2));
                 }
                 catch
                 {
@@ -315,7 +315,7 @@ internal sealed class GameLoopThread : IGameLoopThread
 
     private void ProcessPendingActions()
     {
-        while (_pendingActions.TryDequeue(out var pendingAction))
+        while (_pendingActions.TryDequeue(out PendingAction? pendingAction))
         {
             try
             {
@@ -331,7 +331,7 @@ internal sealed class GameLoopThread : IGameLoopThread
 
     private void CancelPendingActions()
     {
-        while (_pendingActions.TryDequeue(out var pendingAction))
+        while (_pendingActions.TryDequeue(out PendingAction? pendingAction))
         {
             pendingAction.CompletionSource?.TrySetCanceled();
         }

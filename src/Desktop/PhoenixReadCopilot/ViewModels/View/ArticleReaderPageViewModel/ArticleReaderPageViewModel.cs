@@ -38,7 +38,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
     private async Task InitializeAsync(ArticleIdentifier article)
     {
         Title = article.Title;
-        Content = default;
+        Content = null;
         IsLoading = true;
         Article = article;
         IsCommentsOpened = false;
@@ -66,7 +66,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
             return;
         }
 
-        var state = !IsLiked;
+        bool? state = !IsLiked;
         try
         {
             await _operationService.ToggleLikeAsync(Article.Value, state ?? false);
@@ -94,7 +94,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
             return;
         }
 
-        var state = !IsFavorited;
+        bool? state = !IsFavorited;
         try
         {
             await _operationService.ToggleFavoriteAsync(Article.Value, state ?? false);
@@ -121,7 +121,7 @@ public sealed partial class ArticleReaderPageViewModel : ViewModelBase
 
         if (IsCommentsOpened && CommentModule.Comments.Count == 0)
         {
-            await CommentModule.LoadItemsCommand.ExecuteAsync(default);
+            await CommentModule.LoadItemsCommand.ExecuteAsync(null);
         }
     }
 

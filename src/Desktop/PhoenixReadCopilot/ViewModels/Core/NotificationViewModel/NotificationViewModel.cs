@@ -5,6 +5,7 @@ using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Services;
 using Richasy.BiliKernel.Bili.Moment;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Notifications;
 using Windows.UI.StartScreen;
 using WinUIKernel.Share.ViewModels;
@@ -32,7 +33,7 @@ public sealed partial class NotificationViewModel : ViewModelBase
     [RelayCommand]
     private async Task TryStartAsync()
     {
-        var isNotifyEnabled = Settings.IsNotificationEnabled;
+        bool isNotifyEnabled = Settings.IsNotificationEnabled;
         if (!isNotifyEnabled)
         {
             return;
@@ -50,8 +51,8 @@ public sealed partial class NotificationViewModel : ViewModelBase
             _timer.Start();
         }
 
-        await InitializeCommand.ExecuteAsync(default);
-        TrySendVideoMomentNotificationsCommand.Execute(default);
+        await InitializeCommand.ExecuteAsync(null);
+        TrySendVideoMomentNotificationsCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -61,7 +62,9 @@ public sealed partial class NotificationViewModel : ViewModelBase
         {
             try
             {
-                var entry = (await Package.Current.GetAppListEntriesAsync()).FirstOrDefault();
+                AppListEntry? entry = (
+                    await Package.Current.GetAppListEntriesAsync()
+                ).FirstOrDefault();
                 if (entry is not null)
                 {
                     _isTileSupport = StartScreenManager.GetDefault().SupportsAppListEntry(entry);
@@ -78,5 +81,5 @@ public sealed partial class NotificationViewModel : ViewModelBase
     }
 
     private void OnTimerTick(object? sender, object e) =>
-        TrySendVideoMomentNotificationsCommand.Execute(default);
+        TrySendVideoMomentNotificationsCommand.Execute(null);
 }

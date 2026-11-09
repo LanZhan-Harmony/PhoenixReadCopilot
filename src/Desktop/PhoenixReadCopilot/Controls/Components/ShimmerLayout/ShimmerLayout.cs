@@ -15,7 +15,7 @@ public sealed partial class ShimmerLayout : LayoutControlBase
         nameof(IsActive),
         typeof(bool),
         typeof(ShimmerLayout),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

@@ -42,8 +42,8 @@ public sealed partial class MomentPageViewModel : ViewModelBase
             return;
         }
 
-        Sections = new List<IMomentSectionDetailViewModel>
-        {
+        Sections =
+        [
             new VideoMomentSectionDetailViewModel(
                 _momentDiscoveryService,
                 _dispatcherQueue,
@@ -59,10 +59,12 @@ public sealed partial class MomentPageViewModel : ViewModelBase
                 _loggerFactory.CreateLogger<MomentUperSectionViewModel>(),
                 _settingsService
             ),
-        };
+        ];
 
-        var isLastVideoSection = _settings.LastMomentSectionIsVideo;
-        var section = isLastVideoSection ? Sections.First() : Sections.Last();
+        bool isLastVideoSection = _settings.LastMomentSectionIsVideo;
+        IMomentSectionDetailViewModel section = isLastVideoSection
+            ? Sections.First()
+            : Sections.Last();
         SelectSectionCommand.Execute(section);
         _dispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
@@ -79,9 +81,9 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         }
 
         SelectedSection = section;
-        var isVideo = section is VideoMomentSectionDetailViewModel;
+        bool isVideo = section is VideoMomentSectionDetailViewModel;
         _settings.LastMomentSectionIsVideo = isVideo;
-        SelectedSection.InitializeCommand.Execute(default);
+        SelectedSection.InitializeCommand.Execute(null);
     }
 
     [RelayCommand]
@@ -94,6 +96,6 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         }
 
         CommentModule.Initialize(data.CommentId, data.CommentType!.Value, CommentSortType.Hot);
-        CommentModule.RefreshCommand.Execute(default);
+        CommentModule.RefreshCommand.Execute(null);
     }
 }

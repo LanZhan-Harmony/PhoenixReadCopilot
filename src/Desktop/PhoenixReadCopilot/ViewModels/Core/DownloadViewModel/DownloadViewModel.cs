@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         _apiClient = apiClient;
         _httpClient = new HttpClient();
         _ffmpegPath = _appViewModel.FFmpegPath;
-        var localDownloadFolder = _settings.DownloadFolder;
+        string localDownloadFolder = _settings.DownloadFolder;
         _downloadPath =
             string.IsNullOrEmpty(localDownloadFolder) || !Directory.Exists(localDownloadFolder)
                 ? Path.Combine(
@@ -66,8 +67,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
         string seriesId,
         string title,
         string coverUrl,
-        IReadOnlyList<Episode>? episodes = default,
-        Episode? currentEpisode = default
+        IReadOnlyList<Episode>? episodes = null,
+        Episode? currentEpisode = null
     )
     {
         _seriesId = seriesId;
@@ -95,11 +96,11 @@ public sealed partial class DownloadViewModel : ViewModelBase
     /// 下载当前分集视频.
     /// </summary>
     [RelayCommand]
-    private async Task DownloadWithFormatAsync(PlayerFormatInformation? format = default)
+    private async Task DownloadWithFormatAsync(PlayerFormatInformation? format = null)
     {
         if (CurrentEpisode is not null)
         {
-            var ep = CurrentEpisode;
+            Episode ep = CurrentEpisode;
             await DownloadSingleEpisodeAsync(
                 _seriesId,
                 ep.VideoId,
@@ -112,7 +113,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         if (Episodes is { Count: > 0 })
         {
-            var ep = Episodes.FirstOrDefault(e => e.Number == _currentPartIndex) ?? Episodes[0];
+            Episode ep = Episodes.FirstOrDefault(e => e.Number == _currentPartIndex) ?? Episodes[0];
             await DownloadSingleEpisodeAsync(
                 _seriesId,
                 ep.VideoId,
@@ -140,9 +141,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         try
         {
-            var fileName = $"{SanitizeFileName(_seriesTitle)}_cover.jpg";
-            var savePath = Path.Combine(_downloadPath, fileName);
-            var bytes = await _httpClient.GetByteArrayAsync(_coverUrl);
+            string fileName = $"{SanitizeFileName(_seriesTitle)}_cover.jpg";
+            string savePath = Path.Combine(_downloadPath, fileName);
+            byte[] bytes = await _httpClient.GetByteArrayAsync(_coverUrl);
             await File.WriteAllBytesAsync(savePath, bytes);
             _appViewModel.ShowTipCommand.Execute(($"封面已下载至: {savePath}", InfoType.Success));
             if (_openFolderAfterDownload)
@@ -168,7 +169,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         if (string.IsNullOrEmpty(videoId) && Episodes is { Count: > 0 })
         {
-            var ep = Episodes.FirstOrDefault(e => e.Number == _currentPartIndex) ?? Episodes[0];
+            Episode ep = Episodes.FirstOrDefault(e => e.Number == _currentPartIndex) ?? Episodes[0];
             videoId = ep.VideoId;
             epNumber = ep.Number;
         }
@@ -181,11 +182,16 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
         try
         {
-            var danmakuPage = await _apiClient.GetDanmakuAsync(_seriesId, videoId, 0, 3600000);
-            var fileName = $"{SanitizeFileName(_seriesTitle)}_第{epNumber}集_弹幕.xml";
-            var savePath = Path.Combine(_downloadPath, fileName);
+            DanmakuPage danmakuPage = await _apiClient.GetDanmakuAsync(
+                _seriesId,
+                videoId,
+                0,
+                3600000
+            );
+            string fileName = $"{SanitizeFileName(_seriesTitle)}_第{epNumber}集_弹幕.xml";
+            string savePath = Path.Combine(_downloadPath, fileName);
 
-            var sb = new System.Text.StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             sb.AppendLine("<i>");
             sb.AppendLine("<chatserver>phoenixread</chatserver>");
@@ -193,9 +199,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
             sb.AppendLine("<mission>0</mission>");
             sb.AppendLine($"<maxlimit>{danmakuPage.Items.Count}</maxlimit>");
 
-            foreach (var item in danmakuPage.Items)
+            foreach (DanmakuItem item in danmakuPage.Items)
             {
-                var timeSec = item.TimeMs / 1000.0;
+                double timeSec = item.TimeMs / 1000.0;
                 sb.AppendLine(
                     $"<d p=\"{timeSec:F2},1,25,16777215,0,0,0,0\">{System.Security.SecurityElement.Escape(item.Text)}</d>"
                 );
@@ -228,13 +234,13 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        var episodesToDownload = Episodes.ToList();
+        List<Episode> episodesToDownload = Episodes.ToList();
         _appViewModel.ShowTipCommand.Execute(
             ($"开始后台批量下载全部 {episodesToDownload.Count} 集...", InfoType.Information)
         );
         _ = Task.Run(async () =>
         {
-            foreach (var ep in episodesToDownload)
+            foreach (Episode? ep in episodesToDownload)
             {
                 await DownloadSingleEpisodeAsync(
                     _seriesId,
@@ -263,8 +269,8 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        var totalCount = Episodes.Count;
-        var indices = ParseSelection(selection, totalCount);
+        int totalCount = Episodes.Count;
+        List<int> indices = ParseSelection(selection, totalCount);
         if (indices.Count == 0)
         {
             _appViewModel.ShowTipCommand.Execute(
@@ -278,9 +284,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
         );
         _ = Task.Run(async () =>
         {
-            foreach (var idx in indices)
+            foreach (int idx in indices)
             {
-                var ep = Episodes.FirstOrDefault(e => e.Number == idx);
+                Episode? ep = Episodes.FirstOrDefault(e => e.Number == idx);
                 if (ep is not null)
                 {
                     await DownloadSingleEpisodeAsync(
@@ -305,7 +311,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         string videoId,
         int index,
         string title,
-        PlayerFormatInformation? preferFormat = default,
+        PlayerFormatInformation? preferFormat = null,
         bool silent = false
     )
     {
@@ -318,7 +324,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 );
             }
 
-            var mediaList = await _apiClient.ResolveMediaAsync(seriesId, videoId);
+            IReadOnlyList<PlaybackMedia>? mediaList = await _apiClient.ResolveMediaAsync(
+                seriesId,
+                videoId
+            );
             if (mediaList is null || mediaList.Count == 0)
             {
                 if (!silent)
@@ -353,9 +362,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 return;
             }
 
-            var fileName = $"{SanitizeFileName(_seriesTitle)} - 第{index}集.mp4";
-            var outputPath = Path.Combine(_downloadPath, fileName);
-            var tempPath = Path.Combine(_downloadPath, $".temp_{index}_{Guid.NewGuid():N}.mp4");
+            string fileName = $"{SanitizeFileName(_seriesTitle)} - 第{index}集.mp4";
+            string outputPath = Path.Combine(_downloadPath, fileName);
+            string tempPath = Path.Combine(_downloadPath, $".temp_{index}_{Guid.NewGuid():N}.mp4");
 
             try
             {
@@ -367,18 +376,30 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 }
 
                 // 统一通过 HttpClient 下载媒体原始数据流，避免 FFmpeg 访问网络因 UA/握手被 CDN 返回 403 / EIO -5
-                using var request = new HttpRequestMessage(HttpMethod.Get, media.Url);
-                var referer = !string.IsNullOrEmpty(media.Referer) ? media.Referer : "https://novel.snssdk.com";
+                using HttpRequestMessage request = new(HttpMethod.Get, media.Url);
+                string referer = !string.IsNullOrEmpty(media.Referer)
+                    ? media.Referer
+                    : "https://novel.snssdk.com";
                 request.Headers.Referrer = new Uri(referer);
                 request.Headers.TryAddWithoutValidation(
                     "User-Agent",
                     "com.phoenix.read/73532 (Linux; U; Android 16; zh_CN; 25053RT47C; Build/BP2A.250605.031.A3; Cronet/TTNetVersion:04657795 2026-01-23 QuicVersion:c67e9834 2025-09-08)"
                 );
 
-                using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
+                using (
+                    HttpResponseMessage response = await _httpClient.SendAsync(
+                        request,
+                        HttpCompletionOption.ResponseHeadersRead
+                    )
+                )
                 {
                     response.EnsureSuccessStatusCode();
-                    await using var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                    await using FileStream fs = new(
+                        tempPath,
+                        FileMode.Create,
+                        FileAccess.Write,
+                        FileShare.None
+                    );
                     await response.Content.CopyToAsync(fs);
                 }
 
@@ -405,7 +426,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 }
 
                 // 2. 包含 CENC AES-128 加密密钥，调用本地 FFmpeg 对本地文件进行极速解密解包 (无网络依赖，毫秒级完成)
-                var ffmpegExe = ResolveFFmpegPath();
+                string? ffmpegExe = ResolveFFmpegPath();
                 if (string.IsNullOrEmpty(ffmpegExe))
                 {
                     _appViewModel.ShowTipCommand.Execute(
@@ -424,12 +445,12 @@ public sealed partial class DownloadViewModel : ViewModelBase
                     );
                 }
 
-                var args = new System.Text.StringBuilder();
+                StringBuilder args = new();
                 args.Append("-y ");
                 args.Append($"-decryption_key {media.DecryptionKey} ");
                 args.Append($"-i \"{tempPath}\" -c copy \"{outputPath}\"");
 
-                var startInfo = new ProcessStartInfo(ffmpegExe, args.ToString())
+                ProcessStartInfo startInfo = new(ffmpegExe, args.ToString())
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -437,16 +458,20 @@ public sealed partial class DownloadViewModel : ViewModelBase
                     RedirectStandardOutput = true,
                 };
 
-                using var process = Process.Start(startInfo);
+                using Process? process = Process.Start(startInfo);
                 if (process != null)
                 {
-                    var errorOutput = await process.StandardError.ReadToEndAsync();
+                    string errorOutput = await process.StandardError.ReadToEndAsync();
                     await process.WaitForExitAsync();
                     if (process.ExitCode == 0)
                     {
                         if (File.Exists(tempPath))
                         {
-                            try { File.Delete(tempPath); } catch { }
+                            try
+                            {
+                                File.Delete(tempPath);
+                            }
+                            catch { }
                         }
 
                         if (!silent)
@@ -462,7 +487,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
                     }
                     else
                     {
-                        _logger.LogError($"FFmpeg 本地解密第 {index} 集失败 (exit code {process.ExitCode}): {errorOutput}");
+                        _logger.LogError(
+                            $"FFmpeg 本地解密第 {index} 集失败 (exit code {process.ExitCode}): {errorOutput}"
+                        );
                         if (!silent)
                         {
                             _appViewModel.ShowTipCommand.Execute(
@@ -479,7 +506,11 @@ public sealed partial class DownloadViewModel : ViewModelBase
             {
                 if (File.Exists(tempPath) && File.Exists(outputPath))
                 {
-                    try { File.Delete(tempPath); } catch { }
+                    try
+                    {
+                        File.Delete(tempPath);
+                    }
+                    catch { }
                 }
             }
         }
@@ -502,20 +533,20 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return _ffmpegPath;
         }
 
-        var appBaseFfmpeg = Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe");
+        string appBaseFfmpeg = Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe");
         if (File.Exists(appBaseFfmpeg))
         {
             return appBaseFfmpeg;
         }
 
         // 探测系统 PATH 中是否存在 ffmpeg
-        var pathEnv = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-        var paths = pathEnv.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
-        foreach (var p in paths)
+        string pathEnv = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+        string[] paths = pathEnv.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+        foreach (string p in paths)
         {
             try
             {
-                var candidate = Path.Combine(p, "ffmpeg.exe");
+                string candidate = Path.Combine(p, "ffmpeg.exe");
                 if (File.Exists(candidate))
                 {
                     return candidate;
@@ -529,17 +560,17 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
     private static List<int> ParseSelection(string selection, int max)
     {
-        var result = new HashSet<int>();
-        var parts = selection.Split([',', ' ', '，'], StringSplitOptions.RemoveEmptyEntries);
-        foreach (var p in parts)
+        HashSet<int> result = [];
+        string[] parts = selection.Split([',', ' ', '，'], StringSplitOptions.RemoveEmptyEntries);
+        foreach (string p in parts)
         {
             if (p.Contains('-'))
             {
-                var range = p.Split('-');
+                string[] range = p.Split('-');
                 if (
                     range.Length == 2
-                    && int.TryParse(range[0], out var start)
-                    && int.TryParse(range[1], out var end)
+                    && int.TryParse(range[0], out int start)
+                    && int.TryParse(range[1], out int end)
                 )
                 {
                     for (int i = Math.Max(1, start); i <= Math.Min(max, end); i++)
@@ -548,7 +579,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
                     }
                 }
             }
-            else if (int.TryParse(p, out var num) && num >= 1 && num <= max)
+            else if (int.TryParse(p, out int num) && num >= 1 && num <= max)
             {
                 result.Add(num);
             }
@@ -562,9 +593,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
         {
             return "短剧";
         }
-        var invalid =
+        string invalid =
             new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-        var regex = new Regex($"[{Regex.Escape(invalid)}]");
+        Regex regex = new($"[{Regex.Escape(invalid)}]");
         return regex.Replace(name, "_");
     }
 

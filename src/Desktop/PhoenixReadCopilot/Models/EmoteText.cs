@@ -23,7 +23,11 @@ public sealed class EmoteText
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteText"/> class.
     /// </summary>
-    public EmoteText(string text, Dictionary<string, AppImage>? emotes, IList<AppImage>? pictures = null)
+    public EmoteText(
+        string text,
+        Dictionary<string, AppImage>? emotes,
+        IList<AppImage>? pictures = null
+    )
     {
         Text = text ?? string.Empty;
         Emotes = emotes;
@@ -34,9 +38,7 @@ public sealed class EmoteText
     /// Initializes a new instance of the <see cref="EmoteText"/> class with pictures.
     /// </summary>
     public EmoteText(string text, IList<AppImage>? pictures = null)
-        : this(text, null, pictures)
-    {
-    }
+        : this(text, null, pictures) { }
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)
@@ -70,11 +72,13 @@ public sealed class EmoteText
             return null;
         }
 
-        var emotes = bili.Emotes?.ToDictionary(
+        Dictionary<string, AppImage>? emotes = bili.Emotes?.ToDictionary(
             k => k.Key,
             v => new AppImage(v.Value.Uri, v.Value.Width, v.Value.Height)
         );
-        var pictures = bili.Pictures?.Select(p => new AppImage(p.Uri, p.Width, p.Height)).ToList();
+        List<AppImage>? pictures = bili
+            .Pictures?.Select(p => new AppImage(p.Uri, p.Width, p.Height))
+            .ToList();
         return new EmoteText(bili.Text, emotes, pictures);
     }
 }

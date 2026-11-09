@@ -25,7 +25,7 @@ public sealed partial class VideoPartitionSideBody : VideoPartitionSideBodyBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        PartitionView.ItemsSource = default;
+        PartitionView.ItemsSource = null;
         ViewModel.PartitionInitialized -= OnPartitionInitialized;
     }
 
@@ -36,7 +36,7 @@ public sealed partial class VideoPartitionSideBody : VideoPartitionSideBodyBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        var item = sender.SelectedItem as PartitionViewModel;
+        PartitionViewModel? item = sender.SelectedItem as PartitionViewModel;
         ViewModel.SelectPartitionCommand.Execute(item);
     }
 
@@ -44,7 +44,7 @@ public sealed partial class VideoPartitionSideBody : VideoPartitionSideBodyBase
     {
         if (ViewModel.SelectedPartition is not null)
         {
-            var partition = ViewModel.Partitions.FirstOrDefault(p =>
+            PartitionViewModel? partition = ViewModel.Partitions.FirstOrDefault(p =>
                 p.Equals(ViewModel.SelectedPartition.Data)
             );
             PartitionView.Select(ViewModel.Partitions.IndexOf(partition));

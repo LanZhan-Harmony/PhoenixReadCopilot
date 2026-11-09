@@ -15,7 +15,7 @@ public sealed partial class CommentOverlayPanel : CommentMainPanelBase
         nameof(IsPanelOpened),
         typeof(bool),
         typeof(CommentOverlayPanel),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

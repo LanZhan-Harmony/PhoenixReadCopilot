@@ -16,7 +16,7 @@ public sealed partial class SearchSectionItemControl : UserControl
         nameof(ViewModel),
         typeof(ISearchSectionDetailViewModel),
         typeof(SearchSectionItemControl),
-        new PropertyMetadata(default)
+        new PropertyMetadata(null)
     );
 
     /// <summary>

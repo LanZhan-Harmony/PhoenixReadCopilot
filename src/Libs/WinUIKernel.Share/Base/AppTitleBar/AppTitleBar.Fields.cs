@@ -53,7 +53,7 @@ public sealed partial class AppTitleBar
     private const string LeftEdgeVisibleVisualStateName = "LeftEdgeVisible";
     private const string LeftEdgeCollapsedVisualStateName = "LeftEdgeCollapsed";
 
-    private readonly List<FrameworkElement> _interactableElementList = new();
+    private readonly List<FrameworkElement> _interactableElementList = [];
     private InputActivationListener _inputActivationListener;
 
     private ColumnDefinition _leftPaddingColumn;

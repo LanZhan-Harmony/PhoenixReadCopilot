@@ -24,7 +24,7 @@ public sealed partial class FavoritesPageSideBody : FavoritesPageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        SectionView.ItemsSource = default;
+        SectionView.ItemsSource = null;
         ViewModel.SectionInitialized -= OnSectionInitialized;
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
@@ -36,7 +36,8 @@ public sealed partial class FavoritesPageSideBody : FavoritesPageControlBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        var item = sender.SelectedItem as IFavoriteSectionDetailViewModel;
+        IFavoriteSectionDetailViewModel? item =
+            sender.SelectedItem as IFavoriteSectionDetailViewModel;
         ViewModel.SelectSectionCommand.Execute(item);
     }
 

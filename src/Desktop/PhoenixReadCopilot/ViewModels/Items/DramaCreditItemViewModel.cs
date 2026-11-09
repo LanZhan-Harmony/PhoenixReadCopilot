@@ -38,7 +38,7 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
 
         if (
             !string.IsNullOrEmpty(credit.User?.AvatarUrl)
-            && Uri.TryCreate(credit.User.AvatarUrl, UriKind.Absolute, out var avatarUri)
+            && Uri.TryCreate(credit.User.AvatarUrl, UriKind.Absolute, out Uri? avatarUri)
         )
         {
             Avatar = avatarUri;
@@ -46,7 +46,7 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
 
         if (credit.Roles is { Count: > 0 })
         {
-            var roleTexts = credit.Roles.Select(r => r.Label);
+            IEnumerable<string> roleTexts = credit.Roles.Select(r => r.Label);
             RoleText = string.Join(" / ", roleTexts.Where(t => !string.IsNullOrWhiteSpace(t)));
         }
 
@@ -90,8 +90,8 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
         IsLoading = true;
         try
         {
-            var next = !IsFollowed;
-            var res = await _apiClient.SetFollowAsync(User.Id, next);
+            bool next = !IsFollowed;
+            PhoenixOperationResult res = await _apiClient.SetFollowAsync(User.Id, next);
             if (res.Succeeded)
             {
                 IsFollowed = next;

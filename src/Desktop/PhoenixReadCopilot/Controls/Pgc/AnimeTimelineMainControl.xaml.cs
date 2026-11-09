@@ -10,5 +10,5 @@ public sealed partial class AnimeTimelineMainControl : AnimeTimelineControlBase
     /// </summary>
     public AnimeTimelineMainControl() => InitializeComponent();
 
-    protected override void OnControlUnloaded() => SeasonRepeater.ItemsSource = default;
+    protected override void OnControlUnloaded() => SeasonRepeater.ItemsSource = null;
 }

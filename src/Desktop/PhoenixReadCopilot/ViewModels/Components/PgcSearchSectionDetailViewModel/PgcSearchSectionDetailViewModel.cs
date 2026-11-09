@@ -44,7 +44,7 @@ public sealed partial class PgcSearchSectionDetailViewModel
     /// <inheritdoc/>
     public void Clear()
     {
-        _partition = default;
+        _partition = null;
         _keyword = string.Empty;
         IsEmpty = false;
         _canRequest = false;
@@ -65,14 +65,11 @@ public sealed partial class PgcSearchSectionDetailViewModel
         try
         {
             IsLoading = true;
-            var (result, nextOffset) = await _service.GetPartitionSearchResultAsync(
-                _keyword,
-                _partition,
-                _offset
-            );
+            (IReadOnlyList<SearchResultItem>? result, string? nextOffset) =
+                await _service.GetPartitionSearchResultAsync(_keyword, _partition, _offset);
             _offset = nextOffset;
             _canRequest = !string.IsNullOrEmpty(_offset);
-            foreach (var item in result)
+            foreach (SearchResultItem item in result)
             {
                 if (Items.Any(p => p.Data.Equals(item.Season)))
                 {
@@ -98,8 +95,8 @@ public sealed partial class PgcSearchSectionDetailViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        var keyword = _keyword;
-        var partition = _partition;
+        string keyword = _keyword;
+        SearchPartition partition = _partition;
         Initialize(keyword, partition);
         await LoadItemsAsync();
     }

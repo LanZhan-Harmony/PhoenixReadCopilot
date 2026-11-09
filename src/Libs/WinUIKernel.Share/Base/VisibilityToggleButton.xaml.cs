@@ -31,7 +31,7 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
         nameof(IsHide),
         typeof(bool),
         typeof(VisibilityToggleButton),
-        new PropertyMetadata(default, new PropertyChangedCallback(OnIsHideChanged))
+        new PropertyMetadata(null, new PropertyChangedCallback(OnIsHideChanged))
     );
 
     /// <summary>
@@ -42,7 +42,7 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
             nameof(AlwaysShowWhenCollapsed),
             typeof(bool),
             typeof(VisibilityToggleButton),
-            new PropertyMetadata(default)
+            new PropertyMetadata(null)
         );
 
     /// <summary>
@@ -109,13 +109,13 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
 
     private static void OnIsHideChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as VisibilityToggleButton;
+        VisibilityToggleButton? instance = d as VisibilityToggleButton;
         instance?.CheckButtonStates();
     }
 
     private static void OnDirectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var instance = d as VisibilityToggleButton;
+        VisibilityToggleButton? instance = d as VisibilityToggleButton;
         instance?.CheckButtonStates();
     }
 
@@ -128,11 +128,11 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
             : Direction == VisibilityToggleButtonDirection.LeftToRightVisible
                 ? FluentIcons.Common.Symbol.ChevronLeft
                 : FluentIcons.Common.Symbol.ChevronRight;
-        var tip = IsHide ? HideTip : ShowTip;
+        string tip = IsHide ? HideTip : ShowTip;
         ToolTipService.SetToolTip(Btn, tip);
         AutomationProperties.SetName(Btn, tip);
 
-        var container = VisualTreeHelper.GetParent(this) as FrameworkElement;
+        FrameworkElement? container = VisualTreeHelper.GetParent(this) as FrameworkElement;
         if (container is not null)
         {
             container.Margin = IsHide

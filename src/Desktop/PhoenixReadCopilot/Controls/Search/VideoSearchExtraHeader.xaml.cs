@@ -20,7 +20,7 @@ public sealed partial class VideoSearchExtraHeader : VideoSectionDetailControlBa
             return;
         }
 
-        var sort = (ComprehensiveSearchSortType)SortComboBox.SelectedItem;
+        ComprehensiveSearchSortType sort = (ComprehensiveSearchSortType)SortComboBox.SelectedItem;
         ViewModel.ChangeSortTypeCommand.Execute(sort);
     }
 }

@@ -42,7 +42,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     {
         _pageNumber = 1;
         TotalCount = detail.TotalCount;
-        foreach (var item in detail.Videos)
+        foreach (VideoInformation item in detail.Videos)
         {
             Items.Add(
                 new VideoItemViewModel(
@@ -89,16 +89,14 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         try
         {
             IsLoading = true;
-            var (detail, nextPn) = await _service.GetVideoFavoriteFolderDetailAsync(
-                Data,
-                _pageNumber
-            );
+            (VideoFavoriteFolderDetail? detail, int? nextPn) =
+                await _service.GetVideoFavoriteFolderDetailAsync(Data, _pageNumber);
             _preventLoadMore = detail is null || detail.Videos is null || nextPn is null;
             _pageNumber = nextPn ?? 0;
             TotalCount = detail.TotalCount;
             if (!_preventLoadMore || detail.Videos?.Count > 0)
             {
-                foreach (var item in detail.Videos)
+                foreach (VideoInformation item in detail.Videos)
                 {
                     Items.Add(
                         new VideoItemViewModel(
@@ -128,11 +126,11 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     [RelayCommand]
     private void PlayCurrentList()
     {
-        var preferDisplayMode = _settings.DefaultPlayerDisplayMode;
+        PlayerDisplayMode preferDisplayMode = _settings.DefaultPlayerDisplayMode;
 
         if (Items.Count == 1)
         {
-            var video = Items.First();
+            VideoItemViewModel video = Items.First();
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
                 new PlayerWindow().OpenVideo(new VideoSnapshot(video.Data));
@@ -146,7 +144,10 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         }
         else
         {
-            var data = (Items.Select(p => p.Data).ToList(), new VideoSnapshot(Items.First().Data));
+            (List<VideoInformation>, VideoSnapshot) data = (
+                Items.Select(p => p.Data).ToList(),
+                new VideoSnapshot(Items.First().Data)
+            );
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
                 new PlayerWindow().OpenVideo(data);

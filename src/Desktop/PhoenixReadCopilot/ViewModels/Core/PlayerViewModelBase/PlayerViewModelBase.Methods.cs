@@ -19,7 +19,10 @@ public abstract partial class PlayerViewModelBase
         }
 
         IsPlayerDataLoading = true;
-        IsPaused = true;
+        if (!_autoPlay)
+        {
+            IsPaused = true;
+        }
 
         await OnLoadPlayDataAsync();
 

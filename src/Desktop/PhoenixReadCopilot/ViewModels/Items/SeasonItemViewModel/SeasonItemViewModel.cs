@@ -7,6 +7,7 @@ using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using Richasy.BiliKernel.Models;
+using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Windows.System;
 using WinUIKernel.Share.Base;
@@ -25,8 +26,8 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     public SeasonItemViewModel(
         SeasonInformation data,
         SeasonCardStyle style,
-        PgcFavoriteStatus? favStatus = default,
-        Action<SeasonItemViewModel>? removeAction = default
+        PgcFavoriteStatus? favStatus = null,
+        Action<SeasonItemViewModel>? removeAction = null
     )
         : base(data)
     {
@@ -48,24 +49,40 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     public SeasonItemViewModel(
         DailyReleaseItem item,
         SeasonCardStyle style = SeasonCardStyle.Timeline,
-        Action<SeasonItemViewModel>? removeAction = default
+        Action<SeasonItemViewModel>? removeAction = null
     )
-        : base(CreateSeasonInformation(item.Drama, !string.IsNullOrWhiteSpace(item.Note) ? item.Note : (item.IsOnline ? "已上线" : "待播"), item.IsOnline ? "已上线" : "预告"))
+        : base(
+            CreateSeasonInformation(
+                item.Drama,
+                !string.IsNullOrWhiteSpace(item.Note)
+                    ? item.Note
+                    : (item.IsOnline ? "已上线" : "待播"),
+                item.IsOnline ? "已上线" : "预告"
+            )
+        )
     {
         Drama = item.Drama;
         _removeAction = removeAction;
         Style = style;
         Title = item.Drama.Title;
-        if (!string.IsNullOrEmpty(item.Drama.CoverUrl) && Uri.TryCreate(item.Drama.CoverUrl, UriKind.Absolute, out var uri))
+        if (
+            !string.IsNullOrEmpty(item.Drama.CoverUrl)
+            && Uri.TryCreate(item.Drama.CoverUrl, UriKind.Absolute, out Uri? uri)
+        )
         {
             Cover = uri;
         }
-        var status = item.IsOnline ? "已上线" : "待播";
+        string status = item.IsOnline ? "已上线" : "待播";
         Subtitle = !string.IsNullOrWhiteSpace(item.Note)
             ? $"{status} · {item.Note}"
-            : (item.Drama.EpisodeCount > 0 ? $"{status} · 全 {item.Drama.EpisodeCount} 集" : status);
+            : (
+                item.Drama.EpisodeCount > 0 ? $"{status} · 全 {item.Drama.EpisodeCount} 集" : status
+            );
         Highlight = item.IsOnline ? "已上线" : "预告";
-        Score = double.TryParse(item.Drama.Score, out var parsedScore) && parsedScore > 0 ? parsedScore : null;
+        Score =
+            double.TryParse(item.Drama.Score, out double parsedScore) && parsedScore > 0
+                ? parsedScore
+                : null;
     }
 
     /// <summary>
@@ -74,44 +91,68 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     public SeasonItemViewModel(
         Drama drama,
         SeasonCardStyle style = SeasonCardStyle.Index,
-        Action<SeasonItemViewModel>? removeAction = default
+        Action<SeasonItemViewModel>? removeAction = null
     )
-        : base(CreateSeasonInformation(drama, drama.Remark, !string.IsNullOrWhiteSpace(drama.Score) ? $"{drama.Score}分" : null))
+        : base(
+            CreateSeasonInformation(
+                drama,
+                drama.Remark,
+                !string.IsNullOrWhiteSpace(drama.Score) ? $"{drama.Score}分" : null
+            )
+        )
     {
         Drama = drama;
         _removeAction = removeAction;
         Style = style;
         Title = drama.Title;
-        if (!string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri))
+        if (
+            !string.IsNullOrEmpty(drama.CoverUrl)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? uri)
+        )
         {
             Cover = uri;
         }
         Subtitle = !string.IsNullOrWhiteSpace(drama.Remark)
             ? drama.Remark
-            : (drama.EpisodeCount > 0 ? $"{drama.Category} · 全 {drama.EpisodeCount} 集" : drama.Category);
-        Highlight = !string.IsNullOrWhiteSpace(drama.Score) ? $"{drama.Score}分" : (drama.Tags.Count > 0 ? drama.Tags[0] : null);
-        Score = double.TryParse(drama.Score, out var parsedScore) && parsedScore > 0 ? parsedScore : null;
+            : (
+                drama.EpisodeCount > 0
+                    ? $"{drama.Category} · 全 {drama.EpisodeCount} 集"
+                    : drama.Category
+            );
+        Highlight = !string.IsNullOrWhiteSpace(drama.Score)
+            ? $"{drama.Score}分"
+            : (drama.Tags.Count > 0 ? drama.Tags[0] : null);
+        Score =
+            double.TryParse(drama.Score, out double parsedScore) && parsedScore > 0
+                ? parsedScore
+                : null;
     }
 
-    private static SeasonInformation CreateSeasonInformation(Drama drama, string? subtitle = null, string? highlight = null)
+    private static SeasonInformation CreateSeasonInformation(
+        Drama drama,
+        string? subtitle = null,
+        string? highlight = null
+    )
     {
-        var cover = !string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out var uri)
-            ? new Richasy.BiliKernel.Models.Appearance.BiliImage(uri)
-            : default;
+        BiliImage? cover =
+            !string.IsNullOrEmpty(drama.CoverUrl)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? uri)
+                ? new Richasy.BiliKernel.Models.Appearance.BiliImage(uri)
+                : null;
         return new SeasonInformation(new MediaIdentifier(drama.Id, drama.Title, cover));
     }
 
     [RelayCommand]
     private void Play()
     {
-        var preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
+        PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {
-            OpenInNewWindowCommand.Execute(default);
+            OpenInNewWindowCommand.Execute(null);
             return;
         }
 
-        var preferPlayer = ItemServices.Settings.PlayerType;
+        PlayerType preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
             ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), GetWebUrl());
@@ -133,7 +174,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     [RelayCommand]
     private void OpenInNewWindow() =>
         new PlayerWindow().OpenPgc(
-            new MediaIdentifier("ss_" + Data.Identifier.Id, default, default)
+            new MediaIdentifier("ss_" + Data.Identifier.Id, null, null)
         );
 
     [RelayCommand]
@@ -180,7 +221,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     [RelayCommand]
     private void Pin()
     {
-        var pinItem = new PinItem(
+        PinItem pinItem = new(
             $"ss_{Data.Identifier.Id}",
             Data.Identifier.Title,
             Data.Identifier.Cover.Uri.ToString(),

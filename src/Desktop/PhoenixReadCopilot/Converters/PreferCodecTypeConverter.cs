@@ -12,7 +12,7 @@ internal sealed partial class PreferCodecTypeConverter : IValueConverter
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        var result = string.Empty;
+        string result = string.Empty;
         if (value is PreferCodecType codec)
         {
             switch (codec)

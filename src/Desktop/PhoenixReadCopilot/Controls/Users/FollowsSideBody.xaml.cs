@@ -24,7 +24,7 @@ public sealed partial class FollowsSideBody : FollowsPageControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        GroupView.ItemsSource = default;
+        GroupView.ItemsSource = null;
         GroupView.SelectionChanged -= OnGroupSelectionChanged;
         ViewModel.GroupInitialized -= OnGroupInitialized;
     }
@@ -33,7 +33,7 @@ public sealed partial class FollowsSideBody : FollowsPageControlBase
 
     private void OnGroupSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        var item = sender.SelectedItem as UserGroup;
+        UserGroup? item = sender.SelectedItem as UserGroup;
         ViewModel.SelectGroupCommand.Execute(item);
     }
 

@@ -45,5 +45,5 @@ public sealed partial class MessagePageViewModel
     /// <summary>
     /// 分区列表.
     /// </summary>
-    public ObservableCollection<IMessageSectionDetailViewModel> Sections { get; } = new();
+    public ObservableCollection<IMessageSectionDetailViewModel> Sections { get; } = [];
 }

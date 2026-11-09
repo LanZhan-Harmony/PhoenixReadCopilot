@@ -12,7 +12,7 @@ internal sealed partial class DurationConverter : IValueConverter
             return AppToolkit.FormatDuration(TimeSpan.FromSeconds(d));
         }
 
-        return default;
+        return null;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>
