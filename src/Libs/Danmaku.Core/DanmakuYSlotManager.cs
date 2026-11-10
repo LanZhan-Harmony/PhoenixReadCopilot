@@ -2,6 +2,7 @@ namespace Danmaku.Core;
 
 internal sealed class DanmakuYSlotManager
 {
+    private readonly Lock _lock = new();
     private readonly Random _random;
     private Slot[] _ySlotArray;
 
@@ -13,7 +14,7 @@ internal sealed class DanmakuYSlotManager
 
     public void UpdateLength(uint newLength)
     {
-        lock (_ySlotArray)
+        lock (_lock)
         {
             _ySlotArray = new Slot[newLength];
         }
@@ -25,15 +26,15 @@ internal sealed class DanmakuYSlotManager
     /// <returns>Is any slot occupied.</returns>
     public bool GetY(uint danmakuId, uint height, out uint y)
     {
-        if (height > _ySlotArray.Length)
+        lock (_lock)
         {
-            // Danmaku's height is larger than total available height
-            y = 0;
-            return false;
-        }
+            if (height > _ySlotArray.Length)
+            {
+                // Danmaku's height is larger than total available height
+                y = 0;
+                return false;
+            }
 
-        lock (_ySlotArray)
-        {
             uint index = 0;
             while (index + height < _ySlotArray.Length)
             {
@@ -59,14 +60,14 @@ internal sealed class DanmakuYSlotManager
             }
 
             // Can't find available slot, then return a random Y.
-            y = (uint)_random.Next(0, _ySlotArray.Length - (int)height);
+            y = (uint)_random.Next(0, Math.Max(1, _ySlotArray.Length - (int)height));
             return false;
         }
     }
 
     public void ReleaseYSlot(uint danmakuId, uint y)
     {
-        lock (_ySlotArray)
+        lock (_lock)
         {
             if (y < _ySlotArray.Length && _ySlotArray[y].Id == danmakuId)
             {
@@ -81,7 +82,7 @@ internal sealed class DanmakuYSlotManager
     /// </summary>
     public void Clear()
     {
-        lock (_ySlotArray)
+        lock (_lock)
         {
             for (var i = 0; i < _ySlotArray.Length; i++)
             {

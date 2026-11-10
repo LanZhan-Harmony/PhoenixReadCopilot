@@ -915,73 +915,21 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             // 更新性能统计
             UpdatePerformanceStats(elapsedTime);
 
-            // 🚀 GC 优化：尝试进入 NoGC 区域以确保流畅渲染
-            var enteredNoGCRegion = false;
-            if (!_isInNoGCRegion)
-            {
-                try
-                {
-                    // 30MB 用于 Update + Render
-                    if (GC.TryStartNoGCRegion(30_000_000, true))
-                    {
-                        _isInNoGCRegion = true;
-                        enteredNoGCRegion = true;
-                    }
-                }
-                catch
-                {
-                    // 忽略异常
-                }
-            }
+            // 更新弹幕位置
+            UpdateDanmaku(elapsedTime, _totalTime);
 
-            try
-            {
-                // 更新弹幕位置
-                UpdateDanmaku(elapsedTime, _totalTime);
+            // 渲染弹幕
+            RenderDanmaku();
 
-                // 渲染弹幕
-                RenderDanmaku();
-
-                Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
-                if (presentResult.HasValue && presentResult.Value.Failure)
-                {
-                    Logger.Log($"Present failed: {presentResult.Value}");
-                }
-            }
-            finally
+            Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
+            if (presentResult.HasValue && presentResult.Value.Failure)
             {
-                // 确保退出 NoGC 区域
-                if (enteredNoGCRegion && _isInNoGCRegion)
-                {
-                    try
-                    {
-                        GC.EndNoGCRegion();
-                        _isInNoGCRegion = false;
-                    }
-                    catch
-                    {
-                        _isInNoGCRegion = false;
-                    }
-                }
+                Logger.Log($"Present failed: {presentResult.Value}");
             }
         }
         catch (Exception ex)
         {
             Logger.Log($"Render error: {ex.Message}");
-
-            // 确保退出 NoGC 区域
-            if (_isInNoGCRegion)
-            {
-                try
-                {
-                    GC.EndNoGCRegion();
-                }
-                catch
-                {
-                    // 忽略
-                }
-                _isInNoGCRegion = false;
-            }
         }
         finally
         {
