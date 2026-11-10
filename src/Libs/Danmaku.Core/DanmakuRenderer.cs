@@ -212,7 +212,7 @@ public sealed class DanmakuRenderer : IDisposable
     }
 
     /// <summary>
-    /// 添加弹幕列表（去重）.
+    /// 添加弹幕列表.
     /// </summary>
     public void AddDanmakuList(List<DanmakuItem> danmakuList)
     {

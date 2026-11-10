@@ -228,23 +228,19 @@ internal sealed class DanmakuScheduler : IDisposable
     }
 
     /// <summary>
-    /// 添加弹幕列表（去重）.
+    /// 添加弹幕列表.
     /// </summary>
     public void AddDanmakuList(List<DanmakuItem> danmakuList)
     {
+        if (danmakuList == null || danmakuList.Count == 0)
+        {
+            return;
+        }
+
         lock (_danmakuList)
         {
-            if (_danmakuList == null)
-            {
-                _danmakuList = danmakuList ?? [];
-            }
-            else
-            {
-                IEnumerable<DanmakuItem> items = danmakuList.Where(p =>
-                    !_danmakuList.Any(v => v.Id == p.Id)
-                );
-                _danmakuList.AddRange(items);
-            }
+            _danmakuList.AddRange(danmakuList);
+            _danmakuList.Sort(static (a, b) => a.StartMs.CompareTo(b.StartMs));
         }
     }
 
