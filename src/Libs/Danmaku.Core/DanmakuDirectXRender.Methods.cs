@@ -25,7 +25,7 @@ internal partial class DanmakuDirectXRender
     /// <returns>DirectWrite 文本格式.</returns>
     private IDWriteTextFormat? GetOrCreateTextFormat(string fontFamily, float fontSize, bool isBold)
     {
-        string key = $"{fontFamily}_{fontSize:F1}_{isBold}";
+        var key = $"{fontFamily}_{fontSize:F1}_{isBold}";
 
         lock (_resourceManager.CacheLock)
         {
@@ -64,7 +64,7 @@ internal partial class DanmakuDirectXRender
     /// <returns>D2D1 纯色画刷.</returns>
     private ID2D1SolidColorBrush? GetOrCreateBrush(Color color)
     {
-        uint colorKey = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
+        var colorKey = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
 
         lock (_resourceManager.CacheLock)
         {
@@ -113,15 +113,15 @@ internal partial class DanmakuDirectXRender
         {
             if (renderItem.Item is null)
             {
-                return null;
+                return default;
             }
 
             // 计算位图尺寸，需要为描边预留额外空间
-            float outlinePadding = renderItem.Item.HasOutline
+            var outlinePadding = renderItem.Item.HasOutline
                 ? (float)_configState.OutlineSize * 2
                 : 0;
-            int width = (int)Math.Ceiling(renderItem.Width + outlinePadding);
-            int height = (int)Math.Ceiling(renderItem.Height + outlinePadding);
+            var width = (int)Math.Ceiling(renderItem.Width + outlinePadding);
+            var height = (int)Math.Ceiling(renderItem.Height + outlinePadding);
 
             if (width <= 0 || height <= 0 || width > 4096 || height > 4096)
             {
@@ -139,7 +139,7 @@ internal partial class DanmakuDirectXRender
             compatibleTarget.Clear(_clearColor); // 🚀 优化：使用预分配的 Color4
 
             // 计算描边偏移（让文本居中，避免边缘截断）
-            float offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
+            var offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
 
             // 绘制描边（创建临时 Brush，使用完全不透明的颜色）
             if (renderItem.Item.HasOutline && _configState.OutlineSize > 0)
@@ -163,7 +163,7 @@ internal partial class DanmakuDirectXRender
                     )
                 ); // Alpha = 1.0 (完全不透明)
 
-                float strokeWidth = (float)_configState.OutlineSize;
+                var strokeWidth = (float)_configState.OutlineSize;
                 for (int i = 0; i < _outlineOffsets.Length; i++)
                 {
                     Vector2 outlineOffset = _outlineOffsets[i] * strokeWidth;
@@ -330,7 +330,7 @@ internal partial class DanmakuDirectXRender
                     : renderItem.Item.OutlineColor;
 
             ID2D1SolidColorBrush? outlineBrush = GetOrCreateBrush(outlineColor);
-            float strokeWidth = (float)_configState.OutlineSize;
+            var strokeWidth = (float)_configState.OutlineSize;
 
             // 使用预计算的偏移量（🚀 优化：重用 Vector2，避免每次分配）
             for (int i = 0; i < _outlineOffsets.Length; i++)
@@ -375,8 +375,8 @@ internal partial class DanmakuDirectXRender
             _resourceManager.ObjectPool.TryGetTexture(
                 cacheKey,
                 out ID2D1Bitmap1? cachedBitmap,
-                out float width,
-                out float height
+                out var width,
+                out var height
             )
         )
         {
@@ -389,7 +389,7 @@ internal partial class DanmakuDirectXRender
             Matrix3x2 prevTransform = _resourceManager.D2DContext.Transform;
 
             // 计算绘制位置（需要减去描边偏移）
-            float offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
+            var offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
 
             // 设置到目标位置（🚀 优化：重用 Matrix3x2，避免分配）
             _reusableMatrix.M11 = 1;
@@ -436,8 +436,8 @@ internal partial class DanmakuDirectXRender
             _resourceManager.ObjectPool.TryGetTexture(
                 cacheKey,
                 out ID2D1Bitmap1? cachedBitmap,
-                out float width,
-                out float height
+                out var width,
+                out var height
             )
             && cachedBitmap != null
         )
@@ -493,7 +493,7 @@ internal partial class DanmakuDirectXRender
         Matrix3x2 prevTransform = _resourceManager.D2DContext.Transform;
 
         // 计算绘制位置（需要减去描边偏移）
-        float offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
+        var offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
 
         // 设置到目标位置（🚀 优化：重用 Matrix3x2）
         _reusableMatrix.M11 = 1;

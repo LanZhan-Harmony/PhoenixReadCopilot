@@ -1,7 +1,7 @@
 namespace PhoenixReadCopilot.Controls.Pgc;
 
 /// <summary>
-/// 动漫主页头部.
+/// 上新日历右侧顶部.
 /// </summary>
 public sealed partial class AnimeMainHeader : AnimePageControlBase
 {

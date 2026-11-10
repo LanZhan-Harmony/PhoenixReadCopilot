@@ -153,7 +153,7 @@
   <data name="AlsoLike" xml:space="preserve">
     <value>同时点赞</value>
   </data>
-  <data name="Anime" xml:space="preserve">
+  <data name="Calendar" xml:space="preserve">
     <value>上新日历</value>
   </data>
   <data name="NewDramaCalendar" xml:space="preserve">
@@ -351,7 +351,7 @@
   <data name="ChooseFavorite" xml:space="preserve">
     <value>选择收藏夹</value>
   </data>
-  <data name="Cinema" xml:space="preserve">
+  <data name="FindDrama" xml:space="preserve">
     <value>找剧</value>
   </data>
   <data name="DramaFilter" xml:space="preserve">

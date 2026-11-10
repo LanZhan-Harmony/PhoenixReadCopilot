@@ -42,8 +42,8 @@ public sealed class DebugRenderer : IDisposable
 
         try
         {
-            string[] lines =
-            [
+            var lines = new[]
+            {
                 "弹幕调试信息:",
                 $"缓冲区大小: {debugInfo.BufferWidth}x{debugInfo.BufferHeight}",
                 $"逻辑大小: {debugInfo.LogicalWidth:F1}x{debugInfo.LogicalHeight:F1}",
@@ -51,7 +51,7 @@ public sealed class DebugRenderer : IDisposable
                 $"弹幕数量: {debugInfo.DanmakuCount}",
                 $"运行时间: {debugInfo.RunningTime:mm\\:ss}",
                 $"帧率: {debugInfo.FrameRate:F1} FPS",
-            ];
+            };
 
             DrawDebugPanel(lines, scale);
         }
@@ -66,7 +66,7 @@ public sealed class DebugRenderer : IDisposable
     /// </summary>
     private void DrawDebugPanel(string[] lines, double scale)
     {
-        float floatScale = (float)scale;
+        var floatScale = (float)scale;
 
         // 如果缩放变化，重新创建资源
         if (Math.Abs(_lastScale - floatScale) > 0.01f)
@@ -83,13 +83,13 @@ public sealed class DebugRenderer : IDisposable
         }
 
         // 应用缩放因子到面板大小和位置
-        float scaledPadding = PanelPadding * floatScale;
-        float scaledLineSpacing = LineSpacing * floatScale;
-        float scaledCornerRadius = CornerRadius * floatScale;
+        var scaledPadding = PanelPadding * floatScale;
+        var scaledLineSpacing = LineSpacing * floatScale;
+        var scaledCornerRadius = CornerRadius * floatScale;
 
         // 计算面板大小（应用缩放）
-        float panelWidth = 250f * floatScale;
-        float panelHeight = lines.Length * scaledLineSpacing + scaledPadding * 2;
+        var panelWidth = 250f * floatScale;
+        var panelHeight = lines.Length * scaledLineSpacing + scaledPadding * 2;
 
         // 绘制背景（应用缩放）
         RoundedRectangle backgroundRect = new()
@@ -107,8 +107,8 @@ public sealed class DebugRenderer : IDisposable
         _d2dContext.FillRoundedRectangle(backgroundRect, _cachedBackgroundBrush);
 
         // 绘制文本（应用缩放）
-        float textY = scaledPadding + scaledPadding / 2;
-        foreach (string line in lines)
+        var textY = scaledPadding + scaledPadding / 2;
+        foreach (var line in lines)
         {
             RawRectF textRect = new(
                 scaledPadding + (scaledPadding / 2),
@@ -129,7 +129,7 @@ public sealed class DebugRenderer : IDisposable
     {
         try
         {
-            float scaledFontSize = DebugFontSize * scale;
+            var scaledFontSize = DebugFontSize * scale;
 
             // 创建文本格式
             _cachedTextFormat = _dwriteFactory.CreateTextFormat(

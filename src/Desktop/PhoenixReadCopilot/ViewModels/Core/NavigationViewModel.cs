@@ -232,8 +232,8 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             GetItem<PopularPage>(Resources.PopularSlim, FluentIcons.Common.Symbol.Rocket),
             GetItem<MomentPage>(Resources.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
             GetItem<VideoPartitionPage>(Resources.Video, FluentIcons.Common.Symbol.VideoClip),
-            GetItem<AnimePage>(Resources.Anime, FluentIcons.Common.Symbol.Calendar),
-            GetItem<CinemaPage>(Resources.Cinema, FluentIcons.Common.Symbol.SlideSearch),
+            GetItem<AnimePage>(Resources.Calendar, FluentIcons.Common.Symbol.Calendar),
+            GetItem<CinemaPage>(Resources.FindDrama, FluentIcons.Common.Symbol.SlideSearch),
             GetItem<ArticlePartitionPage>(
                 Resources.Article,
                 FluentIcons.Common.Symbol.DocumentBulletList

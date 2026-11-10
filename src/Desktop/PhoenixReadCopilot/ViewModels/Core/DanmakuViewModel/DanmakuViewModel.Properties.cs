@@ -22,9 +22,21 @@ public sealed partial class DanmakuViewModel
 
     private string _seriesId = string.Empty;
     private string _videoId = string.Empty;
+    private string _loadedVideoId = string.Empty;
     private int _position;
     private int _duration;
     private CancellationTokenSource? _loadCancellationTokenSource;
+
+    /// <summary>
+    /// 当前分集弹幕是否已成功加载.
+    /// </summary>
+    public bool HasLoaded => !string.IsNullOrEmpty(_loadedVideoId) && _loadedVideoId == _videoId;
+
+    /// <summary>
+    /// 当前已加载的弹幕列表缓存.
+    /// </summary>
+    [ObservableProperty]
+    public partial IReadOnlyList<DanmakuCoreItem> CurrentDanmakus { get; set; } = [];
 
     [ObservableProperty]
     public partial bool IsShowDanmaku { get; set; }

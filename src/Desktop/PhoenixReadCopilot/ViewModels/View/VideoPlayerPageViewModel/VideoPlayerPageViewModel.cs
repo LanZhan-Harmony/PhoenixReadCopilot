@@ -274,7 +274,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             ? media.Referer
             : "https://novel.snssdk.com";
 
-        Danmaku.ClearAll();
         await Player.SetPlayDataAsync(
             videoUrl,
             null,

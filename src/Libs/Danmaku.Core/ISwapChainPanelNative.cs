@@ -1,16 +1,15 @@
 using System.Runtime.InteropServices;
-using SharpGen.Runtime;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace Danmaku.Core;
 
-[ComImport]
-[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+/// <summary>
+/// WinUI 3 / XAML SwapChainPanel 原生互操作接口.
+/// </summary>
+[GeneratedComInterface]
 [Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
-public interface ISwapChainPanelNative
+public partial interface ISwapChainPanelNative
 {
     [PreserveSig]
-    Result SetSwapChain([In] IntPtr swapChain);
-
-    [PreserveSig]
-    ulong Release();
+    int SetSwapChain(nint swapChain);
 }

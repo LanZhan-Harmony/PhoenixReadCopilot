@@ -1,10 +1,10 @@
-using PhoenixReadCopilot.ViewModels.Components;
+using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Pgc;
 
 /// <summary>
-/// 娱乐索引控件基类.
+/// 找剧 / 筛选索引控件基类.
 /// </summary>
 public abstract class EntertainmentIndexControlBase
-    : LayoutUserControlBase<EntertainmentIndexViewModel> { }
+    : LayoutUserControlBase<CinemaPageViewModel> { }

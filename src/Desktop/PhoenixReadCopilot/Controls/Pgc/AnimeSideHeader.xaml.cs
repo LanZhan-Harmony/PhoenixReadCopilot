@@ -1,10 +1,7 @@
-using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.ViewModels.Items;
-
 namespace PhoenixReadCopilot.Controls.Pgc;
 
 /// <summary>
-/// 侧边栏头部.
+/// 上新日历左侧顶部.
 /// </summary>
 public sealed partial class AnimeSideHeader : AnimePageControlBase
 {
@@ -12,70 +9,4 @@ public sealed partial class AnimeSideHeader : AnimePageControlBase
     /// Initializes a new instance of the <see cref="AnimeSideHeader"/> class.
     /// </summary>
     public AnimeSideHeader() => InitializeComponent();
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
-    {
-        ViewModel.SectionInitialized += OnSectionInitialized;
-        SectionSelector.SelectionChanged += OnSectionSelectionChanged;
-        CheckSectionInitialization();
-        CheckSectionSelection();
-    }
-
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-    {
-        ViewModel.SectionInitialized -= OnSectionInitialized;
-        SectionSelector.SelectionChanged -= OnSectionSelectionChanged;
-    }
-
-    private void OnSectionInitialized(object? sender, EventArgs e)
-    {
-        CheckSectionInitialization();
-        CheckSectionSelection();
-    }
-
-    private void OnSectionSelectionChanged(
-        SelectorBar sender,
-        SelectorBarSelectionChangedEventArgs args
-    )
-    {
-        if (sender.SelectedItem?.Tag is not IPgcSectionDetailViewModel vm)
-        {
-            return;
-        }
-
-        ViewModel.SelectSectionCommand.Execute(vm);
-    }
-
-    private void CheckSectionSelection()
-    {
-        if (ViewModel.SelectedSection is null)
-        {
-            return;
-        }
-
-        SectionSelector.SelectedItem = SectionSelector.Items.FirstOrDefault(p =>
-            p.Tag == ViewModel.SelectedSection
-        );
-    }
-
-    private void CheckSectionInitialization()
-    {
-        if (
-            ViewModel?.Sections is null
-            || SectionSelector is null
-            || SectionSelector.Items.Count > 0
-        )
-        {
-            return;
-        }
-
-        foreach (IPgcSectionDetailViewModel vm in ViewModel.Sections)
-        {
-            SelectorBarItem? item = SectionTemplate.LoadContent() as SelectorBarItem;
-            item.DataContext = vm;
-            SectionSelector.Items.Add(item);
-        }
-    }
 }

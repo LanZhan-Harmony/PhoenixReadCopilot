@@ -1,10 +1,11 @@
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
+using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Pgc;
 
 /// <summary>
-/// 侧边栏时间轴.
+/// 上新日历左侧时间轴.
 /// </summary>
 public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
 {
@@ -16,8 +17,11 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        ViewModel.TimelineInitialized += OnTimelineInitialized;
-        ViewModel.InitializeCommand.Execute(null);
+        if (ViewModel is not null)
+        {
+            ViewModel.TimelineInitialized += OnTimelineInitialized;
+        }
+
         TimelineView.SelectionChanged += OnTimelineSelectionChanged;
         CheckTimelineSelection();
     }
@@ -27,20 +31,41 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
     {
         TimelineView.ItemsSource = null;
         TimelineView.SelectionChanged -= OnTimelineSelectionChanged;
-        ViewModel.TimelineInitialized -= OnTimelineInitialized;
+        if (ViewModel is not null)
+        {
+            ViewModel.TimelineInitialized -= OnTimelineInitialized;
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void OnViewModelChanged(AnimePageViewModel? oldValue, AnimePageViewModel? newValue)
+    {
+        if (oldValue is not null)
+        {
+            oldValue.TimelineInitialized -= OnTimelineInitialized;
+        }
+
+        if (newValue is not null)
+        {
+            newValue.TimelineInitialized += OnTimelineInitialized;
+            CheckTimelineSelection();
+        }
     }
 
     private void OnTimelineInitialized(object? sender, EventArgs e) => CheckTimelineSelection();
 
     private void CheckTimelineSelection()
     {
-        if (ViewModel.SelectedTimeline is null)
+        if (ViewModel?.SelectedTimeline is null)
         {
             return;
         }
 
         int index = ViewModel.Timelines.IndexOf(ViewModel.SelectedTimeline);
-        TimelineView.Select(index);
+        if (index >= 0)
+        {
+            TimelineView.Select(index);
+        }
     }
 
     private void OnTimelineSelectionChanged(
@@ -48,11 +73,14 @@ public sealed partial class AnimeTimelineSideControl : AnimeTimelineControlBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        if (sender.SelectedItem is not TimelineItemViewModel vm)
+        if (ViewModel is null)
         {
             return;
         }
 
-        ViewModel.SelectTimelineCommand.Execute(vm);
+        if (TimelineView.SelectedItem is TimelineItemViewModel item)
+        {
+            ViewModel.SelectTimelineCommand.Execute(item);
+        }
     }
 }

@@ -57,6 +57,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         ClearAll();
         _seriesId = seriesId;
         _videoId = videoId;
+        _loadedVideoId = string.Empty;
         ResetData();
     }
 
@@ -112,6 +113,8 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         _loadCancellationTokenSource?.Cancel();
         _loadCancellationTokenSource?.Dispose();
         _loadCancellationTokenSource = null;
+        _loadedVideoId = string.Empty;
+        CurrentDanmakus = [];
         _duration = 0;
         _seriesId = string.Empty;
         _videoId = string.Empty;
@@ -141,7 +144,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
             IsLoading
             || string.IsNullOrEmpty(_seriesId)
             || string.IsNullOrEmpty(_videoId)
-            || _duration == duration
+            || (_loadedVideoId == _videoId && !string.IsNullOrEmpty(_loadedVideoId))
         )
         {
             return;
@@ -154,17 +157,26 @@ public sealed partial class DanmakuViewModel : ViewModelBase
 
         IsLoading = true;
         _duration = duration;
+        var currentLoadingVideoId = _videoId;
+        var currentLoadingSeriesId = _seriesId;
 
         try
         {
             long durationMs = duration > 0 ? duration * 1000L : 3600000L;
             DanmakuPage page = await _apiClient.GetDanmakuAsync(
-                _seriesId,
-                _videoId,
+                currentLoadingSeriesId,
+                currentLoadingVideoId,
                 0,
                 durationMs,
                 token
             );
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
+            _loadedVideoId = currentLoadingVideoId;
 
             if (page.Items is { Count: > 0 })
             {
@@ -181,16 +193,37 @@ public sealed partial class DanmakuViewModel : ViewModelBase
                     })
                     .ToList();
 
+                CurrentDanmakus = danmakus;
                 CanShowDanmaku = true;
+                _logger.LogInformation(
+                    $"[Danmaku] 成功获取弹幕: 剧集={currentLoadingSeriesId}, 分集={currentLoadingVideoId}, 弹幕条数={danmakus.Count}"
+                );
+                foreach (DanmakuCoreItem? sample in danmakus.Take(3))
+                {
+                    _logger.LogInformation(
+                        $"[Danmaku Sample] Id={sample.Id}, Text='{sample.Text}', StartMs={sample.StartMs}ms ({sample.StartMs / 1000.0:F1}s)"
+                    );
+                }
                 ListAdded?.Invoke(this, danmakus);
             }
+            else
+            {
+                CurrentDanmakus = [];
+                _logger.LogInformation(
+                    $"[Danmaku] 请求完成，分集 {currentLoadingVideoId} 弹幕数量为 0."
+                );
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // 正常取消（如快速切集、分集重置），静默处理不记日志
         }
         catch (Exception ex)
         {
-            if (ex is not TaskCanceledException)
-            {
-                _logger.LogError(ex, $"加载短剧 {_seriesId} | {_videoId} 的弹幕失败.");
-            }
+            _logger.LogError(
+                ex,
+                $"加载短剧 {currentLoadingSeriesId} | {currentLoadingVideoId} 的弹幕失败."
+            );
         }
         finally
         {

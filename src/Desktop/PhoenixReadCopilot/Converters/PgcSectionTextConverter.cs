@@ -12,9 +12,8 @@ internal sealed partial class PgcSectionTextConverter : IValueConverter
         return sectionType switch
         {
             PgcSectionType.Timeline => Resources.TimeChart,
-            PgcSectionType.Anime => Resources.Anime,
             PgcSectionType.Movie => Resources.Movie,
-            PgcSectionType.TV => Resources.Cinema,
+            PgcSectionType.TV => Resources.FindDrama,
             PgcSectionType.Documentary => Resources.Documentary,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };

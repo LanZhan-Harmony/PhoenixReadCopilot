@@ -33,13 +33,13 @@
                 </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsVideoPartitionPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
-            <community:SettingsCard Header="{x:Bind strings:Resources.Anime}">
+            <community:SettingsCard Header="{x:Bind strings:Resources.Calendar}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Dust"/>
                 </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsAnimePageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
-            <community:SettingsCard Header="{x:Bind strings:Resources.Cinema}">
+            <community:SettingsCard Header="{x:Bind strings:Resources.FindDrama}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="FilmstripPlay"/>
                 </community:SettingsCard.HeaderIcon>
