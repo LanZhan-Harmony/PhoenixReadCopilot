@@ -142,20 +142,42 @@ internal sealed class DanmakuScheduler : IDisposable
         Stop();
         lock (_danmakuList)
         {
-            _lastIndex = 0;
-            if (_danmakuList.Count > 0)
-            {
-                while (
-                    _lastIndex < _danmakuList.Count && _danmakuList[_lastIndex].StartMs < targetMs
-                )
-                {
-                    _lastIndex++;
-                }
-            }
+            _lastIndex = FindFirstIndexAtOrAfter(targetMs);
             _lastTimeMs = targetMs;
             Resume();
             _isSeeking = false;
         }
+    }
+
+    /// <summary>
+    /// 使用二分查找快速定位第一个 StartMs >= targetMs 的索引.
+    /// </summary>
+    private int FindFirstIndexAtOrAfter(uint targetMs)
+    {
+        if (_danmakuList.Count == 0)
+        {
+            return 0;
+        }
+
+        int low = 0;
+        int high = _danmakuList.Count - 1;
+        int result = _danmakuList.Count;
+
+        while (low <= high)
+        {
+            int mid = low + ((high - low) >> 1);
+            if (_danmakuList[mid].StartMs >= targetMs)
+            {
+                result = mid;
+                high = mid - 1;
+            }
+            else
+            {
+                low = mid + 1;
+            }
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -166,6 +188,8 @@ internal sealed class DanmakuScheduler : IDisposable
         lock (_danmakuList)
         {
             _danmakuList?.Clear();
+            _lastIndex = 0;
+            _lastTimeMs = 0;
         }
         StopRequested?.Invoke();
     }

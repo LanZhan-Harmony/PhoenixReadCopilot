@@ -907,24 +907,32 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
 
         try
         {
-            TimeSpan currentTime = _frameStopwatch.Elapsed;
-            TimeSpan elapsedTime = currentTime - _lastFrameTime;
-            _lastFrameTime = currentTime;
-            _totalTime += elapsedTime;
-
-            // 更新性能统计
-            UpdatePerformanceStats(elapsedTime);
-
-            // 更新弹幕位置
-            UpdateDanmaku(elapsedTime, _totalTime);
-
-            // 渲染弹幕
-            RenderDanmaku();
-
-            Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
-            if (presentResult.HasValue && presentResult.Value.Failure)
+            lock (_resourceManager.RenderLock)
             {
-                Logger.Log($"Present failed: {presentResult.Value}");
+                if (_isPaused || _isStopped || _resourceManager.D2DContext == null)
+                {
+                    return;
+                }
+
+                TimeSpan currentTime = _frameStopwatch.Elapsed;
+                TimeSpan elapsedTime = currentTime - _lastFrameTime;
+                _lastFrameTime = currentTime;
+                _totalTime += elapsedTime;
+
+                // 更新性能统计
+                UpdatePerformanceStats(elapsedTime);
+
+                // 更新弹幕位置
+                UpdateDanmaku(elapsedTime, _totalTime);
+
+                // 渲染弹幕
+                RenderDanmaku();
+
+                Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
+                if (presentResult.HasValue && presentResult.Value.Failure)
+                {
+                    Logger.Log($"Present failed: {presentResult.Value}");
+                }
             }
         }
         catch (Exception ex)

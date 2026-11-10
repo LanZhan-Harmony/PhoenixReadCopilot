@@ -10,9 +10,9 @@ namespace Danmaku.Core;
 internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
 {
     /// <summary>
-    /// 文本内容的哈希码.
+    /// 文本内容.
     /// </summary>
-    public readonly int TextHash;
+    public readonly string? Text;
 
     /// <summary>
     /// 文本颜色的 RGB 值（R &lt;&lt; 16 | G &lt;&lt; 8 | B）.
@@ -46,8 +46,7 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
         bool hasOutline
     )
     {
-        // 使用 Ordinal 比较确保一致性（高性能、零分配）
-        TextHash = text?.GetHashCode(StringComparison.Ordinal) ?? 0;
+        Text = text;
 
         // RGB 打包（忽略 Alpha）
         TextColorRGB = (uint)(textColor.R << 16 | textColor.G << 8 | textColor.B);
@@ -58,15 +57,15 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     }
 
     /// <summary>
-    /// 高性能相等性比较（零分配）.
+    /// 高性能相等性比较（数值优先快速过滤，最后比对字符串文本，杜绝哈希碰撞错乱）.
     /// </summary>
     public bool Equals(TextureCacheKey other)
     {
-        return TextHash == other.TextHash
-            && TextColorRGB == other.TextColorRGB
+        return TextColorRGB == other.TextColorRGB
             && OutlineColorRGB == other.OutlineColorRGB
             && FontSize == other.FontSize
-            && HasOutline == other.HasOutline;
+            && HasOutline == other.HasOutline
+            && string.Equals(Text, other.Text, StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -78,12 +77,13 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     }
 
     /// <summary>
-    /// 高性能哈希函数（零分配）.
+    /// 高性能哈希函数.
     /// </summary>
     public override int GetHashCode()
     {
-        // .NET Core 3.0+ 高性能哈希（零分配）
-        return HashCode.Combine(TextHash, TextColorRGB, OutlineColorRGB, FontSize, HasOutline);
+        int textHash =
+            Text != null ? string.GetHashCode(Text.AsSpan(), StringComparison.Ordinal) : 0;
+        return HashCode.Combine(textHash, TextColorRGB, OutlineColorRGB, FontSize, HasOutline);
     }
 
     /// <summary>
@@ -107,6 +107,6 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     /// </summary>
     public override string ToString()
     {
-        return $"[Hash:{TextHash:X8}, RGB:{TextColorRGB:X6}/{OutlineColorRGB:X6}, Size:{FontSize:F1}, Outline:{HasOutline}]";
+        return $"[Text:'{Text}', RGB:{TextColorRGB:X6}/{OutlineColorRGB:X6}, Size:{FontSize:F1}, Outline:{HasOutline}]";
     }
 }
