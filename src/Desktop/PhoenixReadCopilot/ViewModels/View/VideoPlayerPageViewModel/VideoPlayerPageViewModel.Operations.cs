@@ -294,6 +294,8 @@ public sealed partial class VideoPlayerPageViewModel
         Player.CancelNotification();
 
         Danmaku?.ResetData(_seriesId, episode.VideoId);
+        var episodeDuration = (int)episode.Duration.TotalSeconds;
+        Danmaku?.LoadDanmakusCommand.Execute(episodeDuration);
         Subtitle?.ResetData(_seriesId, episode.VideoId);
 
         // 加载分集媒体
@@ -316,10 +318,10 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void PlayerProgressChanged(int progress, int duration)
     {
-        if (progress < duration && progress > 1 && (Danmaku?.IsEmpty() ?? false))
+        // 兜底静默尝试：若当前分集尚未成功加载弹幕且未在加载中，发起一次加载尝试
+        if (Danmaku is not null && !Danmaku.HasLoaded && !Danmaku.IsLoading && !string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(_currentVideoId))
         {
-            Danmaku?.ResetData(_seriesId, _currentEpisode?.VideoId ?? _currentVideoId);
-            Danmaku?.LoadDanmakusCommand.Execute(duration);
+            Danmaku.LoadDanmakusCommand.Execute(duration);
         }
 
         Danmaku?.UpdatePosition(progress);

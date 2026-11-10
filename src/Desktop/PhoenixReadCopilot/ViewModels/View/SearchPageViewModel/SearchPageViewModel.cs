@@ -65,10 +65,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             if (long.TryParse(videoId, out long id))
             {
                 _navigationViewModel.Back();
-                VideoInformation video = new(
-                    new MediaIdentifier(videoId, null, null),
-                    null
-                );
+                VideoInformation video = new(new MediaIdentifier(videoId, null, null), null);
                 new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(null);
                 return;
             }
@@ -177,8 +174,8 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 
         SearchPartition? partition = type switch
         {
-            SearchSectionType.Anime => new SearchPartition(7, Resources.Anime),
-            SearchSectionType.Cinema => new SearchPartition(8, Resources.Cinema),
+            SearchSectionType.Anime => new SearchPartition(7, Resources.Calendar),
+            SearchSectionType.Cinema => new SearchPartition(8, Resources.FindDrama),
             SearchSectionType.User => new SearchPartition(2, Resources.User),
             SearchSectionType.Article => new SearchPartition(6, Resources.Article),
             _ => null,

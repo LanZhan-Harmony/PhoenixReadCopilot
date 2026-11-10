@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -8,7 +9,7 @@ using PhoenixReadCopilot.ViewModels.Items;
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 上新日历页面视图模型 (原动漫页面).
+/// 上新日历页面视图模型.
 /// </summary>
 public sealed partial class AnimePageViewModel
 {
@@ -16,16 +17,34 @@ public sealed partial class AnimePageViewModel
     private readonly ILogger<AnimePageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
+    private readonly Dictionary<DateOnly, List<SeasonItemViewModel>> _dateCache = [];
+    private CancellationTokenSource? _timelineCts;
+    private CancellationTokenSource? _dateReleasesCts;
+    private bool _isInitialized;
 
     [ObservableProperty]
-    public partial List<IPgcSectionDetailViewModel>? Sections { get; set; }
+    public partial bool IsTimelineLoading { get; set; }
 
     [ObservableProperty]
-    public partial IPgcSectionDetailViewModel? SelectedSection { get; set; }
+    public partial bool IsEmpty { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsError { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShowSideEmptyHolder { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShowTimelineEmptyHolder { get; set; }
+
+    [ObservableProperty]
+    public partial TimelineItemViewModel? SelectedTimeline { get; set; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<TimelineItemViewModel> Timelines { get; set; } = new();
 
     /// <summary>
-    /// 区块加载完成.
+    /// 时间线加载完成.
     /// </summary>
-    public event EventHandler? SectionInitialized;
+    public event EventHandler? TimelineInitialized;
 }

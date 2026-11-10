@@ -18,7 +18,7 @@ internal sealed class DanmakuScheduler : IDisposable
     private volatile bool _isTopEnabled = true;
     private volatile bool _isBottomEnabled = true;
     private volatile bool _isRollingEnabled = true;
-    private Thread _updateThread;
+    private readonly Thread _updateThread;
 
     /// <summary>
     /// 当需要渲染弹幕时触发.
@@ -290,6 +290,7 @@ internal sealed class DanmakuScheduler : IDisposable
                     // 检查是否长时间暂停或重启
                     if (currentTimeMs < _lastTimeMs || currentTimeMs - _lastTimeMs > 5000)
                     {
+                        Logger.Log("Reseek after a long time suspension");
                         Seek(currentTimeMs);
                         continue;
                     }
@@ -317,7 +318,7 @@ internal sealed class DanmakuScheduler : IDisposable
 
                         if (!skip)
                         {
-                            bool shouldShow = item.Mode switch
+                            var shouldShow = item.Mode switch
                             {
                                 DanmakuMode.Bottom => _isBottomEnabled,
                                 DanmakuMode.Top => _isTopEnabled,
@@ -339,6 +340,10 @@ internal sealed class DanmakuScheduler : IDisposable
         catch (Exception ex)
         {
             Logger.Log($"DanmakuScheduler error: {ex.Message}");
+        }
+        finally
+        {
+            Logger.Log("DanmakuScheduler exited");
         }
     }
 

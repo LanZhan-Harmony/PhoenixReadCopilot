@@ -14,8 +14,6 @@ public sealed class DanmakuRenderer : IDisposable
 
     private readonly DanmakuDirectXRender _render;
     private readonly DanmakuScheduler _scheduler;
-    private readonly Grid _rootGrid;
-    private readonly SwapChainPanel _swapChainPanel;
     private bool _isDisposed;
 
     /// <summary>
@@ -35,40 +33,40 @@ public sealed class DanmakuRenderer : IDisposable
     /// <param name="initialConfig">初始配置（可选）.</param>
     public DanmakuRenderer(
         Grid rootGrid,
-        ILogger<DanmakuRenderer> logger = null,
+        ILogger<DanmakuRenderer> logger = default,
         DanmakuConfiguration initialConfig = null
     )
     {
-        _rootGrid = rootGrid ?? throw new ArgumentNullException(nameof(rootGrid));
+        ArgumentNullException.ThrowIfNull(rootGrid);
 
-        // 移除容器内已有的旧 SwapChainPanel，杜绝堆积废弃面板
-        for (int i = _rootGrid.Children.Count - 1; i >= 0; i--)
+        // 关键修复：不要直接调用 Children.Clear()，可能触发其他控件的 Unloaded 事件导致崩溃
+        // 只清理非 SwapChainPanel 的子元素
+        for (int i = rootGrid.Children.Count - 1; i >= 0; i--)
         {
-            if (_rootGrid.Children[i] is SwapChainPanel)
+            if (rootGrid.Children[i] is not SwapChainPanel)
             {
-                _rootGrid.Children.RemoveAt(i);
+                rootGrid.Children.RemoveAt(i);
             }
         }
 
-        if (_rootGrid.XamlRoot is null)
+        if (rootGrid.XamlRoot is null)
         {
             throw new InvalidOperationException(
                 "rootGrid.XamlRoot is null - make sure the Grid is attached to the visual tree"
             );
         }
 
-        _swapChainPanel = new SwapChainPanel
+        SwapChainPanel swapChainPanel = new()
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
-            Opacity = 0,
         };
-        _rootGrid.Children.Add(_swapChainPanel);
+        rootGrid.Children.Add(swapChainPanel);
 
         Logger.SetLogger(logger);
 
         // 创建渲染引擎
-        _render = new DanmakuDirectXRender(_swapChainPanel, _rootGrid, initialConfig);
+        _render = new DanmakuDirectXRender(swapChainPanel, rootGrid, initialConfig);
 
         // 创建调度器
         _scheduler = new DanmakuScheduler();
@@ -78,6 +76,8 @@ public sealed class DanmakuRenderer : IDisposable
         _scheduler.PauseRequested += OnPauseRequested;
         _scheduler.ResumeRequested += OnResumeRequested;
         _scheduler.StopRequested += OnStopRequested;
+
+        Logger.Log("DanmakuRenderer is created");
     }
 
     #region 配置管理
@@ -172,13 +172,11 @@ public sealed class DanmakuRenderer : IDisposable
     #region 弹幕管理
 
     /// <summary>
-    /// 清空弹幕列表与屏幕上正在飞行的弹幕节点.
+    /// 清空弹幕列表.
     /// </summary>
     public void Clear()
     {
         _scheduler?.Clear();
-        _render?.Clear();
-        _swapChainPanel?.DispatcherQueue?.TryEnqueue(() => _swapChainPanel?.Opacity = 0);
     }
 
     /// <summary>
@@ -244,13 +242,7 @@ public sealed class DanmakuRenderer : IDisposable
         // 2. 再释放渲染器（停止渲染循环，释放 DirectX 资源）
         _render?.Dispose();
 
-        // 3. 从根容器中移除已释放的 SwapChainPanel，避免残存死画板
-        if (_swapChainPanel != null && _rootGrid != null)
-        {
-            _rootGrid.Children.Remove(_swapChainPanel);
-        }
-
-        // 4. 解除事件订阅，防止内存泄漏
+        // 3. 解除事件订阅，防止内存泄漏
         if (_scheduler != null)
         {
             _scheduler.DanmakuRendered -= OnDanmakuRendered;
@@ -258,6 +250,8 @@ public sealed class DanmakuRenderer : IDisposable
             _scheduler.ResumeRequested -= OnResumeRequested;
             _scheduler.StopRequested -= OnStopRequested;
         }
+
+        Logger.Log("DanmakuRenderer is disposed");
     }
 
     #endregion

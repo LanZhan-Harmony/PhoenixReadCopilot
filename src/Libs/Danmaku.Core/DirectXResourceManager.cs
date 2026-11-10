@@ -6,7 +6,6 @@ using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
-using Vortice.Mathematics;
 using WinRT;
 using AlphaMode = Vortice.DXGI.AlphaMode;
 
@@ -151,7 +150,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 缓存锁.
     /// </summary>
-    public object CacheLock { get; } = new object();
+    public Lock CacheLock { get; } = new();
 
     #endregion
 
@@ -165,39 +164,8 @@ internal sealed class DirectXResourceManager : IDisposable
         CreateRenderTargetView();
         CreateD2DResources();
         CreateDWriteFactory();
-        ClearInitialBuffers();
-    }
 
-    /// <summary>
-    /// 初始化清理双缓冲区为全透明并呈现，杜绝驱动/DWM在初次渲染或尺寸调整时呈现不透明白色.
-    /// </summary>
-    public void ClearInitialBuffers()
-    {
-        try
-        {
-            if (D3DDevice != null && D3DContext != null && SwapChain != null)
-            {
-                Color4 transparent = new(0, 0, 0, 0);
-                for (int i = 0; i < 2; i++)
-                {
-                    using ID3D11Texture2D backBuffer = SwapChain.GetBuffer<ID3D11Texture2D>(0);
-                    using ID3D11RenderTargetView rtv = D3DDevice.CreateRenderTargetView(
-                        backBuffer,
-                        null
-                    );
-                    D3DContext.ClearRenderTargetView(rtv, transparent);
-                    SwapChain.Present(0, PresentFlags.None);
-                }
-
-                // 呈现两次后重新绑定 D2D Target 到当前可用的后缓冲区
-                CreateRenderTargetView();
-                CreateD2DRenderTarget();
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.Log($"ClearInitialBuffers failed: {ex.Message}");
-        }
+        Logger.Log("DirectX resources initialized with color font support");
     }
 
     /// <summary>
@@ -210,12 +178,12 @@ internal sealed class DirectXResourceManager : IDisposable
         creationFlags |= DeviceCreationFlags.Debug;
 #endif
 
-        Vortice.Direct3D.FeatureLevel[] featureLevels =
-        [
+        Vortice.Direct3D.FeatureLevel[] featureLevels = new[]
+        {
             Vortice.Direct3D.FeatureLevel.Level_11_1,
             Vortice.Direct3D.FeatureLevel.Level_11_0,
             Vortice.Direct3D.FeatureLevel.Level_10_1,
-        ];
+        };
 
         ID3D11Device device;
         ID3D11DeviceContext context;
@@ -242,8 +210,8 @@ internal sealed class DirectXResourceManager : IDisposable
         using IDXGIFactory2 dxgiFactory = dxgiAdapter.GetParent<IDXGIFactory2>();
 
         // 超采样模式：使用物理像素大小创建 SwapChain 以获得更清晰的渲染效果
-        uint bufferWidth = (uint)Math.Max(1, (int)_canvasWidth);
-        uint bufferHeight = (uint)Math.Max(1, (int)_canvasHeight);
+        var bufferWidth = (uint)Math.Max(1, (int)_canvasWidth);
+        var bufferHeight = (uint)Math.Max(1, (int)_canvasHeight);
 
         SwapChainDescription1 swapChainDesc = new()
         {
@@ -258,10 +226,16 @@ internal sealed class DirectXResourceManager : IDisposable
             AlphaMode = AlphaMode.Premultiplied,
         };
 
+        Logger.Log($"Creating SwapChain: Physical={bufferWidth}x{bufferHeight}, Scale={_scale}");
+
         SwapChain = dxgiFactory.CreateSwapChainForComposition(D3DDevice, swapChainDesc);
 
         // Associate swap chain with SwapChainPanel
         SetSwapChainOnPanel();
+
+        Logger.Log(
+            $"SwapChain set successfully, physical size: {swapChainDesc.Width}x{swapChainDesc.Height}"
+        );
     }
 
     /// <summary>
@@ -274,11 +248,11 @@ internal sealed class DirectXResourceManager : IDisposable
         {
             IWinRTObject winrtObj = _swapChainPanel.As<IWinRTObject>();
             IObjectReference objRef = winrtObj.NativeObject;
-            nint panelPtr = objRef.ThisPtr;
+            var panelPtr = objRef.ThisPtr;
 
             Guid guid = typeof(ISwapChainPanelNative).GUID;
             void* nativePanelPtr;
-            int hr = (
+            var hr = (
                 (delegate* unmanaged[Stdcall]<IntPtr, Guid*, void**, int>)(*(void***)panelPtr)[0]
             )(panelPtr, &guid, &nativePanelPtr);
             if (hr < 0)
@@ -336,6 +310,7 @@ internal sealed class DirectXResourceManager : IDisposable
             // AOT 兼容：直接使用 QueryInterface 而不是 As<T>()
             using IDXGISwapChain2 swapChain2 = SwapChain.QueryInterface<IDXGISwapChain2>();
             swapChain2.MatrixTransform = matrix;
+            Logger.Log($"SetTransformMatrix: scale={_scale}, matrix=({matrix.M11},{matrix.M22})");
         }
     }
 
@@ -390,6 +365,10 @@ internal sealed class DirectXResourceManager : IDisposable
 
         D2DContext.AntialiasMode = AntialiasMode.PerPrimitive;
         D2DContext.TextAntialiasMode = Vortice.Direct2D1.TextAntialiasMode.Cleartype;
+
+        Logger.Log(
+            $"D2D Render Target created: Bitmap DPI=96 (physical pixels), Display DPI={_dpi}, Scale={_scale}"
+        );
     }
 
     /// <summary>
@@ -439,6 +418,8 @@ internal sealed class DirectXResourceManager : IDisposable
 
         // 更新交换链的变换矩阵
         SetTransformMatrix();
+
+        Logger.Log($"Scale updated: {_scale}, DPI={_dpi}");
     }
 
     /// <summary>
@@ -464,8 +445,8 @@ internal sealed class DirectXResourceManager : IDisposable
         RenderTargetView = null;
 
         // 超采样模式：SwapChain 使用物理像素大小
-        uint physicalWidth = (uint)Math.Max(1, (int)_canvasWidth);
-        uint physicalHeight = (uint)Math.Max(1, (int)_canvasHeight);
+        var physicalWidth = (uint)Math.Max(1, (int)_canvasWidth);
+        var physicalHeight = (uint)Math.Max(1, (int)_canvasHeight);
 
         SwapChain.ResizeBuffers(
             2,
@@ -480,7 +461,10 @@ internal sealed class DirectXResourceManager : IDisposable
 
         CreateRenderTargetView();
         CreateD2DRenderTarget();
-        ClearInitialBuffers();
+
+        Logger.Log(
+            $"SwapChain resized: Logical={width}x{height}, Physical={physicalWidth}x{physicalHeight}, Scale={_scale}"
+        );
     }
 
     /// <summary>
@@ -488,7 +472,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void OnCompositionScaleChanged(SwapChainPanel sender, object args)
     {
-        float newScale = (float)(sender.CompositionScaleX + sender.CompositionScaleY) / 2f;
+        var newScale = (float)(sender.CompositionScaleX + sender.CompositionScaleY) / 2f;
         if (Math.Abs(newScale - _scale) < 0.001f)
         {
             return;
@@ -506,6 +490,10 @@ internal sealed class DirectXResourceManager : IDisposable
         // 更新交换链的变换矩阵
         SetTransformMatrix();
 
+        Logger.Log(
+            $"CompositionScale changed: {_scale}, DPI={_dpi}, Canvas={_canvasWidth}x{_canvasHeight}"
+        );
+
         // 触发缩放变化事件
         ScaleChanged?.Invoke(this, _scale);
     }
@@ -515,8 +503,8 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void OnSizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs e)
     {
-        float newWidth = (float)e.NewSize.Width * _scale;
-        float newHeight = (float)e.NewSize.Height * _scale;
+        var newWidth = (float)e.NewSize.Width * _scale;
+        var newHeight = (float)e.NewSize.Height * _scale;
         if (Math.Abs(newWidth - _canvasWidth) < 0.1f && Math.Abs(newHeight - _canvasHeight) < 0.1f)
         {
             return;
@@ -527,22 +515,20 @@ internal sealed class DirectXResourceManager : IDisposable
         _logicalWidth = e.NewSize.Width;
         _logicalHeight = e.NewSize.Height;
 
-        if (_swapChainPanel.DispatcherQueue.HasThreadAccess)
-        {
-            ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
-            SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
-        }
-        else
-        {
-            _swapChainPanel.DispatcherQueue.TryEnqueue(
-                DispatcherQueuePriority.Normal,
-                () =>
-                {
-                    ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
-                    SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
-                }
-            );
-        }
+        _swapChainPanel.DispatcherQueue.TryEnqueue(
+            DispatcherQueuePriority.Low,
+            () =>
+            {
+                ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
+
+                Logger.Log(
+                    $"Size changed: Logical={_logicalWidth}x{_logicalHeight}, Canvas={_canvasWidth}x{_canvasHeight}"
+                );
+
+                // 触发尺寸变化事件
+                SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
+            }
+        );
 
         // 启动延迟 resize 机制
         ScheduleDelayedResize();
@@ -561,8 +547,8 @@ internal sealed class DirectXResourceManager : IDisposable
             _delayedResizeCts = new CancellationTokenSource();
 
             CancellationTokenSource cts = _delayedResizeCts;
-            double width = _logicalWidth;
-            double height = _logicalHeight;
+            var width = _logicalWidth;
+            var height = _logicalHeight;
 
             // 异步执行延迟 resize
             _ = Task.Run(
@@ -580,7 +566,7 @@ internal sealed class DirectXResourceManager : IDisposable
                                 if (!_isDisposed && !cts.IsCancellationRequested)
                                 {
                                     // 检查并更新 RasterizationScale
-                                    double? rasterizationScale = _swapChainPanel
+                                    var rasterizationScale = _swapChainPanel
                                         .XamlRoot
                                         ?.RasterizationScale;
                                     if (
@@ -588,10 +574,16 @@ internal sealed class DirectXResourceManager : IDisposable
                                         && Math.Abs(rasterizationScale.Value - _scale) > 0.001f
                                     )
                                     {
+                                        Logger.Log(
+                                            $"RasterizationScale mismatch detected: Current={_scale}, XamlRoot={rasterizationScale.Value}"
+                                        );
                                         UpdateScale((float)rasterizationScale.Value);
                                     }
 
                                     ResizeSwapChain((float)width, (float)height);
+                                    Logger.Log(
+                                        $"Delayed resize executed: Logical={width}x{height}, Scale={_scale}"
+                                    );
                                 }
                             }
                         );
@@ -599,6 +591,7 @@ internal sealed class DirectXResourceManager : IDisposable
                     catch (OperationCanceledException)
                     {
                         // 任务被取消，这是正常情况
+                        Logger.Log("Delayed resize cancelled (new size change detected)");
                     }
                     catch (Exception ex)
                     {
@@ -683,5 +676,7 @@ internal sealed class DirectXResourceManager : IDisposable
         SwapChain?.Dispose();
         D3DContext?.Dispose();
         D3DDevice?.Dispose();
+
+        Logger.Log("DirectX resources disposed");
     }
 }

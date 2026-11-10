@@ -1,37 +1,14 @@
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.ViewModels;
 
-namespace PhoenixReadCopilot.ViewModels.Components;
+namespace PhoenixReadCopilot.ViewModels.View;
 
-/// <summary>
-/// 短剧上新日历视图模型.
-/// </summary>
-public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionDetailViewModel
+public sealed partial class AnimePageViewModel
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AnimeTimelineViewModel"/> class.
-    /// </summary>
-    public AnimeTimelineViewModel(
-        PhoenixReadApiClient apiClient,
-        DispatcherQueue dispatcherQueue,
-        ILogger<AnimeTimelineViewModel> logger
-    )
+    private async Task RequestDailyReleasesAsync()
     {
-        _apiClient = apiClient;
-        _dispatcherQueue = dispatcherQueue;
-        _logger = logger;
-    }
-
-    private bool _isInitialized;
-
-    [RelayCommand]
-    private async Task InitializeAsync()
-    {
-        if (Timelines.Count > 0)
+        if (IsTimelineLoading || Timelines.Count > 0)
         {
             return;
         }
@@ -42,10 +19,10 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
 
         try
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            CancellationToken ct = _cancellationTokenSource.Token;
+            _timelineCts?.Cancel();
+            _timelineCts?.Dispose();
+            _timelineCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+            CancellationToken ct = _timelineCts.Token;
 
             DailyReleasePage page = await _apiClient.GetDailyReleasesAsync(
                 targetDate: null,
@@ -114,58 +91,16 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
         }
     }
 
-    [RelayCommand]
-    private async Task RefreshAsync()
-    {
-        _dateCache.Clear();
-        Timelines.Clear();
-        SelectedTimeline = null;
-        _isInitialized = false;
-        IsError = false;
-        UpdateVisibilityStates();
-        await InitializeAsync();
-    }
-
-    [RelayCommand]
-    private void SelectTimeline(TimelineItemViewModel vm)
-    {
-        if (vm is null)
-        {
-            return;
-        }
-
-        SelectedTimeline = vm;
-
-        if (vm.Items == null)
-        {
-            if (_dateCache.TryGetValue(vm.TargetDate, out List<SeasonItemViewModel>? cached))
-            {
-                vm.Items = cached;
-                vm.Count = cached.Count;
-                vm.IsEmpty = cached.Count == 0;
-                UpdateVisibilityStates();
-            }
-            else
-            {
-                _ = LoadDateReleasesAsync(vm);
-            }
-        }
-        else
-        {
-            UpdateVisibilityStates();
-        }
-    }
-
     private async Task LoadDateReleasesAsync(TimelineItemViewModel vm)
     {
         try
         {
             IsTimelineLoading = true;
             UpdateVisibilityStates();
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            CancellationToken ct = _cancellationTokenSource.Token;
+            _dateReleasesCts?.Cancel();
+            _dateReleasesCts?.Dispose();
+            _dateReleasesCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+            CancellationToken ct = _dateReleasesCts.Token;
 
             DailyReleasePage page = await _apiClient.GetDailyReleasesAsync(
                 targetDate: vm.TargetDate,
@@ -201,8 +136,6 @@ public sealed partial class AnimeTimelineViewModel : ViewModelBase, IPgcSectionD
             });
         }
     }
-
-    private void CheckEmpty() => UpdateVisibilityStates();
 
     private void UpdateVisibilityStates()
     {

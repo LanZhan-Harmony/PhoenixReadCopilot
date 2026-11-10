@@ -290,6 +290,12 @@ internal sealed class ObjectPoolManager : IDisposable
         {
             entry.Bitmap?.Dispose();
             entry.Bitmap = null;
+
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(
+                $"✅ 释放纹理: Hash={key.TextHash:X8} (缓存剩余: {_textureCache.Count})"
+            );
+#endif
         }
     }
 
@@ -298,8 +304,8 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     public (int Total, int InUse) GetTextureStats()
     {
-        int total = _textureCache.Count;
-        int inUse = _textureCache.Values.Count(e => e.RefCount > 0);
+        var total = _textureCache.Count;
+        var inUse = _textureCache.Values.Count(e => e.RefCount > 0);
         return (total, inUse);
     }
 

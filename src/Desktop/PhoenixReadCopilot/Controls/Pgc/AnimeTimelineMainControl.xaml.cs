@@ -1,7 +1,7 @@
 namespace PhoenixReadCopilot.Controls.Pgc;
 
 /// <summary>
-/// 动漫时间轴主控件.
+/// 上新日历右侧剧集列表.
 /// </summary>
 public sealed partial class AnimeTimelineMainControl : AnimeTimelineControlBase
 {

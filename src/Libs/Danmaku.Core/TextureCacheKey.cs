@@ -38,7 +38,13 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     /// <summary>
     /// 初始化纹理缓存键.
     /// </summary>
-    public TextureCacheKey(string text, Windows.UI.Color textColor, Windows.UI.Color outlineColor, float fontSize, bool hasOutline)
+    public TextureCacheKey(
+        string text,
+        Windows.UI.Color textColor,
+        Windows.UI.Color outlineColor,
+        float fontSize,
+        bool hasOutline
+    )
     {
         // 使用 Ordinal 比较确保一致性（高性能、零分配）
         TextHash = text?.GetHashCode(StringComparison.Ordinal) ?? 0;
@@ -56,11 +62,11 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     /// </summary>
     public bool Equals(TextureCacheKey other)
     {
-        return TextHash == other.TextHash &&
-               TextColorRGB == other.TextColorRGB &&
-               OutlineColorRGB == other.OutlineColorRGB &&
-               FontSize == other.FontSize &&
-               HasOutline == other.HasOutline;
+        return TextHash == other.TextHash
+            && TextColorRGB == other.TextColorRGB
+            && OutlineColorRGB == other.OutlineColorRGB
+            && FontSize == other.FontSize
+            && HasOutline == other.HasOutline;
     }
 
     /// <summary>

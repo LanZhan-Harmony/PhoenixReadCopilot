@@ -1,5 +1,3 @@
-// Copyright (c) Bili Copilot. All rights reserved.
-
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Windows.Foundation.Diagnostics;

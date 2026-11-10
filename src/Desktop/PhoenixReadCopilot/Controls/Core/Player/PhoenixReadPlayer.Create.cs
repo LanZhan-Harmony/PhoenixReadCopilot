@@ -15,7 +15,7 @@ using WinUIKernel.Share.Base;
 namespace PhoenixReadCopilot.Controls.Core;
 
 /// <summary>
-/// Bili 播放器.
+/// 红果播放器.
 /// </summary>
 public sealed partial class PhoenixReadPlayer
 {

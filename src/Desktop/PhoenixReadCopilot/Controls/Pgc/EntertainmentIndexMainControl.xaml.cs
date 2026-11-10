@@ -1,7 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.ViewModels.Components;
+using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.Controls.Pgc;
@@ -42,8 +42,8 @@ public sealed partial class EntertainmentIndexMainControl : EntertainmentIndexCo
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(
-        EntertainmentIndexViewModel? oldValue,
-        EntertainmentIndexViewModel? newValue
+        CinemaPageViewModel? oldValue,
+        CinemaPageViewModel? newValue
     )
     {
         oldValue?.ItemsUpdated -= OnItemsUpdatedAsync;

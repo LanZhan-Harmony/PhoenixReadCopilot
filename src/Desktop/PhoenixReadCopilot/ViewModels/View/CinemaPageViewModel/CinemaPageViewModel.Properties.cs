@@ -1,14 +1,15 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
+using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 找剧 / 多维筛选页面视图模型 (原影院页面).
+/// 找剧 / 多维筛选页面视图模型.
 /// </summary>
 public sealed partial class CinemaPageViewModel
 {
@@ -16,16 +17,28 @@ public sealed partial class CinemaPageViewModel
     private readonly ILogger<CinemaPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
+    private int _offset;
+    private bool _hasMore;
+    private string? _sessionId;
+    private CancellationTokenSource? _filterCts;
+    private CancellationTokenSource? _indexCts;
 
     [ObservableProperty]
-    public partial List<EntertainmentIndexViewModel>? Sections { get; set; }
+    public partial List<IndexFilterViewModel>? Filters { get; set; }
 
     [ObservableProperty]
-    public partial EntertainmentIndexViewModel? SelectedSection { get; set; }
+    public partial bool IsFilterLoading { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsSeasonLoading { get; set; }
 
     /// <summary>
-    /// 区块加载完成.
+    /// 条目已更新.
     /// </summary>
-    public event EventHandler? SectionInitialized;
+    public event EventHandler? ItemsUpdated;
+
+    /// <summary>
+    /// 短剧剧集列表.
+    /// </summary>
+    public ObservableCollection<SeasonItemViewModel> Items { get; } = [];
 }

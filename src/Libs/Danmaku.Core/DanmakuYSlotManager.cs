@@ -1,5 +1,3 @@
-// Copyright (c) Bili Copilot. All rights reserved.
-
 namespace Danmaku.Core;
 
 internal sealed class DanmakuYSlotManager
@@ -39,7 +37,7 @@ internal sealed class DanmakuYSlotManager
             uint index = 0;
             while (index + height < _ySlotArray.Length)
             {
-                bool found = true;
+                var found = true;
                 for (uint i = 0; i < height; i++)
                 {
                     if (_ySlotArray[index + i].Length > 0)
@@ -85,7 +83,7 @@ internal sealed class DanmakuYSlotManager
     {
         lock (_ySlotArray)
         {
-            for (int i = 0; i < _ySlotArray.Length; i++)
+            for (var i = 0; i < _ySlotArray.Length; i++)
             {
                 _ySlotArray[i].Id = 0;
                 _ySlotArray[i].Length = 0;

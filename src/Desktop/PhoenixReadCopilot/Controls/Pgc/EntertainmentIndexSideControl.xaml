@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:EntertainmentIndexControlBase
-    x:Class="PhoenixReadCopilot.Controls.Pgc.EntertainmentIndexSideControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:components="using:PhoenixReadCopilot.Controls.Components"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
-    xmlns:local="using:PhoenixReadCopilot.Controls.Pgc"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+<local:EntertainmentIndexControlBase x:Class="PhoenixReadCopilot.Controls.Pgc.EntertainmentIndexSideControl"
+                                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+                                     xmlns:local="using:PhoenixReadCopilot.Controls.Pgc"
+                                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                     mc:Ignorable="d">
 
     <Grid>
         <ScrollView Style="{StaticResource PageScrollViewStyle}">
-            <ItemsRepeater
-                x:Name="FilterRepeater"
-                Margin="12"
-                ItemsSource="{x:Bind ViewModel.Filters, Mode=OneWay}">
+            <ItemsRepeater x:Name="FilterRepeater"
+                           Margin="12"
+                           ItemsSource="{x:Bind ViewModel.Filters, Mode=OneWay}">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate x:DataType="items:IndexFilterViewModel">
                         <components:IndexFilterItemControl ViewModel="{x:Bind}"/>

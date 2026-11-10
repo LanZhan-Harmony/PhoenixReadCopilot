@@ -5,35 +5,14 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.ViewModels;
 
-namespace PhoenixReadCopilot.ViewModels.Components;
+namespace PhoenixReadCopilot.ViewModels.View;
 
-/// <summary>
-/// 短剧多维筛选索引视图模型.
-/// </summary>
-public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSectionDetailViewModel
+public sealed partial class CinemaPageViewModel
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EntertainmentIndexViewModel"/> class.
-    /// </summary>
-    public EntertainmentIndexViewModel(
-        PgcSectionType type,
-        PhoenixReadApiClient apiClient,
-        DispatcherQueue dispatcherQueue,
-        ILogger<EntertainmentIndexViewModel> logger
-    )
+    private async Task RequestFilterPanelAsync()
     {
-        SectionType = type;
-        _apiClient = apiClient;
-        _dispatcherQueue = dispatcherQueue;
-        _logger = logger;
-    }
-
-    [RelayCommand]
-    private async Task InitializeAsync()
-    {
-        if (Filters?.Count > 0)
+        if (IsFilterLoading || Filters?.Count > 0)
         {
             return;
         }
@@ -41,10 +20,10 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
         IsFilterLoading = true;
         try
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            CancellationToken ct = _cancellationTokenSource.Token;
+            _filterCts?.Cancel();
+            _filterCts?.Dispose();
+            _filterCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+            CancellationToken ct = _filterCts.Token;
 
             IReadOnlyList<ShortDramaFilterRow> rows =
                 await _apiClient.GetShortDramaFilterPanelAsync(ShortDramaGenre.ShortPlay, ct);
@@ -81,24 +60,6 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
     }
 
     [RelayCommand]
-    private Task Refresh()
-    {
-        _offset = 0;
-        _hasMore = true;
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                Items.Clear();
-                Filters = null;
-                await InitializeAsync();
-            }
-        );
-
-        return Task.CompletedTask;
-    }
-
-    [RelayCommand]
     private async Task RequestIndexAsync()
     {
         if (IsSeasonLoading)
@@ -114,10 +75,10 @@ public sealed partial class EntertainmentIndexViewModel : ViewModelBase, IPgcSec
         IsSeasonLoading = true;
         try
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(25));
-            CancellationToken ct = _cancellationTokenSource.Token;
+            _indexCts?.Cancel();
+            _indexCts?.Dispose();
+            _indexCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+            CancellationToken ct = _indexCts.Token;
 
             Dictionary<string, IReadOnlyList<string>> selections = [];
             if (Filters != null)
