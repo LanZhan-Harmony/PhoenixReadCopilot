@@ -105,11 +105,6 @@ internal partial class DanmakuDirectXRender
     /// </summary>
     private GameLoopThread? _gameLoopThread;
 
-    /// <summary>
-    /// 标记当前是否在 NoGC 区域中.
-    /// </summary>
-    private volatile bool _isInNoGCRegion;
-
     #endregion
 
     #region 时间和性能统计
