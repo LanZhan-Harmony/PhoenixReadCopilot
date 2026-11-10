@@ -135,9 +135,16 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             return;
         }
 
+        // 立即标记渲染状态，防止高刷屏下同一时钟周期内重复排队
+        _isRendering = true;
+
         // 将实际渲染工作委托给 GameLoopThread
         // 这样既能利用 CompositionTarget.Rendering 的最佳时机，又不阻塞 UI 线程
-        _ = _gameLoopThread?.RunAsync(RenderFrame);
+        var task = _gameLoopThread?.RunAsync(RenderFrame);
+        if (task == null)
+        {
+            _isRendering = false;
+        }
     }
 
     private void OnResourceManagerScaleChanged(object? sender, float scale)
@@ -892,18 +899,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
     /// </summary>
     private void RenderFrame()
     {
-        if (_isRendering)
-        {
-            return;
-        }
-
         if (_isPaused || _isStopped || _resourceManager.D2DContext == null)
         {
+            _isRendering = false;
             return;
         }
-
-        // 设置重入保护标志
-        _isRendering = true;
 
         try
         {
@@ -917,6 +917,13 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 TimeSpan currentTime = _frameStopwatch.Elapsed;
                 TimeSpan elapsedTime = currentTime - _lastFrameTime;
                 _lastFrameTime = currentTime;
+
+                // 限制单帧最大时间跨度（防止系统挂起或掉帧时弹幕剧烈瞬移）
+                if (elapsedTime.TotalMilliseconds > 100.0)
+                {
+                    elapsedTime = TimeSpan.FromMilliseconds(100.0);
+                }
+
                 _totalTime += elapsedTime;
 
                 // 更新性能统计
@@ -928,7 +935,9 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 // 渲染弹幕
                 RenderDanmaku();
 
-                Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
+                // 🚀 核心优化：使用 Present(0) 立即提交后备缓冲到 DWM，不等待垂直消隐阻塞
+                // 解决外层 CompositionTarget.Rendering 与底层 Present(1) 产生的双重 V-Sync 等待导致帧率腰斩卡顿的问题
+                Result? presentResult = _resourceManager.SwapChain?.Present(0, PresentFlags.None);
                 if (presentResult.HasValue && presentResult.Value.Failure)
                 {
                     Logger.Log($"Present failed: {presentResult.Value}");
