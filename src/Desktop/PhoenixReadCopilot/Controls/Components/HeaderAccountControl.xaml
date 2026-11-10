@@ -10,6 +10,72 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <local:HeaderAccountControlBase.Resources>
+        <MenuFlyout
+            x:Name="AccountFlyout"
+            Opened="OnFlyoutOpened"
+            Placement="BottomEdgeAlignedRight"
+            ShouldConstrainToRootBounds="False">
+            <MenuFlyoutItem>
+                <MenuFlyoutItem.Template>
+                    <ControlTemplate>
+                        <local:AccountCard Width="300"/>
+                    </ControlTemplate>
+                </MenuFlyoutItem.Template>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem
+                Command="{x:Bind ViewModel.ShowMomentsCommand}"
+                KeyboardAcceleratorTextOverride="{x:Bind ViewModel.MomentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
+                Text="{x:Bind strings:Resources.MyDynamic}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="DesignIdeas"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Command="{x:Bind ViewModel.ShowFollowsCommand}"
+                KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FollowCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
+                Text="{x:Bind strings:Resources.MyFollow}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="PeopleEye"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Command="{x:Bind ViewModel.ShowFansCommand}"
+                KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FansCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
+                Text="{x:Bind strings:Resources.MyFans}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="PeopleCommunity"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Command="{x:Bind ViewModel.OpenPersonalWebsiteCommand}"
+                    Text="{x:Bind strings:Resources.Personal}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="Person"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFavoritesCommand}"
+                    Text="{x:Bind strings:Resources.MyFavorite}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="StarLineHorizontal3"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Command="{x:Bind ViewModel.ShowViewLaterCommand}"
+                    Text="{x:Bind strings:Resources.ViewLater}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="CalendarClock"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Command="{x:Bind ViewModel.ShowHistoryCommand}"
+                    Text="{x:Bind strings:Resources.ViewHistory}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="History"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
+    </local:HeaderAccountControlBase.Resources>
+
     <Grid>
         <ProgressRing
             x:Name="LoadingRing"
@@ -18,77 +84,24 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             IsActive="{x:Bind ViewModel.IsInitializing, Mode=OneWay}"/>
-        <Button Style="{StaticResource AvatarButtonStyle}">
-            <PersonPicture
-                Width="28"
-                Height="28"
-                DisplayName="{x:Bind ViewModel.MyProfile.User.Name, Mode=OneWay}"
-                ProfilePicture="{x:Bind ViewModel.MyProfile.User.Avatar.Uri, Mode=OneWay, Converter={StaticResource BitmapConverter}}"
-                Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
-            <Button.Flyout>
-                <MenuFlyout
-                    Opened="OnFlyoutOpened"
-                    Placement="BottomEdgeAlignedRight"
-                    ShouldConstrainToRootBounds="False">
-                    <MenuFlyoutItem>
-                        <MenuFlyoutItem.Template>
-                            <ControlTemplate>
-                                <local:AccountCard Width="300"/>
-                            </ControlTemplate>
-                        </MenuFlyoutItem.Template>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutSeparator/>
-                    <MenuFlyoutItem
-                        Command="{x:Bind ViewModel.ShowMomentsCommand}"
-                        KeyboardAcceleratorTextOverride="{x:Bind ViewModel.MomentCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-                        Text="{x:Bind strings:Resources.MyDynamic}">
-                        <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="DesignIdeas"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem
-                        Command="{x:Bind ViewModel.ShowFollowsCommand}"
-                        KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FollowCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-                        Text="{x:Bind strings:Resources.MyFollow}">
-                        <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="PeopleEye"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem
-                        Command="{x:Bind ViewModel.ShowFansCommand}"
-                        KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FansCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-                        Text="{x:Bind strings:Resources.MyFans}">
-                        <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="PeopleCommunity"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutSeparator/>
-                    <MenuFlyoutItem Command="{x:Bind ViewModel.OpenPersonalWebsiteCommand}"
-                            Text="{x:Bind strings:Resources.Personal}">
-                        <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="Person"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFavoritesCommand}"
-                            Text="{x:Bind strings:Resources.MyFavorite}">
-                        <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="StarLineHorizontal3"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Command="{x:Bind ViewModel.ShowViewLaterCommand}"
-                            Text="{x:Bind strings:Resources.ViewLater}">
-                        <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="CalendarClock"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Command="{x:Bind ViewModel.ShowHistoryCommand}"
-                            Text="{x:Bind strings:Resources.ViewHistory}">
-                        <MenuFlyoutItem.Icon>
-                            <ic:SymbolIcon Symbol="History"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                </MenuFlyout>
-            </Button.Flyout>
+        <Button
+            x:Name="AvatarButton"
+            Click="OnAvatarButtonClick"
+            Style="{StaticResource AvatarButtonStyle}">
+            <Grid Width="28" Height="28">
+                <PersonPicture
+                    Width="28"
+                    Height="28"
+                    DisplayName="{x:Bind ViewModel.MyProfile.User.Name, Mode=OneWay}"
+                    ProfilePicture="{x:Bind ViewModel.MyProfile.User.Avatar.Uri, Mode=OneWay, Converter={StaticResource BitmapConverter}}"
+                    Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                <ic:SymbolIcon
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    Symbol="Person"
+                    Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}"/>
+            </Grid>
         </Button>
     </Grid>
 </local:HeaderAccountControlBase>

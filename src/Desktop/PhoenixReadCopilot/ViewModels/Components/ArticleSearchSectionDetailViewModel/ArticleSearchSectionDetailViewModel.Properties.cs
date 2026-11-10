@@ -3,9 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Models.Search;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -14,14 +13,11 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class ArticleSearchSectionDetailViewModel
 {
-    private readonly ISearchService _service;
     private readonly ILogger<ArticleSearchSectionDetailViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
 
-    private bool _canRequest;
-    private string _offset;
-    private string _keyword;
-    private SearchPartition _partition;
+    private string _keyword = string.Empty;
+    private SearchPartition? _partition;
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
@@ -29,10 +25,12 @@ public sealed partial class ArticleSearchSectionDetailViewModel
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
 
+#pragma warning disable CS0067
     /// <summary>
     /// 列表已完成更新.
     /// </summary>
-    public event EventHandler ListUpdated;
+    public event EventHandler? ListUpdated;
+#pragma warning restore CS0067
 
     /// <inheritdoc/>
     public SearchSectionType SectionType => SearchSectionType.Article;

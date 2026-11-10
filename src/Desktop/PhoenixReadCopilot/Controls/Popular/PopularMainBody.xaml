@@ -31,7 +31,7 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
                     CornerRadius="{StaticResource ControlCornerRadius}"
-                    Command="{x:Bind PlayCommand, Mode=OneWay}">
+                    Command="{x:Bind ShowUserSpaceCommand, Mode=OneWay}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>

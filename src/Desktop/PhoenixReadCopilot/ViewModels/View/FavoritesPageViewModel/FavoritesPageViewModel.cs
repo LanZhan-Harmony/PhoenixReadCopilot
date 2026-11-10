@@ -1,13 +1,12 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -21,7 +20,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="FavoritesPageViewModel"/> class.
     /// </summary>
     public FavoritesPageViewModel(
-        IFavoriteService service,
+        PhoenixReadApiClient apiClient,
         ILogger<FavoritesPageViewModel> logger,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService,
@@ -30,7 +29,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _service = service;
+        _apiClient = apiClient;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
         _settingsService = settingsService;
@@ -52,24 +51,30 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         }
 
         IsLoading = true;
-        Sections.Add(
-            new PgcFavoriteSectionDetailViewModel(
-                PgcFavoriteType.Anime,
-                _service,
-                _loggerFactory.CreateLogger<PgcFavoriteSectionDetailViewModel>()
-            )
-        );
-        Sections.Add(
-            new PgcFavoriteSectionDetailViewModel(
-                PgcFavoriteType.Cinema,
-                _service,
-                _loggerFactory.CreateLogger<PgcFavoriteSectionDetailViewModel>()
-            )
-        );
-        await InitializeVideoFoldersAsync();
-        IsLoading = false;
+        try
+        {
+            VideoFavoriteFolder defaultFolder = new("favorites", "追剧收藏", null, null, null, 0);
+            VideoFavoriteSectionDetailViewModel defaultSection = new(
+                defaultFolder,
+                _apiClient,
+                _navigationViewModel,
+                _settingsService,
+                _loggerFactory.CreateLogger<VideoFavoriteSectionDetailViewModel>()
+            );
+            Sections.Add(defaultSection);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "初始化追剧收藏夹失败");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+
         RestoreSelection();
         SectionInitialized?.Invoke(this, EventArgs.Empty);
+        await Task.CompletedTask;
     }
 
     [RelayCommand]
@@ -86,135 +91,22 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     }
 
     [RelayCommand]
-    private void SelectSection(IFavoriteSectionDetailViewModel vm)
+    private void SelectSection(IFavoriteSectionDetailViewModel? vm)
     {
         if (vm is null || vm == CurrentSection)
         {
             return;
         }
 
-        string sectionSettingValue = string.Empty;
-        if (vm is PgcFavoriteSectionDetailViewModel pgcVM)
-        {
-            sectionSettingValue = $"pgc_{pgcVM.Type}";
-        }
-        else if (vm is VideoFavoriteSectionDetailViewModel videoVM)
-        {
-            sectionSettingValue = $"video_{videoVM.Data.Id}";
-        }
-        else if (vm is UgcSeasonFavoriteSectionDetailViewModel ugcVM)
-        {
-            sectionSettingValue = $"ugc_{ugcVM.Data.Id}";
-        }
-
-        _settings.LastSelectedFavoriteSection = sectionSettingValue;
         CurrentSection = vm;
         CurrentSection.TryFirstLoadCommand.Execute(null);
     }
 
     private void RestoreSelection()
     {
-        string lastSelectedSection = _settings.LastSelectedFavoriteSection;
-        if (string.IsNullOrEmpty(lastSelectedSection))
+        if (CurrentSection is null && Sections.Count > 0)
         {
             SelectSection(Sections.First());
-            return;
-        }
-
-        bool isSelected = false;
-        if (lastSelectedSection.StartsWith("pgc"))
-        {
-            bool isSuccess = Enum.TryParse<PgcFavoriteType>(
-                lastSelectedSection.Replace("pgc_", string.Empty),
-                out PgcFavoriteType type
-            );
-            if (isSuccess)
-            {
-                PgcFavoriteSectionDetailViewModel? section = Sections
-                    .OfType<PgcFavoriteSectionDetailViewModel>()
-                    .FirstOrDefault(p => p.Type == type);
-                if (section is not null)
-                {
-                    isSelected = true;
-                    SelectSection(section);
-                }
-            }
-        }
-        else if (lastSelectedSection.StartsWith("video"))
-        {
-            string id = lastSelectedSection.Replace("video_", string.Empty);
-            VideoFavoriteSectionDetailViewModel? section = Sections
-                .OfType<VideoFavoriteSectionDetailViewModel>()
-                .FirstOrDefault(p => p.Data.Id == id);
-            if (section is not null)
-            {
-                isSelected = true;
-                SelectSection(section);
-            }
-        }
-        else if (lastSelectedSection.StartsWith("ugc"))
-        {
-            string id = lastSelectedSection.Replace("ugc_", string.Empty);
-            UgcSeasonFavoriteSectionDetailViewModel? section = Sections
-                .OfType<UgcSeasonFavoriteSectionDetailViewModel>()
-                .FirstOrDefault(p => p.Data.Id == id);
-            if (section is not null)
-            {
-                isSelected = true;
-                SelectSection(section);
-            }
-        }
-
-        if (!isSelected && CurrentSection is null)
-        {
-            SelectSection(Sections.First());
-        }
-    }
-
-    private async Task InitializeVideoFoldersAsync()
-    {
-        try
-        {
-            (
-                IReadOnlyList<VideoFavoriteFolderGroup>? groups,
-                VideoFavoriteFolderDetail? defaultGroup
-            ) = await _service.GetVideoFavoriteGroupsAsync();
-            VideoFavoriteSectionDetailViewModel defaultGroupVM = new(
-                defaultGroup.Folder,
-                _service,
-                _navigationViewModel,
-                _settingsService,
-                _loggerFactory.CreateLogger<VideoFavoriteSectionDetailViewModel>()
-            );
-            defaultGroupVM.InjectFirstPageData(defaultGroup);
-            Sections.Add(defaultGroupVM);
-
-            foreach (VideoFavoriteFolderGroup group in groups)
-            {
-                foreach (VideoFavoriteFolder folder in group.Folders)
-                {
-                    IFavoriteSectionDetailViewModel folderVM =
-                        folder.IsUgcSeason == true
-                            ? (IFavoriteSectionDetailViewModel)
-                                new UgcSeasonFavoriteSectionDetailViewModel(
-                                    folder,
-                                    _service,
-                                    _loggerFactory.CreateLogger<UgcSeasonFavoriteSectionDetailViewModel>()
-                                )
-                            : new VideoFavoriteSectionDetailViewModel(
-                                folder,
-                                _service,
-                                _navigationViewModel,
-                                _settingsService,
-                                _loggerFactory.CreateLogger<VideoFavoriteSectionDetailViewModel>()
-                            );
-                    Sections.Add(folderVM);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "初始化视频收藏夹失败");
         }
     }
 }

@@ -64,19 +64,19 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
             {
                 VideoTitle = vinfo.Identifier.Title ?? Resources.NoTitleVideo;
-                VideoCover = vinfo.Identifier.Cover.Uri;
-                VideoDuration = AppToolkit.FormatDuration(
-                    TimeSpan.FromSeconds(vinfo.Duration!.Value)
-                );
+                VideoCover = vinfo.Identifier.Cover?.Uri;
+                VideoDuration = vinfo.Duration.HasValue
+                    ? AppToolkit.FormatDuration(TimeSpan.FromSeconds(vinfo.Duration.Value))
+                    : string.Empty;
             }
             else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
             {
                 IsPgc = true;
                 VideoTitle = einfo.Identifier.Title;
-                VideoCover = einfo.Identifier.Cover.Uri;
-                VideoDuration = AppToolkit.FormatDuration(
-                    TimeSpan.FromSeconds(einfo.Duration!.Value)
-                );
+                VideoCover = einfo.Identifier.Cover?.Uri;
+                VideoDuration = einfo.Duration.HasValue
+                    ? AppToolkit.FormatDuration(TimeSpan.FromSeconds(einfo.Duration.Value))
+                    : string.Empty;
             }
         }
     }

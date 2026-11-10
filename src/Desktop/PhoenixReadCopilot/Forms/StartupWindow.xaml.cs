@@ -2,11 +2,10 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Models.Authorization;
 using WinUIEx;
 
 namespace PhoenixReadCopilot.Forms;
@@ -19,9 +18,8 @@ public sealed partial class StartupWindow : WindowEx
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
     private readonly StartupPageViewModel _startupViewModel =
         Ioc.Default.GetRequiredService<StartupPageViewModel>();
-    private readonly IBiliTokenResolver _tokenResolver =
-        Ioc.Default.GetRequiredService<IBiliTokenResolver>();
-    private bool _isFirstActivated = true;
+    private readonly PhoenixReadApiClient _apiClient =
+        Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupWindow"/> class.
@@ -47,27 +45,27 @@ public sealed partial class StartupWindow : WindowEx
 
         RootFrame.Navigate(typeof(StartupPage), null, new SuppressNavigationTransitionInfo());
 
-        Activated += OnActivated;
         Closed += OnClosed;
     }
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-        BiliToken? localToken = _tokenResolver.GetToken();
-        if (localToken is null)
+        _appViewModel.Windows.Remove(this);
+        Closed -= OnClosed;
+
+        bool isAuthenticated = false;
+        try
+        {
+            isAuthenticated = _apiClient.GetAuthenticationState().IsAuthenticated;
+        }
+        catch
+        {
+            // Ignore
+        }
+
+        if (!isAuthenticated)
         {
             _startupViewModel.ExitCommand.Execute(false);
         }
-    }
-
-    private void OnActivated(object sender, WindowActivatedEventArgs args)
-    {
-        if (_isFirstActivated)
-        {
-            _isFirstActivated = false;
-            return;
-        }
-
-        _startupViewModel.ReloadQRCodeCommand.Execute(null);
     }
 }

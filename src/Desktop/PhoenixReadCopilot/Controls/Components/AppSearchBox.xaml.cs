@@ -3,9 +3,9 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models.Search;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;

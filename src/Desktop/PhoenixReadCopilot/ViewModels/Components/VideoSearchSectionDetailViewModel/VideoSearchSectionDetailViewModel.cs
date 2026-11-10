@@ -1,18 +1,16 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.Search;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
 /// <summary>
-/// 视频搜索分区详情视图模型.
+/// 视频/短剧搜索分区详情视图模型.
 /// </summary>
 public sealed partial class VideoSearchSectionDetailViewModel
     : ViewModelBase,
@@ -22,12 +20,12 @@ public sealed partial class VideoSearchSectionDetailViewModel
     /// Initializes a new instance of the <see cref="VideoSearchSectionDetailViewModel"/> class.
     /// </summary>
     public VideoSearchSectionDetailViewModel(
-        ISearchService service,
+        PhoenixReadApiClient apiClient,
         DispatcherQueue dispatcherQueue,
         ILogger<VideoSearchSectionDetailViewModel> logger
     )
     {
-        _service = service;
+        _apiClient = apiClient;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
         Sorts = [.. Enum.GetValues<ComprehensiveSearchSortType>()];
@@ -37,6 +35,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     public void Initialize(string keyword, SearchPartition partition)
     {
         Clear();
+        _partition = partition;
         Sort = ComprehensiveSearchSortType.Default;
         _keyword = keyword;
     }
@@ -51,7 +50,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Items.Clear);
     }
 
-    internal void SetFirstPageData(IReadOnlyList<VideoInformation> videos, int? initialOffset)
+    internal void SetFirstPageData(IReadOnlyList<Drama>? dramas, int? initialOffset)
     {
         _canRequest = true;
         _currentPage = initialOffset;
@@ -60,13 +59,13 @@ public sealed partial class VideoSearchSectionDetailViewModel
             () =>
             {
                 Items.Clear();
-                _isPreventLoadMore = videos is null || videos.Count == 0;
+                _isPreventLoadMore = dramas is null || dramas.Count == 0;
 
-                if (!_isPreventLoadMore)
+                if (!_isPreventLoadMore && dramas is not null)
                 {
-                    foreach (VideoInformation item in videos)
+                    foreach (Drama item in dramas)
                     {
-                        if (Items.Any(p => p.Data.Equals(item)))
+                        if (Items.Any(p => p.Drama?.Id == item.Id))
                         {
                             continue;
                         }
@@ -88,7 +87,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        if (!_canRequest || IsEmpty || _isPreventLoadMore || IsLoading || _currentPage == null)
+        if (!_canRequest || IsEmpty || _isPreventLoadMore || IsLoading)
         {
             return;
         }
@@ -96,13 +95,22 @@ public sealed partial class VideoSearchSectionDetailViewModel
         try
         {
             IsLoading = true;
-            (IReadOnlyList<VideoInformation>? videos, int? nextOffset) =
-                await _service.GetComprehensiveSearchResultAsync(_keyword, _currentPage, Sort);
-            _currentPage = nextOffset;
-            _canRequest = _currentPage != null;
-            foreach (VideoInformation item in videos)
+            SearchResult result = await _apiClient.SearchAsync(
+                new SearchQuery
+                {
+                    Keyword = _keyword,
+                    Offset = _currentPage ?? 0,
+                    Count = 18,
+                }
+            );
+
+            _currentPage = result.NextOffset;
+            _canRequest = result.HasMore;
+            _isPreventLoadMore = !result.HasMore || result.Dramas.Count == 0;
+
+            foreach (Drama item in result.Dramas)
             {
-                if (Items.Any(p => p.Data.Equals(item)))
+                if (Items.Any(p => p.Drama?.Id == item.Id))
                 {
                     continue;
                 }
@@ -115,7 +123,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
         catch (Exception ex)
         {
             _isPreventLoadMore = true;
-            _logger.LogError(ex, "加载视频搜索结果时出错.");
+            _logger.LogError(ex, "加载短剧搜索结果时出错.");
         }
         finally
         {
@@ -132,7 +140,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
             async () =>
             {
                 string keyword = _keyword;
-                _currentPage = 1;
+                _currentPage = 0;
                 Clear();
                 _keyword = keyword;
                 _canRequest = true;

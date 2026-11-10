@@ -4,10 +4,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.BadgeNotifications;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Services;
+using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Bili.Authorization;
 using Windows.System;
 using WinUIEx;
@@ -29,13 +31,15 @@ public sealed partial class AppViewModel : ViewModelBase
         ILogger<AppViewModel> logger,
         IBiliTokenResolver tokenResolver,
         ISettingsService settingsService,
-        IAppToolkit appToolkit
+        IAppToolkit appToolkit,
+        PhoenixReadApiClient apiClient
     )
     {
         _logger = logger;
         _tokenResolver = tokenResolver;
         _settings = settingsService.Settings;
         _appToolkit = appToolkit;
+        _apiClient = apiClient;
     }
 
     [RelayCommand]
@@ -43,6 +47,33 @@ public sealed partial class AppViewModel : ViewModelBase
     {
         Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().UnregisterKey();
         Microsoft.Windows.AppLifecycle.AppInstance.Restart(null);
+    }
+
+    /// <summary>
+    /// 进入主窗口并关闭启动窗口.
+    /// </summary>
+    [RelayCommand]
+    public void EnterMainWindow()
+    {
+        _settings.ShouldSkipStartup = true;
+        Window? startupWindow = Windows.FirstOrDefault(p => p is StartupWindow);
+        if (Windows.FirstOrDefault(p => p is MainWindow) is { } mainWindow)
+        {
+            mainWindow.Activate();
+            ItemServices.Account.InitializeCommand.Execute(null);
+        }
+        else
+        {
+            IsInitialLoading = true;
+            new MainWindow().Activate();
+            InitializeExternalCommand.Execute(null);
+        }
+
+        if (startupWindow is not null)
+        {
+            Windows.Remove(startupWindow);
+            startupWindow.Close();
+        }
     }
 
     [RelayCommand]
@@ -77,18 +108,16 @@ public sealed partial class AppViewModel : ViewModelBase
         bool hasToken = false;
         try
         {
-            hasToken = _tokenResolver.GetToken() is not null;
+            hasToken = _apiClient.GetAuthenticationState().IsAuthenticated;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to get token during launch.");
         }
 
-        if (hasToken)
+        if (hasToken || _settings.ShouldSkipStartup)
         {
-            IsInitialLoading = true;
-            new MainWindow().Activate();
-            InitializeExternalCommand.Execute(null);
+            EnterMainWindow();
         }
         else
         {

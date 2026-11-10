@@ -1,26 +1,22 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Models.User;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.Moment;
-using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 用户动态页视图模型.
+/// 用户空间/主页视图模型.
 /// </summary>
 public sealed partial class UserSpacePageViewModel : ViewModelBase
 {
@@ -28,53 +24,107 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="UserSpacePageViewModel"/> class.
     /// </summary>
     public UserSpacePageViewModel(
+        PhoenixReadApiClient apiClient,
         CommentMainViewModel comment,
-        IRelationshipService relationshipService,
-        IUserService userService,
-        ISearchService searchService,
         ILogger<UserSpacePageViewModel> logger,
         AppViewModel appViewModel,
         PinnerViewModel pinnerViewModel,
         ISettingsService settingsService,
-        IMomentDiscoveryService momentDiscoveryService,
+        DispatcherQueue dispatcherQueue,
         ILoggerFactory loggerFactory
     )
     {
+        _apiClient = apiClient;
         CommentModule = comment;
-        _relationshipService = relationshipService;
-        _userService = userService;
-        _searchService = searchService;
         _logger = logger;
         _appViewModel = appViewModel;
         _pinnerViewModel = pinnerViewModel;
         _settings = settingsService.Settings;
-        _momentDiscoveryService = momentDiscoveryService;
+        _dispatcherQueue = dispatcherQueue;
         _loggerFactory = loggerFactory;
     }
 
     [RelayCommand]
-    private async Task InitializeAsync(UserProfile profile)
+    private async Task InitializeAsync(object parameter)
     {
-        _profile = profile;
-        Card = null;
-        UserName = profile.Name;
         if (IsSearchMode)
         {
             ExitSearch();
+        }
+
+        try
+        {
+            PhoenixReadApi.UserProfile? profile = null;
+            if (parameter is DramaCredit credit)
+            {
+                _userId = credit.User?.Id ?? string.Empty;
+                UserName = credit.User?.Name ?? string.Empty;
+                profile = await _apiClient.GetUserProfileAsync(credit);
+            }
+            else if (parameter is ActorLeaderboardItem actor)
+            {
+                _userId = !string.IsNullOrEmpty(actor.UserId) ? actor.UserId : actor.ActorId;
+                UserName = actor.Name;
+                profile = await _apiClient.GetUserProfileAsync(_userId);
+            }
+            else if (parameter is string id)
+            {
+                _userId = id;
+                profile = await _apiClient.GetUserProfileAsync(id);
+            }
+            else if (parameter is PhoenixReadCopilot.Models.User.User user)
+            {
+                _userId = user.Id;
+                UserName = user.Name;
+                profile = await _apiClient.GetUserProfileAsync(user.Id);
+            }
+            else if (parameter is PhoenixReadApi.User apiUser)
+            {
+                _userId = apiUser.Id;
+                UserName = apiUser.Name;
+                profile = await _apiClient.GetUserProfileAsync(apiUser.Id);
+            }
+            else if (parameter is PhoenixReadApi.UserProfile up)
+            {
+                _userId = up.User.Id;
+                UserName = up.User.Name;
+                profile = up;
+            }
+
+            if (profile is not null)
+            {
+                _phoenixProfile = profile;
+                UserName = !string.IsNullOrEmpty(profile.User.Name) ? profile.User.Name : UserName;
+                IsFollowed = false;
+                Card = CreateUserCard(profile);
+            }
+            else if (!string.IsNullOrEmpty(UserName))
+            {
+                Card = new UserCard
+                {
+                    Profile = new UserDetailProfile
+                    {
+                        User = new PhoenixReadCopilot.Models.User.User
+                        {
+                            Id = _userId,
+                            Name = UserName,
+                        },
+                    },
+                    Community = new UserCommunity(),
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取红果创作者主页失败: {UserId}", _userId);
         }
 
         if (Sections is null)
         {
             Sections =
             [
-                new(
-                    _momentDiscoveryService,
-                    _loggerFactory.CreateLogger<UserMomentDetailViewModel>()
-                ),
-                new(
-                    _momentDiscoveryService,
-                    _loggerFactory.CreateLogger<UserMomentDetailViewModel>()
-                ),
+                new(_apiClient, _loggerFactory.CreateLogger<UserMomentDetailViewModel>()),
+                new(_apiClient, _loggerFactory.CreateLogger<UserMomentDetailViewModel>()),
             ];
 
             Sections.ElementAt(0).SetIsVideo(true);
@@ -84,7 +134,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         foreach (UserMomentDetailViewModel item in Sections)
         {
             item.SetShowCommentAction(ShowComment);
-            item.ResetCommand.Execute(profile);
+            item.ResetCommand.Execute((object?)_phoenixProfile ?? _userId);
         }
 
         if (SelectedSection is null)
@@ -99,8 +149,6 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             SelectedSection.InitializeCommand.Execute(null);
         }
-
-        await InitializeRelationAsync();
 
         Initialized?.Invoke(this, EventArgs.Empty);
     }
@@ -124,7 +172,10 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             return;
         }
 
-        await SelectedSection?.RefreshCommand.ExecuteAsync(null);
+        if (SelectedSection is not null)
+        {
+            await SelectedSection.RefreshCommand.ExecuteAsync(null);
+        }
     }
 
     [RelayCommand]
@@ -143,65 +194,66 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ToggleFollowAsync()
     {
-        if (IsFollowed)
+        if (string.IsNullOrEmpty(_userId))
         {
-            try
+            return;
+        }
+
+        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        {
+            _appViewModel.ShowTipCommand.Execute(("请先登录后再关注", InfoType.Warning));
+            return;
+        }
+
+        try
+        {
+            bool next = !IsFollowed;
+            PhoenixOperationResult res = await _apiClient.SetFollowAsync(_userId, next);
+            if (res.Succeeded)
             {
-                await _relationshipService.UnfollowUserAsync(_profile.Id);
-                IsFollowed = false;
-                _appViewModel.ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "取消关注用户时失败");
+                IsFollowed = next;
                 _appViewModel.ShowTipCommand.Execute(
-                    (Resources.FailedToUnfollowUser, InfoType.Error)
+                    (next ? Resources.Followed : Resources.Unfollowed, InfoType.Success)
+                );
+            }
+            else
+            {
+                _appViewModel.ShowTipCommand.Execute(
+                    (res.Message ?? "关注操作失败", InfoType.Error)
                 );
             }
         }
-        else
+        catch (Exception ex)
         {
-            try
-            {
-                await _relationshipService.FollowUserAsync(_profile.Id);
-                IsFollowed = true;
-                _appViewModel.ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "关注用户时失败");
-                _appViewModel.ShowTipCommand.Execute(
-                    (Resources.FailedToFollowUser, InfoType.Error)
-                );
-            }
+            _logger.LogError(ex, "切换关注状态时失败");
+            _appViewModel.ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
         }
     }
 
     [RelayCommand]
     private void Pin()
     {
-        PinItem pinItem = new(
-            _profile.Id,
-            _profile.Name,
-            _profile.Avatar.Uri.ToString(),
-            PinContentType.User
-        );
+        string avatarUri = Card?.Profile?.User?.Avatar?.Uri?.ToString() ?? string.Empty;
+        PinItem pinItem = new(_userId, UserName, avatarUri, PinContentType.User);
         _pinnerViewModel.AddItemCommand.Execute(pinItem);
     }
 
     [RelayCommand]
     private async Task InitializeUserInformationAsync()
     {
+        if (Card is not null || string.IsNullOrEmpty(_userId))
+        {
+            return;
+        }
+
         try
         {
-            Card ??= await _userService.GetUserInformationAsync(_profile.Id);
+            PhoenixReadApi.UserProfile profile = await _apiClient.GetUserProfileAsync(_userId);
+            Card = CreateUserCard(profile);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取用户信息时失败");
-            _appViewModel.ShowTipCommand.Execute(
-                (Resources.FailedToGetUserInformation, InfoType.Error)
-            );
+            _logger.LogError(ex, "获取创作者信息失败");
         }
     }
 
@@ -213,6 +265,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             || IsSearching
             || !IsSearchMode
             || string.IsNullOrEmpty(SearchKeyword)
+            || string.IsNullOrEmpty(_userId)
         )
         {
             return;
@@ -222,28 +275,32 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             IsSearching = true;
             _searchCancellationTokenSource = new CancellationTokenSource();
-            (IReadOnlyList<VideoInformation>? videos, int total, bool hasMore) =
-                await _searchService.SearchUserVideosAsync(
-                    _profile.Id,
-                    SearchKeyword,
-                    _searchPn,
-                    _searchCancellationTokenSource.Token
-                );
-            _preventLoadMoreSearch = !hasMore || videos is null || videos.Count == 0;
-            if (videos is not null)
-            {
-                foreach (VideoInformation item in videos)
-                {
-                    SearchVideos.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
-                }
+            CancellationToken ct = _searchCancellationTokenSource.Token;
 
-                SearchUpdated?.Invoke(this, EventArgs.Empty);
+            UserDramaPage dramas = await _apiClient.GetUserRelatedDramasAsync(
+                _userId,
+                count: 18,
+                cursor: _searchOffset.ToString(),
+                cancellationToken: ct
+            );
+
+            _preventLoadMoreSearch = !dramas.HasMore || dramas.Items.Count == 0;
+            if (int.TryParse(dramas.Cursor, out int nextCursor))
+            {
+                _searchOffset = nextCursor;
             }
 
-            if (!_preventLoadMoreSearch)
+            string kw = SearchKeyword.Trim();
+            List<Drama> matched = dramas
+                .Items.Where(d => d.Title.Contains(kw, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (Drama item in matched)
             {
-                _searchPn++;
+                SearchVideos.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
             }
+
+            SearchUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (TaskCanceledException)
         {
@@ -251,10 +308,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "搜索用户视频时失败");
-            _appViewModel.ShowTipCommand.Execute(
-                (Resources.FailedToSearchUserVideos, InfoType.Error)
-            );
+            _logger.LogError(ex, "搜索用户短剧作品时失败");
         }
         finally
         {
@@ -271,37 +325,49 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         IsSearchEmpty = false;
         SearchVideos.Clear();
         _preventLoadMoreSearch = false;
-        _searchPn = 0;
+        _searchOffset = 0;
         CancelSearch();
     }
 
-    private async Task InitializeRelationAsync()
+    private static UserCard CreateUserCard(PhoenixReadApi.UserProfile profile)
     {
-        try
+        UserAvatar? avatar =
+            !string.IsNullOrEmpty(profile.User.AvatarUrl)
+            && Uri.TryCreate(profile.User.AvatarUrl, UriKind.Absolute, out Uri? uri)
+                ? new UserAvatar { Uri = uri }
+                : null;
+
+        return new UserCard
         {
-            UserRelationStatus state = await _relationshipService.GetRelationshipAsync(_profile.Id);
-            IsFollowed =
-                state != UserRelationStatus.Unknown && state != UserRelationStatus.Unfollow;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "获取用户关系时失败");
-            _appViewModel.ShowTipCommand.Execute(
-                (Resources.FailedToGetUserRelation, InfoType.Error)
-            );
-        }
+            Profile = new UserDetailProfile
+            {
+                User = new PhoenixReadCopilot.Models.User.User
+                {
+                    Id = profile.User.Id,
+                    Name = profile.User.Name,
+                    Avatar = avatar,
+                },
+                Introduce = profile.User.Introduction,
+            },
+            Community = new UserCommunity
+            {
+                FollowCount = profile.CollectionsPage.Total,
+                FansCount = profile.LikesPage.Total,
+                LikeCount = profile.RelatedDramasPage.Total,
+            },
+        };
     }
 
     private void ShowComment(MomentItemViewModel data)
     {
-        MomentInformation moment = data.Data;
+        var moment = data.Data;
         if (CommentModule.Id == moment.CommentId)
         {
             return;
         }
 
         IsCommentsOpened = true;
-        CommentModule.Initialize(moment.CommentId, moment.CommentType!.Value, CommentSortType.Hot);
+        CommentModule.Initialize(moment.CommentId);
         CommentModule.RefreshCommand.Execute(null);
     }
 

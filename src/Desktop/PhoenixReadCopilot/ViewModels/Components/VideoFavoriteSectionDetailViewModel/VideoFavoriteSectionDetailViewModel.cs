@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Forms;
@@ -7,14 +8,13 @@ using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
 /// <summary>
-/// 视频收藏分区详情视图模型.
+/// 视频/短剧收藏分区详情视图模型.
 /// </summary>
 public sealed partial class VideoFavoriteSectionDetailViewModel
     : ViewModelBase<VideoFavoriteFolder>,
@@ -25,36 +25,17 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     /// </summary>
     public VideoFavoriteSectionDetailViewModel(
         VideoFavoriteFolder data,
-        IFavoriteService service,
+        PhoenixReadApiClient apiClient,
         NavigationViewModel navigationViewModel,
         ISettingsService settingsService,
         ILogger<VideoFavoriteSectionDetailViewModel> logger
     )
         : base(data)
     {
-        _service = service;
+        _apiClient = apiClient;
         _navigationViewModel = navigationViewModel;
         _settings = settingsService.Settings;
         _logger = logger;
-    }
-
-    internal void InjectFirstPageData(VideoFavoriteFolderDetail detail)
-    {
-        _pageNumber = 1;
-        TotalCount = detail.TotalCount;
-        foreach (VideoInformation item in detail.Videos)
-        {
-            Items.Add(
-                new VideoItemViewModel(
-                    item,
-                    VideoCardStyle.Favorite,
-                    removeAction: RemoveVideo,
-                    favFolder: Data
-                )
-            );
-        }
-
-        IsEmpty = Items.Count == 0;
     }
 
     [RelayCommand]
@@ -74,7 +55,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         IsEmpty = false;
         Items.Clear();
         _preventLoadMore = false;
-        _pageNumber = 0;
+        _offset = 0;
         await LoadItemsAsync();
     }
 
@@ -89,18 +70,23 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         try
         {
             IsLoading = true;
-            (VideoFavoriteFolderDetail? detail, int? nextPn) =
-                await _service.GetVideoFavoriteFolderDetailAsync(Data, _pageNumber);
-            _preventLoadMore = detail is null || detail.Videos is null || nextPn is null;
-            _pageNumber = nextPn ?? 0;
-            TotalCount = detail.TotalCount;
-            if (!_preventLoadMore || detail.Videos?.Count > 0)
+            DramaPage page = await _apiClient.GetFavoritesAsync(count: 20, offset: _offset);
+            _preventLoadMore = !page.HasMore || page.Items.Count == 0;
+            _offset = page.NextOffset;
+            TotalCount = (int)page.Total;
+
+            if (page.Items.Count > 0)
             {
-                foreach (VideoInformation item in detail.Videos)
+                foreach (Drama drama in page.Items)
                 {
+                    if (Items.Any(p => p.Drama?.Id == drama.Id))
+                    {
+                        continue;
+                    }
+
                     Items.Add(
                         new VideoItemViewModel(
-                            item,
+                            drama,
                             VideoCardStyle.Favorite,
                             removeAction: RemoveVideo,
                             favFolder: Data
@@ -113,8 +99,8 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         }
         catch (Exception ex)
         {
-            _preventLoadMore = false;
-            _logger.LogError(ex, $"获取视频收藏列表时出错.");
+            _preventLoadMore = true;
+            _logger.LogError(ex, "加载短剧收藏失败");
         }
         finally
         {
@@ -126,42 +112,19 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     [RelayCommand]
     private void PlayCurrentList()
     {
-        PlayerDisplayMode preferDisplayMode = _settings.DefaultPlayerDisplayMode;
-
-        if (Items.Count == 1)
+        if (Items.Count == 0)
         {
-            VideoItemViewModel video = Items.First();
-            if (preferDisplayMode == PlayerDisplayMode.NewWindow)
-            {
-                new PlayerWindow().OpenVideo(new VideoSnapshot(video.Data));
-                return;
-            }
-
-            _navigationViewModel.NavigateToOver(
-                typeof(VideoPlayerPage),
-                new VideoSnapshot(video.Data)
-            );
+            return;
         }
-        else
-        {
-            (List<VideoInformation>, VideoSnapshot) data = (
-                Items.Select(p => p.Data).ToList(),
-                new VideoSnapshot(Items.First().Data)
-            );
-            if (preferDisplayMode == PlayerDisplayMode.NewWindow)
-            {
-                new PlayerWindow().OpenVideo(data);
-                return;
-            }
 
-            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), data);
-        }
+        VideoItemViewModel first = Items.First();
+        first.PlayCommand.Execute(null);
     }
 
-    private void RemoveVideo(VideoItemViewModel vm)
+    private void RemoveVideo(VideoItemViewModel item)
     {
-        Items.Remove(vm);
+        Items.Remove(item);
+        TotalCount = Math.Max(0, TotalCount - 1);
         IsEmpty = Items.Count == 0;
-        ListUpdated?.Invoke(this, EventArgs.Empty);
     }
 }

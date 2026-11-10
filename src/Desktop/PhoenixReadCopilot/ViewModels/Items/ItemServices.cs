@@ -32,6 +32,8 @@ internal static class ItemServices
 
     public static IViewLaterService ViewLater = Ioc.Default.GetRequiredService<IViewLaterService>();
 
+    public static ILocalViewLaterService LocalViewLater = Ioc.Default.GetRequiredService<ILocalViewLaterService>();
+
     public static IViewHistoryService ViewHistory =
         Ioc.Default.GetRequiredService<IViewHistoryService>();
 

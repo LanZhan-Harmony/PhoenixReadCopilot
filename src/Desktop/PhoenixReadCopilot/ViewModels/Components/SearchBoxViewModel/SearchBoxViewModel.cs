@@ -1,12 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Models.Search;
+using HotSearchItem = PhoenixReadCopilot.Models.Search.HotSearchItem;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -20,13 +21,13 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="SearchBoxViewModel"/> class.
     /// </summary>
     public SearchBoxViewModel(
-        ISearchService searchService,
+        PhoenixReadApiClient apiClient,
         NavigationViewModel navigationViewModel,
         ISettingsService settingsService,
         ILogger<SearchBoxViewModel> logger
     )
     {
-        _searchService = searchService;
+        _apiClient = apiClient;
         _navigationViewModel = navigationViewModel;
         _settings = settingsService.Settings;
         _logger = logger;
@@ -78,20 +79,26 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
                 if (_recommendItems.Count == 0)
                 {
-                    IReadOnlyList<SearchRecommendItem> recommends =
-                        await _searchService.GetSearchRecommendsAsync();
-                    _recommendItems.AddRange(recommends);
+                    try
+                    {
+                        IReadOnlyList<string> cues = await _apiClient.GetSearchCuesAsync();
+                        _recommendItems.AddRange(cues);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "尝试获取搜索占位推荐词时失败.");
+                    }
                 }
 
-                if (Suggestion.Count == _recommendItems.Count)
+                if (Suggestion.Count == _recommendItems.Count && Suggestion.Count > 0)
                 {
                     return;
                 }
 
                 Suggestion.Clear();
-                foreach (SearchRecommendItem item in _recommendItems)
+                foreach (string item in _recommendItems)
                 {
-                    Suggestion.Add(new(new SearchSuggestItem(item.Text, item.Keyword)));
+                    Suggestion.Add(new(item));
                 }
             }
             else
@@ -109,18 +116,24 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 {
                     Suggestion.Clear();
                     _cancellationTokenSource = new CancellationTokenSource();
-                    IReadOnlyList<SearchSuggestItem>? suggests =
-                        await _searchService.GetSearchSuggestsAsync(
-                            Keyword,
+                    IReadOnlyList<SearchSuggestion> suggests =
+                        await _apiClient.GetSuggestionsAsync(
+                            Keyword.Trim(),
+                            maxResults: 8,
                             _cancellationTokenSource.Token
                         );
+
                     if (suggests is not null)
                     {
-                        foreach (SearchSuggestItem item in suggests)
+                        foreach (SearchSuggestion item in suggests)
                         {
-                            Suggestion.Add(new(item));
+                            Suggestion.Add(new(item.Name));
                         }
                     }
+                }
+                catch (TaskCanceledException)
+                {
+                    // Ignore cancellation
                 }
                 catch (Exception ex)
                 {
@@ -149,12 +162,32 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         IsHotSearchLoading = true;
         try
         {
-            IReadOnlyList<HotSearchItem> hotSearches = await _searchService.GetTotalHotSearchAsync(
-                30
-            );
-            foreach (HotSearchItem item in hotSearches)
+            HotSearch hotSearch = await _apiClient.GetHotSearchAsync();
+            int index = 1;
+
+            // 优先加载短剧热搜榜，若无则使用第一张榜单或猜你想搜
+            HotSearchBoard? board = hotSearch.Boards.FirstOrDefault(b => b.Title.Contains("短剧"))
+                ?? hotSearch.Boards.FirstOrDefault();
+
+            IEnumerable<PhoenixReadApi.HotSearchItem> items = board?.Items ?? hotSearch.Guesses;
+            foreach (PhoenixReadApi.HotSearchItem item in items)
             {
-                HotSearchItems.Add(item);
+                SearchItemIcon? icon = null;
+                if (!string.IsNullOrEmpty(item.CoverUrl) && Uri.TryCreate(item.CoverUrl, UriKind.Absolute, out Uri? coverUri))
+                {
+                    icon = new SearchItemIcon { Uri = coverUri };
+                }
+
+                string heat = !string.IsNullOrEmpty(item.CardTips) ? item.CardTips : item.Heat;
+                HotSearchItems.Add(new HotSearchItem
+                {
+                    Index = index++,
+                    Text = item.Title,
+                    Keyword = item.Title,
+                    Tag = item.Tag,
+                    Heat = heat,
+                    Icon = icon,
+                });
             }
         }
         catch (Exception ex)

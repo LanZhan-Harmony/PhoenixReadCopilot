@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using Richasy.BiliKernel.Models.Search;
+using PhoenixReadCopilot.Models.Search;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -18,10 +18,19 @@ public sealed partial class SearchSuggestItemViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSuggestItemViewModel"/> class.
     /// </summary>
-    public SearchSuggestItemViewModel(SearchSuggestItemBase item)
+    public SearchSuggestItemViewModel(SearchSuggestItem item)
     {
         Keyword = item.Keyword;
         SearchContent = item.Text;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SearchSuggestItemViewModel"/> class.
+    /// </summary>
+    public SearchSuggestItemViewModel(string keyword)
+    {
+        Keyword = keyword;
+        SearchContent = keyword;
     }
 
     /// <summary>
@@ -31,6 +40,8 @@ public sealed partial class SearchSuggestItemViewModel : ViewModelBase
     {
         RegionId = regionId;
         RegionName = regionName;
+        Keyword = string.Empty;
+        SearchContent = string.Empty;
     }
 
     /// <summary>

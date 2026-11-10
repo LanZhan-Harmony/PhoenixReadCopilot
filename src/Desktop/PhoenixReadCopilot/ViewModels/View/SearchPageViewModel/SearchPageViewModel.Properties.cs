@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -12,20 +12,20 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class SearchPageViewModel
 {
-    private readonly ISearchService _service;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<SearchPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILoggerFactory _loggerFactory;
 
     [ObservableProperty]
-    public partial string Keyword { get; set; }
+    public partial string Keyword { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsSearching { get; set; }
 
     [ObservableProperty]
-    public partial ISearchSectionDetailViewModel SelectedSection { get; set; }
+    public partial ISearchSectionDetailViewModel? SelectedSection { get; set; }
 
     /// <summary>
     /// 详情分区列表.
@@ -36,5 +36,5 @@ public sealed partial class SearchPageViewModel
     /// <summary>
     /// 分区初始化完成.
     /// </summary>
-    public event EventHandler SectionInitialized;
+    public event EventHandler? SectionInitialized;
 }

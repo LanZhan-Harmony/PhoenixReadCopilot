@@ -1,15 +1,12 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -24,16 +21,14 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="HistoryPageViewModel"/> class.
     /// </summary>
     public HistoryPageViewModel(
-        IViewHistoryService service,
-        ISearchService searchService,
+        PhoenixReadApiClient apiClient,
         ILogger<HistoryPageViewModel> logger,
         AppViewModel appViewModel,
         DispatcherQueue dispatcherQueue,
         ILoggerFactory loggerFactory
     )
     {
-        _service = service;
-        _searchService = searchService;
+        _apiClient = apiClient;
         _logger = logger;
         _appViewModel = appViewModel;
         _dispatcherQueue = dispatcherQueue;
@@ -53,31 +48,13 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             return;
         }
 
-        List<ViewHistoryTabType> types = Enum.GetValues<ViewHistoryTabType>()
-            .Where(p => p != ViewHistoryTabType.All)
-            .ToList();
-        List<IHistorySectionDetailViewModel> sections = [];
-        foreach (ViewHistoryTabType type in types)
-        {
-            IHistorySectionDetailViewModel? vm = type switch
-            {
-                ViewHistoryTabType.Video => (IHistorySectionDetailViewModel)
-                    new VideoHistorySectionDetailViewModel(
-                        _service,
-                        _loggerFactory.CreateLogger<VideoHistorySectionDetailViewModel>()
-                    ),
-                ViewHistoryTabType.Article => new ArticleHistorySectionDetailViewModel(
-                    _service,
-                    _loggerFactory.CreateLogger<ArticleHistorySectionDetailViewModel>()
-                ),
-                _ => null,
-            };
-
-            if (vm is not null)
-            {
-                sections.Add(vm);
-            }
-        }
+        List<IHistorySectionDetailViewModel> sections =
+        [
+            new VideoHistorySectionDetailViewModel(
+                _apiClient,
+                _loggerFactory.CreateLogger<VideoHistorySectionDetailViewModel>()
+            ),
+        ];
 
         Sections = sections;
         SelectSection(Sections.First());
@@ -103,7 +80,10 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             return;
         }
 
-        await SelectedSection?.RefreshCommand.ExecuteAsync(this);
+        if (SelectedSection is not null)
+        {
+            await SelectedSection.RefreshCommand.ExecuteAsync(this);
+        }
     }
 
     [RelayCommand]
@@ -114,8 +94,24 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             return;
         }
 
-        await _service.CleanHistoryAsync(SelectedSection.Type);
-        await Task.Delay(500);
+        if (SelectedSection is VideoHistorySectionDetailViewModel videoSection)
+        {
+            foreach (var item in videoSection.Items.ToList())
+            {
+                if (item.HistoryEntry is not null)
+                {
+                    try
+                    {
+                        await _apiClient.DeleteHistoryAsync(item.HistoryEntry.SeriesId, item.HistoryEntry.VideoId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "删除历史记录出错: {SeriesId}", item.HistoryEntry.SeriesId);
+                    }
+                }
+            }
+        }
+
         await SelectedSection.RefreshCommand.ExecuteAsync(this);
     }
 
@@ -149,29 +145,30 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             IsSearching = true;
             CancelSearch();
             _searchCancellationTokenSource = new CancellationTokenSource();
-            (IReadOnlyList<VideoInformation>? videos, int total, bool hasMore) =
-                await _searchService.SearchHistoryVideosAsync(
-                    SearchKeyword,
-                    _searchPn,
-                    _searchCancellationTokenSource.Token
+            var ct = _searchCancellationTokenSource.Token;
+
+            ReadHistoryPage historyPage = await _apiClient.GetHistoryAsync(
+                count: 50,
+                offset: _searchOffset,
+                cancellationToken: ct
+            );
+
+            _preventLoadMoreSearch = !historyPage.HasMore || historyPage.Items.Count == 0;
+            _searchOffset = historyPage.NextOffset;
+
+            string kw = SearchKeyword.Trim();
+            var filtered = historyPage.Items
+                .Where(e => e.Title.Contains(kw, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (ReadHistoryEntry entry in filtered)
+            {
+                SearchVideos.Add(
+                    new VideoItemViewModel(entry, RemoveSearchVideo)
                 );
-            _preventLoadMoreSearch = !hasMore || videos is null || videos.Count == 0;
-            if (videos is not null)
-            {
-                foreach (VideoInformation item in videos)
-                {
-                    SearchVideos.Add(
-                        new VideoItemViewModel(item, VideoCardStyle.History, RemoveSearchVideo)
-                    );
-                }
-
-                SearchUpdated?.Invoke(this, EventArgs.Empty);
             }
 
-            if (!_preventLoadMoreSearch)
-            {
-                _searchPn++;
-            }
+            SearchUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (TaskCanceledException)
         {
@@ -179,7 +176,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "搜索用户视频时失败");
+            _logger.LogError(ex, "搜索历史记录失败");
             _appViewModel.ShowTipCommand.Execute(
                 (Resources.FailedToSearchUserVideos, InfoType.Error)
             );
@@ -199,7 +196,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         IsSearchEmpty = false;
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, SearchVideos.Clear);
         _preventLoadMoreSearch = false;
-        _searchPn = 0;
+        _searchOffset = 0;
         CancelSearch();
     }
 

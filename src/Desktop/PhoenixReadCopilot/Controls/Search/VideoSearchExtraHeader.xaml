@@ -8,7 +8,7 @@
     xmlns:strings="using:PhoenixReadCopilot.Strings"
     xmlns:local="using:PhoenixReadCopilot.Controls.Search"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Richasy.BiliKernel.Models"
+    xmlns:models="using:PhoenixReadCopilot.Core.Enums"
     mc:Ignorable="d">
 
     <StackPanel Orientation="Horizontal">

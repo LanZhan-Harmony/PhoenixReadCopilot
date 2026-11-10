@@ -1,9 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.Forms;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
-using Windows.System;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages;
@@ -13,8 +10,6 @@ namespace PhoenixReadCopilot.Pages;
 /// </summary>
 public sealed partial class StartupPage : StartupPageBase
 {
-    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
-
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPage"/> class.
     /// </summary>
@@ -28,25 +23,6 @@ public sealed partial class StartupPage : StartupPageBase
     {
         ViewModel.InitializeCommand.Execute(QRCodeImage);
     }
-
-    private void OnWebSignInButtonClick(object sender, RoutedEventArgs e)
-    {
-        Window? window = _appViewModel.Windows.FirstOrDefault(p => p is WebSignInWindow);
-        if (window is not null)
-        {
-            window.Activate();
-        }
-        else
-        {
-            new WebSignInWindow().Activate();
-        }
-    }
-
-    private async void OnRepoButtonClickAsync(object sender, RoutedEventArgs e) =>
-        await Launcher.LaunchUriAsync(new Uri("https://github.com/Richasy/Bili.Copilot"));
-
-    private async void OnBiliButtonClickAsync(object sender, RoutedEventArgs e) =>
-        await Launcher.LaunchUriAsync(new Uri("https://space.bilibili.com/5992670"));
 
     private void OnRefreshQRButtonClick(object sender, RoutedEventArgs e) =>
         ViewModel.ReloadQRCodeCommand.Execute(null);

@@ -1,24 +1,23 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Models.User;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
 /// <summary>
-/// 用户动态详情视图模型.
+/// 用户动态/作品详情视图模型.
 /// </summary>
 public sealed partial class UserMomentDetailViewModel
 {
-    private readonly IMomentDiscoveryService _service;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<UserMomentDetailViewModel> _logger;
     private bool _isVideo;
     private bool _preventLoadMore;
     private string? _offset;
-    private UserProfile _user;
-    private Action<MomentItemViewModel> _showCommentAction;
+    private string _userId = string.Empty;
+    private Action<MomentItemViewModel>? _showCommentAction;
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
@@ -27,7 +26,7 @@ public sealed partial class UserMomentDetailViewModel
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    public partial string Title { get; set; }
+    public partial string Title { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial ObservableCollection<MomentItemViewModel> Items { get; set; } = new();
@@ -35,5 +34,5 @@ public sealed partial class UserMomentDetailViewModel
     /// <summary>
     /// 列表已完成更新.
     /// </summary>
-    public event EventHandler ListUpdated;
+    public event EventHandler? ListUpdated;
 }
