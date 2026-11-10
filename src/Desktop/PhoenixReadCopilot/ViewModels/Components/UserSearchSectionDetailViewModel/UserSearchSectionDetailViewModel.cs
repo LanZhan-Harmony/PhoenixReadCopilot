@@ -1,15 +1,15 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Models.Search;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
 /// <summary>
-/// 用户搜索分区详情视图模型.
+/// 用户/演职员搜索分区详情视图模型.
 /// </summary>
 public sealed partial class UserSearchSectionDetailViewModel
     : ViewModelBase,
@@ -19,12 +19,12 @@ public sealed partial class UserSearchSectionDetailViewModel
     /// Initializes a new instance of the <see cref="UserSearchSectionDetailViewModel"/> class.
     /// </summary>
     public UserSearchSectionDetailViewModel(
-        ISearchService service,
+        PhoenixReadApiClient apiClient,
         DispatcherQueue dispatcherQueue,
         ILogger<UserSearchSectionDetailViewModel> logger
     )
     {
-        _service = service;
+        _apiClient = apiClient;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
     }
@@ -44,6 +44,7 @@ public sealed partial class UserSearchSectionDetailViewModel
     {
         _partition = null;
         _keyword = string.Empty;
+        _offset = 0;
         IsEmpty = false;
         _canRequest = false;
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Items.Clear);
@@ -55,7 +56,7 @@ public sealed partial class UserSearchSectionDetailViewModel
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        if (!_canRequest || IsEmpty || IsLoading)
+        if (!_canRequest || IsEmpty || IsLoading || string.IsNullOrWhiteSpace(_keyword))
         {
             return;
         }
@@ -63,25 +64,34 @@ public sealed partial class UserSearchSectionDetailViewModel
         try
         {
             IsLoading = true;
-            (IReadOnlyList<SearchResultItem>? result, string? nextOffset) =
-                await _service.GetPartitionSearchResultAsync(_keyword, _partition, _offset);
-            _offset = nextOffset;
-            _canRequest = !string.IsNullOrEmpty(_offset);
-            foreach (SearchResultItem item in result)
+            SearchResult result = await _apiClient.SearchAsync(
+                new SearchQuery
+                {
+                    Keyword = _keyword,
+                    Offset = _offset,
+                    Count = 20,
+                    Tab = SearchTab.User,
+                }
+            );
+
+            _offset = result.NextOffset;
+            _canRequest = result.HasMore;
+
+            foreach (User item in result.Users)
             {
-                if (Items.Any(p => p.Data.Equals(item.User)))
+                if (Items.Any(p => p.Id == item.Id))
                 {
                     continue;
                 }
 
-                Items.Add(new UserItemViewModel(item.User));
+                Items.Add(new UserItemViewModel(item));
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"加载用户搜索结果时出错.");
+            _logger.LogError(ex, "加载用户搜索结果时出错.");
         }
         finally
         {
@@ -94,8 +104,11 @@ public sealed partial class UserSearchSectionDetailViewModel
     private async Task RefreshAsync()
     {
         string keyword = _keyword;
-        SearchPartition partition = _partition;
-        Initialize(keyword, partition);
+        SearchPartition? partition = _partition;
+        if (partition is not null)
+        {
+            Initialize(keyword, partition);
+        }
         await LoadItemsAsync();
     }
 }

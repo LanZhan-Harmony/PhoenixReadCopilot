@@ -58,10 +58,14 @@ internal partial class DanmakuDirectXRender
     private volatile bool _isPaused;
 
     /// <summary>
-    /// 重入保护标志：防止在处理一帧时再次进入渲染.
-    /// 关键修复：避免 OnRendering 与 UI 事件（Loading/Measure）冲突导致闪退.
+    /// 平滑后的帧间隔时间（毫秒），用于低通滤波平滑弹幕位移.
     /// </summary>
-    private volatile bool _isRendering;
+    private float _smoothedElapsedMs = 16.666f;
+
+    /// <summary>
+    /// 是否已经执行了清屏帧（用于无弹幕时的静默节能检测）.
+    /// </summary>
+    private volatile bool _hasClearedScreen;
 
     /// <summary>
     /// DPI 值（每英寸点数）.

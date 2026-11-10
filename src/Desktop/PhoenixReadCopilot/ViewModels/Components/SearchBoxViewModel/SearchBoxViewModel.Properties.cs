@@ -1,11 +1,12 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Models.Search;
+using HotSearchItem = PhoenixReadCopilot.Models.Search.HotSearchItem;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -14,11 +15,11 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class SearchBoxViewModel
 {
-    private readonly ISearchService _searchService;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<SearchBoxViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly AppSettings _settings;
-    private readonly List<SearchRecommendItem> _recommendItems = [];
+    private readonly List<string> _recommendItems = [];
     private CancellationTokenSource? _cancellationTokenSource;
     private string _extraRegionId = string.Empty;
     private string _extraRegionName = string.Empty;

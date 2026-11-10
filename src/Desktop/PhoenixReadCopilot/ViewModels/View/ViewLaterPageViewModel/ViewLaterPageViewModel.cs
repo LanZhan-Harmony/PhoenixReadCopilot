@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Forms;
@@ -7,9 +8,6 @@ using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -23,13 +21,13 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="ViewLaterPageViewModel"/> class.
     /// </summary>
     public ViewLaterPageViewModel(
-        IViewLaterService service,
+        ILocalViewLaterService localService,
         ILogger<ViewLaterPageViewModel> logger,
         NavigationViewModel navigationViewModel,
         ISettingsService settingsService
     )
     {
-        _service = service;
+        _localService = localService;
         _logger = logger;
         _navigationViewModel = navigationViewModel;
         _settings = settingsService.Settings;
@@ -50,7 +48,6 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     private async Task RefreshAsync()
     {
         IsEmpty = false;
-        _pageNumber = 0;
         TotalCount = 0;
         Videos.Clear();
         await InitializeAsync();
@@ -59,7 +56,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadVideosAsync()
     {
-        if (IsLoading || IsEmpty || (Videos.Count >= TotalCount && Videos.Count > 0))
+        if (IsLoading)
         {
             return;
         }
@@ -67,34 +64,22 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         IsLoading = true;
         try
         {
-            (IReadOnlyList<VideoInformation>? videos, int totalCount, int nextPage) =
-                await _service.GetViewLaterSetAsync(_pageNumber);
-            if (Videos.Count == 0 && (videos is null || videos.Count == 0 || totalCount == 0))
+            IReadOnlyList<Drama> dramas = await _localService.GetAllAsync();
+            Videos.Clear();
+            foreach (Drama item in dramas)
             {
-                IsEmpty = true;
+                Videos.Add(
+                    new VideoItemViewModel(
+                        item,
+                        VideoCardStyle.ViewLater,
+                        removeAction: RemoveVideo
+                    )
+                );
             }
-            else
-            {
-                _pageNumber = nextPage;
-                TotalCount = totalCount;
-                foreach (VideoInformation item in videos)
-                {
-                    if (Videos.Any(p => p.Data.Identifier.Id == item.Identifier.Id))
-                    {
-                        continue;
-                    }
 
-                    Videos.Add(
-                        new VideoItemViewModel(
-                            item,
-                            VideoCardStyle.ViewLater,
-                            removeAction: RemoveVideo
-                        )
-                    );
-                }
-
-                ListUpdated?.Invoke(this, EventArgs.Empty);
-            }
+            TotalCount = Videos.Count;
+            IsEmpty = Videos.Count == 0;
+            ListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
@@ -112,8 +97,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     {
         try
         {
-            await _service.CleanAsync(ViewLaterCleanType.All);
-            await Task.Delay(500);
+            await _localService.ClearAsync();
             await RefreshAsync();
         }
         catch (Exception ex)
@@ -125,40 +109,23 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private void PlayAll()
     {
-        PlayerDisplayMode preferDisplayMode = _settings.DefaultPlayerDisplayMode;
-        if (Videos.Count == 1)
+        if (Videos.Count == 0)
         {
-            VideoItemViewModel video = Videos.First();
-            if (preferDisplayMode == PlayerDisplayMode.NewWindow)
-            {
-                new PlayerWindow().OpenVideo(new VideoSnapshot(video.Data));
-                return;
-            }
-
-            _navigationViewModel.NavigateToOver(
-                typeof(VideoPlayerPage),
-                new VideoSnapshot(video.Data)
-            );
+            return;
         }
-        else
-        {
-            (List<VideoInformation>, VideoSnapshot) data = (
-                Videos.Select(p => p.Data).ToList(),
-                new VideoSnapshot(Videos.First().Data)
-            );
-            if (preferDisplayMode == PlayerDisplayMode.NewWindow)
-            {
-                new PlayerWindow().OpenVideo(data);
-                return;
-            }
 
-            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), data);
-        }
+        VideoItemViewModel first = Videos.First();
+        first.PlayCommand.Execute(null);
     }
 
     private void RemoveVideo(VideoItemViewModel item)
     {
         Videos.Remove(item);
+        if (item.Drama is not null)
+        {
+            _ = _localService.RemoveAsync(item.Drama.Id);
+        }
+        TotalCount = Videos.Count;
         IsEmpty = Videos.Count == 0;
     }
 }

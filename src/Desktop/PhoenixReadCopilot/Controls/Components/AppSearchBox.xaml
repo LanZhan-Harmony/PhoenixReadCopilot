@@ -10,7 +10,7 @@
                         xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                         xmlns:local="using:PhoenixReadCopilot.Controls.Components"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        xmlns:search="using:Richasy.BiliKernel.Models.Search"
+                        xmlns:search="using:PhoenixReadCopilot.Models.Search"
                         xmlns:strings="using:PhoenixReadCopilot.Strings"
                         mc:Ignorable="d">
 

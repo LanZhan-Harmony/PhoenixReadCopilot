@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
@@ -23,6 +24,14 @@ public sealed partial class VideoOperationControl : VideoPlayerPageControlBase
         if (ViewModel.CurrentLoop != loopType)
         {
             ViewModel.CurrentLoop = loopType;
+        }
+    }
+
+    private void OnCreditItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is DramaCreditItemViewModel vm)
+        {
+            vm.ShowUserSpaceCommand.Execute(null);
         }
     }
 }

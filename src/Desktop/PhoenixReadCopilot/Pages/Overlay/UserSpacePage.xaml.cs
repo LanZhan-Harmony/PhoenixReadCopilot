@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages.Overlay;
@@ -19,9 +18,9 @@ public sealed partial class UserSpacePage : UserSpacePageBase
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
-        if (e.Parameter is UserProfile profile)
+        if (e.Parameter is not null)
         {
-            ViewModel.InitializeCommand.Execute(profile);
+            ViewModel.InitializeCommand.Execute(e.Parameter);
         }
     }
 }

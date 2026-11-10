@@ -10,7 +10,7 @@ using Vortice.DXGI;
 
 namespace Danmaku.Core;
 
-internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClient
+internal sealed partial class DanmakuDirectXRender : IDisposable
 {
     internal DanmakuDirectXRender(
         SwapChainPanel swapChainPanel,
@@ -74,21 +74,18 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             _renderSnapshots[i] = new DanmakuDirectXRenderItem[128]; // 初始容量
         }
 
-        // 🚀 混合渲染架构：
-        // 策略：CompositionTarget.Rendering 提供渲染时机，GameLoopThread 执行实际渲染
+        // 🚀 独立自主渲染架构：
+        // 策略：GameLoopThread 在高优先级独立工作线程自主循环，以 DXGI 硬件垂直同步 (VSync) 直接驱动，完全脱离 UI 线程
         // 优点：
-        // - 渲染时机与系统完美同步（避免卡顿）
-        // - 渲染在专用线程执行（避免 UI 线程阻塞）
-        // - 不需要手动 vsync 等待
+        // - 100% 跑满显示器物理刷新率（60Hz/120Hz/144Hz/240Hz）
+        // - 彻底消除 WinUI 3 UI 消息泵抖动与跨线程调度丢帧
+        // - 低通滤波平滑步长，消除弹幕位移微抖动
         _frameStopwatch.Start();
 
-        // 创建游戏循环线程（用于渲染）
-        _gameLoopThread = new GameLoopThread(_swapChainPanel, this);
+        // 创建独立渲染循环线程
+        _gameLoopThread = new GameLoopThread(RenderFrame);
 
-        // 订阅 CompositionTarget.Rendering 作为渲染时机信号
-        CompositionTarget.Rendering += OnRenderingSignal;
-
-        Logger.Log("DanmakuDirectXRender is created (Hybrid Rendering Mode)");
+        Logger.Log("DanmakuDirectXRender is created (Independent Game Loop Mode)");
     }
 
     /// <summary>
@@ -123,30 +120,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         Logger.Log($"Configuration updated");
     }
 
-    /// <summary>
-    /// CompositionTarget.Rendering 事件处理器（仅作为时机信号，不执行渲染）.
-    /// 这个方法在 UI 线程上调用，非常快速，立即将渲染任务委托给 GameLoopThread.
-    /// </summary>
-    private void OnRenderingSignal(object? sender, object e)
-    {
-        // 快速检查：避免重复调度
-        if (_isPaused || _isStopped || _isRendering)
-        {
-            return;
-        }
-
-        // 立即标记渲染状态，防止高刷屏下同一时钟周期内重复排队
-        _isRendering = true;
-
-        // 将实际渲染工作委托给 GameLoopThread
-        // 这样既能利用 CompositionTarget.Rendering 的最佳时机，又不阻塞 UI 线程
-        var task = _gameLoopThread?.RunAsync(RenderFrame);
-        if (task == null)
-        {
-            _isRendering = false;
-        }
-    }
-
     private void OnResourceManagerScaleChanged(object? sender, float scale)
     {
         _scale = scale;
@@ -172,6 +145,12 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
             _renderLayerList[i]
                 .UpdateYSlotManagerLength((uint)CanvasHeight, _configState.RollingAreaRatio);
         }
+
+        // 尺寸变化后，重置上一帧时间戳，并唤醒独立渲染线程重绘
+        _lastFrameTime = _frameStopwatch.Elapsed;
+        _smoothedElapsedMs = 0f;
+        _hasClearedScreen = false;
+        _gameLoopThread?.Wake();
 
         Logger.Log($"Size changed: Canvas={CanvasWidth}x{CanvasHeight}");
     }
@@ -322,6 +301,10 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
                 _renderLayerList[layerId].RenderList.Add(renderItem);
                 addedToRenderList = true; // 标记已添加
             }
+
+            // 唤醒独立渲染线程
+            _hasClearedScreen = false;
+            _gameLoopThread?.Wake();
         }
         catch (Exception ex)
         {
@@ -462,7 +445,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
     private void UpdateDanmaku(TimeSpan elapsedTime, TimeSpan totalTime)
     {
         float elapsedMs = (float)elapsedTime.TotalMilliseconds;
-        UpdatePerformanceStats(elapsedTime);
 
         // 如果启用并行更新且弹幕数量较多，使用并行处理
         if (_configState.EnableParallelUpdate)
@@ -757,27 +739,38 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
     {
         _isStopped = false;
         _isPaused = false;
+        _lastFrameTime = _frameStopwatch.Elapsed;
         _frameStopwatch.Start();
 
-        // 启动游戏循环调度器（用于渲染）
-        _gameLoopThread?.StartDispatcher();
+        if (_gameLoopThread != null)
+        {
+            _gameLoopThread.IsPaused = false;
+            _gameLoopThread.Wake();
+        }
 
-        Debug.WriteLine("DanmakuDirectXRender is started (Hybrid Rendering Mode)");
+        Logger.Log("DanmakuDirectXRender is started (Independent Game Loop Mode)");
     }
 
     public void Pause()
     {
         _isPaused = true;
+        if (_gameLoopThread != null)
+        {
+            _gameLoopThread.IsPaused = true;
+        }
         _frameStopwatch.Stop();
-        Debug.WriteLine("DanmakuDirectXRender is paused");
+        Logger.Log("DanmakuDirectXRender is paused");
     }
 
     public void Stop()
     {
         _isStopped = true;
+        _isPaused = true;
 
-        // 停止游戏循环调度器
-        _gameLoopThread?.StopDispatcher();
+        if (_gameLoopThread != null)
+        {
+            _gameLoopThread.IsPaused = true;
+        }
 
         Clear();
         Logger.Log("DanmakuDirectXRender is stopped");
@@ -790,18 +783,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         _isStopped = true;
         _isPaused = true;
 
-        // 2. 取消订阅 CompositionTarget.Rendering
-        CompositionTarget.Rendering -= OnRenderingSignal;
-
-        // 3. 停止游戏循环线程
+        // 2. 停止游戏循环线程并等待安全退出
         _gameLoopThread?.Dispose();
         _gameLoopThread = null;
 
-        // 4. 等待当前帧完成（给一点时间让正在执行的 OnRendering 完成）
-        // 注意：不能用 Thread.Sleep，因为可能在 UI 线程
-        // 使用标志位 _isStopped 让 OnRendering 自己提前退出
-
-        // 5. 清理弹幕列表
+        // 3. 清理弹幕列表
         Clear();
 
         // 6. 清理事件订阅
@@ -872,36 +858,34 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         }
     }
 
-    #region IGameLoopClient 实现
-
     /// <summary>
-    /// 游戏循环启动时调用.
+    /// 获取当前所有层的活跃弹幕总数.
     /// </summary>
-    void IGameLoopClient.OnGameLoopStarting()
+    private int GetActiveDanmakuCount()
     {
-        Logger.Log("Game loop thread started");
+        if (_renderLayerList == null)
+        {
+            return 0;
+        }
+
+        int count = 0;
+        for (int i = 0; i < _renderLayerList.Length; i++)
+        {
+            count += _renderLayerList[i].RenderList.Count;
+        }
+
+        return count;
     }
 
-    /// <summary>
-    /// 游戏循环停止时调用.
-    /// </summary>
-    void IGameLoopClient.OnGameLoopStopped()
-    {
-        Logger.Log("Game loop thread stopped");
-    }
-
-    #endregion
-
-    #region 混合渲染模式实现
+    #region 独立自主渲染循环实现
 
     /// <summary>
-    /// 渲染帧的主方法（在游戏循环线程上调用）.
+    /// 渲染帧的主方法（在专用高优先级渲染线程循环调用）.
     /// </summary>
     private void RenderFrame()
     {
-        if (_isPaused || _isStopped || _resourceManager.D2DContext == null)
+        if (_isPaused || _isStopped)
         {
-            _isRendering = false;
             return;
         }
 
@@ -909,38 +893,75 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         {
             lock (_resourceManager.RenderLock)
             {
-                if (_isPaused || _isStopped || _resourceManager.D2DContext == null)
+                if (_isPaused || _isStopped || _resourceManager.D2DContext == null || _resourceManager.SwapChain == null)
                 {
                     return;
                 }
 
-                TimeSpan currentTime = _frameStopwatch.Elapsed;
-                TimeSpan elapsedTime = currentTime - _lastFrameTime;
-                _lastFrameTime = currentTime;
-
-                // 限制单帧最大时间跨度（防止系统挂起或掉帧时弹幕剧烈瞬移）
-                if (elapsedTime.TotalMilliseconds > 100.0)
+                int activeCount = GetActiveDanmakuCount();
+                if (activeCount == 0)
                 {
-                    elapsedTime = TimeSpan.FromMilliseconds(100.0);
+                    if (_hasClearedScreen)
+                    {
+                        // 屏幕已清空，且当前无弹幕：重置上一帧时间戳，进入节能等待
+                        _lastFrameTime = _frameStopwatch.Elapsed;
+                        _smoothedElapsedMs = 0f;
+                        _gameLoopThread?.WaitForWork(40);
+                        return;
+                    }
                 }
 
-                _totalTime += elapsedTime;
+                TimeSpan currentTime = _frameStopwatch.Elapsed;
+                TimeSpan rawElapsedTime = currentTime - _lastFrameTime;
+                _lastFrameTime = currentTime;
+
+                float rawMs = (float)rawElapsedTime.TotalMilliseconds;
+                if (rawMs > 100.0f || rawMs <= 0.0f || _smoothedElapsedMs <= 0.0f)
+                {
+                    rawMs = 16.666f;
+                    _smoothedElapsedMs = 16.666f;
+                }
+                else
+                {
+                    // 🚀 核心优化：时间步长低通滤波平滑 (EMA Filter)
+                    // 消除由于 Windows 线程调度微抖动产生的帧时间波动，保证每一帧弹幕移动距离完全均匀恒定
+                    _smoothedElapsedMs = (_smoothedElapsedMs * 0.85f) + (rawMs * 0.15f);
+                }
+
+                TimeSpan smoothedElapsedTime = TimeSpan.FromMilliseconds(_smoothedElapsedMs);
+                _totalTime += smoothedElapsedTime;
 
                 // 更新性能统计
-                UpdatePerformanceStats(elapsedTime);
+                UpdatePerformanceStats(rawElapsedTime);
 
-                // 更新弹幕位置
-                UpdateDanmaku(elapsedTime, _totalTime);
+                if (activeCount > 0)
+                {
+                    _hasClearedScreen = false;
+                    // 更新弹幕位置（使用平滑后的时间，确保亚像素运动绝对均匀）
+                    UpdateDanmaku(smoothedElapsedTime, _totalTime);
+                }
+                else
+                {
+                    // 标记当前帧为清屏帧
+                    _hasClearedScreen = true;
+                }
 
                 // 渲染弹幕
                 RenderDanmaku();
 
-                // 🚀 核心优化：使用 Present(0) 立即提交后备缓冲到 DWM，不等待垂直消隐阻塞
-                // 解决外层 CompositionTarget.Rendering 与底层 Present(1) 产生的双重 V-Sync 等待导致帧率腰斩卡顿的问题
-                Result? presentResult = _resourceManager.SwapChain?.Present(0, PresentFlags.None);
+                // 🚀 硬件垂直同步呈现：Present(1, PresentFlags.None)
+                // 1. 由显卡/DWM 硬件垂直同步驱动，精准匹配显示器物理刷新率（60Hz/120Hz/144Hz/240Hz）
+                // 2. 在后台独立高优先级线程阻塞等待硬件 V-Blank，完全避开 WinUI 3 UI 消息循环抖动
+                Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
                 if (presentResult.HasValue && presentResult.Value.Failure)
                 {
                     Logger.Log($"Present failed: {presentResult.Value}");
+                }
+
+                // 防止窗口遮挡或极少情况下 Present 立即返回导致紧密忙等
+                if (rawMs < 1.0f)
+                {
+                    Thread.Sleep(1);
                 }
             }
         }
@@ -948,12 +969,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable, IGameLoopClien
         {
             Logger.Log($"Render error: {ex.Message}");
         }
-        finally
-        {
-            _isRendering = false;
-        }
-
-        // CompositionTarget.Rendering 会自动触发下一帧
     }
 
     #endregion

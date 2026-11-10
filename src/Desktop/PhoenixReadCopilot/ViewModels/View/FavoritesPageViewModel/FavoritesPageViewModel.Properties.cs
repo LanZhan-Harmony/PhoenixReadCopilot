@@ -2,10 +2,10 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class FavoritesPageViewModel
 {
-    private readonly IFavoriteService _service;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<FavoritesPageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ISettingsService _settingsService;
@@ -22,7 +22,7 @@ public sealed partial class FavoritesPageViewModel
     private readonly ILoggerFactory _loggerFactory;
 
     [ObservableProperty]
-    public partial IFavoriteSectionDetailViewModel CurrentSection { get; set; }
+    public partial IFavoriteSectionDetailViewModel? CurrentSection { get; set; }
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -30,7 +30,7 @@ public sealed partial class FavoritesPageViewModel
     /// <summary>
     /// 分区初始化完成.
     /// </summary>
-    public event EventHandler SectionInitialized;
+    public event EventHandler? SectionInitialized;
 
     /// <summary>
     /// 分区列表.

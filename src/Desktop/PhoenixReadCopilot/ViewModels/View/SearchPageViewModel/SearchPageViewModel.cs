@@ -1,18 +1,14 @@
-using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.Toolkits;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.Search;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -25,7 +21,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="SearchPageViewModel"/> class.
     /// </summary>
     public SearchPageViewModel(
-        ISearchService service,
+        PhoenixReadApiClient apiClient,
         ILogger<SearchPageViewModel> logger,
         NavigationViewModel navigationViewModel,
         ISettingsService settingsService,
@@ -34,7 +30,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _service = service;
+        _apiClient = apiClient;
         _logger = logger;
         _navigationViewModel = navigationViewModel;
         _dispatcherQueue = dispatcherQueue;
@@ -52,40 +48,9 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             throw new ArgumentNullException(nameof(keyword));
         }
 
-        if (keyword == Keyword)
+        if (keyword == Keyword && Sections is { Count: > 0 })
         {
             return;
-        }
-
-        if (keyword.StartsWith("av", StringComparison.InvariantCultureIgnoreCase))
-        {
-            string videoId = keyword[2..];
-
-            // videoId should be a number.
-            if (long.TryParse(videoId, out long id))
-            {
-                _navigationViewModel.Back();
-                VideoInformation video = new(new MediaIdentifier(videoId, null, null), null);
-                new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(null);
-                return;
-            }
-        }
-        else if (keyword.StartsWith("BV"))
-        {
-            try
-            {
-                VideoInformation video = new(
-                    new MediaIdentifier(IdToolkit.Bv2Av(keyword).ToString(), null, null),
-                    null
-                );
-                _navigationViewModel.Back();
-                new VideoItemViewModel(video, VideoCardStyle.Search).PlayCommand.Execute(null);
-                return;
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("尝试解析BV号时失败.");
-            }
         }
 
         Keyword = keyword;
@@ -95,15 +60,18 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         try
         {
             IsSearching = true;
-            (IReadOnlyList<VideoInformation>? videos, int? nextVideoOffset) =
-                await _service.GetComprehensiveSearchResultAsync(keyword);
+            SearchResult searchResult = await _apiClient.SearchAsync(keyword);
+
+            VideoSearchSectionDetailViewModel videoSection = CreateVideoSection(
+                searchResult.Dramas,
+                searchResult.NextOffset
+            );
+            UserSearchSectionDetailViewModel userSection = CreateUserSection();
+
             List<ISearchSectionDetailViewModel> sections =
             [
-                CreateVideoSection(videos, nextVideoOffset),
-                CreateSection(SearchSectionType.Anime),
-                CreateSection(SearchSectionType.Cinema),
-                CreateSection(SearchSectionType.User),
-                CreateSection(SearchSectionType.Article),
+                videoSection,
+                userSection,
             ];
             Sections = [.. sections];
             SelectSection(Sections.FirstOrDefault());
@@ -123,7 +91,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     /// 选择分区.
     /// </summary>
     [RelayCommand]
-    private void SelectSection(ISearchSectionDetailViewModel section)
+    private void SelectSection(ISearchSectionDetailViewModel? section)
     {
         if (section is null || section == SelectedSection)
         {
@@ -135,53 +103,28 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     }
 
     private VideoSearchSectionDetailViewModel CreateVideoSection(
-        IReadOnlyList<VideoInformation> videos,
+        IReadOnlyList<Drama>? dramas,
         int? page
     )
     {
         VideoSearchSectionDetailViewModel newSection = new(
-            _service,
+            _apiClient,
             _dispatcherQueue,
             _loggerFactory.CreateLogger<VideoSearchSectionDetailViewModel>()
         );
         newSection.Initialize(Keyword, new SearchPartition(0, Resources.Video));
-        newSection.SetFirstPageData(videos, page);
+        newSection.SetFirstPageData(dramas, page);
         return newSection;
     }
 
-    private ISearchSectionDetailViewModel CreateSection(SearchSectionType type)
+    private UserSearchSectionDetailViewModel CreateUserSection()
     {
-        ISearchSectionDetailViewModel? sectionDetail = type switch
-        {
-            SearchSectionType.Anime or SearchSectionType.Cinema => (ISearchSectionDetailViewModel)
-                new PgcSearchSectionDetailViewModel(
-                    _service,
-                    _dispatcherQueue,
-                    _loggerFactory.CreateLogger<PgcSearchSectionDetailViewModel>()
-                ),
-            SearchSectionType.User => new UserSearchSectionDetailViewModel(
-                _service,
-                _dispatcherQueue,
-                _loggerFactory.CreateLogger<UserSearchSectionDetailViewModel>()
-            ),
-            SearchSectionType.Article => new ArticleSearchSectionDetailViewModel(
-                _service,
-                _dispatcherQueue,
-                _loggerFactory.CreateLogger<ArticleSearchSectionDetailViewModel>()
-            ),
-            _ => null,
-        };
-
-        SearchPartition? partition = type switch
-        {
-            SearchSectionType.Anime => new SearchPartition(7, Resources.Calendar),
-            SearchSectionType.Cinema => new SearchPartition(8, Resources.FindDrama),
-            SearchSectionType.User => new SearchPartition(2, Resources.User),
-            SearchSectionType.Article => new SearchPartition(6, Resources.Article),
-            _ => null,
-        };
-
-        sectionDetail?.Initialize(Keyword, partition);
-        return sectionDetail;
+        UserSearchSectionDetailViewModel userSection = new(
+            _apiClient,
+            _dispatcherQueue,
+            _loggerFactory.CreateLogger<UserSearchSectionDetailViewModel>()
+        );
+        userSection.Initialize(Keyword, new SearchPartition(2, Resources.User));
+        return userSection;
     }
 }

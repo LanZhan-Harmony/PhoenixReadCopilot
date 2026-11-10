@@ -1,9 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Models.User;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models.User;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -12,15 +11,13 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class AccountViewModel
 {
-    private readonly IMyProfileService _myProfileService;
-    private readonly IMessageService _messageService;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly NavigationViewModel _navService;
     private readonly ILogger<AccountViewModel> _logger;
     private readonly AppViewModel _appViewModel;
-    private readonly IAuthenticationService _authService;
 
     [ObservableProperty]
-    public partial UserDetailProfile MyProfile { get; set; }
+    public partial UserDetailProfile? MyProfile { get; set; }
 
     [ObservableProperty]
     public partial bool IsInitializing { get; set; }
@@ -35,5 +32,5 @@ public sealed partial class AccountViewModel
     public partial int FansCount { get; set; }
 
     [ObservableProperty]
-    public partial string Introduce { get; set; }
+    public partial string Introduce { get; set; } = string.Empty;
 }

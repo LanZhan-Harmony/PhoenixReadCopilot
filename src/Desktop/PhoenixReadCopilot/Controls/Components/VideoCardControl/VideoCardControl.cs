@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
 using Windows.Foundation;
@@ -21,8 +22,6 @@ public abstract class VideoCardPresenter : LayoutUserControlBase<VideoItemViewMo
 /// </summary>
 public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewModel>
 {
-    private static readonly IResourceToolkit _resourceToolkit =
-        Ioc.Default.GetRequiredService<IResourceToolkit>();
     private CardControl? _rootCard;
     private VideoCardPresenter? _presenter;
 
@@ -95,26 +94,6 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         };
     }
 
-    private static MenuFlyoutItem CreatePrivatePlayItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.PlayInPrivate,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
-            Tag = nameof(ViewModel.PlayInPrivateCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateUserSpaceItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.EnterUserSpace,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Person },
-            Tag = nameof(ViewModel.ShowUserSpaceCommand),
-        };
-    }
-
     private static MenuFlyoutItem CreateAddViewLaterItem()
     {
         return new MenuFlyoutItem()
@@ -128,6 +107,18 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         };
     }
 
+    private static Brush? GetCriticalBrush()
+    {
+        if (Ioc.Default.GetService<IResourceToolkit>() is { } toolkit)
+        {
+            return toolkit.GetThemeBrush("SystemFillColorCriticalBrush");
+        }
+
+        return Application.Current.Resources.TryGetValue("SystemFillColorCriticalBrush", out object? brush)
+            ? brush as Brush
+            : null;
+    }
+
     private MenuFlyoutItem CreateRemoveViewLaterItem()
     {
         return new MenuFlyoutItem()
@@ -136,9 +127,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,
-                Foreground = Ioc
-                    .Default.GetRequiredService<IResourceToolkit>()
-                    .GetThemeBrush("SystemFillColorCriticalBrush"),
+                Foreground = GetCriticalBrush(),
             },
             Tag = nameof(ViewModel.RemoveViewLaterCommand),
         };
@@ -152,9 +141,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,
-                Foreground = Ioc
-                    .Default.GetRequiredService<IResourceToolkit>()
-                    .GetThemeBrush("SystemFillColorCriticalBrush"),
+                Foreground = GetCriticalBrush(),
             },
             Tag = nameof(ViewModel.RemoveHistoryCommand),
         };
@@ -168,31 +155,9 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             Icon = new FluentIcons.WinUI.SymbolIcon
             {
                 Symbol = FluentIcons.Common.Symbol.Delete,
-                Foreground = Ioc
-                    .Default.GetRequiredService<IResourceToolkit>()
-                    .GetThemeBrush("SystemFillColorCriticalBrush"),
+                Foreground = GetCriticalBrush(),
             },
             Tag = nameof(ViewModel.RemoveFavoriteCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateOpenInBroswerItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
-            Tag = nameof(ViewModel.OpenInBroswerCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateCopyUriItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.CopyVideoUrl,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
-            Tag = nameof(ViewModel.CopyUriCommand),
         };
     }
 
@@ -222,20 +187,12 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     private void CreateContextFlyout()
     {
         MenuFlyout menuFlyout = new() { ShouldConstrainToRootBounds = false };
-        menuFlyout.Items.Add(CreatePrivatePlayItem());
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
-        if (ViewModel.Style != VideoCardStyle.Moment && ViewModel.IsUserValid)
-        {
-            menuFlyout.Items.Add(CreateUserSpaceItem());
-        }
-
         if (ViewModel.Style != VideoCardStyle.ViewLater)
         {
             menuFlyout.Items.Add(CreateAddViewLaterItem());
         }
 
-        menuFlyout.Items.Add(CreateOpenInBroswerItem());
-        menuFlyout.Items.Add(CreateCopyUriItem());
         menuFlyout.Items.Add(CreatePinItem());
         if (ViewModel.Style == VideoCardStyle.ViewLater)
         {
@@ -264,12 +221,6 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
         {
             switch (item.Tag.ToString())
             {
-                case nameof(ViewModel.PlayInPrivateCommand):
-                    item.Command = ViewModel.PlayInPrivateCommand;
-                    break;
-                case nameof(ViewModel.ShowUserSpaceCommand):
-                    item.Command = ViewModel.ShowUserSpaceCommand;
-                    break;
                 case nameof(ViewModel.AddToViewLaterCommand):
                     item.Command = ViewModel.AddToViewLaterCommand;
                     break;
@@ -281,12 +232,6 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
                     break;
                 case nameof(ViewModel.RemoveFavoriteCommand):
                     item.Command = ViewModel.RemoveFavoriteCommand;
-                    break;
-                case nameof(ViewModel.OpenInBroswerCommand):
-                    item.Command = ViewModel.OpenInBroswerCommand;
-                    break;
-                case nameof(ViewModel.CopyUriCommand):
-                    item.Command = ViewModel.CopyUriCommand;
                     break;
                 case nameof(ViewModel.OpenInNewWindowCommand):
                     item.Command = ViewModel.OpenInNewWindowCommand;

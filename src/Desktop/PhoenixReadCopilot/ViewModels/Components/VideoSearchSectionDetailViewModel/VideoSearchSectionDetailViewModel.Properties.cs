@@ -2,10 +2,10 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class VideoSearchSectionDetailViewModel
 {
-    private readonly ISearchService _service;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<VideoSearchSectionDetailViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
 
@@ -22,6 +22,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     private int? _currentPage;
     private string _keyword;
     private bool _isPreventLoadMore;
+    private SearchPartition? _partition;
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }

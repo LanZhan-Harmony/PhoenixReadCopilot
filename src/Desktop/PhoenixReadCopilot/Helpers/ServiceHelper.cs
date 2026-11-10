@@ -49,9 +49,11 @@ internal class ServiceHelper
             .AddSingleton(DispatcherQueue.GetForCurrentThread())
             // 3. 通用工具与 XamlRootProvider
             .AddSingleton<ISettingsService, SettingsService>()
+            .AddSingleton<ILocalViewLaterService, LocalViewLaterService>()
             .AddSingleton<IAppToolkit, AppToolkit>()
             .AddSingleton<IFileToolkit, FileToolkit>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>()
+            .AddSingleton<IResourceToolkit, SharedResourceToolkit>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
             // 4. 红果客户端单例 (双轨并存)
             .AddSingleton<PhoenixReadApiClient>(_ =>

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -72,6 +73,19 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
+
+    [RelayCommand]
+    private void ShowUserSpace()
+    {
+        if (Data is not null)
+        {
+            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data);
+        }
+        else if (User is not null && !string.IsNullOrEmpty(User.Id))
+        {
+            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), User.Id);
+        }
+    }
 
     [RelayCommand]
     private async Task ToggleFollowAsync()

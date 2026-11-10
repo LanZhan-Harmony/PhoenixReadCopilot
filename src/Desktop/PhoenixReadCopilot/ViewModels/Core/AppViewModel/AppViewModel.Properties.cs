@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Models.Settings;
 using Richasy.BiliKernel.Bili.Authorization;
 using WinUIKernel.Share.Toolkits;
@@ -17,6 +18,7 @@ public sealed partial class AppViewModel : ViewModelBase
     private readonly IBiliTokenResolver _tokenResolver;
     private readonly IAppToolkit _appToolkit;
     private readonly AppSettings _settings;
+    private readonly PhoenixReadApiClient _apiClient;
 
     [ObservableProperty]
     public partial Window ActivatedWindow { get; set; }

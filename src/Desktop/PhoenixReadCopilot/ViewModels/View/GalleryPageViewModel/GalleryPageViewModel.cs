@@ -90,7 +90,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
             return;
         }
 
-        string fileName = Path.GetFileName(SelectedImage.Uri.ToString());
+        string fileName = Path.GetFileName(SelectedImage.Uri.AbsolutePath);
         string extension = Path.GetExtension(fileName);
         FileSavePicker savePicker = new(_appViewModel.ActivatedWindow.AppWindow.Id)
         {
@@ -132,7 +132,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
 
         UserProfilePersonalizationSettings profileSettings =
             UserProfilePersonalizationSettings.Current;
-        string fileName = Path.GetFileName(SelectedImage.Uri.ToString());
+        string fileName = Path.GetFileName(SelectedImage.Uri.AbsolutePath);
         string tempFolder = Path.Combine(PathHelper.TempFolderPath, "TempImages");
         Directory.CreateDirectory(tempFolder);
         string filePath = Path.Combine(tempFolder, fileName);

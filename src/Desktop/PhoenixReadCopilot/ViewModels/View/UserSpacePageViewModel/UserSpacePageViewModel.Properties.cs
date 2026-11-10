@@ -1,47 +1,46 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models.User;
+using PhoenixReadCopilot.Models.User;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 用户动态页视图模型.
+/// 用户空间/主页视图模型.
 /// </summary>
 public sealed partial class UserSpacePageViewModel
 {
-    private readonly IRelationshipService _relationshipService;
-    private readonly IUserService _userService;
-    private readonly ISearchService _searchService;
+    private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<UserSpacePageViewModel> _logger;
     private readonly AppViewModel _appViewModel;
     private readonly PinnerViewModel _pinnerViewModel;
     private readonly AppSettings _settings;
-    private readonly IMomentDiscoveryService _momentDiscoveryService;
     private readonly ILoggerFactory _loggerFactory;
-    private UserProfile _profile;
-    private int _searchPn;
+    private readonly DispatcherQueue _dispatcherQueue;
+
+    private string _userId = string.Empty;
+    private PhoenixReadApi.UserProfile? _phoenixProfile;
+    private int _searchOffset;
     private bool _preventLoadMoreSearch;
-    private CancellationTokenSource _searchCancellationTokenSource;
+    private CancellationTokenSource? _searchCancellationTokenSource;
 
     [ObservableProperty]
-    public partial List<UserMomentDetailViewModel> Sections { get; set; }
+    public partial List<UserMomentDetailViewModel>? Sections { get; set; }
 
     [ObservableProperty]
-    public partial UserMomentDetailViewModel SelectedSection { get; set; }
+    public partial UserMomentDetailViewModel? SelectedSection { get; set; }
 
     [ObservableProperty]
     public partial bool IsCommentsOpened { get; set; }
 
     [ObservableProperty]
-    public partial string UserName { get; set; }
+    public partial string UserName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsFollowed { get; set; }
@@ -53,23 +52,23 @@ public sealed partial class UserSpacePageViewModel
     public partial bool IsSearchMode { get; set; }
 
     [ObservableProperty]
-    public partial string SearchKeyword { get; set; }
+    public partial string SearchKeyword { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsSearchEmpty { get; set; }
 
     [ObservableProperty]
-    public partial UserCard Card { get; set; }
+    public partial UserCard? Card { get; set; }
 
     /// <summary>
     /// 区块初始化完成.
     /// </summary>
-    public event EventHandler Initialized;
+    public event EventHandler? Initialized;
 
     /// <summary>
     /// 搜索更新.
     /// </summary>
-    public event EventHandler SearchUpdated;
+    public event EventHandler? SearchUpdated;
 
     /// <summary>
     /// 评论模块.

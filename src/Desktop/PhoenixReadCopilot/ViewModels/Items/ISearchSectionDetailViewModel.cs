@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Core.Enums;
-using Richasy.BiliKernel.Models.Search;
+using PhoenixReadCopilot.Models.Search;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

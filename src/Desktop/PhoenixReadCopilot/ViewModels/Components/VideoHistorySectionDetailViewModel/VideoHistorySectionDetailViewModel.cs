@@ -1,15 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
 /// <summary>
-/// 视频历史记录视图模型.
+/// 视频/短剧历史记录视图模型.
 /// </summary>
 public sealed partial class VideoHistorySectionDetailViewModel
     : ViewModelBase,
@@ -19,11 +17,11 @@ public sealed partial class VideoHistorySectionDetailViewModel
     /// Initializes a new instance of the <see cref="VideoHistorySectionDetailViewModel"/> class.
     /// </summary>
     public VideoHistorySectionDetailViewModel(
-        IViewHistoryService service,
+        PhoenixReadApiClient apiClient,
         ILogger<VideoHistorySectionDetailViewModel> logger
     )
     {
-        _service = service;
+        _apiClient = apiClient;
         _logger = logger;
     }
 
@@ -59,29 +57,36 @@ public sealed partial class VideoHistorySectionDetailViewModel
         try
         {
             IsLoading = true;
-            ViewHistoryGroup? group = await _service.GetViewHistoryAsync(Type, _offset);
-            _offset = group.Offset ?? 0;
-            _isPreventLoadMore = group is null || _offset == 0;
-            if (group.Videos is not null)
+            ReadHistoryPage page = await _apiClient.GetHistoryAsync(
+                count: 20,
+                offset: _offset
+            );
+            _offset = page.NextOffset;
+            _isPreventLoadMore = !page.HasMore || page.Items.Count == 0;
+            if (page.Items.Count > 0)
             {
-                foreach (VideoInformation video in group.Videos)
+                foreach (ReadHistoryEntry entry in page.Items)
                 {
+                    if (Items.Any(p => p.HistoryEntry?.SeriesId == entry.SeriesId && p.HistoryEntry?.VideoId == entry.VideoId))
+                    {
+                        continue;
+                    }
+
                     Items.Add(
                         new VideoItemViewModel(
-                            video,
-                            VideoCardStyle.History,
+                            entry,
                             removeAction: RemoveHistory
                         )
                     );
                 }
-            }
 
-            ListUpdated?.Invoke(this, EventArgs.Empty);
+                ListUpdated?.Invoke(this, EventArgs.Empty);
+            }
         }
         catch (Exception ex)
         {
             _isPreventLoadMore = true;
-            _logger.LogError(ex, "加载视频历史记录时出错.");
+            _logger.LogError(ex, "加载短剧历史记录时出错.");
         }
         finally
         {

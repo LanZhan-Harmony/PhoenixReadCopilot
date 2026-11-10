@@ -1,13 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.Pages;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models.User;
 using Windows.System;
 using WinUIKernel.Share.ViewModels;
 
@@ -22,19 +18,15 @@ public sealed partial class AccountViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="AccountViewModel"/> class.
     /// </summary>
     public AccountViewModel(
-        IMyProfileService myProfileService,
-        IMessageService messageService,
+        PhoenixReadApiClient apiClient,
         NavigationViewModel navService,
         AppViewModel appViewModel,
-        IAuthenticationService authService,
         ILogger<AccountViewModel> logger
     )
     {
+        _apiClient = apiClient;
         _navService = navService;
-        _messageService = messageService;
-        _myProfileService = myProfileService;
         _appViewModel = appViewModel;
-        _authService = authService;
         _logger = logger;
     }
 
@@ -49,41 +41,42 @@ public sealed partial class AccountViewModel : ViewModelBase
         IsInitializing = true;
         try
         {
-            MyProfile = await _myProfileService.GetMyProfileAsync();
-            Introduce = string.IsNullOrEmpty(MyProfile.Introduce)
-                ? Resources.NoSelfIntroduce
-                : MyProfile.Introduce;
-            _appViewModel.IsInitialLoading = false;
-            _appViewModel.CheckUpateCommand.Execute(null);
-            UpdateUnreadCommand.Execute(null);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "无法获取登录用户的资料");
-
-            // 用户可能更改了密码，提醒用户是否需要重新登录.
-            ContentDialog dialog = new()
+            bool isValid = await _apiClient.ValidateSessionAsync();
+            if (isValid)
             {
-                Title = Resources.LoginExpiredTitle,
-                Content = Resources.LoginExpiredDescription,
-                PrimaryButtonText = Resources.ReSignIn,
-                CloseButtonText = Resources.Exit,
-                DefaultButton = ContentDialogButton.Primary,
-                XamlRoot = _appViewModel.ActivatedWindow.Content.XamlRoot,
-            };
+                CurrentUserInfo info = await _apiClient.GetCurrentUserInfoAsync();
+                UserAvatar? avatar = !string.IsNullOrEmpty(info.AvatarUrl) && Uri.TryCreate(info.AvatarUrl, UriKind.Absolute, out Uri? uri)
+                    ? new UserAvatar { Uri = uri }
+                    : null;
 
-            ContentDialogResult result = await dialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
-                await SignOutAsync();
+                MyProfile = new UserDetailProfile
+                {
+                    User = new PhoenixReadCopilot.Models.User.User
+                    {
+                        Id = info.Id,
+                        Name = string.IsNullOrEmpty(info.Name) ? "红果短剧用户" : info.Name,
+                        Avatar = avatar,
+                    },
+                    Introduce = !string.IsNullOrEmpty(info.Description) ? info.Description : (info.IsVip ? "红果 VIP 会员" : "红果短剧用户"),
+                    IsVip = info.IsVip,
+                };
+                Introduce = MyProfile.Introduce;
             }
             else
             {
-                App.Current.Exit();
+                MyProfile = null;
             }
         }
-
-        IsInitializing = false;
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "获取已登录用户信息失败，进入未登录状态");
+            MyProfile = null;
+        }
+        finally
+        {
+            _appViewModel.IsInitialLoading = false;
+            IsInitializing = false;
+        }
     }
 
     [RelayCommand]
@@ -96,25 +89,24 @@ public sealed partial class AccountViewModel : ViewModelBase
 
         try
         {
-            UserCommunityInformation communityInformation =
-                await _myProfileService.GetMyCommunityInformationAsync();
-            MomentCount = communityInformation.MomentCount ?? 0;
-            FollowCount = communityInformation.FollowCount ?? 0;
-            FansCount = communityInformation.FansCount ?? 0;
-            UpdateUnreadCommand.Execute(null);
+            DramaPage favs = await _apiClient.GetFavoritesAsync(count: 1);
+            ReadHistoryPage history = await _apiClient.GetHistoryAsync(count: 1);
+            FollowCount = (int)favs.Total;
+            MomentCount = (int)history.Total;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "已登录用户的社区信息获取失败");
+            _logger.LogWarning(ex, "获取社区/收藏计数失败");
         }
     }
 
     [RelayCommand]
     private async Task SignOutAsync()
     {
-        await _authService.SignOutAsync().ConfigureAwait(false);
+        _apiClient.Logout();
         MyProfile = null;
         _appViewModel.RestartCommand.Execute(null);
+        await Task.CompletedTask;
     }
 
     [RelayCommand]
@@ -125,18 +117,29 @@ public sealed partial class AccountViewModel : ViewModelBase
             return;
         }
 
-        await Launcher.LaunchUriAsync(new Uri($"https://space.bilibili.com/{MyProfile.User.Id}"));
+        await Launcher.LaunchUriAsync(new Uri($"https://hongguoduanju.com/user/{MyProfile.User.Id}"));
     }
 
     [RelayCommand]
-    private void ShowFans() => _navService.NavigateToOver(typeof(FansPage), MyProfile.User.Id);
+    private void ShowFans()
+    {
+        if (MyProfile is not null)
+        {
+            _navService.NavigateToOver(typeof(FansPage), MyProfile.User.Id);
+        }
+    }
 
     [RelayCommand]
-    private void ShowFollows() =>
-        _navService.NavigateToOver(typeof(FollowsPage), MyProfile.User.Id);
+    private void ShowFollows() => ShowFavorites();
 
     [RelayCommand]
-    private void ShowMoments() => _navService.NavigateToOver(typeof(UserSpacePage), MyProfile.User);
+    private void ShowMoments()
+    {
+        if (MyProfile is not null)
+        {
+            _navService.NavigateToOver(typeof(UserSpacePage), MyProfile.User.Id);
+        }
+    }
 
     [RelayCommand]
     private void ShowViewLater() => _navService.NavigateToOver(typeof(ViewLaterPage));
@@ -148,18 +151,5 @@ public sealed partial class AccountViewModel : ViewModelBase
     private void ShowFavorites() => _navService.NavigateToOver(typeof(FavoritesPage));
 
     [RelayCommand]
-    private async Task UpdateUnreadAsync()
-    {
-        try
-        {
-            UnreadInformation unreadInfo = await _messageService.GetUnreadInformationAsync();
-            _navService
-                .FooterItems.First(p => p.PageKey == typeof(MessagePage).FullName)
-                .ShowUnread = unreadInfo.Total > 0;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "未读消息获取失败");
-        }
-    }
+    private static async Task UpdateUnreadAsync() => await Task.CompletedTask;
 }

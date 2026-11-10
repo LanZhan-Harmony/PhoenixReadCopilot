@@ -45,7 +45,10 @@
                        FontWeight="SemiBold"
                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                        Text="制作名单"/>
-            <ListView ItemsSource="{x:Bind ViewModel.Credits, Mode=OneWay}" SelectionMode="None">
+            <ListView ItemsSource="{x:Bind ViewModel.Credits, Mode=OneWay}"
+                      SelectionMode="None"
+                      IsItemClickEnabled="True"
+                      ItemClick="OnCreditItemClick">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="items:DramaCreditItemViewModel">
                         <Grid Padding="0,6" ColumnSpacing="12">

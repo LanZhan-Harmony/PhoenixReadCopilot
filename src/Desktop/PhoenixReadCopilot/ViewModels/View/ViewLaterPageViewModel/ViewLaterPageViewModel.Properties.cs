@@ -2,9 +2,9 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -13,12 +13,10 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class ViewLaterPageViewModel
 {
-    private readonly IViewLaterService _service;
+    private readonly ILocalViewLaterService _localService;
     private readonly ILogger<ViewLaterPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly AppSettings _settings;
-
-    private int _pageNumber;
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -32,7 +30,7 @@ public sealed partial class ViewLaterPageViewModel
     /// <summary>
     /// 视频列表已完成更新.
     /// </summary>
-    public event EventHandler ListUpdated;
+    public event EventHandler? ListUpdated;
 
     /// <summary>
     /// 视频列表.

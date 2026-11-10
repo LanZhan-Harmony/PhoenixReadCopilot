@@ -1,10 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Bili.Authorization;
+using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 
@@ -15,18 +18,20 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class StartupPageViewModel : ViewModelBase
 {
+    private DispatcherTimer? _countdownTimer;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPageViewModel"/> class.
     /// </summary>
     public StartupPageViewModel(
-        IAuthenticationService authenticationService,
+        PhoenixReadApiClient apiClient,
         ILogger<StartupPageViewModel> logger,
         DispatcherQueue dispatcherQueue,
         IAppToolkit appToolkit,
         AppViewModel appViewModel
     )
     {
-        _authenticationService = authenticationService;
+        _apiClient = apiClient;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
         _appToolkit = appToolkit;
@@ -36,7 +41,6 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     /// <summary>
     /// 初始化视图模型.
     /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
     [RelayCommand]
     private async Task InitializeAsync(Image qrcodeImageControl)
     {
@@ -56,27 +60,192 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken ct = _cancellationTokenSource.Token;
+
         try
         {
             IsQRCodeLoading = true;
-            await _authenticationService.SignInAsync(
-                cancellationToken: _cancellationTokenSource.Token
-            );
-            bool isSignedIn = await CheckAuthorizeStatusAsync();
-            if (isSignedIn)
+            ErrorTip = string.Empty;
+
+            QrCodeLoginSession session = await _apiClient.CreateQrCodeLoginAsync(ct);
+            if (session.QrCodeImageBytes is { Length: > 0 })
             {
-                ExitCommand.Execute(true);
+                RenderQRCode(session.QrCodeImageBytes);
             }
             else
             {
-                _logger.LogWarning("未能成功获取授权信息，扫码可能出现了异常.");
+                IsQRCodeLoading = false;
             }
+
+            // 轮询检查扫码登录状态
+            _ = Task.Run(async () =>
+            {
+                while (!ct.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await Task.Delay(2000, ct);
+                        if (ct.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                        QrCodeCheckResult result = await _apiClient.CheckQrCodeStatusAsync(session.Token, ct);
+                        if (result.Status == QrCodeLoginStatus.Confirmed)
+                        {
+                            _dispatcherQueue.TryEnqueue(() =>
+                            {
+                                RequestClose?.Invoke(this, EventArgs.Empty);
+                                if (_appViewModel.Windows.Any(p => p is StartupWindow))
+                                {
+                                    _appViewModel.EnterMainWindowCommand.Execute(null);
+                                }
+                                else
+                                {
+                                    ItemServices.Account.InitializeCommand.Execute(null);
+                                }
+                            });
+                            break;
+                        }
+                        else if (result.Status == QrCodeLoginStatus.Expired)
+                        {
+                            _dispatcherQueue.TryEnqueue(() =>
+                            {
+                                ErrorTip = "二维码已过期，请刷新";
+                            });
+                            break;
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "检查二维码状态异常");
+                    }
+                }
+            }, ct);
+        }
+        catch (OperationCanceledException)
+        {
+            // Ignore cancellation
         }
         catch (Exception ex)
         {
             IsQRCodeLoading = false;
             ErrorTip = ex.Message;
-            _logger.LogInformation(ex, "登录过程中出现异常.");
+            _logger.LogError(ex, "获取扫码二维码失败.");
+        }
+    }
+
+    [RelayCommand]
+    private async Task SendVerificationCodeAsync()
+    {
+        string phone = PhoneNumber.Trim();
+        if (string.IsNullOrWhiteSpace(phone) || phone.Length != 11)
+        {
+            ErrorTip = "请输入正确的11位手机号码";
+            return;
+        }
+
+        try
+        {
+            IsSmsSending = true;
+            ErrorTip = string.Empty;
+            VerificationCodeResult result = await _apiClient.SendVerificationCodeAsync(phone);
+            int wait = result.RetryAfterSeconds > 0 ? result.RetryAfterSeconds : 60;
+            StartCountdown(wait);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "发送短信验证码失败");
+            ErrorTip = ex.Message;
+        }
+        finally
+        {
+            IsSmsSending = false;
+        }
+    }
+
+    private void StartCountdown(int seconds)
+    {
+        _countdownTimer?.Stop();
+        SendCodeCountdown = seconds;
+        _countdownTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _countdownTimer.Tick += (s, e) =>
+        {
+            SendCodeCountdown--;
+            if (SendCodeCountdown <= 0)
+            {
+                _countdownTimer.Stop();
+            }
+        };
+        _countdownTimer.Start();
+    }
+
+    [RelayCommand]
+    private async Task LoginWithSmsAsync()
+    {
+        string phone = PhoneNumber.Trim();
+        string code = VerificationCode.Trim();
+
+        if (string.IsNullOrWhiteSpace(phone) || phone.Length != 11)
+        {
+            ErrorTip = "请输入正确的11位手机号码";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            ErrorTip = "请输入收到的短信验证码";
+            return;
+        }
+
+        try
+        {
+            IsLoggingIn = true;
+            ErrorTip = string.Empty;
+            await _apiClient.LoginAsync(phone, code);
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                RequestClose?.Invoke(this, EventArgs.Empty);
+                if (_appViewModel.Windows.Any(p => p is StartupWindow))
+                {
+                    _appViewModel.EnterMainWindowCommand.Execute(null);
+                }
+                else
+                {
+                    ItemServices.Account.InitializeCommand.Execute(null);
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "短信登录失败");
+            ErrorTip = ex.Message;
+        }
+        finally
+        {
+            IsLoggingIn = false;
+        }
+    }
+
+    [RelayCommand]
+    private void SkipLogin()
+    {
+        if (_cancellationTokenSource is not null)
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+        }
+
+        _countdownTimer?.Stop();
+        RequestClose?.Invoke(this, EventArgs.Empty);
+        if (_appViewModel.Windows.Any(p => p is StartupWindow))
+        {
+            _appViewModel.EnterMainWindowCommand.Execute(null);
         }
     }
 
@@ -90,6 +259,8 @@ public sealed partial class StartupPageViewModel : ViewModelBase
             _cancellationTokenSource = null;
         }
 
+        _countdownTimer?.Stop();
+
         if (shouldRestart)
         {
             _appViewModel.RestartCommand.Execute(null);
@@ -101,7 +272,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     {
         if (QRCodeImage is null)
         {
-            throw new InvalidOperationException("二维码图片控件尚未就绪，请初始化模块.");
+            return;
         }
 
         _dispatcherQueue.TryEnqueue(async () =>
@@ -112,23 +283,5 @@ public sealed partial class StartupPageViewModel : ViewModelBase
             QRCodeImage.Source = bitmap;
             IsQRCodeLoading = false;
         });
-    }
-
-    private async Task<bool> CheckAuthorizeStatusAsync()
-    {
-        IAuthenticationService tokenResolver = _authenticationService;
-        try
-        {
-            await tokenResolver
-                .EnsureTokenAsync(_cancellationTokenSource?.Token ?? CancellationToken.None)
-                .ConfigureAwait(false);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "检查授权状态时出现异常.");
-        }
-
-        return false;
     }
 }

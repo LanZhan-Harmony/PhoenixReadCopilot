@@ -11,9 +11,7 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.Toolkits;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Globalization;
-using Windows.System;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -65,11 +63,13 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     public VideoItemViewModel(
         Drama drama,
         VideoCardStyle style = VideoCardStyle.Recommend,
-        Action<VideoItemViewModel>? removeAction = null
+        Action<VideoItemViewModel>? removeAction = null,
+        VideoFavoriteFolder? favFolder = null
     )
         : base(CreateVideoInformation(drama))
     {
         _removeAction = removeAction;
+        _favFolder = favFolder;
         Drama = drama;
         Style = style;
         Title = drama.Title;
@@ -111,7 +111,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         _removeAction = removeAction;
         Actor = actor;
-        ActorId = !string.IsNullOrEmpty(actor.ActorId) ? actor.ActorId : actor.UserId;
+        ActorId = !string.IsNullOrEmpty(actor.UserId) ? actor.UserId : actor.ActorId;
         Style = VideoCardStyle.Rank;
         Title = actor.Name;
         Rank = actor.Position;
@@ -144,6 +144,50 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         IsUserValid = true;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class from a <see cref="ReadHistoryEntry"/>.
+    /// </summary>
+    public VideoItemViewModel(
+        ReadHistoryEntry history,
+        Action<VideoItemViewModel>? removeAction = null
+    )
+        : base(CreateHistoryInformation(history))
+    {
+        _removeAction = removeAction;
+        HistoryEntry = history;
+        Style = VideoCardStyle.History;
+        Title = history.Title;
+        Subtitle = history.EpisodeNumber > 0 ? $"第 {history.EpisodeNumber} 集" : string.Empty;
+
+        if (
+            !string.IsNullOrEmpty(history.CoverUrl)
+            && Uri.TryCreate(history.CoverUrl, UriKind.Absolute, out Uri? coverUri)
+        )
+        {
+            Cover = coverUri;
+        }
+
+        if (history.CurrentPositionMs > 0)
+        {
+            ProgressText = AppToolkit.FormatDuration(
+                TimeSpan.FromMilliseconds(history.CurrentPositionMs)
+            );
+        }
+    }
+
+    private static VideoInformation CreateHistoryInformation(ReadHistoryEntry history)
+    {
+        BiliImage? cover =
+            !string.IsNullOrEmpty(history.CoverUrl)
+            && Uri.TryCreate(history.CoverUrl, UriKind.Absolute, out Uri? uri)
+                ? new BiliImage(uri)
+                : null;
+        return new VideoInformation(
+            new MediaIdentifier(history.SeriesId, history.Title, cover),
+            null
+        );
+    }
+
     private static VideoInformation CreateActorInformation(ActorLeaderboardItem actor)
     {
         BiliImage? cover =
@@ -166,9 +210,25 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     [RelayCommand]
-    private void Play()
+    private void ShowUserSpace()
     {
         if (Actor is not null)
+        {
+            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Actor);
+            return;
+        }
+
+        string? targetId = !string.IsNullOrEmpty(ActorId) ? ActorId : null;
+        if (!string.IsNullOrEmpty(targetId))
+        {
+            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), targetId);
+        }
+    }
+
+    [RelayCommand]
+    private void Play()
+    {
+        if (Actor is not null || !string.IsNullOrEmpty(ActorId))
         {
             ShowUserSpace();
             return;
@@ -184,7 +244,12 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         PlayerType preferPlayer = ItemServices.Settings.PlayerType;
         if (preferPlayer == PlayerType.Web)
         {
-            ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), GetWebUri().ToString());
+            return;
+        }
+
+        if (HistoryEntry is not null)
+        {
+            ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), HistoryEntry.SeriesId);
             return;
         }
 
@@ -195,33 +260,18 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     [RelayCommand]
-    private void PlayInPrivate() =>
-        ItemServices.Navigation.NavigateToOver(
-            typeof(VideoPlayerPage),
-            new VideoSnapshot(Data, true)
-        );
-
-    [RelayCommand]
-    private void ShowUserSpace()
-    {
-        if (!string.IsNullOrEmpty(ActorId))
-        {
-            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), ActorId);
-            return;
-        }
-
-        if (Data.Publisher?.User is not null)
-        {
-            ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.Publisher.User);
-        }
-    }
-
-    [RelayCommand]
     private async Task AddToViewLaterAsync()
     {
         try
         {
-            await ItemServices.ViewLater.AddAsync(Data.Identifier.Id);
+            if (Drama is not null)
+            {
+                await ItemServices.LocalViewLater.AddAsync(Drama);
+            }
+            else
+            {
+                await ItemServices.ViewLater.AddAsync(Data.Identifier.Id);
+            }
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.AddViewLaterSucceed, InfoType.Success)
             );
@@ -238,7 +288,14 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            await ItemServices.ViewLater.RemoveAsync([Data.Identifier.Id]);
+            if (Drama is not null)
+            {
+                await ItemServices.LocalViewLater.RemoveAsync(Drama.Id);
+            }
+            else
+            {
+                await ItemServices.ViewLater.RemoveAsync([Data.Identifier.Id]);
+            }
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
@@ -255,7 +312,17 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            await ItemServices.ViewHistory.RemoveVideoHistoryItemAsync(Data);
+            if (HistoryEntry is not null)
+            {
+                await ItemServices.PhoenixRead.DeleteHistoryAsync(
+                    HistoryEntry.SeriesId,
+                    HistoryEntry.VideoId
+                );
+            }
+            else
+            {
+                await ItemServices.ViewHistory.RemoveVideoHistoryItemAsync(Data);
+            }
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
@@ -272,7 +339,18 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            await ItemServices.Favorite.RemoveVideoAsync(_favFolder, Data.Identifier);
+            if (Drama is not null)
+            {
+                await ItemServices.PhoenixRead.SetFavoriteAsync(
+                    Drama.Id,
+                    string.Empty,
+                    active: false
+                );
+            }
+            else
+            {
+                await ItemServices.Favorite.RemoveVideoAsync(_favFolder, Data.Identifier);
+            }
             _removeAction?.Invoke(this);
         }
         catch (Exception ex)
@@ -285,25 +363,13 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     [RelayCommand]
-    private async Task OpenInBroswerAsync() => await Launcher.LaunchUriAsync(GetWebUri()).AsTask();
-
-    [RelayCommand]
     private void OpenInNewWindow() => new PlayerWindow().OpenVideo(new VideoSnapshot(Data));
-
-    [RelayCommand]
-    private void CopyUri()
-    {
-        DataPackage dp = new();
-        dp.SetText(GetWebUri().ToString());
-        dp.SetWebLink(GetWebUri());
-        Clipboard.SetContent(dp);
-        ItemServices.App.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
-    }
 
     [RelayCommand]
     private void Pin()
     {
-        string coverUri = Cover?.ToString() ?? Data.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
+        string coverUri =
+            Cover?.ToString() ?? Data.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
         PinItem pinItem = new(
             Data.Identifier.Id,
             Data.Identifier.Title,
@@ -311,18 +377,5 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             PinContentType.Video
         );
         ItemServices.Pinner.AddItemCommand.Execute(pinItem);
-    }
-
-    private Uri GetWebUri()
-    {
-        if (Drama is not null)
-        {
-            return new Uri($"https://hongguoduanju.com/drama/{Drama.Id}");
-        }
-
-        string? shortLink = Data.GetExtensionIfNotNull<string>(VideoExtensionDataId.ShortLink);
-        return string.IsNullOrEmpty(shortLink)
-            ? new Uri($"https://www.bilibili.com/video/av{Data.Identifier.Id}")
-            : new Uri(shortLink);
     }
 }

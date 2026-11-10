@@ -1,16 +1,19 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Moment;
+using Richasy.BiliKernel.Models.Appearance;
+using Richasy.BiliKernel.Models.Media;
+using Richasy.BiliKernel.Models.Moment;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
 /// <summary>
-/// 用户动态详情视图模型.
+/// 用户动态/作品详情视图模型.
 /// </summary>
 public sealed partial class UserMomentDetailViewModel : ViewModelBase
 {
@@ -18,11 +21,11 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="UserMomentDetailViewModel"/> class.
     /// </summary>
     public UserMomentDetailViewModel(
-        IMomentDiscoveryService service,
+        PhoenixReadApiClient apiClient,
         ILogger<UserMomentDetailViewModel> logger
     )
     {
-        _service = service;
+        _apiClient = apiClient;
         _logger = logger;
     }
 
@@ -47,11 +50,88 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     /// <returns>结果.</returns>
     public bool IsVideo() => _isVideo;
 
-    [RelayCommand]
-    private void Reset(UserProfile profile)
+    /// <summary>
+    /// 设置初始短剧列表.
+    /// </summary>
+    public void SetInitialData(IReadOnlyList<Drama>? dramas, string? cursor, bool hasMore)
     {
         Clear();
-        _user = profile;
+        if (dramas is { Count: > 0 })
+        {
+            foreach (Drama drama in dramas)
+            {
+                MomentInformation momentInfo = CreateDramaMoment(drama);
+                Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Video, _showCommentAction!));
+            }
+
+            ListUpdated?.Invoke(this, EventArgs.Empty);
+            _offset = cursor;
+            _preventLoadMore = !hasMore;
+            IsEmpty = false;
+        }
+        else
+        {
+            _offset = cursor;
+            _preventLoadMore = false;
+            IsEmpty = true;
+        }
+    }
+
+    /// <summary>
+    /// 设置初始动态列表.
+    /// </summary>
+    public void SetInitialData(IReadOnlyList<UserActivity>? activities, string? cursor, bool hasMore)
+    {
+        Clear();
+        if (activities is { Count: > 0 })
+        {
+            foreach (UserActivity activity in activities)
+            {
+                MomentInformation momentInfo = CreateActivityMoment(activity);
+                Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Comprehensive, _showCommentAction!));
+            }
+
+            ListUpdated?.Invoke(this, EventArgs.Empty);
+            _offset = cursor;
+            _preventLoadMore = !hasMore;
+            IsEmpty = false;
+        }
+        else
+        {
+            _offset = cursor;
+            _preventLoadMore = false;
+            IsEmpty = true;
+        }
+    }
+
+    [RelayCommand]
+    private void Reset(object userParam)
+    {
+        Clear();
+        if (userParam is PhoenixReadApi.UserProfile profile)
+        {
+            _userId = profile.User.Id;
+            if (_isVideo)
+            {
+                SetInitialData(profile.RelatedDramas, profile.RelatedDramasPage.Cursor, profile.RelatedDramasPage.HasMore);
+            }
+            else
+            {
+                SetInitialData(profile.Activities, profile.ActivitiesPage.Cursor, profile.ActivitiesPage.HasMore);
+            }
+        }
+        else if (userParam is string id)
+        {
+            _userId = id;
+        }
+        else if (userParam is ActorLeaderboardItem actor)
+        {
+            _userId = !string.IsNullOrEmpty(actor.UserId) ? actor.UserId : actor.ActorId;
+        }
+        else if (userParam is Richasy.BiliKernel.Models.User.UserProfile bp)
+        {
+            _userId = bp.Id;
+        }
     }
 
     [RelayCommand]
@@ -78,13 +158,13 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         _offset = null;
         IsEmpty = false;
         _preventLoadMore = false;
-        Items = [];
+        Items.Clear();
     }
 
     [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        if (IsEmpty || IsLoading || _preventLoadMore)
+        if (IsLoading || _preventLoadMore || string.IsNullOrEmpty(_userId))
         {
             return;
         }
@@ -92,40 +172,87 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         try
         {
             IsLoading = true;
-            (
-                IReadOnlyList<Richasy.BiliKernel.Models.Moment.MomentInformation>? moments,
-                string? offset,
-                bool hasMore
-            ) = _isVideo
-                ? await _service.GetUserVideoMomentsAsync(_user, _offset)
-                : await _service.GetUserComprehensiveMomentsAsync(_user, _offset);
-            _offset = offset;
-            _preventLoadMore = !hasMore || string.IsNullOrEmpty(offset);
-            if (moments is not null)
+            if (_isVideo)
             {
-                foreach (
-                    MomentItemViewModel? item in moments.Select(p => new MomentItemViewModel(
-                        p,
-                        _isVideo ? MomentCardStyle.Video : MomentCardStyle.Comprehensive,
-                        _showCommentAction
-                    ))
-                )
+                UserDramaPage page = await _apiClient.GetUserRelatedDramasAsync(
+                    _userId,
+                    count: 18,
+                    cursor: _offset ?? string.Empty
+                );
+                _offset = page.Cursor;
+                _preventLoadMore = !page.HasMore || string.IsNullOrEmpty(_offset);
+                if (page.Items.Count > 0)
                 {
-                    Items.Add(item);
+                    foreach (Drama drama in page.Items)
+                    {
+                        MomentInformation momentInfo = CreateDramaMoment(drama);
+                        Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Video, _showCommentAction!));
+                    }
+                    ListUpdated?.Invoke(this, EventArgs.Empty);
                 }
-
-                ListUpdated?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                UserActivityPage page = await _apiClient.GetUserActivitiesAsync(
+                    _userId,
+                    count: 18,
+                    cursor: _offset ?? string.Empty
+                );
+                _offset = page.Cursor;
+                _preventLoadMore = !page.HasMore || string.IsNullOrEmpty(_offset);
+                if (page.Items.Count > 0)
+                {
+                    foreach (UserActivity activity in page.Items)
+                    {
+                        MomentInformation momentInfo = CreateActivityMoment(activity);
+                        Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Comprehensive, _showCommentAction!));
+                    }
+                    ListUpdated?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
         catch (Exception ex)
         {
             _preventLoadMore = true;
-            _logger.LogError(ex, "加载动态列表失败.");
+            _logger.LogError(ex, "加载用户动态/作品失败.");
         }
         finally
         {
             IsEmpty = Items.Count == 0;
             IsLoading = false;
         }
+    }
+
+    private static MomentInformation CreateDramaMoment(Drama drama)
+    {
+        BiliImage? cover = !string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? coverUri)
+            ? new BiliImage(coverUri)
+            : null;
+
+        VideoInformation video = new(
+            new MediaIdentifier(drama.Id, drama.Title, cover),
+            null
+        );
+
+        return new MomentInformation(
+            id: drama.Id,
+            user: new Richasy.BiliKernel.Models.User.UserProfile(drama.Id, drama.Category ?? "短剧", null),
+            communityInformation: null,
+            tip: !string.IsNullOrEmpty(drama.Score) ? $"评分: {drama.Score}" : null,
+            description: new EmoteText(drama.Remark ?? drama.Title, null),
+            data: video
+        );
+    }
+
+    private static MomentInformation CreateActivityMoment(UserActivity activity)
+    {
+        return new MomentInformation(
+            id: activity.Id,
+            user: null,
+            communityInformation: null,
+            tip: null,
+            description: new EmoteText(activity.Text, null),
+            data: null
+        );
     }
 }
