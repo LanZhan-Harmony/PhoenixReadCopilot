@@ -150,9 +150,9 @@ internal sealed class GameLoopThread : IGameLoopThread
         {
             if (_startDispatcher && _dispatcherQueue != null)
             {
-                // 调度器模式：通过 DispatcherQueue 排队
+                // 调度器模式：通过 DispatcherQueue 以 High 最高优先级排队立即执行
                 _dispatcherQueue.TryEnqueue(
-                    DispatcherQueuePriority.Normal,
+                    DispatcherQueuePriority.High,
                     () =>
                     {
                         try
@@ -261,12 +261,13 @@ internal sealed class GameLoopThread : IGameLoopThread
                 {
                     try
                     {
-                        // 简单的轮询循环，让 DispatcherQueue 处理消息
-                        // 注意：WinUI 3 的 DispatcherQueue 工作方式与 UWP 不同
-                        while (_startDispatcher && !_shutdownRequested)
+                        // 使用监视器等待而不是每毫秒 Thread.Sleep(1) 忙等，大幅降低 CPU 调度抖动
+                        lock (_lock)
                         {
-                            // 让调度器有机会处理排队的工作
-                            Thread.Sleep(1);
+                            while (_startDispatcher && !_shutdownRequested)
+                            {
+                                Monitor.Wait(_lock, 100);
+                            }
                         }
                     }
                     finally

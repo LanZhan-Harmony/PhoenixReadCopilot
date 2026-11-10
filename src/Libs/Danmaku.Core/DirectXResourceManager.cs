@@ -29,7 +29,7 @@ internal sealed class DirectXResourceManager : IDisposable
     private readonly Lock _resizeLock = new();
 
     /// <summary>
-    /// 渲染呈现与交换链尺寸调整的互斥锁（使用 .NET 9+ 高性能 Lock）.
+    /// 渲染呈现与交换链尺寸调整的互斥锁.
     /// </summary>
     public Lock RenderLock { get; } = new();
 
