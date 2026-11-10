@@ -29,6 +29,11 @@ internal sealed class DirectXResourceManager : IDisposable
     private readonly Lock _resizeLock = new();
 
     /// <summary>
+    /// 渲染呈现与交换链尺寸调整的互斥锁（使用 .NET 9+ 高性能 Lock）.
+    /// </summary>
+    public Lock RenderLock { get; } = new();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="DirectXResourceManager"/> class.
     /// </summary>
     /// <param name="swapChainPanel">SwapChainPanel 控件.</param>
@@ -429,42 +434,45 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <param name="height">新高度（逻辑像素）.</param>
     public void ResizeSwapChain(float width, float height)
     {
-        if (SwapChain == null)
+        lock (RenderLock)
         {
-            return;
+            if (SwapChain == null)
+            {
+                return;
+            }
+
+            // 更新画布大小（物理像素，用于超采样渲染）
+            _canvasWidth = width * _scale;
+            _canvasHeight = height * _scale;
+
+            D2DContext.Target = null;
+            D2DTargetBitmap?.Dispose();
+            D2DTargetBitmap = null;
+            RenderTargetView?.Dispose();
+            RenderTargetView = null;
+
+            // 超采样模式：SwapChain 使用物理像素大小
+            var physicalWidth = (uint)Math.Max(1, (int)_canvasWidth);
+            var physicalHeight = (uint)Math.Max(1, (int)_canvasHeight);
+
+            SwapChain.ResizeBuffers(
+                2,
+                physicalWidth,
+                physicalHeight,
+                Format.B8G8R8A8_UNorm,
+                SwapChainFlags.None
+            );
+
+            // 重新设置变换矩阵
+            SetTransformMatrix();
+
+            CreateRenderTargetView();
+            CreateD2DRenderTarget();
+
+            Logger.Log(
+                $"SwapChain resized: Logical={width}x{height}, Physical={physicalWidth}x{physicalHeight}, Scale={_scale}"
+            );
         }
-
-        // 更新画布大小（物理像素，用于超采样渲染）
-        _canvasWidth = width * _scale;
-        _canvasHeight = height * _scale;
-
-        D2DContext.Target = null;
-        D2DTargetBitmap?.Dispose();
-        D2DTargetBitmap = null;
-        RenderTargetView?.Dispose();
-        RenderTargetView = null;
-
-        // 超采样模式：SwapChain 使用物理像素大小
-        var physicalWidth = (uint)Math.Max(1, (int)_canvasWidth);
-        var physicalHeight = (uint)Math.Max(1, (int)_canvasHeight);
-
-        SwapChain.ResizeBuffers(
-            2,
-            physicalWidth,
-            physicalHeight,
-            Format.B8G8R8A8_UNorm,
-            SwapChainFlags.None
-        );
-
-        // 重新设置变换矩阵
-        SetTransformMatrix();
-
-        CreateRenderTargetView();
-        CreateD2DRenderTarget();
-
-        Logger.Log(
-            $"SwapChain resized: Logical={width}x{height}, Physical={physicalWidth}x{physicalHeight}, Scale={_scale}"
-        );
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
 using Microsoft.Extensions.ObjectPool;
@@ -292,9 +293,7 @@ internal sealed class ObjectPoolManager : IDisposable
             entry.Bitmap = null;
 
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(
-                $"✅ 释放纹理: Hash={key.TextHash:X8} (缓存剩余: {_textureCache.Count})"
-            );
+            Debug.WriteLine($"✅ 释放纹理: Hash={key.Text} (缓存剩余: {_textureCache.Count})");
 #endif
         }
     }
