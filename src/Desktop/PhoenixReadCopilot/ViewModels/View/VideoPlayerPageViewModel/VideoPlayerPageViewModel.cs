@@ -77,7 +77,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         if (parameter is VideoSnapshot snapshot)
         {
             seriesId = snapshot.Video.Identifier.Id;
-            IsPrivatePlay = snapshot.IsPrivate;
         }
         else if (parameter is Drama drama)
         {
@@ -323,7 +322,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         bool shouldReport = _settings.ShouldReportProgress;
         if (
             !shouldReport
-            || IsPrivatePlay
             || string.IsNullOrEmpty(_seriesId)
             || _currentEpisode is null
             || progress == 0

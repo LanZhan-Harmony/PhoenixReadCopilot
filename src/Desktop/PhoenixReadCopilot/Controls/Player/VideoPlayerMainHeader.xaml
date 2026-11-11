@@ -16,13 +16,6 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ic:SymbolIcon Margin="0,0,12,0"
-                       VerticalAlignment="Center"
-                       FontSize="14"
-                       Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                       Symbol="EyeOff"
-                       ToolTipService.ToolTip="{x:Bind strings:Resources.PlayInPrivateTip}"
-                       Visibility="{x:Bind ViewModel.IsPrivatePlay, Mode=OneWay}"/>
         <TextBlock Grid.Column="1"
                    Margin="0,0,12,0"
                    HorizontalAlignment="Left"
@@ -50,15 +43,7 @@
                                         Command="{x:Bind ViewModel.CopyTitleCommand, Mode=OneWay}"
                                         Text="{x:Bind strings:Resources.CopyTitle}"/>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}" Tag="{x:Bind strings:Resources.Link}"/>
-                        <MenuFlyoutItem MinWidth="200"
-                                        Command="{x:Bind ViewModel.CopyVideoUrlCommand, Mode=OneWay}"
-                                        Text="{x:Bind strings:Resources.CopyVideoUrl}"/>
-                        <MenuFlyoutItem Command="{x:Bind ViewModel.ShareVideoUrlCommand, Mode=OneWay}" Text="{x:Bind strings:Resources.ShareLink}"/>
-                        <MenuFlyoutSeparator/>
-                        <MenuFlyoutSeparator Style="{StaticResource MenuFlyoutHeaderSeparatorStyle}" Tag="{x:Bind strings:Resources.OpenWith}"/>
                         <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInNewWindowCommand, Mode=OneWay}" Text="{x:Bind strings:Resources.OpenInNewWindow}"/>
-                        <MenuFlyoutItem Command="{x:Bind ViewModel.OpenInBroswerCommand, Mode=OneWay}" Text="{x:Bind strings:Resources.OpenInBrowser}"/>
                     </MenuFlyout>
                 </Button.Flyout>
             </Button>

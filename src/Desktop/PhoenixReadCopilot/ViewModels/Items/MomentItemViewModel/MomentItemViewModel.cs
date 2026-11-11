@@ -9,8 +9,6 @@ using PhoenixReadCopilot.Toolkits;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -100,7 +98,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     {
         if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
         {
-            if (!TryOpenInNewWindowIfPreferred() && !TryOpenInWebPlayerIfPreferred())
+            if (!TryOpenInNewWindowIfPreferred())
             {
                 VideoSnapshot snapshot = new(vinfo);
                 ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), snapshot);
@@ -118,41 +116,11 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
             return false;
         }
-
-        bool TryOpenInWebPlayerIfPreferred()
-        {
-            PlayerType preferPlayer = ItemServices.Settings.PlayerType;
-            if (preferPlayer == PlayerType.Web)
-            {
-                string? webUrl = GetMediaUrl();
-                if (webUrl is not null)
-                {
-                    ItemServices.Navigation.NavigateToOver(typeof(WebPlayerPage), webUrl);
-                }
-
-                return true;
-            }
-
-            return false;
-        }
     }
 
     [RelayCommand]
     private void ShowUserSpace() =>
         ItemServices.Navigation.NavigateToOver(typeof(UserSpacePage), Data.User);
-
-    [RelayCommand]
-    private void PlayInPrivate()
-    {
-        VideoInformation? vinfo = FindInnerContent<VideoInformation>();
-        if (vinfo is null)
-        {
-            return;
-        }
-
-        VideoSnapshot snapshot = new(vinfo, true);
-        ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), snapshot);
-    }
 
     [RelayCommand]
     private async Task AddToViewLaterAsync()
@@ -189,32 +157,11 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     }
 
     [RelayCommand]
-    private async Task OpenInBroswerAsync()
-    {
-        string url = GetMediaUrl() ?? $"https://t.bilibili.com/{Data.Id}";
-        await Launcher.LaunchUriAsync(new Uri(url));
-    }
-
-    [RelayCommand]
     private void OpenInNewWindow()
     {
         if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
         {
             new PlayerWindow().OpenVideo(new VideoSnapshot(vinfo));
-        }
-    }
-
-    [RelayCommand]
-    private void CopyUrl()
-    {
-        string? url = GetMediaUrl();
-        if (url is not null)
-        {
-            DataPackage dataPackage = new();
-            dataPackage.SetText(url);
-            dataPackage.SetWebLink(new Uri(url));
-            Clipboard.SetContent(dataPackage);
-            ItemServices.App.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
         }
     }
 
@@ -236,29 +183,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             ItemServices.Pinner.AddItemCommand.Execute(pinItem);
         }
-    }
-
-    private string? GetMediaUrl()
-    {
-        if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
-        {
-            return $"https://www.bilibili.com/av{vinfo.Identifier.Id}";
-        }
-        else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation episodeInformation)
-        {
-            if (episodeInformation.Identifier.Id == "0")
-            {
-                // 出差番剧.
-                long ssid = episodeInformation.GetExtensionIfNotNull<long>(
-                    EpisodeExtensionDataId.SeasonId
-                );
-                return $"https://www.bilibili.com/bangumi/play/ss{ssid}";
-            }
-
-            return $"https://www.bilibili.com/bangumi/play/ep{episodeInformation.Identifier.Id}";
-        }
-
-        return null;
     }
 
     private T? FindInnerContent<T>()

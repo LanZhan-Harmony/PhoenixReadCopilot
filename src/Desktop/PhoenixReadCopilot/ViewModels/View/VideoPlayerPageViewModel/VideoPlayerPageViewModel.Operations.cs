@@ -8,7 +8,6 @@ using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -18,28 +17,6 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class VideoPlayerPageViewModel
 {
-    [RelayCommand]
-    private async Task ToggleFollowAsync()
-    {
-        try
-        {
-            DramaCredit? firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
-            if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
-            {
-                bool state = !IsFollow;
-                PhoenixOperationResult res = await _apiClient.SetFollowAsync(user.Id, state);
-                if (res.Succeeded)
-                {
-                    IsFollow = state;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "尝试关注/取消关注制作人员时失败.");
-        }
-    }
-
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
@@ -116,9 +93,7 @@ public sealed partial class VideoPlayerPageViewModel
         {
             string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
             ShareLink shareInfo = await _apiClient.CreateShareLinkAsync(_seriesId, targetVideoId);
-            string url = !string.IsNullOrEmpty(shareInfo.Url)
-                ? shareInfo.Url
-                : (!string.IsNullOrEmpty(shareInfo.ShortUrl) ? shareInfo.ShortUrl : GetWebLink());
+            string url = !string.IsNullOrEmpty(shareInfo.Url) ? shareInfo.Url : shareInfo.ShortUrl;
 
             DataPackage package = new();
             package.SetText(url);
@@ -130,20 +105,6 @@ public sealed partial class VideoPlayerPageViewModel
         {
             _logger.LogError(ex, "分享短剧链接失败.");
         }
-    }
-
-    [RelayCommand]
-    private void ShareVideoUrl() => ShareCommand.Execute(null);
-
-    [RelayCommand]
-    private void CopyVideoUrl()
-    {
-        string url = GetWebLink();
-        DataPackage dp = new();
-        dp.SetText(url);
-        dp.SetWebLink(new Uri(url));
-        Clipboard.SetContent(dp);
-        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
 
     [RelayCommand]
@@ -165,9 +126,6 @@ public sealed partial class VideoPlayerPageViewModel
             _appViewModel.ShowTipCommand.Execute(("加入追剧列表失败", InfoType.Error));
         }
     }
-
-    [RelayCommand]
-    private Task OpenInBroswerAsync() => Launcher.LaunchUriAsync(new Uri(GetWebLink())).AsTask();
 
     [RelayCommand]
     private async Task PlayNextVideoAsync()
@@ -225,16 +183,6 @@ public sealed partial class VideoPlayerPageViewModel
     }
 
     [RelayCommand]
-    private void OpenUserSpace()
-    {
-        DramaCredit? firstCredit = _dramaDetails?.Drama?.Credits?.FirstOrDefault();
-        if (firstCredit?.User is { } user && !string.IsNullOrEmpty(user.Id))
-        {
-            _navigationViewModel.NavigateToOver(typeof(UserSpacePage), user.Id);
-        }
-    }
-
-    [RelayCommand]
     private void OpenInNewWindow()
     {
         if (Player.Position > 0)
@@ -270,11 +218,6 @@ public sealed partial class VideoPlayerPageViewModel
         Clipboard.SetContent(dp);
         _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
     }
-
-    private string GetWebLink() =>
-        !string.IsNullOrEmpty(_seriesId)
-            ? $"https://novel.snssdk.com/page/drama?book_id={_seriesId}"
-            : "https://novel.snssdk.com";
 
     private void ChangePart(Episode episode)
     {
@@ -319,11 +262,12 @@ public sealed partial class VideoPlayerPageViewModel
     private void PlayerProgressChanged(int progress, int duration)
     {
         // 兜底静默尝试：若当前分集尚未成功加载弹幕且未在加载中，发起一次加载尝试
-        if (Danmaku is not null && Danmaku is
-            {
-                HasLoaded: false,
-                IsLoading: false
-            } && !string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(_currentVideoId))
+        if (
+            Danmaku is not null
+            && Danmaku is { HasLoaded: false, IsLoading: false }
+            && !string.IsNullOrEmpty(_seriesId)
+            && !string.IsNullOrEmpty(_currentVideoId)
+        )
         {
             Danmaku.LoadDanmakusCommand.Execute(duration);
         }

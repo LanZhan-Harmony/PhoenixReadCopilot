@@ -102,9 +102,6 @@ public sealed partial class VideoPlayerPageViewModel
     public partial string NextVideoTip { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial bool IsPrivatePlay { get; set; }
-
-    [ObservableProperty]
     public partial VideoLoopType CurrentLoop { get; set; }
 
     [ObservableProperty]

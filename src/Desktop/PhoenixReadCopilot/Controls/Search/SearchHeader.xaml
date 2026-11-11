@@ -11,22 +11,9 @@
                              xmlns:strings="using:PhoenixReadCopilot.Strings"
                              mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="VideoTemplate" x:DataType="components:VideoSearchSectionDetailViewModel">
-            <local:VideoSearchExtraHeader ViewModel="{x:Bind}"/>
-        </DataTemplate>
-        <DataTemplate x:Key="EmptyTemplate">
-            <Border/>
-        </DataTemplate>
-        <ext:SearchSectionTemplateSelector x:Key="ExtraSelector"
-                                           UserTemplate="{StaticResource EmptyTemplate}"
-                                           VideoTemplate="{StaticResource VideoTemplate}"/>
-    </UserControl.Resources>
-
     <Grid Padding="16,0" ColumnSpacing="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock VerticalAlignment="Center"
@@ -36,11 +23,7 @@
             <Run Text="{x:Bind strings:Resources.Search}"/>
             <Run Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Text="{x:Bind ViewModel.Keyword, Mode=OneWay}"/>
         </TextBlock>
-        <ContentControl Grid.Column="1"
-                        Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
-                        ContentTemplateSelector="{StaticResource ExtraSelector}"
-                        Style="{StaticResource AppContentControlStyle}"/>
-        <Button Grid.Column="2"
+        <Button Grid.Column="1"
                 VerticalAlignment="Center"
                 AutomationProperties.Name="{x:Bind strings:Resources.Refresh}"
                 Command="{x:Bind ViewModel.SelectedSection.RefreshCommand, Mode=OneWay}"
