@@ -81,7 +81,6 @@ public sealed partial class VideoPlayerPageViewModel
                 : 0;
 
         Downloader.InitializeMetas(
-            GetWebLink(),
             [.. Formats.Select(p => p.Data)],
             partIndex >= 0 ? partIndex + 1 : 1
         );

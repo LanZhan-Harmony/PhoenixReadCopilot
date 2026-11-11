@@ -61,16 +61,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenVideo(VideoSnapshot snapshot)
     {
         Activate();
-        PlayerType preferPlayer = _settings.PlayerType;
-        if (preferPlayer == PlayerType.Web)
-        {
-            MainFrame.Navigate(
-                typeof(WebPlayerPage),
-                $"https://www.bilibili.com/video/av{snapshot.Video.Identifier.Id}"
-            );
-            return;
-        }
-
         MainFrame.Navigate(typeof(VideoPlayerPage), snapshot);
     }
 
@@ -89,16 +79,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     public void OpenVideo((List<VideoInformation> videos, VideoSnapshot snapshot) data)
     {
         Activate();
-        PlayerType preferPlayer = _settings.PlayerType;
-        if (preferPlayer == PlayerType.Web)
-        {
-            MainFrame.Navigate(
-                typeof(WebPlayerPage),
-                $"https://www.bilibili.com/video/av{data.snapshot.Video.Identifier.Id}"
-            );
-            return;
-        }
-
         MainFrame.Navigate(typeof(VideoPlayerPage), data);
     }
 

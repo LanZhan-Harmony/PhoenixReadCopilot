@@ -67,16 +67,6 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         };
     }
 
-    private static MenuFlyoutItem CreatePrivatePlayItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.PlayInPrivate,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.EyeOff },
-            Tag = nameof(ViewModel.PlayInPrivateCommand),
-        };
-    }
-
     private static MenuFlyoutItem CreateUserSpaceItem()
     {
         return new MenuFlyoutItem()
@@ -97,26 +87,6 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
                 Symbol = FluentIcons.Common.Symbol.CalendarAdd,
             },
             Tag = nameof(ViewModel.AddToViewLaterCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateOpenInBroswerItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
-            Tag = nameof(ViewModel.OpenInBroswerCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateCopyUriItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.CopyVideoUrl,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Copy },
-            Tag = nameof(ViewModel.CopyUrlCommand),
         };
     }
 
@@ -148,17 +118,10 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         MenuFlyout menuFlyout = new() { ShouldConstrainToRootBounds = false };
         if (ViewModel.Style == MomentCardStyle.Video)
         {
-            menuFlyout.Items.Add(CreatePrivatePlayItem());
             menuFlyout.Items.Add(CreateOpenInNewWindowItem());
-            menuFlyout.Items.Add(CreateOpenInBroswerItem());
             menuFlyout.Items.Add(CreateUserSpaceItem());
             menuFlyout.Items.Add(CreateAddViewLaterItem());
-            menuFlyout.Items.Add(CreateCopyUriItem());
             menuFlyout.Items.Add(CreatePinItem());
-        }
-        else
-        {
-            menuFlyout.Items.Add(CreateOpenInBroswerItem());
         }
 
         ContextFlyout = menuFlyout;
@@ -175,20 +138,11 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
         {
             switch (item.Tag.ToString())
             {
-                case nameof(ViewModel.PlayInPrivateCommand):
-                    item.Command = ViewModel.PlayInPrivateCommand;
-                    break;
                 case nameof(ViewModel.ShowUserSpaceCommand):
                     item.Command = ViewModel.ShowUserSpaceCommand;
                     break;
                 case nameof(ViewModel.AddToViewLaterCommand):
                     item.Command = ViewModel.AddToViewLaterCommand;
-                    break;
-                case nameof(ViewModel.OpenInBroswerCommand):
-                    item.Command = ViewModel.OpenInBroswerCommand;
-                    break;
-                case nameof(ViewModel.CopyUrlCommand):
-                    item.Command = ViewModel.CopyUrlCommand;
                     break;
                 case nameof(ViewModel.OpenInNewWindowCommand):
                     item.Command = ViewModel.OpenInNewWindowCommand;

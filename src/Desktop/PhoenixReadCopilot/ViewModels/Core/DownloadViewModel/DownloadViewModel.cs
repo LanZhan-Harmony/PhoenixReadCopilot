@@ -50,7 +50,6 @@ public sealed partial class DownloadViewModel : ViewModelBase
     /// 初始化基础数据.
     /// </summary>
     public void InitializeMetas(
-        string url,
         IReadOnlyCollection<PlayerFormatInformation>? formats,
         int currentPart = 1
     )
@@ -234,10 +233,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        List<Episode> episodesToDownload =
-        [
-            .. Episodes,
-        ];
+        List<Episode> episodesToDownload = [.. Episodes];
         _appViewModel.ShowTipCommand.Execute(
             ($"开始后台批量下载全部 {episodesToDownload.Count} 集...", InfoType.Information)
         );
