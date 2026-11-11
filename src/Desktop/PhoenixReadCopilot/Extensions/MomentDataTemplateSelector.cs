@@ -11,8 +11,6 @@ internal sealed partial class MomentDataTemplateSelector : DataTemplateSelector
 
     public DataTemplate ForwardTemplate { get; set; }
 
-    public DataTemplate EpisodeTemplate { get; set; }
-
     public DataTemplate ImageTemplate { get; set; }
 
     public DataTemplate NotSupportTemplate { get; set; }
@@ -26,10 +24,6 @@ internal sealed partial class MomentDataTemplateSelector : DataTemplateSelector
         else if (item is VideoItemViewModel)
         {
             return VideoTemplate;
-        }
-        else if (item is EpisodeItemViewModel)
-        {
-            return EpisodeTemplate;
         }
         else if (item is IEnumerable<BiliImage>)
         {

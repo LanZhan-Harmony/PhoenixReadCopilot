@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -41,27 +42,12 @@ public sealed partial class SeasonItemViewModel
     public double? Score { get; init; }
 
     /// <summary>
-    /// 处于想看状态.
-    /// </summary>
-    public bool? InWantWatch { get; init; }
-
-    /// <summary>
-    /// 处于在看状态.
-    /// </summary>
-    public bool? InWatching { get; init; }
-
-    /// <summary>
-    /// 处于已看状态.
-    /// </summary>
-    public bool? InWatched { get; init; }
-
-    /// <summary>
     /// 样式.
     /// </summary>
     public SeasonCardStyle Style { get; init; }
 
     /// <summary>
-    /// 短剧数据实体 (如果是红果短剧).
+    /// 短剧数据实体.
     /// </summary>
-    public PhoenixReadApi.Drama? Drama { get; init; }
+    public Drama? Drama { get; init; }
 }
