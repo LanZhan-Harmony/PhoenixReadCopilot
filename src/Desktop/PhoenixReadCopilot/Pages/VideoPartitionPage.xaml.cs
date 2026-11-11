@@ -12,7 +12,10 @@ public sealed partial class VideoPartitionPage : VideoPartitionPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionPage"/> class.
     /// </summary>
-    public VideoPartitionPage() => InitializeComponent();
+    public VideoPartitionPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class VideoPartitionPageBase : LayoutPageBase<VideoPartitionPage
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionPageBase"/> class.
     /// </summary>
-    protected VideoPartitionPageBase() => ViewModel = Ioc.Default.GetRequiredService<VideoPartitionPageViewModel>();
+    protected VideoPartitionPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<VideoPartitionPageViewModel>();
+    }
 }

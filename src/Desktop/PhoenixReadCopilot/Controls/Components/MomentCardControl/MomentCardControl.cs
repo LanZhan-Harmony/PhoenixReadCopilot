@@ -24,7 +24,10 @@ public sealed partial class MomentCardControl : LayoutControlBase<MomentItemView
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentCardControl"/> class.
     /// </summary>
-    public MomentCardControl() => DefaultStyleKey = typeof(MomentCardControl);
+    public MomentCardControl()
+    {
+        DefaultStyleKey = typeof(MomentCardControl);
+    }
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()

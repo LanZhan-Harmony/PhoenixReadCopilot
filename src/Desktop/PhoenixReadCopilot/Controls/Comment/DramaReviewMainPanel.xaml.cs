@@ -12,7 +12,10 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// </summary>
 public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
 {
-    public DramaReviewMainPanel() => InitializeComponent();
+    public DramaReviewMainPanel()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

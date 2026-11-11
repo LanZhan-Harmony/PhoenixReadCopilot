@@ -8,5 +8,8 @@ public sealed partial class MessagePageSideHeader : MessagePageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePageSideHeader"/> class.
     /// </summary>
-    public MessagePageSideHeader() => InitializeComponent();
+    public MessagePageSideHeader()
+    {
+        InitializeComponent();
+    }
 }

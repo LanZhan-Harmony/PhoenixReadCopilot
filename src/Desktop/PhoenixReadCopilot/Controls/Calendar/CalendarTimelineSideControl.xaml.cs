@@ -12,7 +12,10 @@ public sealed partial class CalendarTimelineSideControl : CalendarTimelineContro
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarTimelineSideControl"/> class.
     /// </summary>
-    public CalendarTimelineSideControl() => InitializeComponent();
+    public CalendarTimelineSideControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

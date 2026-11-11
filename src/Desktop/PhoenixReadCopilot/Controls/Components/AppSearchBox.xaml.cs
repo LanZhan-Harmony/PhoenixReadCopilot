@@ -18,7 +18,10 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBox"/> class.
     /// </summary>
-    public AppSearchBox() => InitializeComponent();
+    public AppSearchBox()
+    {
+        InitializeComponent();
+    }
 
     protected override void OnControlUnloaded() => HotSearchView.ItemsSource = null;
 
@@ -84,6 +87,8 @@ public abstract class AppSearchBoxBase : LayoutUserControlBase<SearchBoxViewMode
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBoxBase"/> class.
     /// </summary>
-    protected AppSearchBoxBase() =>
+    protected AppSearchBoxBase()
+    {
         ViewModel = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+    }
 }

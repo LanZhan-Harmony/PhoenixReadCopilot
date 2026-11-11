@@ -8,5 +8,8 @@ public sealed partial class PlayerRecommendVideoPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerRecommendVideoPresenter"/> class.
     /// </summary>
-    public PlayerRecommendVideoPresenter() => InitializeComponent();
+    public PlayerRecommendVideoPresenter()
+    {
+        InitializeComponent();
+    }
 }

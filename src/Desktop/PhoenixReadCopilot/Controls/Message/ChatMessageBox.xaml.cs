@@ -14,7 +14,10 @@ public sealed partial class ChatMessageBox : ChatMessageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ChatMessageBox"/> class.
     /// </summary>
-    public ChatMessageBox() => InitializeComponent();
+    public ChatMessageBox()
+    {
+        InitializeComponent();
+    }
 
     private void OnInputBoxKeyDown(object sender, KeyRoutedEventArgs e)
     {

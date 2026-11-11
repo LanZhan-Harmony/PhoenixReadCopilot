@@ -8,5 +8,8 @@ public sealed partial class PgcDescriptorControl : PgcPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcDescriptorControl"/> class.
     /// </summary>
-    public PgcDescriptorControl() => InitializeComponent();
+    public PgcDescriptorControl()
+    {
+        InitializeComponent();
+    }
 }

@@ -8,5 +8,8 @@ public sealed partial class ChatSessionSideItem : ChatMessageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ChatSessionSideItem"/> class.
     /// </summary>
-    public ChatSessionSideItem() => InitializeComponent();
+    public ChatSessionSideItem()
+    {
+        InitializeComponent();
+    }
 }

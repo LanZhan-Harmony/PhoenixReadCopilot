@@ -12,7 +12,10 @@ public sealed partial class PlayerPresenter : PlayerPresenterBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPresenter"/> class.
     /// </summary>
-    public PlayerPresenter() => InitializeComponent();
+    public PlayerPresenter()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 尝试获取 FFmpeg 播放器.

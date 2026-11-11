@@ -56,13 +56,6 @@
                                MinItemWidth="148"
                                MinRowSpacing="16"/>
 
-            <UniformGridLayout x:Key="PgcLayout"
-                               ItemsStretch="Fill"
-                               MinColumnSpacing="16"
-                               MinItemHeight="266"
-                               MinItemWidth="148"
-                               MinRowSpacing="16"/>
-
             <UniformGridLayout x:Key="UserLayout"
                                ItemsStretch="Fill"
                                MinColumnSpacing="16"

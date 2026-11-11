@@ -16,7 +16,10 @@ public sealed partial class VideoPlayerInfoSectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerInfoSectionDetailViewModel"/> class.
     /// </summary>
-    public VideoPlayerInfoSectionDetailViewModel(VideoPlayerPageViewModel pageVM) => Page = pageVM;
+    public VideoPlayerInfoSectionDetailViewModel(VideoPlayerPageViewModel pageVM)
+    {
+        Page = pageVM;
+    }
 
     /// <summary>
     /// 视频播放页视图模型.

@@ -11,7 +11,10 @@ public sealed partial class VideoSearchExtraHeader : VideoSectionDetailControlBa
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoSearchExtraHeader"/> class.
     /// </summary>
-    public VideoSearchExtraHeader() => InitializeComponent();
+    public VideoSearchExtraHeader()
+    {
+        InitializeComponent();
+    }
 
     private void OnSortComboBoxChanged(object sender, SelectionChangedEventArgs e)
     {

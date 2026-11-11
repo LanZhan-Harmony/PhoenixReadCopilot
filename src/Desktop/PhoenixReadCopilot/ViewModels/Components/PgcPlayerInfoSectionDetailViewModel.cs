@@ -16,7 +16,10 @@ public sealed partial class PgcPlayerInfoSectionDetailViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerInfoSectionDetailViewModel"/> class.
     /// </summary>
-    public PgcPlayerInfoSectionDetailViewModel(PgcPlayerPageViewModel pageVM) => Page = pageVM;
+    public PgcPlayerInfoSectionDetailViewModel(PgcPlayerPageViewModel pageVM)
+    {
+        Page = pageVM;
+    }
 
     /// <summary>
     /// 视频播放页视图模型.

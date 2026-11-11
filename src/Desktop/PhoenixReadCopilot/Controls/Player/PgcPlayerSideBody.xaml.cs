@@ -8,5 +8,8 @@ public sealed partial class PgcPlayerSideBody : PgcPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerSideBody"/> class.
     /// </summary>
-    public PgcPlayerSideBody() => InitializeComponent();
+    public PgcPlayerSideBody()
+    {
+        InitializeComponent();
+    }
 }

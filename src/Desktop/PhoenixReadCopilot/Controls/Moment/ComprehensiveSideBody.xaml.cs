@@ -11,7 +11,10 @@ public sealed partial class ComprehensiveSideBody : ComprehensiveSectionControlB
     /// <summary>
     /// Initializes a new instance of the <see cref="ComprehensiveSideBody"/> class.
     /// </summary>
-    public ComprehensiveSideBody() => InitializeComponent();
+    public ComprehensiveSideBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

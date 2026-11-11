@@ -12,7 +12,10 @@ public sealed partial class MessagePage : MessagePageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePage"/> class.
     /// </summary>
-    public MessagePage() => InitializeComponent();
+    public MessagePage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class MessagePageBase : LayoutPageBase<MessagePageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePageBase"/> class.
     /// </summary>
-    protected MessagePageBase() => ViewModel = Ioc.Default.GetRequiredService<MessagePageViewModel>();
+    protected MessagePageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<MessagePageViewModel>();
+    }
 }

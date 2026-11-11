@@ -12,7 +12,10 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoMomentSpaceControl"/> class.
     /// </summary>
-    public VideoMomentSpaceControl() => InitializeComponent();
+    public VideoMomentSpaceControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -41,21 +44,18 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                if (
-                    VideoScrollView.ExtentHeight
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                VideoScrollView.ExtentHeight
                     - VideoScrollView.ViewportHeight
                     - VideoScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                <= 240
+            )
+            {
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -68,15 +68,12 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }

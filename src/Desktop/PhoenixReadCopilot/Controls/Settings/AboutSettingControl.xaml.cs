@@ -8,5 +8,8 @@ public sealed partial class AboutSettingControl : SettingsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="AboutSettingControl"/> class.
     /// </summary>
-    public AboutSettingControl() => InitializeComponent();
+    public AboutSettingControl()
+    {
+        InitializeComponent();
+    }
 }

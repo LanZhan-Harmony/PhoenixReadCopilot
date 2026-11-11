@@ -14,7 +14,10 @@ public sealed partial class DownloadButton : DownloadButtonBase
     /// <summary>
     /// Initializes a new instance of the <see cref="DownloadButton"/> class.
     /// </summary>
-    public DownloadButton() => InitializeComponent();
+    public DownloadButton()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()

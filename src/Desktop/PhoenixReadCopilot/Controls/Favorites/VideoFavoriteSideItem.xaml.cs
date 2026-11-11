@@ -8,5 +8,8 @@ public sealed partial class VideoFavoriteSideItem : VideoFavoriteControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoFavoriteSideItem"/> class.
     /// </summary>
-    public VideoFavoriteSideItem() => InitializeComponent();
+    public VideoFavoriteSideItem()
+    {
+        InitializeComponent();
+    }
 }

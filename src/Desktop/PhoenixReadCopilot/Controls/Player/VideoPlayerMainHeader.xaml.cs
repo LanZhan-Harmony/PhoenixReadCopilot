@@ -8,5 +8,8 @@ public sealed partial class VideoPlayerMainHeader : VideoPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerMainHeader"/> class.
     /// </summary>
-    public VideoPlayerMainHeader() => InitializeComponent();
+    public VideoPlayerMainHeader()
+    {
+        InitializeComponent();
+    }
 }

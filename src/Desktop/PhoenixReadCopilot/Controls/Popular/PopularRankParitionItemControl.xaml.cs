@@ -11,7 +11,10 @@ public sealed partial class PopularRankParitionItemControl : PopularRankParition
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularRankParitionItemControl"/> class.
     /// </summary>
-    public PopularRankParitionItemControl() => InitializeComponent();
+    public PopularRankParitionItemControl()
+    {
+        InitializeComponent();
+    }
 }
 
 /// <summary>

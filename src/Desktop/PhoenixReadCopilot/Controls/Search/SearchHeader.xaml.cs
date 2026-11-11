@@ -8,5 +8,8 @@ public sealed partial class SearchHeader : SearchPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchHeader"/> class.
     /// </summary>
-    public SearchHeader() => InitializeComponent();
+    public SearchHeader()
+    {
+        InitializeComponent();
+    }
 }

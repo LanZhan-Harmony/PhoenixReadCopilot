@@ -10,10 +10,16 @@ public sealed partial class RecommendVideoPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="RecommendVideoPresenter"/> class.
     /// </summary>
-    public RecommendVideoPresenter() => InitializeComponent();
+    public RecommendVideoPresenter()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(VideoItemViewModel? oldValue, VideoItemViewModel? newValue)
+    protected override void OnViewModelChanged(
+        VideoItemViewModel? oldValue,
+        VideoItemViewModel? newValue
+    )
     {
         base.OnViewModelChanged(oldValue, newValue);
         Bindings.Update();

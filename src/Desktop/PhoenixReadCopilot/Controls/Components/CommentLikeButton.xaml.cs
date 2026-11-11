@@ -11,7 +11,10 @@ public sealed partial class CommentLikeButton : CommentLikeButtonBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentLikeButton"/> class.
     /// </summary>
-    public CommentLikeButton() => InitializeComponent();
+    public CommentLikeButton()
+    {
+        InitializeComponent();
+    }
 }
 
 /// <summary>

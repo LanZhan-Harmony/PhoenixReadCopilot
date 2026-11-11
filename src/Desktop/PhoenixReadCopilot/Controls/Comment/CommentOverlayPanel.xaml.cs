@@ -21,7 +21,10 @@ public sealed partial class CommentOverlayPanel : CommentMainPanelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentOverlayPanel"/> class.
     /// </summary>
-    public CommentOverlayPanel() => InitializeComponent();
+    public CommentOverlayPanel()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 面板可见性.

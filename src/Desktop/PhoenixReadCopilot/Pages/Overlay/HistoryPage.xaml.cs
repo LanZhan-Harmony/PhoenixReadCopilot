@@ -12,7 +12,10 @@ public sealed partial class HistoryPage : HistoryPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryPage"/> class.
     /// </summary>
-    public HistoryPage() => InitializeComponent();
+    public HistoryPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class HistoryPageBase : LayoutPageBase<HistoryPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryPageBase"/> class.
     /// </summary>
-    protected HistoryPageBase() => ViewModel = Ioc.Default.GetRequiredService<HistoryPageViewModel>();
+    protected HistoryPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<HistoryPageViewModel>();
+    }
 }

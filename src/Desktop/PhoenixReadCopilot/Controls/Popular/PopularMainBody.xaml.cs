@@ -17,7 +17,10 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularMainBody"/> class.
     /// </summary>
-    public PopularMainBody() => InitializeComponent();
+    public PopularMainBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

@@ -8,5 +8,8 @@ public sealed partial class MomentUperItemControl : MomentUperSectionControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentUperItemControl"/> class.
     /// </summary>
-    public MomentUperItemControl() => InitializeComponent();
+    public MomentUperItemControl()
+    {
+        InitializeComponent();
+    }
 }

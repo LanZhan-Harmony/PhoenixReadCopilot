@@ -8,5 +8,8 @@ public sealed partial class NotifyMessageHeader : NotifyMessageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="NotifyMessageHeader"/> class.
     /// </summary>
-    public NotifyMessageHeader() => InitializeComponent();
+    public NotifyMessageHeader()
+    {
+        InitializeComponent();
+    }
 }

@@ -8,5 +8,8 @@ public sealed partial class PlayerControlSettingControl : SettingsPageControlBas
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerControlSettingControl"/> class.
     /// </summary>
-    public PlayerControlSettingControl() => InitializeComponent();
+    public PlayerControlSettingControl()
+    {
+        InitializeComponent();
+    }
 }

@@ -39,7 +39,10 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="EmoteTextBlock"/> class.
     /// </summary>
-    public EmoteTextBlock() => InitializeComponent();
+    public EmoteTextBlock()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 最大行数.
@@ -141,10 +144,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         Paragraph para = new();
 
         Regex emojiRegex = new(@"(\[.*?\])");
-        string[] splitContents =
-        [
-            .. emojiRegex.Split(text).Where(p => p.Length > 0),
-        ];
+        string[] splitContents = [.. emojiRegex.Split(text).Where(p => p.Length > 0)];
         foreach (string content in splitContents)
         {
             if (emojiRegex.IsMatch(content))

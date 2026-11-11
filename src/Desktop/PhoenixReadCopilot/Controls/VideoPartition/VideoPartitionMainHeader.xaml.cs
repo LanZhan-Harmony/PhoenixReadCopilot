@@ -13,7 +13,10 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionMainHeader"/> class.
     /// </summary>
-    public VideoPartitionMainHeader() => InitializeComponent();
+    public VideoPartitionMainHeader()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -87,9 +90,7 @@ public sealed partial class VideoPartitionMainHeader : VideoPartitionDetailContr
         {
             foreach (PartitionViewModel item in ViewModel.Children)
             {
-                Selector.Items.Add(
-                    new SelectorBarItem() { Text = item.Title ?? null, Tag = item }
-                );
+                Selector.Items.Add(new SelectorBarItem() { Text = item.Title ?? null, Tag = item });
             }
         }
 

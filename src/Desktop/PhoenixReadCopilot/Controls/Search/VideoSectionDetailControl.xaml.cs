@@ -15,7 +15,10 @@ public sealed partial class VideoSectionDetailControl : VideoSectionDetailContro
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoSectionDetailControl"/> class.
     /// </summary>
-    public VideoSectionDetailControl() => InitializeComponent();
+    public VideoSectionDetailControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

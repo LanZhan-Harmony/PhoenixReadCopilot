@@ -12,7 +12,10 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerSideHeader"/> class.
     /// </summary>
-    public PgcPlayerSideHeader() => InitializeComponent();
+    public PgcPlayerSideHeader()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -73,9 +76,7 @@ public sealed partial class PgcPlayerSideHeader : PgcPlayerPageControlBase
         {
             foreach (IPlayerSectionDetailViewModel item in ViewModel.Sections)
             {
-                Selector.Items.Add(
-                    new SelectorBarItem() { Text = item.Title ?? null, Tag = item }
-                );
+                Selector.Items.Add(new SelectorBarItem() { Text = item.Title ?? null, Tag = item });
             }
         }
 

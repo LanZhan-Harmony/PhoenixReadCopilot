@@ -15,7 +15,10 @@ public sealed partial class SearchPage : SearchPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPage"/> class.
     /// </summary>
-    public SearchPage() => InitializeComponent();
+    public SearchPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -52,5 +55,8 @@ public abstract class SearchPageBase : LayoutPageBase<SearchPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPageBase"/> class.
     /// </summary>
-    protected SearchPageBase() => ViewModel = Ioc.Default.GetRequiredService<SearchPageViewModel>();
+    protected SearchPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<SearchPageViewModel>();
+    }
 }

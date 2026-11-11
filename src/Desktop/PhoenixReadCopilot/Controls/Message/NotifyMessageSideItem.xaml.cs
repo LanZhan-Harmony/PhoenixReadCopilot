@@ -8,5 +8,8 @@ public sealed partial class NotifyMessageSideItem : NotifyMessageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="NotifyMessageSideItem"/> class.
     /// </summary>
-    public NotifyMessageSideItem() => InitializeComponent();
+    public NotifyMessageSideItem()
+    {
+        InitializeComponent();
+    }
 }

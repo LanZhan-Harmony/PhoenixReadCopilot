@@ -15,7 +15,10 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentMainPanel"/> class.
     /// </summary>
-    public CommentMainPanel() => InitializeComponent();
+    public CommentMainPanel()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -73,21 +76,18 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                if (
-                    CommentScrollView.ExtentHeight
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                CommentScrollView.ExtentHeight
                     - CommentScrollView.ViewportHeight
                     - CommentScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                <= 240
+            )
+            {
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnInitialized(object? sender, EventArgs e)
@@ -106,16 +106,13 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
 
     private void CheckCommentCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void CheckSortType()
@@ -139,7 +136,10 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
             return;
         }
 
-        if (SortTypeComboBox.SelectedItem is CommentSortOrder sortOrder && sortOrder != ViewModel.SortType)
+        if (
+            SortTypeComboBox.SelectedItem is CommentSortOrder sortOrder
+            && sortOrder != ViewModel.SortType
+        )
         {
             ViewModel.ChangeSortTypeCommand.Execute(sortOrder);
         }

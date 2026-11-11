@@ -11,7 +11,10 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePageHeader"/> class.
     /// </summary>
-    public UserSpacePageHeader() => InitializeComponent();
+    public UserSpacePageHeader()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

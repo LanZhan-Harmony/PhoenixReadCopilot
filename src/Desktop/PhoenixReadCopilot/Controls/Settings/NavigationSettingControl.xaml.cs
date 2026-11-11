@@ -8,5 +8,8 @@ public sealed partial class NavigationSettingControl : SettingsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="NavigationSettingControl"/> class.
     /// </summary>
-    public NavigationSettingControl() => InitializeComponent();
+    public NavigationSettingControl()
+    {
+        InitializeComponent();
+    }
 }

@@ -8,5 +8,8 @@ public sealed partial class PlayerBehaviorSettingControl : SettingsPageControlBa
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerBehaviorSettingControl"/> class.
     /// </summary>
-    public PlayerBehaviorSettingControl() => InitializeComponent();
+    public PlayerBehaviorSettingControl()
+    {
+        InitializeComponent();
+    }
 }

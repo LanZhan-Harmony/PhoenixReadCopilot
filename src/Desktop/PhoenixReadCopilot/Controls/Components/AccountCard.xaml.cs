@@ -8,5 +8,8 @@ public sealed partial class AccountCard : HeaderAccountControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="AccountCard"/> class.
     /// </summary>
-    public AccountCard() => InitializeComponent();
+    public AccountCard()
+    {
+        InitializeComponent();
+    }
 }

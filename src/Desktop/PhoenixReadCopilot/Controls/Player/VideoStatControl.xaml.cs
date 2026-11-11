@@ -8,5 +8,8 @@ public sealed partial class VideoStatControl : VideoPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoStatControl"/> class.
     /// </summary>
-    public VideoStatControl() => InitializeComponent();
+    public VideoStatControl()
+    {
+        InitializeComponent();
+    }
 }

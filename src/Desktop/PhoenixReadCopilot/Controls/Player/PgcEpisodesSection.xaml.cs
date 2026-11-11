@@ -14,7 +14,10 @@ public sealed partial class PgcEpisodesSection : PgcEpisodesSectionBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcEpisodesSection"/> class.
     /// </summary>
-    public PgcEpisodesSection() => InitializeComponent();
+    public PgcEpisodesSection()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

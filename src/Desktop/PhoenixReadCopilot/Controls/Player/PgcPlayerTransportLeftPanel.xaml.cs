@@ -8,5 +8,8 @@ public sealed partial class PgcPlayerTransportLeftPanel : PgcPlayerPageControlBa
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerTransportLeftPanel"/> class.
     /// </summary>
-    public PgcPlayerTransportLeftPanel() => InitializeComponent();
+    public PgcPlayerTransportLeftPanel()
+    {
+        InitializeComponent();
+    }
 }

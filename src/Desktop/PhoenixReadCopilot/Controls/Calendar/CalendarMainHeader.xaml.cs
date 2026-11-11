@@ -8,5 +8,8 @@ public sealed partial class CalendarMainHeader : CalendarPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarMainHeader"/> class.
     /// </summary>
-    public CalendarMainHeader() => InitializeComponent();
+    public CalendarMainHeader()
+    {
+        InitializeComponent();
+    }
 }

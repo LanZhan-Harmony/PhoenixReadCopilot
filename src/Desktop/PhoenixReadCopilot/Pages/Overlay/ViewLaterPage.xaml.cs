@@ -12,7 +12,10 @@ public sealed partial class ViewLaterPage : ViewLaterPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewLaterPage"/> class.
     /// </summary>
-    public ViewLaterPage() => InitializeComponent();
+    public ViewLaterPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class ViewLaterPageBase : LayoutPageBase<ViewLaterPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewLaterPageBase"/> class.
     /// </summary>
-    protected ViewLaterPageBase() => ViewModel = Ioc.Default.GetRequiredService<ViewLaterPageViewModel>();
+    protected ViewLaterPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<ViewLaterPageViewModel>();
+    }
 }

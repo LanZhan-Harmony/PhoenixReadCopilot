@@ -13,7 +13,10 @@ public sealed partial class SettingsPage : SettingsPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPage"/> class.
     /// </summary>
-    public SettingsPage() => InitializeComponent();
+    public SettingsPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded()
@@ -31,6 +34,8 @@ public abstract class SettingsPageBase : LayoutPageBase<SettingsPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPageBase"/> class.
     /// </summary>
-    protected SettingsPageBase() =>
+    protected SettingsPageBase()
+    {
         ViewModel = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
+    }
 }

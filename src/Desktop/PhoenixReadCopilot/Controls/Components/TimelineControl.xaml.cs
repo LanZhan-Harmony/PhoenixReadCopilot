@@ -11,7 +11,10 @@ public sealed partial class TimelineControl : TimelineControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="TimelineControl"/> class.
     /// </summary>
-    public TimelineControl() => InitializeComponent();
+    public TimelineControl()
+    {
+        InitializeComponent();
+    }
 }
 
 /// <summary>

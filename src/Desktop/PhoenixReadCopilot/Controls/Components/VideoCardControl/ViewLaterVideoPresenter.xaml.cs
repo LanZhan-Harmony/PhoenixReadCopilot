@@ -8,5 +8,8 @@ public sealed partial class ViewLaterVideoPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewLaterVideoPresenter"/> class.
     /// </summary>
-    public ViewLaterVideoPresenter() => InitializeComponent();
+    public ViewLaterVideoPresenter()
+    {
+        InitializeComponent();
+    }
 }

@@ -12,7 +12,10 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MessagePageSideBody"/> class.
     /// </summary>
-    public MessagePageSideBody() => InitializeComponent();
+    public MessagePageSideBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -48,21 +51,18 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
 
     private void OnViewChanged(ScrollView sender, object args)
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                SectionView.ScrollView.ExtentHeight
+                    - SectionView.ScrollView.ViewportHeight
+                    - SectionView.ScrollView.VerticalOffset
+                <= 240
+            )
             {
-                if (
-                    SectionView.ScrollView.ExtentHeight
-                        - SectionView.ScrollView.ViewportHeight
-                        - SectionView.ScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadChatSessionsCommand.Execute(null);
-                }
+                ViewModel.LoadChatSessionsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private async void OnChatSessionsUpdatedAsync(object? sender, EventArgs e)
@@ -81,15 +81,12 @@ public sealed partial class MessagePageSideBody : MessagePageControlBase
 
     private void CheckChatSessionCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (SectionView.ScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (SectionView.ScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadChatSessionsCommand.Execute(null);
-                }
+                ViewModel.LoadChatSessionsCommand.Execute(null);
             }
-        );
+        });
     }
 }

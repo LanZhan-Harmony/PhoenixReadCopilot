@@ -11,7 +11,10 @@ public sealed partial class PopularSectionItemControl : PopularSectionItemContro
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularSectionItemControl"/> class.
     /// </summary>
-    public PopularSectionItemControl() => InitializeComponent();
+    public PopularSectionItemControl()
+    {
+        InitializeComponent();
+    }
 }
 
 /// <summary>

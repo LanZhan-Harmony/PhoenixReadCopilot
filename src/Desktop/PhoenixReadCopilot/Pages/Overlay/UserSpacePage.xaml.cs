@@ -13,7 +13,10 @@ public sealed partial class UserSpacePage : UserSpacePageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSpacePage"/> class.
     /// </summary>
-    public UserSpacePage() => InitializeComponent();
+    public UserSpacePage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)

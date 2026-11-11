@@ -14,7 +14,10 @@ public sealed partial class PgcFavoriteBody : PgcFavoriteControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcFavoriteBody"/> class.
     /// </summary>
-    public PgcFavoriteBody() => InitializeComponent();
+    public PgcFavoriteBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -64,21 +67,18 @@ public sealed partial class PgcFavoriteBody : PgcFavoriteControlBase
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                if (
-                    SeasonScrollView.ExtentHeight
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                SeasonScrollView.ExtentHeight
                     - SeasonScrollView.ViewportHeight
                     - SeasonScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                <= 240
+            )
+            {
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -91,15 +91,12 @@ public sealed partial class PgcFavoriteBody : PgcFavoriteControlBase
 
     private void CheckSeasonCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (SeasonScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (SeasonScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }

@@ -11,7 +11,10 @@ public sealed partial class PartitionItemControl : PartitionItemControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PartitionItemControl"/> class.
     /// </summary>
-    public PartitionItemControl() => InitializeComponent();
+    public PartitionItemControl()
+    {
+        InitializeComponent();
+    }
 }
 
 /// <summary>

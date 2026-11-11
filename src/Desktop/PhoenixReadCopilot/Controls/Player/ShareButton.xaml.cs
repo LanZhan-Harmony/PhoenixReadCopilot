@@ -22,7 +22,10 @@ public sealed partial class ShareButton : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ShareButton"/> class.
     /// </summary>
-    public ShareButton() => InitializeComponent();
+    public ShareButton()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 点击命令.

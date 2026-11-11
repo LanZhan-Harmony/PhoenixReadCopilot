@@ -8,5 +8,8 @@ public sealed partial class FavoriteSeasonPresenter : SeasonCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoriteSeasonPresenter"/> class.
     /// </summary>
-    public FavoriteSeasonPresenter() => InitializeComponent();
+    public FavoriteSeasonPresenter()
+    {
+        InitializeComponent();
+    }
 }

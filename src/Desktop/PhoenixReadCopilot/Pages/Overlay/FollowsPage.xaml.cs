@@ -12,7 +12,10 @@ public sealed partial class FollowsPage : FollowsPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FollowsPage"/> class.
     /// </summary>
-    public FollowsPage() => InitializeComponent();
+    public FollowsPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class FollowsPageBase : LayoutPageBase<FollowsPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="FollowsPageBase"/> class.
     /// </summary>
-    protected FollowsPageBase() => ViewModel = Ioc.Default.GetRequiredService<FollowsPageViewModel>();
+    protected FollowsPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<FollowsPageViewModel>();
+    }
 }

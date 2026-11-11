@@ -8,5 +8,8 @@ public sealed partial class FavoritesPageMainBody : FavoritesPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageMainBody"/> class.
     /// </summary>
-    public FavoritesPageMainBody() => InitializeComponent();
+    public FavoritesPageMainBody()
+    {
+        InitializeComponent();
+    }
 }

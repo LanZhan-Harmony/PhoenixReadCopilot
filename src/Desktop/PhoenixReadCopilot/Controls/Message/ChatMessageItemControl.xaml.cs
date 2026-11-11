@@ -12,7 +12,10 @@ public sealed partial class ChatMessageItemControl : ChatMessageItemControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ChatMessageItemControl"/> class.
     /// </summary>
-    public ChatMessageItemControl() => InitializeComponent();
+    public ChatMessageItemControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded() => CheckState();

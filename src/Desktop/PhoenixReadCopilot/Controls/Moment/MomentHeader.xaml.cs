@@ -14,7 +14,10 @@ public sealed partial class MomentHeader : MomentHeaderBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentHeader"/> class.
     /// </summary>
-    public MomentHeader() => InitializeComponent();
+    public MomentHeader()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

@@ -8,7 +8,10 @@ public sealed partial class CalendarTimelineMainControl : CalendarTimelineContro
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarTimelineMainControl"/> class.
     /// </summary>
-    public CalendarTimelineMainControl() => InitializeComponent();
+    public CalendarTimelineMainControl()
+    {
+        InitializeComponent();
+    }
 
     protected override void OnControlUnloaded() => SeasonRepeater.ItemsSource = null;
 }

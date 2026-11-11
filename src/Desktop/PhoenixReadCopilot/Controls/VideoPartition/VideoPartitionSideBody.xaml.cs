@@ -13,7 +13,10 @@ public sealed partial class VideoPartitionSideBody : VideoPartitionSideBodyBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionSideBody"/> class.
     /// </summary>
-    public VideoPartitionSideBody() => InitializeComponent();
+    public VideoPartitionSideBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

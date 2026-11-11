@@ -17,7 +17,10 @@ public sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewMod
     /// <summary>
     /// Initializes a new instance of the <see cref="FFmpegPlayer"/> class.
     /// </summary>
-    public FFmpegPlayer() => DefaultStyleKey = typeof(FFmpegPlayer);
+    public FFmpegPlayer()
+    {
+        DefaultStyleKey = typeof(FFmpegPlayer);
+    }
 
     /// <inheritdoc/>
     protected override async void OnControlLoaded()

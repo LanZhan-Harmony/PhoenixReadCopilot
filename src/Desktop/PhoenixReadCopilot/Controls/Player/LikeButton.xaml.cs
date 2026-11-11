@@ -53,7 +53,10 @@ public sealed partial class LikeButton : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="LikeButton"/> class.
     /// </summary>
-    public LikeButton() => InitializeComponent();
+    public LikeButton()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 是否已点赞.

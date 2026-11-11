@@ -12,8 +12,6 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
 
     public DataTemplate RecommendTemplate { get; set; }
 
-    public DataTemplate UgcSeasonTemplate { get; set; }
-
     public DataTemplate PartTemplate { get; set; }
 
     public DataTemplate PlaylistTemplate { get; set; }
@@ -41,10 +39,6 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
         else if (item is VideoPlayerPartSectionDetailViewModel)
         {
             return PartTemplate;
-        }
-        else if (item is VideoPlayerSeasonSectionDetailViewModel)
-        {
-            return UgcSeasonTemplate;
         }
         else if (item is VideoPlayerPlaylistSectionDetailViewModel)
         {
