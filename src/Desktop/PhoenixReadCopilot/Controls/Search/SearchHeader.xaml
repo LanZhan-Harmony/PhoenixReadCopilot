@@ -4,11 +4,11 @@
                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                              xmlns:components="using:PhoenixReadCopilot.ViewModels.Components"
                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                             xmlns:strings="using:PhoenixReadCopilot.Strings"
                              xmlns:ext="using:PhoenixReadCopilot.Extensions"
                              xmlns:ic="using:FluentIcons.WinUI"
                              xmlns:local="using:PhoenixReadCopilot.Controls.Search"
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                             xmlns:strings="using:PhoenixReadCopilot.Strings"
                              mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -19,7 +19,6 @@
             <Border/>
         </DataTemplate>
         <ext:SearchSectionTemplateSelector x:Key="ExtraSelector"
-                                           ArticleTemplate="{StaticResource EmptyTemplate}"
                                            PgcTemplate="{StaticResource EmptyTemplate}"
                                            UserTemplate="{StaticResource EmptyTemplate}"
                                            VideoTemplate="{StaticResource VideoTemplate}"/>

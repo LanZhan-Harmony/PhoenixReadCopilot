@@ -267,9 +267,6 @@ public sealed partial class AppSettings : ObservableObject
         PgcSectionType.Movie;
 
     [ObservableProperty]
-    public partial string ArticlePartitionPageLastSelectedPartitionId { get; set; } = string.Empty;
-
-    [ObservableProperty]
     public partial string FollowsPageLastSelectedGroupId { get; set; } = string.Empty;
 
     [ObservableProperty]
@@ -299,9 +296,6 @@ public sealed partial class AppSettings : ObservableObject
 
     [ObservableProperty]
     public partial bool IsCinemaPageVisible { get; set; } = true;
-
-    [ObservableProperty]
-    public partial bool IsArticlePartitionPageVisible { get; set; } = true;
 
     // ================= 动态扩展配置项 =================
     [ObservableProperty]
@@ -394,7 +388,6 @@ public sealed partial class AppSettings : ObservableObject
             "VideoPartitionPage" => IsVideoPartitionPageVisible,
             "AnimePage" => IsAnimePageVisible,
             "CinemaPage" => IsCinemaPageVisible,
-            "ArticlePartitionPage" => IsArticlePartitionPageVisible,
             _ => true,
         };
     }
@@ -421,9 +414,6 @@ public sealed partial class AppSettings : ObservableObject
                 break;
             case "CinemaPage":
                 IsCinemaPageVisible = isVisible;
-                break;
-            case "ArticlePartitionPage":
-                IsArticlePartitionPageVisible = isVisible;
                 break;
         }
     }

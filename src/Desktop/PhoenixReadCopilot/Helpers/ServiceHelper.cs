@@ -10,7 +10,6 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 using Richasy.BiliKernel.Authenticator;
 using Richasy.BiliKernel.Authorizers.TV;
-using Richasy.BiliKernel.Bili.Article;
 using Richasy.BiliKernel.Bili.Authorization;
 using Richasy.BiliKernel.Bili.Media;
 using Richasy.BiliKernel.Bili.Moment;
@@ -93,8 +92,6 @@ internal class ServiceHelper
             .AddSingleton<IMomentOperationService, MomentOperationService>()
             .AddSingleton<IPlayerService, PlayerService>()
             .AddSingleton<ISubtitleService, SubtitleService>()
-            .AddSingleton<IArticleDiscoveryService, ArticleDiscoveryService>()
-            .AddSingleton<IArticleOperationService, ArticleOperationService>()
             .AddSingleton<ISearchService, SearchService>()
             // 5. 本地凭证解析器
             .AddSingleton<IBiliCookiesResolver, LocalBiliCookiesResolver>()
@@ -118,8 +115,6 @@ internal class ServiceHelper
             .AddSingleton<SearchBoxViewModel>()
             // View
             .AddTransient<AnimePageViewModel>()
-            .AddTransient<ArticlePartitionPageViewModel>()
-            .AddTransient<ArticleReaderPageViewModel>()
             .AddTransient<CinemaPageViewModel>()
             .AddTransient<FansPageViewModel>()
             .AddTransient<FavoritesPageViewModel>()

@@ -36,7 +36,6 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
         return type switch
         {
             ViewHistoryTabType.Video => Strings.Resources.Video,
-            ViewHistoryTabType.Article => Strings.Resources.Article,
             _ => string.Empty,
         };
     }

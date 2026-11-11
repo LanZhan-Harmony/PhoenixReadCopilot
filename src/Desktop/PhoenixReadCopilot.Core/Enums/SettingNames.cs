@@ -23,8 +23,6 @@ public enum SettingNames
     AnimePageLastSelectedSectionType,
     CinemaPageNavColumnWidth,
     IsCinemaPageNavColumnManualHide,
-    CinemaPageLastSelectedSectionType,
-    ArticlePartitionPageLastSelectedPartitionId,
     FollowsPageLastSelectedGroupId,
     LastSelectedFavoriteSection,
     LastSelectedMessageSection,

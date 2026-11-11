@@ -234,10 +234,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             GetItem<VideoPartitionPage>(Resources.Video, FluentIcons.Common.Symbol.VideoClip),
             GetItem<AnimePage>(Resources.Calendar, FluentIcons.Common.Symbol.Calendar),
             GetItem<CinemaPage>(Resources.FindDrama, FluentIcons.Common.Symbol.SlideSearch),
-            GetItem<ArticlePartitionPage>(
-                Resources.Article,
-                FluentIcons.Common.Symbol.DocumentBulletList
-            ),
         ];
 
         foreach (AppNavigationItemViewModel item in list)

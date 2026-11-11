@@ -14,13 +14,8 @@
         <DataTemplate x:Key="VideoTemplate" x:DataType="components:VideoHistorySectionDetailViewModel">
             <history:VideoHistorySection ViewModel="{x:Bind}"/>
         </DataTemplate>
-        <DataTemplate x:Key="ArticleTemplate" x:DataType="components:ArticleHistorySectionDetailViewModel">
-            <history:ArticleHistorySection ViewModel="{x:Bind}"/>
-        </DataTemplate>
 
-        <ext:HistorySectionTemplateSelector x:Key="TemplateSelector"
-                                            ArticleTemplate="{StaticResource ArticleTemplate}"
-                                            VideoTemplate="{StaticResource VideoTemplate}"/>
+        <ext:HistorySectionTemplateSelector x:Key="TemplateSelector" VideoTemplate="{StaticResource VideoTemplate}"/>
     </Page.Resources>
 
     <Grid>
@@ -39,6 +34,8 @@
                         ContentTemplateSelector="{StaticResource TemplateSelector}"
                         Style="{StaticResource AppContentControlStyle}"
                         Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
-        <history:HistoryVideoSearchSection Grid.Row="2" ViewModel="{x:Bind ViewModel, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}"/>
+        <history:HistoryVideoSearchSection Grid.Row="2"
+                                           ViewModel="{x:Bind ViewModel, Mode=OneWay}"
+                                           Visibility="{x:Bind ViewModel.IsSearchMode, Mode=OneWay}"/>
     </Grid>
 </local:HistoryPageBase>

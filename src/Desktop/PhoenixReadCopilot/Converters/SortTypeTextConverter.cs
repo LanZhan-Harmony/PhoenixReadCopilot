@@ -39,32 +39,6 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
                     break;
             }
         }
-        else if (value is ArticleSortType ast)
-        {
-            switch (ast)
-            {
-                case ArticleSortType.Default:
-                    result = Resources.SortByDefault;
-                    break;
-                case ArticleSortType.Newest:
-                    result = Resources.SortByNewest;
-                    break;
-                case ArticleSortType.Read:
-                    result = Resources.SortByRead;
-                    break;
-                case ArticleSortType.Reply:
-                    result = Resources.SortByReply;
-                    break;
-                case ArticleSortType.Like:
-                    result = Resources.SortByLike;
-                    break;
-                case ArticleSortType.Favorite:
-                    result = Resources.SortByFavorite;
-                    break;
-                default:
-                    break;
-            }
-        }
         else if (value is ComprehensiveSearchSortType chst)
         {
             result = chst switch
@@ -85,7 +59,6 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
                 _ => throw new ArgumentOutOfRangeException(nameof(value)),
             };
         }
-
         else if (value is PhoenixReadApi.CommentSortOrder cso)
         {
             result = cso switch

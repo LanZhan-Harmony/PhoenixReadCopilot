@@ -26,12 +26,7 @@
             <search:UserSectionDetailControl ViewModel="{x:Bind}"/>
         </DataTemplate>
 
-        <DataTemplate x:Key="ArticleSectionTemplate" x:DataType="components1:ArticleSearchSectionDetailViewModel">
-            <search:ArticleSectionDetailControl ViewModel="{x:Bind}"/>
-        </DataTemplate>
-
         <ext:SearchSectionTemplateSelector x:Key="SectionSelector"
-                                           ArticleTemplate="{StaticResource ArticleSectionTemplate}"
                                            PgcTemplate="{StaticResource PgcSectionTemplate}"
                                            UserTemplate="{StaticResource UserSectionTemplate}"
                                            VideoTemplate="{StaticResource VideoSectionTemplate}"/>
@@ -60,8 +55,9 @@
 
         <search:SearchHeader Grid.ColumnSpan="3" ViewModel="{x:Bind ViewModel, Mode=OneWay}"/>
 
-        <search:SearchSideBody Grid.Row="2" ViewModel="{x:Bind ViewModel, Mode=OneWay}"
+        <search:SearchSideBody Grid.Row="2"
                                Margin="0,0,-6,0"
+                               ViewModel="{x:Bind ViewModel, Mode=OneWay}"
                                Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
 
         <ContentControl Grid.Row="2"
