@@ -17,7 +17,6 @@ using Richasy.BiliKernel.Bili.Search;
 using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Http;
 using Richasy.BiliKernel.Resolvers.WinUIQRCode;
-using Richasy.BiliKernel.Services.Article;
 using Richasy.BiliKernel.Services.Media;
 using Richasy.BiliKernel.Services.Moment;
 using Richasy.BiliKernel.Services.Search;
@@ -123,7 +122,6 @@ internal class ServiceHelper
             .AddTransient<HistoryPageViewModel>()
             .AddSingleton<MessagePageViewModel>()
             .AddTransient<MomentPageViewModel>()
-            .AddTransient<PgcPlayerPageViewModel>()
             .AddTransient<PopularPageViewModel>()
             .AddTransient<SearchPageViewModel>()
             .AddSingleton<SettingsPageViewModel>()

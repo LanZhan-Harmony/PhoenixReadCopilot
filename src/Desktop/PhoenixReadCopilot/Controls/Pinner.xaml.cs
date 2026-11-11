@@ -41,11 +41,6 @@ public sealed partial class Pinner : PinnerBase
             UserProfile user = new(item.Id, item.Title, new BiliImage(new Uri(item.Cover)));
             navVM.NavigateToOver(typeof(UserSpacePage), user);
         }
-        else if (item.Type == PinContentType.Pgc)
-        {
-            MediaIdentifier identifier = new(item.Id, item.Title, null);
-            navVM.NavigateToOver(typeof(PgcPlayerPage), identifier);
-        }
         else if (item.Type == PinContentType.Video)
         {
             VideoSnapshot snapshot = new(

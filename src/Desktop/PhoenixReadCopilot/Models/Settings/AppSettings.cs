@@ -164,13 +164,7 @@ public sealed partial class AppSettings : ObservableObject
     public partial int LastSelectedVideoQuality { get; set; } = 0;
 
     [ObservableProperty]
-    public partial int LastSelectedPgcQuality { get; set; } = 0;
-
-    [ObservableProperty]
     public partial bool IsVideoPlayerPartsOnlyIndex { get; set; } = false;
-
-    [ObservableProperty]
-    public partial bool IsPgcPlayerPartsOnlyIndex { get; set; } = false;
 
     [ObservableProperty]
     public partial bool IsOpenGLSupport { get; set; } = false;
@@ -253,18 +247,10 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool IsCalendarPageNavColumnManualHide { get; set; } = false;
 
     [ObservableProperty]
-    public partial PgcSectionType CalendarPageLastSelectedSectionType { get; set; } =
-        PgcSectionType.Calendar;
-
-    [ObservableProperty]
     public partial double FindDramaPageNavColumnWidth { get; set; } = 0;
 
     [ObservableProperty]
     public partial bool IsFindDramaPageNavColumnManualHide { get; set; } = false;
-
-    [ObservableProperty]
-    public partial PgcSectionType FindDramaPageLastSelectedSectionType { get; set; } =
-        PgcSectionType.Movie;
 
     [ObservableProperty]
     public partial string FollowsPageLastSelectedGroupId { get; set; } = string.Empty;
@@ -313,8 +299,12 @@ public sealed partial class AppSettings : ObservableObject
             "VideoPartitionPage" => VideoPartitionPageNavColumnWidth <= 0
                 ? defaultValue
                 : VideoPartitionPageNavColumnWidth,
-            "CalendarPage" => CalendarPageNavColumnWidth <= 0 ? defaultValue : CalendarPageNavColumnWidth,
-            "FindDramaPage" => FindDramaPageNavColumnWidth <= 0 ? defaultValue : FindDramaPageNavColumnWidth,
+            "CalendarPage" => CalendarPageNavColumnWidth <= 0
+                ? defaultValue
+                : CalendarPageNavColumnWidth,
+            "FindDramaPage" => FindDramaPageNavColumnWidth <= 0
+                ? defaultValue
+                : FindDramaPageNavColumnWidth,
             _ => defaultValue,
         };
 

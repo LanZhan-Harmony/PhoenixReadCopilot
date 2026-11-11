@@ -14,7 +14,8 @@ public sealed partial class MomentItemViewModel
 {
     private static IMomentOperationService OperationService => ItemServices.MomentOperation;
     private static ILogger<MomentItemViewModel>? _logger;
-    private static ILogger<MomentItemViewModel> Logger => _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentItemViewModel>>();
+    private static ILogger<MomentItemViewModel> Logger =>
+        _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentItemViewModel>>();
 
     private readonly Action<MomentItemViewModel> _showMomentAction;
 
@@ -26,9 +27,6 @@ public sealed partial class MomentItemViewModel
 
     [ObservableProperty]
     public partial bool IsLiked { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsPgc { get; set; }
 
     /// <summary>
     /// 作者.

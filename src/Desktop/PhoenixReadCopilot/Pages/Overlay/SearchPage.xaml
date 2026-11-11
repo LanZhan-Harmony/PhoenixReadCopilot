@@ -18,16 +18,11 @@
             <search:VideoSectionDetailControl ViewModel="{x:Bind}"/>
         </DataTemplate>
 
-        <DataTemplate x:Key="PgcSectionTemplate" x:DataType="components1:PgcSearchSectionDetailViewModel">
-            <search:PgcSectionDetailControl ViewModel="{x:Bind}"/>
-        </DataTemplate>
-
         <DataTemplate x:Key="UserSectionTemplate" x:DataType="components1:UserSearchSectionDetailViewModel">
             <search:UserSectionDetailControl ViewModel="{x:Bind}"/>
         </DataTemplate>
 
         <ext:SearchSectionTemplateSelector x:Key="SectionSelector"
-                                           PgcTemplate="{StaticResource PgcSectionTemplate}"
                                            UserTemplate="{StaticResource UserSectionTemplate}"
                                            VideoTemplate="{StaticResource VideoSectionTemplate}"/>
     </Page.Resources>

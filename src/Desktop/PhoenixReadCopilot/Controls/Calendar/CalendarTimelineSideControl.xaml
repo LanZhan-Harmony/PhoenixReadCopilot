@@ -30,7 +30,7 @@
             </ItemsView.Layout>
         </ItemsView>
 
-        <base:EmptyHolder Description="{x:Bind strings:Resources.RequestPgcTimeLineFailed}"
+        <base:EmptyHolder Description="{x:Bind strings:Resources.RequestTimeLineFailed}"
                           Emoji="&#x1F6F8;"
                           Visibility="{x:Bind ViewModel.ShowSideEmptyHolder, Mode=OneWay}"/>
 

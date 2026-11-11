@@ -4,7 +4,6 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
-using Windows.System;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;

@@ -19,7 +19,6 @@
             <Border/>
         </DataTemplate>
         <ext:SearchSectionTemplateSelector x:Key="ExtraSelector"
-                                           PgcTemplate="{StaticResource EmptyTemplate}"
                                            UserTemplate="{StaticResource EmptyTemplate}"
                                            VideoTemplate="{StaticResource VideoTemplate}"/>
     </UserControl.Resources>
