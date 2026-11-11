@@ -15,7 +15,10 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSectionDetailControl"/> class.
     /// </summary>
-    public UserSectionDetailControl() => InitializeComponent();
+    public UserSectionDetailControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

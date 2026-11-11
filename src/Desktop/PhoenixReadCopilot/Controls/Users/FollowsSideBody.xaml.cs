@@ -11,7 +11,10 @@ public sealed partial class FollowsSideBody : FollowsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FollowsSideBody"/> class.
     /// </summary>
-    public FollowsSideBody() => InitializeComponent();
+    public FollowsSideBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

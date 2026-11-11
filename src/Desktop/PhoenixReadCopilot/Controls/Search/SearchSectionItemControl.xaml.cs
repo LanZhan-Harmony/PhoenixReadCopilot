@@ -22,7 +22,10 @@ public sealed partial class SearchSectionItemControl : UserControl
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSectionItemControl"/> class.
     /// </summary>
-    public SearchSectionItemControl() => InitializeComponent();
+    public SearchSectionItemControl()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 视图模型.

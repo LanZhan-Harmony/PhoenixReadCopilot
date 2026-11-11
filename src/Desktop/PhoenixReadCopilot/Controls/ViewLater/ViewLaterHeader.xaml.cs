@@ -10,7 +10,10 @@ public sealed partial class ViewLaterHeader : ViewLaterPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewLaterHeader"/> class.
     /// </summary>
-    public ViewLaterHeader() => InitializeComponent();
+    public ViewLaterHeader()
+    {
+        InitializeComponent();
+    }
 
     private void OnCleanButtonClick(object sender, RoutedEventArgs e) => CleanTip.IsOpen = true;
 }

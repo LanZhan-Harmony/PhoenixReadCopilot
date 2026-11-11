@@ -8,5 +8,8 @@ public sealed partial class FavoritesPageSideHeader : FavoritesPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageSideHeader"/> class.
     /// </summary>
-    public FavoritesPageSideHeader() => InitializeComponent();
+    public FavoritesPageSideHeader()
+    {
+        InitializeComponent();
+    }
 }

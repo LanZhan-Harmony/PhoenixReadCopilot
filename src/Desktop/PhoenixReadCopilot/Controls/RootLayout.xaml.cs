@@ -265,5 +265,8 @@ public abstract class RootLayoutBase : LayoutUserControlBase<NavigationViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayoutBase"/> class.
     /// </summary>
-    protected RootLayoutBase() => ViewModel = Ioc.Default.GetRequiredService<NavigationViewModel>();
+    protected RootLayoutBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<NavigationViewModel>();
+    }
 }

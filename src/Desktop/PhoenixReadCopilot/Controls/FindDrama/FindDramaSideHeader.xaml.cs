@@ -8,5 +8,8 @@ public sealed partial class FindDramaSideHeader : FindDramaPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FindDramaSideHeader"/> class.
     /// </summary>
-    public FindDramaSideHeader() => InitializeComponent();
+    public FindDramaSideHeader()
+    {
+        InitializeComponent();
+    }
 }

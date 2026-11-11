@@ -21,7 +21,10 @@ public sealed partial class SideBottomLoadingWidget : UserControl
     /// <summary>
     /// Initializes a new instance of the <see cref="SideBottomLoadingWidget"/> class.
     /// </summary>
-    public SideBottomLoadingWidget() => InitializeComponent();
+    public SideBottomLoadingWidget()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 文本.

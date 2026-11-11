@@ -13,7 +13,10 @@ public sealed partial class PgcSeasonsSection : PgcSeasonsSectionBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcSeasonsSection"/> class.
     /// </summary>
-    public PgcSeasonsSection() => InitializeComponent();
+    public PgcSeasonsSection()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

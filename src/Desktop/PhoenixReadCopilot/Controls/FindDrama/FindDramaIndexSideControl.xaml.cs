@@ -8,7 +8,10 @@ public sealed partial class FindDramaIndexSideControl : FindDramaIndexControlBas
     /// <summary>
     /// Initializes a new instance of the <see cref="FindDramaIndexSideControl"/> class.
     /// </summary>
-    public FindDramaIndexSideControl() => InitializeComponent();
+    public FindDramaIndexSideControl()
+    {
+        InitializeComponent();
+    }
 
     protected override void OnControlUnloaded() => FilterRepeater.ItemsSource = null;
 }

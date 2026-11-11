@@ -12,7 +12,10 @@ public sealed partial class PgcFavoriteHeader : PgcFavoriteControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcFavoriteHeader"/> class.
     /// </summary>
-    public PgcFavoriteHeader() => InitializeComponent();
+    public PgcFavoriteHeader()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

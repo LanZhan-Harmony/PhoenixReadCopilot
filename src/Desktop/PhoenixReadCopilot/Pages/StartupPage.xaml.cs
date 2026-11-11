@@ -36,5 +36,8 @@ public abstract class StartupPageBase : LayoutPageBase<StartupPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPageBase"/> class.
     /// </summary>
-    public StartupPageBase() => ViewModel = Ioc.Default.GetRequiredService<StartupPageViewModel>();
+    public StartupPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<StartupPageViewModel>();
+    }
 }

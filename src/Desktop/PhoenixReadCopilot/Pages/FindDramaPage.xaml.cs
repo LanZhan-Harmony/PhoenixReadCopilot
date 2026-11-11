@@ -12,7 +12,10 @@ public partial class FindDramaPage : FindDramaPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FindDramaPage"/> class.
     /// </summary>
-    public FindDramaPage() => InitializeComponent();
+    public FindDramaPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class FindDramaPageBase : LayoutPageBase<FindDramaPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="FindDramaPageBase"/> class.
     /// </summary>
-    protected FindDramaPageBase() => ViewModel = Ioc.Default.GetRequiredService<FindDramaPageViewModel>();
+    protected FindDramaPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<FindDramaPageViewModel>();
+    }
 }

@@ -12,7 +12,10 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FollowsMainBody"/> class.
     /// </summary>
-    public FollowsMainBody() => InitializeComponent();
+    public FollowsMainBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -41,21 +44,18 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                if (
-                    UserScrollView.ExtentHeight
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                UserScrollView.ExtentHeight
                     - UserScrollView.ViewportHeight
                     - UserScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadUsersCommand.Execute(null);
-                }
+                <= 240
+            )
+            {
+                ViewModel.LoadUsersCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -68,15 +68,12 @@ public sealed partial class FollowsMainBody : FollowsPageControlBase
 
     private void CheckUserCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadUsersCommand.Execute(null);
-                }
+                ViewModel.LoadUsersCommand.Execute(null);
             }
-        );
+        });
     }
 }

@@ -12,7 +12,10 @@ public sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerSideHeader"/> class.
     /// </summary>
-    public VideoPlayerSideHeader() => InitializeComponent();
+    public VideoPlayerSideHeader()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -73,9 +76,7 @@ public sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
         {
             foreach (IPlayerSectionDetailViewModel item in ViewModel.Sections)
             {
-                Selector.Items.Add(
-                    new SelectorBarItem() { Text = item.Title ?? null, Tag = item }
-                );
+                Selector.Items.Add(new SelectorBarItem() { Text = item.Title ?? null, Tag = item });
             }
         }
 

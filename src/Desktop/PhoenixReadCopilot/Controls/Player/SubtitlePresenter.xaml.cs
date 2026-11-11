@@ -8,5 +8,8 @@ public sealed partial class SubtitlePresenter : SubtitleControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SubtitlePresenter"/> class.
     /// </summary>
-    public SubtitlePresenter() => InitializeComponent();
+    public SubtitlePresenter()
+    {
+        InitializeComponent();
+    }
 }

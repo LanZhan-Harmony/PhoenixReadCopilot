@@ -11,7 +11,10 @@ public sealed partial class MomentPresenter : MomentPresenterBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentPresenter"/> class.
     /// </summary>
-    public MomentPresenter() => InitializeComponent();
+    public MomentPresenter()
+    {
+        InitializeComponent();
+    }
 }
 
 /// <summary>

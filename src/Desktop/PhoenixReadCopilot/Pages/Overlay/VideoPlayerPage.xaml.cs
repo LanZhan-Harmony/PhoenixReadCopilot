@@ -136,6 +136,8 @@ public abstract class VideoPlayerPageBase : LayoutPageBase<VideoPlayerPageViewMo
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPageBase"/> class.
     /// </summary>
-    protected VideoPlayerPageBase() =>
+    protected VideoPlayerPageBase()
+    {
         ViewModel = Ioc.Default.GetRequiredService<VideoPlayerPageViewModel>();
+    }
 }

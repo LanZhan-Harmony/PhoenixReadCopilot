@@ -10,8 +10,6 @@ internal sealed partial class FavoriteSectionTemplateSelector : DataTemplateSele
 
     public DataTemplate VideoTempalte { get; set; }
 
-    public DataTemplate UgcTemplate { get; set; }
-
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
         if (item is PgcFavoriteSectionDetailViewModel)
@@ -21,10 +19,6 @@ internal sealed partial class FavoriteSectionTemplateSelector : DataTemplateSele
         else if (item is VideoFavoriteSectionDetailViewModel)
         {
             return VideoTempalte;
-        }
-        else if (item is UgcSeasonFavoriteSectionDetailViewModel)
-        {
-            return UgcTemplate;
         }
 
         return null;

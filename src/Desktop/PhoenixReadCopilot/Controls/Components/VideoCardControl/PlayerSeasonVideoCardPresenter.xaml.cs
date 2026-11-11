@@ -8,5 +8,8 @@ public sealed partial class PlayerSeasonVideoCardPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerSeasonVideoCardPresenter"/> class.
     /// </summary>
-    public PlayerSeasonVideoCardPresenter() => InitializeComponent();
+    public PlayerSeasonVideoCardPresenter()
+    {
+        InitializeComponent();
+    }
 }

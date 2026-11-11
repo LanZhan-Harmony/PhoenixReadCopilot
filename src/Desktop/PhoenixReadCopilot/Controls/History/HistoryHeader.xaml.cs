@@ -13,7 +13,10 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryHeader"/> class.
     /// </summary>
-    public HistoryHeader() => InitializeComponent();
+    public HistoryHeader()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

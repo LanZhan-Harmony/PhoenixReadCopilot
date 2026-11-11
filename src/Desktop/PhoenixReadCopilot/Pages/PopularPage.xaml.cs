@@ -12,7 +12,10 @@ public sealed partial class PopularPage : PopularPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularPage"/> class.
     /// </summary>
-    public PopularPage() => InitializeComponent();
+    public PopularPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class PopularPageBase : LayoutPageBase<PopularPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularPageBase"/> class.
     /// </summary>
-    protected PopularPageBase() => ViewModel = Ioc.Default.GetRequiredService<PopularPageViewModel>();
+    protected PopularPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<PopularPageViewModel>();
+    }
 }

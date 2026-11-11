@@ -8,5 +8,8 @@ public sealed partial class PartitionVideoPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="PartitionVideoPresenter"/> class.
     /// </summary>
-    public PartitionVideoPresenter() => InitializeComponent();
+    public PartitionVideoPresenter()
+    {
+        InitializeComponent();
+    }
 }

@@ -8,5 +8,8 @@ public sealed partial class SearchVideoPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchVideoPresenter"/> class.
     /// </summary>
-    public SearchVideoPresenter() => InitializeComponent();
+    public SearchVideoPresenter()
+    {
+        InitializeComponent();
+    }
 }

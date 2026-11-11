@@ -8,5 +8,8 @@ public sealed partial class ChatMessageHeader : ChatMessageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ChatMessageHeader"/> class.
     /// </summary>
-    public ChatMessageHeader() => InitializeComponent();
+    public ChatMessageHeader()
+    {
+        InitializeComponent();
+    }
 }

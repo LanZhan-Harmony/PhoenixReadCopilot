@@ -11,7 +11,10 @@ public sealed partial class SubtitleButton : SubtitleControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SubtitleButton"/> class.
     /// </summary>
-    public SubtitleButton() => InitializeComponent();
+    public SubtitleButton()
+    {
+        InitializeComponent();
+    }
 
     protected override void OnControlUnloaded() => SubtitleView.ItemsSource = null;
 

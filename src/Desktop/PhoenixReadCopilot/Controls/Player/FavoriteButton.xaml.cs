@@ -64,7 +64,10 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoriteButton"/> class.
     /// </summary>
-    public FavoriteButton() => InitializeComponent();
+    public FavoriteButton()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 是否已收藏.

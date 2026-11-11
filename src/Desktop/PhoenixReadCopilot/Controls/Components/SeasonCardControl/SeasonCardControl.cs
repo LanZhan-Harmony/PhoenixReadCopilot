@@ -26,7 +26,10 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     /// <summary>
     /// Initializes a new instance of the <see cref="SeasonCardControl"/> class.
     /// </summary>
-    public SeasonCardControl() => DefaultStyleKey = typeof(SeasonCardControl);
+    public SeasonCardControl()
+    {
+        DefaultStyleKey = typeof(SeasonCardControl);
+    }
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()

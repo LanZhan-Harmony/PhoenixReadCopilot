@@ -8,5 +8,8 @@ public sealed partial class PgcOperationControl : PgcPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcOperationControl"/> class.
     /// </summary>
-    public PgcOperationControl() => InitializeComponent();
+    public PgcOperationControl()
+    {
+        InitializeComponent();
+    }
 }

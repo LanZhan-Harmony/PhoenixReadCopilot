@@ -8,5 +8,8 @@ public sealed partial class HistoryVideoPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryVideoPresenter"/> class.
     /// </summary>
-    public HistoryVideoPresenter() => InitializeComponent();
+    public HistoryVideoPresenter()
+    {
+        InitializeComponent();
+    }
 }

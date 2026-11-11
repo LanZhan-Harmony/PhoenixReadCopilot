@@ -23,7 +23,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoDanmakuPanel"/> class.
     /// </summary>
-    public VideoDanmakuPanel() => InitializeComponent();
+    public VideoDanmakuPanel()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -49,11 +52,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             _danmakuRenderer.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
         }
 
-        if (ViewModel is
-            {
-                IsPaused: false,
-                IsShowDanmaku: true
-            })
+        if (ViewModel is { IsPaused: false, IsShowDanmaku: true })
         {
             _danmakuRenderer?.Resume();
         }
@@ -139,16 +138,9 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     {
         _cachedDanmakus = [.. _cachedDanmakus.Concat(e).DistinctBy(x => x.Id)];
         EnsureRendererCreated();
-        _danmakuRenderer?.AddDanmakuList(e as List<DanmakuItem> ??
-        [
-            .. e,
-        ]);
+        _danmakuRenderer?.AddDanmakuList(e as List<DanmakuItem> ?? [.. e]);
         _danmakuRenderer?.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
-        if (ViewModel is
-            {
-                IsPaused: false,
-                IsShowDanmaku: true
-            })
+        if (ViewModel is { IsPaused: false, IsShowDanmaku: true })
         {
             _danmakuRenderer?.Resume();
         }
@@ -253,11 +245,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             _danmakuRenderer.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
         }
 
-        if (ViewModel is
-            {
-                IsPaused: false,
-                IsShowDanmaku: true
-            })
+        if (ViewModel is { IsPaused: false, IsShowDanmaku: true })
         {
             _danmakuRenderer?.Resume();
         }

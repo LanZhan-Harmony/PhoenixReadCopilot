@@ -14,7 +14,10 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ComprehensiveMainBody"/> class.
     /// </summary>
-    public ComprehensiveMainBody() => InitializeComponent();
+    public ComprehensiveMainBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -64,21 +67,18 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                if (
-                    MomentScrollView.ExtentHeight
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                MomentScrollView.ExtentHeight
                     - MomentScrollView.ViewportHeight
                     - MomentScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel?.LoadItemsCommand.Execute(null);
-                }
+                <= 240
+            )
+            {
+                ViewModel?.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -91,15 +91,12 @@ public sealed partial class ComprehensiveMainBody : MomentUperSectionControlBase
 
     private void CheckMomentCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (MomentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel?.LoadItemsCommand.Execute(null);
-                }
+                ViewModel?.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }

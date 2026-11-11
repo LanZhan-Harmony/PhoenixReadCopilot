@@ -11,7 +11,10 @@ public sealed partial class FavoritesPageSideBody : FavoritesPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageSideBody"/> class.
     /// </summary>
-    public FavoritesPageSideBody() => InitializeComponent();
+    public FavoritesPageSideBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

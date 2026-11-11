@@ -28,7 +28,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoCardControl"/> class.
     /// </summary>
-    public VideoCardControl() => DefaultStyleKey = typeof(VideoCardControl);
+    public VideoCardControl()
+    {
+        DefaultStyleKey = typeof(VideoCardControl);
+    }
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()

@@ -12,7 +12,10 @@ public partial class CalendarPage : CalendarPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarPage"/> class.
     /// </summary>
-    public CalendarPage() => InitializeComponent();
+    public CalendarPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,6 +29,8 @@ public abstract class CalendarPageBase : LayoutPageBase<CalendarPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarPageBase"/> class.
     /// </summary>
-    protected CalendarPageBase() =>
+    protected CalendarPageBase()
+    {
         ViewModel = Ioc.Default.GetRequiredService<CalendarPageViewModel>();
+    }
 }

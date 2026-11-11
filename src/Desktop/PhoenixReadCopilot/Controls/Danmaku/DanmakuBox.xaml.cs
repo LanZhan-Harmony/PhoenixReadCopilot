@@ -13,7 +13,10 @@ public sealed partial class DanmakuBox : DanmakuControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="DanmakuBox"/> class.
     /// </summary>
-    public DanmakuBox() => InitializeComponent();
+    public DanmakuBox()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 输入框失去焦点.

@@ -18,7 +18,10 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="LoggerSettingControl"/> class.
     /// </summary>
-    public LoggerSettingControl() => InitializeComponent();
+    public LoggerSettingControl()
+    {
+        InitializeComponent();
+    }
 
     private async void OnOpenLoggerFolderButtonClickAsync(object sender, RoutedEventArgs e)
     {

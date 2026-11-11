@@ -8,5 +8,8 @@ public sealed partial class DanmakuDisplayOptions : DanmakuControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="DanmakuDisplayOptions"/> class.
     /// </summary>
-    public DanmakuDisplayOptions() => InitializeComponent();
+    public DanmakuDisplayOptions()
+    {
+        InitializeComponent();
+    }
 }

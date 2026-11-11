@@ -8,5 +8,8 @@ public sealed partial class NotificationSettingControl : SettingsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="NotificationSettingControl"/> class.
     /// </summary>
-    public NotificationSettingControl() => InitializeComponent();
+    public NotificationSettingControl()
+    {
+        InitializeComponent();
+    }
 }

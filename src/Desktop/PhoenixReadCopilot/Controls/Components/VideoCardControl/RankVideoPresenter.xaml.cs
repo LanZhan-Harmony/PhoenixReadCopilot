@@ -10,10 +10,16 @@ public sealed partial class RankVideoPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="RankVideoPresenter"/> class.
     /// </summary>
-    public RankVideoPresenter() => InitializeComponent();
+    public RankVideoPresenter()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(VideoItemViewModel? oldValue, VideoItemViewModel? newValue)
+    protected override void OnViewModelChanged(
+        VideoItemViewModel? oldValue,
+        VideoItemViewModel? newValue
+    )
     {
         base.OnViewModelChanged(oldValue, newValue);
         Bindings.Update();

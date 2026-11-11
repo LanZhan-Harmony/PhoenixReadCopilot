@@ -8,5 +8,8 @@ public sealed partial class PgcInfoSection : PgcPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcInfoSection"/> class.
     /// </summary>
-    public PgcInfoSection() => InitializeComponent();
+    public PgcInfoSection()
+    {
+        InitializeComponent();
+    }
 }

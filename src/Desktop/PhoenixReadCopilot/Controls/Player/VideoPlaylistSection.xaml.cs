@@ -15,7 +15,10 @@ public sealed partial class VideoPlaylistSection : VideoPlaylistSectionBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlaylistSection"/> class.
     /// </summary>
-    public VideoPlaylistSection() => InitializeComponent();
+    public VideoPlaylistSection()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override async void OnControlLoaded() => await CheckSelectedItemAsync();

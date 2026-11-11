@@ -137,6 +137,8 @@ public abstract class PgcPlayerPageBase : LayoutPageBase<PgcPlayerPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcPlayerPageBase"/> class.
     /// </summary>
-    protected PgcPlayerPageBase() =>
+    protected PgcPlayerPageBase()
+    {
         ViewModel = Ioc.Default.GetRequiredService<PgcPlayerPageViewModel>();
+    }
 }

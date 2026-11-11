@@ -2025,9 +2025,6 @@
   <data name="TwoCoin" xml:space="preserve">
     <value>两个币</value>
   </data>
-  <data name="UgcSeason" xml:space="preserve">
-    <value>视频合集</value>
-  </data>
   <data name="UHDFirst" xml:space="preserve">
     <value>超高清（4K）优先</value>
   </data>

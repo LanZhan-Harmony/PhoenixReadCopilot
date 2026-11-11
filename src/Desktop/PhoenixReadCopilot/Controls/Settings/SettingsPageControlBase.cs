@@ -12,6 +12,8 @@ public abstract class SettingsPageControlBase : LayoutUserControlBase<SettingsPa
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPageControlBase"/> class.
     /// </summary>
-    protected SettingsPageControlBase() =>
+    protected SettingsPageControlBase()
+    {
         ViewModel = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
+    }
 }

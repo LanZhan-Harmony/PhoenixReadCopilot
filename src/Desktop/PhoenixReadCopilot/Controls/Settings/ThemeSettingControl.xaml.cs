@@ -11,7 +11,10 @@ public sealed partial class ThemeSettingControl : SettingsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ThemeSettingControl"/> class.
     /// </summary>
-    public ThemeSettingControl() => InitializeComponent();
+    public ThemeSettingControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

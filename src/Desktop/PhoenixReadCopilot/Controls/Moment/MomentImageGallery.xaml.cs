@@ -24,7 +24,10 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentImageGallery"/> class.
     /// </summary>
-    public MomentImageGallery() => InitializeComponent();
+    public MomentImageGallery()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 图片源.

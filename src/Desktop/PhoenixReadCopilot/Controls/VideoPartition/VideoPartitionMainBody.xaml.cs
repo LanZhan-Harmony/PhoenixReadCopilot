@@ -14,7 +14,10 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionMainBody"/> class.
     /// </summary>
-    public VideoPartitionMainBody() => InitializeComponent();
+    public VideoPartitionMainBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -64,21 +67,18 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                if (
-                    VideoScrollView.ExtentHeight
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                VideoScrollView.ExtentHeight
                     - VideoScrollView.ViewportHeight
                     - VideoScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadVideosCommand.Execute(null);
-                }
+                <= 240
+            )
+            {
+                ViewModel.LoadVideosCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -91,15 +91,12 @@ public sealed partial class VideoPartitionMainBody : VideoPartitionDetailControl
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadVideosCommand.Execute(null);
-                }
+                ViewModel.LoadVideosCommand.Execute(null);
             }
-        );
+        });
     }
 }

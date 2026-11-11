@@ -8,5 +8,8 @@ public sealed partial class DownloadSettingControl : SettingsPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="DownloadSettingControl"/> class.
     /// </summary>
-    public DownloadSettingControl() => InitializeComponent();
+    public DownloadSettingControl()
+    {
+        InitializeComponent();
+    }
 }

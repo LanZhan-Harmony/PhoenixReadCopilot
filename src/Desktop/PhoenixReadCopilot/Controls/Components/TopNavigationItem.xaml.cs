@@ -31,7 +31,10 @@ public sealed partial class TopNavigationItem : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="TopNavigationItem"/> class.
     /// </summary>
-    public TopNavigationItem() => InitializeComponent();
+    public TopNavigationItem()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 条目点击时发生.

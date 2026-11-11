@@ -15,7 +15,10 @@ public sealed partial class PgcSectionDetailControl : PgcSectionDetailControlBas
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcSectionDetailControl"/> class.
     /// </summary>
-    public PgcSectionDetailControl() => InitializeComponent();
+    public PgcSectionDetailControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

@@ -9,5 +9,8 @@ public sealed partial class ComprehensiveMomentSectionDetailControl
     /// <summary>
     /// Initializes a new instance of the <see cref="ComprehensiveMomentSectionDetailControl"/> class.
     /// </summary>
-    public ComprehensiveMomentSectionDetailControl() => InitializeComponent();
+    public ComprehensiveMomentSectionDetailControl()
+    {
+        InitializeComponent();
+    }
 }

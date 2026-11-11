@@ -11,7 +11,10 @@ public sealed partial class SearchSideBody : SearchPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSideBody"/> class.
     /// </summary>
-    public SearchSideBody() => InitializeComponent();
+    public SearchSideBody()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

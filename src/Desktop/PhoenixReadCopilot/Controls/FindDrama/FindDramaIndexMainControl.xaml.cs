@@ -14,7 +14,10 @@ public sealed partial class FindDramaIndexMainControl : FindDramaIndexControlBas
     /// <summary>
     /// Initializes a new instance of the <see cref="FindDramaIndexMainControl"/> class.
     /// </summary>
-    public FindDramaIndexMainControl() => InitializeComponent();
+    public FindDramaIndexMainControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()

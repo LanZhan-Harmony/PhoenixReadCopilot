@@ -12,7 +12,10 @@ public sealed partial class FavoritesPage : FavoritesPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPage"/> class.
     /// </summary>
-    public FavoritesPage() => InitializeComponent();
+    public FavoritesPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class FavoritesPageBase : LayoutPageBase<FavoritesPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="FavoritesPageBase"/> class.
     /// </summary>
-    protected FavoritesPageBase() => ViewModel = Ioc.Default.GetRequiredService<FavoritesPageViewModel>();
+    protected FavoritesPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<FavoritesPageViewModel>();
+    }
 }

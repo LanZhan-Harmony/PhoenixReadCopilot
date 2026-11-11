@@ -22,7 +22,10 @@ public sealed partial class Pinner : PinnerBase
     /// <summary>
     /// Initializes a new instance of the <see cref="Pinner"/> class.
     /// </summary>
-    public Pinner() => InitializeComponent();
+    public Pinner()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -73,5 +76,8 @@ public abstract class PinnerBase : LayoutUserControlBase<PinnerViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerBase"/> class.
     /// </summary>
-    protected PinnerBase() => ViewModel = Ioc.Default.GetRequiredService<PinnerViewModel>();
+    protected PinnerBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<PinnerViewModel>();
+    }
 }

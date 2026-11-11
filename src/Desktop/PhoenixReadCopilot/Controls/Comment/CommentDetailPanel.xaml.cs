@@ -14,7 +14,10 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentDetailPanel"/> class.
     /// </summary>
-    public CommentDetailPanel() => InitializeComponent();
+    public CommentDetailPanel()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded()
@@ -62,21 +65,18 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                if (
-                    CommentScrollView.ExtentHeight
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                CommentScrollView.ExtentHeight
                     - CommentScrollView.ViewportHeight
                     - CommentScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                <= 240
+            )
+            {
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -89,16 +89,13 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
 
     private void CheckCommentCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }
 

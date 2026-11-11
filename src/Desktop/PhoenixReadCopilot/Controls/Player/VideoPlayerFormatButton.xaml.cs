@@ -11,7 +11,10 @@ public sealed partial class VideoPlayerFormatButton : VideoPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerFormatButton"/> class.
     /// </summary>
-    public VideoPlayerFormatButton() => InitializeComponent();
+    public VideoPlayerFormatButton()
+    {
+        InitializeComponent();
+    }
 
     protected override void OnControlUnloaded() => FormatView.ItemsSource = null;
 

@@ -12,7 +12,10 @@ public sealed partial class FansPage : FansPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPage"/> class.
     /// </summary>
-    public FansPage() => InitializeComponent();
+    public FansPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class FansPageBase : LayoutPageBase<FansPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPageBase"/> class.
     /// </summary>
-    protected FansPageBase() => ViewModel = Ioc.Default.GetRequiredService<FansPageViewModel>();
+    protected FansPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<FansPageViewModel>();
+    }
 }

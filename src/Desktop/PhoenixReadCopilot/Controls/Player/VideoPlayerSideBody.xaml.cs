@@ -8,5 +8,8 @@ public sealed partial class VideoPlayerSideBody : VideoPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerSideBody"/> class.
     /// </summary>
-    public VideoPlayerSideBody() => InitializeComponent();
+    public VideoPlayerSideBody()
+    {
+        InitializeComponent();
+    }
 }

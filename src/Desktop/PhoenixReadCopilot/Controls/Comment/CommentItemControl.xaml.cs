@@ -33,7 +33,10 @@ public sealed partial class CommentItemControl : CommentItemControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentItemControl"/> class.
     /// </summary>
-    public CommentItemControl() => InitializeComponent();
+    public CommentItemControl()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 显示更多命令.

@@ -8,5 +8,8 @@ public sealed partial class PgcStatControl : PgcPlayerPageControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcStatControl"/> class.
     /// </summary>
-    public PgcStatControl() => InitializeComponent();
+    public PgcStatControl()
+    {
+        InitializeComponent();
+    }
 }

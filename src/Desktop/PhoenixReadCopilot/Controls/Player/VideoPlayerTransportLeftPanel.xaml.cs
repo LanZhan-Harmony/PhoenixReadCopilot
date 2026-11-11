@@ -8,5 +8,8 @@ public sealed partial class VideoPlayerTransportLeftPanel : VideoPlayerPageContr
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerTransportLeftPanel"/> class.
     /// </summary>
-    public VideoPlayerTransportLeftPanel() => InitializeComponent();
+    public VideoPlayerTransportLeftPanel()
+    {
+        InitializeComponent();
+    }
 }

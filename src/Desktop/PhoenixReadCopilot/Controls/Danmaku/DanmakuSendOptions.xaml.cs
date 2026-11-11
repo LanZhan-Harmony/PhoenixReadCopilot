@@ -12,7 +12,10 @@ public sealed partial class DanmakuSendOptions : DanmakuControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="DanmakuSendOptions"/> class.
     /// </summary>
-    public DanmakuSendOptions() => InitializeComponent();
+    public DanmakuSendOptions()
+    {
+        InitializeComponent();
+    }
 
     protected override void OnControlUnloaded() => ColorRepeater.ItemsSource = null;
 

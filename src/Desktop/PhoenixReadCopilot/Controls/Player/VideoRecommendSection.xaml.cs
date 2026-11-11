@@ -11,7 +11,10 @@ public sealed partial class VideoRecommendSection : VideoRecommendSectionBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoRecommendSection"/> class.
     /// </summary>
-    public VideoRecommendSection() => InitializeComponent();
+    public VideoRecommendSection()
+    {
+        InitializeComponent();
+    }
 
     protected override void OnControlUnloaded() => VideoRepeater.ItemsSource = null;
 }

@@ -12,7 +12,10 @@ public sealed partial class MomentPage : MomentPageBase
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentPage"/> class.
     /// </summary>
-    public MomentPage() => InitializeComponent();
+    public MomentPage()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
@@ -26,5 +29,8 @@ public abstract class MomentPageBase : LayoutPageBase<MomentPageViewModel>
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentPageBase"/> class.
     /// </summary>
-    protected MomentPageBase() => ViewModel = Ioc.Default.GetRequiredService<MomentPageViewModel>();
+    protected MomentPageBase()
+    {
+        ViewModel = Ioc.Default.GetRequiredService<MomentPageViewModel>();
+    }
 }

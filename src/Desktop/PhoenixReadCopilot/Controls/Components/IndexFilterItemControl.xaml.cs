@@ -13,7 +13,10 @@ public sealed partial class IndexFilterItemControl : IndexFilterItemControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="IndexFilterItemControl"/> class.
     /// </summary>
-    public IndexFilterItemControl() => InitializeComponent();
+    public IndexFilterItemControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded() =>

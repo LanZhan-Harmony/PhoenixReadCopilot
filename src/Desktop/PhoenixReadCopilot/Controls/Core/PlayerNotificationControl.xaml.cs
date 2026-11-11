@@ -11,7 +11,10 @@ public sealed partial class PlayerNotificationControl : PlayerNotificationContro
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerNotificationControl"/> class.
     /// </summary>
-    public PlayerNotificationControl() => InitializeComponent();
+    public PlayerNotificationControl()
+    {
+        InitializeComponent();
+    }
 
     /// <inheritdoc/>
     protected override void OnControlLoaded() => ViewModel.StartCommand.Execute(null);

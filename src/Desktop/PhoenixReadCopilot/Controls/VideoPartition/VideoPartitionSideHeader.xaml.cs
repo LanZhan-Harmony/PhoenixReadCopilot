@@ -10,5 +10,8 @@ public sealed partial class VideoPartitionSideHeader : UserControl
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartitionSideHeader"/> class.
     /// </summary>
-    public VideoPartitionSideHeader() => InitializeComponent();
+    public VideoPartitionSideHeader()
+    {
+        InitializeComponent();
+    }
 }

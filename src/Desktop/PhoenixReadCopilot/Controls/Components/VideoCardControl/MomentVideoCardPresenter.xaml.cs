@@ -8,5 +8,8 @@ public sealed partial class MomentVideoCardPresenter : VideoCardPresenter
     /// <summary>
     /// Initializes a new instance of the <see cref="MomentVideoCardPresenter"/> class.
     /// </summary>
-    public MomentVideoCardPresenter() => InitializeComponent();
+    public MomentVideoCardPresenter()
+    {
+        InitializeComponent();
+    }
 }

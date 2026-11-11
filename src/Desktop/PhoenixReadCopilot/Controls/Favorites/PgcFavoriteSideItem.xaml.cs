@@ -8,5 +8,8 @@ public sealed partial class PgcFavoriteSideItem : PgcFavoriteControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PgcFavoriteSideItem"/> class.
     /// </summary>
-    public PgcFavoriteSideItem() => InitializeComponent();
+    public PgcFavoriteSideItem()
+    {
+        InitializeComponent();
+    }
 }

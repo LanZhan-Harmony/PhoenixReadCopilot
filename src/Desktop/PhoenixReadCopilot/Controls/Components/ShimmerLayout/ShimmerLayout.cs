@@ -21,7 +21,10 @@ public sealed partial class ShimmerLayout : LayoutControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ShimmerLayout"/> class.
     /// </summary>
-    public ShimmerLayout() => DefaultStyleKey = typeof(ShimmerLayout);
+    public ShimmerLayout()
+    {
+        DefaultStyleKey = typeof(ShimmerLayout);
+    }
 
     /// <summary>
     /// 是否激活.
