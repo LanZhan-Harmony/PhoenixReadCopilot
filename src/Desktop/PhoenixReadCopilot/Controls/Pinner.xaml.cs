@@ -5,7 +5,6 @@ using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
 using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Article;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
@@ -50,11 +49,6 @@ public sealed partial class Pinner : PinnerBase
                 new VideoInformation(new MediaIdentifier(item.Id, item.Title, null), null)
             );
             navVM.NavigateToOver(typeof(VideoPlayerPage), snapshot);
-        }
-        else if (item.Type == PinContentType.Article)
-        {
-            ArticleIdentifier identifier = new(item.Id, item.Title, null, null);
-            navVM.NavigateToOver(typeof(ArticleReaderPage), identifier);
         }
 
         ItemsFlyout.Hide();

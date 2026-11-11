@@ -13,8 +13,6 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
 
     public DataTemplate UserTemplate { get; set; }
 
-    public DataTemplate ArticleTemplate { get; set; }
-
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
         if (item is ISearchSectionDetailViewModel searchSectionDetailViewModel)
@@ -24,7 +22,6 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
                 SearchSectionType.Video => VideoTemplate,
                 SearchSectionType.Anime or SearchSectionType.Cinema => PgcTemplate,
                 SearchSectionType.User => UserTemplate,
-                SearchSectionType.Article => ArticleTemplate,
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(searchSectionDetailViewModel.SectionType),
                     searchSectionDetailViewModel.SectionType,

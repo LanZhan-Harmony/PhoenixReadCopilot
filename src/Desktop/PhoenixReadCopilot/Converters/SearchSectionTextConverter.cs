@@ -14,7 +14,6 @@ internal sealed partial class SearchSectionTextConverter : IValueConverter
             SearchSectionType.Video => Resources.Video,
             SearchSectionType.Cinema => Resources.FindDrama,
             SearchSectionType.User => Resources.User,
-            SearchSectionType.Article => Resources.Article,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };
     }

@@ -13,7 +13,6 @@
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/VideoCardControl/VideoCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/SeasonCardControl/SeasonCardControl.xaml"/>
-                <ResourceDictionary Source="ms-appx:///Controls/Components/ArticleCardControl/ArticleCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/EpisodeCardControl/EpisodeCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/MomentCardControl/MomentCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Core/Player/PlayerResources.xaml"/>
@@ -49,13 +48,6 @@
                                MinColumnSpacing="16"
                                MinItemHeight="266"
                                MinItemWidth="148"
-                               MinRowSpacing="16"/>
-
-            <UniformGridLayout x:Key="ArticleLayout"
-                               ItemsStretch="Fill"
-                               MinColumnSpacing="16"
-                               MinItemHeight="200"
-                               MinItemWidth="200"
                                MinRowSpacing="16"/>
 
             <UniformGridLayout x:Key="UserLayout"

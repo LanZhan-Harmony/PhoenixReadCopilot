@@ -19,9 +19,4 @@ public enum PinContentType
     /// 视频内容.
     /// </summary>
     Video,
-
-    /// <summary>
-    /// 文章.
-    /// </summary>
-    Article,
 }

@@ -45,12 +45,6 @@
                 </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsCinemaPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
-            <community:SettingsCard Header="{x:Bind strings:Resources.Article}">
-                <community:SettingsCard.HeaderIcon>
-                    <ic:SymbolIcon Symbol="DocumentBulletList"/>
-                </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsArticlePartitionPageVisible, Mode=TwoWay}"/>
-            </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>
 </local:SettingsPageControlBase>

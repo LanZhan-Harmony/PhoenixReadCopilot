@@ -24,9 +24,4 @@ public enum SearchSectionType
     /// 影视.
     /// </summary>
     Cinema = 8,
-
-    /// <summary>
-    /// 文章.
-    /// </summary>
-    Article = 6,
 }
