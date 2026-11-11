@@ -6,22 +6,12 @@ namespace PhoenixReadCopilot.Core.Enums;
 public enum SearchSectionType
 {
     /// <summary>
-    /// 视频.
+    /// 短剧.
     /// </summary>
-    Video = 0,
-
-    /// <summary>
-    /// 动漫.
-    /// </summary>
-    Anime = 7,
+    Drama = 0,
 
     /// <summary>
     /// 用户.
     /// </summary>
-    User = 2,
-
-    /// <summary>
-    /// 影视.
-    /// </summary>
-    Cinema = 8,
+    User = 1,
 }

@@ -11,8 +11,6 @@ internal sealed partial class PgcFavoriteTextConverter : IValueConverter
         PgcFavoriteType type = (PgcFavoriteType)value;
         return type switch
         {
-            PgcFavoriteType.Anime => Resources.MyFavoriteAnime,
-            PgcFavoriteType.Cinema => Resources.MyFavoriteFilm,
             _ => throw new Exception("Unknown type."),
         };
     }

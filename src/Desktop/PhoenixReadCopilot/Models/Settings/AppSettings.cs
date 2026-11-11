@@ -247,23 +247,23 @@ public sealed partial class AppSettings : ObservableObject
     public partial string VideoPartitionPageLastSelectedPartitionId { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial double AnimePageNavColumnWidth { get; set; } = 0;
+    public partial double CalendarPageNavColumnWidth { get; set; } = 0;
 
     [ObservableProperty]
-    public partial bool IsAnimePageNavColumnManualHide { get; set; } = false;
+    public partial bool IsCalendarPageNavColumnManualHide { get; set; } = false;
 
     [ObservableProperty]
-    public partial PgcSectionType AnimePageLastSelectedSectionType { get; set; } =
-        PgcSectionType.Anime;
+    public partial PgcSectionType CalendarPageLastSelectedSectionType { get; set; } =
+        PgcSectionType.Calendar;
 
     [ObservableProperty]
-    public partial double CinemaPageNavColumnWidth { get; set; } = 0;
+    public partial double FindDramaPageNavColumnWidth { get; set; } = 0;
 
     [ObservableProperty]
-    public partial bool IsCinemaPageNavColumnManualHide { get; set; } = false;
+    public partial bool IsFindDramaPageNavColumnManualHide { get; set; } = false;
 
     [ObservableProperty]
-    public partial PgcSectionType CinemaPageLastSelectedSectionType { get; set; } =
+    public partial PgcSectionType FindDramaPageLastSelectedSectionType { get; set; } =
         PgcSectionType.Movie;
 
     [ObservableProperty]
@@ -292,10 +292,10 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool IsVideoPartitionPageVisible { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsAnimePageVisible { get; set; } = true;
+    public partial bool IsCalendarPageVisible { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsCinemaPageVisible { get; set; } = true;
+    public partial bool IsFindDramaPageVisible { get; set; } = true;
 
     // ================= 动态扩展配置项 =================
     [ObservableProperty]
@@ -313,8 +313,8 @@ public sealed partial class AppSettings : ObservableObject
             "VideoPartitionPage" => VideoPartitionPageNavColumnWidth <= 0
                 ? defaultValue
                 : VideoPartitionPageNavColumnWidth,
-            "AnimePage" => AnimePageNavColumnWidth <= 0 ? defaultValue : AnimePageNavColumnWidth,
-            "CinemaPage" => CinemaPageNavColumnWidth <= 0 ? defaultValue : CinemaPageNavColumnWidth,
+            "CalendarPage" => CalendarPageNavColumnWidth <= 0 ? defaultValue : CalendarPageNavColumnWidth,
+            "FindDramaPage" => FindDramaPageNavColumnWidth <= 0 ? defaultValue : FindDramaPageNavColumnWidth,
             _ => defaultValue,
         };
 
@@ -331,11 +331,11 @@ public sealed partial class AppSettings : ObservableObject
             case "VideoPartitionPage":
                 VideoPartitionPageNavColumnWidth = value;
                 break;
-            case "AnimePage":
-                AnimePageNavColumnWidth = value;
+            case "CalendarPage":
+                CalendarPageNavColumnWidth = value;
                 break;
-            case "CinemaPage":
-                CinemaPageNavColumnWidth = value;
+            case "FindDramaPage":
+                FindDramaPageNavColumnWidth = value;
                 break;
         }
     }
@@ -348,8 +348,8 @@ public sealed partial class AppSettings : ObservableObject
         {
             "PopularPage" => IsPopularPageNavColumnManualHide,
             "VideoPartitionPage" => IsVideoPartitionPageNavColumnManualHide,
-            "AnimePage" => IsAnimePageNavColumnManualHide,
-            "CinemaPage" => IsCinemaPageNavColumnManualHide,
+            "CalendarPage" => IsCalendarPageNavColumnManualHide,
+            "FindDramaPage" => IsFindDramaPageNavColumnManualHide,
             _ => defaultValue,
         };
 
@@ -366,11 +366,11 @@ public sealed partial class AppSettings : ObservableObject
             case "VideoPartitionPage":
                 IsVideoPartitionPageNavColumnManualHide = value;
                 break;
-            case "AnimePage":
-                IsAnimePageNavColumnManualHide = value;
+            case "CalendarPage":
+                IsCalendarPageNavColumnManualHide = value;
                 break;
-            case "CinemaPage":
-                IsCinemaPageNavColumnManualHide = value;
+            case "FindDramaPage":
+                IsFindDramaPageNavColumnManualHide = value;
                 break;
         }
     }
@@ -386,8 +386,8 @@ public sealed partial class AppSettings : ObservableObject
             "PopularPage" => IsPopularPageVisible,
             "MomentPage" => IsMomentPageVisible,
             "VideoPartitionPage" => IsVideoPartitionPageVisible,
-            "AnimePage" => IsAnimePageVisible,
-            "CinemaPage" => IsCinemaPageVisible,
+            "CalendarPage" => IsCalendarPageVisible,
+            "FindDramaPage" => IsFindDramaPageVisible,
             _ => true,
         };
     }
@@ -409,11 +409,11 @@ public sealed partial class AppSettings : ObservableObject
             case "VideoPartitionPage":
                 IsVideoPartitionPageVisible = isVisible;
                 break;
-            case "AnimePage":
-                IsAnimePageVisible = isVisible;
+            case "CalendarPage":
+                IsCalendarPageVisible = isVisible;
                 break;
-            case "CinemaPage":
-                IsCinemaPageVisible = isVisible;
+            case "FindDramaPage":
+                IsFindDramaPageVisible = isVisible;
                 break;
         }
     }

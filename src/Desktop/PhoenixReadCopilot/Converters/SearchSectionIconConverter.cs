@@ -10,10 +10,8 @@ internal sealed partial class SearchSectionIconConverter : IValueConverter
         SearchSectionType sectionType = (SearchSectionType)value;
         return sectionType switch
         {
-            SearchSectionType.Video => FluentIcons.Common.Symbol.VideoClip,
-            SearchSectionType.Anime => FluentIcons.Common.Symbol.Dust,
+            SearchSectionType.Drama => FluentIcons.Common.Symbol.VideoClip,
             SearchSectionType.User => FluentIcons.Common.Symbol.People,
-            SearchSectionType.Cinema => FluentIcons.Common.Symbol.MoviesAndTv,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };
     }

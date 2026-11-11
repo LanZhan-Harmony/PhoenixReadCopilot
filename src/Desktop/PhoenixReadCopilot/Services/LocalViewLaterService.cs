@@ -91,10 +91,7 @@ public sealed class LocalViewLaterService : ILocalViewLaterService
         try
         {
             await EnsureLoadedAsync();
-            return
-            [
-                .. _cache!,
-            ];
+            return [.. _cache!];
         }
         finally
         {

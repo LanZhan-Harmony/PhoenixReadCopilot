@@ -10,8 +10,6 @@ internal sealed partial class PgcFavoriteIconConverter : IValueConverter
         PgcFavoriteType type = (PgcFavoriteType)value;
         return type switch
         {
-            PgcFavoriteType.Anime => FluentIcons.Common.Symbol.Dust,
-            PgcFavoriteType.Cinema => FluentIcons.Common.Symbol.MoviesAndTv,
             _ => throw new Exception("Unknown type."),
         };
     }

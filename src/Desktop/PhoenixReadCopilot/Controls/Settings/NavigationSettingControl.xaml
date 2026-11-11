@@ -37,13 +37,13 @@
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Dust"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsAnimePageVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsCalendarPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.FindDrama}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="FilmstripPlay"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsCinemaPageVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsFindDramaPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>

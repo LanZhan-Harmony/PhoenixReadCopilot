@@ -19,8 +19,7 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
         {
             return searchSectionDetailViewModel.SectionType switch
             {
-                SearchSectionType.Video => VideoTemplate,
-                SearchSectionType.Anime or SearchSectionType.Cinema => PgcTemplate,
+                SearchSectionType.Drama => VideoTemplate,
                 SearchSectionType.User => UserTemplate,
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(searchSectionDetailViewModel.SectionType),

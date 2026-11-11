@@ -114,8 +114,8 @@ internal class ServiceHelper
             .AddSingleton<AccountViewModel>()
             .AddSingleton<SearchBoxViewModel>()
             // View
-            .AddTransient<AnimePageViewModel>()
-            .AddTransient<CinemaPageViewModel>()
+            .AddTransient<CalendarPageViewModel>()
+            .AddTransient<FindDramaPageViewModel>()
             .AddTransient<FansPageViewModel>()
             .AddTransient<FavoritesPageViewModel>()
             .AddTransient<FollowsPageViewModel>()
