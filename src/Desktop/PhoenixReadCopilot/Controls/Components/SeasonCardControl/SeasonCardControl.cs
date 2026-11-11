@@ -66,16 +66,6 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         };
     }
 
-    private static MenuFlyoutItem CreateOpenInBroswerItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.OpenInBrowser,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Globe },
-            Tag = nameof(ViewModel.OpenInBroswerCommand),
-        };
-    }
-
     private static MenuFlyoutItem CreateFollowItem()
     {
         return new MenuFlyoutItem()
@@ -93,39 +83,6 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
             Text = Strings.Resources.FixContent,
             Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Pin },
             Tag = nameof(ViewModel.PinCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateMarkWantWatchItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.MarkWantWatch,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Thinking },
-            Tag = nameof(ViewModel.MarkWantWatchCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateMarkWatchingItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.MarkWatching,
-            Icon = new FluentIcons.WinUI.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Eye },
-            Tag = nameof(ViewModel.MarkWatchingCommand),
-        };
-    }
-
-    private static MenuFlyoutItem CreateMarkWatchedItem()
-    {
-        return new MenuFlyoutItem()
-        {
-            Text = Strings.Resources.MarkWatched,
-            Icon = new FluentIcons.WinUI.SymbolIcon
-            {
-                Symbol = FluentIcons.Common.Symbol.Checkmark,
-            },
-            Tag = nameof(ViewModel.MarkWatchedCommand),
         };
     }
 
@@ -162,7 +119,6 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         MenuFlyout menuFlyout = new() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
-        menuFlyout.Items.Add(CreateOpenInBroswerItem());
         if (ViewModel.Style != SeasonCardStyle.Favorite)
         {
             menuFlyout.Items.Add(CreateFollowItem());
@@ -171,9 +127,6 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
         else
         {
             menuFlyout.Items.Add(CreatePinItem());
-            menuFlyout.Items.Add(CreateMarkWantWatchItem());
-            menuFlyout.Items.Add(CreateMarkWatchingItem());
-            menuFlyout.Items.Add(CreateMarkWatchedItem());
             menuFlyout.Items.Add(CreateUnfollowItem());
         }
 
@@ -194,26 +147,11 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
                 case nameof(ViewModel.OpenInNewWindowCommand):
                     item.Command = ViewModel.OpenInNewWindowCommand;
                     break;
-                case nameof(ViewModel.OpenInBroswerCommand):
-                    item.Command = ViewModel.OpenInBroswerCommand;
-                    break;
                 case nameof(ViewModel.FollowCommand):
                     item.Command = ViewModel.FollowCommand;
                     break;
                 case nameof(ViewModel.PinCommand):
                     item.Command = ViewModel.PinCommand;
-                    break;
-                case nameof(ViewModel.MarkWantWatchCommand):
-                    item.IsEnabled = !(ViewModel.InWantWatch ?? false);
-                    item.Command = ViewModel.MarkWantWatchCommand;
-                    break;
-                case nameof(ViewModel.MarkWatchingCommand):
-                    item.IsEnabled = !(ViewModel.InWatching ?? false);
-                    item.Command = ViewModel.MarkWatchingCommand;
-                    break;
-                case nameof(ViewModel.MarkWatchedCommand):
-                    item.IsEnabled = !(ViewModel.InWatched ?? false);
-                    item.Command = ViewModel.MarkWatchedCommand;
                     break;
                 case nameof(ViewModel.UnfollowCommand):
                     item.Command = ViewModel.UnfollowCommand;

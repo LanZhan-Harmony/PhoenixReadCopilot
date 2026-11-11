@@ -13,7 +13,6 @@
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/VideoCardControl/VideoCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/SeasonCardControl/SeasonCardControl.xaml"/>
-                <ResourceDictionary Source="ms-appx:///Controls/Components/EpisodeCardControl/EpisodeCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/MomentCardControl/MomentCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Core/Player/PlayerResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/ShimmerLayout/ShimmerLayout.xaml"/>
