@@ -105,24 +105,7 @@ public sealed partial class AppViewModel : ViewModelBase
             catch { }
         }
 
-        bool hasToken = false;
-        try
-        {
-            hasToken = _apiClient.GetAuthenticationState().IsAuthenticated;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get token during launch.");
-        }
-
-        if (hasToken || _settings.ShouldSkipStartup)
-        {
-            EnterMainWindow();
-        }
-        else
-        {
-            new StartupWindow().Activate();
-        }
+        EnterMainWindow();
     }
 
     [RelayCommand]

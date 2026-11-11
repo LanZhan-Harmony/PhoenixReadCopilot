@@ -45,9 +45,11 @@ public sealed partial class AccountViewModel : ViewModelBase
             if (isValid)
             {
                 CurrentUserInfo info = await _apiClient.GetCurrentUserInfoAsync();
-                UserAvatar? avatar = !string.IsNullOrEmpty(info.AvatarUrl) && Uri.TryCreate(info.AvatarUrl, UriKind.Absolute, out Uri? uri)
-                    ? new UserAvatar { Uri = uri }
-                    : null;
+                UserAvatar? avatar =
+                    !string.IsNullOrEmpty(info.AvatarUrl)
+                    && Uri.TryCreate(info.AvatarUrl, UriKind.Absolute, out Uri? uri)
+                        ? new UserAvatar { Uri = uri }
+                        : null;
 
                 MyProfile = new UserDetailProfile
                 {
@@ -57,7 +59,9 @@ public sealed partial class AccountViewModel : ViewModelBase
                         Name = string.IsNullOrEmpty(info.Name) ? "红果短剧用户" : info.Name,
                         Avatar = avatar,
                     },
-                    Introduce = !string.IsNullOrEmpty(info.Description) ? info.Description : (info.IsVip ? "红果 VIP 会员" : "红果短剧用户"),
+                    Introduce = !string.IsNullOrEmpty(info.Description)
+                        ? info.Description
+                        : (info.IsVip ? "红果 VIP 会员" : "红果短剧用户"),
                     IsVip = info.IsVip,
                 };
                 Introduce = MyProfile.Introduce;
@@ -107,26 +111,6 @@ public sealed partial class AccountViewModel : ViewModelBase
         MyProfile = null;
         _appViewModel.RestartCommand.Execute(null);
         await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task OpenPersonalWebsiteAsync()
-    {
-        if (MyProfile is null)
-        {
-            return;
-        }
-
-        await Launcher.LaunchUriAsync(new Uri($"https://hongguoduanju.com/user/{MyProfile.User.Id}"));
-    }
-
-    [RelayCommand]
-    private void ShowFans()
-    {
-        if (MyProfile is not null)
-        {
-            _navService.NavigateToOver(typeof(FansPage), MyProfile.User.Id);
-        }
     }
 
     [RelayCommand]

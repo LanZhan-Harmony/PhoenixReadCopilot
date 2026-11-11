@@ -1,3 +1,4 @@
+using System.Linq;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Forms;
@@ -27,28 +28,26 @@ public sealed partial class HeaderAccountControl : HeaderAccountControlBase
 
     private void OnAvatarButtonClick(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.MyProfile is not null)
-        {
-            AccountFlyout.ShowAt(AvatarButton);
-        }
-        else
-        {
-            Window? window = _appViewModel.Windows.FirstOrDefault(p => p is StartupWindow);
-            if (window is not null)
-            {
-                try
-                {
-                    window.Activate();
-                    return;
-                }
-                catch
-                {
-                    _appViewModel.Windows.Remove(window);
-                }
-            }
+        AccountFlyout.ShowAt(AvatarButton);
+    }
 
-            new StartupWindow().Activate();
+    private void OnSignInFlyoutItemClick(object sender, RoutedEventArgs e)
+    {
+        Window? window = _appViewModel.Windows.FirstOrDefault(p => p is StartupWindow);
+        if (window is not null)
+        {
+            try
+            {
+                window.Activate();
+                return;
+            }
+            catch
+            {
+                _appViewModel.Windows.Remove(window);
+            }
         }
+
+        new StartupWindow().Activate();
     }
 }
 
