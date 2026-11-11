@@ -73,10 +73,7 @@ public sealed partial class VideoPlayerPageViewModel
                 .OrderByDescending(PlayerFormatItemViewModel.GetQualityScore),
         ];
 
-        Formats =
-        [
-            .. distinctMedias.Select(m => new PlayerFormatItemViewModel(m)),
-        ];
+        Formats = [.. distinctMedias.Select(m => new PlayerFormatItemViewModel(m))];
 
         int partIndex =
             _episodes is not null && _currentEpisode is not null
@@ -85,9 +82,7 @@ public sealed partial class VideoPlayerPageViewModel
 
         Downloader.InitializeMetas(
             GetWebLink(),
-            [
-                .. Formats.Select(p => p.Data),
-            ],
+            [.. Formats.Select(p => p.Data)],
             partIndex >= 0 ? partIndex + 1 : 1
         );
 
@@ -233,10 +228,7 @@ public sealed partial class VideoPlayerPageViewModel
         // 1. 先检查分集列表中是否有下一集.
         if (_episodes is not null && _currentEpisode is not null)
         {
-            List<Episode> list =
-            [
-                .. _episodes,
-            ];
+            List<Episode> list = [.. _episodes];
             int index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
             if (index >= 0 && index < list.Count - 1)
             {
@@ -270,10 +262,7 @@ public sealed partial class VideoPlayerPageViewModel
 
         if (_episodes is not null && _currentEpisode is not null)
         {
-            List<Episode> list =
-            [
-                .. _episodes,
-            ];
+            List<Episode> list = [.. _episodes];
             int index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
             if (index > 0)
             {

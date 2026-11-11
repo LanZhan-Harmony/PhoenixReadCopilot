@@ -42,7 +42,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     public event EventHandler ListUpdated;
 
     /// <inheritdoc/>
-    public SearchSectionType SectionType => SearchSectionType.Video;
+    public SearchSectionType SectionType => SearchSectionType.Drama;
 
     /// <summary>
     /// 条目列表.

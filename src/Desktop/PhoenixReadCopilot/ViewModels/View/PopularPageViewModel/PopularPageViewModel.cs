@@ -271,9 +271,8 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             if (requestId == _currentRequestId)
             {
                 VideoListUpdated?.Invoke(this, EventArgs.Empty);
-                _dispatcherQueue.TryEnqueue(
-                    DispatcherQueuePriority.Low,
-                    () => IsVideoLoading = false
+                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                    IsVideoLoading = false
                 );
             }
         }

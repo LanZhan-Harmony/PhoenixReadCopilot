@@ -42,6 +42,20 @@
                                MinItemWidth="200"
                                MinRowSpacing="16"/>
 
+            <UniformGridLayout x:Key="CalendarLayout"
+                               ItemsStretch="Fill"
+                               MinColumnSpacing="16"
+                               MinItemHeight="266"
+                               MinItemWidth="148"
+                               MinRowSpacing="16"/>
+
+            <UniformGridLayout x:Key="FindDramaLayout"
+                               ItemsStretch="Fill"
+                               MinColumnSpacing="16"
+                               MinItemHeight="266"
+                               MinItemWidth="148"
+                               MinRowSpacing="16"/>
+
             <UniformGridLayout x:Key="PgcLayout"
                                ItemsStretch="Fill"
                                MinColumnSpacing="16"

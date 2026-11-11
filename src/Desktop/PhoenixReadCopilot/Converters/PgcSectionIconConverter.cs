@@ -11,7 +11,7 @@ internal sealed partial class PgcSectionIconConverter : IValueConverter
         return sectionType switch
         {
             PgcSectionType.Timeline => FluentIcons.Common.Symbol.Calendar,
-            PgcSectionType.Anime => FluentIcons.Common.Symbol.Dust,
+            PgcSectionType.Calendar => FluentIcons.Common.Symbol.Dust,
             PgcSectionType.Movie => FluentIcons.Common.Symbol.MoviesAndTv,
             PgcSectionType.TV => FluentIcons.Common.Symbol.SlideSearch,
             PgcSectionType.Documentary => FluentIcons.Common.Symbol.EarthLeaf,

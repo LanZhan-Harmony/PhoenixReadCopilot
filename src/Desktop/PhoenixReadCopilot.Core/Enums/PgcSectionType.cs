@@ -11,9 +11,9 @@ public enum PgcSectionType
     Timeline,
 
     /// <summary>
-    /// 动漫.
+    /// 上新日历.
     /// </summary>
-    Anime,
+    Calendar,
 
     /// <summary>
     /// 电影.
