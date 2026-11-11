@@ -55,14 +55,17 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void SelectGroup(UserGroup group)
     {
-        if (group == null || group == SelectedGroup)
+        if (group is null || group == SelectedGroup)
         {
             return;
         }
 
         if (Users.Count > 0)
         {
-            _userCache[SelectedGroup] = Users.ToList();
+            _userCache[SelectedGroup] =
+            [
+                .. Users,
+            ];
         }
 
         SelectedGroup = group;
@@ -117,7 +120,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
             (IReadOnlyList<UserCard>? users, int nextOffset) =
                 await _service.GetMyFollowUserGroupDetailAsync(SelectedGroup.Id, pn);
             _offsetCache[SelectedGroup] = nextOffset;
-            if (users != null)
+            if (users is not null)
             {
                 foreach (UserCard item in users)
                 {
@@ -158,7 +161,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         try
         {
             IReadOnlyList<UserGroup> groups = await _service.GetMyFollowUserGroupsAsync();
-            if (groups != null)
+            if (groups is not null)
             {
                 foreach (UserGroup item in groups)
                 {

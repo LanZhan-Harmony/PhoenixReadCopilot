@@ -39,12 +39,12 @@ internal partial class DanmakuDirectXRender
                 textFormat = _resourceManager.DWriteFactory.CreateTextFormat(
                     fontFamily,
                     isBold ? FontWeight.Bold : FontWeight.Normal,
-                    Vortice.DirectWrite.FontStyle.Normal,
+                    FontStyle.Normal,
                     FontStretch.Normal,
                     fontSize
                 );
 
-                textFormat.WordWrapping = Vortice.DirectWrite.WordWrapping.NoWrap;
+                textFormat.WordWrapping = WordWrapping.NoWrap;
 
                 // 限制缓存大小
                 if (_resourceManager.TextFormatCache.Count < 100)
@@ -90,15 +90,10 @@ internal partial class DanmakuDirectXRender
     /// </summary>
     /// <param name="color">颜色.</param>
     /// <returns>D2D1 纯色画刷.</returns>
-    private ID2D1SolidColorBrush CreateColorBrush(Windows.UI.Color color)
+    private ID2D1SolidColorBrush CreateColorBrush(Color color)
     {
         return _resourceManager.D2DContext.CreateSolidColorBrush(
-            new Vortice.Mathematics.Color(
-                (byte)color.R,
-                (byte)color.G,
-                (byte)color.B,
-                (byte)color.A
-            )
+            new Vortice.Mathematics.Color(color.R, color.G, color.B, color.A)
         );
     }
 
@@ -113,7 +108,7 @@ internal partial class DanmakuDirectXRender
         {
             if (renderItem.Item is null)
             {
-                return default;
+                return null;
             }
 
             // 计算位图尺寸，需要为描边预留额外空间
@@ -141,61 +136,16 @@ internal partial class DanmakuDirectXRender
             // 计算描边偏移（让文本居中，避免边缘截断）
             var offset = renderItem.Item.HasOutline ? (float)_configState.OutlineSize : 0;
 
-            // 绘制描边（创建临时 Brush，使用完全不透明的颜色）
-            if (renderItem.Item.HasOutline && _configState.OutlineSize > 0)
+            if (renderItem.Segments is { Count: > 0 } segments)
             {
-                Color outlineColor =
-                    renderItem.Item.TextColor.R
-                        + renderItem.Item.TextColor.G
-                        + renderItem.Item.TextColor.B
-                    < 0x20
-                        ? Microsoft.UI.Colors.White
-                        : renderItem.Item.OutlineColor;
-                // 使用完全不透明（Alpha = 255），透明度将在绘制位图时应用
-                outlineColor.A = 255;
-
-                using ID2D1SolidColorBrush outlineBrush = compatibleTarget.CreateSolidColorBrush(
-                    new Vortice.Mathematics.Color4(
-                        outlineColor.R / 255f,
-                        outlineColor.G / 255f,
-                        outlineColor.B / 255f,
-                        1.0f
-                    )
-                ); // Alpha = 1.0 (完全不透明)
-
-                var strokeWidth = (float)_configState.OutlineSize;
-                for (int i = 0; i < _outlineOffsets.Length; i++)
-                {
-                    Vector2 outlineOffset = _outlineOffsets[i] * strokeWidth;
-                    _reusableVector2.X = offset + outlineOffset.X;
-                    _reusableVector2.Y = offset + outlineOffset.Y;
-                    compatibleTarget.DrawTextLayout(
-                        _reusableVector2,
-                        renderItem.TextLayout,
-                        outlineBrush,
-                        DrawTextOptions.EnableColorFont
-                    ); // 启用彩色字体支持
-                }
+                // 🎨 混合图文弹幕渲染（文字 + 红果表情）
+                DrawSegmentedContent(compatibleTarget, renderItem, segments, offset);
             }
-
-            // 绘制主文本（创建临时 Brush，使用完全不透明的颜色）
-            using ID2D1SolidColorBrush textBrush = compatibleTarget.CreateSolidColorBrush(
-                new Vortice.Mathematics.Color4(
-                    renderItem.Item.TextColor.R / 255f,
-                    renderItem.Item.TextColor.G / 255f,
-                    renderItem.Item.TextColor.B / 255f,
-                    1.0f
-                )
-            ); // Alpha = 1.0 (完全不透明，透明度将在绘制位图时应用)
-
-            _reusableVector2.X = offset;
-            _reusableVector2.Y = offset;
-            compatibleTarget.DrawTextLayout(
-                _reusableVector2,
-                renderItem.TextLayout,
-                textBrush,
-                DrawTextOptions.EnableColorFont
-            ); // 启用彩色字体支持（关键：显示彩色 Emoji）
+            else if (renderItem.TextLayout is not null)
+            {
+                // 🔤 纯文字弹幕渲染（原有极速路径）
+                DrawPlainTextContent(compatibleTarget, renderItem, offset);
+            }
 
             Result result = compatibleTarget.EndDraw(out _, out _);
             if (result.Failure)
@@ -221,6 +171,180 @@ internal partial class DanmakuDirectXRender
         {
             Logger.Log($"CreateTextBitmap failed: {ex.Message}");
             return null;
+        }
+    }
+
+    /// <summary>
+    /// 绘制纯文本弹幕内容（描边 + 文本）.
+    /// </summary>
+    private void DrawPlainTextContent(
+        ID2D1BitmapRenderTarget target,
+        DanmakuDirectXRenderItem renderItem,
+        float offset
+    )
+    {
+        if (renderItem.TextLayout is null)
+        {
+            return;
+        }
+
+        // 绘制描边（创建临时 Brush，使用完全不透明的颜色）
+        if (renderItem.Item.HasOutline && _configState.OutlineSize > 0)
+        {
+            Color outlineColor =
+                renderItem.Item.TextColor.R
+                    + renderItem.Item.TextColor.G
+                    + renderItem.Item.TextColor.B
+                < 0x20
+                    ? Microsoft.UI.Colors.White
+                    : renderItem.Item.OutlineColor;
+            outlineColor.A = 255;
+
+            using ID2D1SolidColorBrush outlineBrush = target.CreateSolidColorBrush(
+                new Vortice.Mathematics.Color4(
+                    outlineColor.R / 255f,
+                    outlineColor.G / 255f,
+                    outlineColor.B / 255f,
+                    1.0f
+                )
+            );
+
+            var strokeWidth = (float)_configState.OutlineSize;
+            for (int i = 0; i < _outlineOffsets.Length; i++)
+            {
+                Vector2 outlineOffset = _outlineOffsets[i] * strokeWidth;
+                _reusableVector2.X = offset + outlineOffset.X;
+                _reusableVector2.Y = offset + outlineOffset.Y;
+                target.DrawTextLayout(
+                    _reusableVector2,
+                    renderItem.TextLayout,
+                    outlineBrush,
+                    DrawTextOptions.EnableColorFont
+                );
+            }
+        }
+
+        // 绘制主文本（创建临时 Brush，使用完全不透明的颜色）
+        using ID2D1SolidColorBrush textBrush = target.CreateSolidColorBrush(
+            new Vortice.Mathematics.Color4(
+                renderItem.Item.TextColor.R / 255f,
+                renderItem.Item.TextColor.G / 255f,
+                renderItem.Item.TextColor.B / 255f,
+                1.0f
+            )
+        );
+
+        _reusableVector2.X = offset;
+        _reusableVector2.Y = offset;
+        target.DrawTextLayout(
+            _reusableVector2,
+            renderItem.TextLayout,
+            textBrush,
+            DrawTextOptions.EnableColorFont
+        );
+    }
+
+    /// <summary>
+    /// 绘制混合图文弹幕内容（文字 + 红果表情 WebP）.
+    /// </summary>
+    private void DrawSegmentedContent(
+        ID2D1BitmapRenderTarget target,
+        DanmakuDirectXRenderItem renderItem,
+        List<DanmakuSegment> segments,
+        float baseOffset
+    )
+    {
+        Color outlineColor =
+            renderItem.Item.TextColor.R + renderItem.Item.TextColor.G + renderItem.Item.TextColor.B
+            < 0x20
+                ? Microsoft.UI.Colors.White
+                : renderItem.Item.OutlineColor;
+        outlineColor.A = 255;
+
+        using ID2D1SolidColorBrush outlineBrush = target.CreateSolidColorBrush(
+            new Vortice.Mathematics.Color4(
+                outlineColor.R / 255f,
+                outlineColor.G / 255f,
+                outlineColor.B / 255f,
+                1.0f
+            )
+        );
+
+        using ID2D1SolidColorBrush textBrush = target.CreateSolidColorBrush(
+            new Vortice.Mathematics.Color4(
+                renderItem.Item.TextColor.R / 255f,
+                renderItem.Item.TextColor.G / 255f,
+                renderItem.Item.TextColor.B / 255f,
+                1.0f
+            )
+        );
+
+        float strokeWidth = (float)_configState.OutlineSize;
+        float currentX = baseOffset;
+        float totalHeight = renderItem.Height;
+
+        foreach (DanmakuSegment seg in segments)
+        {
+            if (seg is { Type: DanmakuSegmentType.Text, TextLayout: not null })
+            {
+                float textY = baseOffset + MathF.Max(0, (totalHeight - seg.Height) / 2f);
+
+                // 绘制文字描边
+                if (renderItem.Item.HasOutline && _configState.OutlineSize > 0)
+                {
+                    for (int i = 0; i < _outlineOffsets.Length; i++)
+                    {
+                        Vector2 outlineOffset = _outlineOffsets[i] * strokeWidth;
+                        _reusableVector2.X = currentX + outlineOffset.X;
+                        _reusableVector2.Y = textY + outlineOffset.Y;
+                        target.DrawTextLayout(
+                            _reusableVector2,
+                            seg.TextLayout,
+                            outlineBrush,
+                            DrawTextOptions.EnableColorFont
+                        );
+                    }
+                }
+
+                // 绘制文字内容
+                _reusableVector2.X = currentX;
+                _reusableVector2.Y = textY;
+                target.DrawTextLayout(
+                    _reusableVector2,
+                    seg.TextLayout,
+                    textBrush,
+                    DrawTextOptions.EnableColorFont
+                );
+
+                currentX += seg.Width;
+            }
+            else if (seg.Type == DanmakuSegmentType.Emoji)
+            {
+                ID2D1Bitmap1? emojiBmp = _emojiManager?.GetOrCreateEmojiBitmap(seg.Content);
+                if (emojiBmp is not null)
+                {
+                    // 表情垂直居中：高度与汉字保持一致
+                    float emojiSize = seg.Height;
+                    float emojiY = baseOffset + MathF.Max(0, (totalHeight - emojiSize) / 2f);
+                    Vortice.Mathematics.Rect destRect = new(currentX, emojiY, emojiSize, emojiSize);
+                    Vortice.Mathematics.Rect srcRect = new(
+                        0,
+                        0,
+                        emojiBmp.PixelSize.Width,
+                        emojiBmp.PixelSize.Height
+                    );
+
+                    target.DrawBitmap(
+                        emojiBmp,
+                        destRect,
+                        1.0f,
+                        BitmapInterpolationMode.Linear,
+                        srcRect
+                    );
+                }
+
+                currentX += seg.Width;
+            }
         }
     }
 
@@ -256,9 +380,9 @@ internal partial class DanmakuDirectXRender
     /// <param name="y">Y 坐标.</param>
     private void DrawDanmakuText(DanmakuDirectXRenderItem renderItem, float x, float y)
     {
-        if (renderItem.TextLayout == null)
+        if (renderItem.TextLayout is null && renderItem.Segments is null)
         {
-            Logger.Log($"TextLayout is null for: {renderItem.Item.Text}");
+            Logger.Log($"TextLayout and Segments are null for: {renderItem.Item.Text}");
             return;
         }
 
@@ -312,10 +436,105 @@ internal partial class DanmakuDirectXRender
         if (renderItem.Item.HasBorder || DebugMode)
         {
             ID2D1SolidColorBrush? borderBrush = GetOrCreateBrush(_configState.BorderColor);
-            if (borderBrush != null)
+            if (borderBrush is not null)
             {
                 _resourceManager.D2DContext.DrawRectangle(rect, borderBrush, 2f);
             }
+        }
+
+        // 🎨 图文弹幕直接回退绘制
+        if (renderItem.Segments is { Count: > 0 } segments)
+        {
+            Color outlineColor =
+                renderItem.Item.TextColor.R
+                    + renderItem.Item.TextColor.G
+                    + renderItem.Item.TextColor.B
+                < 0x20
+                    ? Microsoft.UI.Colors.White
+                    : renderItem.Item.OutlineColor;
+
+            ID2D1SolidColorBrush? outlineBrush = GetOrCreateBrush(outlineColor);
+            ID2D1SolidColorBrush? textBrush = GetOrCreateBrush(renderItem.Item.TextColor);
+            float strokeWidth = (float)_configState.OutlineSize;
+            float currentX = x;
+            float totalHeight = renderItem.Height;
+
+            foreach (DanmakuSegment seg in segments)
+            {
+                if (seg is { Type: DanmakuSegmentType.Text, TextLayout: not null })
+                {
+                    float textY = y + MathF.Max(0, (totalHeight - seg.Height) / 2f);
+                    if (
+                        renderItem.Item.HasOutline
+                        && _configState.OutlineSize > 0
+                        && outlineBrush is not null
+                    )
+                    {
+                        for (int i = 0; i < _outlineOffsets.Length; i++)
+                        {
+                            Vector2 offset = _outlineOffsets[i] * strokeWidth;
+                            _reusableVector2.X = currentX + offset.X;
+                            _reusableVector2.Y = textY + offset.Y;
+                            _resourceManager.D2DContext.DrawTextLayout(
+                                _reusableVector2,
+                                seg.TextLayout,
+                                outlineBrush,
+                                DrawTextOptions.EnableColorFont
+                            );
+                        }
+                    }
+
+                    if (textBrush is not null)
+                    {
+                        _reusableVector2.X = currentX;
+                        _reusableVector2.Y = textY;
+                        _resourceManager.D2DContext.DrawTextLayout(
+                            _reusableVector2,
+                            seg.TextLayout,
+                            textBrush,
+                            DrawTextOptions.EnableColorFont
+                        );
+                    }
+
+                    currentX += seg.Width;
+                }
+                else if (seg.Type == DanmakuSegmentType.Emoji)
+                {
+                    ID2D1Bitmap1? emojiBmp = _emojiManager?.GetOrCreateEmojiBitmap(seg.Content);
+                    if (emojiBmp is not null)
+                    {
+                        float emojiSize = seg.Height;
+                        float emojiY = y + MathF.Max(0, (totalHeight - emojiSize) / 2f);
+                        Vortice.Mathematics.Rect destRect = new(
+                            currentX,
+                            emojiY,
+                            emojiSize,
+                            emojiSize
+                        );
+                        Vortice.Mathematics.Rect srcRect = new(
+                            0,
+                            0,
+                            emojiBmp.PixelSize.Width,
+                            emojiBmp.PixelSize.Height
+                        );
+                        _resourceManager.D2DContext.DrawBitmap(
+                            emojiBmp,
+                            destRect,
+                            1.0f,
+                            BitmapInterpolationMode.Linear,
+                            srcRect
+                        );
+                    }
+
+                    currentX += seg.Width;
+                }
+            }
+            return;
+        }
+
+        if (renderItem.TextLayout is null)
+        {
+            return;
         }
 
         // Draw outline (优化版本 - 4方向，使用预计算偏移)
@@ -348,13 +567,13 @@ internal partial class DanmakuDirectXRender
         }
 
         // Draw main text with color font support (for emoji)
-        ID2D1SolidColorBrush? textBrush = GetOrCreateBrush(renderItem.Item.TextColor);
+        ID2D1SolidColorBrush? textBrushDirect = GetOrCreateBrush(renderItem.Item.TextColor);
         _reusableVector2.X = x;
         _reusableVector2.Y = y;
         _resourceManager.D2DContext.DrawTextLayout(
             _reusableVector2,
             renderItem.TextLayout,
-            textBrush,
+            textBrushDirect,
             DrawTextOptions.EnableColorFont
         ); // 启用彩色字体支持（关键：显示彩色 Emoji）
     }
@@ -380,7 +599,7 @@ internal partial class DanmakuDirectXRender
             )
         )
         {
-            if (cachedBitmap == null)
+            if (cachedBitmap is null)
             {
                 return false;
             }
@@ -400,12 +619,9 @@ internal partial class DanmakuDirectXRender
             _reusableMatrix.M32 = y - offset;
             _resourceManager.D2DContext.Transform = _reusableMatrix * prevTransform;
 
-            // 计算透明度（Advanced 和 Subtitle 模式使用完全不透明）
+            // 计算透明度（Subtitle 模式使用完全不透明）
             float opacity =
-                (
-                    renderItem.Item.Mode == DanmakuMode.Advanced
-                    || renderItem.Item.Mode == DanmakuMode.Subtitle
-                )
+                renderItem.Item.Mode == DanmakuMode.Subtitle
                     ? 1.0f
                     : (float)_configState.TextOpacity;
 
@@ -438,8 +654,7 @@ internal partial class DanmakuDirectXRender
                 out ID2D1Bitmap1? cachedBitmap,
                 out var width,
                 out var height
-            )
-            && cachedBitmap != null
+            ) && cachedBitmap is not null
         )
         {
             // 找到了纹理，直接绘制（TryGetTexture 已经增加引用计数）
@@ -449,7 +664,7 @@ internal partial class DanmakuDirectXRender
         {
             // 纹理不存在，创建并缓存到对象池
             ID2D1Bitmap1? newBitmap = CreateTextBitmap(renderItem);
-            if (newBitmap != null)
+            if (newBitmap is not null)
             {
                 // 添加到对象池（PreRenderTexture 会将 RefCount 初始化为 1）
                 _resourceManager.ObjectPool.PreRenderTexture(
@@ -504,14 +719,9 @@ internal partial class DanmakuDirectXRender
         _reusableMatrix.M32 = y - offset;
         _resourceManager.D2DContext.Transform = _reusableMatrix * prevTransform;
 
-        // 计算透明度（Advanced 和 Subtitle 模式使用完全不透明）
+        // 计算透明度（Subtitle 模式使用完全不透明）
         float opacity =
-            (
-                renderItem.Item.Mode == DanmakuMode.Advanced
-                || renderItem.Item.Mode == DanmakuMode.Subtitle
-            )
-                ? 1.0f
-                : (float)_configState.TextOpacity;
+            renderItem.Item.Mode == DanmakuMode.Subtitle ? 1.0f : (float)_configState.TextOpacity;
 
         // 绘制位图（应用真正的透明度！）
         _resourceManager.D2DContext.DrawBitmap(bitmap, opacity, InterpolationMode.Linear);

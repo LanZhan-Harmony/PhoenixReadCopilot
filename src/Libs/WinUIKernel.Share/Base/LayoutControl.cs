@@ -91,7 +91,7 @@ public abstract class LayoutControlBase<TViewModel> : LayoutControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        if (ViewModel != null)
+        if (ViewModel is not null)
         {
             AssignValuesWhenViewModelChanged();
         }

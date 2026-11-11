@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;

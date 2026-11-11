@@ -17,7 +17,7 @@ public partial class ImageExBase
     public async ValueTask<long> GetAllCacheSizeAsync()
     {
         StorageFolder cacheFolder = await GetCacheFolderAsync();
-        if (cacheFolder == null)
+        if (cacheFolder is null)
         {
             return 0L;
         }
@@ -37,7 +37,7 @@ public partial class ImageExBase
     public async Task ClearCacheAsync()
     {
         StorageFolder cacheFolder = await GetCacheFolderAsync();
-        if (cacheFolder != null)
+        if (cacheFolder is not null)
         {
             await cacheFolder.DeleteAsync(StorageDeleteOption.PermanentDelete);
         }
@@ -102,7 +102,7 @@ public partial class ImageExBase
         CancellationToken cancellationToken = default
     )
     {
-        if (string.IsNullOrEmpty(key) || data == null || data.Length == 0)
+        if (string.IsNullOrEmpty(key) || data is null || data.Length == 0)
         {
             return;
         }
@@ -118,7 +118,7 @@ public partial class ImageExBase
     private static string GetCacheFileName(string key)
     {
         key = NormalizeKey(key);
-        using MD5 md5 = System.Security.Cryptography.MD5.Create();
+        using MD5 md5 = MD5.Create();
         string hash = Convert.ToHexStringLower(md5.ComputeHash(Encoding.UTF8.GetBytes(key)));
         return hash;
     }

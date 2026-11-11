@@ -1,7 +1,3 @@
-using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.ViewModels.Components;
-using PhoenixReadCopilot.ViewModels.Items;
-
 namespace PhoenixReadCopilot.Controls.Pgc;
 
 /// <summary>

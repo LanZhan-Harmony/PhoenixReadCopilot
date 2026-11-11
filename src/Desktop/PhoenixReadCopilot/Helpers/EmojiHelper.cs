@@ -39,7 +39,7 @@ public sealed class EmojiItem
 /// <summary>
 /// 表情辅助工具类.
 /// </summary>
-public static class EmojiHelper
+public static partial class EmojiHelper
 {
     private static readonly string[] EmojiNames =
     [
@@ -102,7 +102,6 @@ public static class EmojiHelper
     [
         with(StringComparer.OrdinalIgnoreCase),
     ];
-    private static readonly List<EmojiItem> AllEmojis = [];
 
     // 常见 Unicode Emoji 到红果表情代码的反向映射表
     private static readonly Dictionary<string, string> UnicodeToEmojiMap = new()
@@ -171,21 +170,19 @@ public static class EmojiHelper
         { "😍", "[爱慕]" },
     };
 
+    public static List<EmojiItem> AllEmojis { get; private set; } = [];
+
     static EmojiHelper()
     {
-        string baseDir = AppContext.BaseDirectory;
         foreach (string name in EmojiNames)
         {
-            string localFile = Path.Combine(baseDir, "Assets", "Emoji", $"{name}.webp");
-            Uri uri;
-            if (File.Exists(localFile))
-            {
-                uri = new Uri(localFile);
-            }
-            else
-            {
-                uri = new Uri($"ms-appx:///Assets/Emoji/{name}.webp");
-            }
+            string localFile = Path.Combine(
+                AppContext.BaseDirectory,
+                "Assets",
+                "Emoji",
+                $"{name}.webp"
+            );
+            Uri uri = new(localFile);
 
             EmojiItem item = new(name, uri);
             AllEmojis.Add(item);
@@ -195,11 +192,6 @@ public static class EmojiHelper
             EmojiLookup[$"[{name}]"] = item;
         }
     }
-
-    /// <summary>
-    /// 获取所有表情列表.
-    /// </summary>
-    public static IReadOnlyList<EmojiItem> Emojis => AllEmojis;
 
     /// <summary>
     /// 尝试根据名称或代码查找表情.
@@ -221,7 +213,7 @@ public static class EmojiHelper
         // 去掉可能包含的首尾括号
         if (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
         {
-            string inner = trimmed.Substring(1, trimmed.Length - 2);
+            string inner = trimmed[1..^1];
             return EmojiLookup.TryGetValue(inner, out emoji);
         }
 
@@ -242,11 +234,7 @@ public static class EmojiHelper
         string result = text;
 
         // 1. 替换 HTML 图片标签形式的表情 (如 <img ... alt="微笑">)
-        result = Regex.Replace(
-            result,
-            @"<img[^>]*alt=[""']?([a-zA-Z0-9_\u4e00-\u9fa5]+)[""']?[^>]*>",
-            "[$1]"
-        );
+        result = HtmlImageRegex().Replace(result, "[$1]");
 
         // 2. 替换 Unicode Emoji 到 [表情名]
         foreach ((string? unicode, string? code) in UnicodeToEmojiMap)
@@ -259,4 +247,7 @@ public static class EmojiHelper
 
         return result;
     }
+
+    [GeneratedRegex(@"<img[^>]*alt=[""']?([a-zA-Z0-9_\u4e00-\u9fa5]+)[""']?[^>]*>")]
+    private static partial Regex HtmlImageRegex();
 }

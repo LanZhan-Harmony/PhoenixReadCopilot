@@ -43,7 +43,7 @@ public sealed partial class VideoPartitionPageViewModel : LayoutPageViewModelBas
 
         IsPartitionLoading = true;
         IReadOnlyList<Partition> partitions = await _service.GetVideoPartitionsAsync();
-        if (partitions != null)
+        if (partitions is not null)
         {
             foreach (Partition item in partitions)
             {

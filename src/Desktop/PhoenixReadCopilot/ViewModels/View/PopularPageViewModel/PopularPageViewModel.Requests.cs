@@ -59,9 +59,12 @@ public sealed partial class PopularPageViewModel
                         }
                     }
 
-                    if (SelectedSection != null)
+                    if (SelectedSection is not null)
                     {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = Videos.ToList();
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] =
+                        [
+                            .. Videos,
+                        ];
                     }
                 });
             }
@@ -134,9 +137,12 @@ public sealed partial class PopularPageViewModel
                         Videos.Add(vm);
                     }
 
-                    if (SelectedSection != null)
+                    if (SelectedSection is not null)
                     {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = Videos.ToList();
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] =
+                        [
+                            .. Videos,
+                        ];
                     }
                 });
             }
@@ -205,9 +211,12 @@ public sealed partial class PopularPageViewModel
                         Videos.Add(vm);
                     }
 
-                    if (SelectedSection != null)
+                    if (SelectedSection is not null)
                     {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = Videos.ToList();
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] =
+                        [
+                            .. Videos,
+                        ];
                     }
                 });
             }

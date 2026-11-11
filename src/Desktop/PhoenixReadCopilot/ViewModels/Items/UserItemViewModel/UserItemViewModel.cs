@@ -4,7 +4,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Bili.User;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
@@ -48,7 +47,10 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         UserData = user;
         Id = user.Id;
         Name = user.Name;
-        if (!string.IsNullOrEmpty(user.AvatarUrl) && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out Uri? uri))
+        if (
+            !string.IsNullOrEmpty(user.AvatarUrl)
+            && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out Uri? uri)
+        )
         {
             Avatar = uri;
         }
@@ -60,11 +62,13 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
 
     private static UserCard CreateUserCard(PhoenixReadApi.User user)
     {
-        BiliImage? avatar = !string.IsNullOrEmpty(user.AvatarUrl) && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out Uri? uri)
-            ? new BiliImage(uri)
-            : null;
-        Richasy.BiliKernel.Models.User.UserProfile userProfile = new(user.Id, user.Name, avatar);
-        Richasy.BiliKernel.Models.User.UserDetailProfile detailProfile = new(userProfile, user.Introduction, null, null, null);
+        BiliImage? avatar =
+            !string.IsNullOrEmpty(user.AvatarUrl)
+            && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out Uri? uri)
+                ? new BiliImage(uri)
+                : null;
+        UserProfile userProfile = new(user.Id, user.Name, avatar);
+        UserDetailProfile detailProfile = new(userProfile, user.Introduction, null, null, null);
         return new UserCard(detailProfile, new UserCommunityInformation(user.Id));
     }
 
@@ -76,12 +80,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     private void Pin()
     {
         string coverUri = Avatar?.ToString() ?? string.Empty;
-        PinItem pinItem = new(
-            Id,
-            Name,
-            coverUri,
-            PinContentType.User
-        );
+        PinItem pinItem = new(Id, Name, coverUri, PinContentType.User);
         ItemServices.Pinner.AddItemCommand.Execute(pinItem);
     }
 
@@ -99,9 +98,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         catch (Exception ex)
         {
             Logger.LogError(ex, "修改关注状态失败");
-            ItemServices.App.ShowTipCommand.Execute(
-                (Resources.FailedToFollowUser, InfoType.Error)
-            );
+            ItemServices.App.ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
         }
     }
 }

@@ -100,7 +100,7 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
         SelectorBarItem? match = BoardSelector.Items.FirstOrDefault(item =>
             item.Tag as string == currentTag
         );
-        if (match != null && BoardSelector.SelectedItem != match)
+        if (match is not null && BoardSelector.SelectedItem != match)
         {
             try
             {

@@ -114,7 +114,10 @@ public sealed partial class VideoMomentSectionDetailViewModel
 
     private void SaveLastTenMomentIds()
     {
-        List<string> momentIds = Items.Take(10).Select(p => p.Data.Id).ToList();
+        List<string> momentIds =
+        [
+            .. Items.Take(10).Select(p => p.Data.Id),
+        ];
         string lastTenMomentIds = string.Join(',', momentIds);
         _settings.LastTenMomentIds = lastTenMomentIds;
     }

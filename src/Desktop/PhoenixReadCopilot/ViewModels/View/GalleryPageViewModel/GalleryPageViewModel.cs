@@ -33,7 +33,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
     [RelayCommand]
     private void ChangeImage(AppImage image)
     {
-        if (image == null || SelectedImage == image)
+        if (image is null || SelectedImage == image)
         {
             return;
         }

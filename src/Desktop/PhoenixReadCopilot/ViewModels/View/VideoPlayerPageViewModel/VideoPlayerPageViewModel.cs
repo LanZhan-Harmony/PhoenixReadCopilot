@@ -247,10 +247,10 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         _isFormatChanging = true;
-        bool isFirstSet = SelectedFormat == null;
+        bool isFirstSet = SelectedFormat is null;
         SelectedFormat = vm;
         PlaybackMedia? media = vm.PlaybackMedia ?? _currentMediaList?.FirstOrDefault();
-        if (media == null)
+        if (media is null)
         {
             _isFormatChanging = false;
             return;

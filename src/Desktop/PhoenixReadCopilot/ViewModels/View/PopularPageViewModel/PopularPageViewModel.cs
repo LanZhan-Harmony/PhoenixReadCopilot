@@ -200,7 +200,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         Videos.Clear();
         CurrentChannel = channel;
 
-        if (SelectedSection != null)
+        if (SelectedSection is not null)
         {
             string cacheKey = GetCacheKey(SelectedSection, CurrentChannel);
             if (
@@ -288,7 +288,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         IsVideoLoading = false;
 
         Videos.Clear();
-        if (SelectedSection != null)
+        if (SelectedSection is not null)
         {
             _videoCache.Remove(GetCacheKey(SelectedSection, CurrentChannel));
             ResetPagination(SelectedSection);
@@ -363,7 +363,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     private void PlayCuratedList()
     {
         VideoItemViewModel? first = Videos.FirstOrDefault();
-        if (first?.Drama != null)
+        if (first?.Drama is not null)
         {
             _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
         }

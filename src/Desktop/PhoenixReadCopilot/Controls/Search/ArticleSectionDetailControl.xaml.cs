@@ -45,21 +45,18 @@ public sealed partial class ArticleSectionDetailControl : ArticleSectionDetailCo
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                ArticleScrollView.ExtentHeight
+                    - ArticleScrollView.ViewportHeight
+                    - ArticleScrollView.VerticalOffset
+                <= 240
+            )
             {
-                if (
-                    ArticleScrollView.ExtentHeight
-                        - ArticleScrollView.ViewportHeight
-                        - ArticleScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -72,16 +69,13 @@ public sealed partial class ArticleSectionDetailControl : ArticleSectionDetailCo
 
     private void CheckArticleCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (ArticleScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (ArticleScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }
 

@@ -37,7 +37,7 @@ public sealed partial class FFmpegPlayerViewModel
 
             try
             {
-                if (Player.PlaybackSession != null)
+                if (Player.PlaybackSession is not null)
                 {
                     Player.PlaybackSession.PositionChanged -= OnMediaPositionChanged;
                     Player.PlaybackSession.NaturalDurationChanged -= OnMediaNaturalDurationChanged;

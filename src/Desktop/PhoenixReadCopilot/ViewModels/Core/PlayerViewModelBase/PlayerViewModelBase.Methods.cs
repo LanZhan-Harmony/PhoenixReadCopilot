@@ -38,7 +38,7 @@ public abstract partial class PlayerViewModelBase
 
     private void ActiveDisplay()
     {
-        if (_displayRequest != null)
+        if (_displayRequest is not null)
         {
             return;
         }
@@ -52,7 +52,7 @@ public abstract partial class PlayerViewModelBase
 
     private void ReleaseDisplay()
     {
-        if (_displayRequest == null)
+        if (_displayRequest is null)
         {
             return;
         }

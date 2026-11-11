@@ -22,7 +22,7 @@ public sealed partial class ObjectToBoolConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         bool result = false;
-        if (value != null)
+        if (value is not null)
         {
             if (value is string str)
             {

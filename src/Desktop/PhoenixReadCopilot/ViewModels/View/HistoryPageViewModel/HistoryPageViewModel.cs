@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -96,17 +95,24 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
 
         if (SelectedSection is VideoHistorySectionDetailViewModel videoSection)
         {
-            foreach (var item in videoSection.Items.ToList())
+            foreach (VideoItemViewModel? item in videoSection.Items.ToList())
             {
                 if (item.HistoryEntry is not null)
                 {
                     try
                     {
-                        await _apiClient.DeleteHistoryAsync(item.HistoryEntry.SeriesId, item.HistoryEntry.VideoId);
+                        await _apiClient.DeleteHistoryAsync(
+                            item.HistoryEntry.SeriesId,
+                            item.HistoryEntry.VideoId
+                        );
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "删除历史记录出错: {SeriesId}", item.HistoryEntry.SeriesId);
+                        _logger.LogWarning(
+                            ex,
+                            "删除历史记录出错: {SeriesId}",
+                            item.HistoryEntry.SeriesId
+                        );
                     }
                 }
             }
@@ -145,7 +151,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             IsSearching = true;
             CancelSearch();
             _searchCancellationTokenSource = new CancellationTokenSource();
-            var ct = _searchCancellationTokenSource.Token;
+            CancellationToken ct = _searchCancellationTokenSource.Token;
 
             ReadHistoryPage historyPage = await _apiClient.GetHistoryAsync(
                 count: 50,
@@ -157,15 +163,13 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             _searchOffset = historyPage.NextOffset;
 
             string kw = SearchKeyword.Trim();
-            var filtered = historyPage.Items
-                .Where(e => e.Title.Contains(kw, StringComparison.OrdinalIgnoreCase))
+            var filtered = historyPage
+                .Items.Where(e => e.Title.Contains(kw, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             foreach (ReadHistoryEntry entry in filtered)
             {
-                SearchVideos.Add(
-                    new VideoItemViewModel(entry, RemoveSearchVideo)
-                );
+                SearchVideos.Add(new VideoItemViewModel(entry, RemoveSearchVideo));
             }
 
             SearchUpdated?.Invoke(this, EventArgs.Empty);

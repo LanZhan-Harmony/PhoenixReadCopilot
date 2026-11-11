@@ -1,4 +1,3 @@
-using System.Linq;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Forms;
@@ -61,5 +60,6 @@ public abstract class HeaderAccountControlBase : LayoutUserControlBase<AccountVi
     /// <summary>
     /// Initializes a new instance of the <see cref="HeaderAccountControlBase"/> class.
     /// </summary>
-    protected HeaderAccountControlBase() => ViewModel = Ioc.Default.GetRequiredService<AccountViewModel>();
+    protected HeaderAccountControlBase() =>
+        ViewModel = Ioc.Default.GetRequiredService<AccountViewModel>();
 }

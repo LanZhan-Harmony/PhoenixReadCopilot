@@ -14,7 +14,7 @@ public sealed partial class EmotePanel : UserControl
     /// <summary>
     /// 表情列表.
     /// </summary>
-    public IReadOnlyList<EmojiItem> Emojis => EmojiHelper.Emojis;
+    public IReadOnlyList<EmojiItem> Emojis => EmojiHelper.AllEmojis;
 
     /// <summary>
     /// 视图模型.

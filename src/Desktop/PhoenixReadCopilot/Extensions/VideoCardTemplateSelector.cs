@@ -27,7 +27,7 @@ internal sealed partial class VideoCardTemplateSelector : DataTemplateSelector
     {
         if (item is VideoItemViewModel vm)
         {
-            if (vm.Actor != null && ActorTemplate != null)
+            if (vm.Actor is not null && ActorTemplate is not null)
             {
                 return ActorTemplate;
             }

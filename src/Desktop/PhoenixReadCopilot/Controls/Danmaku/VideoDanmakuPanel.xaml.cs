@@ -35,7 +35,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
         if (ViewModel.CurrentDanmakus.Count > 0)
         {
-            _cachedDanmakus = [.. _cachedDanmakus.Concat(ViewModel.CurrentDanmakus).DistinctBy(x => x.Id)];
+            _cachedDanmakus =
+            [
+                .. _cachedDanmakus.Concat(ViewModel.CurrentDanmakus).DistinctBy(x => x.Id),
+            ];
         }
 
         EnsureRendererCreated();
@@ -46,7 +49,11 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             _danmakuRenderer.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
         }
 
-        if (ViewModel?.IsPaused == false && ViewModel.IsShowDanmaku)
+        if (ViewModel is
+            {
+                IsPaused: false,
+                IsShowDanmaku: true
+            })
         {
             _danmakuRenderer?.Resume();
         }
@@ -107,7 +114,10 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
         if (newValue.CurrentDanmakus.Count > 0)
         {
-            _cachedDanmakus = [.. _cachedDanmakus.Concat(newValue.CurrentDanmakus).DistinctBy(x => x.Id)];
+            _cachedDanmakus =
+            [
+                .. _cachedDanmakus.Concat(newValue.CurrentDanmakus).DistinctBy(x => x.Id),
+            ];
             EnsureRendererCreated();
             _danmakuRenderer?.AddDanmakuList(_cachedDanmakus);
             _danmakuRenderer?.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
@@ -129,9 +139,16 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     {
         _cachedDanmakus = [.. _cachedDanmakus.Concat(e).DistinctBy(x => x.Id)];
         EnsureRendererCreated();
-        _danmakuRenderer?.AddDanmakuList(e as List<DanmakuItem> ?? e.ToList());
+        _danmakuRenderer?.AddDanmakuList(e as List<DanmakuItem> ??
+        [
+            .. e,
+        ]);
         _danmakuRenderer?.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
-        if (ViewModel?.IsPaused == false && ViewModel.IsShowDanmaku)
+        if (ViewModel is
+            {
+                IsPaused: false,
+                IsShowDanmaku: true
+            })
         {
             _danmakuRenderer?.Resume();
         }
@@ -149,7 +166,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         DanmakuItem model = new()
         {
             StartMs = Convert.ToUInt32(_lastProgress * 1000),
-            Mode = (DanmakuMode)((int)ViewModel.Location),
+            Mode = (DanmakuMode)(int)ViewModel.Location,
             TextColor = ViewModel.Color,
             BaseFontSize = ViewModel.IsStandardSize ? 20 : 24,
             Text = e,
@@ -166,7 +183,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
     private void OnProgressChanged(object? sender, int e)
     {
         _lastProgress = e;
-        if (_danmakuRenderer == null)
+        if (_danmakuRenderer is null)
         {
             EnsureRendererCreated();
         }
@@ -236,7 +253,11 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             _danmakuRenderer.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
         }
 
-        if (ViewModel?.IsPaused == false && ViewModel.IsShowDanmaku)
+        if (ViewModel is
+            {
+                IsPaused: false,
+                IsShowDanmaku: true
+            })
         {
             _danmakuRenderer?.Resume();
         }

@@ -25,7 +25,7 @@ public sealed partial class ArticleHistorySectionDetailViewModel
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    public partial ObservableCollection<ArticleItemViewModel> Items { get; set; } = new();
+    public partial ObservableCollection<ArticleItemViewModel> Items { get; set; } = [];
 
     /// <summary>
     /// 列表已完成更新.

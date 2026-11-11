@@ -7,7 +7,6 @@ using PhoenixReadCopilot.ViewModels.Items;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using Richasy.BiliKernel.Models.Moment;
-using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -61,7 +60,9 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             foreach (Drama drama in dramas)
             {
                 MomentInformation momentInfo = CreateDramaMoment(drama);
-                Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Video, _showCommentAction!));
+                Items.Add(
+                    new MomentItemViewModel(momentInfo, MomentCardStyle.Video, _showCommentAction!)
+                );
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -80,7 +81,11 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     /// <summary>
     /// 设置初始动态列表.
     /// </summary>
-    public void SetInitialData(IReadOnlyList<UserActivity>? activities, string? cursor, bool hasMore)
+    public void SetInitialData(
+        IReadOnlyList<UserActivity>? activities,
+        string? cursor,
+        bool hasMore
+    )
     {
         Clear();
         if (activities is { Count: > 0 })
@@ -88,7 +93,13 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             foreach (UserActivity activity in activities)
             {
                 MomentInformation momentInfo = CreateActivityMoment(activity);
-                Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Comprehensive, _showCommentAction!));
+                Items.Add(
+                    new MomentItemViewModel(
+                        momentInfo,
+                        MomentCardStyle.Comprehensive,
+                        _showCommentAction!
+                    )
+                );
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -113,11 +124,19 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             _userId = profile.User.Id;
             if (_isVideo)
             {
-                SetInitialData(profile.RelatedDramas, profile.RelatedDramasPage.Cursor, profile.RelatedDramasPage.HasMore);
+                SetInitialData(
+                    profile.RelatedDramas,
+                    profile.RelatedDramasPage.Cursor,
+                    profile.RelatedDramasPage.HasMore
+                );
             }
             else
             {
-                SetInitialData(profile.Activities, profile.ActivitiesPage.Cursor, profile.ActivitiesPage.HasMore);
+                SetInitialData(
+                    profile.Activities,
+                    profile.ActivitiesPage.Cursor,
+                    profile.ActivitiesPage.HasMore
+                );
             }
         }
         else if (userParam is string id)
@@ -186,7 +205,13 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
                     foreach (Drama drama in page.Items)
                     {
                         MomentInformation momentInfo = CreateDramaMoment(drama);
-                        Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Video, _showCommentAction!));
+                        Items.Add(
+                            new MomentItemViewModel(
+                                momentInfo,
+                                MomentCardStyle.Video,
+                                _showCommentAction!
+                            )
+                        );
                     }
                     ListUpdated?.Invoke(this, EventArgs.Empty);
                 }
@@ -205,7 +230,13 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
                     foreach (UserActivity activity in page.Items)
                     {
                         MomentInformation momentInfo = CreateActivityMoment(activity);
-                        Items.Add(new MomentItemViewModel(momentInfo, MomentCardStyle.Comprehensive, _showCommentAction!));
+                        Items.Add(
+                            new MomentItemViewModel(
+                                momentInfo,
+                                MomentCardStyle.Comprehensive,
+                                _showCommentAction!
+                            )
+                        );
                     }
                     ListUpdated?.Invoke(this, EventArgs.Empty);
                 }
@@ -225,18 +256,21 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
 
     private static MomentInformation CreateDramaMoment(Drama drama)
     {
-        BiliImage? cover = !string.IsNullOrEmpty(drama.CoverUrl) && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? coverUri)
-            ? new BiliImage(coverUri)
-            : null;
+        BiliImage? cover =
+            !string.IsNullOrEmpty(drama.CoverUrl)
+            && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? coverUri)
+                ? new BiliImage(coverUri)
+                : null;
 
-        VideoInformation video = new(
-            new MediaIdentifier(drama.Id, drama.Title, cover),
-            null
-        );
+        VideoInformation video = new(new MediaIdentifier(drama.Id, drama.Title, cover), null);
 
         return new MomentInformation(
             id: drama.Id,
-            user: new Richasy.BiliKernel.Models.User.UserProfile(drama.Id, drama.Category ?? "短剧", null),
+            user: new Richasy.BiliKernel.Models.User.UserProfile(
+                drama.Id,
+                drama.Category ?? "短剧",
+                null
+            ),
             communityInformation: null,
             tip: !string.IsNullOrEmpty(drama.Score) ? $"评分: {drama.Score}" : null,
             description: new EmoteText(drama.Remark ?? drama.Title, null),

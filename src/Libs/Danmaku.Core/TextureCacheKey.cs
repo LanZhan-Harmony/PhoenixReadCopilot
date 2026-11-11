@@ -82,7 +82,7 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     public override int GetHashCode()
     {
         int textHash =
-            Text != null ? string.GetHashCode(Text.AsSpan(), StringComparison.Ordinal) : 0;
+            Text is not null ? string.GetHashCode(Text.AsSpan(), StringComparison.Ordinal) : 0;
         return HashCode.Combine(textHash, TextColorRGB, OutlineColorRGB, FontSize, HasOutline);
     }
 

@@ -128,7 +128,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         string? subtitles = actor.SubTitles is { Count: > 0 }
             ? string.Join(" · ", actor.SubTitles)
             : null;
-        Subtitle = subtitles != null ? $"{subtitles} ({trendText})" : trendText;
+        Subtitle = subtitles is not null ? $"{subtitles} ({trendText})" : trendText;
 
         if (
             !string.IsNullOrEmpty(actor.AvatarUrl)

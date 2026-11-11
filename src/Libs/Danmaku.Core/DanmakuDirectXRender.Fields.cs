@@ -38,6 +38,11 @@ internal partial class DanmakuDirectXRender
     /// </summary>
     private DebugRenderer _debugRenderer;
 
+    /// <summary>
+    /// 红果表情管理器.
+    /// </summary>
+    private readonly DanmakuEmojiManager _emojiManager;
+
     #endregion
 
     #region 渲染层和状态管理

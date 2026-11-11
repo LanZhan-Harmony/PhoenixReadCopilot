@@ -72,13 +72,15 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
 
         List<AppImage>? pictures =
             comment.Images?.Count > 0
-                ? comment
-                    .Images.Where(img =>
-                        !string.IsNullOrEmpty(img.Url)
-                        && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
-                    )
-                    .Select(img => new AppImage(img))
-                    .ToList()
+                ?
+                [
+                    .. comment
+                        .Images.Where(img =>
+                            !string.IsNullOrEmpty(img.Url)
+                            && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
+                        )
+                        .Select(img => new AppImage(img)),
+                ]
                 : null;
         Content = new EmoteText(comment.Text, pictures);
     }

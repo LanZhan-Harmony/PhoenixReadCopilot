@@ -33,7 +33,7 @@ public sealed class DanmakuRenderer : IDisposable
     /// <param name="initialConfig">初始配置（可选）.</param>
     public DanmakuRenderer(
         Grid rootGrid,
-        ILogger<DanmakuRenderer> logger = default,
+        ILogger<DanmakuRenderer> logger = null,
         DanmakuConfiguration initialConfig = null
     )
     {
@@ -66,7 +66,7 @@ public sealed class DanmakuRenderer : IDisposable
         Logger.SetLogger(logger);
 
         // 创建渲染引擎
-        _render = new DanmakuDirectXRender(swapChainPanel, rootGrid, initialConfig);
+        _render = new DanmakuDirectXRender(swapChainPanel, initialConfig);
 
         // 创建调度器
         _scheduler = new DanmakuScheduler();
@@ -243,7 +243,7 @@ public sealed class DanmakuRenderer : IDisposable
         _render?.Dispose();
 
         // 3. 解除事件订阅，防止内存泄漏
-        if (_scheduler != null)
+        if (_scheduler is not null)
         {
             _scheduler.DanmakuRendered -= OnDanmakuRendered;
             _scheduler.PauseRequested -= OnPauseRequested;

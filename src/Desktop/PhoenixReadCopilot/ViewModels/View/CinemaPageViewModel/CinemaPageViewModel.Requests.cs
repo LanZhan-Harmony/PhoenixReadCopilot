@@ -30,7 +30,7 @@ public sealed partial class CinemaPageViewModel
             List<IndexFilterViewModel> filterList = [];
             foreach (ShortDramaFilterRow row in rows)
             {
-                string dimName = row.Name.StartsWith("全部") ? row.Name.Substring(2) : row.Name;
+                string dimName = row.Name.StartsWith("全部") ? row.Name[2..] : row.Name;
                 List<Condition> conditions =
                 [
                     new(row.Name, string.Empty),
@@ -81,7 +81,7 @@ public sealed partial class CinemaPageViewModel
             CancellationToken ct = _indexCts.Token;
 
             Dictionary<string, IReadOnlyList<string>> selections = [];
-            if (Filters != null)
+            if (Filters is not null)
             {
                 foreach (IndexFilterViewModel f in Filters)
                 {

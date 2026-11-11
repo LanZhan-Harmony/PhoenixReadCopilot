@@ -63,7 +63,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     protected override void OnControlLoaded()
     {
         base.OnControlLoaded();
-        if (Text != null && (RichBlock?.Blocks.Count == 0))
+        if (Text is not null && (RichBlock?.Blocks.Count == 0))
         {
             InitializeContent();
         }
@@ -79,7 +79,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
     private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         EmoteTextBlock? instance = d as EmoteTextBlock;
-        if (instance != null)
+        if (instance is not null)
         {
             instance.InitializeContent();
             instance.FlyoutRichBlock?.Blocks?.Clear();
@@ -88,16 +88,16 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
 
     private void InitializeContent()
     {
-        if (RichBlock != null)
+        if (RichBlock is not null)
         {
             RichBlock.Blocks.Clear();
             Paragraph? para = null;
-            if (Text != null)
+            if (Text is not null)
             {
                 para = ParseText();
             }
 
-            if (para != null)
+            if (para is not null)
             {
                 RichBlock.Visibility = Visibility.Visible;
                 RichBlock.Blocks.Add(para);
@@ -113,7 +113,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         if (Text?.Pictures?.Count > 0)
         {
             ItemsRepeater? gallery = FindName("Gallery") as ItemsRepeater;
-            if (gallery != null)
+            if (gallery is not null)
             {
                 gallery.ItemsSource = Text.Pictures;
                 gallery.Visibility = Visibility.Visible;
@@ -141,7 +141,10 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         Paragraph para = new();
 
         Regex emojiRegex = new(@"(\[.*?\])");
-        string[] splitContents = emojiRegex.Split(text).Where(p => p.Length > 0).ToArray();
+        string[] splitContents =
+        [
+            .. emojiRegex.Split(text).Where(p => p.Length > 0),
+        ];
         foreach (string content in splitContents)
         {
             if (emojiRegex.IsMatch(content))
@@ -165,7 +168,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
                     para.Inlines.Add(inlineCon);
                 }
                 else if (
-                    emotes != null
+                    emotes is not null
                     && emotes.TryGetValue(content, out AppImage? emoji)
                     && emoji?.Uri is not null
                 )
@@ -221,7 +224,7 @@ public sealed partial class EmoteTextBlock : LayoutUserControlBase
         }
 
         Paragraph? para = ParseText();
-        if (para != null)
+        if (para is not null)
         {
             FlyoutRichBlock.Blocks.Add(para);
         }

@@ -71,24 +71,21 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                ReviewScrollView.ExtentHeight
+                    - ReviewScrollView.ViewportHeight
+                    - ReviewScrollView.VerticalOffset
+                <= 240
+            )
             {
-                if (
-                    ReviewScrollView.ExtentHeight
-                        - ReviewScrollView.ViewportHeight
-                        - ReviewScrollView.VerticalOffset
-                    <= 240
-                )
+                if (ViewModel is not null && ViewModel is { HasMore: true, IsLoading: false })
                 {
-                    if (ViewModel is not null && ViewModel.HasMore && !ViewModel.IsLoading)
-                    {
-                        ViewModel.LoadMoreCommand.Execute(null);
-                    }
+                    ViewModel.LoadMoreCommand.Execute(null);
                 }
             }
-        );
+        });
     }
 
     private void OnInitialized(object? sender, EventArgs e)
@@ -108,21 +105,17 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
 
     private void CheckReviewCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                ReviewScrollView.ScrollableHeight <= 240
+                && ViewModel is not null
+                && ViewModel is { HasMore: true, IsLoading: false }
+            )
             {
-                if (
-                    ReviewScrollView.ScrollableHeight <= 240
-                    && ViewModel is not null
-                    && ViewModel.HasMore
-                    && !ViewModel.IsLoading
-                )
-                {
-                    ViewModel.LoadMoreCommand.Execute(null);
-                }
+                ViewModel.LoadMoreCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void CheckSortType()

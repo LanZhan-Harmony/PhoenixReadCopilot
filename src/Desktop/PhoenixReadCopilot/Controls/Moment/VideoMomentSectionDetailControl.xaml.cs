@@ -45,21 +45,18 @@ public sealed partial class VideoMomentSectionDetailControl : VideoMomentSection
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                VideoScrollView.ExtentHeight
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
+                <= 240
+            )
             {
-                if (
-                    VideoScrollView.ExtentHeight
-                        - VideoScrollView.ViewportHeight
-                        - VideoScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -72,16 +69,13 @@ public sealed partial class VideoMomentSectionDetailControl : VideoMomentSection
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }
 

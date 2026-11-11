@@ -10,6 +10,7 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
+using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -54,7 +55,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         try
         {
-            PhoenixReadApi.UserProfile? profile = null;
+            UserProfile? profile = null;
             if (parameter is DramaCredit credit)
             {
                 _userId = credit.User?.Id ?? string.Empty;
@@ -72,7 +73,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 _userId = id;
                 profile = await _apiClient.GetUserProfileAsync(id);
             }
-            else if (parameter is PhoenixReadCopilot.Models.User.User user)
+            else if (parameter is Models.User.User user)
             {
                 _userId = user.Id;
                 UserName = user.Name;
@@ -84,7 +85,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 UserName = apiUser.Name;
                 profile = await _apiClient.GetUserProfileAsync(apiUser.Id);
             }
-            else if (parameter is PhoenixReadApi.UserProfile up)
+            else if (parameter is UserProfile up)
             {
                 _userId = up.User.Id;
                 UserName = up.User.Name;
@@ -104,7 +105,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 {
                     Profile = new UserDetailProfile
                     {
-                        User = new PhoenixReadCopilot.Models.User.User
+                        User = new Models.User.User
                         {
                             Id = _userId,
                             Name = UserName,
@@ -248,7 +249,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         try
         {
-            PhoenixReadApi.UserProfile profile = await _apiClient.GetUserProfileAsync(_userId);
+            UserProfile profile = await _apiClient.GetUserProfileAsync(_userId);
             Card = CreateUserCard(profile);
         }
         catch (Exception ex)
@@ -291,9 +292,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             }
 
             string kw = SearchKeyword.Trim();
-            List<Drama> matched = dramas
-                .Items.Where(d => d.Title.Contains(kw, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            List<Drama> matched =
+            [
+                .. dramas
+                    .Items.Where(d => d.Title.Contains(kw, StringComparison.OrdinalIgnoreCase)),
+            ];
 
             foreach (Drama item in matched)
             {
@@ -329,7 +332,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         CancelSearch();
     }
 
-    private static UserCard CreateUserCard(PhoenixReadApi.UserProfile profile)
+    private static UserCard CreateUserCard(UserProfile profile)
     {
         UserAvatar? avatar =
             !string.IsNullOrEmpty(profile.User.AvatarUrl)
@@ -341,7 +344,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             Profile = new UserDetailProfile
             {
-                User = new PhoenixReadCopilot.Models.User.User
+                User = new Models.User.User
                 {
                     Id = profile.User.Id,
                     Name = profile.User.Name,
@@ -360,7 +363,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
     private void ShowComment(MomentItemViewModel data)
     {
-        var moment = data.Data;
+        MomentInformation moment = data.Data;
         if (CommentModule.Id == moment.CommentId)
         {
             return;

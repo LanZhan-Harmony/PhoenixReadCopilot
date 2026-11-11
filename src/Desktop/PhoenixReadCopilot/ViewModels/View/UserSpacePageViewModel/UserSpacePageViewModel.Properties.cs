@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Models.User;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using PhoenixReadCopilot.Models.User;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -25,7 +25,7 @@ public sealed partial class UserSpacePageViewModel
     private readonly DispatcherQueue _dispatcherQueue;
 
     private string _userId = string.Empty;
-    private PhoenixReadApi.UserProfile? _phoenixProfile;
+    private UserProfile? _phoenixProfile;
     private int _searchOffset;
     private bool _preventLoadMoreSearch;
     private CancellationTokenSource? _searchCancellationTokenSource;

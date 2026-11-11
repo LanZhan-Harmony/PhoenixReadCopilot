@@ -17,7 +17,7 @@ public sealed partial class ObjectToVisibilityConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         bool isShow = true;
-        if (value == null)
+        if (value is null)
         {
             isShow = false;
         }

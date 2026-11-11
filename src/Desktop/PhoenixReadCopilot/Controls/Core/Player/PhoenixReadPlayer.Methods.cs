@@ -54,7 +54,7 @@ public sealed partial class PhoenixReadPlayer
                 double width = ActualWidth;
                 _subtitlePresenter.FontSize = Math.Max(
                     12,
-                    (double)(initialFontSize + ((width - initialWidth) / 100 * 1.5))
+                    initialFontSize + ((width - initialWidth) / 100 * 1.5)
                 );
                 double horizontalPadding = Math.Max(
                     8,
@@ -91,7 +91,7 @@ public sealed partial class PhoenixReadPlayer
         {
             if (args is not null)
             {
-                if (_transportControl != null)
+                if (_transportControl is not null)
                 {
                     _lastRelativeMTCPoint = args.GetCurrentPoint(_transportControl).Position;
                 }
@@ -111,9 +111,12 @@ public sealed partial class PhoenixReadPlayer
             }
 
             bool isInStayArea =
-                _lastRelativeMTCPoint != null
-                && _lastRelativeMTCPoint.Value.X >= 0
-                && _lastRelativeMTCPoint.Value.Y >= 0
+                _lastRelativeMTCPoint is not null
+                && _lastRelativeMTCPoint.Value is
+                {
+                    X: >= 0,
+                    Y: >= 0
+                }
                 && _lastRelativeMTCPoint.Value.X <= _transportControl.ActualWidth
                 && _lastRelativeMTCPoint.Value.Y <= _transportControl.ActualHeight;
 
@@ -163,7 +166,7 @@ public sealed partial class PhoenixReadPlayer
         _mtcStayTime += 0.5;
 
         if (
-            _lastPressedTime != null
+            _lastPressedTime is not null
             && DateTimeOffset.Now - _lastPressedTime > TimeSpan.FromSeconds(1)
             && !_isHolding
         )
@@ -173,7 +176,7 @@ public sealed partial class PhoenixReadPlayer
         }
 
         if (
-            _lastRightArrowPressedTime != null
+            _lastRightArrowPressedTime is not null
             && DateTimeOffset.Now - _lastRightArrowPressedTime > TimeSpan.FromSeconds(1)
             && !_isHolding
         )
@@ -187,8 +190,11 @@ public sealed partial class PhoenixReadPlayer
             _cursorStayTime >= 2
             && _transportControl is not null
             && _transportControl.Visibility == Visibility.Collapsed
-            && !ViewModel.IsPaused
-            && !ViewModel.IsPlayerDataLoading
+            && ViewModel is
+            {
+                IsPaused: false,
+                IsPlayerDataLoading: false
+            }
         )
         {
             if (!_isCursorDisposed)

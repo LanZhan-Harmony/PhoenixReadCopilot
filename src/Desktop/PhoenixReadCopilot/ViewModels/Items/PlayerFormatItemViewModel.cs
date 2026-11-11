@@ -69,7 +69,11 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     /// </summary>
     public static int GetEffectiveResolution(PlaybackMedia media)
     {
-        if (media.Width > 0 && media.Height > 0)
+        if (media is
+            {
+                Width: > 0,
+                Height: > 0
+            })
         {
             return Math.Min(media.Width, media.Height);
         }

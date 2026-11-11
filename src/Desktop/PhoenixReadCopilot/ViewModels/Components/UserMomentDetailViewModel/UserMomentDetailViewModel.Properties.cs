@@ -29,7 +29,7 @@ public sealed partial class UserMomentDetailViewModel
     public partial string Title { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial ObservableCollection<MomentItemViewModel> Items { get; set; } = new();
+    public partial ObservableCollection<MomentItemViewModel> Items { get; set; } = [];
 
     /// <summary>
     /// 列表已完成更新.

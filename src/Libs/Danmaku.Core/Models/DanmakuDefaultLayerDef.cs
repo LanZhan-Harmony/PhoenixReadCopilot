@@ -31,17 +31,12 @@ public static class DanmakuDefaultLayerDef
     public const uint BottomLayerId = 3;
 
     /// <summary>
-    /// 高级弹幕图层 ID.
-    /// </summary>
-    public const uint AdvancedLayerId = 4;
-
-    /// <summary>
     /// 字幕弹幕图层 ID.
     /// </summary>
-    public const uint SubtitleLayerId = 5;
+    public const uint SubtitleLayerId = 4;
 
     /// <summary>
     /// 默认图层总数.
     /// </summary>
-    public const uint DefaultLayerCount = 6;
+    public const uint DefaultLayerCount = 5;
 }

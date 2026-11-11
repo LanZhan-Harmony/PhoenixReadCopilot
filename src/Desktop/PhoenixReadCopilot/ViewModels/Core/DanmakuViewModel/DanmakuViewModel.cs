@@ -180,18 +180,20 @@ public sealed partial class DanmakuViewModel : ViewModelBase
 
             if (page.Items is { Count: > 0 })
             {
-                List<DanmakuCoreItem> danmakus = page
-                    .Items.Select(item => new DanmakuCoreItem
-                    {
-                        Id = item.Id,
-                        Text = item.Text,
-                        StartMs = (uint)Math.Max(0, item.TimeMs),
-                        Mode = DanmakuMode.Rolling,
-                        TextColor = Microsoft.UI.Colors.White,
-                        BaseFontSize = 24,
-                        HasOutline = true,
-                    })
-                    .ToList();
+                List<DanmakuCoreItem> danmakus =
+                [
+                    .. page
+                        .Items.Select(item => new DanmakuCoreItem
+                        {
+                            Id = item.Id,
+                            Text = item.Text,
+                            StartMs = (uint)Math.Max(0, item.TimeMs),
+                            Mode = DanmakuMode.Rolling,
+                            TextColor = Microsoft.UI.Colors.White,
+                            BaseFontSize = 24,
+                            HasOutline = true,
+                        }),
+                ];
 
                 CurrentDanmakus = danmakus;
                 CanShowDanmaku = true;
@@ -301,7 +303,10 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     private async Task ReloadFontsAsync()
     {
         IReadOnlyList<string> fonts = await _fontToolkit.GetFontsAsync();
-        Fonts = fonts.ToList();
+        Fonts =
+        [
+            .. fonts,
+        ];
         string localFont = _settings.DanmakuFontFamily;
         if (!Fonts.Contains(localFont))
         {

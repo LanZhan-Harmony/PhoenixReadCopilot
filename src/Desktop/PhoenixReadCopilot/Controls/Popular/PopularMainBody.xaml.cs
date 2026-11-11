@@ -74,22 +74,19 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
 
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                VideoScrollView.ExtentHeight
+                    - VideoScrollView.ViewportHeight
+                    - VideoScrollView.VerticalOffset
+                    <= 240
+                && ViewModel is { IsVideoLoading: false }
+            )
             {
-                if (
-                    VideoScrollView.ExtentHeight
-                        - VideoScrollView.ViewportHeight
-                        - VideoScrollView.VerticalOffset
-                        <= 240
-                    && ViewModel is { IsVideoLoading: false }
-                )
-                {
-                    ViewModel.LoadVideosCommand.Execute(null);
-                }
+                ViewModel.LoadVideosCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -102,19 +99,15 @@ public sealed partial class PopularMainBody : PopularPageControlBase
 
     private void CheckVideoCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                VideoScrollView.ScrollableHeight <= 240
+                && ViewModel is { IsVideoLoading: false, Videos.Count: > 0 }
+            )
             {
-                if (
-                    VideoScrollView.ScrollableHeight <= 240
-                    && ViewModel is { IsVideoLoading: false }
-                    && ViewModel.Videos.Count > 0
-                )
-                {
-                    ViewModel.LoadVideosCommand.Execute(null);
-                }
+                ViewModel.LoadVideosCommand.Execute(null);
             }
-        );
+        });
     }
 }

@@ -64,7 +64,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
     /// </summary>
     public void MarkRightArrowKeyPressedTime()
     {
-        if (_lastRightArrowPressedTime != null)
+        if (_lastRightArrowPressedTime is not null)
         {
             return;
         }
@@ -82,7 +82,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             ToggleTripleSpeed(false);
         }
         else if (
-            _lastPressedTime == null
+            _lastPressedTime is null
             || DateTimeOffset.Now - _lastPressedTime < TimeSpan.FromSeconds(1)
         )
         {
@@ -227,7 +227,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
 
     private void UnhookInteractionControlEvents()
     {
-        if (_interactionControl != null)
+        if (_interactionControl is not null)
         {
             _interactionControl.DoubleTapped -= OnCoreDoubleTapped;
             _interactionControl.ManipulationStarted -= OnInteractionControlManipulationStarted;
@@ -276,7 +276,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
 
     private void OnRequestShowNotification(object? sender, PlayerNotificationItemViewModel e)
     {
-        _notificationContainer.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+        _notificationContainer.Visibility = Visibility.Visible;
         _notificationContainer.Children.Clear();
         PlayerNotificationControl control = new();
         control.ViewModel = e;
@@ -339,7 +339,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             HandleViewModelPropertyChanged(e);
         }
 
-        if (ViewModel != null && e.PropertyName == "IsPaused" && _transportControl is not null)
+        if (ViewModel is not null && e.PropertyName == "IsPaused" && _transportControl is not null)
         {
             if (
                 _transportControl.Visibility == Visibility.Collapsed

@@ -29,11 +29,17 @@ internal sealed class ObjectPoolManager : IDisposable
     public ObjectPoolManager()
     {
         // 创建 DanmakuItem 对象池（使用默认策略）
-        DefaultObjectPoolProvider danmakuItemPolicy = new() { MaximumRetained = 2000 };
+        DefaultObjectPoolProvider danmakuItemPolicy = new()
+        {
+            MaximumRetained = 2000
+        };
         _danmakuItemPool = danmakuItemPolicy.Create(new DanmakuItemPoolPolicy());
 
         // 创建 RenderItem 对象池（使用默认策略）
-        DefaultObjectPoolProvider renderItemPolicy = new() { MaximumRetained = 2000 };
+        DefaultObjectPoolProvider renderItemPolicy = new()
+        {
+            MaximumRetained = 2000
+        };
         _renderItemPool = renderItemPolicy.Create(new RenderItemPoolPolicy());
 
         // 纹理缓存（不使用对象池，因为纹理生命周期复杂）
@@ -67,7 +73,7 @@ internal sealed class ObjectPoolManager : IDisposable
         public bool Return(DanmakuItem obj)
         {
             // 重置对象状态
-            if (obj == null)
+            if (obj is null)
             {
                 return false;
             }
@@ -86,25 +92,7 @@ internal sealed class ObjectPoolManager : IDisposable
             obj.Mode = DanmakuMode.Rolling;
             obj.TextColor = Microsoft.UI.Colors.White;
             obj.OutlineColor = Microsoft.UI.Colors.Black;
-            obj.StartX = 0;
-            obj.StartY = 0;
-            obj.EndX = 0;
-            obj.EndY = 0;
-            obj.MarginLeft = 0;
-            obj.MarginRight = 0;
-            obj.MarginBottom = 0;
-            obj.AlignmentMode = DanmakuAlignmentMode.Default;
-            obj.AnchorMode = DanmakuAlignmentMode.UpperLeft;
-            obj.StartAlpha = 0;
-            obj.EndAlpha = 0;
             obj.DurationMs = 0;
-            obj.TranslationDurationMs = 0;
-            obj.TranslationDelayMs = 0;
-            obj.AlphaDurationMs = 0;
-            obj.AlphaDelayMs = 0;
-            obj.RotateZ = 0;
-            obj.RotateY = 0;
-            obj.KeepDefinedFontSize = false;
 
             return true;
         }
@@ -123,7 +111,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     public void ReturnDanmakuItem(DanmakuItem? item)
     {
-        if (item != null)
+        if (item is not null)
         {
             _danmakuItemPool.Return(item);
         }
@@ -146,7 +134,7 @@ internal sealed class ObjectPoolManager : IDisposable
 
         public bool Return(DanmakuDirectXRenderItem obj)
         {
-            if (obj == null)
+            if (obj is null)
             {
                 return false;
             }
@@ -158,6 +146,15 @@ internal sealed class ObjectPoolManager : IDisposable
             obj.TextLayout = null;
             obj.TextFormat = null;
             obj.Item = null;
+            if (obj.Segments is not null)
+            {
+                foreach (DanmakuSegment segment in obj.Segments)
+                {
+                    segment?.Dispose();
+                }
+                obj.Segments.Clear();
+                obj.Segments = null;
+            }
 
             return true;
         }
@@ -178,7 +175,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     public void ReturnRenderItem(DanmakuDirectXRenderItem? item)
     {
-        if (item != null)
+        if (item is not null)
         {
             _renderItemPool.Return(item);
         }
@@ -190,7 +187,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <param name="item">要归还的渲染项.</param>
     public void ReturnRenderItemAndClearTexture(DanmakuDirectXRenderItem? item)
     {
-        if (item == null)
+        if (item is null)
         {
             return;
         }
@@ -222,7 +219,7 @@ internal sealed class ObjectPoolManager : IDisposable
         ID2D1Bitmap1 bitmap,
         float width,
         float height,
-        IDWriteTextLayout textLayout
+        IDWriteTextLayout? textLayout = null
     )
     {
         // 🔧 简化：弹幕已去重，不需要引用计数
@@ -254,7 +251,7 @@ internal sealed class ObjectPoolManager : IDisposable
         out float height
     )
     {
-        if (_textureCache.TryGetValue(key, out TexturePoolEntry? entry) && entry.Bitmap != null)
+        if (_textureCache.TryGetValue(key, out TexturePoolEntry? entry) && entry.Bitmap is not null)
         {
             bitmap = entry.Bitmap;
             width = entry.Width;

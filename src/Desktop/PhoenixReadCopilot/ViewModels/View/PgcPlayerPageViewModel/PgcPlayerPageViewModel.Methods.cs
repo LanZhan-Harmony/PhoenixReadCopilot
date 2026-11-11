@@ -49,7 +49,10 @@ public sealed partial class PgcPlayerPageViewModel
         // Formats = info.Formats.Select(p => new PlayerFormatItemViewModel(new PhoenixReadCopilot.Core.Models.PlayerFormatInformation(p.Quality, p.Description, p.NeedVip, p.NeedLogin))).ToList();
 
         PreferQualityType preferFormatSetting = _settings.PreferQuality;
-        List<PlayerFormatItemViewModel> availableFormats = Formats.Where(p => p.IsEnabled).ToList();
+        List<PlayerFormatItemViewModel> availableFormats =
+        [
+            .. Formats.Where(p => p.IsEnabled),
+        ];
         PlayerFormatItemViewModel? selectedFormat = null;
         if (preferFormatSetting == PreferQualityType.Auto)
         {
@@ -165,7 +168,7 @@ public sealed partial class PgcPlayerPageViewModel
             playEpisode = _view.Episodes.FirstOrDefault(p => p.Identifier.Id == initialEpisodeId);
         }
 
-        if (playEpisode == null)
+        if (playEpisode is null)
         {
             string? historyEpisodeId = _view.Progress?.Cid;
             bool autoLoadHistory = _settings.AutoLoadHistory;
@@ -254,7 +257,7 @@ public sealed partial class PgcPlayerPageViewModel
             ratio = new MediaAspectRatio(16, 9);
         }
 
-        PlayerHeight = (double)(PlayerWidth * ratio.Height / ratio.Width);
+        PlayerHeight = PlayerWidth * ratio.Height / ratio.Width;
     }
 
     private void ReloadEpisode()

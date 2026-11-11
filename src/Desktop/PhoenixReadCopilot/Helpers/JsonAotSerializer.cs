@@ -37,7 +37,7 @@ namespace PhoenixReadCopilot.Helpers;
 [JsonSerializable(typeof(MTCBehavior))]
 [JsonSerializable(typeof(PgcSectionType))]
 [JsonSerializable(typeof(AppSettings))]
-[JsonSerializable(typeof(PhoenixReadCopilot.Core.Enums.DanmakuLocation))]
+[JsonSerializable(typeof(DanmakuLocation))]
 [JsonSerializable(typeof(BiliToken))]
 [JsonSerializable(typeof(MediaIdentifier))]
 [JsonSerializable(typeof(List<string>))]

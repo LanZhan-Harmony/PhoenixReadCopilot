@@ -45,21 +45,18 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                UserScrollView.ExtentHeight
+                    - UserScrollView.ViewportHeight
+                    - UserScrollView.VerticalOffset
+                <= 240
+            )
             {
-                if (
-                    UserScrollView.ExtentHeight
-                        - UserScrollView.ViewportHeight
-                        - UserScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -72,16 +69,13 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
 
     private void CheckUserCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }
 

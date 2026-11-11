@@ -94,7 +94,9 @@ public sealed partial class PinnerViewModel : ViewModelBase
     {
         await _fileToolkit.WriteLocalDataAsync<List<PinItem>>(
             string.Format(PinFileName, _tokenResolver.GetToken().UserId),
-            Items.ToList(),
+            [
+                .. Items,
+            ],
             PinFolderName
         );
         IsEmpty = Items.Count == 0;

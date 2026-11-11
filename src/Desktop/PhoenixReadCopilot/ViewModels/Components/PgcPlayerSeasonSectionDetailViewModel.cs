@@ -26,7 +26,10 @@ public sealed partial class PgcPlayerSeasonSectionDetailViewModel
     /// </summary>
     public PgcPlayerSeasonSectionDetailViewModel(IList<SeasonInformation> items, string seasonId)
     {
-        Items = items.Select(p => new SeasonItemViewModel(p, SeasonCardStyle.Player)).ToList();
+        Items =
+        [
+            .. items.Select(p => new SeasonItemViewModel(p, SeasonCardStyle.Player)),
+        ];
         SelectedItem = Items.FirstOrDefault(p => p.Data.Identifier.Id == seasonId);
     }
 

@@ -87,104 +87,10 @@ public class DanmakuItem
     /// </summary>
     public Color OutlineColor = Colors.Black;
 
-    #region For Advanced mode
-
     /// <summary>
-    /// 起始 X 坐标（高级模式）.
+    /// 顶部/底部停留持续时间（毫秒）.
     /// </summary>
-    public float StartX;
-
-    /// <summary>
-    /// 起始 Y 坐标（高级模式）.
-    /// </summary>
-    public float StartY;
-
-    /// <summary>
-    /// 结束 X 坐标（高级模式）.
-    /// </summary>
-    public float EndX;
-
-    /// <summary>
-    /// 结束 Y 坐标（高级模式）.
-    /// </summary>
-    public float EndY;
-
-    /// <summary>
-    /// 左边距.
-    /// </summary>
-    public int MarginLeft;
-
-    /// <summary>
-    /// 右边距.
-    /// </summary>
-    public int MarginRight;
-
-    /// <summary>
-    /// 下边距.
-    /// </summary>
-    public int MarginBottom;
-
-    /// <summary>
-    /// 对齐模式.
-    /// </summary>
-    public DanmakuAlignmentMode AlignmentMode = DanmakuAlignmentMode.Default;
-
-    /// <summary>
-    /// 锚点模式.
-    /// </summary>
-    public DanmakuAlignmentMode AnchorMode = DanmakuAlignmentMode.UpperLeft;
-
-    /// <summary>
-    /// 起始透明度.
-    /// </summary>
-    public byte StartAlpha;
-
-    /// <summary>
-    /// 结束透明度.
-    /// </summary>
-    public byte EndAlpha;
-
-    /// <summary>
-    /// 持续时间（毫秒）.
-    /// </summary>
-    public ulong DurationMs;
-
-    /// <summary>
-    /// 平移持续时间（毫秒）.
-    /// </summary>
-    public ulong TranslationDurationMs;
-
-    /// <summary>
-    /// 平移延迟时间（毫秒）.
-    /// </summary>
-    public ulong TranslationDelayMs;
-
-    /// <summary>
-    /// 透明度变化持续时间（毫秒）.
-    /// </summary>
-    public ulong AlphaDurationMs;
-
-    /// <summary>
-    /// 透明度变化延迟时间（毫秒）.
-    /// </summary>
-    public ulong AlphaDelayMs;
-
-    /// <summary>
-    /// Z 轴旋转角度（度数）.
-    /// </summary>
-    public float RotateZ;
-
-    /// <summary>
-    /// Y 轴旋转角度（度数）.
-    /// </summary>
-    public float RotateY;
-
-    /// <summary>
-    /// 是否保持定义的字体大小.
-    /// </summary>
-    public bool KeepDefinedFontSize;
-
-    #endregion
+    public float DurationMs;
 
     /// <summary>
     /// 创建当前弹幕项的深拷贝.
@@ -208,25 +114,7 @@ public class DanmakuItem
             Mode = Mode,
             TextColor = TextColor,
             OutlineColor = OutlineColor,
-            StartX = StartX,
-            StartY = StartY,
-            EndX = EndX,
-            EndY = EndY,
-            MarginLeft = MarginLeft,
-            MarginRight = MarginRight,
-            MarginBottom = MarginBottom,
-            AlignmentMode = AlignmentMode,
-            AnchorMode = AnchorMode,
-            StartAlpha = StartAlpha,
-            EndAlpha = EndAlpha,
             DurationMs = DurationMs,
-            TranslationDurationMs = TranslationDurationMs,
-            TranslationDelayMs = TranslationDelayMs,
-            AlphaDurationMs = AlphaDurationMs,
-            AlphaDelayMs = AlphaDelayMs,
-            RotateZ = RotateZ,
-            RotateY = RotateY,
-            KeepDefinedFontSize = KeepDefinedFontSize,
         };
     }
 
@@ -249,25 +137,7 @@ public class DanmakuItem
         Mode = source.Mode;
         TextColor = source.TextColor;
         OutlineColor = source.OutlineColor;
-        StartX = source.StartX;
-        StartY = source.StartY;
-        EndX = source.EndX;
-        EndY = source.EndY;
-        MarginLeft = source.MarginLeft;
-        MarginRight = source.MarginRight;
-        MarginBottom = source.MarginBottom;
-        AlignmentMode = source.AlignmentMode;
-        AnchorMode = source.AnchorMode;
-        StartAlpha = source.StartAlpha;
-        EndAlpha = source.EndAlpha;
         DurationMs = source.DurationMs;
-        TranslationDurationMs = source.TranslationDurationMs;
-        TranslationDelayMs = source.TranslationDelayMs;
-        AlphaDurationMs = source.AlphaDurationMs;
-        AlphaDelayMs = source.AlphaDelayMs;
-        RotateZ = source.RotateZ;
-        RotateY = source.RotateY;
-        KeepDefinedFontSize = source.KeepDefinedFontSize;
     }
 }
 #pragma warning restore CA1051 // 不要声明可见实例字段

@@ -86,7 +86,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     [RelayCommand]
     private void SelectUper(MomentUperSectionViewModel item)
     {
-        if (item == null)
+        if (item is null)
         {
             return;
         }

@@ -40,7 +40,10 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     {
         _settings = settingsService.Settings;
         _partSelectedAction = action;
-        Parts = parts.ToList();
+        Parts =
+        [
+            .. parts,
+        ];
         SelectedPart = parts.FirstOrDefault(p => p.VideoId == currentVideoId);
         OnlyIndex = _settings.IsVideoPlayerPartsOnlyIndex;
     }

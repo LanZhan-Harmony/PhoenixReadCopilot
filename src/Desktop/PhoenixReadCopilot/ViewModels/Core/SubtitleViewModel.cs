@@ -76,7 +76,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
     public void UpdatePosition(int position)
     {
         _position = position;
-        if (SelectedMeta == null || _subtitles is null || _subtitles.Count == 0 || !IsEnabled)
+        if (SelectedMeta is null || _subtitles is null || _subtitles.Count == 0 || !IsEnabled)
         {
             return;
         }

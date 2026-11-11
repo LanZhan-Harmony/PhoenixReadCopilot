@@ -235,7 +235,10 @@ internal sealed class DanmakuScheduler : IDisposable
     {
         lock (_danmakuList)
         {
-            return _danmakuList.ToList();
+            return
+            [
+                .. _danmakuList,
+            ];
         }
     }
 
@@ -256,7 +259,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// </summary>
     public void AddDanmakuList(List<DanmakuItem> danmakuList)
     {
-        if (danmakuList == null || danmakuList.Count == 0)
+        if (danmakuList is null || danmakuList.Count == 0)
         {
             return;
         }
@@ -374,7 +377,7 @@ internal sealed class DanmakuScheduler : IDisposable
             DanmakuMode.Bottom => DanmakuDefaultLayerDef.BottomLayerId,
             DanmakuMode.Top => DanmakuDefaultLayerDef.TopLayerId,
             DanmakuMode.ReverseRolling => DanmakuDefaultLayerDef.ReverseRollingLayerId,
-            DanmakuMode.Advanced => DanmakuDefaultLayerDef.AdvancedLayerId,
+            DanmakuMode.Subtitle => DanmakuDefaultLayerDef.SubtitleLayerId,
             _ => DanmakuDefaultLayerDef.RollingLayerId,
         };
     }

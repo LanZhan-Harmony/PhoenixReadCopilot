@@ -24,9 +24,11 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     /// </summary>
     public VideoPlayerRecommendSectionDetailViewModel(IList<VideoInformation> items)
     {
-        Items = items
-            .Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerRecommend))
-            .ToList();
+        Items =
+        [
+            .. items
+                .Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerRecommend)),
+        ];
     }
 
     /// <summary>
@@ -34,9 +36,11 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     /// </summary>
     public VideoPlayerRecommendSectionDetailViewModel(IEnumerable<Drama> dramas)
     {
-        Items = dramas
-            .Select(d => new VideoItemViewModel(d, VideoCardStyle.PlayerRecommend))
-            .ToList();
+        Items =
+        [
+            .. dramas
+                .Select(d => new VideoItemViewModel(d, VideoCardStyle.PlayerRecommend)),
+        ];
     }
 
     /// <inheritdoc/>

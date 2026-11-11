@@ -29,7 +29,7 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
         }
 
         Item = item; // 不再克隆，直接使用（由对象池管理生命周期）
-        Id = (uint)Item.Text.GetHashCode(System.StringComparison.Ordinal);
+        Id = (uint)Item.Text.GetHashCode(StringComparison.Ordinal);
         FontSize = Item.BaseFontSize > 0 ? Item.BaseFontSize : DanmakuItem.DefaultBaseFontSize;
 
         // 重置状态
@@ -40,13 +40,17 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
         Height = 0;
         X = 0;
         Y = 0;
-        NeedToReleaseYSlot = false;
-        StartX = 0;
         StartY = 0;
-        EndX = 0;
-        EndY = 0;
-        TranslationSpeedX = 0;
-        TranslationSpeedY = 0;
+        NeedToReleaseYSlot = false;
+        if (Segments is not null)
+        {
+            for (int i = 0; i < Segments.Count; i++)
+            {
+                Segments[i]?.Dispose();
+            }
+            Segments.Clear();
+            Segments = null;
+        }
     }
 
     /// <summary>
@@ -77,12 +81,17 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
     /// <summary>
     /// 首次渲染时间.
     /// </summary>
-    public System.TimeSpan FirstRenderTime;
+    public TimeSpan FirstRenderTime;
 
     /// <summary>
-    /// DirectWrite 文本布局.
+    /// DirectWrite 文本布局（纯文本弹幕使用）.
     /// </summary>
-    public IDWriteTextLayout TextLayout;
+    public IDWriteTextLayout? TextLayout;
+
+    /// <summary>
+    /// 混合图文分段（含表情弹幕使用）.
+    /// </summary>
+    public List<DanmakuSegment>? Segments;
 
     /// <summary>
     /// DirectWrite 文本格式.
@@ -117,39 +126,24 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
     public volatile bool NeedToReleaseYSlot;
 
     /// <summary>
-    /// 起始 X 坐标（用于动画）.
+    /// 起始 Y 坐标（分配的槽位 Y）.
     /// </summary>
-    public float StartX;
-
-    /// <summary>
-    /// 起始 Y 坐标（用于动画）.
-    /// </summary>
-    public float StartY;
-
-    /// <summary>
-    /// 结束 X 坐标（用于动画）.
-    /// </summary>
-    public float EndX;
-
-    /// <summary>
-    /// 结束 Y 坐标（用于动画）.
-    /// </summary>
-    public float EndY;
-
-    /// <summary>
-    /// X 方向平移速度.
-    /// </summary>
-    public float TranslationSpeedX;
-
-    /// <summary>
-    /// Y 方向平移速度.
-    /// </summary>
-    public float TranslationSpeedY;
+    public volatile float StartY;
 
     /// <inheritdoc/>
     public void Dispose()
     {
         TextLayout?.Dispose();
-        // TextFormat 是缓存的，不要在这里 Dispose
+        TextLayout = null;
+
+        if (Segments is not null)
+        {
+            for (int i = 0; i < Segments.Count; i++)
+            {
+                Segments[i]?.Dispose();
+            }
+            Segments.Clear();
+            Segments = null;
+        }
     }
 }

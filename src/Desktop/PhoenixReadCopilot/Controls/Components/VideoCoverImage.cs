@@ -82,7 +82,10 @@ public sealed partial class VideoCoverImage : ImageExBase
 
     private static void OnDecodeWidthPropertyChanged(DependencyObject sender, DependencyProperty dp)
     {
-        if (sender is VideoCoverImage control && control.AspectRatio > 0)
+        if (sender is VideoCoverImage
+            {
+                AspectRatio: > 0
+            } control)
         {
             control.DecodeHeight = Math.Max(
                 1,
@@ -98,7 +101,7 @@ public sealed partial class VideoCoverImage : ImageExBase
             return;
         }
 
-        if (Source != null && _aspectRatioCache.TryGetValue(Source, out double cachedRatio))
+        if (Source is not null && _aspectRatioCache.TryGetValue(Source, out double cachedRatio))
         {
             if (Math.Abs(AspectRatio - cachedRatio) > 0.01)
             {
@@ -171,7 +174,7 @@ public sealed partial class VideoCoverImage : ImageExBase
             // 限制极端比例，避免瀑布流中过长或过扁的异常卡片影响体验 (0.5 ~ 2.0，涵盖 9:16 到 2:1)
             realRatio = Math.Clamp(realRatio, 0.5, 2.0);
 
-            if (Source != null)
+            if (Source is not null)
             {
                 if (_aspectRatioCache.Count > 1000)
                 {
@@ -192,7 +195,7 @@ public sealed partial class VideoCoverImage : ImageExBase
 
         // 确保 CanvasImageSource 具有与当前 DecodeWidth / DecodeHeight 匹配的分辨率
         if (
-            CanvasImageSource == null
+            CanvasImageSource is null
             || Math.Abs(CanvasImageSource.Size.Width - targetWidth) > 0.5
             || Math.Abs(CanvasImageSource.Size.Height - targetHeight) > 0.5
         )

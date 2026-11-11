@@ -59,6 +59,6 @@ public sealed partial class TimelineItemViewModel : ViewModelBase
         Date = targetDate.ToString("MM-dd");
         Items = items;
         Count = items?.Count ?? 0;
-        IsEmpty = items != null && items.Count == 0;
+        IsEmpty = items is not null && items.Count == 0;
     }
 }

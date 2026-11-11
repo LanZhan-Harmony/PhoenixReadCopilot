@@ -344,7 +344,11 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         }
 
         PointInt32 lastPoint = GetSavedWindowPosition();
-        bool isZeroPoint = lastPoint.X == 0 && lastPoint.Y == 0;
+        bool isZeroPoint = lastPoint is
+        {
+            X: 0,
+            Y: 0
+        };
         bool isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
         double left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
         double top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
@@ -365,7 +369,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         int left = AppWindow.Position.X;
         int top = AppWindow.Position.Y;
         BOOL isMaximized = PInvoke.IsZoomed(new HWND(this.GetWindowHandle()));
-        _settings.IsPlayerWindowMaximized = (bool)isMaximized;
+        _settings.IsPlayerWindowMaximized = isMaximized;
 
         if (!isMaximized)
         {

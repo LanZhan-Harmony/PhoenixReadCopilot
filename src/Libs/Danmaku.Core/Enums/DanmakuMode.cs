@@ -31,17 +31,7 @@ public enum DanmakuMode
     ReverseRolling = 6,
 
     /// <summary>
-    /// 高级弹幕.
-    /// </summary>
-    Advanced = 7,
-
-    /// <summary>
-    /// 代码弹幕.
-    /// </summary>
-    Code = 8,
-
-    /// <summary>
     /// 字幕弹幕.
     /// </summary>
-    Subtitle = 9,
+    Subtitle = 7,
 }
