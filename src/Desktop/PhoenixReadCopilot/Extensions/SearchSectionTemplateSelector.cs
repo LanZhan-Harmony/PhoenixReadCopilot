@@ -9,8 +9,6 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
 {
     public DataTemplate VideoTemplate { get; set; }
 
-    public DataTemplate PgcTemplate { get; set; }
-
     public DataTemplate UserTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)

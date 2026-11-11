@@ -52,10 +52,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             {
                 InnerContent = new VideoItemViewModel(video, VideoCardStyle.Moment);
             }
-            else if (data.Data is EpisodeInformation episode)
-            {
-                InnerContent = new EpisodeItemViewModel(episode, EpisodeCardStyle.Moment);
-            }
             else if (data.Data is IEnumerable<BiliImage> images)
             {
                 InnerContent = images;
@@ -67,15 +63,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                 VideoCover = vinfo.Identifier.Cover?.Uri;
                 VideoDuration = vinfo.Duration.HasValue
                     ? AppToolkit.FormatDuration(TimeSpan.FromSeconds(vinfo.Duration.Value))
-                    : string.Empty;
-            }
-            else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
-            {
-                IsPgc = true;
-                VideoTitle = einfo.Identifier.Title;
-                VideoCover = einfo.Identifier.Cover?.Uri;
-                VideoDuration = einfo.Duration.HasValue
-                    ? AppToolkit.FormatDuration(TimeSpan.FromSeconds(einfo.Duration.Value))
                     : string.Empty;
             }
         }
@@ -118,27 +105,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                 VideoSnapshot snapshot = new(vinfo);
                 ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), snapshot);
             }
-        }
-        else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
-        {
-            if (!TryOpenInNewWindowIfPreferred() && !TryOpenInWebPlayerIfPreferred())
-            {
-                bool hasEpid = einfo.Identifier.Id != "0";
-                if (hasEpid)
-                {
-                    MediaIdentifier identifier = new("ep_" + einfo.Identifier.Id, null, null);
-                    ItemServices.Navigation.NavigateToOver(typeof(PgcPlayerPage), identifier);
-                }
-                else
-                {
-                    // 出差番剧，使用网页打开.
-                    OpenInBroswerCommand.Execute(null);
-                }
-            }
-        }
-        else if (FindInnerContent<IEnumerable<BiliImage>>() is not IEnumerable<BiliImage>)
-        {
-            OpenInBroswerCommand.Execute(null);
         }
 
         bool TryOpenInNewWindowIfPreferred()
@@ -236,26 +202,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             new PlayerWindow().OpenVideo(new VideoSnapshot(vinfo));
         }
-        else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
-        {
-            if (einfo.Identifier.Id == "0")
-            {
-                // 出差番剧.
-                new PlayerWindow().OpenPgc(
-                    new MediaIdentifier(
-                        $"ss_{einfo.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.SeasonId)}",
-                        null,
-                        null
-                    )
-                );
-            }
-            else
-            {
-                new PlayerWindow().OpenPgc(
-                    new MediaIdentifier($"ep_{einfo.Identifier.Id}", null, null)
-                );
-            }
-        }
     }
 
     [RelayCommand]
@@ -284,23 +230,6 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                 vinfo.Identifier.Cover.Uri.ToString(),
                 PinContentType.Video
             );
-        }
-        else if (FindInnerContent<EpisodeInformation>() is EpisodeInformation einfo)
-        {
-            pinItem =
-                einfo.Identifier.Id == "0"
-                    ? new PinItem(
-                        $"ss_{einfo.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.SeasonId)}",
-                        einfo.Identifier.Title,
-                        einfo.Identifier.Cover.Uri.ToString(),
-                        PinContentType.Pgc
-                    )
-                    : new PinItem(
-                        $"ep_{einfo.Identifier.Id}",
-                        einfo.Identifier.Title,
-                        einfo.Identifier.Cover.Uri.ToString(),
-                        PinContentType.Pgc
-                    );
         }
 
         if (pinItem is not null)

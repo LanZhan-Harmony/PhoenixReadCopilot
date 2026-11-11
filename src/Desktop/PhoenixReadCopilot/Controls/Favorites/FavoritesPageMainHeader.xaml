@@ -10,15 +10,10 @@
                                 mc:Ignorable="d">
 
     <UserControl.Resources>
-        <DataTemplate x:Key="PgcTemplate" x:DataType="components:PgcFavoriteSectionDetailViewModel">
-            <local:PgcFavoriteHeader ViewModel="{x:Bind}"/>
-        </DataTemplate>
         <DataTemplate x:Key="VideoTemplate" x:DataType="components:VideoFavoriteSectionDetailViewModel">
             <local:VideoFavoriteHeader ViewModel="{x:Bind}"/>
         </DataTemplate>
-        <ext:FavoriteSectionTemplateSelector x:Key="Selector"
-                                             PgcTemplate="{StaticResource PgcTemplate}"
-                                             VideoTempalte="{StaticResource VideoTemplate}"/>
+        <ext:FavoriteSectionTemplateSelector x:Key="Selector" VideoTempalte="{StaticResource VideoTemplate}"/>
     </UserControl.Resources>
 
     <Grid>

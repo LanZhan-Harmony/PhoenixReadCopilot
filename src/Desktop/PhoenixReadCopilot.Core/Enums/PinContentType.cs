@@ -11,11 +11,6 @@ public enum PinContentType
     User,
 
     /// <summary>
-    /// PGC 内容.
-    /// </summary>
-    Pgc,
-
-    /// <summary>
     /// 视频内容.
     /// </summary>
     Video,

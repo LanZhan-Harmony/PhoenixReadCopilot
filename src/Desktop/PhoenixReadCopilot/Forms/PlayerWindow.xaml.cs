@@ -102,23 +102,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         MainFrame.Navigate(typeof(VideoPlayerPage), data);
     }
 
-    /// <summary>
-    /// 打开PGC内容.
-    /// </summary>
-    public void OpenPgc(MediaIdentifier pgc)
-    {
-        Activate();
-        PlayerType preferPlayer = _settings.PlayerType;
-        if (preferPlayer == PlayerType.Web)
-        {
-            string url = $"https://www.bilibili.com/bangumi/play/{pgc.Id.Replace("_", string.Empty)}";
-            MainFrame.Navigate(typeof(WebPlayerPage), url);
-            return;
-        }
-
-        MainFrame.Navigate(typeof(PgcPlayerPage), pgc);
-    }
-
     /// <inheritdoc/>
     public void EnterPlayerHostMode(PlayerDisplayMode mode)
     {
@@ -133,11 +116,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
             TitleBar.Title = vPage.ViewModel.Title;
             vPage.EnterPlayerHostMode();
         }
-        else if (MainFrame.Content is PgcPlayerPage pPage)
-        {
-            TitleBar.Title = pPage.ViewModel.EpisodeTitle;
-            pPage.EnterPlayerHostMode();
-        }
     }
 
     /// <inheritdoc/>
@@ -149,10 +127,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         if (MainFrame.Content is VideoPlayerPage vPage)
         {
             vPage.ExitPlayerHostMode();
-        }
-        else if (MainFrame.Content is PgcPlayerPage pPage)
-        {
-            pPage.ExitPlayerHostMode();
         }
     }
 
@@ -237,11 +211,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
             vPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
             return true;
         }
-        else if (MainFrame.Content is PgcPlayerPage pPage)
-        {
-            pPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
-            return true;
-        }
 
         return false;
     }
@@ -251,10 +220,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         if (MainFrame.Content is VideoPlayerPage vPage)
         {
             return vPage.ViewModel.Player.TryTogglePlayPause();
-        }
-        else if (MainFrame.Content is PgcPlayerPage pPage)
-        {
-            return pPage.ViewModel.Player.TryTogglePlayPause();
         }
 
         return false;
@@ -266,10 +231,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         {
             return vPage.MarkRightArrowPressed();
         }
-        else if (MainFrame.Content is PgcPlayerPage pPage)
-        {
-            return pPage.MarkRightArrowPressed();
-        }
 
         return false;
     }
@@ -280,10 +241,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         {
             return vPage.CancelRightArrow();
         }
-        else if (MainFrame.Content is PgcPlayerPage pPage)
-        {
-            return pPage.CancelRightArrow();
-        }
 
         return false;
     }
@@ -293,10 +250,6 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         if (MainFrame.Content is VideoPlayerPage vPage)
         {
             vPage.ViewModel.CleanCommand.Execute(null);
-        }
-        else if (MainFrame.Content is PgcPlayerPage pPage)
-        {
-            pPage.ViewModel.CleanCommand.Execute(null);
         }
     }
 
@@ -344,22 +297,19 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         }
 
         PointInt32 lastPoint = GetSavedWindowPosition();
-        bool isZeroPoint = lastPoint is
-        {
-            X: 0,
-            Y: 0
-        };
+        bool isZeroPoint = lastPoint is { X: 0, Y: 0 };
         bool isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
         double left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
-        double top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
+        double top =
+            isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
         return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
     }
 
     private void MoveAndResize()
     {
         PointInt32 lastPoint = GetSavedWindowPosition();
-        DisplayArea displayArea =
-            DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary) ?? DisplayArea.Primary;
+        DisplayArea displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
+            ?? DisplayArea.Primary;
         RectInt32 rect = GetRenderRect(displayArea.WorkArea);
         AppWindow.MoveAndResize(rect);
     }

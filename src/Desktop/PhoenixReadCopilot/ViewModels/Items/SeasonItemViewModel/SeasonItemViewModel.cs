@@ -6,7 +6,6 @@ using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Models;
 using Richasy.BiliKernel.Models.Appearance;
 using Richasy.BiliKernel.Models.Media;
 using WinUIKernel.Share.Base;
@@ -19,26 +18,6 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformation>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SeasonItemViewModel"/> class.
-    /// </summary>
-    public SeasonItemViewModel(
-        SeasonInformation data,
-        SeasonCardStyle style,
-        PgcFavoriteStatus? favStatus = null,
-        Action<SeasonItemViewModel>? removeAction = null
-    )
-        : base(data)
-    {
-        Title = data.Identifier.Title;
-        Cover = data.Identifier.Cover.Uri;
-        Style = style;
-        Subtitle = data.GetExtensionIfNotNull<string>(SeasonExtensionDataId.Subtitle);
-        Highlight = data.GetExtensionIfNotNull<string>(SeasonExtensionDataId.Highlight);
-        Score = data.GetExtensionIfNotNull<double>(SeasonExtensionDataId.Score);
-        _removeAction = removeAction;
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="SeasonItemViewModel"/> class from a <see cref="DailyReleaseItem"/>.
     /// </summary>
@@ -171,7 +150,9 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         catch (Exception ex)
         {
             Logger.LogError(ex, "追剧失败");
-            ItemServices.App.ShowTipCommand.Execute((Resources.FailedToFollowPgc, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute(
+                (Resources.FailedToFollowDrama, InfoType.Error)
+            );
         }
     }
 
@@ -187,7 +168,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         {
             Logger.LogError(ex, "取消追剧失败");
             ItemServices.App.ShowTipCommand.Execute(
-                (Resources.FailedToUnfollowPgc, InfoType.Error)
+                (Resources.FailedToUnfollowDrama, InfoType.Error)
             );
         }
     }

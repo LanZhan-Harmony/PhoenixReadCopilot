@@ -66,11 +66,6 @@ public sealed partial class RootLayout : RootLayoutBase
             SecondaryTitleBar.Title = vPage.ViewModel.Title;
             vPage.EnterPlayerHostMode();
         }
-        else if (OverlayFrame.Content is PgcPlayerPage pPage)
-        {
-            SecondaryTitleBar.Title = pPage.ViewModel.EpisodeTitle;
-            pPage.EnterPlayerHostMode();
-        }
 
         if (isSecondaryTitleBarVisible)
         {
@@ -102,10 +97,6 @@ public sealed partial class RootLayout : RootLayoutBase
         {
             vPage.ExitPlayerHostMode();
         }
-        else if (OverlayFrame.Content is PgcPlayerPage pPage)
-        {
-            pPage.ExitPlayerHostMode();
-        }
 
         MainTitleBar.UpdatePadding();
         MainTitleBar.DelayUpdateAsync(100);
@@ -128,11 +119,6 @@ public sealed partial class RootLayout : RootLayoutBase
             vPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
             isHandled = true;
         }
-        else if (OverlayFrame.Content is PgcPlayerPage pPage)
-        {
-            pPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
-            isHandled = true;
-        }
 
         return isHandled;
     }
@@ -151,10 +137,6 @@ public sealed partial class RootLayout : RootLayoutBase
         if (OverlayFrame.Content is VideoPlayerPage vPage)
         {
             return vPage.ViewModel.Player.TryTogglePlayPause();
-        }
-        else if (OverlayFrame.Content is PgcPlayerPage pPage)
-        {
-            return pPage.ViewModel.Player.TryTogglePlayPause();
         }
 
         return false;
@@ -175,10 +157,6 @@ public sealed partial class RootLayout : RootLayoutBase
         {
             return vPage.MarkRightArrowPressed();
         }
-        else if (OverlayFrame.Content is PgcPlayerPage pPage)
-        {
-            return pPage.MarkRightArrowPressed();
-        }
 
         return false;
     }
@@ -197,10 +175,6 @@ public sealed partial class RootLayout : RootLayoutBase
         if (OverlayFrame.Content is VideoPlayerPage vPage)
         {
             return vPage.CancelRightArrow();
-        }
-        else if (OverlayFrame.Content is PgcPlayerPage pPage)
-        {
-            return pPage.CancelRightArrow();
         }
 
         return false;

@@ -732,14 +732,8 @@
   <data name="FixedContent" xml:space="preserve">
     <value>固定的内容</value>
   </data>
-  <data name="FixedPgcs" xml:space="preserve">
-    <value>固定的剧集</value>
-  </data>
   <data name="FixedPublishers" xml:space="preserve">
     <value>固定的UP</value>
-  </data>
-  <data name="FixPgc" xml:space="preserve">
-    <value>固定剧集</value>
   </data>
   <data name="FixPublisher" xml:space="preserve">
     <value>固定UP</value>
@@ -1140,9 +1134,6 @@
   <data name="NoFans" xml:space="preserve">
     <value>该用户还木有粉丝哟~</value>
   </data>
-  <data name="NoFavoritesPgc" xml:space="preserve">
-    <value>没有找到正在追的剧集</value>
-  </data>
   <data name="NoFavoriteVideos" xml:space="preserve">
     <value>收藏夹内还没有视频~</value>
   </data>
@@ -1166,9 +1157,6 @@
   </data>
   <data name="None" xml:space="preserve">
     <value>无</value>
-  </data>
-  <data name="NoPgcSeasons" xml:space="preserve">
-    <value>没有找到符合要求的剧集</value>
   </data>
   <data name="NoReply" xml:space="preserve">
     <value>目前还没有评论</value>
@@ -1328,15 +1316,6 @@
   </data>
   <data name="Personal" xml:space="preserve">
     <value>个人主页</value>
-  </data>
-  <data name="PgcFollowing" xml:space="preserve">
-    <value>正在追</value>
-  </data>
-  <data name="PgcInitializing" xml:space="preserve">
-    <value>正在加载 PGC 内容</value>
-  </data>
-  <data name="PgcNotFollow" xml:space="preserve">
-    <value>追</value>
   </data>
   <data name="PixelFormat" xml:space="preserve">
     <value>像素格式</value>
@@ -1605,10 +1584,7 @@
   <data name="RequestMessageFailed" xml:space="preserve">
     <value>请求消息失败</value>
   </data>
-  <data name="RequestPgcFailed" xml:space="preserve">
-    <value>PGC内容请求失败</value>
-  </data>
-  <data name="RequestPgcTimeLineFailed" xml:space="preserve">
+  <data name="RequestTimeLineFailed" xml:space="preserve">
     <value>请求时间线内容失败</value>
   </data>
   <data name="RequestPlayListFailed" xml:space="preserve">
@@ -2199,17 +2175,14 @@
   <data name="CopySeasonUrl" xml:space="preserve">
     <value>复制剧集地址</value>
   </data>
-  <data name="FailedToFollowPgc" xml:space="preserve">
-    <value>追番/追剧失败</value>
+  <data name="FailedToFollowDrama" xml:space="preserve">
+    <value>追剧失败</value>
   </data>
   <data name="Unfollowed" xml:space="preserve">
     <value>已取消关注</value>
   </data>
-  <data name="FailedToUnfollowPgc" xml:space="preserve">
-    <value>取消追番/追剧失败</value>
-  </data>
-  <data name="FailedToMarkPgc" xml:space="preserve">
-    <value>状态标记失败</value>
+  <data name="FailedToUnfollowDrama" xml:space="preserve">
+    <value>取消追剧失败</value>
   </data>
   <data name="Unfollow" xml:space="preserve">
     <value>取消关注</value>

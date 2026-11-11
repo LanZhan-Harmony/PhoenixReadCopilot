@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.UI.Xaml;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Models.Settings;
@@ -35,7 +36,6 @@ namespace PhoenixReadCopilot.Helpers;
 [JsonSerializable(typeof(PreferQualityType))]
 [JsonSerializable(typeof(PlayerType))]
 [JsonSerializable(typeof(MTCBehavior))]
-[JsonSerializable(typeof(PgcSectionType))]
 [JsonSerializable(typeof(AppSettings))]
 [JsonSerializable(typeof(DanmakuLocation))]
 [JsonSerializable(typeof(BiliToken))]
@@ -43,8 +43,8 @@ namespace PhoenixReadCopilot.Helpers;
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(PinItem))]
 [JsonSerializable(typeof(List<PinItem>))]
-[JsonSerializable(typeof(PhoenixReadApi.Drama))]
-[JsonSerializable(typeof(List<PhoenixReadApi.Drama>))]
+[JsonSerializable(typeof(Drama))]
+[JsonSerializable(typeof(List<Drama>))]
 internal sealed partial class SourceGenerationContext : JsonSerializerContext;
 
 internal static class JsonAotSerializer

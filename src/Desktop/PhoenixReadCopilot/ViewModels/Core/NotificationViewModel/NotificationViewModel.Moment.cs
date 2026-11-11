@@ -41,10 +41,7 @@ public sealed partial class NotificationViewModel
             LoadLastTenMomentIds();
 
             // 只取最新的三个动态.
-            List<MomentInformation> newMoments =
-            [
-                .. lastMoments.Moments.Take(3),
-            ];
+            List<MomentInformation> newMoments = [.. lastMoments.Moments.Take(3)];
             foreach (MomentInformation? moment in newMoments)
             {
                 if (_momentIds.Contains(moment.Id))
@@ -64,26 +61,6 @@ public sealed partial class NotificationViewModel
                     cover = vinfo.Identifier.Cover.Uri.ToString();
                     pageType = typeof(VideoPlayerPage).FullName;
                     arguments = JsonAotSerializer.Serialize(vinfo.Identifier);
-                }
-                else if (moment.Data is EpisodeInformation einfo)
-                {
-                    title = einfo.Identifier.Title;
-                    cover = einfo.Identifier.Cover.Uri.ToString();
-                    pageType = typeof(PgcPlayerPage).FullName;
-                    bool hasEpid = einfo.Identifier.Id != "0";
-                    if (hasEpid)
-                    {
-                        MediaIdentifier identifier = new(
-                            "ep_" + einfo.Identifier.Id,
-                            null,
-                            null
-                        );
-                        arguments = JsonAotSerializer.Serialize(identifier);
-                    }
-                    else
-                    {
-                        arguments = string.Empty;
-                    }
                 }
 
                 avatar = moment.User.Avatar.Uri.ToString();
@@ -109,10 +86,7 @@ public sealed partial class NotificationViewModel
             }
 
             // 尝试提取最新的10个动态id，如果不足10个，则从 _momentIds 中补充.
-            List<string> newMomentIds =
-            [
-                .. newMoments.Select(p => p.Id),
-            ];
+            List<string> newMomentIds = [.. newMoments.Select(p => p.Id)];
             List<string> momentIds =
             [
                 .. newMomentIds,
@@ -121,10 +95,7 @@ public sealed partial class NotificationViewModel
 
             SaveLastTenMomentIds(momentIds);
 
-            List<MomentInformation> lastFiveMoments =
-            [
-                .. lastMoments.Moments.Take(5),
-            ];
+            List<MomentInformation> lastFiveMoments = [.. lastMoments.Moments.Take(5)];
             UpdateMomentTiles(lastFiveMoments);
         }
         catch (Exception ex)
@@ -146,10 +117,7 @@ public sealed partial class NotificationViewModel
             return;
         }
 
-        _momentIds =
-        [
-            .. lastTenMomentIds.Split(','),
-        ];
+        _momentIds = [.. lastTenMomentIds.Split(',')];
     }
 
     private void SaveLastTenMomentIds(List<string> momentIds)
