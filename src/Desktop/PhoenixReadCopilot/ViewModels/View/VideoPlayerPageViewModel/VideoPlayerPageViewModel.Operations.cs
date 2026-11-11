@@ -319,7 +319,11 @@ public sealed partial class VideoPlayerPageViewModel
     private void PlayerProgressChanged(int progress, int duration)
     {
         // 兜底静默尝试：若当前分集尚未成功加载弹幕且未在加载中，发起一次加载尝试
-        if (Danmaku is not null && !Danmaku.HasLoaded && !Danmaku.IsLoading && !string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(_currentVideoId))
+        if (Danmaku is not null && Danmaku is
+            {
+                HasLoaded: false,
+                IsLoading: false
+            } && !string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(_currentVideoId))
         {
             Danmaku.LoadDanmakusCommand.Execute(duration);
         }
@@ -330,7 +334,7 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void PlayerStateChanged(PlayerState state)
     {
-        if (_currentEpisode == null && string.IsNullOrEmpty(_seriesId))
+        if (_currentEpisode is null && string.IsNullOrEmpty(_seriesId))
         {
             return;
         }

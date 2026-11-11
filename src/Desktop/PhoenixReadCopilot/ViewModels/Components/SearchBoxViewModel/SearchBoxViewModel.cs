@@ -7,8 +7,8 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using HotSearchItem = PhoenixReadCopilot.Models.Search.HotSearchItem;
 using WinUIKernel.Share.ViewModels;
+using HotSearchItem = PhoenixReadCopilot.Models.Search.HotSearchItem;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -116,12 +116,11 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 {
                     Suggestion.Clear();
                     _cancellationTokenSource = new CancellationTokenSource();
-                    IReadOnlyList<SearchSuggestion> suggests =
-                        await _apiClient.GetSuggestionsAsync(
-                            Keyword.Trim(),
-                            maxResults: 8,
-                            _cancellationTokenSource.Token
-                        );
+                    IReadOnlyList<SearchSuggestion> suggests = await _apiClient.GetSuggestionsAsync(
+                        Keyword.Trim(),
+                        maxResults: 8,
+                        _cancellationTokenSource.Token
+                    );
 
                     if (suggests is not null)
                     {
@@ -173,21 +172,26 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
             foreach (PhoenixReadApi.HotSearchItem item in items)
             {
                 SearchItemIcon? icon = null;
-                if (!string.IsNullOrEmpty(item.CoverUrl) && Uri.TryCreate(item.CoverUrl, UriKind.Absolute, out Uri? coverUri))
+                if (
+                    !string.IsNullOrEmpty(item.CoverUrl)
+                    && Uri.TryCreate(item.CoverUrl, UriKind.Absolute, out Uri? coverUri)
+                )
                 {
                     icon = new SearchItemIcon { Uri = coverUri };
                 }
 
                 string heat = !string.IsNullOrEmpty(item.CardTips) ? item.CardTips : item.Heat;
-                HotSearchItems.Add(new HotSearchItem
-                {
-                    Index = index++,
-                    Text = item.Title,
-                    Keyword = item.Title,
-                    Tag = item.Tag,
-                    Heat = heat,
-                    Icon = icon,
-                });
+                HotSearchItems.Add(
+                    new HotSearchItem
+                    {
+                        Index = index++,
+                        Text = item.Title,
+                        Keyword = item.Title,
+                        Tag = item.Tag,
+                        Heat = heat,
+                        Icon = icon,
+                    }
+                );
             }
         }
         catch (Exception ex)

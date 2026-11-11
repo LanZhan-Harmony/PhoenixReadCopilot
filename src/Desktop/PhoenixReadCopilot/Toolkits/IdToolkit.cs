@@ -43,10 +43,16 @@ public static class IdToolkit
     /// <returns>AVId.</returns>
     public static long Bv2Av(string bvid)
     {
-        char[] bvidArr = bvid.ToArray();
+        char[] bvidArr =
+        [
+            .. bvid,
+        ];
         Swap(ref bvidArr[3], ref bvidArr[9]);
         Swap(ref bvidArr[4], ref bvidArr[7]);
-        bvidArr = bvidArr.Skip(3).ToArray();
+        bvidArr =
+        [
+            .. bvidArr.Skip(3),
+        ];
 
         long tmp = bvidArr.Aggregate(0L, (pre, bvidChar) => (pre * BASE) + DATA.IndexOf(bvidChar));
 

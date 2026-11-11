@@ -275,10 +275,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 
             try
             {
-                if (_ffmpegSource is not null)
-                {
-                    _ffmpegSource.PlaybackSession = session;
-                }
+                _ffmpegSource?.PlaybackSession = session;
             }
             catch { }
 

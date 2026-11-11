@@ -39,7 +39,10 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
 
         if (Data.Children is not null)
         {
-            List<PartitionViewModel> children = Data.Children.ToList();
+            List<PartitionViewModel> children =
+            [
+                .. Data.Children,
+            ];
             Partition rcmdPartition = new(Data.Data.Id, Resources.Recommend);
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
@@ -97,11 +100,17 @@ public sealed partial class VideoPartitionDetailViewModel : ViewModelBase<Partit
         {
             if (IsRecommend)
             {
-                _recommendVideoCache = Videos.ToList();
+                _recommendVideoCache =
+                [
+                    .. Videos,
+                ];
             }
             else
             {
-                _childPartitionVideoCache[CurrentPartition.Data.Id] = Videos.ToList();
+                _childPartitionVideoCache[CurrentPartition.Data.Id] =
+                [
+                    .. Videos,
+                ];
             }
         }
 

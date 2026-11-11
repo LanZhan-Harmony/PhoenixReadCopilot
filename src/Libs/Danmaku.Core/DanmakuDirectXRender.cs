@@ -1,9 +1,7 @@
 using System.Diagnostics;
 using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using SharpGen.Runtime;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
@@ -14,8 +12,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 {
     internal DanmakuDirectXRender(
         SwapChainPanel swapChainPanel,
-        FrameworkElement container,
-        DanmakuConfiguration initialConfig = null
+        DanmakuConfiguration? initialConfig = null
     )
     {
         _swapChainPanel = swapChainPanel ?? throw new ArgumentNullException(nameof(swapChainPanel));
@@ -51,15 +48,14 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _resourceManager.ScaleChanged += OnResourceManagerScaleChanged;
         _resourceManager.SizeChanged += OnResourceManagerSizeChanged;
 
+        // 初始化红果表情管理器
+        _emojiManager = new DanmakuEmojiManager(_resourceManager);
+
         uint layerCount = DanmakuDefaultLayerDef.DefaultLayerCount;
         _renderLayerList = new RenderLayer[layerCount];
         for (uint i = 0; i < layerCount; i++)
         {
-            _renderLayerList[i] = new RenderLayer(
-                i,
-                i == DanmakuDefaultLayerDef.AdvancedLayerId
-                    || i == DanmakuDefaultLayerDef.SubtitleLayerId
-            );
+            _renderLayerList[i] = new RenderLayer(i, i == DanmakuDefaultLayerDef.SubtitleLayerId);
             if (CanvasHeight >= 1f)
             {
                 _renderLayerList[i]
@@ -94,7 +90,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     /// <param name="config">新的配置（只有非空值会被应用）.</param>
     public void UpdateConfiguration(DanmakuConfiguration config)
     {
-        if (config == null)
+        if (config is null)
         {
             return;
         }
@@ -106,12 +102,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             rollingAreaRatio =>
             {
                 // 当滚动区域比例变化时，更新所有层的 Y 轴槽管理器
-                if (_renderLayerList != null)
+                if (_renderLayerList is not null)
                 {
-                    for (int i = 0; i < _renderLayerList.Length; i++)
+                    foreach (RenderLayer layer in _renderLayerList)
                     {
-                        _renderLayerList[i]
-                            .UpdateYSlotManagerLength((uint)CanvasHeight, rollingAreaRatio);
+                        layer.UpdateYSlotManagerLength((uint)CanvasHeight, rollingAreaRatio);
                     }
                 }
             }
@@ -140,10 +135,9 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         CanvasWidth = _resourceManager.CanvasWidth;
         CanvasHeight = _resourceManager.CanvasHeight;
 
-        for (int i = 0; i < _renderLayerList.Length; i++)
+        foreach (RenderLayer layer in _renderLayerList)
         {
-            _renderLayerList[i]
-                .UpdateYSlotManagerLength((uint)CanvasHeight, _configState.RollingAreaRatio);
+            layer.UpdateYSlotManagerLength((uint)CanvasHeight, _configState.RollingAreaRatio);
         }
 
         // 尺寸变化后，重置上一帧时间戳，并唤醒独立渲染线程重绘
@@ -157,7 +151,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
     public void RenderDanmakuItem(uint layerId, DanmakuItem danmakuItem)
     {
-        if (_resourceManager.D2DContext == null || _isStopped || CanvasWidth <= 0)
+        if (_resourceManager.D2DContext is null || _isStopped || CanvasWidth <= 0)
         {
             return;
         }
@@ -190,8 +184,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             }
 
             if (
-                !_configState.AutoControlDensity
-                && _configState.RollingDensity > 0
+                _configState is
+                {
+                    AutoControlDensity: false,
+                    RollingDensity: > 0
+                }
                 && renderItem.Item.Mode == DanmakuMode.Rolling
                 && _renderLayerList[layerId].RenderList.Count >= _configState.RollingDensity
             )
@@ -209,17 +206,51 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 : renderItem.Item.FontFamilyName;
             IDWriteTextFormat? textFormat = GetOrCreateTextFormat(fontFamily, fontSize, isBold);
 
-            // Create text layout
-            textLayout = _resourceManager.DWriteFactory.CreateTextLayout(
-                renderItem.Item.Text,
-                textFormat,
-                (CanvasWidth) - 24f,
-                CanvasHeight
-            );
+            // 🎨 红果表情解析：如果包含 [表情名]，拆分为混合图文分段
+            if (DanmakuEmojiManager.HasEmojiPattern(renderItem.Item.Text))
+            {
+                List<DanmakuSegment>? segments = _emojiManager.ParseSegments(
+                    renderItem.Item.Text,
+                    textFormat,
+                    fontSize,
+                    CanvasWidth - 24f,
+                    CanvasHeight
+                );
 
-            TextMetrics textMetrics = textLayout.Metrics;
-            renderItem.Width = textMetrics.Width + 8f;
-            renderItem.Height = textMetrics.Height;
+                if (segments is not null && segments.Count > 0)
+                {
+                    renderItem.Segments = segments;
+                    float totalW = 0f;
+                    float maxH = 0f;
+                    foreach (DanmakuSegment segment in segments)
+                    {
+                        totalW += segment.Width;
+                        if (segment.Height > maxH)
+                        {
+                            maxH = segment.Height;
+                        }
+                    }
+                    renderItem.Width = totalW + 8f;
+                    renderItem.Height = maxH;
+                }
+            }
+
+            // 🔤 纯文字弹幕：走标准的单个 TextLayout
+            if (renderItem.Segments is null)
+            {
+                textLayout = _resourceManager.DWriteFactory.CreateTextLayout(
+                    renderItem.Item.Text,
+                    textFormat,
+                    CanvasWidth - 24f,
+                    CanvasHeight
+                );
+
+                TextMetrics textMetrics = textLayout.Metrics;
+                renderItem.Width = textMetrics.Width + 8f;
+                renderItem.Height = textMetrics.Height;
+                renderItem.TextLayout = textLayout;
+                textLayout = null; // 所有权转移到 renderItem
+            }
 
             if (renderItem.Item.HasOutline)
             {
@@ -239,11 +270,9 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 return;
             }
 
-            renderItem.TextLayout = textLayout;
             renderItem.TextFormat = textFormat!;
-            textLayout = null; // 所有权转移到 renderItem
 
-            // Calculate initial position
+            // 计算初始位置
             switch (renderItem.Item.Mode)
             {
                 case DanmakuMode.Rolling:
@@ -252,7 +281,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                         (uint)renderItem.Height,
                         out uint yRolling
                     );
-                    renderItem.StartX = CanvasWidth;
+                    renderItem.X = CanvasWidth;
                     renderItem.StartY = yRolling;
                     break;
                 case DanmakuMode.Bottom:
@@ -261,6 +290,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                         (uint)renderItem.Height,
                         out uint yBottom
                     );
+                    renderItem.X = (CanvasWidth - renderItem.Width) / 2;
                     renderItem.StartY = yBottom;
                     break;
                 case DanmakuMode.Top:
@@ -269,6 +299,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                         (uint)renderItem.Height,
                         out uint yTop
                     );
+                    renderItem.X = (CanvasWidth - renderItem.Width) / 2;
                     renderItem.StartY = yTop;
                     break;
                 case DanmakuMode.ReverseRolling:
@@ -277,15 +308,14 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                         (uint)renderItem.Height,
                         out uint yReverse
                     );
-                    renderItem.StartX = -renderItem.Width;
+                    renderItem.X = -renderItem.Width;
                     renderItem.StartY = yReverse;
                     break;
-                case DanmakuMode.Advanced:
-                    CalculateAdvancedPosition(renderItem);
+                default:
+                    renderItem.X = CanvasWidth;
+                    renderItem.StartY = 0;
                     break;
             }
-
-            renderItem.X = renderItem.StartX;
 
             if (
                 _configState.AutoControlDensity
@@ -317,129 +347,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             textLayout?.Dispose();
 
             // 如果 renderItem 没有添加到渲染列表，需要归还
-            if (renderItem != null && !addedToRenderList)
+            if (renderItem is not null && !addedToRenderList)
             {
                 _resourceManager.ObjectPool.ReturnRenderItem(renderItem);
             }
         }
-    }
-
-    private void CalculateAdvancedPosition(DanmakuDirectXRenderItem renderItem)
-    {
-        // Similar logic to original implementation
-        if (renderItem.Item.AlignmentMode == DanmakuAlignmentMode.Default)
-        {
-            renderItem.StartX =
-                renderItem.Item.StartX > 1.0f
-                    ? renderItem.Item.StartX
-                    : renderItem.Item.StartX * CanvasWidth;
-            renderItem.StartY =
-                renderItem.Item.StartY > 1.0f
-                    ? renderItem.Item.StartY
-                    : renderItem.Item.StartY * CanvasHeight;
-            renderItem.EndX =
-                renderItem.Item.EndX > 1.0f
-                    ? renderItem.Item.EndX
-                    : renderItem.Item.EndX * CanvasWidth;
-            renderItem.EndY =
-                renderItem.Item.EndY > 1.0f
-                    ? renderItem.Item.EndY
-                    : renderItem.Item.EndY * CanvasHeight;
-
-            // Apply anchor mode adjustments
-            switch (renderItem.Item.AnchorMode)
-            {
-                case DanmakuAlignmentMode.LowerCenter:
-                case DanmakuAlignmentMode.MiddleCenter:
-                case DanmakuAlignmentMode.UpperCenter:
-                    renderItem.StartX -= renderItem.Width / 2;
-                    renderItem.EndX -= renderItem.Width / 2;
-                    break;
-                case DanmakuAlignmentMode.LowerRight:
-                case DanmakuAlignmentMode.MiddleRight:
-                case DanmakuAlignmentMode.UpperRight:
-                    renderItem.StartX -= renderItem.Width;
-                    renderItem.EndX -= renderItem.Width;
-                    break;
-            }
-
-            switch (renderItem.Item.AnchorMode)
-            {
-                case DanmakuAlignmentMode.LowerLeft:
-                case DanmakuAlignmentMode.LowerCenter:
-                case DanmakuAlignmentMode.LowerRight:
-                    renderItem.StartY -= renderItem.Height;
-                    renderItem.EndY -= renderItem.Height;
-                    break;
-                case DanmakuAlignmentMode.MiddleLeft:
-                case DanmakuAlignmentMode.MiddleCenter:
-                case DanmakuAlignmentMode.MiddleRight:
-                    renderItem.StartY -= renderItem.Height / 2;
-                    renderItem.EndY -= renderItem.Height / 2;
-                    break;
-            }
-        }
-        else
-        {
-            // Alignment mode based positioning
-            if (
-                renderItem.Item.AlignmentMode == DanmakuAlignmentMode.LowerLeft
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.MiddleLeft
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.UpperLeft
-            )
-            {
-                renderItem.StartX = renderItem.Item.MarginLeft;
-            }
-            else if (
-                renderItem.Item.AlignmentMode == DanmakuAlignmentMode.LowerCenter
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.MiddleCenter
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.UpperCenter
-            )
-            {
-                renderItem.StartX = (CanvasWidth - renderItem.Width) / 2;
-            }
-            else if (
-                renderItem.Item.AlignmentMode == DanmakuAlignmentMode.LowerRight
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.MiddleRight
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.UpperRight
-            )
-            {
-                renderItem.StartX = CanvasWidth - renderItem.Width - renderItem.Item.MarginRight;
-            }
-
-            if (
-                renderItem.Item.AlignmentMode == DanmakuAlignmentMode.LowerLeft
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.LowerCenter
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.LowerRight
-            )
-            {
-                renderItem.StartY = CanvasHeight - renderItem.Height - renderItem.Item.MarginBottom;
-            }
-            else if (
-                renderItem.Item.AlignmentMode == DanmakuAlignmentMode.MiddleLeft
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.MiddleCenter
-                || renderItem.Item.AlignmentMode == DanmakuAlignmentMode.MiddleRight
-            )
-            {
-                renderItem.StartY = (CanvasHeight - renderItem.Height) / 2;
-            }
-            else
-            {
-                renderItem.StartY = 0;
-            }
-
-            renderItem.EndX = renderItem.StartX;
-            renderItem.EndY = renderItem.StartY;
-        }
-
-        renderItem.TranslationSpeedX =
-            renderItem.Item.TranslationDurationMs > 0
-                ? (renderItem.EndX - renderItem.StartX) / renderItem.Item.TranslationDurationMs
-                : 0;
-        renderItem.TranslationSpeedY =
-            renderItem.Item.TranslationDurationMs > 0
-                ? (renderItem.EndY - renderItem.StartY) / renderItem.Item.TranslationDurationMs
-                : 0;
     }
 
     private void UpdateDanmaku(TimeSpan elapsedTime, TimeSpan totalTime)
@@ -450,7 +362,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         if (_configState.EnableParallelUpdate)
         {
             // 并行处理每一层
-            System.Threading.Tasks.Parallel.For(
+            Parallel.For(
                 0,
                 _renderLayerList.Length,
                 layerId => UpdateLayerDanmaku((uint)layerId, elapsedMs, totalTime)
@@ -554,7 +466,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                                     renderItem.Width
                                 );
                         }
-                        if (renderItem.NeedToReleaseYSlot && renderItem.X > 48f)
+                        if (renderItem is
+                            {
+                                NeedToReleaseYSlot: true,
+                                X: > 48f
+                            })
                         {
                             ySlotManager.ReleaseYSlot(renderItem.Id, (uint)renderItem.StartY);
                             renderItem.NeedToReleaseYSlot = false;
@@ -583,7 +499,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     {
         // 关键修复：在渲染前再次检查状态，防止在 UI 事件处理期间访问资源
         if (
-            _resourceManager.D2DContext == null
+            _resourceManager.D2DContext is null
             || CanvasWidth <= 0
             || CanvasHeight <= 0
             || _isStopped
@@ -641,37 +557,22 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                     totalCount++;
 
                     float x = renderItem.X;
-                    float y;
-
-                    switch (renderItem.Item.Mode)
+                    float y = renderItem.Item.Mode switch
                     {
-                        case DanmakuMode.Rolling:
-                        case DanmakuMode.ReverseRolling:
-                            y = renderItem.StartY;
-                            break;
-
-                        case DanmakuMode.Bottom:
-                            y = Math.Max(
-                                (
-                                    _configState.NoOverlapSubtitle
-                                        ? Math.Max(CanvasHeight - 100f, CanvasHeight * 0.8f)
-                                        : CanvasHeight
-                                )
-                                    - renderItem.Height
-                                    - renderItem.StartY,
-                                0
-                            );
-                            y -= renderItem.Item.MarginBottom;
-                            break;
-
-                        case DanmakuMode.Top:
-                            y = renderItem.StartY;
-                            break;
-
-                        default:
-                            y = 0;
-                            break;
-                    }
+                        DanmakuMode.Rolling or DanmakuMode.ReverseRolling => renderItem.StartY,
+                        DanmakuMode.Bottom => Math.Max(
+                            (
+                                _configState.NoOverlapSubtitle
+                                    ? Math.Max(CanvasHeight - 100f, CanvasHeight * 0.8f)
+                                    : CanvasHeight
+                            )
+                            - renderItem.Height
+                            - renderItem.StartY,
+                            0
+                        ),
+                        DanmakuMode.Top => renderItem.StartY,
+                        _ => 0,
+                    };
 
                     // Draw danmaku
                     DrawDanmakuText(renderItem, x, y);
@@ -690,7 +591,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 Logger.Log($"EndDraw failed: {result}");
                 // Device might be lost, try to recover on next frame
                 if (
-                    _resourceManager.D3DDevice != null
+                    _resourceManager.D3DDevice is not null
                     && _resourceManager.D3DDevice.DeviceRemovedReason.Failure
                 )
                 {
@@ -706,7 +607,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
     public void SetLayerRenderState(uint layerId, bool render)
     {
-        if (_renderLayerList != null && layerId < _renderLayerList.Length)
+        if (_renderLayerList is not null && layerId < _renderLayerList.Length)
         {
             _renderLayerList[layerId].IsEnabled = render;
         }
@@ -714,7 +615,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
     public void ClearLayer(uint layerId)
     {
-        if (_renderLayerList != null && layerId < _renderLayerList.Length)
+        if (_renderLayerList is not null && layerId < _renderLayerList.Length)
         {
             _renderLayerList[layerId].Clear(_resourceManager.ObjectPool);
         }
@@ -722,14 +623,14 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
     public void Clear()
     {
-        if (_renderLayerList == null)
+        if (_renderLayerList is null)
         {
             return;
         }
 
-        for (int i = 0; i < _renderLayerList.Length; i++)
+        foreach (RenderLayer layer in _renderLayerList)
         {
-            _renderLayerList[i].Clear(_resourceManager.ObjectPool);
+            layer.Clear(_resourceManager.ObjectPool);
         }
 
         Debug.WriteLine("DanmakuDirectXRender is cleared");
@@ -742,7 +643,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _lastFrameTime = _frameStopwatch.Elapsed;
         _frameStopwatch.Start();
 
-        if (_gameLoopThread != null)
+        if (_gameLoopThread is not null)
         {
             _gameLoopThread.IsPaused = false;
             _gameLoopThread.Wake();
@@ -754,10 +655,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     public void Pause()
     {
         _isPaused = true;
-        if (_gameLoopThread != null)
-        {
-            _gameLoopThread.IsPaused = true;
-        }
+        _gameLoopThread?.IsPaused = true;
         _frameStopwatch.Stop();
         Logger.Log("DanmakuDirectXRender is paused");
     }
@@ -767,10 +665,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _isStopped = true;
         _isPaused = true;
 
-        if (_gameLoopThread != null)
-        {
-            _gameLoopThread.IsPaused = true;
-        }
+        _gameLoopThread?.IsPaused = true;
 
         Clear();
         Logger.Log("DanmakuDirectXRender is stopped");
@@ -791,14 +686,14 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         Clear();
 
         // 6. 清理事件订阅
-        if (_resourceManager != null)
+        if (_resourceManager is not null)
         {
             _resourceManager.ScaleChanged -= OnResourceManagerScaleChanged;
             _resourceManager.SizeChanged -= OnResourceManagerSizeChanged;
         }
 
         // 7. 清理 SwapChainPanel 引用（避免循环引用）
-        if (_swapChainPanel != null)
+        if (_swapChainPanel is not null)
         {
             _swapChainPanel = null;
         }
@@ -807,9 +702,10 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _cachedOutlineBrush?.Dispose();
         _cachedOutlineBrush = null;
 
-        // 9. 清理调试渲染器
+        // 9. 清理调试渲染器与表情管理器
         _debugRenderer?.Dispose();
         _debugRenderer = null;
+        _emojiManager?.Dispose();
 
         // 10. 最后释放资源管理器（包含 DirectX 资源）
         _resourceManager?.Dispose();
@@ -819,7 +715,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
     private void RenderDebugInfo(int totalCount)
     {
-        if (CanvasWidth == 0 || _resourceManager == null)
+        if (CanvasWidth == 0 || _resourceManager is null)
         {
             return;
         }
@@ -863,15 +759,15 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     /// </summary>
     private int GetActiveDanmakuCount()
     {
-        if (_renderLayerList == null)
+        if (_renderLayerList is null)
         {
             return 0;
         }
 
         int count = 0;
-        for (int i = 0; i < _renderLayerList.Length; i++)
+        foreach (RenderLayer layer in _renderLayerList)
         {
-            count += _renderLayerList[i].RenderList.Count;
+            count += layer.RenderList.Count;
         }
 
         return count;
@@ -893,7 +789,12 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         {
             lock (_resourceManager.RenderLock)
             {
-                if (_isPaused || _isStopped || _resourceManager.D2DContext == null || _resourceManager.SwapChain == null)
+                if (
+                    _isPaused
+                    || _isStopped
+                    || _resourceManager.D2DContext is null
+                    || _resourceManager.SwapChain is null
+                )
                 {
                     return;
                 }
@@ -953,7 +854,10 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 // 1. 由显卡/DWM 硬件垂直同步驱动，精准匹配显示器物理刷新率（60Hz/120Hz/144Hz/240Hz）
                 // 2. 在后台独立高优先级线程阻塞等待硬件 V-Blank，完全避开 WinUI 3 UI 消息循环抖动
                 Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
-                if (presentResult.HasValue && presentResult.Value.Failure)
+                if (presentResult is
+                    {
+                        Failure: true
+                    })
                 {
                     Logger.Log($"Present failed: {presentResult.Value}");
                 }

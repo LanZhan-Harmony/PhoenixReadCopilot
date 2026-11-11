@@ -133,7 +133,7 @@ public partial class App : Application
                     argsStr
                 );
                 object obj = type.Contains("VideoPlayer")
-                    ? (object)new VideoSnapshot(new VideoInformation(identifier, null))
+                    ? new VideoSnapshot(new VideoInformation(identifier, null))
                     : identifier;
                 Type? pageType = Type.GetType(type);
                 Ioc.Default.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);

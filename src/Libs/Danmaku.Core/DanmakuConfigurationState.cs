@@ -88,7 +88,7 @@ internal sealed class DanmakuConfigurationState
         get => _rollingAreaRatio;
         set
         {
-            if (value > 0 && value <= 1.0f)
+            if (value is > 0 and <= 1.0f)
             {
                 _rollingAreaRatio = value;
             }
@@ -112,7 +112,7 @@ internal sealed class DanmakuConfigurationState
         get => _textOpacity;
         set
         {
-            if (value > 0 && value <= 1.0)
+            if (value is > 0 and <= 1.0)
             {
                 _textOpacity = value;
             }
@@ -179,7 +179,7 @@ internal sealed class DanmakuConfigurationState
         Action<float>? updateYSlotManager = null
     )
     {
-        if (config == null)
+        if (config is null)
         {
             return;
         }

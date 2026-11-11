@@ -18,7 +18,7 @@ public sealed partial class SubtitleButton : SubtitleControlBase
     private void OnMetaChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
         SubtitleMeta? meta = sender.SelectedItem as SubtitleMeta;
-        if (meta != null)
+        if (meta is not null)
         {
             if (ViewModel.SelectedMeta != meta)
             {

@@ -63,7 +63,7 @@ internal sealed class RenderLayer
         else if (_layerId == DanmakuDefaultLayerDef.TopLayerId)
         {
             YSlotManager.UpdateLength(
-                (uint)Math.Floor(newLength * System.Math.Min(rollingLayerAreaRatio, 0.75))
+                (uint)Math.Floor(newLength * Math.Min(rollingLayerAreaRatio, 0.75))
             );
         }
         else if (_layerId == DanmakuDefaultLayerDef.BottomLayerId)
@@ -84,7 +84,7 @@ internal sealed class RenderLayer
     {
         lock (RenderList)
         {
-            if (objectPool != null)
+            if (objectPool is not null)
             {
                 // 🔧 修复：清理纹理缓存并归还所有对象到对象池
                 for (int i = 0; i < RenderList.Count; i++)

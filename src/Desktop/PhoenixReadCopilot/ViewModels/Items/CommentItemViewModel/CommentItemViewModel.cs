@@ -66,13 +66,15 @@ public sealed partial class CommentItemViewModel : ViewModelBase
 
         List<AppImage>? pictures =
             comment.Images?.Count > 0
-                ? comment
-                    .Images.Where(img =>
-                        !string.IsNullOrEmpty(img.Url)
-                        && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
-                    )
-                    .Select(img => new AppImage(img))
-                    .ToList()
+                ?
+                [
+                    .. comment
+                        .Images.Where(img =>
+                            !string.IsNullOrEmpty(img.Url)
+                            && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
+                        )
+                        .Select(img => new AppImage(img)),
+                ]
                 : null;
         Content = new EmoteText(comment.Text, pictures);
     }
@@ -129,13 +131,15 @@ public sealed partial class CommentItemViewModel : ViewModelBase
 
         List<AppImage>? pictures =
             reply.Images?.Count > 0
-                ? reply
-                    .Images.Where(img =>
-                        !string.IsNullOrEmpty(img.Url)
-                        && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
-                    )
-                    .Select(img => new AppImage(img))
-                    .ToList()
+                ?
+                [
+                    .. reply
+                        .Images.Where(img =>
+                            !string.IsNullOrEmpty(img.Url)
+                            && Uri.TryCreate(img.Url, UriKind.Absolute, out _)
+                        )
+                        .Select(img => new AppImage(img)),
+                ]
                 : null;
         Content = new EmoteText(reply.Text, pictures);
     }

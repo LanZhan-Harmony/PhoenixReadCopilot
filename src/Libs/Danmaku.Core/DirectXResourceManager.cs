@@ -7,7 +7,6 @@ using Vortice.Direct3D11;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
 using WinRT;
-using AlphaMode = Vortice.DXGI.AlphaMode;
 
 namespace Danmaku.Core;
 
@@ -183,22 +182,20 @@ internal sealed class DirectXResourceManager : IDisposable
         creationFlags |= DeviceCreationFlags.Debug;
 #endif
 
-        Vortice.Direct3D.FeatureLevel[] featureLevels = new[]
-        {
+        Vortice.Direct3D.FeatureLevel[] featureLevels =
+        [
             Vortice.Direct3D.FeatureLevel.Level_11_1,
             Vortice.Direct3D.FeatureLevel.Level_11_0,
             Vortice.Direct3D.FeatureLevel.Level_10_1,
-        };
+        ];
 
-        ID3D11Device device;
-        ID3D11DeviceContext context;
         D3D11.D3D11CreateDevice(
             null,
             DriverType.Hardware,
             creationFlags,
             featureLevels,
-            out device,
-            out context
+            out ID3D11Device device,
+            out ID3D11DeviceContext context
         );
 
         D3DDevice = device;
@@ -273,9 +270,8 @@ internal sealed class DirectXResourceManager : IDisposable
 
             try
             {
-                delegate* unmanaged[Stdcall]<void*, nint, int> setSwapChainFunc = (
-                    (delegate* unmanaged[Stdcall]<void*, IntPtr, int>)(*(void***)nativePanelPtr)[3]
-                );
+                delegate* unmanaged[Stdcall]<void*, nint, int> setSwapChainFunc =
+                    (delegate* unmanaged[Stdcall]<void*, IntPtr, int>)(*(void***)nativePanelPtr)[3];
                 hr = setSwapChainFunc(nativePanelPtr, SwapChain.NativePointer);
                 setSwapChainResult = new SharpGen.Runtime.Result(hr);
             }
@@ -291,7 +287,7 @@ internal sealed class DirectXResourceManager : IDisposable
         {
             Logger.Log($"SetSwapChain failed: {setSwapChainResult}");
 #pragma warning disable CA2201 // 不要引发保留的异常类型
-            throw new System.Exception($"Failed to set swap chain: {setSwapChainResult}");
+            throw new Exception($"Failed to set swap chain: {setSwapChainResult}");
 #pragma warning restore CA2201
         }
 
@@ -305,7 +301,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void SetTransformMatrix()
     {
-        if (SwapChain != null)
+        if (SwapChain is not null)
         {
             // 超采样渲染：SwapChain 是物理像素，需要缩小到逻辑像素以匹配 SwapChainPanel
             // 例如：200% DPI 下，SwapChain=1920x1080(物理)，SwapChainPanel=960x540(逻辑)
@@ -436,7 +432,7 @@ internal sealed class DirectXResourceManager : IDisposable
     {
         lock (RenderLock)
         {
-            if (SwapChain == null)
+            if (SwapChain is null)
             {
                 return;
             }
@@ -480,7 +476,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void OnCompositionScaleChanged(SwapChainPanel sender, object args)
     {
-        var newScale = (float)(sender.CompositionScaleX + sender.CompositionScaleY) / 2f;
+        var newScale = (sender.CompositionScaleX + sender.CompositionScaleY) / 2f;
         if (Math.Abs(newScale - _scale) < 0.001f)
         {
             return;
@@ -667,7 +663,7 @@ internal sealed class DirectXResourceManager : IDisposable
         }
 
         // 取消订阅事件
-        if (_swapChainPanel != null)
+        if (_swapChainPanel is not null)
         {
             _swapChainPanel.CompositionScaleChanged -= OnCompositionScaleChanged;
             _swapChainPanel.SizeChanged -= OnSizeChanged;

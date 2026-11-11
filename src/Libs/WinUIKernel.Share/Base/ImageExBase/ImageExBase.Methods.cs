@@ -237,7 +237,7 @@ public abstract partial class ImageExBase
             uri = holderUri;
         }
 
-        if (uri != null && instance.IsLoaded)
+        if (uri is not null && instance.IsLoaded)
         {
             await instance.RedrawAsync();
         }
@@ -255,7 +255,7 @@ public abstract partial class ImageExBase
 
     private async Task TryLoadImageAsync(Uri uri)
     {
-        if (uri is null && HolderImage != null)
+        if (uri is null && HolderImage is not null)
         {
             uri = HolderImage;
         }
@@ -273,7 +273,7 @@ public abstract partial class ImageExBase
 
     private async Task LoadImageInternalAsync(long requestId, CancellationToken cancellationToken)
     {
-        if (_lastUri == null)
+        if (_lastUri is null)
         {
             _lastUri = HolderImage;
         }
@@ -447,7 +447,7 @@ public abstract partial class ImageExBase
 #if DEBUG
             string canceledUrl = currentUri?.ToString() ?? _lastUri?.ToString() ?? "unknown";
             Debug.WriteLine(
-                $"[ImageEx] 图片加载已取消: {canceledUrl.Substring(Math.Max(0, canceledUrl.Length - 50))}"
+                $"[ImageEx] 图片加载已取消: {canceledUrl[Math.Max(0, canceledUrl.Length - 50)..]}"
             );
 #endif
             bitmap?.Dispose();
@@ -586,8 +586,8 @@ public abstract partial class ImageExBase
 
         LogRequestStats(
             isDuplicate
-                ? $"请求去重: {url.Substring(Math.Max(0, url.Length - 50))}"
-                : $"新建请求: {url.Substring(Math.Max(0, url.Length - 50))}"
+                ? $"请求去重: {url[Math.Max(0, url.Length - 50)..]}"
+                : $"新建请求: {url[Math.Max(0, url.Length - 50)..]}"
         );
         return await task;
     }
@@ -614,9 +614,7 @@ public abstract partial class ImageExBase
             // 单独统计取消的请求
             Interlocked.Increment(ref _totalRequestsCancelled);
 #if DEBUG
-            Debug.WriteLine(
-                $"[ImageEx] HTTP 请求已取消: {url.Substring(Math.Max(0, url.Length - 50))}"
-            );
+            Debug.WriteLine($"[ImageEx] HTTP 请求已取消: {url[Math.Max(0, url.Length - 50)..]}");
 #endif
             tcs.TrySetCanceled(cancellationToken);
         }
@@ -632,7 +630,7 @@ public abstract partial class ImageExBase
             {
                 _pendingRequests.Remove(url);
             }
-            LogRequestStats($"请求完成: {url.Substring(Math.Max(0, url.Length - 50))}");
+            LogRequestStats($"请求完成: {url[Math.Max(0, url.Length - 50)..]}");
         }
     }
 
@@ -666,11 +664,11 @@ public abstract partial class ImageExBase
         else if (enableDiskCache)
         {
             string? cacheFile = await GetCacheFilePathAsync(uri.ToString(), cacheSubFolder);
-            if (cacheFile != null)
+            if (cacheFile is not null)
             {
                 Interlocked.Increment(ref _totalRequestsFromCache);
                 LogRequestStats(
-                    $"缓存命中: {uri.ToString().Substring(Math.Max(0, uri.ToString().Length - 50))}"
+                    $"缓存命中: {uri.ToString()[Math.Max(0, uri.ToString().Length - 50)..]}"
                 );
                 if (IsRequestObsolete())
                 {
@@ -769,7 +767,7 @@ public abstract partial class ImageExBase
                     cancellationToken
                 );
 
-                if (content != null && content.Length > 0 && !IsRequestObsolete())
+                if (content is not null && content.Length > 0 && !IsRequestObsolete())
                 {
                     await using MemoryStream memoryStream = new(content);
                     using IRandomAccessStream randomStream = memoryStream.AsRandomAccessStream();
@@ -809,7 +807,7 @@ public abstract partial class ImageExBase
                 cancellationToken
             );
 
-            if (content != null && content.Length > 0 && !IsRequestObsolete())
+            if (content is not null && content.Length > 0 && !IsRequestObsolete())
             {
                 await using MemoryStream memoryStream = new(content);
                 using IRandomAccessStream randomStream = memoryStream.AsRandomAccessStream();

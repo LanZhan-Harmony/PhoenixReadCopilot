@@ -331,7 +331,12 @@ public abstract partial class ImageExBase : LayoutControlBase, IDisposable
             }
 #endif
             // 只恢复被全局取消的、当前已加载的、有Source的实例
-            if (instance._wasCancelledGlobally && instance.IsLoaded && instance.Source is not null)
+            if (instance is
+                {
+                    _wasCancelledGlobally: true,
+                    IsLoaded: true,
+                    Source: not null
+                })
             {
                 instance._wasCancelledGlobally = false;
 #if DEBUG

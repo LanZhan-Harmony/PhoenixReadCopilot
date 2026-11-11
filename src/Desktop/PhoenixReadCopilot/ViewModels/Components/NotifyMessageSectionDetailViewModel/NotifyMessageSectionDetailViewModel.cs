@@ -64,7 +64,7 @@ public sealed partial class NotifyMessageSectionDetailViewModel
             (IReadOnlyList<NotifyMessage>? messages, long offsetId, long offsetTime, bool hasMore) =
                 await _service.GetNotifyMessagesAsync(Type, _offsetId, _offsetTime);
             _preventLoadMore = messages is null || messages.Count == 0 || !hasMore;
-            if (messages != null)
+            if (messages is not null)
             {
                 foreach (NotifyMessage item in messages)
                 {

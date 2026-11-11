@@ -51,7 +51,7 @@ public sealed partial class AccountViewModel : ViewModelBase
 
                 MyProfile = new UserDetailProfile
                 {
-                    User = new PhoenixReadCopilot.Models.User.User
+                    User = new Models.User.User
                     {
                         Id = info.Id,
                         Name = string.IsNullOrEmpty(info.Name) ? "红果短剧用户" : info.Name,

@@ -70,7 +70,7 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
-        if (Frame.Tag is string tag && tag == "PlayerWindow")
+        if (Frame.Tag is string and "PlayerWindow")
         {
             ViewModel.IsSeparatorWindowPlayer = true;
         }

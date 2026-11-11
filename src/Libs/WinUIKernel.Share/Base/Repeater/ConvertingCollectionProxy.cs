@@ -62,7 +62,7 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
 
                 field = value;
                 base.ClearItems();
-                if (field != null)
+                if (field is not null)
                 {
                     foreach (TSource? item in field)
                     {
@@ -130,7 +130,7 @@ public class ConvertingCollectionProxy<T, TSource> : ObservableCollection<T>
                 break;
             case NotifyCollectionChangedAction.Remove:
                 _suppressCollectionChanged = true;
-                List<T> removedItems = new(e.OldItems!.Count);
+                List<T> removedItems = [with(e.OldItems!.Count)];
                 for (int i = e.OldItems.Count - 1; i >= 0; i--)
                 {
                     removedItems.Insert(0, this[i + e.OldStartingIndex]);

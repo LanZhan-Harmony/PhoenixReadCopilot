@@ -49,7 +49,7 @@ public sealed partial class ArticlePartitionPageViewModel : LayoutPageViewModelB
         Partition hotPartition = new("-", Resources.HotArticle);
         Partitions.Add(new PartitionViewModel(hotPartition));
         IReadOnlyList<Partition> partitions = await _service.GetPartitionsAsync();
-        if (partitions != null)
+        if (partitions is not null)
         {
             foreach (Partition item in partitions)
             {

@@ -39,7 +39,7 @@ public sealed partial class DanmakuBox : DanmakuControlBase
 
         DanmakuInputBox.IsEnabled = isAuthenticated;
         DanmakuInputBox.PlaceholderText = isAuthenticated
-            ? PhoenixReadCopilot.Strings.Resources.DanmakuPlaceholder
+            ? Strings.Resources.DanmakuPlaceholder
             : "请先登录后发送弹幕";
     }
 

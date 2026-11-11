@@ -298,7 +298,9 @@ public sealed partial class AppTitleBar
 
                 nonClientPointerSource.SetRegionRects(
                     NonClientRegionKind.Passthrough,
-                    passthroughRects.ToArray()
+                    [
+                        .. passthroughRects,
+                    ]
                 );
             }
         }

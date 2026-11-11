@@ -41,7 +41,7 @@ public sealed partial class AnimePageViewModel
     public partial TimelineItemViewModel? SelectedTimeline { get; set; }
 
     [ObservableProperty]
-    public partial ObservableCollection<TimelineItemViewModel> Timelines { get; set; } = new();
+    public partial ObservableCollection<TimelineItemViewModel> Timelines { get; set; } = [];
 
     /// <summary>
     /// 时间线加载完成.

@@ -41,7 +41,10 @@ public sealed partial class NotificationViewModel
             LoadLastTenMomentIds();
 
             // 只取最新的三个动态.
-            List<MomentInformation> newMoments = lastMoments.Moments.Take(3).ToList();
+            List<MomentInformation> newMoments =
+            [
+                .. lastMoments.Moments.Take(3),
+            ];
             foreach (MomentInformation? moment in newMoments)
             {
                 if (_momentIds.Contains(moment.Id))
@@ -106,7 +109,10 @@ public sealed partial class NotificationViewModel
             }
 
             // 尝试提取最新的10个动态id，如果不足10个，则从 _momentIds 中补充.
-            List<string> newMomentIds = newMoments.Select(p => p.Id).ToList();
+            List<string> newMomentIds =
+            [
+                .. newMoments.Select(p => p.Id),
+            ];
             List<string> momentIds =
             [
                 .. newMomentIds,
@@ -115,7 +121,10 @@ public sealed partial class NotificationViewModel
 
             SaveLastTenMomentIds(momentIds);
 
-            List<MomentInformation> lastFiveMoments = lastMoments.Moments.Take(5).ToList();
+            List<MomentInformation> lastFiveMoments =
+            [
+                .. lastMoments.Moments.Take(5),
+            ];
             UpdateMomentTiles(lastFiveMoments);
         }
         catch (Exception ex)
@@ -137,7 +146,10 @@ public sealed partial class NotificationViewModel
             return;
         }
 
-        _momentIds = lastTenMomentIds.Split(',').ToList();
+        _momentIds =
+        [
+            .. lastTenMomentIds.Split(','),
+        ];
     }
 
     private void SaveLastTenMomentIds(List<string> momentIds)

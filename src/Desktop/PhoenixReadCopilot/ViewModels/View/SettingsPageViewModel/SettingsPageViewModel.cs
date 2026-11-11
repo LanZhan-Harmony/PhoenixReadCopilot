@@ -33,7 +33,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         _fileToolkit = fileToolkit;
         Settings.PropertyChanged += (s, e) =>
         {
-            if (e.PropertyName == null)
+            if (e.PropertyName is null)
             {
                 return;
             }
@@ -80,7 +80,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         string? folderPath = await _fileToolkit.PickFolderAsync(
             _appViewModel.ActivatedWindow.AppWindow.Id
         );
-        if (folderPath != null)
+        if (folderPath is not null)
         {
             Settings.DownloadFolder = folderPath;
         }

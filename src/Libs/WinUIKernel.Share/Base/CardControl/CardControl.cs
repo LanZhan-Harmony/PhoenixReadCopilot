@@ -78,7 +78,7 @@ public sealed partial class CardControl : Button
     /// </summary>
     private static SharedShadowResources GetOrCreateSharedResources()
     {
-        if (_sharedResources != null)
+        if (_sharedResources is not null)
         {
             return _sharedResources;
         }
@@ -206,7 +206,7 @@ public sealed partial class CardControl : Button
             return;
         }
 
-        if (_shadowCreated || !_loaded || !_templateApplied || _shadowContainer == null)
+        if (_shadowCreated || !_loaded || !_templateApplied || _shadowContainer is null)
         {
             return;
         }
@@ -229,7 +229,7 @@ public sealed partial class CardControl : Button
 
     private void DestroyShadow()
     {
-        if (!_shadowCreated || _shadowContainer == null)
+        if (!_shadowCreated || _shadowContainer is null)
         {
             return;
         }
@@ -243,8 +243,8 @@ public sealed partial class CardControl : Button
         if (
             !_templateApplied
             || !WinUIKernelShareExtensions.IsCardAnimationEnabled
-            || _compositor == null
-            || _shadowContainer == null
+            || _compositor is null
+            || _shadowContainer is null
         )
         {
             return;

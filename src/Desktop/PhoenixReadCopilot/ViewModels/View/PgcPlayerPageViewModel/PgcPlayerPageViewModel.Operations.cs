@@ -90,9 +90,11 @@ public sealed partial class PgcPlayerPageViewModel
             string aid = _episode.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
             (IReadOnlyList<VideoFavoriteFolder>? folders, IReadOnlyList<string>? ids) =
                 await _favoriteService.GetPlayingVideoFavoriteFoldersAsync(aid);
-            FavoriteFolders = folders
-                .Select(p => new PlayerFavoriteFolderViewModel(p, ids.Contains(p.Id)))
-                .ToList();
+            FavoriteFolders =
+            [
+                .. folders
+                    .Select(p => new PlayerFavoriteFolderViewModel(p, ids.Contains(p.Id))),
+            ];
         }
         catch (Exception ex)
         {

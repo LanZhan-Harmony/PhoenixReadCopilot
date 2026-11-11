@@ -64,7 +64,7 @@ public sealed partial class WebSignInWindow : WindowEx
         Activated -= OnActivated;
         Closed -= OnClosed;
         BiliToken? localToken = _tokenResolver.GetToken();
-        if (localToken != null)
+        if (localToken is not null)
         {
             _appViewModel.RestartCommand.Execute(null);
         }

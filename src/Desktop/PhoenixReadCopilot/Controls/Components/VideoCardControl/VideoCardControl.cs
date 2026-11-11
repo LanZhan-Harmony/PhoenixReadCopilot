@@ -39,12 +39,12 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             (_rootCard?.Content as VideoCardPresenter)
             ?? (GetTemplateChild("Presenter") as VideoCardPresenter);
 
-        if (_rootCard != null && ViewModel != null)
+        if (_rootCard is not null && ViewModel is not null)
         {
             _rootCard.Command = ViewModel.PlayCommand;
         }
 
-        if (_presenter != null && ViewModel != null)
+        if (_presenter is not null && ViewModel is not null)
         {
             _presenter.ViewModel = ViewModel;
         }
@@ -63,22 +63,16 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
     )
     {
         base.OnViewModelChanged(oldValue, newValue);
-        if (_rootCard != null)
-        {
-            _rootCard.Command = newValue?.PlayCommand;
-        }
+        _rootCard?.Command = newValue?.PlayCommand;
 
-        if (_presenter == null && _rootCard != null)
+        if (_presenter is null && _rootCard is not null)
         {
             _presenter =
                 (_rootCard.Content as VideoCardPresenter)
                 ?? (GetTemplateChild("Presenter") as VideoCardPresenter);
         }
 
-        if (_presenter != null)
-        {
-            _presenter.ViewModel = newValue;
-        }
+        _presenter?.ViewModel = newValue;
     }
 
     private static MenuFlyoutItem CreateOpenInNewWindowItem()
@@ -114,7 +108,10 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
             return toolkit.GetThemeBrush("SystemFillColorCriticalBrush");
         }
 
-        return Application.Current.Resources.TryGetValue("SystemFillColorCriticalBrush", out object? brush)
+        return Application.Current.Resources.TryGetValue(
+            "SystemFillColorCriticalBrush",
+            out object? brush
+        )
             ? brush as Brush
             : null;
     }

@@ -10,7 +10,7 @@ public sealed partial class BoolToIconVariantConverter : IValueConverter
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        if (value == null)
+        if (value is null)
         {
             return FluentIcons.Common.IconVariant.Regular;
         }

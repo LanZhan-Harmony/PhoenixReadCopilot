@@ -14,7 +14,7 @@ internal sealed class InternalResourceToolkit : IResourceToolkit
     /// <inheritdoc/>
     public string GetLocalizedString(string stringName)
     {
-        if (_resourceLoader == null)
+        if (_resourceLoader is null)
         {
             _resourceLoader = new ResourceLoader(
                 ResourceLoader.GetDefaultResourceFilePath(),

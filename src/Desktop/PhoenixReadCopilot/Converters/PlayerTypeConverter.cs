@@ -12,18 +12,12 @@ internal sealed partial class PlayerTypeConverter : IValueConverter
         string result = string.Empty;
         if (value is PlayerType type)
         {
-            switch (type)
+            result = type switch
             {
-                case PlayerType.FFmpeg:
-                    result = Resources.FFmpegPlayer;
-                    break;
-                case PlayerType.Web:
-                    result = Resources.Web;
-                    break;
-                default:
-                    result = Resources.FFmpegPlayer;
-                    break;
-            }
+                PlayerType.FFmpeg => Resources.FFmpegPlayer,
+                PlayerType.Web => Resources.Web,
+                _ => Resources.FFmpegPlayer,
+            };
         }
 
         return result;

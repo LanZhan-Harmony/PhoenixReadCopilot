@@ -61,17 +61,22 @@ public sealed partial class VideoPlayerPageViewModel
         );
 
         // 按清晰度文案去重，每种清晰度只保留一条，优先保留带解密密钥与高码率的
-        List<PlaybackMedia> distinctMedias = mediaList
-            .GroupBy(PlayerFormatItemViewModel.GetFormatKey)
-            .Select(g =>
-                g.OrderByDescending(m => !string.IsNullOrEmpty(m.DecryptionKey))
-                    .ThenByDescending(m => m.Bitrate)
-                    .First()
-            )
-            .OrderByDescending(PlayerFormatItemViewModel.GetQualityScore)
-            .ToList();
+        List<PlaybackMedia> distinctMedias =
+        [
+            .. mediaList
+                .GroupBy(PlayerFormatItemViewModel.GetFormatKey)
+                .Select(g =>
+                    g.OrderByDescending(m => !string.IsNullOrEmpty(m.DecryptionKey))
+                        .ThenByDescending(m => m.Bitrate)
+                        .First()
+                )
+                .OrderByDescending(PlayerFormatItemViewModel.GetQualityScore),
+        ];
 
-        Formats = distinctMedias.Select(m => new PlayerFormatItemViewModel(m)).ToList();
+        Formats =
+        [
+            .. distinctMedias.Select(m => new PlayerFormatItemViewModel(m)),
+        ];
 
         int partIndex =
             _episodes is not null && _currentEpisode is not null
@@ -80,7 +85,9 @@ public sealed partial class VideoPlayerPageViewModel
 
         Downloader.InitializeMetas(
             GetWebLink(),
-            Formats.Select(p => p.Data).ToList(),
+            [
+                .. Formats.Select(p => p.Data),
+            ],
             partIndex >= 0 ? partIndex + 1 : 1
         );
 
@@ -92,7 +99,7 @@ public sealed partial class VideoPlayerPageViewModel
             PlayerFormatItemViewModel? matched = Formats.Find(p =>
                 p.Data.Quality == lastSelectedQuality
             );
-            if (matched != null)
+            if (matched is not null)
             {
                 selectedFormat = matched;
             }
@@ -226,7 +233,10 @@ public sealed partial class VideoPlayerPageViewModel
         // 1. 先检查分集列表中是否有下一集.
         if (_episodes is not null && _currentEpisode is not null)
         {
-            List<Episode> list = _episodes.ToList();
+            List<Episode> list =
+            [
+                .. _episodes,
+            ];
             int index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
             if (index >= 0 && index < list.Count - 1)
             {
@@ -260,7 +270,10 @@ public sealed partial class VideoPlayerPageViewModel
 
         if (_episodes is not null && _currentEpisode is not null)
         {
-            List<Episode> list = _episodes.ToList();
+            List<Episode> list =
+            [
+                .. _episodes,
+            ];
             int index = list.FindIndex(e => e.VideoId == _currentEpisode.VideoId);
             if (index > 0)
             {

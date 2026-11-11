@@ -137,7 +137,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         BiliImage? cover =
             !string.IsNullOrEmpty(drama.CoverUrl)
             && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? uri)
-                ? new Richasy.BiliKernel.Models.Appearance.BiliImage(uri)
+                ? new BiliImage(uri)
                 : null;
         return new SeasonInformation(new MediaIdentifier(drama.Id, drama.Title, cover));
     }

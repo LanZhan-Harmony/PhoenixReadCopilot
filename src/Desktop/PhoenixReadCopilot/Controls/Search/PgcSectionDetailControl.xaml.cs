@@ -45,21 +45,18 @@ public sealed partial class PgcSectionDetailControl : PgcSectionDetailControlBas
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
         WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (
+                PgcScrollView.ExtentHeight
+                    - PgcScrollView.ViewportHeight
+                    - PgcScrollView.VerticalOffset
+                <= 240
+            )
             {
-                if (
-                    PgcScrollView.ExtentHeight
-                        - PgcScrollView.ViewportHeight
-                        - PgcScrollView.VerticalOffset
-                    <= 240
-                )
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -72,16 +69,13 @@ public sealed partial class PgcSectionDetailControl : PgcSectionDetailControlBas
 
     private void CheckPgcCount()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (PgcScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                if (PgcScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-                {
-                    ViewModel.LoadItemsCommand.Execute(null);
-                }
+                ViewModel.LoadItemsCommand.Execute(null);
             }
-        );
+        });
     }
 }
 

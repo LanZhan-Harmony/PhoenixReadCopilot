@@ -35,7 +35,7 @@ public sealed class DebugRenderer : IDisposable
     /// </summary>
     public void RenderDebugInfo(DebugInfo debugInfo, double scale)
     {
-        if (_d2dContext == null)
+        if (_d2dContext is null)
         {
             return;
         }
@@ -77,7 +77,7 @@ public sealed class DebugRenderer : IDisposable
         }
 
         // 如果资源创建失败，直接返回
-        if (_cachedTextFormat == null || _cachedBackgroundBrush == null || _cachedTextBrush == null)
+        if (_cachedTextFormat is null || _cachedBackgroundBrush is null || _cachedTextBrush is null)
         {
             return;
         }
@@ -94,7 +94,7 @@ public sealed class DebugRenderer : IDisposable
         // 绘制背景（应用缩放）
         RoundedRectangle backgroundRect = new()
         {
-            Rect = new Vortice.RawRectF(
+            Rect = new RawRectF(
                 scaledPadding,
                 scaledPadding,
                 scaledPadding + panelWidth,

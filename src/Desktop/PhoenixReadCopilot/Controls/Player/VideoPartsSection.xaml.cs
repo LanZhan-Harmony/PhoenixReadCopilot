@@ -32,10 +32,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
     protected override void OnControlUnloaded()
     {
         View.ItemsSource = null;
-        if (ViewModel is not null)
-        {
-            ViewModel.PartChanged -= OnPartChanged;
-        }
+        ViewModel?.PartChanged -= OnPartChanged;
     }
 
     /// <inheritdoc/>
@@ -44,10 +41,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
         VideoPlayerPartSectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.PartChanged -= OnPartChanged;
-        }
+        oldValue?.PartChanged -= OnPartChanged;
 
         if (newValue is null)
         {
@@ -71,7 +65,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
 
     private void UpdateSelection()
     {
-        if (ViewModel?.SelectedPart is Episode episode && ViewModel.Parts is not null)
+        if (ViewModel is { SelectedPart: Episode episode, Parts: not null })
         {
             int index = ViewModel.Parts.ToList().IndexOf(episode);
             if (index >= 0)
@@ -83,7 +77,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
 
     private async void ScrollToCurrentAsync()
     {
-        if (ViewModel?.SelectedPart is Episode episode && ViewModel.Parts is not null)
+        if (ViewModel is { SelectedPart: Episode episode, Parts: not null })
         {
             int index = ViewModel.Parts.ToList().IndexOf(episode);
             if (index >= 0)

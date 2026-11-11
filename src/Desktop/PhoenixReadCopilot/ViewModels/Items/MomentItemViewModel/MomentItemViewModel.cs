@@ -339,7 +339,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         {
             return info;
         }
-        else if (Data.Data is MomentInformation minfo && minfo.Data is T info2)
+        else if (Data.Data is MomentInformation { Data: T info2 })
         {
             return info2;
         }

@@ -35,7 +35,10 @@ public sealed partial class VideoPlayerPlaylistSectionDetailViewModel
     {
         _videoId = videoId;
         Page = page;
-        Items = list.Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerPlaylist)).ToList();
+        Items =
+        [
+            .. list.Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerPlaylist)),
+        ];
         SelectedItem = Items.FirstOrDefault(p => p.Data.Identifier.Id == _videoId);
     }
 

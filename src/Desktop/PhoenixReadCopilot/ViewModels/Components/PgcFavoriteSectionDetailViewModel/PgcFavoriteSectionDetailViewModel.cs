@@ -27,7 +27,10 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
     {
         _service = service;
         _logger = logger;
-        StatusList = Enum.GetValues<PgcFavoriteStatus>().ToList();
+        StatusList =
+        [
+            .. Enum.GetValues<PgcFavoriteStatus>(),
+        ];
         Type = type;
     }
 
@@ -61,7 +64,10 @@ public sealed partial class PgcFavoriteSectionDetailViewModel
             return;
         }
 
-        _cache[CurrentStatus] = Items.ToList();
+        _cache[CurrentStatus] =
+        [
+            .. Items,
+        ];
         CurrentStatus = status;
         if (_cache.TryGetValue(status, out List<SeasonItemViewModel>? list))
         {

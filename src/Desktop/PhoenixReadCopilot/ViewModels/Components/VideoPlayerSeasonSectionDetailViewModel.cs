@@ -43,7 +43,10 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel
     )
     {
         Page = page;
-        Seasons = seasons.ToList();
+        Seasons =
+        [
+            .. seasons,
+        ];
         _videoId = videoId;
         VideoSeason? selectedSeason = Seasons.FirstOrDefault(p =>
             p.Videos.Any(q => q.Identifier.Id == _videoId)
@@ -71,9 +74,11 @@ public sealed partial class VideoPlayerSeasonSectionDetailViewModel
         }
 
         SelectedSeason = season;
-        Items = season
-            .Videos.Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerSeason))
-            .ToList();
+        Items =
+        [
+            .. season
+                .Videos.Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerSeason)),
+        ];
         SelectedItem = Items.FirstOrDefault(p => p.Data.Identifier.Id == _videoId);
     }
 }

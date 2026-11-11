@@ -190,7 +190,7 @@ public sealed partial class PgcPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         _isFormatChanging = true;
-        bool isFirstSet = SelectedFormat == null;
+        bool isFirstSet = SelectedFormat is null;
         SelectedFormat = vm;
         int? maxAudioQuality = _audioSegments?.Max(p => Convert.ToInt32(p.Id));
         string preferCodec = AppToolkit.GetPreferCodecId();

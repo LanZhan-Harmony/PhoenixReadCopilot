@@ -44,7 +44,10 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
 
         if (Data.Children is not null)
         {
-            List<PartitionViewModel> children = Data.Children.ToList();
+            List<PartitionViewModel> children =
+            [
+                .. Data.Children,
+            ];
             Partition rcmdPartition = new(Data.Data.Id, Resources.RecommendArticle);
             children.Insert(0, new PartitionViewModel(rcmdPartition));
             Children = [.. children];
@@ -125,11 +128,17 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
         {
             if (IsRecommend)
             {
-                _recommendCache = Articles.ToList();
+                _recommendCache =
+                [
+                    .. Articles,
+                ];
             }
             else
             {
-                _childPartitionArticleCache[CurrentPartition.Data.Id] = Articles.ToList();
+                _childPartitionArticleCache[CurrentPartition.Data.Id] =
+                [
+                    .. Articles,
+                ];
             }
         }
 
@@ -267,7 +276,10 @@ public sealed partial class ArticlePartitionDetailViewModel : ViewModelBase<Part
                 articles.AddRange(d);
             }
 
-            articles = articles.OrderByDescending(p => p.PublishDateTime).Distinct().ToList();
+            articles =
+            [
+                .. articles.OrderByDescending(p => p.PublishDateTime).Distinct(),
+            ];
             TryAddArticles(articles);
         }
         catch (Exception ex)

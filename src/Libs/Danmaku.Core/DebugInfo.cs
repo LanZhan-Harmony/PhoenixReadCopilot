@@ -8,45 +8,45 @@ public struct DebugInfo
     /// <summary>
     /// 缓冲区宽度
     /// </summary>
-    public int BufferWidth { get; set; }
+    public int BufferWidth { get; init; }
 
     /// <summary>
     /// 缓冲区高度
     /// </summary>
-    public int BufferHeight { get; set; }
+    public int BufferHeight { get; init; }
 
     /// <summary>
     /// 逻辑宽度
     /// </summary>
-    public double LogicalWidth { get; set; }
+    public double LogicalWidth { get; init; }
 
     /// <summary>
     /// 逻辑高度
     /// </summary>
-    public double LogicalHeight { get; set; }
+    public double LogicalHeight { get; init; }
 
     /// <summary>
     /// X轴缩放比例
     /// </summary>
-    public double ScaleX { get; set; }
+    public double ScaleX { get; init; }
 
     /// <summary>
     /// Y轴缩放比例
     /// </summary>
-    public double ScaleY { get; set; }
+    public double ScaleY { get; init; }
 
     /// <summary>
     /// 弹幕数量
     /// </summary>
-    public int DanmakuCount { get; set; }
+    public int DanmakuCount { get; init; }
 
     /// <summary>
     /// 运行时间
     /// </summary>
-    public TimeSpan RunningTime { get; set; }
+    public TimeSpan RunningTime { get; init; }
 
     /// <summary>
     /// 帧率
     /// </summary>
-    public double FrameRate { get; set; }
+    public double FrameRate { get; init; }
 }

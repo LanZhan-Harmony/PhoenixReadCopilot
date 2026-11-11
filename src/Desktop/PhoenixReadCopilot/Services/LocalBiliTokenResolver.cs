@@ -15,7 +15,7 @@ public sealed class LocalBiliTokenResolver : IBiliTokenResolver
     /// <inheritdoc/>
     public BiliToken? GetToken()
     {
-        if (_cacheToken != null)
+        if (_cacheToken is not null)
         {
             return _cacheToken;
         }

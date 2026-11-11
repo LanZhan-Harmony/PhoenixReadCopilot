@@ -208,7 +208,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             }
             sb.AppendLine("</i>");
 
-            await File.WriteAllTextAsync(savePath, sb.ToString(), System.Text.Encoding.UTF8);
+            await File.WriteAllTextAsync(savePath, sb.ToString(), Encoding.UTF8);
             _appViewModel.ShowTipCommand.Execute(($"弹幕已保存至: {savePath}", InfoType.Success));
             if (_openFolderAfterDownload)
             {
@@ -234,7 +234,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        List<Episode> episodesToDownload = Episodes.ToList();
+        List<Episode> episodesToDownload =
+        [
+            .. Episodes,
+        ];
         _appViewModel.ShowTipCommand.Execute(
             ($"开始后台批量下载全部 {episodesToDownload.Count} 集...", InfoType.Information)
         );
@@ -459,7 +462,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 };
 
                 using Process? process = Process.Start(startInfo);
-                if (process != null)
+                if (process is not null)
                 {
                     string errorOutput = await process.StandardError.ReadToEndAsync();
                     await process.WaitForExitAsync();

@@ -79,11 +79,8 @@ public sealed partial class AppTitleBar : LayoutControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (_inputActivationListener is not null)
-        {
-            _inputActivationListener.InputActivationChanged -= OnInputActivationChanged;
-            _inputActivationListener = null;
-        }
+        _inputActivationListener?.InputActivationChanged -= OnInputActivationChanged;
+        _inputActivationListener = null;
 
         _backButton?.Click -= OnBackButtonClick;
 

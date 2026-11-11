@@ -47,7 +47,7 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 是否有排名.
     /// </summary>
-    public bool HasRank => Rank.HasValue && Rank.Value > 0;
+    public bool HasRank => Rank is > 0;
 
     /// <summary>
     /// 排名文案 (如 TOP 1).
@@ -62,7 +62,7 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 是否为前三名.
     /// </summary>
-    public bool IsTopRank => Rank.HasValue && Rank.Value >= 1 && Rank.Value <= 3;
+    public bool IsTopRank => Rank is >= 1 and <= 3;
 
     /// <summary>
     /// 演员副标题（作品数 · 追剧人数）.
@@ -170,7 +170,7 @@ public sealed partial class VideoItemViewModel
 
             if (PlayCount is > 0)
             {
-                return AppToolkit.FormatCount(System.Convert.ToInt64(PlayCount.Value));
+                return AppToolkit.FormatCount(Convert.ToInt64(PlayCount.Value));
             }
 
             return null;

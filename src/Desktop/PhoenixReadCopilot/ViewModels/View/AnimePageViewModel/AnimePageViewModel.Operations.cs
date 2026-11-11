@@ -31,7 +31,7 @@ public sealed partial class AnimePageViewModel
 
         SelectedTimeline = vm;
 
-        if (vm.Items == null)
+        if (vm.Items is null)
         {
             if (_dateCache.TryGetValue(vm.TargetDate, out List<SeasonItemViewModel>? cached))
             {

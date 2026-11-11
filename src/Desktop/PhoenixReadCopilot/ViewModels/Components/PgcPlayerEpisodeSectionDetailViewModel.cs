@@ -41,9 +41,11 @@ public sealed partial class PgcPlayerEpisodeSectionDetailViewModel
     {
         _settings = settingsService.Settings;
         _episodeSelectedAction = action;
-        Episodes = episodes
-            .Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Player))
-            .ToList();
+        Episodes =
+        [
+            .. episodes
+                .Select(p => new EpisodeItemViewModel(p, EpisodeCardStyle.Player)),
+        ];
         SelectedEpisode = Episodes.FirstOrDefault(p => p.Data.Identifier.Id == epid);
         OnlyIndex = _settings.IsPgcPlayerPartsOnlyIndex;
     }

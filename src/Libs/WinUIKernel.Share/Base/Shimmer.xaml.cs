@@ -110,7 +110,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
     /// </summary>
     private static SharedResources GetOrCreateSharedResources(Compositor compositor)
     {
-        if (_sharedResources != null)
+        if (_sharedResources is not null)
         {
             return _sharedResources;
         }
@@ -195,7 +195,7 @@ public sealed partial class Shimmer : LayoutUserControlBase
         ActualThemeChanged -= OnActualThemeChanged;
         StopAnimation();
 
-        if (_initialized && RootShape != null)
+        if (_initialized && RootShape is not null)
         {
             ElementCompositionPreview.SetElementChildVisual(RootShape, null);
 

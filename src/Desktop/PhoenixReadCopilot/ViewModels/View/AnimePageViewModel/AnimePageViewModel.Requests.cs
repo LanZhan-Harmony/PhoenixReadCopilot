@@ -31,14 +31,19 @@ public sealed partial class AnimePageViewModel
                 cancellationToken: ct
             );
 
-            List<SeasonItemViewModel> initialItems = page
-                .Items.Select(item => new SeasonItemViewModel(item))
-                .ToList();
+            List<SeasonItemViewModel> initialItems =
+            [
+                .. page
+                    .Items.Select(item => new SeasonItemViewModel(item)),
+            ];
             _dateCache[page.Date] = initialItems;
 
             IReadOnlyList<DateOnly> dates = page.AvailableDates is { Count: > 0 }
                 ? page.AvailableDates
-                : Enumerable.Range(-7, 15).Select(offset => page.Date.AddDays(offset)).ToList();
+                :
+                [
+                    .. Enumerable.Range(-7, 15).Select(offset => page.Date.AddDays(offset)),
+                ];
 
             List<TimelineItemViewModel> viewModels = [];
             foreach (DateOnly date in dates)
@@ -58,7 +63,7 @@ public sealed partial class AnimePageViewModel
 
                 TimelineItemViewModel? todayItem =
                     Timelines.FirstOrDefault(p => p.IsToday) ?? Timelines.FirstOrDefault();
-                if (todayItem != null)
+                if (todayItem is not null)
                 {
                     SelectTimeline(todayItem);
                 }
@@ -109,9 +114,11 @@ public sealed partial class AnimePageViewModel
                 cancellationToken: ct
             );
 
-            List<SeasonItemViewModel> items = page
-                .Items.Select(item => new SeasonItemViewModel(item))
-                .ToList();
+            List<SeasonItemViewModel> items =
+            [
+                .. page
+                    .Items.Select(item => new SeasonItemViewModel(item)),
+            ];
             _dateCache[vm.TargetDate] = items;
 
             _dispatcherQueue.TryEnqueue(() =>
