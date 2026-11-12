@@ -1,12 +1,12 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Media;
+using PhoenixReadCopilot.Core.Models.Pin;
+using PhoenixReadCopilot.Core.Models.Player;
+using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls;
@@ -35,10 +35,22 @@ public sealed partial class Pinner : PinnerBase
     private void OnItemClick(object sender, RoutedEventArgs e)
     {
         PinItem? item = (sender as FrameworkElement)?.DataContext as PinItem;
+        if (item is null)
+        {
+            return;
+        }
+
         NavigationViewModel navVM = _navigationViewModel;
         if (item.Type == PinContentType.User)
         {
-            UserProfile user = new(item.Id, item.Title, new BiliImage(new Uri(item.Cover)));
+            User user = new()
+            {
+                Id = item.Id,
+                Name = item.Title,
+                Avatar = Uri.TryCreate(item.Cover, UriKind.Absolute, out Uri? coverUri)
+                    ? new UserAvatar { Uri = coverUri }
+                    : null,
+            };
             navVM.NavigateToOver(typeof(UserSpacePage), user);
         }
         else if (item.Type == PinContentType.Video)

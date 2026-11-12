@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using PhoenixReadCopilot.Models;
+using PhoenixReadCopilot.Core.Models.Appearance;
 
 namespace PhoenixReadCopilot.Helpers;
 

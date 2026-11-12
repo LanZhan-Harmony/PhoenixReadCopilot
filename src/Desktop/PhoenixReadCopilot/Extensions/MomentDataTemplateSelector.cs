@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models.Appearance;
 
 namespace PhoenixReadCopilot.Extensions;
 
@@ -25,7 +25,7 @@ internal sealed partial class MomentDataTemplateSelector : DataTemplateSelector
         {
             return VideoTemplate;
         }
-        else if (item is IEnumerable<BiliImage>)
+        else if (item is IEnumerable<AppImage>)
         {
             return ImageTemplate;
         }

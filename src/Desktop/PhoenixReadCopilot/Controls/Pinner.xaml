@@ -9,14 +9,14 @@
                   xmlns:ic="using:FluentIcons.WinUI"
                   xmlns:local="using:PhoenixReadCopilot.Controls"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                  xmlns:models="using:PhoenixReadCopilot.Core.Models"
+                  xmlns:pin="using:PhoenixReadCopilot.Core.Models.Pin"
                   xmlns:strings="using:PhoenixReadCopilot.Strings"
                   Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"
                   mc:Ignorable="d">
 
     <UserControl.Resources>
         <converters:PinIconConverter x:Key="IconConverter"/>
-        <DataTemplate x:Key="PinTemplate" x:DataType="models:PinItem">
+        <DataTemplate x:Key="PinTemplate" x:DataType="pin:PinItem">
             <Button Padding="16,12"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"

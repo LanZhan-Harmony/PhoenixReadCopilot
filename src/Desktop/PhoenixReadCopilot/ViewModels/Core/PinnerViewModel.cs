@@ -2,9 +2,9 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Bili.Authorization;
+using PhoenixReadCopilot.ViewModels.Components;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
@@ -16,24 +16,24 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// </summary>
 public sealed partial class PinnerViewModel : ViewModelBase
 {
-    private readonly IBiliTokenResolver _tokenResolver;
     private readonly IFileToolkit _fileToolkit;
     private readonly AppViewModel _appViewModel;
+    private readonly AccountViewModel _accountViewModel;
     private readonly ILogger<PinnerViewModel> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.
     /// </summary>
     public PinnerViewModel(
-        IBiliTokenResolver tokenResolver,
         IFileToolkit fileToolkit,
         AppViewModel appViewModel,
+        AccountViewModel accountViewModel,
         ILogger<PinnerViewModel> logger
     )
     {
-        _tokenResolver = tokenResolver;
         _fileToolkit = fileToolkit;
         _appViewModel = appViewModel;
+        _accountViewModel = accountViewModel;
         _logger = logger;
     }
 
@@ -54,7 +54,7 @@ public sealed partial class PinnerViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        long currentUserId = _tokenResolver.GetToken().UserId;
+        string currentUserId = _accountViewModel.MyProfile?.User?.Id ?? "default";
         List<PinItem> data = await _fileToolkit.ReadLocalDataAsync<List<PinItem>>(
             string.Format(PinFileName, currentUserId),
             "[]",
@@ -92,11 +92,10 @@ public sealed partial class PinnerViewModel : ViewModelBase
 
     private async Task SaveDataAsync()
     {
+        string currentUserId = _accountViewModel.MyProfile?.User?.Id ?? "default";
         await _fileToolkit.WriteLocalDataAsync<List<PinItem>>(
-            string.Format(PinFileName, _tokenResolver.GetToken().UserId),
-            [
-                .. Items,
-            ],
+            string.Format(PinFileName, currentUserId),
+            [.. Items],
             PinFolderName
         );
         IsEmpty = Items.Count == 0;

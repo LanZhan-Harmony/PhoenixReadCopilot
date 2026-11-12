@@ -1,14 +1,15 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Media;
+using PhoenixReadCopilot.Core.Models.Moment;
+using PhoenixReadCopilot.Core.Models.Pin;
+using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.Toolkits;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -50,7 +51,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             {
                 InnerContent = new VideoItemViewModel(video, VideoCardStyle.Moment);
             }
-            else if (data.Data is IEnumerable<BiliImage> images)
+            else if (data.Data is IEnumerable<AppImage> images)
             {
                 InnerContent = images;
             }
@@ -72,17 +73,10 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         bool state = !IsLiked;
         try
         {
-            if (state)
-            {
-                await OperationService.LikeMomentAsync(Data);
-            }
-            else
-            {
-                await OperationService.DislikeMomentAsync(Data);
-            }
-
+            // TODO: 红果动态点赞 API 待接入
             IsLiked = state;
             LikeCount += state ? 1 : -1;
+            await Task.CompletedTask;
         }
         catch (Exception ex)
         {
@@ -135,16 +129,23 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                 return;
             }
 
-            aid = einfo.GetExtensionIfNotNull<long>(EpisodeExtensionDataId.Aid).ToString();
+            aid = einfo.EpisodeId ?? einfo.Identifier.Id;
         }
         else
         {
             aid = vinfo.Identifier.Id;
         }
 
+        string title = vinfo?.Identifier.Title ?? string.Empty;
+        string cover = vinfo?.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
         try
         {
-            await ItemServices.ViewLater.AddAsync(aid);
+            await ItemServices.LocalViewLater.AddAsync(new PhoenixReadApi.Drama
+            {
+                Id = aid,
+                Title = title,
+                CoverUrl = cover,
+            });
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.AddViewLaterSucceed, InfoType.Success)
             );
@@ -168,13 +169,13 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
     [RelayCommand]
     private void Pin()
     {
-        PinItem pinItem = null;
+        PinItem? pinItem = null;
         if (FindInnerContent<VideoInformation>() is VideoInformation vinfo)
         {
             pinItem = new PinItem(
                 vinfo.Identifier.Id,
                 vinfo.Identifier.Title,
-                vinfo.Identifier.Cover.Uri.ToString(),
+                vinfo.Identifier.Cover?.Uri?.ToString() ?? string.Empty,
                 PinContentType.Video
             );
         }

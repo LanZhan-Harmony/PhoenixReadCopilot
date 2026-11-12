@@ -5,7 +5,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Bili.Moment;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -14,7 +13,6 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class ComprehensiveMomentSectionDetailViewModel
 {
-    private readonly IMomentDiscoveryService _service;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly MomentPageViewModel _momentPageViewModel;
     private readonly ILogger<ComprehensiveMomentSectionDetailViewModel> _logger;
@@ -32,7 +30,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     /// <summary>
     /// 已经初始化完成.
     /// </summary>
-    public event EventHandler Initialized;
+    public event EventHandler? Initialized;
 
     /// <inheritdoc/>
     public MomentSectionType SectionType => MomentSectionType.Comprehensive;

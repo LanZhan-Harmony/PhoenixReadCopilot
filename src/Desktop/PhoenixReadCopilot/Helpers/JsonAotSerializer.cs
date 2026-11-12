@@ -4,10 +4,9 @@ using System.Text.Json.Serialization.Metadata;
 using Microsoft.UI.Xaml;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Media;
+using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Models.Settings;
-using Richasy.BiliKernel.Models.Authorization;
-using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot.Helpers;
 
@@ -38,7 +37,6 @@ namespace PhoenixReadCopilot.Helpers;
 [JsonSerializable(typeof(MTCBehavior))]
 [JsonSerializable(typeof(AppSettings))]
 [JsonSerializable(typeof(DanmakuLocation))]
-[JsonSerializable(typeof(BiliToken))]
 [JsonSerializable(typeof(MediaIdentifier))]
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(PinItem))]

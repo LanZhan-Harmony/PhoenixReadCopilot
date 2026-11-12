@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
-using Richasy.BiliKernel.Models.User;
+using PhoenixReadCopilot.Core.Models.User;
 
 namespace PhoenixReadCopilot.Controls.Users;
 
@@ -37,7 +37,10 @@ public sealed partial class FollowsSideBody : FollowsPageControlBase
     private void OnGroupSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
         UserGroup? item = sender.SelectedItem as UserGroup;
-        ViewModel.SelectGroupCommand.Execute(item);
+        if (item is not null)
+        {
+            ViewModel.SelectGroupCommand.Execute(item);
+        }
     }
 
     private void CheckGroupSelection()

@@ -8,19 +8,6 @@ using PhoenixReadCopilot.Toolkits;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Authenticator;
-using Richasy.BiliKernel.Authorizers.TV;
-using Richasy.BiliKernel.Bili.Authorization;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Bili.Search;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Http;
-using Richasy.BiliKernel.Resolvers.WinUIQRCode;
-using Richasy.BiliKernel.Services.Media;
-using Richasy.BiliKernel.Services.Moment;
-using Richasy.BiliKernel.Services.Search;
-using Richasy.BiliKernel.Services.User;
 using Serilog;
 using WinUIKernel.Share;
 using WinUIKernel.Share.Toolkits;
@@ -53,7 +40,7 @@ internal class ServiceHelper
             .AddSingleton<IFontToolkit, SharedFontToolkit>()
             .AddSingleton<IResourceToolkit, SharedResourceToolkit>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
-            // 4. 红果客户端单例 (双轨并存)
+            // 4. 红果客户端单例
             .AddSingleton<PhoenixReadApiClient>(_ =>
             {
                 string sessionPath = Path.Combine(
@@ -69,32 +56,8 @@ internal class ServiceHelper
                     }
                 );
             })
-            // 5. Bili 客户端
-            .AddSingleton<BiliHttpClient>()
-            .AddSingleton<BiliAuthenticator>()
-            .AddSingleton(
-                (Func<IServiceProvider, IQRCodeResolver>)(
-                    _ => new WinUIQRCodeResolver(RenderQRCodeAsync)
-                )
-            )
-            .AddSingleton<IAuthenticationService, TVAuthenticationService>()
-            .AddSingleton<IMyProfileService, MyProfileService>()
-            .AddSingleton<IRelationshipService, RelationshipService>()
-            .AddSingleton<IViewLaterService, ViewLaterService>()
-            .AddSingleton<IViewHistoryService, ViewHistoryService>()
-            .AddSingleton<IMessageService, MessageService>()
-            .AddSingleton<IFavoriteService, FavoriteService>()
-            .AddSingleton<IUserService, UserService>()
-            .AddSingleton<IVideoDiscoveryService, VideoDiscoveryService>()
-            .AddSingleton<IEntertainmentDiscoveryService, EntertainmentDiscoveryService>()
-            .AddSingleton<IMomentDiscoveryService, MomentDiscoveryService>()
-            .AddSingleton<IMomentOperationService, MomentOperationService>()
-            .AddSingleton<IPlayerService, PlayerService>()
+            // 5. 辅助服务
             .AddSingleton<ISubtitleService, SubtitleService>()
-            .AddSingleton<ISearchService, SearchService>()
-            // 5. 本地凭证解析器
-            .AddSingleton<IBiliCookiesResolver, LocalBiliCookiesResolver>()
-            .AddSingleton<IBiliTokenResolver, LocalBiliTokenResolver>()
             // 6. ViewModels
             // Core
             .AddSingleton<AppViewModel>()
@@ -120,7 +83,6 @@ internal class ServiceHelper
             .AddTransient<FollowsPageViewModel>()
             .AddTransient<GalleryPageViewModel>()
             .AddTransient<HistoryPageViewModel>()
-            .AddSingleton<MessagePageViewModel>()
             .AddTransient<MomentPageViewModel>()
             .AddTransient<PopularPageViewModel>()
             .AddTransient<SearchPageViewModel>()
@@ -134,12 +96,5 @@ internal class ServiceHelper
             .BuildServiceProvider();
 
         Ioc.Default.ConfigureServices(serviceProvider);
-    }
-
-    private static Task RenderQRCodeAsync(byte[] imageData)
-    {
-        StartupPageViewModel vm = Ioc.Default.GetRequiredService<StartupPageViewModel>();
-        vm.RenderQRCodeCommand.Execute(imageData);
-        return Task.CompletedTask;
     }
 }

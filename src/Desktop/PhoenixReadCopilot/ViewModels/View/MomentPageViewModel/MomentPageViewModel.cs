@@ -1,12 +1,10 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Models;
-using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -20,14 +18,12 @@ public sealed partial class MomentPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="MomentPageViewModel"/> class.
     /// </summary>
     public MomentPageViewModel(
-        IMomentDiscoveryService discoveryService,
         CommentMainViewModel comment,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService,
         ILoggerFactory loggerFactory
     )
     {
-        _momentDiscoveryService = discoveryService;
         CommentModule = comment;
         _dispatcherQueue = dispatcherQueue;
         _settingsService = settingsService;
@@ -45,14 +41,12 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         Sections =
         [
             new VideoMomentSectionDetailViewModel(
-                _momentDiscoveryService,
                 _dispatcherQueue,
                 this,
                 _settingsService,
                 _loggerFactory.CreateLogger<VideoMomentSectionDetailViewModel>()
             ),
             new ComprehensiveMomentSectionDetailViewModel(
-                _momentDiscoveryService,
                 _dispatcherQueue,
                 this,
                 _loggerFactory.CreateLogger<ComprehensiveMomentSectionDetailViewModel>(),
@@ -81,21 +75,18 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         }
 
         SelectedSection = section;
-        bool isVideo = section is VideoMomentSectionDetailViewModel;
-        _settings.LastMomentSectionIsVideo = isVideo;
         SelectedSection.InitializeCommand.Execute(null);
     }
 
     [RelayCommand]
     private void ShowComment(MomentInformation data)
     {
-        IsCommentsOpened = true;
-        if (CommentModule.Id == data.CommentId)
+        if (string.IsNullOrEmpty(data.CommentId) || CommentModule.Id == data.CommentId)
         {
             return;
         }
 
-        CommentModule.Initialize(data.CommentId, data.CommentType!.Value, CommentSortType.Hot);
-        CommentModule.RefreshCommand.Execute(null);
+        CommentModule.Initialize(data.CommentId);
+        IsCommentsOpened = true;
     }
 }

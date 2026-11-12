@@ -70,17 +70,10 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Humanizer.Core" />
+    <PackageReference Include="Humanizer.Core.zh-Hans" />
     <PackageReference Include="PhoenixReadApi" />
     <PackageReference Include="ReswPlus" />
-    <PackageReference Include="Richasy.BiliKernel.Authorizers.TV" />
-    <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUICookies" />
-    <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUIQRCode" />
-    <PackageReference Include="Richasy.BiliKernel.Resolvers.WinUIToken" />
-    <PackageReference Include="Richasy.BiliKernel.Services.Article" />
-    <PackageReference Include="Richasy.BiliKernel.Services.Media" />
-    <PackageReference Include="Richasy.BiliKernel.Services.Moment" />
-    <PackageReference Include="Richasy.BiliKernel.Services.Search" />
-    <PackageReference Include="Richasy.BiliKernel.Services.User" />
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.File" />
   </ItemGroup>

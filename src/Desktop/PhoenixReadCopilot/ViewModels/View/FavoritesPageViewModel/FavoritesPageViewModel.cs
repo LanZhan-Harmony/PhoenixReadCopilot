@@ -7,7 +7,7 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models.Media;
+using PhoenixReadCopilot.Core.Models.Media;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 

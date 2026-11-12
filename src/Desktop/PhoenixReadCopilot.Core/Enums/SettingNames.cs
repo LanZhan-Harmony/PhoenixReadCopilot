@@ -22,7 +22,6 @@ public enum SettingNames
     IsFindDramaPageNavColumnManualHide,
     FollowsPageLastSelectedGroupId,
     LastSelectedFavoriteSection,
-    LastSelectedMessageSection,
     PreferQuality,
     LastSelectedVideoQuality,
     ShouldAutoPlay,

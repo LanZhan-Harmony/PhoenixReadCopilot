@@ -2,8 +2,8 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -17,39 +17,16 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
     /// Initializes a new instance of the <see cref="MomentUperSectionViewModel"/> class.
     /// </summary>
     public MomentUperSectionViewModel(
-        MomentProfile data,
+        MomentProfile? data,
         Action<MomentInformation>? showCommentAction = null
     )
         : base(data)
     {
         _showCommentAction = showCommentAction;
         IsTotal = data is null;
-        Avatar = data?.User?.Avatar.Uri;
+        Avatar = data?.User?.Avatar?.Uri;
         Name = data?.User?.Name ?? Resources.AllDynamic;
         HasUnread = data?.IsUnread ?? false;
-    }
-
-    internal void InjectFirstPageData(MomentView momentView)
-    {
-        IsEmpty = false;
-        _preventLoadMore = momentView.HasMoreMoments != true;
-        _offset = momentView.Offset;
-        _baseline = momentView.UpdateBaseline;
-        ItemServices.DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                Items.Clear();
-                foreach (MomentInformation item in momentView.Moments)
-                {
-                    Items.Add(
-                        new MomentItemViewModel(item, MomentCardStyle.Comprehensive, ShowComment)
-                    );
-                }
-
-                ListUpdated?.Invoke(this, EventArgs.Empty);
-            }
-        );
     }
 
     [RelayCommand]
@@ -124,48 +101,14 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
 
     private async Task LoadComprehensiveItemsAsync()
     {
-        MomentView? view = await Service.GetComprehensiveMomentsAsync(_offset, _baseline);
-        if (view is not null)
-        {
-            _offset = view.Offset;
-            _baseline = view.UpdateBaseline;
-            _preventLoadMore = view.HasMoreMoments != true;
-            foreach (
-                MomentItemViewModel? item in view.Moments.Select(p => new MomentItemViewModel(
-                    p,
-                    MomentCardStyle.Comprehensive,
-                    ShowComment
-                ))
-            )
-            {
-                Items.Add(item);
-            }
-
-            ListUpdated?.Invoke(this, EventArgs.Empty);
-        }
+        // TODO: 红果动态广场 API 暂未开放
+        await Task.CompletedTask;
     }
 
     private async Task LoadUperItemsAsync()
     {
-        (IReadOnlyList<MomentInformation>? moments, string? offset, bool hasMore) =
-            await Service.GetUserMomentsAsync(Data.User, _offset);
-        _offset = offset;
-        _preventLoadMore = !hasMore || string.IsNullOrEmpty(offset);
-        if (moments is not null)
-        {
-            foreach (
-                MomentItemViewModel? item in moments.Select(p => new MomentItemViewModel(
-                    p,
-                    MomentCardStyle.Comprehensive,
-                    ShowComment
-                ))
-            )
-            {
-                Items.Add(item);
-            }
-
-            ListUpdated?.Invoke(this, EventArgs.Empty);
-        }
+        // TODO: 红果用户动态 API 暂未开放
+        await Task.CompletedTask;
     }
 
     private void ShowComment(MomentItemViewModel item) => _showCommentAction?.Invoke(item.Data);

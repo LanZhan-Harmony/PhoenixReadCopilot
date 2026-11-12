@@ -2,11 +2,11 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Media;
+using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Media;
-using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -147,9 +147,9 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         {
             _userId = !string.IsNullOrEmpty(actor.UserId) ? actor.UserId : actor.ActorId;
         }
-        else if (userParam is Richasy.BiliKernel.Models.User.UserProfile bp)
+        else if (userParam is PhoenixReadCopilot.Core.Models.User.User u)
         {
-            _userId = bp.Id;
+            _userId = u.Id;
         }
     }
 
@@ -256,21 +256,21 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
 
     private static MomentInformation CreateDramaMoment(Drama drama)
     {
-        BiliImage? cover =
+        AppImage? cover =
             !string.IsNullOrEmpty(drama.CoverUrl)
             && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? coverUri)
-                ? new BiliImage(coverUri)
+                ? new AppImage(coverUri)
                 : null;
 
         VideoInformation video = new(new MediaIdentifier(drama.Id, drama.Title, cover), null);
 
         return new MomentInformation(
             id: drama.Id,
-            user: new Richasy.BiliKernel.Models.User.UserProfile(
-                drama.Id,
-                drama.Category ?? "短剧",
-                null
-            ),
+            user: new PhoenixReadCopilot.Core.Models.User.User
+            {
+                Id = drama.Id,
+                Name = drama.Category ?? "短剧",
+            },
             communityInformation: null,
             tip: !string.IsNullOrEmpty(drama.Score) ? $"评分: {drama.Score}" : null,
             description: new EmoteText(drama.Remark ?? drama.Title, null),

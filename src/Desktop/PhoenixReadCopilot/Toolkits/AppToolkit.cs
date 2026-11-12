@@ -42,8 +42,7 @@ internal sealed partial class AppToolkit : IAppToolkit
             return $"{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}.{appVersion.Revision}";
         }
 
-        Version? version =
-            Assembly.GetEntryAssembly()?.GetName().Version
+        Version? version = Assembly.GetEntryAssembly()?.GetName().Version
             ?? Assembly.GetExecutingAssembly().GetName().Version;
         return $"{version?.Major}.{version?.Minor}.{version?.Build}.{version?.Revision}";
     }
@@ -92,7 +91,7 @@ internal sealed partial class AppToolkit : IAppToolkit
     public static Color HexToColor(string hexCode)
     {
         // 去除可能包含的 # 符号
-        if (hexCode.StartsWith("#"))
+        if (hexCode.StartsWith('#'))
         {
             hexCode = hexCode[1..];
         }
@@ -102,7 +101,7 @@ internal sealed partial class AppToolkit : IAppToolkit
             hexCode = intValue.ToString("X2");
         }
 
-        Color color = default(Color);
+        Color color = default;
         if (hexCode.Length == 4)
         {
             hexCode = "00" + hexCode;

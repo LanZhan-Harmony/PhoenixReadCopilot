@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Models.Settings;
-using Richasy.BiliKernel.Bili.Authorization;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 
@@ -15,7 +14,6 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 public sealed partial class AppViewModel : ViewModelBase
 {
     private readonly ILogger<AppViewModel> _logger;
-    private readonly IBiliTokenResolver _tokenResolver;
     private readonly IAppToolkit _appToolkit;
     private readonly AppSettings _settings;
     private readonly PhoenixReadApiClient _apiClient;

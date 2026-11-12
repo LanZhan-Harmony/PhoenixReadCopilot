@@ -5,8 +5,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -22,14 +20,12 @@ public sealed partial class VideoMomentSectionDetailViewModel
     /// Initializes a new instance of the <see cref="VideoMomentSectionDetailViewModel"/> class.
     /// </summary>
     public VideoMomentSectionDetailViewModel(
-        IMomentDiscoveryService service,
         DispatcherQueue dispatcherQueue,
         MomentPageViewModel momentPageViewModel,
         ISettingsService settingsService,
         ILogger<VideoMomentSectionDetailViewModel> logger
     )
     {
-        _service = service;
         _dispatcherQueue = dispatcherQueue;
         _momentPageViewModel = momentPageViewModel;
         _settings = settingsService.Settings;
@@ -45,7 +41,6 @@ public sealed partial class VideoMomentSectionDetailViewModel
         }
 
         await LoadItemsAsync();
-        SaveLastTenMomentIds();
     }
 
     [RelayCommand]
@@ -61,7 +56,6 @@ public sealed partial class VideoMomentSectionDetailViewModel
             async () =>
             {
                 await LoadItemsAsync();
-                SaveLastTenMomentIds();
             }
         );
     }
@@ -77,25 +71,9 @@ public sealed partial class VideoMomentSectionDetailViewModel
         try
         {
             IsLoading = true;
-            MomentView? view = await _service.GetVideoMomentsAsync(_offset, _baseline);
-            if (view is not null)
-            {
-                _offset = view.Offset;
-                _baseline = view.UpdateBaseline;
-                _preventLoadMore = view.HasMoreMoments != true;
-                foreach (
-                    MomentItemViewModel? item in view.Moments.Select(p => new MomentItemViewModel(
-                        p,
-                        MomentCardStyle.Video,
-                        ShowComment
-                    ))
-                )
-                {
-                    Items.Add(item);
-                }
-
-                ListUpdated?.Invoke(this, EventArgs.Empty);
-            }
+            // TODO: 红果动态广场 API 暂未开放
+            await Task.CompletedTask;
+            _preventLoadMore = true;
         }
         catch (Exception ex)
         {
@@ -111,14 +89,4 @@ public sealed partial class VideoMomentSectionDetailViewModel
 
     private void ShowComment(MomentItemViewModel item) =>
         _momentPageViewModel.ShowCommentCommand.Execute(item.Data);
-
-    private void SaveLastTenMomentIds()
-    {
-        List<string> momentIds =
-        [
-            .. Items.Take(10).Select(p => p.Data.Id),
-        ];
-        string lastTenMomentIds = string.Join(',', momentIds);
-        _settings.LastTenMomentIds = lastTenMomentIds;
-    }
 }

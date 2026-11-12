@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Services;
-using Richasy.BiliKernel.Bili.Moment;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Notifications;
@@ -18,13 +17,11 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 public sealed partial class NotificationViewModel : ViewModelBase
 {
     public NotificationViewModel(
-        IMomentDiscoveryService momentService,
         AppViewModel appViewModel,
         ISettingsService settingsService,
         ILogger<NotificationViewModel> logger
     )
     {
-        _momentService = momentService;
         _appViewModel = appViewModel;
         Settings = settingsService.Settings;
         _logger = logger;

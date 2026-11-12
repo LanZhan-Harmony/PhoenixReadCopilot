@@ -2,8 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Appearance;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -12,7 +11,6 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class MomentItemViewModel
 {
-    private static IMomentOperationService OperationService => ItemServices.MomentOperation;
     private static ILogger<MomentItemViewModel>? _logger;
     private static ILogger<MomentItemViewModel> Logger =>
         _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentItemViewModel>>();

@@ -4,13 +4,14 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Media;
+using PhoenixReadCopilot.Core.Models.Pin;
+using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.Toolkits;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Media;
 using Windows.Globalization;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -177,10 +178,10 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 
     private static VideoInformation CreateHistoryInformation(ReadHistoryEntry history)
     {
-        BiliImage? cover =
+        AppImage? cover =
             !string.IsNullOrEmpty(history.CoverUrl)
             && Uri.TryCreate(history.CoverUrl, UriKind.Absolute, out Uri? uri)
-                ? new BiliImage(uri)
+                ? new AppImage(uri)
                 : null;
         return new VideoInformation(
             new MediaIdentifier(history.SeriesId, history.Title, cover),
@@ -190,10 +191,10 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 
     private static VideoInformation CreateActorInformation(ActorLeaderboardItem actor)
     {
-        BiliImage? cover =
+        AppImage? cover =
             !string.IsNullOrEmpty(actor.AvatarUrl)
             && Uri.TryCreate(actor.AvatarUrl, UriKind.Absolute, out Uri? uri)
-                ? new BiliImage(uri)
+                ? new AppImage(uri)
                 : null;
         string id = !string.IsNullOrEmpty(actor.ActorId) ? actor.ActorId : actor.UserId;
         return new VideoInformation(new MediaIdentifier(id, actor.Name, cover), null);
@@ -201,10 +202,10 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 
     private static VideoInformation CreateVideoInformation(Drama drama)
     {
-        BiliImage? cover =
+        AppImage? cover =
             !string.IsNullOrEmpty(drama.CoverUrl)
             && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? uri)
-                ? new BiliImage(uri)
+                ? new AppImage(uri)
                 : null;
         return new VideoInformation(new MediaIdentifier(drama.Id, drama.Title, cover), null);
     }
@@ -268,9 +269,15 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             {
                 await ItemServices.LocalViewLater.AddAsync(Drama);
             }
-            else
+            else if (Data is not null)
             {
-                await ItemServices.ViewLater.AddAsync(Data.Identifier.Id);
+                var drama = new PhoenixReadApi.Drama
+                {
+                    Id = Data.Identifier?.Id ?? string.Empty,
+                    Title = Data.Identifier?.Title ?? string.Empty,
+                    CoverUrl = Data.Identifier?.Cover?.Uri?.ToString() ?? string.Empty,
+                };
+                await ItemServices.LocalViewLater.AddAsync(drama);
             }
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.AddViewLaterSucceed, InfoType.Success)
@@ -292,9 +299,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             {
                 await ItemServices.LocalViewLater.RemoveAsync(Drama.Id);
             }
-            else
+            else if (Data is not null && !string.IsNullOrEmpty(Data.Identifier?.Id))
             {
-                await ItemServices.ViewLater.RemoveAsync([Data.Identifier.Id]);
+                await ItemServices.LocalViewLater.RemoveAsync(Data.Identifier.Id);
             }
             _removeAction?.Invoke(this);
         }
@@ -319,9 +326,12 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
                     HistoryEntry.VideoId
                 );
             }
-            else
+            else if (Data is not null && !string.IsNullOrEmpty(Data.Identifier?.Id))
             {
-                await ItemServices.ViewHistory.RemoveVideoHistoryItemAsync(Data);
+                await ItemServices.PhoenixRead.DeleteHistoryAsync(
+                    Data.Identifier.Id,
+                    string.Empty
+                );
             }
             _removeAction?.Invoke(this);
         }
@@ -347,9 +357,13 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
                     active: false
                 );
             }
-            else
+            else if (Data is not null && !string.IsNullOrEmpty(Data.Identifier?.Id))
             {
-                await ItemServices.Favorite.RemoveVideoAsync(_favFolder, Data.Identifier);
+                await ItemServices.PhoenixRead.SetFavoriteAsync(
+                    Data.Identifier.Id,
+                    string.Empty,
+                    active: false
+                );
             }
             _removeAction?.Invoke(this);
         }
@@ -368,8 +382,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     [RelayCommand]
     private void Pin()
     {
-        string coverUri =
-            Cover?.ToString() ?? Data.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
+        string coverUri = Cover?.ToString()
+            ?? Data.Identifier.Cover?.Uri?.ToString()
+            ?? string.Empty;
         PinItem pinItem = new(
             Data.Identifier.Id,
             Data.Identifier.Title,

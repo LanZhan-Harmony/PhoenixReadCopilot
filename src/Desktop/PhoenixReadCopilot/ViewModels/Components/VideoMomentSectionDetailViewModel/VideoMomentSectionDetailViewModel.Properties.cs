@@ -6,7 +6,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Bili.Moment;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -15,7 +14,6 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class VideoMomentSectionDetailViewModel
 {
-    private readonly IMomentDiscoveryService _service;
     private readonly ILogger<VideoMomentSectionDetailViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly MomentPageViewModel _momentPageViewModel;
@@ -34,7 +32,7 @@ public sealed partial class VideoMomentSectionDetailViewModel
     /// <summary>
     /// 列表已完成更新.
     /// </summary>
-    public event EventHandler ListUpdated;
+    public event EventHandler? ListUpdated;
 
     /// <inheritdoc/>
     public MomentSectionType SectionType => MomentSectionType.Video;

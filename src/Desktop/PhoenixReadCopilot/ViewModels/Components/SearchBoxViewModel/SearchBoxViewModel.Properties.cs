@@ -5,7 +5,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using HotSearchItem = PhoenixReadCopilot.Models.Search.HotSearchItem;
+using HotSearchItem = PhoenixReadCopilot.Core.Models.Search.HotSearchItem;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

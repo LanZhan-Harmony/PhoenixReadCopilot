@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Filter;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;

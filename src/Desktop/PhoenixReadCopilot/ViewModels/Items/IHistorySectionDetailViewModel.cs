@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Richasy.BiliKernel.Models;
+using PhoenixReadCopilot.Core.Enums;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
