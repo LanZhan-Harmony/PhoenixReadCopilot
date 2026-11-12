@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Strings;
 using WinUIKernel.Share.ViewModels;
@@ -54,13 +53,10 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         _preventLoadMore = false;
         Items.Clear();
 
-        ItemServices.DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                await LoadItemsAsync();
-            }
-        );
+        ItemServices.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            await LoadItemsAsync();
+        });
     }
 
     [RelayCommand]

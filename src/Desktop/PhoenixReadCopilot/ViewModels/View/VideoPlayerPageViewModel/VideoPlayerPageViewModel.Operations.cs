@@ -4,7 +4,6 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Forms;
-using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using Windows.ApplicationModel.DataTransfer;

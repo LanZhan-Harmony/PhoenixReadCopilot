@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -14,10 +13,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPageViewModel"/> class.
     /// </summary>
-    public FansPageViewModel(
-        ILogger<FansPageViewModel> logger,
-        DispatcherQueue dispatcherQueue
-    )
+    public FansPageViewModel(ILogger<FansPageViewModel> logger, DispatcherQueue dispatcherQueue)
     {
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
@@ -39,14 +35,11 @@ public sealed partial class FansPageViewModel : ViewModelBase
     {
         IsEmpty = false;
         TotalCount = 0;
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                Users.Clear();
-                await InitializeAsync();
-            }
-        );
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            Users.Clear();
+            await InitializeAsync();
+        });
     }
 
     [RelayCommand]

@@ -3,7 +3,6 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Models.Appearance;
-using PhoenixReadCopilot.Models;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;

@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadCopilot.Core.Models.Subtitle;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.Core.Models.Subtitle;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Core;

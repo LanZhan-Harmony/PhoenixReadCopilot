@@ -2,8 +2,8 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Toolkits;
 using PhoenixReadCopilot.Core.Models.Media;
+using PhoenixReadCopilot.Toolkits;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -67,14 +67,20 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 演员副标题（作品数 · 追剧人数）.
     /// </summary>
-    public string ActorSubtitles => Actor?.SubTitles is { Count: > 0 } ? string.Join(" · ", Actor.SubTitles) : string.Empty;
+    public string ActorSubtitles =>
+        Actor?.SubTitles is { Count: > 0 } ? string.Join(" · ", Actor.SubTitles) : string.Empty;
 
     /// <summary>
     /// 演员代表作.
     /// </summary>
-    public string ActorRepresentativeWork => !string.IsNullOrEmpty(Actor?.RepresentativeWork)
-        ? (Actor.RepresentativeWork.StartsWith("《") ? Actor.RepresentativeWork : $"《{Actor.RepresentativeWork}》")
-        : string.Empty;
+    public string ActorRepresentativeWork =>
+        !string.IsNullOrEmpty(Actor?.RepresentativeWork)
+            ? (
+                Actor.RepresentativeWork.StartsWith("《")
+                    ? Actor.RepresentativeWork
+                    : $"《{Actor.RepresentativeWork}》"
+            )
+            : string.Empty;
 
     /// <summary>
     /// 演员热度/人气文案.

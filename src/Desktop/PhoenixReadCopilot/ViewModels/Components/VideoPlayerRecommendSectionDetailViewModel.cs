@@ -2,9 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
-using PhoenixReadCopilot.Core.Models.Media;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -24,11 +24,7 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     /// </summary>
     public VideoPlayerRecommendSectionDetailViewModel(IList<VideoInformation> items)
     {
-        Items =
-        [
-            .. items
-                .Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerRecommend)),
-        ];
+        Items = [.. items.Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerRecommend))];
     }
 
     /// <summary>
@@ -36,11 +32,7 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     /// </summary>
     public VideoPlayerRecommendSectionDetailViewModel(IEnumerable<Drama> dramas)
     {
-        Items =
-        [
-            .. dramas
-                .Select(d => new VideoItemViewModel(d, VideoCardStyle.PlayerRecommend)),
-        ];
+        Items = [.. dramas.Select(d => new VideoItemViewModel(d, VideoCardStyle.PlayerRecommend))];
     }
 
     /// <inheritdoc/>

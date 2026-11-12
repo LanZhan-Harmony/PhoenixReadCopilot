@@ -5,7 +5,6 @@ using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Core.Models.Pin;
-using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
@@ -140,12 +139,14 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         string cover = vinfo?.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
         try
         {
-            await ItemServices.LocalViewLater.AddAsync(new PhoenixReadApi.Drama
-            {
-                Id = aid,
-                Title = title,
-                CoverUrl = cover,
-            });
+            await ItemServices.LocalViewLater.AddAsync(
+                new PhoenixReadApi.Drama
+                {
+                    Id = aid,
+                    Title = title,
+                    CoverUrl = cover,
+                }
+            );
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.AddViewLaterSucceed, InfoType.Success)
             );

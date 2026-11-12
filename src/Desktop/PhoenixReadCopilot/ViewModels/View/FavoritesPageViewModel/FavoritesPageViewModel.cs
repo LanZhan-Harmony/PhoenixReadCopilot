@@ -2,12 +2,12 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using PhoenixReadCopilot.Core.Models.Media;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -80,14 +80,11 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void Refresh()
     {
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                Sections.Clear();
-                await InitializeAsync();
-            }
-        );
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            Sections.Clear();
+            await InitializeAsync();
+        });
     }
 
     [RelayCommand]

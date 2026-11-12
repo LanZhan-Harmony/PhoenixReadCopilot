@@ -4,7 +4,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -60,15 +59,12 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         SelectedGroup = group;
         _settings.FollowsPageLastSelectedGroupId = group.Id;
 
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                Users.Clear();
-                await LoadUsersAsync();
-                IsEmpty = Users.Count == 0;
-            }
-        );
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            Users.Clear();
+            await LoadUsersAsync();
+            IsEmpty = Users.Count == 0;
+        });
     }
 
     [RelayCommand]
@@ -99,18 +95,15 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void Refresh()
     {
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                Users.Clear();
-                Groups.Clear();
-                _userCache.Clear();
-                _offsetCache.Clear();
-                SelectedGroup = null;
-                await InitializeAsync();
-            }
-        );
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            Users.Clear();
+            Groups.Clear();
+            _userCache.Clear();
+            _offsetCache.Clear();
+            SelectedGroup = null;
+            await InitializeAsync();
+        });
     }
 
     private async Task LoadGroupsAsync()

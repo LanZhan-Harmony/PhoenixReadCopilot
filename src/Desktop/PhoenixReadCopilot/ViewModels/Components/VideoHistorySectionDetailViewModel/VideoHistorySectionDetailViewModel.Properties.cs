@@ -2,8 +2,8 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

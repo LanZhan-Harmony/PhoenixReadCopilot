@@ -163,7 +163,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             _searchOffset = historyPage.NextOffset;
 
             string kw = SearchKeyword.Trim();
-            var filtered = historyPage
+            List<ReadHistoryEntry> filtered = historyPage
                 .Items.Where(e => e.Title.Contains(kw, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 

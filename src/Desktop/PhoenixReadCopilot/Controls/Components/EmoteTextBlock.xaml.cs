@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Models;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;

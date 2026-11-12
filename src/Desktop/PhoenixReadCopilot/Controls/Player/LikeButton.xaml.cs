@@ -41,16 +41,6 @@ public sealed partial class LikeButton : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="TripleCommand"/> 的依赖属性.
-    /// </summary>
-    public static readonly DependencyProperty TripleCommandProperty = DependencyProperty.Register(
-        nameof(TripleCommand),
-        typeof(ICommand),
-        typeof(LikeButton),
-        new PropertyMetadata(null)
-    );
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="LikeButton"/> class.
     /// </summary>
     public LikeButton()
@@ -84,23 +74,4 @@ public sealed partial class LikeButton : LayoutUserControlBase
         get => (ICommand)GetValue(CommandProperty);
         set => SetValue(CommandProperty, value);
     }
-
-    /// <summary>
-    /// 一键三连命令.
-    /// </summary>
-    public ICommand TripleCommand
-    {
-        get => (ICommand)GetValue(TripleCommandProperty);
-        set => SetValue(TripleCommandProperty, value);
-    }
-
-    private void OnLikeButtonClick(object sender, RoutedEventArgs e)
-    {
-        if (!IsLiked)
-        {
-            TripleTip.IsOpen = true;
-        }
-    }
-
-    private void OnTripleButtonClick(TeachingTip sender, object args) => TripleTip.IsOpen = false;
 }

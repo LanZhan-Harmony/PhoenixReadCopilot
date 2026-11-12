@@ -70,7 +70,6 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
-    <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Humanizer.Core.zh-Hans" />
     <PackageReference Include="PhoenixReadApi" />
     <PackageReference Include="ReswPlus" />
