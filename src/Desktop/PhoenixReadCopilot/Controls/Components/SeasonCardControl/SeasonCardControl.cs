@@ -122,16 +122,8 @@ public sealed partial class SeasonCardControl : LayoutControlBase<SeasonItemView
     {
         MenuFlyout menuFlyout = new() { ShouldConstrainToRootBounds = false };
         menuFlyout.Items.Add(CreateOpenInNewWindowItem());
-        if (ViewModel.Style != SeasonCardStyle.Favorite)
-        {
-            menuFlyout.Items.Add(CreateFollowItem());
-            menuFlyout.Items.Add(CreatePinItem());
-        }
-        else
-        {
-            menuFlyout.Items.Add(CreatePinItem());
-            menuFlyout.Items.Add(CreateUnfollowItem());
-        }
+        menuFlyout.Items.Add(CreatePinItem());
+        menuFlyout.Items.Add(CreateUnfollowItem());
 
         ContextFlyout = menuFlyout;
     }

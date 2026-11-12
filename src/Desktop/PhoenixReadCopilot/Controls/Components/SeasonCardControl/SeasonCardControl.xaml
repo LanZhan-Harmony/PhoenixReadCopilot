@@ -28,24 +28,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="FavoriteSeasonCardStyle" TargetType="local:SeasonCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:SeasonCardControl">
-                    <base:CardControl x:Name="RootCard">
-                        <local:FavoriteSeasonPresenter ViewModel="{TemplateBinding ViewModel}"/>
-                    </base:CardControl>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <Style x:Key="PlayerSeasonCardStyle" TargetType="local:SeasonCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:SeasonCardControl">
-                    <local:PlayerSeasonPresenter ViewModel="{TemplateBinding ViewModel}"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 </ResourceDictionary>

@@ -104,7 +104,6 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
             else
             {
                 Suggestion.Clear();
-                Suggestion.Add(new("global", Resources.WholePartitions));
                 Suggestion.Add(new(_extraRegionId, _extraRegionName));
             }
         }

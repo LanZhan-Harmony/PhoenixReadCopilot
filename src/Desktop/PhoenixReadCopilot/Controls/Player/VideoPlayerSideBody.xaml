@@ -23,9 +23,6 @@
         <DataTemplate x:Key="PartTemplate" x:DataType="components:VideoPlayerPartSectionDetailViewModel">
             <local:VideoPartsSection ViewModel="{x:Bind}"/>
         </DataTemplate>
-        <DataTemplate x:Key="PlaylistTemplate" x:DataType="components:VideoPlayerPlaylistSectionDetailViewModel">
-            <local:VideoPlaylistSection ViewModel="{x:Bind}"/>
-        </DataTemplate>
         <DataTemplate x:Key="InfoTemplate" x:DataType="components:VideoPlayerInfoSectionDetailViewModel">
             <local:VideoInfoSection ViewModel="{x:Bind Page}"/>
         </DataTemplate>
@@ -34,7 +31,6 @@
                                                   DramaReviewTemplate="{StaticResource DramaReviewTemplate}"
                                                   InfoTemplate="{StaticResource InfoTemplate}"
                                                   PartTemplate="{StaticResource PartTemplate}"
-                                                  PlaylistTemplate="{StaticResource PlaylistTemplate}"
                                                   RecommendTemplate="{StaticResource RecommendTemplate}"/>
     </UserControl.Resources>
 

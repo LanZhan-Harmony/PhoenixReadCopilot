@@ -21,11 +21,6 @@ public enum VideoCardStyle
     Rank,
 
     /// <summary>
-    /// 分区视频.
-    /// </summary>
-    Partition,
-
-    /// <summary>
     /// 搜索.
     /// </summary>
     Search,
@@ -54,14 +49,4 @@ public enum VideoCardStyle
     /// 播放器推荐.
     /// </summary>
     PlayerRecommend,
-
-    /// <summary>
-    /// 播放器合集中的单集.
-    /// </summary>
-    PlayerSeason,
-
-    /// <summary>
-    /// 播放器播放列表.
-    /// </summary>
-    PlayerPlaylist,
 }

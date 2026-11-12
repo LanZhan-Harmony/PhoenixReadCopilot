@@ -4,12 +4,10 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
-using PhoenixReadCopilot.Core.Models;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
-using Richasy.BiliKernel.Models.Media;
 
 namespace PhoenixReadCopilot;
 
@@ -129,12 +127,7 @@ public partial class App : Application
 
             _dispatcherQueue.TryEnqueue(() =>
             {
-                MediaIdentifier identifier = JsonAotSerializer.Deserialize<MediaIdentifier>(
-                    argsStr
-                );
-                object obj = type.Contains("VideoPlayer")
-                    ? new VideoSnapshot(new VideoInformation(identifier, null))
-                    : identifier;
+                object? obj = null;
                 Type? pageType = Type.GetType(type);
                 Ioc.Default.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);
             });

@@ -127,7 +127,6 @@ internal class ServiceHelper
             .AddSingleton<SettingsPageViewModel>()
             .AddSingleton<StartupPageViewModel>()
             .AddTransient<UserSpacePageViewModel>()
-            .AddTransient<VideoPartitionPageViewModel>()
             .AddTransient<VideoPlayerPageViewModel>()
             .AddTransient<ViewLaterPageViewModel>()
             // Components

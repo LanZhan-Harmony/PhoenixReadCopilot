@@ -14,19 +14,4 @@ public enum SeasonCardStyle
     /// 索引.
     /// </summary>
     Index,
-
-    /// <summary>
-    /// 收藏.
-    /// </summary>
-    Favorite,
-
-    /// <summary>
-    /// 播放组件.
-    /// </summary>
-    Player,
-
-    /// <summary>
-    /// 搜索.
-    /// </summary>
-    Search,
 }
