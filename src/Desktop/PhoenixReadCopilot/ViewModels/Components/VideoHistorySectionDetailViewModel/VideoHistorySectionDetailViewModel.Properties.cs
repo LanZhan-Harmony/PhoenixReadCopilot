@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models;
+using PhoenixReadCopilot.Core.Enums;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

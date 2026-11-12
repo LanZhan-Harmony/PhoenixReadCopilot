@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
-using Richasy.BiliKernel.Models.Subtitle;
+using PhoenixReadCopilot.Core.Models.Subtitle;
 
 namespace PhoenixReadCopilot.Controls.Player;
 

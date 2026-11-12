@@ -1,11 +1,11 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Pin;
+using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -29,13 +29,11 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     {
         Id = data.Profile.User.Id;
         Name = data.Profile.User.Name;
-        Avatar = data.Profile.User.Avatar.Uri;
+        Avatar = data.Profile.User.Avatar?.Uri;
         Description = string.IsNullOrEmpty(data.Profile.Introduce)
             ? Resources.NoSelfIntroduce
             : data.Profile.Introduce;
-        IsFollowed =
-            data.Community.Relation != UserRelationStatus.Unknown
-            && data.Community.Relation != UserRelationStatus.Unfollow;
+        IsFollowed = false;
     }
 
     /// <summary>
@@ -62,14 +60,26 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
 
     private static UserCard CreateUserCard(PhoenixReadApi.User user)
     {
-        BiliImage? avatar =
+        UserAvatar? avatar =
             !string.IsNullOrEmpty(user.AvatarUrl)
             && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out Uri? uri)
-                ? new BiliImage(uri)
+                ? new UserAvatar { Uri = uri }
                 : null;
-        UserProfile userProfile = new(user.Id, user.Name, avatar);
-        UserDetailProfile detailProfile = new(userProfile, user.Introduction, null, null, null);
-        return new UserCard(detailProfile, new UserCommunityInformation(user.Id));
+
+        return new UserCard
+        {
+            Profile = new UserDetailProfile
+            {
+                User = new PhoenixReadCopilot.Core.Models.User.User
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Avatar = avatar,
+                },
+                Introduce = user.Introduction,
+            },
+            Community = new UserCommunity(),
+        };
     }
 
     [RelayCommand]

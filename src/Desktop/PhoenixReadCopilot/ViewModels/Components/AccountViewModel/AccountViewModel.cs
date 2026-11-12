@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Models.User;
+using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.ViewModels;
@@ -52,7 +52,7 @@ public sealed partial class AccountViewModel : ViewModelBase
 
                 MyProfile = new UserDetailProfile
                 {
-                    User = new Models.User.User
+                    User = new PhoenixReadCopilot.Core.Models.User.User
                     {
                         Id = info.Id,
                         Name = string.IsNullOrEmpty(info.Name) ? "红果短剧用户" : info.Name,

@@ -4,8 +4,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
-using Richasy.BiliKernel.Bili.Moment;
-using Richasy.BiliKernel.Models.Moment;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -20,7 +18,6 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     /// Initializes a new instance of the <see cref="ComprehensiveMomentSectionDetailViewModel"/> class.
     /// </summary>
     public ComprehensiveMomentSectionDetailViewModel(
-        IMomentDiscoveryService service,
         DispatcherQueue dispatcherQueue,
         MomentPageViewModel momentPageViewModel,
         ILogger<ComprehensiveMomentSectionDetailViewModel> logger,
@@ -29,7 +26,6 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     )
         : base(settingsService)
     {
-        _service = service;
         _dispatcherQueue = dispatcherQueue;
         _momentPageViewModel = momentPageViewModel;
         _logger = logger;
@@ -64,7 +60,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     [RelayCommand]
     private void Refresh()
     {
-        if (SelectedUper.IsTotal)
+        if (SelectedUper is not null && SelectedUper.IsTotal)
         {
             Upers.Clear();
             _dispatcherQueue.TryEnqueue(
@@ -79,7 +75,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         }
         else
         {
-            SelectedUper.RefreshCommand.Execute(null);
+            SelectedUper?.RefreshCommand.Execute(null);
         }
     }
 
@@ -97,29 +93,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
 
     private async Task LoadUpersAsync()
     {
-        try
-        {
-            MomentView response = await _service.GetComprehensiveMomentsAsync();
-            IReadOnlyList<MomentProfile>? upers = response.Users;
-            if (upers?.Count > 0)
-            {
-                foreach (MomentProfile item in upers)
-                {
-                    Upers.Add(
-                        new MomentUperSectionViewModel(
-                            item,
-                            data => _momentPageViewModel.ShowCommentCommand.Execute(data)
-                        )
-                    );
-                }
-            }
-
-            MomentUperSectionViewModel total = Upers.First();
-            total.InjectFirstPageData(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "尝试获取综合动态时发生错误.");
-        }
+        // TODO: 红果动态广场 API 暂未开放
+        await Task.CompletedTask;
     }
 }

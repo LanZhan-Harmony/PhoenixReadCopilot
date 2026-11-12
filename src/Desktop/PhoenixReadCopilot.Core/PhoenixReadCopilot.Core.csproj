@@ -7,6 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Richasy.BiliKernel.Abstractions" />
+    <PackageReference Include="PhoenixReadApi" />
   </ItemGroup>
 </Project>

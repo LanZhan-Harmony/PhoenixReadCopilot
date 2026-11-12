@@ -3,14 +3,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
-using PhoenixReadCopilot.Models.User;
+using PhoenixReadCopilot.Core.Models.Moment;
+using PhoenixReadCopilot.Core.Models.Pin;
+using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models.Moment;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -56,16 +56,19 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         try
         {
             UserProfile? profile = null;
+            string fallbackAvatarUrl = string.Empty;
             if (parameter is DramaCredit credit)
             {
                 _userId = credit.User?.Id ?? string.Empty;
                 UserName = credit.User?.Name ?? string.Empty;
+                fallbackAvatarUrl = credit.User?.AvatarUrl ?? string.Empty;
                 profile = await _apiClient.GetUserProfileAsync(credit);
             }
             else if (parameter is ActorLeaderboardItem actor)
             {
                 _userId = !string.IsNullOrEmpty(actor.UserId) ? actor.UserId : actor.ActorId;
                 UserName = actor.Name;
+                fallbackAvatarUrl = actor.AvatarUrl ?? string.Empty;
                 profile = await _apiClient.GetUserProfileAsync(_userId);
             }
             else if (parameter is string id)
@@ -73,22 +76,25 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 _userId = id;
                 profile = await _apiClient.GetUserProfileAsync(id);
             }
-            else if (parameter is Models.User.User user)
+            else if (parameter is PhoenixReadCopilot.Core.Models.User.User user)
             {
                 _userId = user.Id;
                 UserName = user.Name;
+                fallbackAvatarUrl = user.Avatar?.Uri?.ToString() ?? string.Empty;
                 profile = await _apiClient.GetUserProfileAsync(user.Id);
             }
             else if (parameter is PhoenixReadApi.User apiUser)
             {
                 _userId = apiUser.Id;
                 UserName = apiUser.Name;
+                fallbackAvatarUrl = apiUser.AvatarUrl ?? string.Empty;
                 profile = await _apiClient.GetUserProfileAsync(apiUser.Id);
             }
             else if (parameter is UserProfile up)
             {
                 _userId = up.User.Id;
                 UserName = up.User.Name;
+                fallbackAvatarUrl = up.User.AvatarUrl ?? string.Empty;
                 profile = up;
             }
 
@@ -97,18 +103,25 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 _phoenixProfile = profile;
                 UserName = !string.IsNullOrEmpty(profile.User.Name) ? profile.User.Name : UserName;
                 IsFollowed = false;
-                Card = CreateUserCard(profile);
+                Card = CreateUserCard(profile, UserName, fallbackAvatarUrl);
             }
             else if (!string.IsNullOrEmpty(UserName))
             {
+                UserAvatar? avatar =
+                    !string.IsNullOrEmpty(fallbackAvatarUrl)
+                    && Uri.TryCreate(fallbackAvatarUrl, UriKind.Absolute, out Uri? uri)
+                        ? new UserAvatar { Uri = uri }
+                        : null;
+
                 Card = new UserCard
                 {
                     Profile = new UserDetailProfile
                     {
-                        User = new Models.User.User
+                        User = new PhoenixReadCopilot.Core.Models.User.User
                         {
                             Id = _userId,
                             Name = UserName,
+                            Avatar = avatar,
                         },
                     },
                     Community = new UserCommunity(),
@@ -294,8 +307,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             string kw = SearchKeyword.Trim();
             List<Drama> matched =
             [
-                .. dramas
-                    .Items.Where(d => d.Title.Contains(kw, StringComparison.OrdinalIgnoreCase)),
+                .. dramas.Items.Where(d =>
+                    d.Title.Contains(kw, StringComparison.OrdinalIgnoreCase)
+                ),
             ];
 
             foreach (Drama item in matched)
@@ -332,11 +346,17 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         CancelSearch();
     }
 
-    private static UserCard CreateUserCard(UserProfile profile)
+    private static UserCard CreateUserCard(UserProfile profile, string fallbackName = "", string fallbackAvatarUrl = "")
     {
+        string name = !string.IsNullOrEmpty(profile.User.Name)
+            ? profile.User.Name
+            : (!string.IsNullOrEmpty(fallbackName) ? fallbackName : string.Empty);
+        string avatarUrl = !string.IsNullOrEmpty(profile.User.AvatarUrl)
+            ? profile.User.AvatarUrl
+            : fallbackAvatarUrl;
         UserAvatar? avatar =
-            !string.IsNullOrEmpty(profile.User.AvatarUrl)
-            && Uri.TryCreate(profile.User.AvatarUrl, UriKind.Absolute, out Uri? uri)
+            !string.IsNullOrEmpty(avatarUrl)
+            && Uri.TryCreate(avatarUrl, UriKind.Absolute, out Uri? uri)
                 ? new UserAvatar { Uri = uri }
                 : null;
 
@@ -344,10 +364,10 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         {
             Profile = new UserDetailProfile
             {
-                User = new Models.User.User
+                User = new PhoenixReadCopilot.Core.Models.User.User
                 {
-                    Id = profile.User.Id,
-                    Name = profile.User.Name,
+                    Id = !string.IsNullOrEmpty(profile.User.Id) ? profile.User.Id : string.Empty,
+                    Name = name,
                     Avatar = avatar,
                 },
                 Introduce = profile.User.Introduction,

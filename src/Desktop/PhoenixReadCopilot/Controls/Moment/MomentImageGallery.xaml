@@ -3,7 +3,7 @@
     x:Class="PhoenixReadCopilot.Controls.Moment.MomentImageGallery"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:appearance="using:Richasy.BiliKernel.Models.Appearance"
+    xmlns:appearance="using:PhoenixReadCopilot.Core.Models.Appearance"
     xmlns:base="using:WinUIKernel.Share.Base"
     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,7 +15,7 @@
         <ItemsRepeater x:Name="ImageRepeater"
                 ItemsSource="{x:Bind ItemsSource, Mode=OneWay}">
             <ItemsRepeater.ItemTemplate>
-                <DataTemplate x:DataType="appearance:BiliImage">
+                <DataTemplate x:DataType="appearance:AppImage">
                     <Grid
                         Width="120"
                         Height="120"

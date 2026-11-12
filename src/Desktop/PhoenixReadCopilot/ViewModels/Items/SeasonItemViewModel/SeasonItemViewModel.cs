@@ -2,12 +2,12 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Models.Appearance;
-using Richasy.BiliKernel.Models.Media;
+using PhoenixReadCopilot.Core.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Media;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -109,10 +109,10 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         string? highlight = null
     )
     {
-        BiliImage? cover =
+        AppImage? cover =
             !string.IsNullOrEmpty(drama.CoverUrl)
             && Uri.TryCreate(drama.CoverUrl, UriKind.Absolute, out Uri? uri)
-                ? new BiliImage(uri)
+                ? new AppImage(uri)
                 : null;
         return new SeasonInformation(new MediaIdentifier(drama.Id, drama.Title, cover));
     }
@@ -144,8 +144,9 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     {
         try
         {
-            await ItemServices.Entertainment.FollowAsync(Data.Identifier.Id);
+            // TODO: 红果追剧 API 待接入
             ItemServices.App.ShowTipCommand.Execute((Resources.Followed, InfoType.Success));
+            await Task.CompletedTask;
         }
         catch (Exception ex)
         {
@@ -161,8 +162,9 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
     {
         try
         {
-            await ItemServices.Entertainment.UnfollowAsync(Data.Identifier.Id);
+            // TODO: 红果取消追剧 API 待接入
             ItemServices.App.ShowTipCommand.Execute((Resources.Unfollowed, InfoType.Success));
+            await Task.CompletedTask;
         }
         catch (Exception ex)
         {
@@ -179,7 +181,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         PinItem pinItem = new(
             $"ss_{Data.Identifier.Id}",
             Data.Identifier.Title,
-            Data.Identifier.Cover.Uri.ToString(),
+            Data.Identifier.Cover?.Uri?.ToString() ?? string.Empty,
             PinContentType.Video
         );
         ItemServices.Pinner.AddItemCommand.Execute(pinItem);

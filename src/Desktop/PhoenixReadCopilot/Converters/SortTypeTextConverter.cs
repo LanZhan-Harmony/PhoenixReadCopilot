@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
+using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
-using Richasy.BiliKernel.Models;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -22,15 +22,6 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
                 ComprehensiveSearchSortType.Play => Resources.SortByPlay,
                 ComprehensiveSearchSortType.Newest => Resources.SortByNewest,
                 _ => string.Empty,
-            };
-        }
-        else if (value is CommentSortType cst)
-        {
-            result = cst switch
-            {
-                CommentSortType.Hot => Resources.HotReply,
-                CommentSortType.Time => Resources.LatestReply,
-                _ => throw new ArgumentOutOfRangeException(nameof(value)),
             };
         }
         else if (value is PhoenixReadApi.CommentSortOrder cso)

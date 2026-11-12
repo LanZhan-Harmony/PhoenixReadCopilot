@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Toolkits;
-using Richasy.BiliKernel.Models.Media;
+using PhoenixReadCopilot.Core.Models.Media;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

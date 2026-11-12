@@ -2,8 +2,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
-using Richasy.BiliKernel.Models.User;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -17,12 +15,10 @@ public sealed partial class FansPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="FansPageViewModel"/> class.
     /// </summary>
     public FansPageViewModel(
-        IRelationshipService service,
         ILogger<FansPageViewModel> logger,
         DispatcherQueue dispatcherQueue
     )
     {
-        _service = service;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
     }
@@ -42,7 +38,6 @@ public sealed partial class FansPageViewModel : ViewModelBase
     private void Refresh()
     {
         IsEmpty = false;
-        _pageNumber = 0;
         TotalCount = 0;
         _dispatcherQueue.TryEnqueue(
             DispatcherQueuePriority.Low,
@@ -57,7 +52,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadUsersAsync()
     {
-        if (IsUserLoading || IsEmpty || (Users.Count >= TotalCount && Users.Count > 0))
+        if (IsUserLoading || IsEmpty)
         {
             return;
         }
@@ -65,32 +60,18 @@ public sealed partial class FansPageViewModel : ViewModelBase
         IsUserLoading = true;
         try
         {
-            (IReadOnlyList<UserCard>? users, int totalCount, int nextPage) =
-                await _service.GetMyFansAsync(_pageNumber);
-            if (Users.Count == 0 && (users.Count == 0 || totalCount == 0))
-            {
-                IsEmpty = true;
-            }
-            else
-            {
-                _pageNumber = nextPage;
-                TotalCount = totalCount;
-                foreach (UserCard item in users)
-                {
-                    Users.Add(new UserItemViewModel(item));
-                }
-
-                UserListUpdated?.Invoke(this, EventArgs.Empty);
-            }
+            // TODO: 红果粉丝列表 API 暂未开放
+            await Task.CompletedTask;
+            IsEmpty = true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "无法获取粉丝列表");
+            _logger.LogError(ex, "加载粉丝列表失败");
+            IsEmpty = true;
         }
         finally
         {
             IsUserLoading = false;
-            IsEmpty = Users.Count == 0;
         }
     }
 }

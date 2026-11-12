@@ -247,7 +247,6 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         List<AppNavigationItemViewModel> list =
         [
             // GetItem<DownloadPage>(Resources.Download, FluentIcons.Common.Symbol.CloudArrowDown),
-            GetItem<MessagePage>(Resources.Message, FluentIcons.Common.Symbol.Chat),
             GetItem<SettingsPage>(Resources.Settings, FluentIcons.Common.Symbol.Settings),
         ];
         return list;

@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Models.Search;
+using PhoenixReadCopilot.Core.Models.Search;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

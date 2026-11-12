@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
@@ -119,8 +119,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _episodes = details.Episodes;
 
             InitializeDramaView(details);
-            Episode initialPart =
-                FindInitialPart(null) ?? throw new Exception("无法找到短剧的分集信息.");
+            Episode initialPart = FindInitialPart(null)
+                ?? throw new Exception("无法找到短剧的分集信息.");
             _currentEpisode = initialPart;
 
             // 初始化整剧剧评与分集评论

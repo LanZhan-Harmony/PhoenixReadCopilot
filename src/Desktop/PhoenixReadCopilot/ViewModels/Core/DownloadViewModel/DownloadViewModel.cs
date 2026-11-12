@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;

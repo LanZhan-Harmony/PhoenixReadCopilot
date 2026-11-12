@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.User;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -12,11 +11,8 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class FansPageViewModel
 {
-    private readonly IRelationshipService _service;
     private readonly ILogger<FansPageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
-
-    private int _pageNumber;
 
     [ObservableProperty]
     public partial bool IsUserLoading { get; set; }
@@ -30,7 +26,7 @@ public sealed partial class FansPageViewModel
     /// <summary>
     /// 用户列表已完成更新.
     /// </summary>
-    public event EventHandler UserListUpdated;
+    public event EventHandler? UserListUpdated;
 
     /// <summary>
     /// 用户列表.

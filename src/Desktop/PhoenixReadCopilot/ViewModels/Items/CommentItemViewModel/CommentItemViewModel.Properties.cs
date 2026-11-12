@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.Models;
+using PhoenixReadCopilot.Core.Models.Appearance;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -11,7 +11,9 @@ public sealed partial class CommentItemViewModel
 {
     private static ILogger<CommentItemViewModel>? _logger;
     private static ILogger<CommentItemViewModel> Logger =>
-        _logger ??= CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<ILogger<CommentItemViewModel>>();
+        _logger ??= CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<
+            ILogger<CommentItemViewModel>
+        >();
 
     private readonly Action<CommentItemViewModel>? _markReplyTargetAction;
 

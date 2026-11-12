@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using PhoenixReadCopilot.Models;
+using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.ViewModels.View;

@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Models;
+using PhoenixReadCopilot.Core.Enums;
 
 namespace PhoenixReadCopilot.Extensions;
 

@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 

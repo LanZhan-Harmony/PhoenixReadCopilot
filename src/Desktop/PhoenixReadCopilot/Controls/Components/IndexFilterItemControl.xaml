@@ -2,9 +2,9 @@
 <local:IndexFilterItemControlBase x:Class="PhoenixReadCopilot.Controls.Components.IndexFilterItemControl"
                                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                  xmlns:models="using:PhoenixReadCopilot.Models"
                                   xmlns:base="using:WinUIKernel.Share.Base"
                                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                  xmlns:filter="using:PhoenixReadCopilot.Core.Models.Filter"
                                   xmlns:local="using:PhoenixReadCopilot.Controls.Components"
                                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                   mc:Ignorable="d">
@@ -29,7 +29,7 @@
                   ItemsSource="{x:Bind ViewModel.Conditions, Mode=OneWay}"
                   SelectedItem="{x:Bind ViewModel.CurrentCondition, Mode=TwoWay}">
             <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="models:Condition">
+                <DataTemplate x:DataType="filter:Condition">
                     <TextBlock Text="{x:Bind Name}"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>

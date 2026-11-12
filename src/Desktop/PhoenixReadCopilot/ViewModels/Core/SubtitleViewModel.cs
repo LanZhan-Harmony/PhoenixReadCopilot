@@ -3,8 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.Services;
-using Richasy.BiliKernel.Bili.Media;
-using Richasy.BiliKernel.Models.Subtitle;
+using PhoenixReadCopilot.Core.Models.Subtitle;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Core;

@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Models.User;
+using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.ViewModels.Components;

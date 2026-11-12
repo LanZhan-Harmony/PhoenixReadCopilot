@@ -10,7 +10,6 @@ using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Authorization;
 using Windows.System;
 using WinUIEx;
 using WinUIKernel.Share.Base;
@@ -29,14 +28,12 @@ public sealed partial class AppViewModel : ViewModelBase
     /// </summary>
     public AppViewModel(
         ILogger<AppViewModel> logger,
-        IBiliTokenResolver tokenResolver,
         ISettingsService settingsService,
         IAppToolkit appToolkit,
         PhoenixReadApiClient apiClient
     )
     {
         _logger = logger;
-        _tokenResolver = tokenResolver;
         _settings = settingsService.Settings;
         _appToolkit = appToolkit;
         _apiClient = apiClient;
@@ -249,7 +246,8 @@ public sealed partial class AppViewModel : ViewModelBase
     private async Task ShowUpdateAsync()
     {
         string packVersion = _appToolkit.GetPackageVersion();
-        string url = $"https://github.com/Richasy/Bili.Copilot/releases/tag/v{packVersion}";
+        string url =
+            $"https://github.com/LanZhan-Harmony/PhoenixReadCopilot/releases/tag/v{packVersion}";
         await Launcher.LaunchUriAsync(new Uri(url));
         HideUpdate();
     }

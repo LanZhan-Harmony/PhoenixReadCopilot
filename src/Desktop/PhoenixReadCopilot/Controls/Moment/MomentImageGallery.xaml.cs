@@ -1,7 +1,7 @@
 using System.Drawing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using Richasy.BiliKernel.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Appearance;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Moment;
@@ -43,8 +43,8 @@ public sealed partial class MomentImageGallery : LayoutUserControlBase
     private void OnImageTapped(object sender, TappedRoutedEventArgs e)
     {
         e.Handled = true;
-        BiliImage? image = (sender as Image).Tag as BiliImage;
-        List<BiliImage>? itemsSource = ItemsSource as List<BiliImage>;
+        AppImage? image = (sender as Image)?.Tag as AppImage;
+        List<AppImage>? itemsSource = ItemsSource as List<AppImage>;
         // new GalleryWindow(image, itemsSource).Activate();
     }
 }

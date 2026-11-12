@@ -5,7 +5,6 @@ using PhoenixReadCopilot.Models.Settings;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
-using Richasy.BiliKernel.Bili.Moment;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -14,7 +13,6 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class MomentPageViewModel
 {
-    private readonly IMomentDiscoveryService _momentDiscoveryService;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILoggerFactory _loggerFactory;
     private readonly ISettingsService _settingsService;
@@ -22,10 +20,10 @@ public sealed partial class MomentPageViewModel
     private AppSettings _settings => _settingsService.Settings;
 
     [ObservableProperty]
-    public partial List<IMomentSectionDetailViewModel> Sections { get; set; }
+    public partial List<IMomentSectionDetailViewModel>? Sections { get; set; }
 
     [ObservableProperty]
-    public partial IMomentSectionDetailViewModel SelectedSection { get; set; }
+    public partial IMomentSectionDetailViewModel? SelectedSection { get; set; }
 
     [ObservableProperty]
     public partial bool IsCommentsOpened { get; set; }
@@ -33,7 +31,7 @@ public sealed partial class MomentPageViewModel
     /// <summary>
     /// 区块初始化完成.
     /// </summary>
-    public event EventHandler Initialized;
+    public event EventHandler? Initialized;
 
     /// <summary>
     /// 评论模块.

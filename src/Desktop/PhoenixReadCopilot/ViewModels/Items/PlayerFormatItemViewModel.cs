@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Core.Models;
+using PhoenixReadCopilot.Core.Models.Player;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -69,11 +69,7 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
     /// </summary>
     public static int GetEffectiveResolution(PlaybackMedia media)
     {
-        if (media is
-            {
-                Width: > 0,
-                Height: > 0
-            })
+        if (media is { Width: > 0, Height: > 0 })
         {
             return Math.Min(media.Width, media.Height);
         }

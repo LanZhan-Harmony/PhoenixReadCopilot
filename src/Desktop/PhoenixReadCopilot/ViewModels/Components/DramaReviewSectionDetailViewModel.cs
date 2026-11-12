@@ -6,6 +6,7 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.ViewModels.Core;

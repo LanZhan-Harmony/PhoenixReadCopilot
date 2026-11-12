@@ -9,7 +9,7 @@
                               xmlns:local="using:PhoenixReadCopilot.Controls.Users"
                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                               xmlns:strings="using:PhoenixReadCopilot.Strings"
-                              xmlns:user="using:Richasy.BiliKernel.Models.User"
+                              xmlns:user="using:PhoenixReadCopilot.Core.Models.User"
                               mc:Ignorable="d">
 
     <Grid>

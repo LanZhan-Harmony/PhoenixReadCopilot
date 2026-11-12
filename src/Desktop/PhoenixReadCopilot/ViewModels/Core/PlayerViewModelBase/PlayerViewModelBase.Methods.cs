@@ -33,7 +33,7 @@ public abstract partial class PlayerViewModelBase
     private static string GetScreenshotFolderPath() =>
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-            "Bili-Screenshots"
+            "PhoenixReadCopilot-Screenshots"
         );
 
     private void ActiveDisplay()

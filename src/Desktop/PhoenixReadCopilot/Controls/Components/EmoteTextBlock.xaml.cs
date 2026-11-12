@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
+using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Models;

@@ -247,9 +247,6 @@ public sealed partial class AppSettings : ObservableObject
     public partial string LastSelectedFavoriteSection { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string LastSelectedMessageSection { get; set; } = string.Empty;
-
-    [ObservableProperty]
     public partial bool LastMomentSectionIsVideo { get; set; } = true;
 
     [ObservableProperty]
