@@ -1,5 +1,3 @@
-using PhoenixReadCopilot.Core.Models.User;
-
 namespace PhoenixReadCopilot.Core.Models.Media;
 
 /// <summary>

@@ -1,6 +1,4 @@
-using PhoenixReadCopilot.Core.Models.Media;
-
-namespace PhoenixReadCopilot.Core.Models.Player;
+namespace PhoenixReadCopilot.Core.Models.Media;
 
 /// <summary>
 /// 视频快照.

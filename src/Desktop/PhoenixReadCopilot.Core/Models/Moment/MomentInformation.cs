@@ -1,5 +1,4 @@
 using PhoenixReadCopilot.Core.Models.Appearance;
-using PhoenixReadCopilot.Core.Models.User;
 
 namespace PhoenixReadCopilot.Core.Models.Moment;
 

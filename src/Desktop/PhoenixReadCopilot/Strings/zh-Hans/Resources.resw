@@ -150,9 +150,6 @@
   <data name="AppThemeDescription" xml:space="preserve">
     <value>选择要显示的应用主题</value>
   </data>
-  <data name="AtMe" xml:space="preserve">
-    <value>@我的</value>
-  </data>
   <data name="AutoLoadHistoryWhenLoaded" xml:space="preserve">
     <value>加载后自动跳转上次播放进度</value>
   </data>
@@ -160,10 +157,10 @@
     <value>自动</value>
   </data>
   <data name="AutoNextRelatedVideo" xml:space="preserve">
-    <value>自动播放关联视频</value>
+    <value>自动播放推荐短剧</value>
   </data>
   <data name="AutoNextRelatedVideoDescription" xml:space="preserve">
-    <value>在视频播放结束后，如果有关联视频，则在 5 秒倒计时结束后自动播放下一个视频</value>
+    <value>在视频播放结束后，如果有推荐短剧，则自动播放下一个短剧</value>
   </data>
   <data name="AutoPlayWhenLoaded" xml:space="preserve">
     <value>加载完成后自动播放</value>
@@ -429,9 +426,6 @@
   <data name="LikeCount" xml:space="preserve">
     <value>点赞数</value>
   </data>
-  <data name="LikeMe" xml:space="preserve">
-    <value>收到的赞</value>
-  </data>
   <data name="LoadingAndWait" xml:space="preserve">
     <value>加载中，请稍候</value>
   </data>
@@ -450,9 +444,6 @@
   <data name="Manual" xml:space="preserve">
     <value>手动</value>
   </data>
-  <data name="MorePeople" xml:space="preserve">
-    <value>等人</value>
-  </data>
   <data name="MoreReplyDisplay" xml:space="preserve">
     <value>共{0}条回复 ⪢</value>
   </data>
@@ -466,7 +457,7 @@
     <value>我的收藏</value>
   </data>
   <data name="MyFavoriteCalendar" xml:space="preserve">
-    <value>我的追番</value>
+    <value>我的预约</value>
   </data>
   <data name="MyFavoriteFilm" xml:space="preserve">
     <value>我的追剧</value>
@@ -600,9 +591,6 @@
   <data name="ReplyCount" xml:space="preserve">
     <value>评论数</value>
   </data>
-  <data name="ReplyMe" xml:space="preserve">
-    <value>回复我的</value>
-  </data>
   <data name="ReplyPlaceholderText" xml:space="preserve">
     <value>写下你的评论吧~</value>
   </data>
@@ -628,13 +616,10 @@
     <value>搜索</value>
   </data>
   <data name="SearchTip" xml:space="preserve">
-    <value>搜索视频、番剧或UP主</value>
+    <value>搜索短剧或用户</value>
   </data>
   <data name="SendFeedback" xml:space="preserve">
     <value>发送反馈</value>
-  </data>
-  <data name="SendMessage" xml:space="preserve">
-    <value>发送消息</value>
   </data>
   <data name="SetFailed" xml:space="preserve">
     <value>设置失败</value>
@@ -684,17 +669,11 @@
   <data name="SortByDefault" xml:space="preserve">
     <value>默认排序</value>
   </data>
-  <data name="SortByFavorite" xml:space="preserve">
-    <value>收藏最多</value>
-  </data>
   <data name="SortByNewest" xml:space="preserve">
     <value>最新发布</value>
   </data>
   <data name="SortByPlay" xml:space="preserve">
     <value>播放最多</value>
-  </data>
-  <data name="SortByReply" xml:space="preserve">
-    <value>评论最多</value>
   </data>
   <data name="SourceNotSupported" xml:space="preserve">
     <value>不支持该源</value>
@@ -746,12 +725,6 @@
   </data>
   <data name="Total" xml:space="preserve">
     <value>全部</value>
-  </data>
-  <data name="Triple" xml:space="preserve">
-    <value>三连</value>
-  </data>
-  <data name="TripleTip" xml:space="preserve">
-    <value>要不顺便来个一键三连？赞赏他人，取悦自己 😉</value>
   </data>
   <data name="UHDFirst" xml:space="preserve">
     <value>超高清（4K）优先</value>
@@ -838,10 +811,10 @@
     <value>下载视频同时下载弹幕</value>
   </data>
   <data name="DownloadAllParts" xml:space="preserve">
-    <value>下载所有分P</value>
+    <value>下载所有分集</value>
   </data>
   <data name="SelectPartsDownload" xml:space="preserve">
-    <value>指定分P下载</value>
+    <value>指定分集下载</value>
   </data>
   <data name="DownloadSelectPartTip" xml:space="preserve">
     <value>选择指定分集或范围，示例：

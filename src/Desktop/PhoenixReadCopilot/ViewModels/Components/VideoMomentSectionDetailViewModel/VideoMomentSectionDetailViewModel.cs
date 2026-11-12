@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
@@ -51,13 +50,10 @@ public sealed partial class VideoMomentSectionDetailViewModel
         IsEmpty = false;
         _preventLoadMore = false;
         Items.Clear();
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                await LoadItemsAsync();
-            }
-        );
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            await LoadItemsAsync();
+        });
     }
 
     [RelayCommand]

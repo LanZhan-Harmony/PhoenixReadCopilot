@@ -2,12 +2,12 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Appearance;
+using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.Core.Models.Appearance;
-using PhoenixReadCopilot.Core.Models.Media;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 

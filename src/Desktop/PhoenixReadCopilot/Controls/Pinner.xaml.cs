@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
-using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;

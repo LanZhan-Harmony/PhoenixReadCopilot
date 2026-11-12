@@ -7,7 +7,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
-using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
@@ -271,7 +270,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             }
             else if (Data is not null)
             {
-                var drama = new PhoenixReadApi.Drama
+                Drama drama = new()
                 {
                     Id = Data.Identifier?.Id ?? string.Empty,
                     Title = Data.Identifier?.Title ?? string.Empty,
@@ -280,13 +279,15 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
                 await ItemServices.LocalViewLater.AddAsync(drama);
             }
             ItemServices.App.ShowTipCommand.Execute(
-                (Resources.AddViewLaterSucceed, InfoType.Success)
+                (Strings.Resources.AddViewLaterSucceed, InfoType.Success)
             );
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "添加稍后再看失败");
-            ItemServices.App.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
+            ItemServices.App.ShowTipCommand.Execute(
+                (Strings.Resources.AddViewLaterFailed, InfoType.Error)
+            );
         }
     }
 
@@ -309,7 +310,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             _logger.LogError(ex, "移除稍后再看视频失败");
             ItemServices.App.ShowTipCommand.Execute(
-                (Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
+                (Strings.Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
             );
         }
     }
@@ -328,10 +329,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             }
             else if (Data is not null && !string.IsNullOrEmpty(Data.Identifier?.Id))
             {
-                await ItemServices.PhoenixRead.DeleteHistoryAsync(
-                    Data.Identifier.Id,
-                    string.Empty
-                );
+                await ItemServices.PhoenixRead.DeleteHistoryAsync(Data.Identifier.Id, string.Empty);
             }
             _removeAction?.Invoke(this);
         }
@@ -339,7 +337,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             _logger.LogError(ex, "移除历史记录视频失败");
             ItemServices.App.ShowTipCommand.Execute(
-                (Resources.FailedToRemoveVideoFromHistory, InfoType.Error)
+                (Strings.Resources.FailedToRemoveVideoFromHistory, InfoType.Error)
             );
         }
     }
@@ -371,7 +369,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             _logger.LogError(ex, "移除收藏视频失败");
             ItemServices.App.ShowTipCommand.Execute(
-                (Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
+                (Strings.Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
             );
         }
     }

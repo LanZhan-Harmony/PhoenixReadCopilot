@@ -8,7 +8,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Models;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
