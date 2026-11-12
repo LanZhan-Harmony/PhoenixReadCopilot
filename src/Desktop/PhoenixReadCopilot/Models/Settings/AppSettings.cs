@@ -27,9 +27,6 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool AutoPlayNext { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool EndWithPlaylist { get; set; } = true;
-
-    [ObservableProperty]
     public partial double SingleFastForwardAndRewindSpan { get; set; } = 15.0;
 
     [ObservableProperty]
@@ -232,15 +229,6 @@ public sealed partial class AppSettings : ObservableObject
     public partial string PopularPageLastSelectedSectionId { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial double VideoPartitionPageNavColumnWidth { get; set; } = 0;
-
-    [ObservableProperty]
-    public partial bool IsVideoPartitionPageNavColumnManualHide { get; set; } = false;
-
-    [ObservableProperty]
-    public partial string VideoPartitionPageLastSelectedPartitionId { get; set; } = string.Empty;
-
-    [ObservableProperty]
     public partial double CalendarPageNavColumnWidth { get; set; } = 0;
 
     [ObservableProperty]
@@ -275,9 +263,6 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool IsMomentPageVisible { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsVideoPartitionPageVisible { get; set; } = true;
-
-    [ObservableProperty]
     public partial bool IsCalendarPageVisible { get; set; } = true;
 
     [ObservableProperty]
@@ -296,9 +281,6 @@ public sealed partial class AppSettings : ObservableObject
             "PopularPage" => PopularPageNavColumnWidth <= 0
                 ? defaultValue
                 : PopularPageNavColumnWidth,
-            "VideoPartitionPage" => VideoPartitionPageNavColumnWidth <= 0
-                ? defaultValue
-                : VideoPartitionPageNavColumnWidth,
             "CalendarPage" => CalendarPageNavColumnWidth <= 0
                 ? defaultValue
                 : CalendarPageNavColumnWidth,
@@ -318,9 +300,6 @@ public sealed partial class AppSettings : ObservableObject
             case "PopularPage":
                 PopularPageNavColumnWidth = value;
                 break;
-            case "VideoPartitionPage":
-                VideoPartitionPageNavColumnWidth = value;
-                break;
             case "CalendarPage":
                 CalendarPageNavColumnWidth = value;
                 break;
@@ -337,7 +316,6 @@ public sealed partial class AppSettings : ObservableObject
         pageKey switch
         {
             "PopularPage" => IsPopularPageNavColumnManualHide,
-            "VideoPartitionPage" => IsVideoPartitionPageNavColumnManualHide,
             "CalendarPage" => IsCalendarPageNavColumnManualHide,
             "FindDramaPage" => IsFindDramaPageNavColumnManualHide,
             _ => defaultValue,
@@ -352,9 +330,6 @@ public sealed partial class AppSettings : ObservableObject
         {
             case "PopularPage":
                 IsPopularPageNavColumnManualHide = value;
-                break;
-            case "VideoPartitionPage":
-                IsVideoPartitionPageNavColumnManualHide = value;
                 break;
             case "CalendarPage":
                 IsCalendarPageNavColumnManualHide = value;
@@ -375,7 +350,6 @@ public sealed partial class AppSettings : ObservableObject
         {
             "PopularPage" => IsPopularPageVisible,
             "MomentPage" => IsMomentPageVisible,
-            "VideoPartitionPage" => IsVideoPartitionPageVisible,
             "CalendarPage" => IsCalendarPageVisible,
             "FindDramaPage" => IsFindDramaPageVisible,
             _ => true,
@@ -395,9 +369,6 @@ public sealed partial class AppSettings : ObservableObject
                 break;
             case "MomentPage":
                 IsMomentPageVisible = isVisible;
-                break;
-            case "VideoPartitionPage":
-                IsVideoPartitionPageVisible = isVisible;
                 break;
             case "CalendarPage":
                 IsCalendarPageVisible = isVisible;

@@ -13,33 +13,7 @@ internal sealed partial class SortTypeTextConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         string result = string.Empty;
-        if (value is PartitionVideoSortType vst)
-        {
-            switch (vst)
-            {
-                case PartitionVideoSortType.Default:
-                    result = Resources.SortByDefault;
-                    break;
-                case PartitionVideoSortType.Newest:
-                    result = Resources.SortByNewest;
-                    break;
-                case PartitionVideoSortType.Play:
-                    result = Resources.SortByPlay;
-                    break;
-                case PartitionVideoSortType.Reply:
-                    result = Resources.SortByReply;
-                    break;
-                case PartitionVideoSortType.Danmaku:
-                    result = Resources.SortByDanmaku;
-                    break;
-                case PartitionVideoSortType.Favorite:
-                    result = Resources.SortByFavorite;
-                    break;
-                default:
-                    break;
-            }
-        }
-        else if (value is ComprehensiveSearchSortType chst)
+        if (value is ComprehensiveSearchSortType chst)
         {
             result = chst switch
             {

@@ -245,54 +245,23 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     private void SetSwapChainOnPanel()
     {
-        SharpGen.Runtime.Result setSwapChainResult;
-        unsafe
+        try
         {
-            IWinRTObject winrtObj = _swapChainPanel.As<IWinRTObject>();
-            IObjectReference objRef = winrtObj.NativeObject;
-            var panelPtr = objRef.ThisPtr;
-
-            Guid guid = typeof(ISwapChainPanelNative).GUID;
-            void* nativePanelPtr;
-            var hr = (
-                (delegate* unmanaged[Stdcall]<IntPtr, Guid*, void**, int>)(*(void***)panelPtr)[0]
-            )(panelPtr, &guid, &nativePanelPtr);
+            ISwapChainPanelNative nativePanel = _swapChainPanel.As<ISwapChainPanelNative>();
+            int hr = nativePanel.SetSwapChain(SwapChain.NativePointer);
             if (hr < 0)
             {
-                Logger.Log($"QueryInterface for ISwapChainPanelNative failed: 0x{hr:X8}");
-#pragma warning disable CA2201 // 不要引发保留的异常类型
-                throw new System.Runtime.InteropServices.COMException(
-                    $"Failed to query ISwapChainPanelNative interface",
-                    hr
-                );
-#pragma warning restore CA2201
+                Logger.Log($"Failed to set swap chain. HRESULT: 0x{hr:X8}");
+                return;
             }
 
-            try
-            {
-                delegate* unmanaged[Stdcall]<void*, nint, int> setSwapChainFunc =
-                    (delegate* unmanaged[Stdcall]<void*, IntPtr, int>)(*(void***)nativePanelPtr)[3];
-                hr = setSwapChainFunc(nativePanelPtr, SwapChain.NativePointer);
-                setSwapChainResult = new SharpGen.Runtime.Result(hr);
-            }
-            finally
-            {
-                ((delegate* unmanaged[Stdcall]<void*, uint>)(*(void***)nativePanelPtr)[2])(
-                    nativePanelPtr
-                );
-            }
+            // 设置变换矩阵
+            SetTransformMatrix();
         }
-
-        if (setSwapChainResult.Failure)
+        catch (Exception ex)
         {
-            Logger.Log($"SetSwapChain failed: {setSwapChainResult}");
-#pragma warning disable CA2201 // 不要引发保留的异常类型
-            throw new Exception($"Failed to set swap chain: {setSwapChainResult}");
-#pragma warning restore CA2201
+            Logger.Log($"Unexpected error during swap chain setup: {ex}");
         }
-
-        // 设置变换矩阵
-        SetTransformMatrix();
     }
 
     /// <summary>
@@ -308,7 +277,6 @@ internal sealed class DirectXResourceManager : IDisposable
             // MatrixTransform = (0.5, 0.5) 将物理坐标映射到逻辑坐标
             Matrix3x2 matrix = new() { M11 = (float)(1.0 / _scale), M22 = (float)(1.0 / _scale) };
 
-            // AOT 兼容：直接使用 QueryInterface 而不是 As<T>()
             using IDXGISwapChain2 swapChain2 = SwapChain.QueryInterface<IDXGISwapChain2>();
             swapChain2.MatrixTransform = matrix;
             Logger.Log($"SetTransformMatrix: scale={_scale}, matrix=({matrix.M11},{matrix.M22})");
@@ -519,20 +487,17 @@ internal sealed class DirectXResourceManager : IDisposable
         _logicalWidth = e.NewSize.Width;
         _logicalHeight = e.NewSize.Height;
 
-        _swapChainPanel.DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
+        _swapChainPanel.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
 
-                Logger.Log(
-                    $"Size changed: Logical={_logicalWidth}x{_logicalHeight}, Canvas={_canvasWidth}x{_canvasHeight}"
-                );
+            Logger.Log(
+                $"Size changed: Logical={_logicalWidth}x{_logicalHeight}, Canvas={_canvasWidth}x{_canvasHeight}"
+            );
 
-                // 触发尺寸变化事件
-                SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
-            }
-        );
+            // 触发尺寸变化事件
+            SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
+        });
 
         // 启动延迟 resize 机制
         ScheduleDelayedResize();

@@ -537,9 +537,6 @@
   <data name="OpenFolderWhenDownloaded" xml:space="preserve">
     <value>下载完成后打开文件夹</value>
   </data>
-  <data name="PartitionRank" xml:space="preserve">
-    <value>分区排行榜</value>
-  </data>
   <data name="Parts" xml:space="preserve">
     <value>分集</value>
   </data>
@@ -578,9 +575,6 @@
   </data>
   <data name="PlayerType" xml:space="preserve">
     <value>播放器类型</value>
-  </data>
-  <data name="Playlist" xml:space="preserve">
-    <value>播放列表</value>
   </data>
   <data name="Popular" xml:space="preserve">
     <value>流行视频</value>
@@ -795,9 +789,6 @@
   <data name="VideoDynamicNotification" xml:space="preserve">
     <value>新视频动态通知</value>
   </data>
-  <data name="VideoPartition" xml:space="preserve">
-    <value>视频分区</value>
-  </data>
   <data name="ViewHistory" xml:space="preserve">
     <value>观看历史</value>
   </data>
@@ -806,9 +797,6 @@
   </data>
   <data name="Web" xml:space="preserve">
     <value>网页</value>
-  </data>
-  <data name="WholePartitions" xml:space="preserve">
-    <value>全区</value>
   </data>
   <data name="ZoomIn" xml:space="preserve">
     <value>放大</value>
@@ -925,12 +913,6 @@
   </data>
   <data name="SkipAISubtitle" xml:space="preserve">
     <value>跳过 AI 字幕下载</value>
-  </data>
-  <data name="StopWhenEndOfPlaylist" xml:space="preserve">
-    <value>在播放列表结尾终止</value>
-  </data>
-  <data name="StopWhenEndOfPlaylistDescription" xml:space="preserve">
-    <value>当播放到播放列表最后一个视频时，不再切换到其它视频</value>
   </data>
   <data name="SingleLoop" xml:space="preserve">
     <value>单个循环</value>

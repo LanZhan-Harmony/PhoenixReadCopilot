@@ -158,7 +158,7 @@ internal partial class DanmakuDirectXRender
             // 获取位图（CompatibleRenderTarget.Bitmap 返回 ID2D1Bitmap，需要转换）
             ID2D1Bitmap bitmap = compatibleTarget.Bitmap;
 
-            // 转换为 ID2D1Bitmap1（通过 QueryInterface）
+            // 转换为 ID2D1Bitmap1
             ID2D1Bitmap1 bitmap1 = bitmap.QueryInterface<ID2D1Bitmap1>();
 
             // 释放原始位图引用（避免内存泄漏）

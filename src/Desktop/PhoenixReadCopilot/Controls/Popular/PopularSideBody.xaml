@@ -16,12 +16,7 @@
         <DataTemplate x:Key="SectionTemplate" x:DataType="items:PopularSectionItemViewModel">
             <local:PopularSectionItemControl ViewModel="{x:Bind}"/>
         </DataTemplate>
-        <DataTemplate x:Key="PartitionTemplate" x:DataType="items:PopularRankPartitionViewModel">
-            <local:PopularRankParitionItemControl ViewModel="{x:Bind}"/>
-        </DataTemplate>
-        <ext:PopularSectionTemplateSelector x:Key="SectionSelector"
-                                            PartitionTemplate="{StaticResource PartitionTemplate}"
-                                            SectionTemplate="{StaticResource SectionTemplate}"/>
+        <ext:PopularSectionTemplateSelector x:Key="SectionSelector" SectionTemplate="{StaticResource SectionTemplate}"/>
     </UserControl.Resources>
 
     <Grid>

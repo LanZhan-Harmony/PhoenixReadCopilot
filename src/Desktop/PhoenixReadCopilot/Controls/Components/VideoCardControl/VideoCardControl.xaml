@@ -40,18 +40,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="PartitionVideoCardStyle" TargetType="local:VideoCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:VideoCardControl">
-                    <base:CardControl x:Name="RootCard">
-                        <local:PartitionVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
-                    </base:CardControl>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="SearchVideoCardStyle" TargetType="local:VideoCardControl">
         <Setter Property="Template">
             <Setter.Value>
@@ -122,23 +110,4 @@
         </Setter>
     </Style>
 
-    <Style x:Key="PlayerSeasonVideoCardStyle" TargetType="local:VideoCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:VideoCardControl">
-                    <local:PlayerSeasonVideoCardPresenter ViewModel="{TemplateBinding ViewModel}"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="PlayerPlaylistVideoCardStyle" TargetType="local:VideoCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:VideoCardControl">
-                    <local:PlayerPlaylistVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 </ResourceDictionary>

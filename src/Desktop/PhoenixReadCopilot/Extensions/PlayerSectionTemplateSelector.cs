@@ -14,8 +14,6 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
 
     public DataTemplate PartTemplate { get; set; }
 
-    public DataTemplate PlaylistTemplate { get; set; }
-
     public DataTemplate InfoTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
@@ -35,10 +33,6 @@ internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelect
         else if (item is VideoPlayerPartSectionDetailViewModel)
         {
             return PartTemplate;
-        }
-        else if (item is VideoPlayerPlaylistSectionDetailViewModel)
-        {
-            return PlaylistTemplate;
         }
         else if (item is VideoPlayerInfoSectionDetailViewModel)
         {
