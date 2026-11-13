@@ -34,8 +34,7 @@ public sealed partial class PlayerNotificationItemViewModel : ViewModelBase<Play
     public PlayerNotificationItemViewModel(PlayerNotification notification)
         : base(notification)
     {
-        _timer = new DispatcherTimer();
-        _timer.Interval = TimeSpan.FromMilliseconds(100);
+        _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
         _timer.Tick += OnTimerTick;
     }
 

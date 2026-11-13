@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Pages;
+using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 

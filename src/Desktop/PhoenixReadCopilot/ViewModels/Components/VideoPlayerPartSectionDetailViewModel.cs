@@ -1,12 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -41,10 +40,7 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     {
         _settings = settingsService.Settings;
         _partSelectedAction = action;
-        Parts =
-        [
-            .. parts,
-        ];
+        Parts = [.. parts];
         SelectedPart = parts.FirstOrDefault(p => p.VideoId == currentVideoId);
         OnlyIndex = _settings.IsVideoPlayerPartsOnlyIndex;
     }

@@ -4,13 +4,12 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using Windows.Foundation;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.Controls.Core;
 
@@ -98,8 +97,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
     {
         if (_cursorTimer is null)
         {
-            _cursorTimer = new DispatcherTimer();
-            _cursorTimer.Interval = TimeSpan.FromSeconds(0.5);
+            _cursorTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5) };
             _cursorTimer.Tick += OnCursorTimerTick;
         }
 
@@ -112,14 +110,11 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
         ViewModel.SetIsTextBoxFocusedFunc(IsTextBoxFocused);
         SizeChanged += OnSizeChanged;
 
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                ArrangeSubtitleSize();
-                MeasureTransportTriggerRect();
-            }
-        );
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            ArrangeSubtitleSize();
+            MeasureTransportTriggerRect();
+        });
 
         _cursorTimer?.Start();
     }
@@ -166,13 +161,10 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
         newValue.RequestCancelNotification += OnRequestCancelNotification;
         newValue.Initialized += OnViewModelInitialized;
 
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
-            {
-                ArrangeSubtitleSize();
-            }
-        );
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            ArrangeSubtitleSize();
+        });
     }
 
     private void HookRootPointerEvents()
@@ -279,8 +271,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
     {
         _notificationContainer.Visibility = Visibility.Visible;
         _notificationContainer.Children.Clear();
-        PlayerNotificationControl control = new();
-        control.ViewModel = e;
+        PlayerNotificationControl control = new() { ViewModel = e };
         e.IsNotificationVisible = true;
         _notificationContainer.Children.Add(control);
     }

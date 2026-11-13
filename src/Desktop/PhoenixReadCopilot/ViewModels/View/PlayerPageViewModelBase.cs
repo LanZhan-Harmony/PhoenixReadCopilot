@@ -1,9 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 

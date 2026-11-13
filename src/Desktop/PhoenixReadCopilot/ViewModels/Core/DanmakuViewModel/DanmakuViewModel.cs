@@ -2,15 +2,14 @@ using CommunityToolkit.Mvvm.Input;
 using Danmaku.Core.Enums;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Toolkits;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
 using DanmakuCoreItem = Danmaku.Core.Models.DanmakuItem;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

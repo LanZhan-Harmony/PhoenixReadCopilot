@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
-using PhoenixReadCopilot.Helpers;
-using ZLogger;
 using PhoenixReadCopilot.Core.Helpers;
+using ZLogger;
 
 namespace PhoenixReadCopilot.Services;
 

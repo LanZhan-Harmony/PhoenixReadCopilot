@@ -264,10 +264,12 @@ public sealed partial class PhoenixReadPlayer
             VirtualKeyModifiers modifiers = VirtualKeyModifiers.None
         )
         {
-            KeyboardAccelerator accelerator = new();
-            accelerator.Key = key;
-            accelerator.Modifiers = modifiers;
-            accelerator.IsEnabled = true;
+            KeyboardAccelerator accelerator = new()
+            {
+                Key = key,
+                Modifiers = modifiers,
+                IsEnabled = true,
+            };
 
             Button btn = new()
             {

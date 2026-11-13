@@ -1,16 +1,15 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
 using HotSearchItem = PhoenixReadCopilot.Core.Models.Search.HotSearchItem;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

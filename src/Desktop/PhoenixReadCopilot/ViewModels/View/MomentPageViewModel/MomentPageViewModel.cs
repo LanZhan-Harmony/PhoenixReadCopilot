@@ -1,12 +1,11 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Moment;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -61,9 +60,8 @@ public sealed partial class MomentPageViewModel : ViewModelBase
             ? Sections.First()
             : Sections.Last();
         SelectSectionCommand.Execute(section);
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () => Initialized?.Invoke(this, EventArgs.Empty)
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            Initialized?.Invoke(this, EventArgs.Empty)
         );
     }
 
