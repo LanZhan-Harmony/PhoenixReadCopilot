@@ -10,7 +10,6 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Extensions;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Graphics;
 using Windows.System;
@@ -256,22 +255,19 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         }
 
         PointInt32 lastPoint = GetSavedWindowPosition();
-        bool isZeroPoint = lastPoint is
-        {
-            X: 0,
-            Y: 0
-        };
+        bool isZeroPoint = lastPoint is { X: 0, Y: 0 };
         bool isValidPosition = lastPoint.X >= workArea.X && lastPoint.Y >= workArea.Y;
         double left = isZeroPoint || !isValidPosition ? (workArea.Width - width) / 2d : lastPoint.X;
-        double top = isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
+        double top =
+            isZeroPoint || !isValidPosition ? (workArea.Height - height) / 2d : lastPoint.Y;
         return new RectInt32(Convert.ToInt32(left), Convert.ToInt32(top), width, height);
     }
 
     private void MoveAndResize()
     {
         PointInt32 lastPoint = GetSavedWindowPosition();
-        DisplayArea displayArea =
-            DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary) ?? DisplayArea.Primary;
+        DisplayArea displayArea = DisplayArea.GetFromPoint(lastPoint, DisplayAreaFallback.Primary)
+            ?? DisplayArea.Primary;
         RectInt32 rect = GetRenderRect(displayArea.WorkArea);
         AppWindow.MoveAndResize(rect);
     }

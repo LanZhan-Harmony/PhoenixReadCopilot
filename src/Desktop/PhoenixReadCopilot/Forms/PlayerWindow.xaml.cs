@@ -4,12 +4,12 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Graphics;
 using Windows.System;
@@ -17,7 +17,6 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using WinUIEx;
 using WinUIKernel.Share.Base;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.Forms;
 

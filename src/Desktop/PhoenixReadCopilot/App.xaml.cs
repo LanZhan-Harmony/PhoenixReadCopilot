@@ -3,13 +3,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
-using Microsoft.Windows.AppNotifications;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using ZLogger;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot;
 
@@ -20,7 +18,6 @@ public partial class App : Application
 {
     private const string Id = "PhoenixReadCopilot";
     private readonly DispatcherQueue _dispatcherQueue;
-    private AppNotificationManager _notificationManager;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -32,16 +29,6 @@ public partial class App : Application
         ServiceHelper.ConfigureServices();
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         UnhandledException += OnUnhandledException;
-        try
-        {
-            _notificationManager = AppNotificationManager.Default;
-            _notificationManager.NotificationInvoked += OnAppNotificationInvoked;
-            _notificationManager.Register();
-        }
-        catch
-        {
-            _notificationManager = null;
-        }
     }
 
     /// <summary>
@@ -87,12 +74,6 @@ public partial class App : Application
 
     private void ExitApp()
     {
-        try
-        {
-            _notificationManager?.Unregister();
-        }
-        catch { }
-        _notificationManager = null;
         Exit();
     }
 
@@ -111,28 +92,6 @@ public partial class App : Application
             Ioc.Default.GetRequiredService<ISettingsService>().Settings.LastSelectedFeaturePage =
                 string.Empty;
             Ioc.Default.GetRequiredService<AppViewModel>().RestartCommand.Execute(null);
-        }
-    }
-
-    private void OnAppNotificationInvoked(
-        AppNotificationManager sender,
-        AppNotificationActivatedEventArgs args
-    )
-    {
-        if (args.Arguments.TryGetValue("page", out string? type))
-        {
-            string argsStr = args.Arguments.TryGetValue("args", out string? a) ? a : string.Empty;
-            if (string.IsNullOrEmpty(argsStr))
-            {
-                return;
-            }
-
-            _dispatcherQueue.TryEnqueue(() =>
-            {
-                object? obj = null;
-                Type? pageType = Type.GetType(type);
-                Ioc.Default.GetRequiredService<NavigationViewModel>().NavigateToOver(pageType, obj);
-            });
         }
     }
 }

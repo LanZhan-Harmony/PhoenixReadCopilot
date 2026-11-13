@@ -5,17 +5,16 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.BadgeNotifications;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using Windows.System;
 using WinUIEx;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -27,17 +26,10 @@ public sealed partial class AppViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="AppViewModel"/> class.
     /// </summary>
-    public AppViewModel(
-        ILogger<AppViewModel> logger,
-        ISettingsService settingsService,
-        IAppToolkit appToolkit,
-        PhoenixReadApiClient apiClient
-    )
+    public AppViewModel(ISettingsService settingsService, IAppToolkit appToolkit)
     {
-        _logger = logger;
         _settings = settingsService.Settings;
         _appToolkit = appToolkit;
-        _apiClient = apiClient;
     }
 
     [RelayCommand]

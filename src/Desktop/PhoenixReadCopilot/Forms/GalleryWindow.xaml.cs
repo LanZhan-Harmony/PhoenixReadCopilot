@@ -1,18 +1,17 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Settings;
+using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using WinUIEx;
 using WinUIKernel.Share.Base;
-using PhoenixReadCopilot.Core.Contracts.Services;
-using PhoenixReadCopilot.Extensions;
 
 namespace PhoenixReadCopilot.Forms;
 

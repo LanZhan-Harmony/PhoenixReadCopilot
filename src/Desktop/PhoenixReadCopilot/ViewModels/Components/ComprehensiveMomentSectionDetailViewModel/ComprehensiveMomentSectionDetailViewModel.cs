@@ -1,10 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.Services;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -46,9 +45,8 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
 
         IsLoading = true;
         Upers.Add(
-            new MomentUperSectionViewModel(
-                null,
-                data => _momentPageViewModel.ShowCommentCommand.Execute(data)
+            new MomentUperSectionViewModel(null, data =>
+                _momentPageViewModel.ShowCommentCommand.Execute(data)
             )
         );
         await LoadUpersAsync();
@@ -64,15 +62,12 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         if (SelectedUper is not null && SelectedUper.IsTotal)
         {
             Upers.Clear();
-            _dispatcherQueue.TryEnqueue(
-                DispatcherQueuePriority.Low,
-                async () =>
-                {
-                    SelectedUper?.Items?.Clear();
-                    SelectedUper = null;
-                    await InitializeAsync();
-                }
-            );
+            _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+            {
+                SelectedUper?.Items?.Clear();
+                SelectedUper = null;
+                await InitializeAsync();
+            });
         }
         else
         {

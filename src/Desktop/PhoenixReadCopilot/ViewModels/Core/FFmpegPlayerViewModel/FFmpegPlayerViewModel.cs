@@ -2,12 +2,11 @@ using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using Windows.Media.Playback;
 using ZLogger;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

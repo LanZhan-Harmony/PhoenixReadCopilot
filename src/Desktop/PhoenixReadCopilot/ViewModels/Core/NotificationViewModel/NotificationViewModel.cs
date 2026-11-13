@@ -1,14 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Services;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Notifications;
 using Windows.UI.StartScreen;
 using WinUIKernel.Share.ViewModels;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -39,8 +38,7 @@ public sealed partial class NotificationViewModel : ViewModelBase
 
         if (_timer is null)
         {
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMinutes(15);
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(15) };
             _timer.Tick += OnTimerTick;
         }
 

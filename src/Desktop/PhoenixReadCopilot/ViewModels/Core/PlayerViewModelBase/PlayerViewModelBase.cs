@@ -1,14 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Player;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using Windows.Media;
 using Windows.Storage.Streams;
 using WinUIEx;
 using WinUIKernel.Share.ViewModels;
-using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

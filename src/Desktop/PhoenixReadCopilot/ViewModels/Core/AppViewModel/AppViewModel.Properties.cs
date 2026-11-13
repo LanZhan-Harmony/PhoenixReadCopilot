@@ -13,10 +13,8 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// </summary>
 public sealed partial class AppViewModel : ViewModelBase
 {
-    private readonly ILogger<AppViewModel> _logger;
     private readonly IAppToolkit _appToolkit;
     private readonly AppSettings _settings;
-    private readonly PhoenixReadApiClient _apiClient;
 
     [ObservableProperty]
     public partial Window ActivatedWindow { get; set; }
