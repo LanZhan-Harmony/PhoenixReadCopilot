@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -32,8 +33,8 @@ public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 
         Player = playerType switch
         {
-            PlayerType.FFmpeg => Ioc.Default.GetService<FFmpegPlayerViewModel>(),
-            _ => Ioc.Default.GetService<FFmpegPlayerViewModel>(),
+            PlayerType.FFmpeg => Ioc.Default.GetRequiredService<FFmpegPlayerViewModel>(),
+            _ => Ioc.Default.GetRequiredService<FFmpegPlayerViewModel>(),
         };
 
         Player.AttachedWindow = appViewModel.ActivatedWindow;

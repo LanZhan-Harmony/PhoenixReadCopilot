@@ -7,6 +7,8 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -97,7 +99,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         catch (Exception ex)
         {
             _preventLoadMore = true;
-            _logger.LogError(ex, "加载短剧收藏失败");
+            _logger.ZLogError(ex, $"加载短剧收藏失败");
         }
         finally
         {

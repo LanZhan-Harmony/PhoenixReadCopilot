@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 using Windows.UI;
 using WinUIKernel.Share.Toolkits;
 using DanmakuCoreItem = Danmaku.Core.Models.DanmakuItem;

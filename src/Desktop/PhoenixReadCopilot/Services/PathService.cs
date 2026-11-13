@@ -1,58 +1,43 @@
 using Microsoft.Windows.Storage;
+using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Helpers;
 
-namespace PhoenixReadCopilot.Helpers;
+namespace PhoenixReadCopilot.Services;
 
-/// <summary>
-/// 路径管理辅助类.
-/// </summary>
-internal static class PathHelper
+internal class PathService : IPathService
 {
-    /// <summary>
-    /// 应用数据根目录.
-    /// </summary>
-    internal static string RootFolderPath { get; }
+    public string RootFolderPath { get; }
 
-    /// <summary>
-    /// 设置文件夹路径.
-    /// </summary>
-    internal static string SettingsFolderPath { get; }
+    public string SettingsFolderPath { get; }
 
-    /// <summary>
-    /// 认证文件夹路径.
-    /// </summary>
-    internal static string AuthFolderPath { get; }
+    public string AuthFolderPath { get; }
 
-    /// <summary>
-    /// 日志文件夹路径.
-    /// </summary>
-    internal static string LogFolderPath { get; }
+    public string DataFolderPath { get; }
 
-    /// <summary>
-    /// 临时文件夹路径.
-    /// </summary>
-    internal static string TempFolderPath { get; }
+    public string LogFolderPath { get; }
 
-    /// <summary>
-    /// 缓存文件夹路径.
-    /// </summary>
-    internal static string CacheFolderPath { get; }
+    public string TempFolderPath { get; }
 
-    static PathHelper()
+    public string CacheFolderPath { get; }
+
+    public PathService()
     {
         RootFolderPath = GetApplicationDataRoot();
         SettingsFolderPath = Path.Combine(RootFolderPath, "Settings");
         AuthFolderPath = Path.Combine(RootFolderPath, "Auth");
+        DataFolderPath = Path.Combine(RootFolderPath, "Data");
         LogFolderPath = Path.Combine(RootFolderPath, "Logs");
         TempFolderPath = Path.Combine(RootFolderPath, "Temp");
         CacheFolderPath = Path.Combine(RootFolderPath, "Cache");
         EnsureDirectoryExists();
     }
 
-    private static void EnsureDirectoryExists()
+    private void EnsureDirectoryExists()
     {
         Directory.CreateDirectory(RootFolderPath);
         Directory.CreateDirectory(SettingsFolderPath);
         Directory.CreateDirectory(AuthFolderPath);
+        Directory.CreateDirectory(DataFolderPath);
         Directory.CreateDirectory(LogFolderPath);
         Directory.CreateDirectory(TempFolderPath);
         Directory.CreateDirectory(CacheFolderPath);

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -57,27 +58,24 @@ public sealed partial class VideoHistorySectionDetailViewModel
         try
         {
             IsLoading = true;
-            ReadHistoryPage page = await _apiClient.GetHistoryAsync(
-                count: 20,
-                offset: _offset
-            );
+            ReadHistoryPage page = await _apiClient.GetHistoryAsync(count: 20, offset: _offset);
             _offset = page.NextOffset;
             _isPreventLoadMore = !page.HasMore || page.Items.Count == 0;
             if (page.Items.Count > 0)
             {
                 foreach (ReadHistoryEntry entry in page.Items)
                 {
-                    if (Items.Any(p => p.HistoryEntry?.SeriesId == entry.SeriesId && p.HistoryEntry?.VideoId == entry.VideoId))
+                    if (
+                        Items.Any(p =>
+                            p.HistoryEntry?.SeriesId == entry.SeriesId
+                            && p.HistoryEntry?.VideoId == entry.VideoId
+                        )
+                    )
                     {
                         continue;
                     }
 
-                    Items.Add(
-                        new VideoItemViewModel(
-                            entry,
-                            removeAction: RemoveHistory
-                        )
-                    );
+                    Items.Add(new VideoItemViewModel(entry, removeAction: RemoveHistory));
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -86,7 +84,7 @@ public sealed partial class VideoHistorySectionDetailViewModel
         catch (Exception ex)
         {
             _isPreventLoadMore = true;
-            _logger.LogError(ex, "加载短剧历史记录时出错.");
+            _logger.ZLogError(ex, $"加载短剧历史记录时出错.");
         }
         finally
         {

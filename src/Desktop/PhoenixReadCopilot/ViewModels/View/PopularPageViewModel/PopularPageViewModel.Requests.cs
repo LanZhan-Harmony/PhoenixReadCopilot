@@ -1,7 +1,7 @@
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -61,10 +61,7 @@ public sealed partial class PopularPageViewModel
 
                     if (SelectedSection is not null)
                     {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] =
-                        [
-                            .. Videos,
-                        ];
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Videos];
                     }
                 });
             }
@@ -75,7 +72,7 @@ public sealed partial class PopularPageViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载红果短剧推荐时出错.");
+            _logger.ZLogError(ex, $"尝试加载红果短剧推荐时出错.");
         }
     }
 
@@ -139,10 +136,7 @@ public sealed partial class PopularPageViewModel
 
                     if (SelectedSection is not null)
                     {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] =
-                        [
-                            .. Videos,
-                        ];
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Videos];
                     }
                 });
             }
@@ -150,11 +144,9 @@ public sealed partial class PopularPageViewModel
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            _logger.LogError(
+            _logger.ZLogError(
                 ex,
-                "尝试加载红果短剧排行榜时出错. Type: {Type}, Channel: {Channel}",
-                type,
-                channel
+                $"尝试加载红果短剧排行榜时出错. Type: {type}, Channel: {channel}"
             );
         }
     }
@@ -213,10 +205,7 @@ public sealed partial class PopularPageViewModel
 
                     if (SelectedSection is not null)
                     {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] =
-                        [
-                            .. Videos,
-                        ];
+                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Videos];
                     }
                 });
             }
@@ -224,7 +213,7 @@ public sealed partial class PopularPageViewModel
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载红果演员排行榜时出错.");
+            _logger.ZLogError(ex, $"尝试加载红果演员排行榜时出错.");
         }
     }
 }

@@ -106,7 +106,7 @@ public sealed partial class VideoCardControl : LayoutControlBase<VideoItemViewMo
 
     private static Brush? GetCriticalBrush()
     {
-        if (Ioc.Default.GetService<IResourceToolkit>() is { } toolkit)
+        if (Ioc.Default.GetRequiredService<IResourceToolkit>() is { } toolkit)
         {
             return toolkit.GetThemeBrush("SystemFillColorCriticalBrush");
         }

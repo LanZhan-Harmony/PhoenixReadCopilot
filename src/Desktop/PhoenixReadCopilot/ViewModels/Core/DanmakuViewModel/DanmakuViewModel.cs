@@ -8,7 +8,9 @@ using PhoenixReadCopilot.Toolkits;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 using DanmakuCoreItem = Danmaku.Core.Models.DanmakuItem;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -182,27 +184,26 @@ public sealed partial class DanmakuViewModel : ViewModelBase
             {
                 List<DanmakuCoreItem> danmakus =
                 [
-                    .. page
-                        .Items.Select(item => new DanmakuCoreItem
-                        {
-                            Id = item.Id,
-                            Text = item.Text,
-                            StartMs = (uint)Math.Max(0, item.TimeMs),
-                            Mode = DanmakuMode.Rolling,
-                            TextColor = Microsoft.UI.Colors.White,
-                            BaseFontSize = 24,
-                            HasOutline = true,
-                        }),
+                    .. page.Items.Select(item => new DanmakuCoreItem
+                    {
+                        Id = item.Id,
+                        Text = item.Text,
+                        StartMs = (uint)Math.Max(0, item.TimeMs),
+                        Mode = DanmakuMode.Rolling,
+                        TextColor = Microsoft.UI.Colors.White,
+                        BaseFontSize = 24,
+                        HasOutline = true,
+                    }),
                 ];
 
                 CurrentDanmakus = danmakus;
                 CanShowDanmaku = true;
-                _logger.LogInformation(
+                _logger.ZLogInformation(
                     $"[Danmaku] 成功获取弹幕: 剧集={currentLoadingSeriesId}, 分集={currentLoadingVideoId}, 弹幕条数={danmakus.Count}"
                 );
                 foreach (DanmakuCoreItem? sample in danmakus.Take(3))
                 {
-                    _logger.LogInformation(
+                    _logger.ZLogInformation(
                         $"[Danmaku Sample] Id={sample.Id}, Text='{sample.Text}', StartMs={sample.StartMs}ms ({sample.StartMs / 1000.0:F1}s)"
                     );
                 }
@@ -211,7 +212,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
             else
             {
                 CurrentDanmakus = [];
-                _logger.LogInformation(
+                _logger.ZLogInformation(
                     $"[Danmaku] 请求完成，分集 {currentLoadingVideoId} 弹幕数量为 0."
                 );
             }
@@ -222,7 +223,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(
+            _logger.ZLogError(
                 ex,
                 $"加载短剧 {currentLoadingSeriesId} | {currentLoadingVideoId} 的弹幕失败."
             );
@@ -267,7 +268,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "弹幕发送失败.");
+            _logger.ZLogError(ex, $"弹幕发送失败.");
             _appViewModel.ShowTipCommand.Execute(("弹幕发送出现异常", InfoType.Error));
         }
     }
@@ -303,10 +304,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     private async Task ReloadFontsAsync()
     {
         IReadOnlyList<string> fonts = await _fontToolkit.GetFontsAsync();
-        Fonts =
-        [
-            .. fonts,
-        ];
+        Fonts = [.. fonts];
         string localFont = _settings.DanmakuFontFamily;
         if (!Fonts.Contains(localFont))
         {

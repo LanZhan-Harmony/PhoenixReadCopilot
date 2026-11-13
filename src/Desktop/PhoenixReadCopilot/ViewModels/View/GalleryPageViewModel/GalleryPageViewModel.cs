@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Windows.Storage.Pickers;
 using PhoenixReadCopilot.Core.Models.Appearance;
-using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.ApplicationModel.DataTransfer;
@@ -133,7 +132,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         UserProfilePersonalizationSettings profileSettings =
             UserProfilePersonalizationSettings.Current;
         string fileName = Path.GetFileName(SelectedImage.Uri.AbsolutePath);
-        string tempFolder = Path.Combine(PathHelper.TempFolderPath, "TempImages");
+        string tempFolder = Path.Combine(_pathService.TempFolderPath, "TempImages");
         Directory.CreateDirectory(tempFolder);
         string filePath = Path.Combine(tempFolder, fileName);
         using HttpClient client = new();

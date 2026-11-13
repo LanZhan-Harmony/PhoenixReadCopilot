@@ -1,6 +1,6 @@
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Items;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -75,7 +75,7 @@ public sealed partial class CalendarPageViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取红果短剧上新日历失败.");
+            _logger.ZLogError(ex, $"获取红果短剧上新日历失败.");
             _dispatcherQueue.TryEnqueue(() =>
             {
                 IsError = true;
@@ -127,7 +127,7 @@ public sealed partial class CalendarPageViewModel
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取指定日期 ({Date}) 上新短剧失败.", vm.TargetDate);
+            _logger.ZLogError(ex, $"获取指定日期 ({vm.TargetDate}) 上新短剧失败.");
         }
         finally
         {

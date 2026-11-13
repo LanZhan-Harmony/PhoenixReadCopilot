@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
+using ZLogger;
 
-namespace PhoenixReadCopilot.Helpers;
+namespace PhoenixReadCopilot.Core.Helpers;
 
 /// <summary>
 /// Debouncer
@@ -49,7 +50,11 @@ public sealed class Debouncer : IDisposable
         }
     }
 
-    public Debouncer(TimeSpan delay, Action<Exception>? onError = null, ILogger<Debouncer>? logger = null)
+    public Debouncer(
+        TimeSpan delay,
+        Action<Exception>? onError = null,
+        ILogger<Debouncer>? logger = null
+    )
     {
         if (delay < TimeSpan.Zero)
         {
@@ -62,7 +67,8 @@ public sealed class Debouncer : IDisposable
 
         DefaultDelay = delay;
         _onError = onError;
-        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Debouncer>.Instance;
+        _logger = logger
+            ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Debouncer>.Instance;
         _timer = new Timer(
             static s => ((Debouncer)s!).OnTimerElapsed(),
             this,
@@ -355,7 +361,7 @@ public sealed class Debouncer : IDisposable
         if (_onError is null)
         {
             // Do not allow exceptions to escape to the thread pool
-            _logger.LogError(ex, $"[Debouncer] Unhandled callback exception");
+            _logger.ZLogError(ex, $"[Debouncer] Unhandled callback exception");
             return;
         }
 
@@ -365,7 +371,7 @@ public sealed class Debouncer : IDisposable
         }
         catch (Exception he)
         {
-            _logger.LogError(he, $"[Debouncer] Error handler threw an exception");
+            _logger.ZLogError(he, $"[Debouncer] Error handler threw an exception");
         }
     }
 

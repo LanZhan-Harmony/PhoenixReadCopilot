@@ -11,9 +11,9 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class MomentItemViewModel
 {
-    private static ILogger<MomentItemViewModel>? _logger;
-    private static ILogger<MomentItemViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentItemViewModel>>();
+    private static readonly ILogger<MomentItemViewModel> _logger = Ioc.Default.GetRequiredService<
+        ILogger<MomentItemViewModel>
+    >();
 
     private readonly Action<MomentItemViewModel> _showMomentAction;
 

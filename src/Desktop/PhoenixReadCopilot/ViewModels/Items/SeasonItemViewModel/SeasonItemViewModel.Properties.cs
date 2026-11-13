@@ -10,11 +10,10 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class SeasonItemViewModel
 {
-    private static ILogger<SeasonItemViewModel>? _logger;
+    private static readonly ILogger<SeasonItemViewModel> _logger = Ioc.Default.GetRequiredService<
+        ILogger<SeasonItemViewModel>
+    >();
     private readonly Action<SeasonItemViewModel>? _removeAction;
-
-    private static ILogger<SeasonItemViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<SeasonItemViewModel>>();
 
     /// <summary>
     /// 标题.

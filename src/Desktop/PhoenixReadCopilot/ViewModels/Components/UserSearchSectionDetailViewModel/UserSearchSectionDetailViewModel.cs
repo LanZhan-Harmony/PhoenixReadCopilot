@@ -5,6 +5,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -91,7 +92,7 @@ public sealed partial class UserSearchSectionDetailViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载用户搜索结果时出错.");
+            _logger.ZLogError(ex, $"加载用户搜索结果时出错.");
         }
         finally
         {

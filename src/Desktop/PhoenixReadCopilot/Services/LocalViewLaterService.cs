@@ -1,6 +1,9 @@
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
+using ZLogger;
+using PhoenixReadCopilot.Core.Helpers;
 
 namespace PhoenixReadCopilot.Services;
 
@@ -17,10 +20,10 @@ public sealed class LocalViewLaterService : ILocalViewLaterService
     /// <summary>
     /// Initializes a new instance of the <see cref="LocalViewLaterService"/> class.
     /// </summary>
-    public LocalViewLaterService(ILogger<LocalViewLaterService> logger)
+    public LocalViewLaterService(ILogger<LocalViewLaterService> logger, IPathService pathService)
     {
         _logger = logger;
-        _filePath = Path.Combine(PathHelper.AuthFolderPath, "view_later.json");
+        _filePath = Path.Combine(pathService.DataFolderPath, "view_later.json");
     }
 
     /// <inheritdoc/>
@@ -116,7 +119,7 @@ public sealed class LocalViewLaterService : ILocalViewLaterService
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "读取稍后再看缓存文件失败，将重新初始化.");
+                _logger.ZLogWarning(ex, $"读取稍后再看缓存文件失败，将重新初始化.");
             }
         }
 
@@ -132,7 +135,7 @@ public sealed class LocalViewLaterService : ILocalViewLaterService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "保存稍后再看文件失败.");
+            _logger.ZLogError(ex, $"保存稍后再看文件失败.");
         }
     }
 }

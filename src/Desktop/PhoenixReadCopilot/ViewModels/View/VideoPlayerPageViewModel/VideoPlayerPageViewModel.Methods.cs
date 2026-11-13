@@ -1,10 +1,10 @@
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -38,10 +38,9 @@ public sealed partial class VideoPlayerPageViewModel
             ? drama.OnlineDate
             : "红果独播";
 
-        Credits =
-            drama
-                .Credits?.Select(c => new DramaCreditItemViewModel(c, _apiClient, _appViewModel))
-                .ToList()
+        Credits = drama
+            .Credits?.Select(c => new DramaCreditItemViewModel(c, _apiClient, _appViewModel))
+            .ToList()
             ?? [];
         Tags = drama.Tags?.ToList() ?? [];
 
@@ -146,7 +145,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取推荐好剧失败.");
+            _logger.ZLogError(ex, $"获取推荐好剧失败.");
         }
 
         Sections = sections;

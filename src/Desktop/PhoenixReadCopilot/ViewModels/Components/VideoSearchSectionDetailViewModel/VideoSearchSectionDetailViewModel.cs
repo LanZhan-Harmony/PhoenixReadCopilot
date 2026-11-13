@@ -6,6 +6,7 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -54,31 +55,28 @@ public sealed partial class VideoSearchSectionDetailViewModel
     {
         _canRequest = true;
         _currentPage = initialOffset;
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            Items.Clear();
+            _isPreventLoadMore = dramas is null || dramas.Count == 0;
+
+            if (!_isPreventLoadMore && dramas is not null)
             {
-                Items.Clear();
-                _isPreventLoadMore = dramas is null || dramas.Count == 0;
-
-                if (!_isPreventLoadMore && dramas is not null)
+                foreach (Drama item in dramas)
                 {
-                    foreach (Drama item in dramas)
+                    if (Items.Any(p => p.Drama?.Id == item.Id))
                     {
-                        if (Items.Any(p => p.Drama?.Id == item.Id))
-                        {
-                            continue;
-                        }
-
-                        Items.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
+                        continue;
                     }
 
-                    ListUpdated?.Invoke(this, EventArgs.Empty);
+                    Items.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
                 }
 
-                IsEmpty = Items.Count == 0;
+                ListUpdated?.Invoke(this, EventArgs.Empty);
             }
-        );
+
+            IsEmpty = Items.Count == 0;
+        });
     }
 
     [RelayCommand]
@@ -123,7 +121,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
         catch (Exception ex)
         {
             _isPreventLoadMore = true;
-            _logger.LogError(ex, "加载短剧搜索结果时出错.");
+            _logger.ZLogError(ex, $"加载短剧搜索结果时出错.");
         }
         finally
         {
@@ -135,18 +133,15 @@ public sealed partial class VideoSearchSectionDetailViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                string keyword = _keyword;
-                _currentPage = 0;
-                Clear();
-                _keyword = keyword;
-                _canRequest = true;
-                await LoadItemsAsync();
-            }
-        );
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            string keyword = _keyword;
+            _currentPage = 0;
+            Clear();
+            _keyword = keyword;
+            _canRequest = true;
+            await LoadItemsAsync();
+        });
 
         await Task.CompletedTask;
     }

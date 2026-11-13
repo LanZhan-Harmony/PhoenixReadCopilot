@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.Storage.Pickers;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Models.Settings;
-using PhoenixReadCopilot.Services;
+using PhoenixReadCopilot.Core.Models.Settings;
+using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.System;
@@ -22,15 +24,13 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
         ISettingsService settingsService,
         AppViewModel appViewModel,
         NavigationViewModel navigationViewModel,
-        IAppToolkit appToolkit,
-        IFileToolkit fileToolkit
+        IAppToolkit appToolkit
     )
     {
         Settings = settingsService.Settings;
         _appViewModel = appViewModel;
         _navigationViewModel = navigationViewModel;
         _appToolkit = appToolkit;
-        _fileToolkit = fileToolkit;
         Settings.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName is null)
@@ -43,7 +43,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             {
                 case nameof(AppSettings.AppTheme):
                     OnPropertyChanged(nameof(AppThemeText));
-                    _appViewModel.ChangeThemeCommand.Execute(Settings.AppTheme);
+                    _appViewModel.ChangeThemeCommand.Execute(Settings.AppTheme.ToElementTheme());
                     break;
                 case nameof(AppSettings.IsTopNavBarShown):
                     OnPropertyChanged(nameof(IsTopNavShown));
@@ -77,13 +77,21 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task ChooseDownloadFolderAsync()
     {
-        string? folderPath = await _fileToolkit.PickFolderAsync(
-            _appViewModel.ActivatedWindow.AppWindow.Id
-        );
-        if (folderPath is not null)
+        try
         {
-            Settings.DownloadFolder = folderPath;
+            FolderPicker picker = new(_appViewModel.ActivatedWindow.AppWindow.Id)
+            {
+                SuggestedStartLocation = PickerLocationId.Desktop,
+            };
+
+            PickFolderResult? result = await picker.PickSingleFolderAsync();
+            string? folderPath = result?.Path;
+            if (folderPath is not null)
+            {
+                Settings.DownloadFolder = folderPath;
+            }
         }
+        catch { }
     }
 
     [RelayCommand]

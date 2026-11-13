@@ -1,11 +1,11 @@
 using System.Text;
 using FFmpegInteropX;
-using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 using Windows.Media.Playback;
 using WinUIKernel.Share.Base;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -146,7 +146,7 @@ public sealed partial class FFmpegPlayerViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "执行 Seek 失败.");
+            _logger.ZLogWarning(ex, $"执行 Seek 失败.");
         }
 
         return Task.CompletedTask;
@@ -229,12 +229,12 @@ public sealed partial class FFmpegPlayerViewModel
                     Player.Play();
                 }
 
-                _logger.LogInformation("命中下一集后台预载源，实现 0 秒无缝瞬播！");
+                _logger.ZLogInformation($"命中下一集后台预载源，实现 0 秒无缝瞬播！");
                 return;
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "无缝应用预载源失败，回退常规加载流程.");
+                _logger.ZLogWarning(ex, $"无缝应用预载源失败，回退常规加载流程.");
             }
         }
 
@@ -251,7 +251,7 @@ public sealed partial class FFmpegPlayerViewModel
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "FFmpeg 加载媒体失败.");
+                _logger.ZLogError(ex, $"FFmpeg 加载媒体失败.");
                 UpdateState(PlayerState.Failed);
             }
         }
@@ -279,7 +279,7 @@ public sealed partial class FFmpegPlayerViewModel
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "FFmpeg 加载媒体失败.");
+                _logger.ZLogError(ex, $"FFmpeg 加载媒体失败.");
                 UpdateState(PlayerState.Failed);
             }
         }

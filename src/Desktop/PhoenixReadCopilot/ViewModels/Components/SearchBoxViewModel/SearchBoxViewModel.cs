@@ -8,7 +8,9 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 using HotSearchItem = PhoenixReadCopilot.Core.Models.Search.HotSearchItem;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -86,7 +88,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "尝试获取搜索占位推荐词时失败.");
+                        _logger.ZLogWarning(ex, $"尝试获取搜索占位推荐词时失败.");
                     }
                 }
 
@@ -135,7 +137,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "尝试加载搜索建议时出错.");
+                    _logger.ZLogError(ex, $"尝试加载搜索建议时出错.");
                 }
             }
             else
@@ -195,7 +197,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载热搜榜单时出错.");
+            _logger.ZLogError(ex, $"尝试加载热搜榜单时出错.");
         }
 
         IsHotSearchLoading = false;

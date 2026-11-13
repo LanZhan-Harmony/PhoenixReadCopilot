@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.ViewModels.Core;
 
@@ -10,6 +12,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 public sealed partial class GalleryPageViewModel
 {
     private readonly AppViewModel _appViewModel;
+    private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();
 
     [ObservableProperty]
     public partial List<AppImage>? Images { get; set; }

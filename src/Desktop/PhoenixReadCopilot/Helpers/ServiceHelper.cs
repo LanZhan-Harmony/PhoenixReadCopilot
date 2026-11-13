@@ -1,14 +1,13 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
-using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Toolkits;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
-using Serilog;
 using WinUIKernel.Share;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
@@ -22,43 +21,17 @@ internal class ServiceHelper
     /// </summary>
     public static void ConfigureServices()
     {
-        string loggerPath = PathHelper.LogFolderPath;
-        Directory.CreateDirectory(loggerPath);
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.File(Path.Combine(loggerPath, $"log-{DateTimeOffset.Now:yyyy-MM-dd}.txt"))
-            .CreateLogger();
-        ServiceProvider serviceProvider = new ServiceCollection()
-            // 1. Serilog 日志
-            .AddLogging(b => b.AddSerilog(dispose: true))
-            // 2. UI 线程调度
-            .AddSingleton(DispatcherQueue.GetForCurrentThread())
-            // 3. 通用工具与 XamlRootProvider
-            .AddSingleton<ISettingsService, SettingsService>()
+        IServiceCollection services = new ServiceCollection()
+            // 1. 通用工具
+            .AddSingleton<IPathService, PathService>()
             .AddSingleton<ILocalViewLaterService, LocalViewLaterService>()
             .AddSingleton<IAppToolkit, AppToolkit>()
-            .AddSingleton<IFileToolkit, FileToolkit>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>()
             .AddSingleton<IResourceToolkit, SharedResourceToolkit>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
-            // 4. 红果客户端单例
-            .AddSingleton<PhoenixReadApiClient>(_ =>
-            {
-                string sessionPath = Path.Combine(
-                    PathHelper.AuthFolderPath,
-                    "phoenix_session.json"
-                );
-                return new PhoenixReadApiClient(
-                    new PhoenixReadApiOptions
-                    {
-                        AuthenticationStateFilePath = sessionPath,
-                        RequestTimeout = TimeSpan.FromSeconds(25),
-                        RetryCount = 2,
-                    }
-                );
-            })
-            // 5. 辅助服务
+            .AddSingleton(DispatcherQueue.GetForCurrentThread())
             .AddSingleton<ISubtitleService, SubtitleService>()
-            // 6. ViewModels
+            // 2. ViewModels
             // Core
             .AddSingleton<AppViewModel>()
             .AddTransient<DanmakuViewModel>()
@@ -92,9 +65,10 @@ internal class ServiceHelper
             .AddTransient<VideoPlayerPageViewModel>()
             .AddTransient<ViewLaterPageViewModel>()
             // Components
-            .AddTransient<CommentMainViewModel>()
-            .BuildServiceProvider();
+            .AddTransient<CommentMainViewModel>();
 
-        Ioc.Default.ConfigureServices(serviceProvider);
+        Core.Helpers.ServiceHelper.ConfigureCoreServices(services);
+        ServiceProvider provider = services.BuildServiceProvider();
+        Ioc.Default.ConfigureServices(provider);
     }
 }

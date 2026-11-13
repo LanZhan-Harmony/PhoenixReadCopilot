@@ -1,6 +1,6 @@
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 
-namespace PhoenixReadCopilot.Services;
+namespace PhoenixReadCopilot.Core.Contracts.Services;
 
 /// <summary>
 /// 应用程序设置服务接口.

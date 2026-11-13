@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Notifications;
 using Windows.UI.StartScreen;
 using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

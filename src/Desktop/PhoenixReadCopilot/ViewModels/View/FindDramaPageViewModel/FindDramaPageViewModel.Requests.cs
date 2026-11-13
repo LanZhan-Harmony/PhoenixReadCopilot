@@ -1,10 +1,10 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Filter;
 using PhoenixReadCopilot.ViewModels.Items;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -51,7 +51,7 @@ public sealed partial class FindDramaPageViewModel
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试请求红果短剧筛选维度面板时失败.");
+            _logger.ZLogError(ex, $"尝试请求红果短剧筛选维度面板时失败.");
         }
         finally
         {
@@ -121,7 +121,7 @@ public sealed partial class FindDramaPageViewModel
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载红果短剧筛选结果时失败.");
+            _logger.ZLogError(ex, $"尝试加载红果短剧筛选结果时失败.");
         }
         finally
         {

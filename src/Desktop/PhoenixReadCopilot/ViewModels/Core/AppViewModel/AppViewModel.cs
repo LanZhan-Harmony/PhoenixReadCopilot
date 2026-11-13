@@ -15,6 +15,7 @@ using WinUIEx;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

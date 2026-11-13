@@ -6,6 +6,8 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -80,7 +82,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载稍后再看时出现异常");
+            _logger.ZLogError(ex, $"尝试加载稍后再看时出现异常");
         }
         finally
         {
@@ -99,7 +101,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "清除稍后再看时出错");
+            _logger.ZLogError(ex, $"清除稍后再看时出错");
         }
     }
 

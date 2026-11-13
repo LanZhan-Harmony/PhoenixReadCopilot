@@ -7,6 +7,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -116,7 +117,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载红果评论回复详情时出错");
+            _logger.ZLogError(ex, $"加载红果评论回复详情时出错");
             _preventLoadMore = true;
         }
         finally
@@ -130,9 +131,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void Refresh()
     {
         Clear();
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () => await LoadItemsAsync()
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+            await LoadItemsAsync()
         );
     }
 
@@ -221,7 +221,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "发送红果评论回复失败");
+            _logger.ZLogError(ex, $"发送红果评论回复失败");
             _appViewModel?.ShowTipCommand.Execute(("发送回复失败", InfoType.Error));
         }
         finally

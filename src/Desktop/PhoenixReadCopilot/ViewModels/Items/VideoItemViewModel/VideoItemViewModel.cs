@@ -1,7 +1,6 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Appearance;
@@ -9,11 +8,11 @@ using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.Toolkits;
 using Windows.Globalization;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -284,7 +283,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "添加稍后再看失败");
+            _logger.ZLogError(ex, $"添加稍后再看失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Strings.Resources.AddViewLaterFailed, InfoType.Error)
             );
@@ -308,7 +307,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "移除稍后再看视频失败");
+            _logger.ZLogError(ex, $"移除稍后再看视频失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Strings.Resources.FailedToRemoveVideoFromViewLater, InfoType.Error)
             );
@@ -335,7 +334,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "移除历史记录视频失败");
+            _logger.ZLogError(ex, $"移除历史记录视频失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Strings.Resources.FailedToRemoveVideoFromHistory, InfoType.Error)
             );
@@ -367,7 +366,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "移除收藏视频失败");
+            _logger.ZLogError(ex, $"移除收藏视频失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Strings.Resources.FailedToRemoveVideoFromFavorite, InfoType.Error)
             );

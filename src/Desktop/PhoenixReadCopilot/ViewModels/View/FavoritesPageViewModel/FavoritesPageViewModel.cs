@@ -8,6 +8,8 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -65,7 +67,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "初始化追剧收藏夹失败");
+            _logger.ZLogError(ex, $"初始化追剧收藏夹失败");
         }
         finally
         {

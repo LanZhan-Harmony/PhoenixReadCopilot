@@ -7,6 +7,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -171,7 +172,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载红果分集评论时失败");
+            _logger.ZLogError(ex, $"尝试加载红果分集评论时失败");
             _preventLoadMore = true;
         }
         finally
@@ -246,7 +247,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "发送红果评论失败");
+            _logger.ZLogError(ex, $"发送红果评论失败");
             _appViewModel?.ShowTipCommand.Execute(("发送评论失败", InfoType.Error));
         }
         finally

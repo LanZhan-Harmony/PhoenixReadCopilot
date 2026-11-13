@@ -8,6 +8,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -108,11 +109,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(
-                            ex,
-                            "删除历史记录出错: {SeriesId}",
-                            item.HistoryEntry.SeriesId
-                        );
+                        _logger.ZLogWarning(ex, $"删除历史记录出错: {item.HistoryEntry.SeriesId}");
                     }
                 }
             }
@@ -180,7 +177,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "搜索历史记录失败");
+            _logger.ZLogError(ex, $"搜索历史记录失败");
             _appViewModel.ShowTipCommand.Execute(
                 (Resources.FailedToSearchUserVideos, InfoType.Error)
             );

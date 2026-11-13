@@ -12,6 +12,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -125,7 +126,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "点赞剧评失败.");
+            _logger.ZLogError(ex, $"点赞剧评失败.");
         }
     }
 
@@ -318,7 +319,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "发送剧评失败.");
+            _logger.ZLogError(ex, $"发送剧评失败.");
             _appViewModel.ShowTipCommand.Execute(("发送剧评失败", InfoType.Error));
         }
         finally
@@ -397,7 +398,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载剧评失败.");
+            _logger.ZLogError(ex, $"加载剧评失败.");
         }
         finally
         {

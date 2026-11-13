@@ -11,14 +11,12 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class MomentUperSectionViewModel
 {
-    private static ILogger<MomentUperSectionViewModel>? _logger;
+    private static readonly ILogger<MomentUperSectionViewModel> _logger =
+        Ioc.Default.GetRequiredService<ILogger<MomentUperSectionViewModel>>();
     private readonly Action<MomentInformation>? _showCommentAction;
     private bool _preventLoadMore;
     private string? _offset;
     private string? _baseline;
-
-    private static ILogger<MomentUperSectionViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<MomentUperSectionViewModel>>();
 
     [ObservableProperty]
     public partial bool HasUnread { get; set; }

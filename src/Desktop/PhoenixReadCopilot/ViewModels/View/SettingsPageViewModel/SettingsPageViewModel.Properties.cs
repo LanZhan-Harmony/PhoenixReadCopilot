@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Toolkits;
@@ -16,14 +16,13 @@ public sealed partial class SettingsPageViewModel
     private readonly AppViewModel _appViewModel;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly IAppToolkit _appToolkit;
-    private readonly IFileToolkit _fileToolkit;
     public AppSettings Settings;
     private bool _isInitialized;
 
     /// <summary>
     /// 当前应用主题.
     /// </summary>
-    public ElementTheme AppTheme => Settings.AppTheme;
+    public AppTheme AppTheme => Settings.AppTheme;
 
     /// <summary>
     /// 主题显示文本.
@@ -31,8 +30,8 @@ public sealed partial class SettingsPageViewModel
     public string AppThemeText =>
         AppTheme switch
         {
-            ElementTheme.Light => Resources.LightTheme,
-            ElementTheme.Dark => Resources.DarkTheme,
+            AppTheme.Light => Resources.LightTheme,
+            AppTheme.Dark => Resources.DarkTheme,
             _ => Resources.SystemDefault,
         };
 
