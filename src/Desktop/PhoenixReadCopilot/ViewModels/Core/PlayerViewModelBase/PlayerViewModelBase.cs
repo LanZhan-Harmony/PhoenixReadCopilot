@@ -8,6 +8,7 @@ using Windows.Media;
 using Windows.Storage.Streams;
 using WinUIEx;
 using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

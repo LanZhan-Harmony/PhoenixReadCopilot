@@ -75,7 +75,7 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
     /// </summary>
     public void UpdateLoginState()
     {
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
         bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
         ReplyBox.IsEnabled = isAuthenticated;
         ReplyBox.PlaceholderText = isAuthenticated
@@ -124,7 +124,7 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         AutoSuggestBoxQuerySubmittedEventArgs args
     )
     {
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
         bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
         if (!isAuthenticated)
         {

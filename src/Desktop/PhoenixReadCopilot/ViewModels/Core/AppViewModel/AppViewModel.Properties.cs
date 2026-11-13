@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 

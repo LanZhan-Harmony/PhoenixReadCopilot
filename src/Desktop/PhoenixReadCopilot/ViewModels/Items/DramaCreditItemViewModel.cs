@@ -6,6 +6,7 @@ using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -28,8 +29,7 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
     {
         _apiClient = apiClient;
         _appViewModel = appViewModel ?? ItemServices.App;
-        _logger =
-            logger
+        _logger = logger
             ?? CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<
                 ILogger<DramaCreditItemViewModel>
             >();
@@ -120,7 +120,7 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "关注用户操作异常.");
+            _logger.ZLogError(ex, $"关注用户操作异常.");
             _appViewModel.ShowTipCommand.Execute(("关注操作失败", InfoType.Error));
         }
         finally

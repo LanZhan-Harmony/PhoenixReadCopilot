@@ -1,11 +1,11 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Strings;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
 using WinUIKernel.Share.Base;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -134,7 +134,7 @@ public abstract partial class PlayerViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "尝试跳转视频时失败.");
+            _logger.ZLogWarning(ex, $"尝试跳转视频时失败.");
         }
     }
 
@@ -373,7 +373,7 @@ public abstract partial class PlayerViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "尝试截图时失败.");
+            _logger.ZLogWarning(ex, $"尝试截图时失败.");
         }
     }
 

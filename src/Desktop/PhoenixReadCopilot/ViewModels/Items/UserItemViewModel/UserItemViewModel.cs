@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Core.Models.User;
@@ -7,6 +6,7 @@ using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -106,7 +106,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "修改关注状态失败");
+            _logger.ZLogError(ex, $"修改关注状态失败");
             ItemServices.App.ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
         }
     }

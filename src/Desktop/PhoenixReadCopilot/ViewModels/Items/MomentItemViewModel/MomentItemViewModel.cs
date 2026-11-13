@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -11,6 +10,7 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.Toolkits;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -79,7 +79,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "切换评论点赞状态时失败");
+            _logger.ZLogError(ex, $"切换评论点赞状态时失败");
         }
     }
 
@@ -153,7 +153,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "添加稍后再看失败");
+            _logger.ZLogError(ex, $"添加稍后再看失败");
             ItemServices.App.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
         }
     }

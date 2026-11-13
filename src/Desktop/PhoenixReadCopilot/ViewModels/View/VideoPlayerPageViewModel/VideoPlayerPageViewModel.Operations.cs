@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
@@ -8,6 +7,7 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using Windows.ApplicationModel.DataTransfer;
 using WinUIKernel.Share.Base;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -45,7 +45,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试点赞/取消点赞分集时失败.");
+            _logger.ZLogError(ex, $"尝试点赞/取消点赞分集时失败.");
         }
     }
 
@@ -78,7 +78,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试收藏/取消收藏剧集时失败.");
+            _logger.ZLogError(ex, $"尝试收藏/取消收藏剧集时失败.");
         }
     }
 
@@ -102,7 +102,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "分享短剧链接失败.");
+            _logger.ZLogError(ex, $"分享短剧链接失败.");
         }
     }
 
@@ -121,7 +121,7 @@ public sealed partial class VideoPlayerPageViewModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加入追剧列表失败");
+            _logger.ZLogError(ex, $"加入追剧列表失败");
             _appViewModel.ShowTipCommand.Execute(("加入追剧列表失败", InfoType.Error));
         }
     }

@@ -13,6 +13,8 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -130,7 +132,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取红果创作者主页失败: {UserId}", _userId);
+            _logger.ZLogError(ex, $"获取红果创作者主页失败: {_userId}");
         }
 
         if (Sections is null)
@@ -239,7 +241,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "切换关注状态时失败");
+            _logger.ZLogError(ex, $"切换关注状态时失败");
             _appViewModel.ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
         }
     }
@@ -267,7 +269,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取创作者信息失败");
+            _logger.ZLogError(ex, $"获取创作者信息失败");
         }
     }
 
@@ -325,7 +327,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "搜索用户短剧作品时失败");
+            _logger.ZLogError(ex, $"搜索用户短剧作品时失败");
         }
         finally
         {
@@ -346,7 +348,11 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         CancelSearch();
     }
 
-    private static UserCard CreateUserCard(UserProfile profile, string fallbackName = "", string fallbackAvatarUrl = "")
+    private static UserCard CreateUserCard(
+        UserProfile profile,
+        string fallbackName = "",
+        string fallbackAvatarUrl = ""
+    )
     {
         string name = !string.IsNullOrEmpty(profile.User.Name)
             ? profile.User.Name

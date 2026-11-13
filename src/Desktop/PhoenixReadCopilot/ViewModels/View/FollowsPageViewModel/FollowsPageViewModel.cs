@@ -4,6 +4,8 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -84,7 +86,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载关注用户时出错.");
+            _logger.ZLogError(ex, $"尝试加载关注用户时出错.");
         }
         finally
         {
@@ -118,7 +120,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试加载关注分组时出错.");
+            _logger.ZLogError(ex, $"尝试加载关注分组时出错.");
         }
         finally
         {

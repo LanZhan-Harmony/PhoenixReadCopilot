@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Strings;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -86,7 +86,7 @@ public sealed partial class MomentUperSectionViewModel : ViewModelBase<MomentPro
         catch (Exception ex)
         {
             _preventLoadMore = true;
-            Logger.LogError(ex, "加载动态列表失败.");
+            _logger.ZLogError(ex, $"加载动态列表失败.");
         }
         finally
         {

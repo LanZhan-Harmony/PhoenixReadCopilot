@@ -5,12 +5,13 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.Forms;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

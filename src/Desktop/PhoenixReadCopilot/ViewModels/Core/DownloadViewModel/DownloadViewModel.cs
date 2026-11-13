@@ -4,11 +4,13 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -152,7 +154,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "下载封面失败.");
+            _logger.ZLogError(ex, $"下载封面失败.");
             _appViewModel.ShowTipCommand.Execute(("下载封面失败", InfoType.Error));
         }
     }
@@ -216,7 +218,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "下载弹幕失败.");
+            _logger.ZLogError(ex, $"下载弹幕失败.");
             _appViewModel.ShowTipCommand.Execute(("下载弹幕失败", InfoType.Error));
         }
     }
@@ -486,7 +488,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
                     }
                     else
                     {
-                        _logger.LogError(
+                        _logger.ZLogError(
                             $"FFmpeg 本地解密第 {index} 集失败 (exit code {process.ExitCode}): {errorOutput}"
                         );
                         if (!silent)
@@ -515,7 +517,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"下载第 {index} 集失败.");
+            _logger.ZLogError(ex, $"下载第 {index} 集失败.");
             if (!silent)
             {
                 _appViewModel.ShowTipCommand.Execute(

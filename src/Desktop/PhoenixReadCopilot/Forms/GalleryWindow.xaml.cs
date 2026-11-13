@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Models.Appearance;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -11,6 +11,8 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using WinUIEx;
 using WinUIKernel.Share.Base;
+using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Extensions;
 
 namespace PhoenixReadCopilot.Forms;
 
@@ -80,7 +82,7 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
                 (AppWindow.Presenter as OverlappedPresenter).Maximize();
             }
 
-            ElementTheme localTheme = _settings.AppTheme;
+            ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
             _appViewModel.ChangeThemeCommand.Execute(localTheme);
         }
 

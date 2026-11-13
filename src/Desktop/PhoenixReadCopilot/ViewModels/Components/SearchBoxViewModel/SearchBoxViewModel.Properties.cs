@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using HotSearchItem = PhoenixReadCopilot.Core.Models.Search.HotSearchItem;

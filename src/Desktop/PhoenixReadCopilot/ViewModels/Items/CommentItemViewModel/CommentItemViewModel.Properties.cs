@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Models.Appearance;
 
@@ -9,11 +10,9 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class CommentItemViewModel
 {
-    private static ILogger<CommentItemViewModel>? _logger;
-    private static ILogger<CommentItemViewModel> Logger =>
-        _logger ??= CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<
-            ILogger<CommentItemViewModel>
-        >();
+    private static readonly ILogger<CommentItemViewModel> _logger = Ioc.Default.GetRequiredService<
+        ILogger<CommentItemViewModel>
+    >();
 
     private readonly Action<CommentItemViewModel>? _markReplyTargetAction;
 

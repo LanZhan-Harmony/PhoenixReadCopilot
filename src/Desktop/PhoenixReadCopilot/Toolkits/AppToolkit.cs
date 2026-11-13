@@ -1,10 +1,11 @@
 using System.Globalization;
 using System.Reflection;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Settings;
+using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Models.Settings;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using Windows.ApplicationModel;
 using Windows.UI;
@@ -27,9 +28,9 @@ internal sealed partial class AppToolkit : IAppToolkit
     /// <inheritdoc/>
     public ApplicationTheme GetCurrentTheme()
     {
-        ElementTheme localTheme = _settings.AppTheme;
-        return localTheme == ElementTheme.Default ? Application.Current.RequestedTheme
-            : localTheme == ElementTheme.Light ? ApplicationTheme.Light
+        AppTheme localTheme = _settings.AppTheme;
+        return localTheme == AppTheme.Default ? Application.Current.RequestedTheme
+            : localTheme == AppTheme.Light ? ApplicationTheme.Light
             : ApplicationTheme.Dark;
     }
 
@@ -49,7 +50,7 @@ internal sealed partial class AppToolkit : IAppToolkit
 
     /// <inheritdoc/>
     public void ResetControlTheme(FrameworkElement element) =>
-        element.RequestedTheme = _settings.AppTheme;
+        element.RequestedTheme = _settings.AppTheme.ToElementTheme();
 
     /// <summary>
     /// 格式化时长.

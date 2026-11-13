@@ -1,8 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
 
-namespace PhoenixReadCopilot.Models.Settings;
+namespace PhoenixReadCopilot.Core.Models.Settings;
 
 /// <summary>
 /// 应用程序全局设置模型.
@@ -11,7 +10,7 @@ public sealed partial class AppSettings : ObservableObject
 {
     // ================= 主题与外观 =================
     [ObservableProperty]
-    public partial ElementTheme AppTheme { get; set; } = ElementTheme.Default;
+    public partial AppTheme AppTheme { get; set; } = AppTheme.Default;
 
     [ObservableProperty]
     public partial bool IsTopNavBarShown { get; set; } = true;

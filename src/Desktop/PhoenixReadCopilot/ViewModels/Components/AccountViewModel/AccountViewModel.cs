@@ -5,6 +5,7 @@ using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -72,7 +73,7 @@ public sealed partial class AccountViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "获取已登录用户信息失败，进入未登录状态");
+            _logger.ZLogWarning(ex, $"获取已登录用户信息失败，进入未登录状态");
             MyProfile = null;
         }
         finally
@@ -99,7 +100,7 @@ public sealed partial class AccountViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "获取社区/收藏计数失败");
+            _logger.ZLogWarning(ex, $"获取社区/收藏计数失败");
         }
     }
 

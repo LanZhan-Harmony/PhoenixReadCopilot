@@ -10,6 +10,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -78,54 +79,60 @@ public sealed partial class StartupPageViewModel : ViewModelBase
             }
 
             // 轮询检查扫码登录状态
-            _ = Task.Run(async () =>
-            {
-                while (!ct.IsCancellationRequested)
+            _ = Task.Run(
+                async () =>
                 {
-                    try
+                    while (!ct.IsCancellationRequested)
                     {
-                        await Task.Delay(2000, ct);
-                        if (ct.IsCancellationRequested)
+                        try
                         {
-                            break;
-                        }
+                            await Task.Delay(2000, ct);
+                            if (ct.IsCancellationRequested)
+                            {
+                                break;
+                            }
 
-                        QrCodeCheckResult result = await _apiClient.CheckQrCodeStatusAsync(session.Token, ct);
-                        if (result.Status == QrCodeLoginStatus.Confirmed)
-                        {
-                            _dispatcherQueue.TryEnqueue(() =>
+                            QrCodeCheckResult result = await _apiClient.CheckQrCodeStatusAsync(
+                                session.Token,
+                                ct
+                            );
+                            if (result.Status == QrCodeLoginStatus.Confirmed)
                             {
-                                RequestClose?.Invoke(this, EventArgs.Empty);
-                                if (_appViewModel.Windows.Any(p => p is StartupWindow))
+                                _dispatcherQueue.TryEnqueue(() =>
                                 {
-                                    _appViewModel.EnterMainWindowCommand.Execute(null);
-                                }
-                                else
+                                    RequestClose?.Invoke(this, EventArgs.Empty);
+                                    if (_appViewModel.Windows.Any(p => p is StartupWindow))
+                                    {
+                                        _appViewModel.EnterMainWindowCommand.Execute(null);
+                                    }
+                                    else
+                                    {
+                                        ItemServices.Account.InitializeCommand.Execute(null);
+                                    }
+                                });
+                                break;
+                            }
+                            else if (result.Status == QrCodeLoginStatus.Expired)
+                            {
+                                _dispatcherQueue.TryEnqueue(() =>
                                 {
-                                    ItemServices.Account.InitializeCommand.Execute(null);
-                                }
-                            });
+                                    ErrorTip = "二维码已过期，请刷新";
+                                });
+                                break;
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
                             break;
                         }
-                        else if (result.Status == QrCodeLoginStatus.Expired)
+                        catch (Exception ex)
                         {
-                            _dispatcherQueue.TryEnqueue(() =>
-                            {
-                                ErrorTip = "二维码已过期，请刷新";
-                            });
-                            break;
+                            _logger.ZLogWarning(ex, $"检查二维码状态异常");
                         }
                     }
-                    catch (OperationCanceledException)
-                    {
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning(ex, "检查二维码状态异常");
-                    }
-                }
-            }, ct);
+                },
+                ct
+            );
         }
         catch (OperationCanceledException)
         {
@@ -135,7 +142,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         {
             IsQRCodeLoading = false;
             ErrorTip = ex.Message;
-            _logger.LogError(ex, "获取扫码二维码失败.");
+            _logger.ZLogError(ex, $"获取扫码二维码失败.");
         }
     }
 
@@ -159,7 +166,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "发送短信验证码失败");
+            _logger.ZLogError(ex, $"发送短信验证码失败");
             ErrorTip = ex.Message;
         }
         finally
@@ -222,7 +229,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "短信登录失败");
+            _logger.ZLogError(ex, $"短信登录失败");
             ErrorTip = ex.Message;
         }
         finally

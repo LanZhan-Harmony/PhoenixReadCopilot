@@ -8,6 +8,7 @@ using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -245,7 +246,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         catch (Exception ex)
         {
             _preventLoadMore = true;
-            _logger.LogError(ex, "加载用户动态/作品失败.");
+            _logger.ZLogError(ex, $"加载用户动态/作品失败.");
         }
         finally
         {

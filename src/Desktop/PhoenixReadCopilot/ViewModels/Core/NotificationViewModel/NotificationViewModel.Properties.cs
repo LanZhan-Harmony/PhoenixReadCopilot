@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

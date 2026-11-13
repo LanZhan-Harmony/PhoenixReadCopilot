@@ -6,6 +6,8 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.Strings;
 using Windows.Media.Playback;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -54,11 +56,11 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
             FFmpegMediaSource source = await FFmpegMediaSource.CreateFromUriAsync(videoUrl, config);
             _preloadedSource = source;
             _preloadedUrl = videoUrl;
-            _logger.LogInformation("下一集 FFmpegMediaSource 后台预加载就绪.");
+            _logger.ZLogInformation($"下一集 FFmpegMediaSource 后台预加载就绪.");
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "预加载下一集 FFmpegMediaSource 失败.");
+            _logger.ZLogWarning(ex, $"预加载下一集 FFmpegMediaSource 失败.");
             DisposePreloadedSource();
         }
         finally
@@ -191,7 +193,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
             }
 
             UpdateState(PlayerState.Failed);
-            _logger.LogError(
+            _logger.ZLogError(
                 $"播放失败: {args.Error} | {args.ErrorMessage} | {args.ExtendedErrorCode}"
             );
         });

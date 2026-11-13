@@ -1,14 +1,13 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
-using Microsoft.UI.Xaml;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 
-namespace PhoenixReadCopilot.Helpers;
+namespace PhoenixReadCopilot.Core.Helpers;
 
 [JsonSourceGenerationOptions(
     WriteIndented = true,
@@ -29,7 +28,7 @@ namespace PhoenixReadCopilot.Helpers;
 [JsonSerializable(typeof(double))]
 [JsonSerializable(typeof(string))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
-[JsonSerializable(typeof(ElementTheme))]
+[JsonSerializable(typeof(AppTheme))]
 [JsonSerializable(typeof(PlayerDisplayMode))]
 [JsonSerializable(typeof(PreferCodecType))]
 [JsonSerializable(typeof(PreferQualityType))]
@@ -43,14 +42,14 @@ namespace PhoenixReadCopilot.Helpers;
 [JsonSerializable(typeof(List<PinItem>))]
 [JsonSerializable(typeof(Drama))]
 [JsonSerializable(typeof(List<Drama>))]
-internal sealed partial class SourceGenerationContext : JsonSerializerContext;
+public sealed partial class SourceGenerationContext : JsonSerializerContext;
 
-internal static class JsonAotSerializer
+public static class JsonAotSerializer
 {
     /// <summary>
     /// Serializes an object to a JSON string.
     /// </summary>
-    internal static string Serialize<T>(T value)
+    public static string Serialize<T>(T value)
     {
         if (
             SourceGenerationContext.Default.GetTypeInfo(typeof(T))
@@ -68,7 +67,7 @@ internal static class JsonAotSerializer
     /// <summary>
     /// Deserializes a JSON string to the specified type.
     /// </summary>
-    internal static T? Deserialize<T>(string value)
+    public static T? Deserialize<T>(string value)
     {
         if (
             SourceGenerationContext.Default.GetTypeInfo(typeof(T))
@@ -83,7 +82,7 @@ internal static class JsonAotSerializer
         return JsonSerializer.Deserialize(value, jsonTypeInfo);
     }
 
-    internal static JsonTypeInfo<T> GetTypeInfo<T>()
+    public static JsonTypeInfo<T> GetTypeInfo<T>()
     {
         if (
             SourceGenerationContext.Default.GetTypeInfo(typeof(T))

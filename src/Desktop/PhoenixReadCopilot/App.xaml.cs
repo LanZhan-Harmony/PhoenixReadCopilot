@@ -8,6 +8,8 @@ using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot;
 
@@ -100,7 +102,7 @@ public partial class App : Application
     )
     {
         Ioc.Default.GetRequiredService<ILogger<App>>()
-            .LogError(e.Exception, "Unhandled exception occurred.");
+            .ZLogError(e.Exception, $"Unhandled exception occurred.");
         e.Handled = true;
 
         // 一旦出现布局循环检测异常，就删除上次选中的功能页，然后重启应用.

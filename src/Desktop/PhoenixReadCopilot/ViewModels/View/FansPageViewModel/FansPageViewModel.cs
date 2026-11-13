@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -59,7 +60,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载粉丝列表失败");
+            _logger.ZLogError(ex, $"加载粉丝列表失败");
             IsEmpty = true;
         }
         finally

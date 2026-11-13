@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Appearance;
@@ -10,6 +9,7 @@ using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -150,7 +150,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "追剧失败");
+            _logger.ZLogError(ex, $"追剧失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.FailedToFollowDrama, InfoType.Error)
             );
@@ -168,7 +168,7 @@ public sealed partial class SeasonItemViewModel : ViewModelBase<SeasonInformatio
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "取消追剧失败");
+            _logger.ZLogError(ex, $"取消追剧失败");
             ItemServices.App.ShowTipCommand.Execute(
                 (Resources.FailedToUnfollowDrama, InfoType.Error)
             );

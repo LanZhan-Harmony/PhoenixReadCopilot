@@ -6,8 +6,10 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
+using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Graphics;
@@ -154,7 +156,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
             (AppWindow.Presenter as OverlappedPresenter).Maximize();
         }
 
-        ElementTheme localTheme = _settings.AppTheme;
+        ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
         _appViewModel.ChangeThemeCommand.Execute(localTheme);
         _isFirstActivated = false;
     }

@@ -9,10 +9,9 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class UserItemViewModel
 {
-    private static ILogger<UserItemViewModel>? _logger;
-
-    private static ILogger<UserItemViewModel> Logger =>
-        _logger ??= Ioc.Default.GetRequiredService<ILogger<UserItemViewModel>>();
+    private static readonly ILogger<UserItemViewModel> _logger = Ioc.Default.GetRequiredService<
+        ILogger<UserItemViewModel>
+    >();
 
     [ObservableProperty]
     public partial bool IsFollowed { get; set; }

@@ -4,6 +4,7 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

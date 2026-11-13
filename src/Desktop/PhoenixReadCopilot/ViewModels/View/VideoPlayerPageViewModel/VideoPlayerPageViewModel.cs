@@ -9,6 +9,8 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -138,7 +140,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             if (ex is not TaskCanceledException)
             {
                 IsPageLoadFailed = true;
-                _logger.LogError(ex, $"尝试获取短剧 {seriesId} 详情时失败.");
+                _logger.ZLogError(ex, $"尝试获取短剧 {seriesId} 详情时失败.");
             }
         }
         finally
@@ -201,7 +203,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             if (ex is not TaskCanceledException)
             {
                 IsMediaLoadFailed = true;
-                _logger.LogError(
+                _logger.ZLogError(
                     ex,
                     $"尝试获取短剧 {_seriesId} 的第 {episode.Number} 分集媒体时失败."
                 );
@@ -348,7 +350,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试上报短剧播放进度时失败.");
+            _logger.ZLogError(ex, $"尝试上报短剧播放进度时失败.");
         }
     }
 

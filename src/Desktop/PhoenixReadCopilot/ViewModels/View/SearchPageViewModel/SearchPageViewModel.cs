@@ -9,6 +9,8 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -68,18 +70,14 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
             );
             UserSearchSectionDetailViewModel userSection = CreateUserSection();
 
-            List<ISearchSectionDetailViewModel> sections =
-            [
-                videoSection,
-                userSection,
-            ];
+            List<ISearchSectionDetailViewModel> sections = [videoSection, userSection];
             Sections = [.. sections];
             SelectSection(Sections.FirstOrDefault());
             SectionInitialized?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "尝试获取搜索结果时失败.");
+            _logger.ZLogError(ex, $"尝试获取搜索结果时失败.");
         }
         finally
         {

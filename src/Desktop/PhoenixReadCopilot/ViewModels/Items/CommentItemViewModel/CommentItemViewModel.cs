@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -183,7 +183,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "点赞评论失败");
+            _logger.ZLogError(ex, $"点赞评论失败");
         }
     }
 

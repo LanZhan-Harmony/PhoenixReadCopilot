@@ -1,6 +1,5 @@
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Player;

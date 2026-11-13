@@ -37,7 +37,7 @@ public sealed partial class DanmakuBox : DanmakuControlBase
 
     public void UpdateLoginState()
     {
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
         bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
 
         DanmakuInputBox.IsEnabled = isAuthenticated;
@@ -56,7 +56,7 @@ public sealed partial class DanmakuBox : DanmakuControlBase
             return;
         }
 
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetService<PhoenixReadApiClient>();
+        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
         bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
         if (!isAuthenticated)
         {

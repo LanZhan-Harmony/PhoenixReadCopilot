@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Core.Enums;
 
 namespace PhoenixReadCopilot.Controls.Settings;
 
@@ -21,19 +22,19 @@ public sealed partial class ThemeSettingControl : SettingsPageControlBase
     {
         ThemePicker.SelectedIndex = ViewModel.AppTheme switch
         {
-            ElementTheme.Light => 0,
-            ElementTheme.Dark => 1,
+            AppTheme.Light => 0,
+            AppTheme.Dark => 1,
             _ => 2,
         };
     }
 
     private void OnThemeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        ElementTheme theme = ThemePicker.SelectedIndex switch
+        AppTheme theme = ThemePicker.SelectedIndex switch
         {
-            0 => ElementTheme.Light,
-            1 => ElementTheme.Dark,
-            _ => ElementTheme.Default,
+            0 => AppTheme.Light,
+            1 => AppTheme.Dark,
+            _ => AppTheme.Default,
         };
 
         ViewModel.Settings.AppTheme = theme;

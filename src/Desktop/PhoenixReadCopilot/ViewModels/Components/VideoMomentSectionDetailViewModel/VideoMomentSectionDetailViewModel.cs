@@ -5,6 +5,8 @@ using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share.ViewModels;
+using ZLogger;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 
@@ -74,7 +76,7 @@ public sealed partial class VideoMomentSectionDetailViewModel
         catch (Exception ex)
         {
             _preventLoadMore = true;
-            _logger.LogError(ex, "加载动态列表失败.");
+            _logger.ZLogError(ex, $"加载动态列表失败.");
         }
         finally
         {

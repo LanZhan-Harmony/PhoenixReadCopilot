@@ -1,14 +1,15 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Windows.Foundation.Diagnostics;
+using ZLogger;
 
 namespace Danmaku.Core;
 
 internal static class Logger
 {
-    private static ILogger<DanmakuRenderer> _logger;
+    private static ILogger<DanmakuRenderer>? _logger;
 
-    public static void SetLogger(ILogger<DanmakuRenderer> logger)
+    public static void SetLogger(ILogger<DanmakuRenderer>? logger)
     {
         _logger = logger;
     }
@@ -16,8 +17,8 @@ internal static class Logger
     public static void Log(
         string message,
         LoggingLevel level = LoggingLevel.Information,
-        [CallerMemberName] string memberName = null,
-        [CallerFilePath] string filePath = null,
+        [CallerMemberName] string? memberName = null,
+        [CallerFilePath] string? filePath = null,
         [CallerLineNumber] int lineNumber = 0
     )
     {
@@ -33,13 +34,16 @@ internal static class Logger
         System.Diagnostics.Debug.WriteLine(message);
 #endif
 
-        if (level == LoggingLevel.Error)
+        if (_logger is { } logger)
         {
-            _logger?.LogError(message);
-        }
-        else
-        {
-            _logger?.LogInformation(message);
+            if (level == LoggingLevel.Error)
+            {
+                logger.ZLogError($"{message}");
+            }
+            else
+            {
+                logger.ZLogInformation($"{message}");
+            }
         }
     }
 }

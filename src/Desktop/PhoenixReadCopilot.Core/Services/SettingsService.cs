@@ -1,18 +1,19 @@
 using System.ComponentModel;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Core.Helpers;
+using PhoenixReadCopilot.Core.Models.Settings;
+using ZLogger;
 
-namespace PhoenixReadCopilot.Services;
+namespace PhoenixReadCopilot.Core.Services;
 
 /// <summary>
 /// 应用程序设置服务实现.
 /// </summary>
 public sealed class SettingsService : ISettingsService, IDisposable
 {
-    private readonly ILogger<SettingsService>? _logger;
-    private readonly string _folderPath = PathHelper.SettingsFolderPath;
+    private readonly ILogger<SettingsService> _logger;
     private readonly string _filePath;
     private readonly Debouncer _writeSettingsDebouncer;
 
@@ -32,13 +33,12 @@ public sealed class SettingsService : ISettingsService, IDisposable
         }
     }
 
-    public SettingsService(ILogger<SettingsService>? logger = null)
+    public SettingsService(ILogger<SettingsService> logger, IPathService pathService)
     {
         _logger = logger;
-        _filePath = Path.Combine(_folderPath, "settings.json");
-        _writeSettingsDebouncer = new Debouncer(
-            TimeSpan.FromMilliseconds(500),
-            ex => _logger?.LogError(ex, "[SettingsService] Failed to save settings to disk")
+        _filePath = Path.Combine(pathService.SettingsFolderPath, "settings.json");
+        _writeSettingsDebouncer = new Debouncer(TimeSpan.FromMilliseconds(500), ex =>
+            _logger.ZLogError(ex, $"[SettingsService] Failed to save settings to disk")
         );
         Settings = LoadFromDisk();
     }
@@ -49,8 +49,8 @@ public sealed class SettingsService : ISettingsService, IDisposable
         {
             if (!File.Exists(_filePath))
             {
-                _logger?.LogInformation(
-                    "[SettingsService] Settings file does not exist, using default values"
+                _logger.ZLogInformation(
+                    $"[SettingsService] Settings file does not exist, using default values"
                 );
                 return new AppSettings();
             }
@@ -61,18 +61,18 @@ public sealed class SettingsService : ISettingsService, IDisposable
         }
         catch (JsonException ex)
         {
-            _logger?.LogError(
+            _logger.ZLogError(
                 ex,
-                "[SettingsService] JSON parsing failed, backup corrupted file and use default values"
+                $"[SettingsService] JSON parsing failed, backup corrupted file and use default values"
             );
             BackupCorruptedFile();
             return new AppSettings();
         }
         catch (Exception ex)
         {
-            _logger?.LogError(
+            _logger.ZLogError(
                 ex,
-                "[SettingsService] Failed to load settings, using default values"
+                $"[SettingsService] Failed to load settings, using default values"
             );
             return new AppSettings();
         }
@@ -97,18 +97,13 @@ public sealed class SettingsService : ISettingsService, IDisposable
         try
         {
             string json = JsonAotSerializer.Serialize(Settings);
-            if (!Directory.Exists(_folderPath))
-            {
-                Directory.CreateDirectory(_folderPath);
-            }
-
             string tmpPath = _filePath + ".tmp";
             await File.WriteAllTextAsync(tmpPath, json).ConfigureAwait(false);
             File.Move(tmpPath, _filePath, true);
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "[SettingsService] Failed to save settings to disk");
+            _logger.ZLogError(ex, $"[SettingsService] Failed to save settings to disk");
         }
     }
 
@@ -120,14 +115,14 @@ public sealed class SettingsService : ISettingsService, IDisposable
             {
                 string backup = _filePath + $".corrupted_{DateTime.Now:yyyyMMddHHmmss}";
                 File.Move(_filePath, backup);
-                _logger?.LogInformation(
+                _logger.ZLogInformation(
                     $"[SettingsService] Corrupted settings backed up to: {backup}"
                 );
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogWarning(ex, "[SettingsService] Failed to backup corrupted settings file");
+            _logger.ZLogWarning(ex, $"[SettingsService] Failed to backup corrupted settings file");
         }
     }
 

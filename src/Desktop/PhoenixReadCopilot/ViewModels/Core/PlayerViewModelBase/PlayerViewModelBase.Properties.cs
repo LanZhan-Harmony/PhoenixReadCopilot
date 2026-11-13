@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Models.Settings;
+using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Items;
 using Windows.Media;
 using Windows.System.Display;
