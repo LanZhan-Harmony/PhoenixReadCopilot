@@ -31,11 +31,6 @@ public sealed partial class AppViewModel : ViewModelBase
     public List<Window> Windows { get; } = [];
 
     /// <summary>
-    /// FFmpeg 路径.
-    /// </summary>
-    public string FFmpegPath { get; private set; }
-
-    /// <summary>
     /// 是否已关闭.
     /// </summary>
     public bool IsClosed { get; set; }

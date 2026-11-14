@@ -1,8 +1,10 @@
+using System;
+using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Player;
-using PhoenixReadCopilot.Core.Models.Settings;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -12,15 +14,10 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 public sealed partial class DownloadViewModel
 {
     private readonly ILogger<DownloadViewModel> _logger;
-    private readonly AppViewModel _appViewModel;
-    private readonly AppSettings _settings;
-    private readonly string _ffmpegPath;
-    private readonly string _downloadPath;
-    private readonly bool _openFolderAfterDownload;
-    private int _currentPartIndex;
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly HttpClient _httpClient;
+    private readonly IDownloadService _downloadService;
+    private readonly INotificationService _notificationService;
 
+    private int _currentPartIndex;
     private string _dramaId = string.Empty;
     private string _seriesTitle = string.Empty;
     private string _coverUrl = string.Empty;

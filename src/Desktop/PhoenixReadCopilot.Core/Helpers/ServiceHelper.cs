@@ -29,6 +29,7 @@ public static class ServiceHelper
         });
 
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IDownloadService, DownloadService>();
 
         services.AddSingleton<PhoenixReadApiClient>(sp =>
         {
