@@ -9,7 +9,7 @@ using PhoenixReadCopilot.ViewModels.Items;
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 流行与榜单页面视图模型.
+/// 流行与榜单页面视图模型 (属性分部).
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
@@ -18,11 +18,7 @@ public sealed partial class PopularPageViewModel
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly Dictionary<string, List<VideoItemViewModel>> _videoCache = [];
-
-    private int _recommendOffset;
-    private string? _recommendSessionId;
-    private readonly HashSet<string> _seenDramaIds = [];
-    private bool _hasMoreRecommendations = true;
+    private readonly Dictionary<string, List<ActorItemViewModel>> _actorCache = [];
 
     private int _leaderboardOffset;
     private string? _leaderboardSessionId;
@@ -47,6 +43,12 @@ public sealed partial class PopularPageViewModel
     [ObservableProperty]
     public partial bool IsLeaderboardSection { get; set; }
 
+    /// <summary>
+    /// 当前是否处于演员榜.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsActorLeaderboard { get; set; }
+
     [ObservableProperty]
     public partial ShortDramaLeaderboardChannel CurrentChannel { get; set; } =
         ShortDramaLeaderboardChannel.All;
@@ -60,7 +62,7 @@ public sealed partial class PopularPageViewModel
     public event EventHandler? SectionInitialized;
 
     /// <summary>
-    /// 视频列表已完成更新.
+    /// 视频/榜单列表已完成更新.
     /// </summary>
     public event EventHandler? VideoListUpdated;
 
@@ -70,7 +72,12 @@ public sealed partial class PopularPageViewModel
     public ObservableCollection<IPopularSectionItemViewModel> Sections { get; } = [];
 
     /// <summary>
-    /// 短剧视频列表.
+    /// 短剧视频榜单列表 (供短剧榜单 Repeater 使用).
     /// </summary>
     public ObservableCollection<VideoItemViewModel> Videos { get; } = [];
+
+    /// <summary>
+    /// 演员榜单列表 (供演员榜单 Repeater 使用).
+    /// </summary>
+    public ObservableCollection<ActorItemViewModel> Actors { get; } = [];
 }

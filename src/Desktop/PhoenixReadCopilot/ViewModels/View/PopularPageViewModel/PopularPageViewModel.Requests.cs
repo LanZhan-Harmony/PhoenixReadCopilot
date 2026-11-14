@@ -10,72 +10,6 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class PopularPageViewModel
 {
-    private async Task LoadRecommendVideosAsync(long requestId, CancellationToken ct)
-    {
-        if (!_hasMoreRecommendations && _recommendOffset > 0)
-        {
-            return;
-        }
-
-        try
-        {
-            RecommendationPage page = await _apiClient.GetRecommendationsAsync(
-                RecommendationGenre.ShortDrama,
-                offset: _recommendOffset,
-                sessionId: _recommendSessionId,
-                seen: _seenDramaIds,
-                cancellationToken: ct
-            );
-
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            {
-                return;
-            }
-
-            _recommendOffset = page.NextOffset;
-            _recommendSessionId = page.SessionId;
-            _hasMoreRecommendations = page.HasMore;
-
-            if (page.Items is { Count: > 0 })
-            {
-                _dispatcherQueue.TryEnqueue(() =>
-                {
-                    if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    foreach (Drama item in page.Items)
-                    {
-                        if (string.IsNullOrWhiteSpace(item.Id))
-                        {
-                            continue;
-                        }
-
-                        // 严格自动去重：不仅在当前推荐会话中去重，还要确保当前展示列表中绝不包含重复剧集
-                        if (_seenDramaIds.Add(item.Id) && !Videos.Any(v => v.Drama?.Id == item.Id))
-                        {
-                            Videos.Add(new VideoItemViewModel(item, VideoCardStyle.Recommend));
-                        }
-                    }
-
-                    if (SelectedSection is not null)
-                    {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Videos];
-                    }
-                });
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // 请求已取消，正常忽略
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"尝试加载红果短剧推荐时出错.");
-        }
-    }
-
     private async Task LoadDramaLeaderboardAsync(
         ShortDramaLeaderboardType type,
         ShortDramaLeaderboardChannel channel,
@@ -190,22 +124,22 @@ public sealed partial class PopularPageViewModel
                             : item.UserId;
                         if (
                             string.IsNullOrWhiteSpace(actorKey)
-                            || Videos.Any(v => v.ActorId == actorKey)
+                            || Actors.Any(v => v.ActorId == actorKey)
                         )
                         {
                             continue;
                         }
 
-                        VideoItemViewModel vm = new(item)
+                        ActorItemViewModel vm = new(item)
                         {
-                            Rank = item.Position > 0 ? item.Position : Videos.Count + 1,
+                            Rank = item.Position > 0 ? item.Position : Actors.Count + 1,
                         };
-                        Videos.Add(vm);
+                        Actors.Add(vm);
                     }
 
                     if (SelectedSection is not null)
                     {
-                        _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Videos];
+                        _actorCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Actors];
                     }
                 });
             }

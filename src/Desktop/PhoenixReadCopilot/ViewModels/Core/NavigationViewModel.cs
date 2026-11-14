@@ -219,10 +219,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     private IReadOnlyList<AppNavigationItemViewModel> GetMenuItems()
     {
         string? lastSelectedPage = string.IsNullOrEmpty(_settings.LastSelectedFeaturePage)
-            ? typeof(PopularPage).FullName
+            ? typeof(HomePage).FullName
             : _settings.LastSelectedFeaturePage;
         List<AppNavigationItemViewModel> list =
         [
+            GetItem<HomePage>(Resources.Home, FluentIcons.Common.Symbol.Home),
             GetItem<PopularPage>(Resources.PopularSlim, FluentIcons.Common.Symbol.Rocket),
             GetItem<MomentPage>(Resources.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
             GetItem<CalendarPage>(Resources.Calendar, FluentIcons.Common.Symbol.Calendar),
