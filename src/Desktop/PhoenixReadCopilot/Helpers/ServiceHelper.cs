@@ -31,6 +31,7 @@ internal class ServiceHelper
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
             .AddSingleton(DispatcherQueue.GetForCurrentThread())
             .AddSingleton<ISubtitleService, SubtitleService>()
+            .AddSingleton<INotificationService, NotificationService>()
             // 2. ViewModels
             // Core
             .AddSingleton<AppViewModel>()

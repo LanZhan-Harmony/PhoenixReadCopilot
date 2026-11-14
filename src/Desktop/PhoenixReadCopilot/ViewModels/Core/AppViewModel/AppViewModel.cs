@@ -56,7 +56,6 @@ public sealed partial class AppViewModel : ViewModelBase
         {
             IsInitialLoading = true;
             new MainWindow().Activate();
-            InitializeExternalCommand.Execute(null);
         }
 
         if (startupWindow is not null)
@@ -64,22 +63,6 @@ public sealed partial class AppViewModel : ViewModelBase
             Windows.Remove(startupWindow);
             startupWindow.Close();
         }
-    }
-
-    [RelayCommand]
-    private Task InitializeExternalAsync()
-    {
-        Architecture architecture = RuntimeInformation.ProcessArchitecture;
-        string identifier = architecture == Architecture.Arm64 ? "arm64" : "x64";
-
-        FFmpegPath = Path.Combine(
-            AppContext.BaseDirectory,
-            "Assets",
-            "ffmpeg",
-            identifier,
-            "ffmpeg.exe"
-        );
-        return Task.CompletedTask;
     }
 
     [RelayCommand]
