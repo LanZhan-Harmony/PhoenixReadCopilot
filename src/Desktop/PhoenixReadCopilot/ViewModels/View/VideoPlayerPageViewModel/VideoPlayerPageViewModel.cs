@@ -73,32 +73,32 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         IsPageLoading = true;
-        string seriesId = string.Empty;
+        string dramaId = string.Empty;
 
         if (parameter is VideoSnapshot snapshot)
         {
-            seriesId = snapshot.Video.Identifier.Id;
+            dramaId = snapshot.Video.Identifier.Id;
         }
         else if (parameter is Drama drama)
         {
-            seriesId = drama.Id;
+            dramaId = drama.Id;
         }
         else if (parameter is string id)
         {
-            seriesId = id;
+            dramaId = id;
         }
         else if (parameter is VideoItemViewModel videoVm)
         {
-            seriesId = videoVm.Drama?.Id ?? videoVm.Data.Identifier.Id;
+            dramaId = videoVm.Drama?.Id ?? videoVm.Data.Identifier.Id;
         }
         else if (parameter is SeasonItemViewModel seasonVm)
         {
-            seriesId = seasonVm.Drama?.Id ?? seasonVm.Data.Identifier.Id;
+            dramaId = seasonVm.Drama?.Id ?? seasonVm.Data.Identifier.Id;
         }
 
         try
         {
-            if (!string.IsNullOrEmpty(_seriesId) && _seriesId != seriesId)
+            if (!string.IsNullOrEmpty(_dramaId) && _dramaId != dramaId)
             {
                 // 记录上一个视频的播放进度.
                 await ReportProgressAsync(Player.Position);
@@ -109,11 +109,11 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
             Player.IsSeparatorWindowPlayer = IsSeparatorWindowPlayer;
             _pageLoadCancellationTokenSource = new CancellationTokenSource();
-            _seriesId = seriesId;
+            _dramaId = dramaId;
 
             // 获取红果短剧详情与分集
             DramaDetails details = await _apiClient.GetDramaDetailsAsync(
-                _seriesId,
+                _dramaId,
                 _pageLoadCancellationTokenSource.Token
             );
             _dramaDetails = details;
@@ -125,8 +125,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _currentEpisode = initialPart;
 
             // 初始化整剧剧评与分集评论
-            _dramaReviews.Initialize(_seriesId, details.Drama.Score);
-            _comments.Initialize(_seriesId, _currentEpisode.VideoId, CommentSortOrder.Hot);
+            _dramaReviews.Initialize(_dramaId, details.Drama.Score);
+            _comments.Initialize(_dramaId, _currentEpisode.VideoId, CommentSortOrder.Hot);
 
             LoadInitialProgress();
             await InitializeSectionsAsync();
@@ -139,7 +139,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             if (ex is not TaskCanceledException)
             {
                 IsPageLoadFailed = true;
-                _logger.ZLogError(ex, $"尝试获取短剧 {seriesId} 详情时失败.");
+                _logger.ZLogError(ex, $"尝试获取短剧 {dramaId} 详情时失败.");
             }
         }
         finally
@@ -181,7 +181,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             {
                 // 解析红果短剧媒体源（包含各清晰度与 AES-128 CENC 解密密钥）
                 mediaList = await _apiClient.ResolveMediaAsync(
-                    _seriesId,
+                    _dramaId,
                     episode.VideoId,
                     _dashLoadCancellationTokenSource.Token
                 );
@@ -204,7 +204,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 IsMediaLoadFailed = true;
                 _logger.ZLogError(
                     ex,
-                    $"尝试获取短剧 {_seriesId} 的第 {episode.Number} 分集媒体时失败."
+                    $"尝试获取短剧 {_dramaId} 的第 {episode.Number} 分集媒体时失败."
                 );
             }
         }
@@ -323,7 +323,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         bool shouldReport = _settings.ShouldReportProgress;
         if (
             !shouldReport
-            || string.IsNullOrEmpty(_seriesId)
+            || string.IsNullOrEmpty(_dramaId)
             || _currentEpisode is null
             || progress == 0
             || Player.IsPlayerDataLoading
@@ -338,7 +338,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             await _apiClient.ReportProgressAsync(
                 new ProgressUpdate
                 {
-                    SeriesId = _seriesId,
+                    DramaId = _dramaId,
                     VideoId = _currentEpisode.VideoId,
                     EpisodeNumber = _currentEpisode.Number,
                     CurrentPositionMs = progress * 1000L,

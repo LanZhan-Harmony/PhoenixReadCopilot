@@ -25,19 +25,19 @@ public sealed partial class FindDramaPageViewModel
             _filterCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
             CancellationToken ct = _filterCts.Token;
 
-            IReadOnlyList<ShortDramaFilterRow> rows =
+            IReadOnlyList<ShortDramaFilterGroup> rows =
                 await _apiClient.GetShortDramaFilterPanelAsync(ShortDramaGenre.ShortPlay, ct);
             List<IndexFilterViewModel> filterList = [];
-            foreach (ShortDramaFilterRow row in rows)
+            foreach (ShortDramaFilterGroup group in rows)
             {
-                string dimName = row.Name.StartsWith("全部") ? row.Name[2..] : row.Name;
+                string dimName = group.Name.StartsWith("全部") ? group.Name[2..] : group.Name;
                 List<Condition> conditions =
                 [
-                    new(row.Name, string.Empty),
-                    .. row.Options.Select(opt => new Condition(opt.Name, opt.Value)),
+                    new(group.Name, string.Empty),
+                    .. group.Items.Select(opt => new Condition(opt.Name, opt.Value)),
                 ];
 
-                Filter filter = new(row.Key, dimName, conditions);
+                Filter filter = new(group.Key, dimName, conditions);
                 filterList.Add(new IndexFilterViewModel(filter, RequestForConditionChanged));
             }
 

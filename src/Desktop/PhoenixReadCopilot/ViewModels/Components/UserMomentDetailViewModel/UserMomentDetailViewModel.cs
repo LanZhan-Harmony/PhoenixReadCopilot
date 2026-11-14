@@ -120,16 +120,12 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     private void Reset(object userParam)
     {
         Clear();
-        if (userParam is PhoenixReadApi.UserProfile profile)
+        if (userParam is UserProfile profile)
         {
             _userId = profile.User.Id;
             if (_isVideo)
             {
-                SetInitialData(
-                    profile.RelatedDramas,
-                    profile.RelatedDramasPage.Cursor,
-                    profile.RelatedDramasPage.HasMore
-                );
+                SetInitialData(profile.Works, profile.WorksPage.Cursor, profile.WorksPage.HasMore);
             }
             else
             {
@@ -194,10 +190,14 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             IsLoading = true;
             if (_isVideo)
             {
-                UserDramaPage page = await _apiClient.GetUserRelatedDramasAsync(
+                UserWorkPage page = await _apiClient.GetUserWorksAsync(
                     _userId,
-                    count: 18,
-                    cursor: _offset ?? string.Empty
+                    new UserWorksQuery
+                    {
+                        SubTab = UserWorkSubTab.Drama,
+                        Count = 18,
+                        Cursor = _offset.ToString(),
+                    }
                 );
                 _offset = page.Cursor;
                 _preventLoadMore = !page.HasMore || string.IsNullOrEmpty(_offset);

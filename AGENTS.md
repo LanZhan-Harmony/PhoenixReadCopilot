@@ -137,7 +137,7 @@ private void SelectEpisode(EpisodeItemViewModel episode)
 
 - **私有字段**：下划线前缀的小驼峰：`_service`、`_logger`、`_recommendOffset`、`_cancellationTokenSource`。
 - **公共属性 / 方法 / 类 / 接口**：大驼峰（PascalCase）：`Title`、`EpisodeCount`、`InitializeAsync`、`IDramaDiscoveryService`。
-- **局部变量 / 参数**：小驼峰（camelCase）：`seriesId`、`cancellationToken`。
+- **局部变量 / 参数**：小驼峰（camelCase）：`dramaId`、`cancellationToken`。
 - **类型后缀约定**：
   - 页面：`*Page`（如 `PopularPage`、`DramaPlayerPage`）
   - 页面基类：`*PageBase`（如 `PopularPageBase`）
@@ -207,7 +207,7 @@ private void SelectEpisode(EpisodeItemViewModel episode)
    - 会话状态持久化文件统一写入 `PathHelper.AuthFolderPath` 文件夹。
 2. **媒体播放与 CENC 解密**：
    - 项目播放核心为主力 `FFmpegPlayerViewModel`（基于 `FFmpegInteropX`）和备选 `WebPlayerViewModel`（基于 WebView2 + EME）；
-   - 从 `client.ResolveMediaAsync(seriesId, videoId)` 获取 [PlaybackMedia](file:///D:/code/C#/PhoenixReadApi/PhoenixReadApi/Public/Models/PlaybackMedia.cs) 后，**必须检查 `DecryptionKey`**；若非空，将 AES-128 解密密钥作为参数传递给播放器：
+   - 从 `client.ResolveMediaAsync(dramaId, videoId)` 获取 [PlaybackMedia](file:///D:/code/C#/PhoenixReadApi/PhoenixReadApi/Public/Models/PlaybackMedia.cs) 后，**必须检查 `DecryptionKey`**；若非空，将 AES-128 解密密钥作为参数传递给播放器：
      ```csharp
      config.FFmpegOptions["decryption_key"] = media.DecryptionKey;
      ```

@@ -19,17 +19,17 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 剧评列表项视图模型.
 /// </summary>
-public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaComment>
+public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly AppViewModel _appViewModel;
     private readonly ILogger _logger;
-    private readonly string _seriesId;
+    private readonly string _dramaId;
     private readonly Action<DramaReviewItemViewModel>? _showMoreAction;
 
     public DramaReviewItemViewModel(
-        DramaComment comment,
-        string seriesId,
+        Comment comment,
+        string dramaId,
         PhoenixReadApiClient apiClient,
         AppViewModel appViewModel,
         ILogger logger,
@@ -37,7 +37,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
     )
         : base(comment)
     {
-        _seriesId = seriesId;
+        _dramaId = dramaId;
         _apiClient = apiClient;
         _appViewModel = appViewModel;
         _logger = logger;
@@ -113,7 +113,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<DramaCommen
         try
         {
             bool next = !IsLiked;
-            PhoenixOperationResult res = await _apiClient.SetReviewLikeAsync(Id, _seriesId, next);
+            PhoenixOperationResult res = await _apiClient.SetReviewLikeAsync(Id, _dramaId, next);
             if (res.Succeeded)
             {
                 IsLiked = next;
@@ -171,7 +171,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
     public string Title => "剧评";
 
     [ObservableProperty]
-    public partial string SeriesId { get; set; } = string.Empty;
+    public partial string DramaId { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string DramaScore { get; set; } = string.Empty;
@@ -228,9 +228,9 @@ public sealed partial class DramaReviewSectionDetailViewModel
     /// <summary>
     /// 初始化剧评组件.
     /// </summary>
-    public void Initialize(string seriesId, string score)
+    public void Initialize(string dramaId, string score)
     {
-        SeriesId = seriesId;
+        DramaId = dramaId;
         DramaScore = score;
         UpdateLoginState();
         Clear();
@@ -247,7 +247,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
     [RelayCommand]
     public async Task TryFirstLoadAsync()
     {
-        if (Reviews.Count > 0 || string.IsNullOrEmpty(SeriesId))
+        if (Reviews.Count > 0 || string.IsNullOrEmpty(DramaId))
         {
             return;
         }
@@ -283,7 +283,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
     [RelayCommand]
     public async Task SendReviewAsync(string content)
     {
-        if (string.IsNullOrWhiteSpace(content) || IsSending || string.IsNullOrEmpty(SeriesId))
+        if (string.IsNullOrWhiteSpace(content) || IsSending || string.IsNullOrEmpty(DramaId))
         {
             return;
         }
@@ -301,7 +301,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         {
             double sendRating = Math.Clamp(Math.Round(Rating * 2.0) / 2.0, 0.5, 5.0);
             PhoenixOperationResult result = await _apiClient.SendDramaReviewAsync(
-                SeriesId,
+                DramaId,
                 sendRating,
                 formatted
             );
@@ -336,7 +336,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
     {
         CommentItemViewModel commentItemVm = new(
             item.Data,
-            SeriesId,
+            DramaId,
             videoId: null,
             _apiClient,
             isDramaReview: true
@@ -349,7 +349,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
             Ioc.Default.GetRequiredService<ILogger<CommentDetailViewModel>>(),
             _apiClient,
             _appViewModel,
-            SeriesId,
+            DramaId,
             videoId: null
         );
         SelectedItem.InitializeCommand.Execute(null);
@@ -357,7 +357,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
 
     private async Task LoadItemsAsync()
     {
-        if (string.IsNullOrEmpty(SeriesId) || IsLoading)
+        if (string.IsNullOrEmpty(DramaId) || IsLoading)
         {
             return;
         }
@@ -367,7 +367,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         try
         {
             CommentPage page = await _apiClient.GetDramaReviewsAsync(
-                SeriesId,
+                DramaId,
                 count: 20,
                 cursor: _cursor,
                 sort: SortType
@@ -376,14 +376,14 @@ public sealed partial class DramaReviewSectionDetailViewModel
             _hasMore = page.HasMore;
             TotalCount = page.Total;
 
-            foreach (DramaComment item in page.Items)
+            foreach (Comment item in page.Items)
             {
                 if (!Reviews.Any(r => r.Id == item.Id))
                 {
                     Reviews.Add(
                         new DramaReviewItemViewModel(
                             item,
-                            SeriesId,
+                            DramaId,
                             _apiClient,
                             _appViewModel,
                             _logger,

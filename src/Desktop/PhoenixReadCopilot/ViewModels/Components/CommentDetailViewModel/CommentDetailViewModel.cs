@@ -26,7 +26,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         ILogger<CommentDetailViewModel> logger,
         PhoenixReadApiClient? apiClient,
         AppViewModel? appViewModel,
-        string? seriesId,
+        string? dramaId,
         string? videoId
     )
         : base(data)
@@ -36,7 +36,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         _logger = logger;
         _apiClient = apiClient;
         _appViewModel = appViewModel;
-        _seriesId = seriesId;
+        _dramaId = dramaId;
         _videoId = videoId;
     }
 
@@ -59,8 +59,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             return;
         }
 
-        string? effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
-        if (string.IsNullOrEmpty(effectiveSeriesId))
+        string? effectiveDramaId = !string.IsNullOrEmpty(_dramaId) ? _dramaId : Data.DramaId;
+        if (string.IsNullOrEmpty(effectiveDramaId))
         {
             return;
         }
@@ -75,7 +75,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             {
                 replyPage = await _apiClient.GetDramaReviewRepliesAsync(
                     commentId: Data.Id,
-                    seriesId: effectiveSeriesId,
+                    dramaId: effectiveDramaId,
                     count: 20,
                     cursor: _cursor
                 );
@@ -84,7 +84,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             {
                 replyPage = await _apiClient.GetEpisodeCommentRepliesAsync(
                     commentId: Data.Id,
-                    seriesId: effectiveSeriesId,
+                    dramaId: effectiveDramaId,
                     videoId: _videoId,
                     count: 20,
                     cursor: _cursor
@@ -104,7 +104,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
                 Comments.Add(
                     new CommentItemViewModel(
                         item,
-                        effectiveSeriesId,
+                        effectiveDramaId,
                         _videoId,
                         _apiClient,
                         isDramaReview: Data.IsDramaReview,
@@ -174,8 +174,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             return;
         }
 
-        string? effectiveSeriesId = !string.IsNullOrEmpty(_seriesId) ? _seriesId : Data.SeriesId;
-        if (string.IsNullOrEmpty(effectiveSeriesId))
+        string? effectiveDramaId = !string.IsNullOrEmpty(_dramaId) ? _dramaId : Data.DramaId;
+        if (string.IsNullOrEmpty(effectiveDramaId))
         {
             return;
         }
@@ -191,7 +191,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
                 // 回复整剧剧评
                 res = await _apiClient.SendDramaReviewReplyAsync(
                     commentId: Data.Id,
-                    seriesId: effectiveSeriesId,
+                    dramaId: effectiveDramaId,
                     text: content,
                     replyToUserId: targetUserId
                 );
@@ -201,7 +201,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
                 // 回复分集评论
                 res = await _apiClient.SendEpisodeCommentReplyAsync(
                     commentId: Data.Id,
-                    seriesId: effectiveSeriesId,
+                    dramaId: effectiveDramaId,
                     videoId: _videoId,
                     text: content,
                     replyToUserId: targetUserId

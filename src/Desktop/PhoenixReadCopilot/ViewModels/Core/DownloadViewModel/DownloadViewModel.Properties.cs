@@ -21,7 +21,7 @@ public sealed partial class DownloadViewModel
     private readonly PhoenixReadApiClient _apiClient;
     private readonly HttpClient _httpClient;
 
-    private string _seriesId = string.Empty;
+    private string _dramaId = string.Empty;
     private string _seriesTitle = string.Empty;
     private string _coverUrl = string.Empty;
 

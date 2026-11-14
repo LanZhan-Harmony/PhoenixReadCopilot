@@ -23,7 +23,7 @@ public sealed partial class VideoPlayerPageViewModel
     private readonly DramaReviewSectionDetailViewModel _dramaReviews;
 
     private DramaDetails? _dramaDetails;
-    private string _seriesId = string.Empty;
+    private string _dramaId = string.Empty;
     private string _currentVideoId = string.Empty;
     private IReadOnlyList<PlaybackMedia>? _currentMediaList;
     private IReadOnlyList<Episode>? _episodes;

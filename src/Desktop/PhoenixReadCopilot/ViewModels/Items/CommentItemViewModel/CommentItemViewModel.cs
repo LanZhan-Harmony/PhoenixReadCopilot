@@ -18,8 +18,8 @@ public sealed partial class CommentItemViewModel : ViewModelBase
     /// 红果评论构造函数（分集评论或整剧剧评）.
     /// </summary>
     public CommentItemViewModel(
-        DramaComment comment,
-        string seriesId,
+        Comment comment,
+        string dramaId,
         string? videoId,
         PhoenixReadApiClient apiClient,
         bool isDramaReview = false,
@@ -28,7 +28,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
     {
         Id = comment.Id;
         Text = comment.Text;
-        SeriesId = seriesId;
+        DramaId = dramaId;
         VideoId = videoId;
         IsDramaReview = isDramaReview;
         _apiClient = apiClient;
@@ -84,7 +84,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
     /// </summary>
     public CommentItemViewModel(
         CommentReply reply,
-        string seriesId,
+        string dramaId,
         string? videoId,
         PhoenixReadApiClient apiClient,
         bool isDramaReview = false,
@@ -93,7 +93,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
     {
         Id = reply.Id;
         Text = reply.Text;
-        SeriesId = seriesId;
+        DramaId = dramaId;
         VideoId = videoId;
         IsDramaReview = isDramaReview;
         _apiClient = apiClient;
@@ -161,13 +161,13 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         try
         {
             PhoenixOperationResult res;
-            if (IsDramaReview && !string.IsNullOrEmpty(SeriesId))
+            if (IsDramaReview && !string.IsNullOrEmpty(DramaId))
             {
-                res = await _apiClient.SetReviewLikeAsync(Id, SeriesId, state);
+                res = await _apiClient.SetReviewLikeAsync(Id, DramaId, state);
             }
             else
             {
-                string? targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : SeriesId;
+                string? targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : DramaId;
                 if (string.IsNullOrEmpty(targetId))
                 {
                     return;

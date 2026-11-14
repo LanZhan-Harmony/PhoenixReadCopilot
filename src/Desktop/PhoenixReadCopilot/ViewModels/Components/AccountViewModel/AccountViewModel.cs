@@ -44,7 +44,7 @@ public sealed partial class AccountViewModel : ViewModelBase
             bool isValid = await _apiClient.ValidateSessionAsync();
             if (isValid)
             {
-                CurrentUserInfo info = await _apiClient.GetCurrentUserInfoAsync();
+                AuthenticatedUser info = await _apiClient.GetCurrentUserInfoAsync();
                 UserAvatar? avatar =
                     !string.IsNullOrEmpty(info.AvatarUrl)
                     && Uri.TryCreate(info.AvatarUrl, UriKind.Absolute, out Uri? uri)

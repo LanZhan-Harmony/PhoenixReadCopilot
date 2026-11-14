@@ -16,7 +16,7 @@ public sealed partial class VideoPlayerPageViewModel
     private void InitializeDramaView(DramaDetails details)
     {
         Drama drama = details.Drama;
-        _seriesId = drama.Id;
+        _dramaId = drama.Id;
         Title = drama.Title;
         Description = drama.Description;
         Cover =
@@ -28,7 +28,7 @@ public sealed partial class VideoPlayerPageViewModel
             drama.PlayCount > 0
                 ? drama.PlayCount
                 : (double.TryParse(drama.Views, out double vc) ? vc : 0);
-        LikeCount = drama.DiggCount;
+        LikeCount = drama.LikeCount;
         FavoriteCount = drama.FollowCount;
         OnlineCountText = !string.IsNullOrEmpty(drama.Heat)
             ? drama.Heat
@@ -52,7 +52,7 @@ public sealed partial class VideoPlayerPageViewModel
     {
         Downloader.Clear();
         Downloader.InitializeDrama(
-            _seriesId,
+            _dramaId,
             Title,
             Cover?.ToString() ?? string.Empty,
             _episodes,
@@ -135,9 +135,7 @@ public sealed partial class VideoPlayerPageViewModel
         // 4. 专属关联好剧推荐（调用红果推荐接口）
         try
         {
-            DramaRelatedRecommendations rec = await _apiClient.GetSeriesRecommendationsAsync(
-                _seriesId
-            );
+            DramaRecommendations rec = await _apiClient.GetSeriesRecommendationsAsync(_dramaId);
             if (rec?.Items is { Count: > 0 } recItems)
             {
                 sections.Add(new VideoPlayerRecommendSectionDetailViewModel(recItems));
@@ -284,7 +282,7 @@ public sealed partial class VideoPlayerPageViewModel
         object? next = FindNextVideo();
         if (
             next is not Episode nextEpisode
-            || string.IsNullOrEmpty(_seriesId)
+            || string.IsNullOrEmpty(_dramaId)
             || string.IsNullOrEmpty(nextEpisode.VideoId)
         )
         {
@@ -317,7 +315,7 @@ public sealed partial class VideoPlayerPageViewModel
                     }
 
                     IReadOnlyList<PlaybackMedia> mediaList = await _apiClient.ResolveMediaAsync(
-                        _seriesId,
+                        _dramaId,
                         nextEpisode.VideoId,
                         token
                     );

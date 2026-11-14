@@ -42,13 +42,13 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     /// 初始化红果短剧分集评论.
     /// </summary>
     public void Initialize(
-        string seriesId,
+        string dramaId,
         string videoId,
         CommentSortOrder sortOrder = CommentSortOrder.Hot
     )
     {
         Clear();
-        _seriesId = seriesId;
+        _dramaId = dramaId;
         _videoId = videoId;
         Id = videoId;
         SortType = sortOrder;
@@ -89,14 +89,14 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        string targetSeriesId = _seriesId;
+        string targetDramaId = _dramaId;
         string targetVideoId = _videoId;
         string targetId = Id;
         CommentSortOrder sortType = SortType;
 
         Clear();
 
-        _seriesId = targetSeriesId;
+        _dramaId = targetDramaId;
         _videoId = targetVideoId;
         Id = targetId;
         SortType = sortType;
@@ -120,7 +120,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         UpdateLoginState();
 
-        if (string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(_videoId))
+        if (string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId))
         {
             return;
         }
@@ -129,7 +129,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         {
             IsLoading = true;
             CommentPage page = await _apiClient.GetEpisodeCommentsAsync(
-                _seriesId,
+                _dramaId,
                 _videoId,
                 count: 20,
                 cursor: _cursor,
@@ -139,7 +139,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             _preventLoadMore = !page.HasMore;
             TopItem = null;
 
-            foreach (DramaComment item in page.Items)
+            foreach (Comment item in page.Items)
             {
                 if (Comments.Any(p => p.Data.Id == item.Id))
                 {
@@ -148,7 +148,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
                 CommentItemViewModel itemVm = new(
                     item,
-                    _seriesId,
+                    _dramaId,
                     _videoId,
                     _apiClient,
                     isDramaReview: false,
@@ -162,7 +162,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                         _loggerFactory.CreateLogger<CommentDetailViewModel>(),
                         _apiClient,
                         _appViewModel,
-                        _seriesId,
+                        _dramaId,
                         _videoId
                     )
                 );
@@ -202,7 +202,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         content = EmojiHelper.FormatEmojiText(content.Trim());
 
-        if (_apiClient is null || string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(_videoId))
+        if (_apiClient is null || string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId))
         {
             return;
         }
@@ -219,13 +219,13 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             PhoenixOperationResult result;
             if (_replyItem is null)
             {
-                result = await _apiClient.SendEpisodeCommentAsync(_seriesId, _videoId, content);
+                result = await _apiClient.SendEpisodeCommentAsync(_dramaId, _videoId, content);
             }
             else
             {
                 result = await _apiClient.SendEpisodeCommentReplyAsync(
                     commentId: _replyItem.Id,
-                    seriesId: _seriesId,
+                    dramaId: _dramaId,
                     videoId: _videoId,
                     text: content,
                     replyToUserId: _replyItem.UserId
@@ -286,7 +286,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         _cursor = string.Empty;
         _preventLoadMore = false;
         Id = string.Empty;
-        _seriesId = string.Empty;
+        _dramaId = string.Empty;
         _videoId = string.Empty;
         IsEmpty = false;
         TopItem = null;
