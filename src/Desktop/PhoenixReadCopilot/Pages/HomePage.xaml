@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:HomePageBase x:Class="PhoenixReadCopilot.Pages.HomePage"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:base="using:WinUIKernel.Share.Base"
+                    xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:ic="using:FluentIcons.WinUI"
+                    xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+                    xmlns:local="using:PhoenixReadCopilot.Pages"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:strings="using:PhoenixReadCopilot.Strings"
+                    mc:Ignorable="d">
+
+    <Grid>
+
+        <!--  推荐短剧流  -->
+        <Grid>
+            <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
+                <Grid Margin="16,12">
+                    <ItemsRepeater x:Name="VideoRepeater"
+                                   ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
+                                   Layout="{StaticResource VideoLayout}">
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="items:VideoItemViewModel">
+                                <components:VideoCardControl Style="{StaticResource RecommendVideoCardStyle}" ViewModel="{x:Bind Mode=OneWay}"/>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </Grid>
+            </ScrollViewer>
+            <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}"/>
+        </Grid>
+    </Grid>
+</local:HomePageBase>

@@ -46,16 +46,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             return;
         }
 
-        // 1. 推荐流
-        Sections.Add(
-            new PopularSectionItemViewModel(
-                FluentIcons.Common.Symbol.Balloon,
-                Resources.Recommend,
-                PopularSectionType.Recommend
-            )
-        );
-
-        // 2. 推荐榜
+        // 1. 推荐榜
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.RibbonStar,
@@ -65,7 +56,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             )
         );
 
-        // 3. 热播榜
+        // 2. 热播榜
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.Fire,
@@ -75,7 +66,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             )
         );
 
-        // 4. 新剧榜
+        // 3. 新剧榜
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.Sparkle,
@@ -85,7 +76,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             )
         );
 
-        // 5. 热搜榜
+        // 4. 热搜榜
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.Search,
@@ -95,7 +86,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
             )
         );
 
-        // 6. 演员排行榜
+        // 5. 演员排行榜
         Sections.Add(
             new PopularSectionItemViewModel(
                 FluentIcons.Common.Symbol.PeopleStar,
@@ -140,35 +131,61 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         // 立即清空当前显示列表，防止界面残留或不同榜单互相串数据
         Videos.Clear();
+        Actors.Clear();
 
         SelectedSection = vm;
         if (vm is PopularSectionItemViewModel pSection)
         {
             _settings.PopularPageLastSelectedSectionId = pSection.Type.ToString();
             IsLeaderboardSection = pSection.LeaderboardType.HasValue;
+            IsActorLeaderboard = pSection.IsActorLeaderboard;
         }
         else
         {
             IsLeaderboardSection = false;
+            IsActorLeaderboard = false;
         }
 
         string cacheKey = GetCacheKey(vm, CurrentChannel);
-        if (
-            _videoCache.TryGetValue(cacheKey, out List<VideoItemViewModel>? cacheVideos)
-            && cacheVideos.Count > 0
-        )
+        if (IsActorLeaderboard)
         {
-            foreach (VideoItemViewModel video in cacheVideos)
+            if (
+                _actorCache.TryGetValue(cacheKey, out List<ActorItemViewModel>? cacheActors)
+                && cacheActors.Count > 0
+            )
             {
-                Videos.Add(video);
-            }
+                foreach (ActorItemViewModel actor in cacheActors)
+                {
+                    Actors.Add(actor);
+                }
 
-            VideoListUpdated?.Invoke(this, EventArgs.Empty);
+                VideoListUpdated?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                ResetPagination(vm);
+                await LoadVideosAsync();
+            }
         }
         else
         {
-            ResetPagination(vm);
-            await LoadVideosAsync();
+            if (
+                _videoCache.TryGetValue(cacheKey, out List<VideoItemViewModel>? cacheVideos)
+                && cacheVideos.Count > 0
+            )
+            {
+                foreach (VideoItemViewModel video in cacheVideos)
+                {
+                    Videos.Add(video);
+                }
+
+                VideoListUpdated?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                ResetPagination(vm);
+                await LoadVideosAsync();
+            }
         }
     }
 
@@ -247,11 +264,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         {
             if (SelectedSection is PopularSectionItemViewModel section)
             {
-                if (section.Type == PopularSectionType.Recommend)
-                {
-                    await LoadRecommendVideosAsync(requestId, ct);
-                }
-                else if (section.LeaderboardType.HasValue)
+                if (section.LeaderboardType.HasValue)
                 {
                     await LoadDramaLeaderboardAsync(
                         section.LeaderboardType.Value,
@@ -287,9 +300,12 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         IsVideoLoading = false;
 
         Videos.Clear();
+        Actors.Clear();
         if (SelectedSection is not null)
         {
-            _videoCache.Remove(GetCacheKey(SelectedSection, CurrentChannel));
+            string cacheKey = GetCacheKey(SelectedSection, CurrentChannel);
+            _videoCache.Remove(cacheKey);
+            _actorCache.Remove(cacheKey);
             ResetPagination(SelectedSection);
         }
 
@@ -300,14 +316,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     {
         if (section is PopularSectionItemViewModel pSection)
         {
-            if (pSection.Type == PopularSectionType.Recommend)
-            {
-                _recommendOffset = 0;
-                _recommendSessionId = null;
-                _seenDramaIds.Clear();
-                _hasMoreRecommendations = true;
-            }
-            else if (pSection.LeaderboardType.HasValue)
+            if (pSection.LeaderboardType.HasValue)
             {
                 _leaderboardOffset = 0;
                 _leaderboardSessionId = null;

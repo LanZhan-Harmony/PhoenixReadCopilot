@@ -253,6 +253,9 @@ public sealed partial class AppSettings : ObservableObject
 
     // ================= 导航项可见性 =================
     [ObservableProperty]
+    public partial bool IsHomePageVisible { get; set; } = true;
+
+    [ObservableProperty]
     public partial bool IsPopularPageVisible { get; set; } = true;
 
     [ObservableProperty]
@@ -344,6 +347,7 @@ public sealed partial class AppSettings : ObservableObject
         string name = pageType.Name;
         return name switch
         {
+            "HomePage" => IsHomePageVisible,
             "PopularPage" => IsPopularPageVisible,
             "MomentPage" => IsMomentPageVisible,
             "CalendarPage" => IsCalendarPageVisible,
@@ -360,6 +364,9 @@ public sealed partial class AppSettings : ObservableObject
         string name = pageType.Name;
         switch (name)
         {
+            case "HomePage":
+                IsHomePageVisible = isVisible;
+                break;
             case "PopularPage":
                 IsPopularPageVisible = isVisible;
                 break;

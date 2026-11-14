@@ -549,6 +549,9 @@
   <data name="PlayerBehaviorDescription" xml:space="preserve">
     <value>设置播放器的默认行为</value>
   </data>
+  <data name="Home" xml:space="preserve">
+    <value>首页</value>
+  </data>
   <data name="PlayerType" xml:space="preserve">
     <value>播放器类型</value>
   </data>

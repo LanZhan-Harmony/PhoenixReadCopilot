@@ -1,19 +1,15 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.Controls.Popular;
 
 /// <summary>
-/// 流行视频页面主体.
+/// 流行与榜单页面主体.
 /// </summary>
 public sealed partial class PopularMainBody : PopularPageControlBase
 {
-    private readonly StackLayout _actorLayout = new() { Spacing = 10 };
-    private VirtualizingLayout? _defaultVideoLayout;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="PopularMainBody"/> class.
     /// </summary>
@@ -30,14 +26,14 @@ public sealed partial class PopularMainBody : PopularPageControlBase
         VideoScrollView.ViewChanged += OnViewChanged;
         VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
 
-        UpdateLayoutMode();
         CheckVideoCount();
     }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        VideoRepeater.ItemsSource = null;
+        DramaRepeater.ItemsSource = null;
+        ActorRepeater.ItemsSource = null;
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         VideoScrollView.ViewChanged -= OnViewChanged;
@@ -54,17 +50,8 @@ public sealed partial class PopularMainBody : PopularPageControlBase
             || e.PropertyName == nameof(ViewModel.CurrentChannel)
         )
         {
-            UpdateLayoutMode();
             VideoScrollView.ChangeView(null, 0, null, true);
         }
-    }
-
-    private void UpdateLayoutMode()
-    {
-        _defaultVideoLayout ??= (VirtualizingLayout)Application.Current.Resources["VideoLayout"];
-        bool isActor =
-            ViewModel?.SelectedSection is PopularSectionItemViewModel { IsActorLeaderboard: true };
-        VideoRepeater.Layout = isActor ? _actorLayout : _defaultVideoLayout;
     }
 
     private async void OnVideoListUpdatedAsync(object? sender, EventArgs e)
@@ -104,9 +91,14 @@ public sealed partial class PopularMainBody : PopularPageControlBase
     {
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
+            bool hasItems = ViewModel?.IsActorLeaderboard == true
+                ? (ViewModel?.Actors.Count ?? 0) > 0
+                : (ViewModel?.Videos.Count ?? 0) > 0;
+
             if (
                 VideoScrollView.ScrollableHeight <= 240
-                && ViewModel is { IsVideoLoading: false, Videos.Count: > 0 }
+                && ViewModel is { IsVideoLoading: false }
+                && hasItems
             )
             {
                 ViewModel.LoadVideosCommand.Execute(null);

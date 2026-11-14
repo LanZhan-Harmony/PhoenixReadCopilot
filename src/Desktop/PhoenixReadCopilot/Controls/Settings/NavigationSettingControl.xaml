@@ -15,6 +15,12 @@
             <ic:SymbolIcon Symbol="Navigation"/>
         </community:SettingsExpander.HeaderIcon>
         <community:SettingsExpander.Items>
+            <community:SettingsCard Header="{x:Bind strings:Resources.Home}">
+                <community:SettingsCard.HeaderIcon>
+                    <ic:SymbolIcon Symbol="Home"/>
+                </community:SettingsCard.HeaderIcon>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsHomePageVisible, Mode=TwoWay}"/>
+            </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.Popular}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Rocket"/>
