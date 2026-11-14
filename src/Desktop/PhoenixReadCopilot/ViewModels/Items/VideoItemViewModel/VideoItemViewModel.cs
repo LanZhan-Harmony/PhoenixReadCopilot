@@ -144,16 +144,16 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class from a <see cref="ReadHistoryEntry"/>.
+    /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class from a <see cref="ReadHistoryItem"/>.
     /// </summary>
     public VideoItemViewModel(
-        ReadHistoryEntry history,
+        ReadHistoryItem history,
         Action<VideoItemViewModel>? removeAction = null
     )
         : base(CreateHistoryInformation(history))
     {
         _removeAction = removeAction;
-        HistoryEntry = history;
+        HistoryItem = history;
         Style = VideoCardStyle.History;
         Title = history.Title;
         Subtitle = history.EpisodeNumber > 0 ? $"第 {history.EpisodeNumber} 集" : string.Empty;
@@ -174,7 +174,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         }
     }
 
-    private static VideoInformation CreateHistoryInformation(ReadHistoryEntry history)
+    private static VideoInformation CreateHistoryInformation(ReadHistoryItem history)
     {
         AppImage? cover =
             !string.IsNullOrEmpty(history.CoverUrl)
@@ -182,7 +182,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
                 ? new AppImage(uri)
                 : null;
         return new VideoInformation(
-            new MediaIdentifier(history.SeriesId, history.Title, cover),
+            new MediaIdentifier(history.DramaId, history.Title, cover),
             null
         );
     }
@@ -246,9 +246,9 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             return;
         }
 
-        if (HistoryEntry is not null)
+        if (HistoryItem is not null)
         {
-            ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), HistoryEntry.SeriesId);
+            ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), HistoryItem.DramaId);
             return;
         }
 
@@ -319,11 +319,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     {
         try
         {
-            if (HistoryEntry is not null)
+            if (HistoryItem is not null)
             {
                 await ItemServices.PhoenixRead.DeleteHistoryAsync(
-                    HistoryEntry.SeriesId,
-                    HistoryEntry.VideoId
+                    HistoryItem.DramaId,
+                    HistoryItem.VideoId
                 );
             }
             else if (Data is not null && !string.IsNullOrEmpty(Data.Identifier?.Id))

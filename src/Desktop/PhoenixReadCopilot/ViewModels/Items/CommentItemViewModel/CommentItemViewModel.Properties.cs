@@ -65,7 +65,7 @@ public sealed partial class CommentItemViewModel
     /// <summary>
     /// 所属剧集 ID.
     /// </summary>
-    public string? SeriesId { get; init; }
+    public string? DramaId { get; init; }
 
     /// <summary>
     /// 所属分集视频 ID.

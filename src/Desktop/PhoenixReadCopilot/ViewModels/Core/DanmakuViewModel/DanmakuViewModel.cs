@@ -53,10 +53,10 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// <summary>
     /// 重置数据.
     /// </summary>
-    public void ResetData(string seriesId, string videoId)
+    public void ResetData(string dramaId, string videoId)
     {
         ClearAll();
-        _seriesId = seriesId;
+        _dramaId = dramaId;
         _videoId = videoId;
         _loadedVideoId = string.Empty;
         ResetData();
@@ -117,7 +117,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         _loadedVideoId = string.Empty;
         CurrentDanmakus = [];
         _duration = 0;
-        _seriesId = string.Empty;
+        _dramaId = string.Empty;
         _videoId = string.Empty;
         ClearDanmaku();
     }
@@ -136,14 +136,14 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// 是否为空.
     /// </summary>
     /// <returns>结果.</returns>
-    public bool IsEmpty() => string.IsNullOrEmpty(_seriesId) || string.IsNullOrEmpty(_videoId);
+    public bool IsEmpty() => string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId);
 
     [RelayCommand]
     private async Task LoadDanmakusAsync(int duration)
     {
         if (
             IsLoading
-            || string.IsNullOrEmpty(_seriesId)
+            || string.IsNullOrEmpty(_dramaId)
             || string.IsNullOrEmpty(_videoId)
             || (_loadedVideoId == _videoId && !string.IsNullOrEmpty(_loadedVideoId))
         )
@@ -159,13 +159,13 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         IsLoading = true;
         _duration = duration;
         var currentLoadingVideoId = _videoId;
-        var currentLoadingSeriesId = _seriesId;
+        var currentLoadingDramaId = _dramaId;
 
         try
         {
             long durationMs = duration > 0 ? duration * 1000L : 3600000L;
             DanmakuPage page = await _apiClient.GetDanmakuAsync(
-                currentLoadingSeriesId,
+                currentLoadingDramaId,
                 currentLoadingVideoId,
                 0,
                 durationMs,
@@ -187,7 +187,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
                     {
                         Id = item.Id,
                         Text = item.Text,
-                        StartMs = (uint)Math.Max(0, item.TimeMs),
+                        StartMs = (uint)Math.Max(0, item.OffsetMs),
                         Mode = DanmakuMode.Rolling,
                         TextColor = Microsoft.UI.Colors.White,
                         BaseFontSize = 24,
@@ -198,7 +198,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
                 CurrentDanmakus = danmakus;
                 CanShowDanmaku = true;
                 _logger.ZLogInformation(
-                    $"[Danmaku] 成功获取弹幕: 剧集={currentLoadingSeriesId}, 分集={currentLoadingVideoId}, 弹幕条数={danmakus.Count}"
+                    $"[Danmaku] 成功获取弹幕: 剧集={currentLoadingDramaId}, 分集={currentLoadingVideoId}, 弹幕条数={danmakus.Count}"
                 );
                 foreach (DanmakuCoreItem? sample in danmakus.Take(3))
                 {
@@ -224,7 +224,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         {
             _logger.ZLogError(
                 ex,
-                $"加载短剧 {currentLoadingSeriesId} | {currentLoadingVideoId} 的弹幕失败."
+                $"加载短剧 {currentLoadingDramaId} | {currentLoadingVideoId} 的弹幕失败."
             );
         }
         finally
@@ -238,7 +238,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     {
         if (
             string.IsNullOrWhiteSpace(text)
-            || string.IsNullOrEmpty(_seriesId)
+            || string.IsNullOrEmpty(_dramaId)
             || string.IsNullOrEmpty(_videoId)
         )
         {
@@ -248,7 +248,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         try
         {
             PhoenixOperationResult result = await _apiClient.SendDanmakuAsync(
-                _seriesId,
+                _dramaId,
                 _videoId,
                 text.Trim()
             );

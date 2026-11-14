@@ -21,7 +21,7 @@ public sealed partial class CommentMainViewModel
 
     private bool _preventLoadMore;
     private string _cursor = string.Empty;
-    private string _seriesId = string.Empty;
+    private string _dramaId = string.Empty;
     private string _videoId = string.Empty;
     private Items.CommentItemViewModel? _replyItem;
 

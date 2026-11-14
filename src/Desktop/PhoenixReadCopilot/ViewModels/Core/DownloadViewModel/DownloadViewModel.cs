@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.Input;
@@ -64,14 +65,14 @@ public sealed partial class DownloadViewModel : ViewModelBase
     /// 初始化红果短剧元数据.
     /// </summary>
     public void InitializeDrama(
-        string seriesId,
+        string dramaId,
         string title,
         string coverUrl,
         IReadOnlyList<Episode>? episodes = null,
         Episode? currentEpisode = null
     )
     {
-        _seriesId = seriesId;
+        _dramaId = dramaId;
         _seriesTitle = title;
         _coverUrl = coverUrl;
         Episodes = episodes is not null ? [.. episodes] : null;
@@ -83,7 +84,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     /// </summary>
     public void Clear()
     {
-        _seriesId = string.Empty;
+        _dramaId = string.Empty;
         _seriesTitle = string.Empty;
         _coverUrl = string.Empty;
         _currentPartIndex = 0;
@@ -102,7 +103,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         {
             Episode ep = CurrentEpisode;
             await DownloadSingleEpisodeAsync(
-                _seriesId,
+                _dramaId,
                 ep.VideoId,
                 ep.Number,
                 string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
@@ -115,7 +116,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         {
             Episode ep = Episodes.FirstOrDefault(e => e.Number == _currentPartIndex) ?? Episodes[0];
             await DownloadSingleEpisodeAsync(
-                _seriesId,
+                _dramaId,
                 ep.VideoId,
                 ep.Number,
                 string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
@@ -174,7 +175,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             epNumber = ep.Number;
         }
 
-        if (string.IsNullOrEmpty(videoId) || string.IsNullOrEmpty(_seriesId))
+        if (string.IsNullOrEmpty(videoId) || string.IsNullOrEmpty(_dramaId))
         {
             _appViewModel.ShowTipCommand.Execute(("无可用弹幕数据", InfoType.Warning));
             return;
@@ -183,7 +184,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
         try
         {
             DanmakuPage danmakuPage = await _apiClient.GetDanmakuAsync(
-                _seriesId,
+                _dramaId,
                 videoId,
                 0,
                 3600000
@@ -201,9 +202,9 @@ public sealed partial class DownloadViewModel : ViewModelBase
 
             foreach (DanmakuItem item in danmakuPage.Items)
             {
-                double timeSec = item.TimeMs / 1000.0;
+                double timeSec = item.OffsetMs / 1000.0;
                 sb.AppendLine(
-                    $"<d p=\"{timeSec:F2},1,25,16777215,0,0,0,0\">{System.Security.SecurityElement.Escape(item.Text)}</d>"
+                    $"<d p=\"{timeSec:F2},1,25,16777215,0,0,0,0\">{SecurityElement.Escape(item.Text)}</d>"
                 );
             }
             sb.AppendLine("</i>");
@@ -228,7 +229,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private async Task BatchDownloadAllPartsAsync()
     {
-        if (string.IsNullOrEmpty(_seriesId) || Episodes is not { Count: > 0 })
+        if (string.IsNullOrEmpty(_dramaId) || Episodes is not { Count: > 0 })
         {
             _appViewModel.ShowTipCommand.Execute(("无分集可下载", InfoType.Warning));
             return;
@@ -243,7 +244,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             foreach (Episode? ep in episodesToDownload)
             {
                 await DownloadSingleEpisodeAsync(
-                    _seriesId,
+                    _dramaId,
                     ep.VideoId,
                     ep.Number,
                     string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
@@ -264,7 +265,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private async Task BatchDownloadSelectedPartsAsync(string selection)
     {
-        if (string.IsNullOrEmpty(_seriesId) || Episodes is not { Count: > 0 })
+        if (string.IsNullOrEmpty(_dramaId) || Episodes is not { Count: > 0 })
         {
             return;
         }
@@ -290,7 +291,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
                 if (ep is not null)
                 {
                     await DownloadSingleEpisodeAsync(
-                        _seriesId,
+                        _dramaId,
                         ep.VideoId,
                         ep.Number,
                         string.IsNullOrEmpty(ep.Title) ? $"第{ep.Number}集" : ep.Title,
@@ -307,7 +308,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     }
 
     private async Task DownloadSingleEpisodeAsync(
-        string seriesId,
+        string dramaId,
         string videoId,
         int index,
         string title,
@@ -325,7 +326,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             }
 
             IReadOnlyList<PlaybackMedia>? mediaList = await _apiClient.ResolveMediaAsync(
-                seriesId,
+                dramaId,
                 videoId
             );
             if (mediaList is null || mediaList.Count == 0)

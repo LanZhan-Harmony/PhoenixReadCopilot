@@ -20,7 +20,7 @@ public sealed partial class DanmakuViewModel
     private readonly IFontToolkit _fontToolkit;
     private readonly AppSettings _settings;
 
-    private string _seriesId = string.Empty;
+    private string _dramaId = string.Empty;
     private string _videoId = string.Empty;
     private string _loadedVideoId = string.Empty;
     private int _position;

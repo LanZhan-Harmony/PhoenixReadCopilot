@@ -292,10 +292,14 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             _searchCancellationTokenSource = new CancellationTokenSource();
             CancellationToken ct = _searchCancellationTokenSource.Token;
 
-            UserDramaPage dramas = await _apiClient.GetUserRelatedDramasAsync(
+            UserWorkPage dramas = await _apiClient.GetUserWorksAsync(
                 _userId,
-                count: 18,
-                cursor: _searchOffset.ToString(),
+                new UserWorksQuery
+                {
+                    SubTab = UserWorkSubTab.Drama,
+                    Count = 18,
+                    Cursor = _searchOffset.ToString(),
+                },
                 cancellationToken: ct
             );
 
@@ -379,9 +383,9 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             },
             Community = new UserCommunity
             {
-                FollowCount = profile.CollectionsPage.Total,
-                FansCount = profile.LikesPage.Total,
-                LikeCount = profile.RelatedDramasPage.Total,
+                FollowCount = profile.FollowCount,
+                FansCount = profile.FansCount,
+                LikeCount = profile.LikeCount,
             },
         };
     }

@@ -18,7 +18,7 @@ public sealed partial class CommentDetailViewModel
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly PhoenixReadApiClient? _apiClient;
     private readonly AppViewModel? _appViewModel;
-    private readonly string? _seriesId;
+    private readonly string? _dramaId;
     private readonly string? _videoId;
 
     private bool _preventLoadMore;

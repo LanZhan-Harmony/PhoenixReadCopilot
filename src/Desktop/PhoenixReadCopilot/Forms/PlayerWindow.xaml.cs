@@ -67,10 +67,10 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     /// <summary>
     /// 打开短剧内容.
     /// </summary>
-    public void OpenDrama(string seriesId)
+    public void OpenDrama(string dramaId)
     {
         Activate();
-        MainFrame.Navigate(typeof(VideoPlayerPage), seriesId);
+        MainFrame.Navigate(typeof(VideoPlayerPage), dramaId);
     }
 
     /// <summary>

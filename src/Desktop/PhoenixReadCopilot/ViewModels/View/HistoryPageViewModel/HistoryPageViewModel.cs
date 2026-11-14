@@ -98,18 +98,18 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         {
             foreach (VideoItemViewModel? item in videoSection.Items.ToList())
             {
-                if (item.HistoryEntry is not null)
+                if (item.HistoryItem is not null)
                 {
                     try
                     {
                         await _apiClient.DeleteHistoryAsync(
-                            item.HistoryEntry.SeriesId,
-                            item.HistoryEntry.VideoId
+                            item.HistoryItem.DramaId,
+                            item.HistoryItem.VideoId
                         );
                     }
                     catch (Exception ex)
                     {
-                        _logger.ZLogWarning(ex, $"删除历史记录出错: {item.HistoryEntry.SeriesId}");
+                        _logger.ZLogWarning(ex, $"删除历史记录出错: {item.HistoryItem.DramaId}");
                     }
                 }
             }
@@ -160,13 +160,13 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             _searchOffset = historyPage.NextOffset;
 
             string kw = SearchKeyword.Trim();
-            List<ReadHistoryEntry> filtered = historyPage
+            List<ReadHistoryItem> filtered = historyPage
                 .Items.Where(e => e.Title.Contains(kw, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            foreach (ReadHistoryEntry entry in filtered)
+            foreach (ReadHistoryItem item in filtered)
             {
-                SearchVideos.Add(new VideoItemViewModel(entry, RemoveSearchVideo));
+                SearchVideos.Add(new VideoItemViewModel(item, RemoveSearchVideo));
             }
 
             SearchUpdated?.Invoke(this, EventArgs.Empty);

@@ -23,10 +23,10 @@ public sealed partial class VideoPlayerPageViewModel
         {
             string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
             bool state = !IsLiked;
-            if (!string.IsNullOrEmpty(_seriesId) && !string.IsNullOrEmpty(targetVideoId))
+            if (!string.IsNullOrEmpty(_dramaId) && !string.IsNullOrEmpty(targetVideoId))
             {
                 PhoenixOperationResult res = await _apiClient.SetDramaEpisodeLikeAsync(
-                    _seriesId,
+                    _dramaId,
                     targetVideoId,
                     state
                 );
@@ -55,11 +55,11 @@ public sealed partial class VideoPlayerPageViewModel
         try
         {
             bool state = !IsFavorited;
-            if (!string.IsNullOrEmpty(_seriesId))
+            if (!string.IsNullOrEmpty(_dramaId))
             {
                 string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
                 PhoenixOperationResult res = await _apiClient.SetFavoriteAsync(
-                    _seriesId,
+                    _dramaId,
                     targetVideoId,
                     state
                 );
@@ -91,7 +91,7 @@ public sealed partial class VideoPlayerPageViewModel
         try
         {
             string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-            ShareLink shareInfo = await _apiClient.CreateShareLinkAsync(_seriesId, targetVideoId);
+            ShareLink shareInfo = await _apiClient.CreateShareLinkAsync(_dramaId, targetVideoId);
             string url = !string.IsNullOrEmpty(shareInfo.Url) ? shareInfo.Url : shareInfo.ShortUrl;
 
             DataPackage package = new();
@@ -111,10 +111,10 @@ public sealed partial class VideoPlayerPageViewModel
     {
         try
         {
-            if (!string.IsNullOrEmpty(_seriesId))
+            if (!string.IsNullOrEmpty(_dramaId))
             {
                 string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-                await _apiClient.SetFavoriteAsync(_seriesId, targetVideoId, true);
+                await _apiClient.SetFavoriteAsync(_dramaId, targetVideoId, true);
                 IsFavorited = true;
                 _appViewModel.ShowTipCommand.Execute(("已加入追剧列表", InfoType.Success));
             }
@@ -194,14 +194,14 @@ public sealed partial class VideoPlayerPageViewModel
             Player.TogglePlayPauseCommand.Execute(null);
         }
 
-        new PlayerWindow().OpenDrama(_seriesId);
+        new PlayerWindow().OpenDrama(_dramaId);
     }
 
     [RelayCommand]
     private void Pin()
     {
         PinItem pinItem = new(
-            _seriesId,
+            _dramaId,
             Title,
             Cover?.ToString() ?? string.Empty,
             PinContentType.Video
@@ -235,17 +235,17 @@ public sealed partial class VideoPlayerPageViewModel
         Downloader.CurrentEpisode = episode;
         Player.CancelNotification();
 
-        Danmaku?.ResetData(_seriesId, episode.VideoId);
+        Danmaku?.ResetData(_dramaId, episode.VideoId);
         var episodeDuration = (int)episode.Duration.TotalSeconds;
         Danmaku?.LoadDanmakusCommand.Execute(episodeDuration);
-        Subtitle?.ResetData(_seriesId, episode.VideoId);
+        Subtitle?.ResetData(_dramaId, episode.VideoId);
 
         // 加载分集媒体
         InitializeDashMediaCommand.Execute(episode);
         Subtitle.InitializeCommand.Execute(null);
 
         // 切换分集评论
-        _comments.Initialize(_seriesId, episode.VideoId, CommentSortOrder.Hot);
+        _comments.Initialize(_dramaId, episode.VideoId, CommentSortOrder.Hot);
         if (SelectedSection == _comments)
         {
             _comments.TryFirstLoadCommand.Execute(null);
@@ -264,7 +264,7 @@ public sealed partial class VideoPlayerPageViewModel
         if (
             Danmaku is not null
             && Danmaku is { HasLoaded: false, IsLoading: false }
-            && !string.IsNullOrEmpty(_seriesId)
+            && !string.IsNullOrEmpty(_dramaId)
             && !string.IsNullOrEmpty(_currentVideoId)
         )
         {
@@ -277,7 +277,7 @@ public sealed partial class VideoPlayerPageViewModel
 
     private void PlayerStateChanged(PlayerState state)
     {
-        if (_currentEpisode is null && string.IsNullOrEmpty(_seriesId))
+        if (_currentEpisode is null && string.IsNullOrEmpty(_dramaId))
         {
             return;
         }

@@ -27,7 +27,7 @@ public sealed partial class VideoItemViewModel
     /// <summary>
     /// 阅读/观看历史条目 (如果是红果历史记录).
     /// </summary>
-    public ReadHistoryEntry? HistoryEntry { get; init; }
+    public ReadHistoryItem? HistoryItem { get; init; }
 
     /// <summary>
     /// 演员数据实体 (如果是红果演员排行榜).

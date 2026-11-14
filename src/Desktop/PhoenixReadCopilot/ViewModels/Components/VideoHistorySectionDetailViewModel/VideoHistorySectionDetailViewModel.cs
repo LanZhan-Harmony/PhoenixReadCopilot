@@ -63,19 +63,19 @@ public sealed partial class VideoHistorySectionDetailViewModel
             _isPreventLoadMore = !page.HasMore || page.Items.Count == 0;
             if (page.Items.Count > 0)
             {
-                foreach (ReadHistoryEntry entry in page.Items)
+                foreach (ReadHistoryItem item in page.Items)
                 {
                     if (
                         Items.Any(p =>
-                            p.HistoryEntry?.SeriesId == entry.SeriesId
-                            && p.HistoryEntry?.VideoId == entry.VideoId
+                            p.HistoryItem?.DramaId == item.DramaId
+                            && p.HistoryItem?.VideoId == item.VideoId
                         )
                     )
                     {
                         continue;
                     }
 
-                    Items.Add(new VideoItemViewModel(entry, removeAction: RemoveHistory));
+                    Items.Add(new VideoItemViewModel(item, removeAction: RemoveHistory));
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);
