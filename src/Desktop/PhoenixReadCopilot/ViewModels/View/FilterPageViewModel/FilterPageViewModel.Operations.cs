@@ -4,7 +4,7 @@ using PhoenixReadCopilot.Pages.Overlay;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
-public sealed partial class FindDramaPageViewModel
+public sealed partial class FilterPageViewModel
 {
     [RelayCommand]
     private async Task InitializeAsync() => await RequestFilterPanelAsync();
@@ -28,7 +28,7 @@ public sealed partial class FindDramaPageViewModel
     }
 
     [RelayCommand]
-    private void ShowMyFavoriteFindDrama()
+    private void ShowMyFavoriteFilter()
     {
         _settings.LastSelectedFavoriteSection = "drama";
         _navigationViewModel.NavigateToOver(typeof(FavoritesPage));

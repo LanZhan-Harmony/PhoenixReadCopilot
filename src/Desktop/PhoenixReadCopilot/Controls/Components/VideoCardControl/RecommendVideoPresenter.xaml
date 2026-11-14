@@ -83,12 +83,12 @@
                        TextWrapping="Wrap"/>
 
             <!--  底部行：题材分类 / 热度播放量  -->
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" ColumnSpacing="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <!--  分类或作者  -->
+                <!--  标签  -->
                 <base:IconTextBlock Grid.Column="0"
                                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                     IconBrush="{ThemeResource TextFillColorTertiaryBrush}"

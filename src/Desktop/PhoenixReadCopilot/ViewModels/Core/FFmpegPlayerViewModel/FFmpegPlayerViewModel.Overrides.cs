@@ -193,6 +193,48 @@ public sealed partial class FFmpegPlayerViewModel
         await renderTarget.SaveAsync(path, CanvasBitmapFileFormat.Png);
     }
 
+    /// <summary>
+    /// 捕获当前视频帧的像素数据 (BGRA8)，用于切集平滑无缝过渡.
+    /// </summary>
+    public byte[]? CaptureCurrentFrame(out int width, out int height)
+    {
+        width = 0;
+        height = 0;
+
+        if (Player?.PlaybackSession is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            int vidWidth = (int)Player.PlaybackSession.NaturalVideoWidth;
+            int vidHeight = (int)Player.PlaybackSession.NaturalVideoHeight;
+
+            if (vidWidth <= 0 || vidHeight <= 0)
+            {
+                return null;
+            }
+
+            width = vidWidth;
+            height = vidHeight;
+
+            using CanvasRenderTarget renderTarget = new(
+                CanvasDevice.GetSharedDevice(),
+                vidWidth,
+                vidHeight,
+                96
+            );
+            Player.CopyFrameToVideoSurface(renderTarget);
+            return renderTarget.GetPixelBytes();
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogWarning(ex, $"捕获切集视频帧失败.");
+            return null;
+        }
+    }
+
     /// <inheritdoc/>
     protected override async Task OnLoadPlayDataAsync()
     {
@@ -257,7 +299,16 @@ public sealed partial class FFmpegPlayerViewModel
         }
         else
         {
-            // 复用已有 Player，直接替换媒体源，避免黑屏与重新挂载开销
+            // 立即停止并释放旧源，确保切集后原集立即停止播放
+            if (Player is not null)
+            {
+                try
+                {
+                    Player.Pause();
+                }
+                catch { }
+            }
+
             if (_ffmpegSource is not null)
             {
                 try
@@ -337,6 +388,31 @@ public sealed partial class FFmpegPlayerViewModel
 
             MediaPlaybackItem playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
             Player.Source = playbackItem;
+        }
+    }
+
+    /// <inheritdoc/>
+    public override void ReleaseCurrentSource()
+    {
+        try
+        {
+            if (Player is not null)
+            {
+                Player.Pause();
+                Player.Source = null;
+            }
+        }
+        catch { }
+
+        if (_ffmpegSource is not null)
+        {
+            try
+            {
+                _ffmpegSource.PlaybackSession = null;
+                _ffmpegSource.Dispose();
+            }
+            catch { }
+            _ffmpegSource = null;
         }
     }
 }

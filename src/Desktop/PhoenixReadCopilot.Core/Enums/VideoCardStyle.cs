@@ -49,4 +49,14 @@ public enum VideoCardStyle
     /// 播放器推荐.
     /// </summary>
     PlayerRecommend,
+
+    /// <summary>
+    /// 上新日历.
+    /// </summary>
+    Calendar,
+
+    /// <summary>
+    /// 多维筛选.
+    /// </summary>
+    Filter,
 }

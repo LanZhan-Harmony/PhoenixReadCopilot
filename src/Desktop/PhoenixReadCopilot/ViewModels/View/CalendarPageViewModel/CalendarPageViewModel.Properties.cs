@@ -17,7 +17,7 @@ public sealed partial class CalendarPageViewModel
     private readonly ILogger<CalendarPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly Dictionary<DateOnly, List<SeasonItemViewModel>> _dateCache = [];
+    private readonly Dictionary<DateOnly, List<VideoItemViewModel>> _dateCache = [];
     private CancellationTokenSource? _timelineCts;
     private CancellationTokenSource? _dateReleasesCts;
     private bool _isInitialized;

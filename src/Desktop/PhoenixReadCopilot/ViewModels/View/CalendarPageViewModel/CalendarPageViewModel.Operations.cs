@@ -33,7 +33,7 @@ public sealed partial class CalendarPageViewModel
 
         if (vm.Items is null)
         {
-            if (_dateCache.TryGetValue(vm.TargetDate, out List<SeasonItemViewModel>? cached))
+            if (_dateCache.TryGetValue(vm.TargetDate, out List<VideoItemViewModel>? cached))
             {
                 vm.Items = cached;
                 vm.Count = cached.Count;

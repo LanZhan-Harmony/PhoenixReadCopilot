@@ -19,6 +19,16 @@ internal partial class DanmakuDirectXRender
     /// </summary>
     private const float DefaultBottomAndTopDurationMs = 3000f;
 
+    /// <summary>
+    /// 弹幕顶部安全边距（逻辑像素，防贴边）.
+    /// </summary>
+    private const float DanmakuTopMargin = 12f;
+
+    /// <summary>
+    /// 弹幕底部安全边距（逻辑像素，防贴边）.
+    /// </summary>
+    private const float DanmakuBottomMargin = 16f;
+
     #endregion
 
     #region UI 和资源管理
@@ -143,6 +153,11 @@ internal partial class DanmakuDirectXRender
     #region DirectX 资源缓存
 
     /// <summary>
+    /// 切集时冻结的视频帧纹理（用于防闪黑平滑过渡）.
+    /// </summary>
+    private ID2D1Bitmap1? _frozenBitmap;
+
+    /// <summary>
     /// 缓存的描边画刷.
     /// </summary>
     private ID2D1SolidColorBrush _cachedOutlineBrush;
@@ -168,9 +183,14 @@ internal partial class DanmakuDirectXRender
     private static readonly Vector2[] _outlineOffsets = new Vector2[8];
 
     /// <summary>
-    /// 透明背景色（用于清屏）.
+    /// 透明背景色（用于渲染时透出底层视频）.
     /// </summary>
     private static readonly Vortice.Mathematics.Color4 _clearColor = new(0, 0, 0, 0);
+
+    /// <summary>
+    /// 纯黑背景色（用于切集或空载时遮盖，防止 WinUI 3 硬件合成打洞穿透到窗口底色）.
+    /// </summary>
+    private static readonly Vortice.Mathematics.Color4 _blackColor = new(0, 0, 0, 1.0f);
 
     /// <summary>
     /// 🚀 GC 优化：预分配快照数组，避免每帧 ToArray() 分配.

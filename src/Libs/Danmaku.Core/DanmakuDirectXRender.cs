@@ -3,6 +3,7 @@ using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
 using Microsoft.UI.Xaml.Controls;
 using SharpGen.Runtime;
+using Vortice.Direct2D1;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
 
@@ -51,15 +52,19 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         // 初始化红果表情管理器
         _emojiManager = new DanmakuEmojiManager(_resourceManager);
 
+        float topMarginPx = DanmakuTopMargin * _scale;
+        float bottomMarginPx = DanmakuBottomMargin * _scale;
+        uint usableHeight = (uint)Math.Max(0, CanvasHeight - (topMarginPx + bottomMarginPx));
+
         uint layerCount = DanmakuDefaultLayerDef.DefaultLayerCount;
         _renderLayerList = new RenderLayer[layerCount];
         for (uint i = 0; i < layerCount; i++)
         {
             _renderLayerList[i] = new RenderLayer(i, i == DanmakuDefaultLayerDef.SubtitleLayerId);
-            if (CanvasHeight >= 1f)
+            if (usableHeight >= 1)
             {
                 _renderLayerList[i]
-                    .UpdateYSlotManagerLength((uint)CanvasHeight, _configState.RollingAreaRatio);
+                    .UpdateYSlotManagerLength(usableHeight, _configState.RollingAreaRatio);
             }
         }
 
@@ -104,9 +109,13 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 // 当滚动区域比例变化时，更新所有层的 Y 轴槽管理器
                 if (_renderLayerList is not null)
                 {
+                    float topMarginPx = DanmakuTopMargin * _scale;
+                    float bottomMarginPx = DanmakuBottomMargin * _scale;
+                    uint usableHeight = (uint)Math.Max(0, CanvasHeight - (topMarginPx + bottomMarginPx));
+
                     foreach (RenderLayer layer in _renderLayerList)
                     {
-                        layer.UpdateYSlotManagerLength((uint)CanvasHeight, rollingAreaRatio);
+                        layer.UpdateYSlotManagerLength(usableHeight, rollingAreaRatio);
                     }
                 }
             }
@@ -135,9 +144,19 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         CanvasWidth = _resourceManager.CanvasWidth;
         CanvasHeight = _resourceManager.CanvasHeight;
 
+        float topMarginPx = DanmakuTopMargin * _scale;
+        float bottomMarginPx = DanmakuBottomMargin * _scale;
+        uint usableHeight = (uint)Math.Max(0, CanvasHeight - (topMarginPx + bottomMarginPx));
+
         foreach (RenderLayer layer in _renderLayerList)
         {
-            layer.UpdateYSlotManagerLength((uint)CanvasHeight, _configState.RollingAreaRatio);
+            layer.UpdateYSlotManagerLength(usableHeight, _configState.RollingAreaRatio);
+        }
+
+        // 若当前处于切集冻结状态，尺寸变化后重新居中绘制冻结帧
+        if (_frozenBitmap is not null)
+        {
+            DrawFrozenFrameInternal();
         }
 
         // 尺寸变化后，重置上一帧时间戳，并唤醒独立渲染线程重绘
@@ -556,22 +575,26 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
                     totalCount++;
 
+                    float topMarginPx = DanmakuTopMargin * _scale;
+                    float bottomMarginPx = DanmakuBottomMargin * _scale;
+
                     float x = renderItem.X;
                     float y = renderItem.Item.Mode switch
                     {
-                        DanmakuMode.Rolling or DanmakuMode.ReverseRolling => renderItem.StartY,
+                        DanmakuMode.Rolling or DanmakuMode.ReverseRolling => topMarginPx + renderItem.StartY,
                         DanmakuMode.Bottom => Math.Max(
                             (
                                 _configState.NoOverlapSubtitle
-                                    ? Math.Max(CanvasHeight - 100f, CanvasHeight * 0.8f)
+                                    ? Math.Max(CanvasHeight - (100f * _scale), CanvasHeight * 0.8f)
                                     : CanvasHeight
                             )
+                            - bottomMarginPx
                             - renderItem.Height
                             - renderItem.StartY,
-                            0
+                            topMarginPx
                         ),
-                        DanmakuMode.Top => renderItem.StartY,
-                        _ => 0,
+                        DanmakuMode.Top => topMarginPx + renderItem.StartY,
+                        _ => topMarginPx,
                     };
 
                     // Draw danmaku
@@ -633,7 +656,162 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             layer.Clear(_resourceManager.ObjectPool);
         }
 
+        // 如果存在切集冻结帧，维持冻结帧呈现（防止闪黑）；否则清透明透出底层视频
+        if (_frozenBitmap is not null)
+        {
+            DrawFrozenFrameInternal();
+        }
+        else
+        {
+            ForceClearAndPresent(opaqueBlack: false);
+        }
+        _hasClearedScreen = true;
+
         Debug.WriteLine("DanmakuDirectXRender is cleared");
+    }
+
+    /// <summary>
+    /// 设置并立即呈现切集冻结帧（用于防闪黑过渡）.
+    /// </summary>
+    public void SetFrozenFrame(byte[] pixels, int width, int height)
+    {
+        if (pixels == null || width <= 0 || height <= 0)
+        {
+            return;
+        }
+
+        lock (_resourceManager.RenderLock)
+        {
+            if (_resourceManager.D2DContext is null || _resourceManager.SwapChain is null)
+            {
+                return;
+            }
+
+            try
+            {
+                _frozenBitmap?.Dispose();
+                _frozenBitmap = null;
+
+                BitmapProperties1 properties = new(
+                    new Vortice.DCommon.PixelFormat(
+                        Format.B8G8R8A8_UNorm,
+                        Vortice.DCommon.AlphaMode.Premultiplied
+                    ),
+                    96.0f,
+                    96.0f,
+                    BitmapOptions.None
+                );
+
+                unsafe
+                {
+                    fixed (byte* pData = pixels)
+                    {
+                        _frozenBitmap = _resourceManager.D2DContext.CreateBitmap(
+                            new Vortice.Mathematics.SizeI(width, height),
+                            (IntPtr)pData,
+                            (uint)(width * 4),
+                            properties
+                        );
+                    }
+                }
+
+                DrawFrozenFrameInternal();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"SetFrozenFrame failed: {ex.Message}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 在 SwapChainPanel 上居中绘制冻结帧并呈现双缓冲.
+    /// </summary>
+    private void DrawFrozenFrameInternal()
+    {
+        if (_frozenBitmap is null || _resourceManager.D2DContext is null || _resourceManager.SwapChain is null)
+        {
+            return;
+        }
+
+        if (CanvasWidth <= 0 || CanvasHeight <= 0)
+        {
+            return;
+        }
+
+        try
+        {
+            float bmpW = _frozenBitmap.PixelSize.Width;
+            float bmpH = _frozenBitmap.PixelSize.Height;
+            if (bmpW <= 0 || bmpH <= 0)
+            {
+                return;
+            }
+
+            float scale = Math.Min(CanvasWidth / bmpW, CanvasHeight / bmpH);
+            float destW = bmpW * scale;
+            float destH = bmpH * scale;
+            float destX = (CanvasWidth - destW) / 2.0f;
+            float destY = (CanvasHeight - destH) / 2.0f;
+
+            Vortice.Mathematics.Rect destRect = new(destX, destY, destW, destH);
+            Vortice.Mathematics.Rect srcRect = new(0, 0, bmpW, bmpH);
+
+            for (int i = 0; i < 2; i++)
+            {
+                _resourceManager.D2DContext.BeginDraw();
+                _resourceManager.D2DContext.Clear(_blackColor);
+                _resourceManager.D2DContext.DrawBitmap(
+                    _frozenBitmap,
+                    destRect,
+                    1.0f,
+                    BitmapInterpolationMode.Linear,
+                    srcRect
+                );
+                _resourceManager.D2DContext.EndDraw(out _, out _);
+                _resourceManager.SwapChain.Present(0, PresentFlags.None);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Log($"DrawFrozenFrameInternal error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// 强制以硬件方式将双缓冲完全清空并立即呈现.
+    /// </summary>
+    /// <param name="opaqueBlack">是否使用纯黑色填充（切集/无视频时为 true，透出视频时为 false）.</param>
+    public void ForceClearAndPresent(bool opaqueBlack = false)
+    {
+        lock (_resourceManager.RenderLock)
+        {
+            if (
+                _resourceManager.D2DContext is null
+                || _resourceManager.SwapChain is null
+                || CanvasWidth <= 0
+                || CanvasHeight <= 0
+            )
+            {
+                return;
+            }
+
+            try
+            {
+                var targetColor = opaqueBlack ? _blackColor : _clearColor;
+                for (int i = 0; i < 2; i++)
+                {
+                    _resourceManager.D2DContext.BeginDraw();
+                    _resourceManager.D2DContext.Clear(targetColor);
+                    _resourceManager.D2DContext.EndDraw(out _, out _);
+                    _resourceManager.SwapChain.Present(0, PresentFlags.None);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"ForceClearAndPresent error: {ex.Message}");
+            }
+        }
     }
 
     public void Start()
@@ -642,6 +820,17 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _isPaused = false;
         _lastFrameTime = _frameStopwatch.Elapsed;
         _frameStopwatch.Start();
+
+        lock (_resourceManager.RenderLock)
+        {
+            // 释放切集冻结帧
+            _frozenBitmap?.Dispose();
+            _frozenBitmap = null;
+        }
+
+        // 视频起播时立即提交一帧透明清除，使底层视频表面立刻透过 SwapChainPanel 展现
+        _hasClearedScreen = false;
+        ForceClearAndPresent(opaqueBlack: false);
 
         if (_gameLoopThread is not null)
         {
@@ -684,6 +873,13 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
         // 3. 清理弹幕列表
         Clear();
+
+        // 4. 清理切集冻结帧
+        lock (_resourceManager.RenderLock)
+        {
+            _frozenBitmap?.Dispose();
+            _frozenBitmap = null;
+        }
 
         // 6. 清理事件订阅
         if (_resourceManager is not null)
@@ -845,6 +1041,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 {
                     // 标记当前帧为清屏帧
                     _hasClearedScreen = true;
+                    if (_frozenBitmap is not null)
+                    {
+                        DrawFrozenFrameInternal();
+                        return;
+                    }
                 }
 
                 // 渲染弹幕

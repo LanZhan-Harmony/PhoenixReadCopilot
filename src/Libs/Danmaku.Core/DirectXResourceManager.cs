@@ -169,6 +169,19 @@ internal sealed class DirectXResourceManager : IDisposable
         CreateD2DResources();
         CreateDWriteFactory();
 
+        // 立即清除并提交双缓冲区的纯透明初始帧，确保透出底层播放器画面
+        try
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                D2DContext.BeginDraw();
+                D2DContext.Clear(new Vortice.Mathematics.Color4(0, 0, 0, 0f));
+                D2DContext.EndDraw(out _, out _);
+                SwapChain.Present(0, PresentFlags.None);
+            }
+        }
+        catch { }
+
         Logger.Log("DirectX resources initialized with color font support");
     }
 
@@ -433,6 +446,19 @@ internal sealed class DirectXResourceManager : IDisposable
             CreateRenderTargetView();
             CreateD2DRenderTarget();
 
+            // 立即清除并提交双缓冲区的纯透明初始帧，确保透出底层播放器画面
+            try
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    D2DContext.BeginDraw();
+                    D2DContext.Clear(new Vortice.Mathematics.Color4(0, 0, 0, 0f));
+                    D2DContext.EndDraw(out _, out _);
+                    SwapChain.Present(0, PresentFlags.None);
+                }
+            }
+            catch { }
+
             Logger.Log(
                 $"SwapChain resized: Logical={width}x{height}, Physical={physicalWidth}x{physicalHeight}, Scale={_scale}"
             );
@@ -487,7 +513,7 @@ internal sealed class DirectXResourceManager : IDisposable
         _logicalWidth = e.NewSize.Width;
         _logicalHeight = e.NewSize.Height;
 
-        _swapChainPanel.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        _swapChainPanel.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
         {
             ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
 

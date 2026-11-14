@@ -5,6 +5,7 @@ using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
+using PhoenixReadCopilot.ViewModels.Core;
 using Windows.ApplicationModel.DataTransfer;
 using WinUIKernel.Share.Base;
 using ZLogger;
@@ -225,6 +226,19 @@ public sealed partial class VideoPlayerPageViewModel
             return;
         }
 
+        // 1. 抓取当前帧并锁定呈现到 SwapChainPanel 上（无闪黑平滑过渡）
+        if (Player is FFmpegPlayerViewModel ffmpegVm)
+        {
+            byte[]? framePixels = ffmpegVm.CaptureCurrentFrame(out int frameW, out int frameH);
+            if (framePixels is not null && frameW > 0 && frameH > 0)
+            {
+                Danmaku?.ShowFrozenFrame(framePixels, frameW, frameH);
+            }
+        }
+
+        // 2. 在发起网络请求前立即释放旧源，确保旧集瞬间停止播放，避免漏声音与画面
+        Player.ReleaseCurrentSource();
+
         if (_initialProgress == 0)
         {
             _initialProgress = -1;
@@ -307,6 +321,16 @@ public sealed partial class VideoPlayerPageViewModel
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
+            // 抓取播完时的最后一帧并呈现到 SwapChainPanel 上，防止播放完毕切集或循环时闪黑
+            if (Player is FFmpegPlayerViewModel ffmpegVm)
+            {
+                byte[]? framePixels = ffmpegVm.CaptureCurrentFrame(out int frameW, out int frameH);
+                if (framePixels is not null && frameW > 0 && frameH > 0)
+                {
+                    Danmaku?.ShowFrozenFrame(framePixels, frameW, frameH);
+                }
+            }
+
             // 清除弹幕.
             Danmaku.ClearDanmaku();
             Subtitle.ClearSubtitle();

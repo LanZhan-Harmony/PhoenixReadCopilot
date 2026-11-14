@@ -31,9 +31,9 @@ public sealed partial class CalendarPageViewModel
                 cancellationToken: ct
             );
 
-            List<SeasonItemViewModel> initialItems =
+            List<VideoItemViewModel> initialItems =
             [
-                .. page.Items.Select(item => new SeasonItemViewModel(item)),
+                .. page.Items.Select(item => new VideoItemViewModel(item)),
             ];
             _dateCache[page.Date] = initialItems;
 
@@ -45,7 +45,7 @@ public sealed partial class CalendarPageViewModel
             foreach (DateOnly date in dates)
             {
                 bool isToday = date == page.Date;
-                List<SeasonItemViewModel>? items = isToday ? initialItems : null;
+                List<VideoItemViewModel>? items = isToday ? initialItems : null;
                 viewModels.Add(new TimelineItemViewModel(date, isToday, items));
             }
 
@@ -110,9 +110,9 @@ public sealed partial class CalendarPageViewModel
                 cancellationToken: ct
             );
 
-            List<SeasonItemViewModel> items =
+            List<VideoItemViewModel> items =
             [
-                .. page.Items.Select(item => new SeasonItemViewModel(item)),
+                .. page.Items.Select(item => new VideoItemViewModel(item)),
             ];
             _dateCache[vm.TargetDate] = items;
 

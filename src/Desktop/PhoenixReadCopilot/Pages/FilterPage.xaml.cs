@@ -7,12 +7,12 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 影院页面.
 /// </summary>
-public partial class FindDramaPage : FindDramaPageBase
+public partial class FilterPage : FilterPageBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindDramaPage"/> class.
+    /// Initializes a new instance of the <see cref="FilterPage"/> class.
     /// </summary>
-    public FindDramaPage()
+    public FilterPage()
     {
         InitializeComponent();
     }
@@ -24,13 +24,13 @@ public partial class FindDramaPage : FindDramaPageBase
 /// <summary>
 /// 影院页面基类.
 /// </summary>
-public abstract class FindDramaPageBase : LayoutPageBase<FindDramaPageViewModel>
+public abstract class FilterPageBase : LayoutPageBase<FilterPageViewModel>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindDramaPageBase"/> class.
+    /// Initializes a new instance of the <see cref="FilterPageBase"/> class.
     /// </summary>
-    protected FindDramaPageBase()
+    protected FilterPageBase()
     {
-        ViewModel = Ioc.Default.GetRequiredService<FindDramaPageViewModel>();
+        ViewModel = Ioc.Default.GetRequiredService<FilterPageViewModel>();
     }
 }

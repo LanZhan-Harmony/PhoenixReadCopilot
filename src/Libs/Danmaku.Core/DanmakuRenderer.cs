@@ -39,14 +39,10 @@ public sealed class DanmakuRenderer : IDisposable
     {
         ArgumentNullException.ThrowIfNull(rootGrid);
 
-        // 关键修复：不要直接调用 Children.Clear()，可能触发其他控件的 Unloaded 事件导致崩溃
-        // 只清理非 SwapChainPanel 的子元素
+        // 关键修复：清理 rootGrid 中的所有旧子元素（包含旧 SwapChainPanel），避免废弃的 SwapChainPanel 堆叠呈现未初始化底色
         for (int i = rootGrid.Children.Count - 1; i >= 0; i--)
         {
-            if (rootGrid.Children[i] is not SwapChainPanel)
-            {
-                rootGrid.Children.RemoveAt(i);
-            }
+            rootGrid.Children.RemoveAt(i);
         }
 
         if (rootGrid.XamlRoot is null)
@@ -170,6 +166,14 @@ public sealed class DanmakuRenderer : IDisposable
     #endregion
 
     #region 弹幕管理
+
+    /// <summary>
+    /// 设置切集冻结帧（用于防闪黑平滑过渡）.
+    /// </summary>
+    public void SetFrozenFrame(byte[] pixels, int width, int height)
+    {
+        _render?.SetFrozenFrame(pixels, width, height);
+    }
 
     /// <summary>
     /// 清空弹幕列表.

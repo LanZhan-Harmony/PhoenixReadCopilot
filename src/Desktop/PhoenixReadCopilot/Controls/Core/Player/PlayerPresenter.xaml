@@ -16,7 +16,7 @@
         <ext:PlayerTemplateSelector x:Key="PlayerTemplateSelector" FFmpegTemplate="{StaticResource FFmpegTemplate}"/>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Background="Black">
         <ContentControl x:Name="PlayerContainer"
                         Content="{x:Bind ViewModel, Mode=OneWay}"
                         ContentTemplateSelector="{StaticResource PlayerTemplateSelector}"

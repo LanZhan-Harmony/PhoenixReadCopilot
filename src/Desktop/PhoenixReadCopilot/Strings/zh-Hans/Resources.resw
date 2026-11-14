@@ -186,8 +186,8 @@
   <data name="ChooseDownloadFolder" xml:space="preserve">
     <value>选择下载文件夹</value>
   </data>
-  <data name="FindDrama" xml:space="preserve">
-    <value>找剧</value>
+  <data name="Filter" xml:space="preserve">
+    <value>筛选</value>
   </data>
   <data name="Clean" xml:space="preserve">
     <value>清除</value>
@@ -910,5 +910,32 @@
   </data>
   <data name="Drama" xml:space="preserve">
     <value>短剧</value>
+  </data>
+  <data name="Reserve" xml:space="preserve">
+    <value>预约</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>已预约</value>
+  </data>
+  <data name="CancelReserve" xml:space="preserve">
+    <value>取消预约</value>
+  </data>
+  <data name="ReserveSucceed" xml:space="preserve">
+    <value>预约成功</value>
+  </data>
+  <data name="CancelReserveSucceed" xml:space="preserve">
+    <value>已取消预约</value>
+  </data>
+  <data name="ReserveFailed" xml:space="preserve">
+    <value>预约操作失败</value>
+  </data>
+  <data name="PlayNow" xml:space="preserve">
+    <value>立即观看</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>已上线</value>
+  </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>待播</value>
   </data>
 </root>

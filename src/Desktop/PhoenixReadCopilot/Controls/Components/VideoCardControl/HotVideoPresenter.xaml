@@ -61,8 +61,7 @@
                     <TextBlock VerticalAlignment="Center"
                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                Style="{StaticResource CaptionTextBlockStyle}"
-                               Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
-                               TextLineBounds="Tight"/>
+                               Text="{x:Bind ViewModel.PlayCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
                 </StackPanel>
             </Grid>
         </Grid>
