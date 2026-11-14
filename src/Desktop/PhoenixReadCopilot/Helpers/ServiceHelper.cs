@@ -51,7 +51,7 @@ internal class ServiceHelper
             // View
             .AddTransient<HomePageViewModel>()
             .AddTransient<CalendarPageViewModel>()
-            .AddTransient<FindDramaPageViewModel>()
+            .AddTransient<FilterPageViewModel>()
             .AddTransient<FansPageViewModel>()
             .AddTransient<FavoritesPageViewModel>()
             .AddTransient<FollowsPageViewModel>()

@@ -136,4 +136,9 @@ public sealed partial class DanmakuViewModel
     /// 请求重置样式.
     /// </summary>
     public event EventHandler? RequestResetStyle;
+
+    /// <summary>
+    /// 请求展示冻结帧以防切集闪黑.
+    /// </summary>
+    public event EventHandler<(byte[] Pixels, int Width, int Height)>? RequestShowFrozenFrame;
 }

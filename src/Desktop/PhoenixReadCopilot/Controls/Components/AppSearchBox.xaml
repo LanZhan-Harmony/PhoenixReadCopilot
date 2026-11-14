@@ -132,7 +132,6 @@
                                                        MaxLines="1"
                                                        Style="{StaticResource BodyTextBlockStyle}"
                                                        Text="{x:Bind Text}"
-                                                       TextLineBounds="Tight"
                                                        TextTrimming="CharacterEllipsis"/>
                                         </Grid>
                                     </ItemContainer>

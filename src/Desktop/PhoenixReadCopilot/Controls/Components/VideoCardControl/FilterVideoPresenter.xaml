@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:VideoCardPresenter x:Class="PhoenixReadCopilot.Controls.Components.FilterVideoPresenter"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:base="using:WinUIKernel.Share.Base"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:ic="using:FluentIcons.WinUI"
+                          xmlns:local="using:PhoenixReadCopilot.Controls.Components"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:strings="using:PhoenixReadCopilot.Strings"
+                          mc:Ignorable="d">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="85"/>
+        </Grid.RowDefinitions>
+
+        <!--  海报封面容器  -->
+        <Border Grid.Row="0"
+                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                CornerRadius="4,4,0,0">
+            <Image HorizontalAlignment="Stretch"
+                   VerticalAlignment="Top"
+                   Stretch="UniformToFill">
+                <Image.Source>
+                    <BitmapImage DecodePixelType="Logical"
+                                 DecodePixelWidth="300"
+                                 UriSource="{x:Bind ViewModel.Cover, Mode=OneWay}"/>
+                </Image.Source>
+            </Image>
+        </Border>
+
+        <!--  左下角：集数  -->
+        <Border Grid.Row="0"
+                Margin="6"
+                Padding="4"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="#99000000"
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.HasEpisodeCount, Mode=OneWay}">
+            <TextBlock FontSize="11"
+                       Foreground="White"
+                       Text="{x:Bind ViewModel.EpisodeCountText, Mode=OneWay}"/>
+        </Border>
+
+        <!--  右下角：评分徽章  -->
+        <Border Grid.Row="0"
+                Margin="6"
+                Padding="4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="#B0D32F2F"
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                Visibility="{x:Bind ViewModel.HasScore, Mode=OneWay}">
+            <StackPanel Orientation="Horizontal" Spacing="3">
+                <TextBlock FontSize="11"
+                           FontWeight="Bold"
+                           Foreground="Gold"
+                           Text="{x:Bind ViewModel.Score, Mode=OneWay}"/>
+                <ic:SymbolIcon FontSize="11"
+                               Foreground="Gold"
+                               IconVariant="Filled"
+                               Symbol="Star"/>
+            </StackPanel>
+        </Border>
+
+        <!--  信息与元数据  -->
+        <Grid Grid.Row="1"
+              Padding="10,6,10,8"
+              RowSpacing="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!--  标题  -->
+            <TextBlock Grid.Row="0"
+                       HorizontalAlignment="Left"
+                       FontWeight="SemiBold"
+                       MaxLines="2"
+                       Text="{x:Bind ViewModel.Title, Mode=OneWay}"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"
+                       ToolTipService.ToolTip="{x:Bind ViewModel.Title, Mode=OneWay}"/>
+
+            <!--  底部行：题材分类 / 热度播放量  -->
+            <Grid Grid.Row="1" ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!--  标签/分类  -->
+                <base:IconTextBlock Grid.Column="0"
+                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                    IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                    Symbol="Tag"
+                                    Text="{x:Bind ViewModel.Author, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis"
+                                    Visibility="{x:Bind ViewModel.Author, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+
+                <!--  热度或播放量  -->
+                <base:IconTextBlock Grid.Column="1"
+                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                    IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                    Symbol="PlayCircle"
+                                    Text="{x:Bind ViewModel.HeatOrPlayCountText, Mode=OneWay}"
+                                    ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"
+                                    Visibility="{x:Bind ViewModel.HeatOrPlayCountText, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</local:VideoCardPresenter>

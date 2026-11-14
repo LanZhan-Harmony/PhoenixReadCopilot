@@ -8,16 +8,16 @@ using PhoenixReadCopilot.ViewModels.Core;
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 找剧 / 多维筛选页面视图模型.
+/// 多维筛选页面视图模型.
 /// </summary>
-public sealed partial class FindDramaPageViewModel : LayoutPageViewModelBase
+public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindDramaPageViewModel"/> class.
+    /// Initializes a new instance of the <see cref="FilterPageViewModel"/> class.
     /// </summary>
-    public FindDramaPageViewModel(
+    public FilterPageViewModel(
         PhoenixReadApiClient apiClient,
-        ILogger<FindDramaPageViewModel> logger,
+        ILogger<FilterPageViewModel> logger,
         NavigationViewModel navigationViewModel,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService
@@ -31,5 +31,5 @@ public sealed partial class FindDramaPageViewModel : LayoutPageViewModelBase
     }
 
     /// <inheritdoc/>
-    protected override string GetPageKey() => nameof(FindDramaPage);
+    protected override string GetPageKey() => nameof(FilterPage);
 }

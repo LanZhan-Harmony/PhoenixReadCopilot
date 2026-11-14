@@ -258,4 +258,11 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             IsCompactOverlay = false;
         }
     }
+
+    /// <summary>
+    /// 释放当前播放的媒体源（用于切集前彻底停止旧视频，避免网络请求期间继续播放）.
+    /// </summary>
+    public virtual void ReleaseCurrentSource()
+    {
+    }
 }

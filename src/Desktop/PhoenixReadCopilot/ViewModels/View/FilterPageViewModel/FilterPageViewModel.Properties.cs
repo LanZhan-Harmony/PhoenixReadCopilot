@@ -9,12 +9,12 @@ using PhoenixReadCopilot.ViewModels.Items;
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 找剧 / 多维筛选页面视图模型.
+/// 多维筛选页面视图模型.
 /// </summary>
-public sealed partial class FindDramaPageViewModel
+public sealed partial class FilterPageViewModel
 {
     private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<FindDramaPageViewModel> _logger;
+    private readonly ILogger<FilterPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
     private int _offset;
@@ -40,5 +40,5 @@ public sealed partial class FindDramaPageViewModel
     /// <summary>
     /// 短剧剧集列表.
     /// </summary>
-    public ObservableCollection<SeasonItemViewModel> Items { get; } = [];
+    public ObservableCollection<VideoItemViewModel> Items { get; } = [];
 }

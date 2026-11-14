@@ -12,7 +12,6 @@
                 <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/CustomNavigationViewResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/VideoCardControl/VideoCardControl.xaml"/>
-                <ResourceDictionary Source="ms-appx:///Controls/Components/SeasonCardControl/SeasonCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/MomentCardControl/MomentCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Core/Player/PlayerResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/ShimmerLayout/ShimmerLayout.xaml"/>
@@ -45,15 +44,15 @@
             <UniformGridLayout x:Key="CalendarLayout"
                                ItemsStretch="Fill"
                                MinColumnSpacing="16"
-                               MinItemHeight="266"
-                               MinItemWidth="148"
+                               MinItemHeight="385"
+                               MinItemWidth="200"
                                MinRowSpacing="16"/>
 
-            <UniformGridLayout x:Key="FindDramaLayout"
+            <UniformGridLayout x:Key="FilterLayout"
                                ItemsStretch="Fill"
                                MinColumnSpacing="16"
-                               MinItemHeight="266"
-                               MinItemWidth="148"
+                               MinItemHeight="385"
+                               MinItemWidth="200"
                                MinRowSpacing="16"/>
 
             <UniformGridLayout x:Key="UserLayout"

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:FindDramaPageControlBase x:Class="PhoenixReadCopilot.Controls.FindDrama.FindDramaMainHeader"
-                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                xmlns:components="using:PhoenixReadCopilot.ViewModels.Components"
-                                xmlns:converters="using:PhoenixReadCopilot.Converters"
-                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                xmlns:ic="using:FluentIcons.WinUI"
-                                xmlns:local="using:PhoenixReadCopilot.Controls.FindDrama"
-                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                                xmlns:strings="using:PhoenixReadCopilot.Strings"
-                                mc:Ignorable="d">
+<local:FilterPageControlBase x:Class="PhoenixReadCopilot.Controls.Filter.FilterMainHeader"
+                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                             xmlns:components="using:PhoenixReadCopilot.ViewModels.Components"
+                             xmlns:converters="using:PhoenixReadCopilot.Converters"
+                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                             xmlns:ic="using:FluentIcons.WinUI"
+                             xmlns:local="using:PhoenixReadCopilot.Controls.Filter"
+                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                             xmlns:strings="using:PhoenixReadCopilot.Strings"
+                             mc:Ignorable="d">
 
     <Grid Padding="16,0"
           VerticalAlignment="Center"
@@ -24,15 +24,13 @@
                 Padding="12,8"
                 VerticalAlignment="Center"
                 AutomationProperties.Name="{x:Bind strings:Resources.MyFavoriteFilm}"
-                Command="{x:Bind ViewModel.ShowMyFavoriteFindDramaCommand}">
+                Command="{x:Bind ViewModel.ShowMyFavoriteFilterCommand}">
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <ic:SymbolIcon VerticalAlignment="Center"
                                FontSize="14"
                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                Symbol="MoviesAndTv"/>
-                <TextBlock VerticalAlignment="Center"
-                           Text="{x:Bind strings:Resources.MyFavoriteFilm}"
-                           TextLineBounds="Tight"/>
+                <TextBlock VerticalAlignment="Center" Text="{x:Bind strings:Resources.MyFavoriteFilm}"/>
             </StackPanel>
         </Button>
         <Button Grid.Column="2"
@@ -46,4 +44,4 @@
                            Symbol="ArrowSync"/>
         </Button>
     </Grid>
-</local:FindDramaPageControlBase>
+</local:FilterPageControlBase>

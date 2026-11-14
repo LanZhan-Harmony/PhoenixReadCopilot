@@ -107,6 +107,14 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// 展示切集冻结帧（用于防闪黑过渡）.
+    /// </summary>
+    public void ShowFrozenFrame(byte[] pixels, int width, int height)
+    {
+        RequestShowFrozenFrame?.Invoke(this, (pixels, width, height));
+    }
+
+    /// <summary>
     /// 清除数据.
     /// </summary>
     public void ClearAll()

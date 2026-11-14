@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
@@ -18,6 +19,41 @@ public sealed partial class VideoItemViewModel
     private static readonly ILogger<VideoItemViewModel> _logger = Ioc.Default.GetRequiredService<
         ILogger<VideoItemViewModel>
     >();
+
+    /// <summary>
+    /// 上新日历数据实体 (如果是上新日历条目).
+    /// </summary>
+    public DailyReleaseItem? DailyRelease { get; init; }
+
+    /// <summary>
+    /// 是否已正式上线.
+    /// </summary>
+    public bool IsOnline { get; init; } = true;
+
+    /// <summary>
+    /// 上线说明或副标题备注.
+    /// </summary>
+    public string? ReleaseNote { get; init; }
+
+    /// <summary>
+    /// 上线状态展示文案.
+    /// </summary>
+    public string OnlineStatusText =>
+        IsOnline
+            ? Strings.Resources.Online
+            : (!string.IsNullOrWhiteSpace(ReleaseNote) ? ReleaseNote : Strings.Resources.Upcoming);
+
+    /// <summary>
+    /// 是否已预约.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsReserved { get; set; }
+
+    /// <summary>
+    /// 是否正在操作预约.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsReserving { get; set; }
 
     /// <summary>
     /// 短剧数据实体 (如果是红果短剧).

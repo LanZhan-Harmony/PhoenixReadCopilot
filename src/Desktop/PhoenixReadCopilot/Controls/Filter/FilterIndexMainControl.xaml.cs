@@ -4,17 +4,17 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share;
 
-namespace PhoenixReadCopilot.Controls.FindDrama;
+namespace PhoenixReadCopilot.Controls.Filter;
 
 /// <summary>
 /// 娱乐索引主体.
 /// </summary>
-public sealed partial class FindDramaIndexMainControl : FindDramaIndexControlBase
+public sealed partial class FilterIndexMainControl : FilterIndexControlBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindDramaIndexMainControl"/> class.
+    /// Initializes a new instance of the <see cref="FilterIndexMainControl"/> class.
     /// </summary>
-    public FindDramaIndexMainControl()
+    public FilterIndexMainControl()
     {
         InitializeComponent();
     }
@@ -45,8 +45,8 @@ public sealed partial class FindDramaIndexMainControl : FindDramaIndexControlBas
 
     /// <inheritdoc/>
     protected override void OnViewModelChanged(
-        FindDramaPageViewModel? oldValue,
-        FindDramaPageViewModel? newValue
+        FilterPageViewModel? oldValue,
+        FilterPageViewModel? newValue
     )
     {
         oldValue?.ItemsUpdated -= OnItemsUpdatedAsync;

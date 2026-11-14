@@ -42,9 +42,7 @@
                                FontSize="14"
                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                Symbol="Dust"/>
-                <TextBlock VerticalAlignment="Center"
-                           Text="{x:Bind strings:Resources.MyFavoriteCalendar}"
-                           TextLineBounds="Tight"/>
+                <TextBlock VerticalAlignment="Center" Text="{x:Bind strings:Resources.MyFavoriteCalendar}"/>
             </StackPanel>
         </Button>
         <Button Grid.Column="2"

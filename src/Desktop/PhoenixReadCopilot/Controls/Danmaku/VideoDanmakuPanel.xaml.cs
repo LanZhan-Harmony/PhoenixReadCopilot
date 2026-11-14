@@ -45,7 +45,6 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
 
         EnsureRendererCreated();
-        ResetDanmakuStyle();
         if (_danmakuRenderer is not null && _cachedDanmakus.Count > 0)
         {
             _danmakuRenderer.AddDanmakuList(_cachedDanmakus);
@@ -72,9 +71,11 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             ViewModel.RequestResetStyle -= OnRequestResetStyle;
             ViewModel.ExtraSpeedChanged -= OnExtraSpeedChanged;
             ViewModel.RequestRedrawDanmaku -= OnRedrawDanmaku;
+            ViewModel.RequestShowFrozenFrame -= OnRequestShowFrozenFrame;
         }
 
         _danmakuRenderer?.Dispose();
+        _danmakuRenderer = null;
     }
 
     /// <inheritdoc/>
@@ -94,6 +95,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             oldValue.RequestResetStyle -= OnRequestResetStyle;
             oldValue.ExtraSpeedChanged -= OnExtraSpeedChanged;
             oldValue.RequestRedrawDanmaku -= OnRedrawDanmaku;
+            oldValue.RequestShowFrozenFrame -= OnRequestShowFrozenFrame;
         }
 
         if (newValue is null)
@@ -110,6 +112,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         newValue.RequestResetStyle += OnRequestResetStyle;
         newValue.ExtraSpeedChanged += OnExtraSpeedChanged;
         newValue.RequestRedrawDanmaku += OnRedrawDanmaku;
+        newValue.RequestShowFrozenFrame += OnRequestShowFrozenFrame;
 
         if (newValue.CurrentDanmakus.Count > 0)
         {
@@ -188,6 +191,12 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
 
     private void OnRedrawDanmaku(object? sender, EventArgs e) => Redraw();
 
+    private void OnRequestShowFrozenFrame(object? sender, (byte[] Pixels, int Width, int Height) e)
+    {
+        EnsureRendererCreated();
+        _danmakuRenderer?.SetFrozenFrame(e.Pixels, e.Width, e.Height);
+    }
+
     private void ResetDanmakuStyle()
     {
         if (_danmakuRenderer is null || ViewModel is null)
@@ -200,6 +209,8 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             _danmakuRenderer.Pause();
         }
 
+        double finalSpeed = ViewModel.DanmakuSpeed * 5 * ViewModel.ExtraSpeed;
+
         DanmakuConfiguration config = DanmakuConfiguration.CreateDefault();
         config.TextOpacity = ViewModel.DanmakuOpacity;
         config.FontSizeScale = ViewModel.DanmakuFontSize;
@@ -207,6 +218,7 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
         config.FontFamilyName = ViewModel.DanmakuFontFamily ?? "Segoe UI";
         config.IsTextBold = ViewModel.IsDanmakuBold;
         config.OutlineSize = 1;
+        config.RollingSpeedBase = (float)finalSpeed;
 
         _danmakuRenderer.SetDanmakuEnabledType(
             isRollingEnabled: true,
@@ -214,7 +226,6 @@ public sealed partial class VideoDanmakuPanel : DanmakuControlBase
             isBottomEnabled: true
         );
         _danmakuRenderer.UpdateConfiguration(config);
-        ResetSpeed();
     }
 
     private void ResetSpeed()

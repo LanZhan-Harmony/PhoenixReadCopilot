@@ -110,4 +110,28 @@
         </Setter>
     </Style>
 
+    <Style x:Key="CalendarVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:CalendarVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="FilterVideoCardStyle" TargetType="local:VideoCardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:VideoCardControl">
+                    <base:CardControl x:Name="RootCard">
+                        <local:FilterVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
+                    </base:CardControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

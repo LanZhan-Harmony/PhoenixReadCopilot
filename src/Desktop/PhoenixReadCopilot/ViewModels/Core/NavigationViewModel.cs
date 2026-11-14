@@ -227,7 +227,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
             GetItem<PopularPage>(Resources.PopularSlim, FluentIcons.Common.Symbol.Rocket),
             GetItem<MomentPage>(Resources.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
             GetItem<CalendarPage>(Resources.Calendar, FluentIcons.Common.Symbol.Calendar),
-            GetItem<FindDramaPage>(Resources.FindDrama, FluentIcons.Common.Symbol.SlideSearch),
+            GetItem<FilterPage>(Resources.Filter, FluentIcons.Common.Symbol.SlideSearch),
         ];
 
         foreach (AppNavigationItemViewModel item in list)

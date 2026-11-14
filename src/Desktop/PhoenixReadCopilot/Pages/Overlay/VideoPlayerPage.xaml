@@ -71,7 +71,8 @@
 
                 <Grid x:Name="VideoContainer"
                       Grid.Row="2"
-                      Margin="0,0,-6,0">
+                      Margin="0,0,-6,0"
+                      Background="Black">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
@@ -79,7 +80,8 @@
                     <Grid x:Name="PlayerContainer"
                           MinHeight="200"
                           HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch">
+                          VerticalAlignment="Stretch"
+                          Background="Black">
                         <core:PhoenixReadPlayer x:Name="PhoenixReadPlayer" ViewModel="{x:Bind ViewModel.Player, Mode=OneWay}"/>
                     </Grid>
                 </Grid>

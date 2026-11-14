@@ -8,7 +8,7 @@ using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
-public sealed partial class FindDramaPageViewModel
+public sealed partial class FilterPageViewModel
 {
     private async Task RequestFilterPanelAsync()
     {
@@ -112,7 +112,7 @@ public sealed partial class FindDramaPageViewModel
             {
                 foreach (Drama drama in page.Items)
                 {
-                    Items.Add(new SeasonItemViewModel(drama, SeasonCardStyle.Index));
+                    Items.Add(new VideoItemViewModel(drama, VideoCardStyle.Filter));
                 }
 
                 ItemsUpdated?.Invoke(this, EventArgs.Empty);

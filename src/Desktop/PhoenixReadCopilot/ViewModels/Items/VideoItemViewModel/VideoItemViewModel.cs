@@ -100,6 +100,52 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class from a <see cref="DailyReleaseItem"/>.
+    /// </summary>
+    public VideoItemViewModel(
+        DailyReleaseItem item,
+        Action<VideoItemViewModel>? removeAction = null
+    )
+        : base(CreateVideoInformation(item.Drama))
+    {
+        _removeAction = removeAction;
+        DailyRelease = item;
+        Drama = item.Drama;
+        IsOnline = item.IsOnline;
+        ReleaseNote = item.Note;
+        Style = VideoCardStyle.Calendar;
+        Title = item.Drama.Title;
+
+        if (
+            !string.IsNullOrEmpty(item.Drama.CoverUrl)
+            && Uri.TryCreate(item.Drama.CoverUrl, UriKind.Absolute, out Uri? coverUri)
+        )
+        {
+            Cover = coverUri;
+        }
+
+        Score = item.Drama.Score;
+        EpisodeCount = item.Drama.EpisodeCount;
+        Tags = item.Drama.Tags ?? [];
+        Category = item.Categories is { Count: > 0 }
+            ? string.Join(" · ", item.Categories)
+            : item.Drama.Category;
+        Author = !string.IsNullOrEmpty(Category)
+            ? Category
+            : (!string.IsNullOrEmpty(item.Drama.Category) ? item.Drama.Category : string.Empty);
+        TagName = Tags.Count > 0 ? Tags[0] : Category;
+        Heat = item.Drama.Heat;
+        Views = item.Drama.Views;
+
+        string statusText = item.IsOnline
+            ? Strings.Resources.Online
+            : (!string.IsNullOrWhiteSpace(item.Note) ? item.Note : Strings.Resources.Upcoming);
+        Subtitle = !string.IsNullOrWhiteSpace(item.Note)
+            ? statusText
+            : (item.Drama.EpisodeCount > 0 ? $"{statusText} · 全 {item.Drama.EpisodeCount} 集" : statusText);
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="VideoItemViewModel"/> class from an <see cref="ActorLeaderboardItem"/>.
     /// </summary>
     public VideoItemViewModel(
@@ -252,10 +298,69 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             return;
         }
 
+        if (DailyRelease is not null && !IsOnline)
+        {
+            _ = ToggleReservationAsync();
+            return;
+        }
+
         ItemServices.Navigation.NavigateToOver(
             typeof(VideoPlayerPage),
             Drama ?? (object)new VideoSnapshot(Data)
         );
+    }
+
+    /// <summary>
+    /// 切换预约状态.
+    /// </summary>
+    [RelayCommand]
+    private async Task ToggleReservationAsync()
+    {
+        if (IsReserving)
+        {
+            return;
+        }
+
+        string? dramaId = Drama?.Id;
+        if (string.IsNullOrEmpty(dramaId))
+        {
+            return;
+        }
+
+        IsReserving = true;
+        try
+        {
+            bool targetActive = !IsReserved;
+            PhoenixOperationResult result = await ItemServices.PhoenixRead.SetReservationAsync(
+                dramaId,
+                targetActive
+            );
+
+            if (result.Succeeded)
+            {
+                IsReserved = targetActive;
+                string msg = targetActive
+                    ? Strings.Resources.ReserveSucceed
+                    : Strings.Resources.CancelReserveSucceed;
+                ItemServices.App.ShowTipCommand.Execute((msg, InfoType.Success));
+            }
+            else
+            {
+                string msg = !string.IsNullOrEmpty(result.Message)
+                    ? result.Message
+                    : Strings.Resources.ReserveFailed;
+                ItemServices.App.ShowTipCommand.Execute((msg, InfoType.Warning));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(ex, $"操作剧集预约状态失败: {dramaId}");
+            ItemServices.App.ShowTipCommand.Execute((Strings.Resources.ReserveFailed, InfoType.Error));
+        }
+        finally
+        {
+            IsReserving = false;
+        }
     }
 
     [RelayCommand]

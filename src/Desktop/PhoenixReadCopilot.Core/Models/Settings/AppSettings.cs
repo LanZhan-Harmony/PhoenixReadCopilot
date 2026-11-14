@@ -234,10 +234,10 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool IsCalendarPageNavColumnManualHide { get; set; } = false;
 
     [ObservableProperty]
-    public partial double FindDramaPageNavColumnWidth { get; set; } = 0;
+    public partial double FilterPageNavColumnWidth { get; set; } = 0;
 
     [ObservableProperty]
-    public partial bool IsFindDramaPageNavColumnManualHide { get; set; } = false;
+    public partial bool IsFilterPageNavColumnManualHide { get; set; } = false;
 
     [ObservableProperty]
     public partial string FollowsPageLastSelectedGroupId { get; set; } = string.Empty;
@@ -265,7 +265,7 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool IsCalendarPageVisible { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsFindDramaPageVisible { get; set; } = true;
+    public partial bool IsFilterPageVisible { get; set; } = true;
 
     // ================= 动态扩展配置项 =================
     [ObservableProperty]
@@ -283,9 +283,9 @@ public sealed partial class AppSettings : ObservableObject
             "CalendarPage" => CalendarPageNavColumnWidth <= 0
                 ? defaultValue
                 : CalendarPageNavColumnWidth,
-            "FindDramaPage" => FindDramaPageNavColumnWidth <= 0
+            "FilterPage" => FilterPageNavColumnWidth <= 0
                 ? defaultValue
-                : FindDramaPageNavColumnWidth,
+                : FilterPageNavColumnWidth,
             _ => defaultValue,
         };
 
@@ -302,8 +302,8 @@ public sealed partial class AppSettings : ObservableObject
             case "CalendarPage":
                 CalendarPageNavColumnWidth = value;
                 break;
-            case "FindDramaPage":
-                FindDramaPageNavColumnWidth = value;
+            case "FilterPage":
+                FilterPageNavColumnWidth = value;
                 break;
         }
     }
@@ -316,7 +316,7 @@ public sealed partial class AppSettings : ObservableObject
         {
             "PopularPage" => IsPopularPageNavColumnManualHide,
             "CalendarPage" => IsCalendarPageNavColumnManualHide,
-            "FindDramaPage" => IsFindDramaPageNavColumnManualHide,
+            "FilterPage" => IsFilterPageNavColumnManualHide,
             _ => defaultValue,
         };
 
@@ -333,8 +333,8 @@ public sealed partial class AppSettings : ObservableObject
             case "CalendarPage":
                 IsCalendarPageNavColumnManualHide = value;
                 break;
-            case "FindDramaPage":
-                IsFindDramaPageNavColumnManualHide = value;
+            case "FilterPage":
+                IsFilterPageNavColumnManualHide = value;
                 break;
         }
     }
@@ -351,7 +351,7 @@ public sealed partial class AppSettings : ObservableObject
             "PopularPage" => IsPopularPageVisible,
             "MomentPage" => IsMomentPageVisible,
             "CalendarPage" => IsCalendarPageVisible,
-            "FindDramaPage" => IsFindDramaPageVisible,
+            "FilterPage" => IsFilterPageVisible,
             _ => true,
         };
     }
@@ -376,8 +376,8 @@ public sealed partial class AppSettings : ObservableObject
             case "CalendarPage":
                 IsCalendarPageVisible = isVisible;
                 break;
-            case "FindDramaPage":
-                IsFindDramaPageVisible = isVisible;
+            case "FilterPage":
+                IsFilterPageVisible = isVisible;
                 break;
         }
     }
