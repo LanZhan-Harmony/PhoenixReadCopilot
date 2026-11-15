@@ -9,12 +9,12 @@ using PhoenixReadCopilot.ViewModels.Items;
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 流行与榜单页面视图模型 (属性分部).
+/// 榜单页面视图模型 (属性分部).
 /// </summary>
-public sealed partial class PopularPageViewModel
+public sealed partial class RankPageViewModel
 {
     private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<PopularPageViewModel> _logger;
+    private readonly ILogger<RankPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly Dictionary<string, List<VideoItemViewModel>> _videoCache = [];
@@ -38,7 +38,7 @@ public sealed partial class PopularPageViewModel
     public partial bool IsVideoLoading { get; set; }
 
     [ObservableProperty]
-    public partial IPopularSectionItemViewModel? SelectedSection { get; set; }
+    public partial IRankSectionItemViewModel? SelectedSection { get; set; }
 
     [ObservableProperty]
     public partial bool IsLeaderboardSection { get; set; }
@@ -69,7 +69,7 @@ public sealed partial class PopularPageViewModel
     /// <summary>
     /// 分区与榜单列表.
     /// </summary>
-    public ObservableCollection<IPopularSectionItemViewModel> Sections { get; } = [];
+    public ObservableCollection<IRankSectionItemViewModel> Sections { get; } = [];
 
     /// <summary>
     /// 短剧视频榜单列表 (供短剧榜单 Repeater 使用).

@@ -36,7 +36,7 @@ d:\code\WinUI3\PhoenixReadCopilot\
 │   │   │   ├── Forms/                          # 独立弹出框、ContentDialog、确认弹窗
 │   │   │   ├── Helpers/                        # 通用无状态辅助类（防抖、NativeAOT 序列化、路径、服务访问等）
 │   │   │   ├── Models/                         # UI 专用常量、枚举与配置映射
-│   │   │   ├── Pages/                          # 顶级导航页面（PopularPage, SettingsPage 等）
+│   │   │   ├── Pages/                          # 顶级导航页面（RankPage, SettingsPage 等）
 │   │   │   │   └── Overlay/                    # 浮层/详情/二级页面（播放页、历史页、书架页等）
 │   │   │   ├── Services/                       # 业务服务层接口与实现（DI 注入，配置、鉴权、本地持久化与数据桥接）
 │   │   │   ├── Strings/                        # ReswPlus 多语言本地化资源（zh-CN, en-US）
@@ -82,7 +82,7 @@ d:\code\WinUI3\PhoenixReadCopilot\
 
 ### 3.1 拆分结构标准
 
-以 `PopularPageViewModel` 或 `DramaPlayerPageViewModel` 为例：
+以 `RankPageViewModel` 或 `DramaPlayerPageViewModel` 为例：
 
 | 文件命名                     | 包含内容与职责                                                                                                                                                                                |
 | :--------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -139,8 +139,8 @@ private void SelectEpisode(EpisodeItemViewModel episode)
 - **公共属性 / 方法 / 类 / 接口**：大驼峰（PascalCase）：`Title`、`EpisodeCount`、`InitializeAsync`、`IDramaDiscoveryService`。
 - **局部变量 / 参数**：小驼峰（camelCase）：`dramaId`、`cancellationToken`。
 - **类型后缀约定**：
-  - 页面：`*Page`（如 `PopularPage`、`DramaPlayerPage`）
-  - 页面基类：`*PageBase`（如 `PopularPageBase`）
+  - 页面：`*Page`（如 `RankPage`、`DramaPlayerPage`）
+  - 页面基类：`*PageBase`（如 `RankPageBase`）
   - 视图模型：`*ViewModel`
   - 自定义控件：`*Control` / `*Section` / `*Button`
   - 业务服务接口 / 实现：`I*Service` / `*Service`（如 `ISettingsService` / `SettingsService`）

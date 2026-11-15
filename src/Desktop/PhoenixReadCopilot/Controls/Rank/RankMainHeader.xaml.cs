@@ -2,19 +2,19 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
 
-namespace PhoenixReadCopilot.Controls.Popular;
+namespace PhoenixReadCopilot.Controls.Rank;
 
 /// <summary>
-/// 流行视频与榜单页面主标题.
+/// 榜单页面主标题.
 /// </summary>
-public sealed partial class PopularMainHeader : PopularPageControlBase
+public sealed partial class RankMainHeader : RankPageControlBase
 {
     private bool _isUpdatingBoardItems;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PopularMainHeader"/> class.
+    /// Initializes a new instance of the <see cref="RankMainHeader"/> class.
     /// </summary>
-    public PopularMainHeader()
+    public RankMainHeader()
     {
         InitializeComponent();
     }
@@ -52,7 +52,7 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
 
     private void UpdateBoardItems()
     {
-        if (ViewModel?.SelectedSection is not PopularSectionItemViewModel { LeaderboardType: { } })
+        if (ViewModel?.SelectedSection is not RankSectionItemViewModel { LeaderboardType: { } })
         {
             return;
         }
@@ -68,7 +68,7 @@ public sealed partial class PopularMainHeader : PopularPageControlBase
                 (
                     string? title,
                     PhoenixReadApi.ShortDramaLeaderboardChannel channel
-                ) in PopularPageViewModel.Channels
+                ) in RankPageViewModel.Channels
             )
             {
                 SelectorBarItem item = new() { Text = title, Tag = channel.ToString() };

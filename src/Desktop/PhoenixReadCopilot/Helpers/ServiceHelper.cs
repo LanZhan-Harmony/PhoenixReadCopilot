@@ -59,7 +59,7 @@ internal class ServiceHelper
             .AddTransient<GalleryPageViewModel>()
             .AddTransient<HistoryPageViewModel>()
             .AddTransient<MomentPageViewModel>()
-            .AddTransient<PopularPageViewModel>()
+            .AddTransient<RankPageViewModel>()
             .AddTransient<SearchPageViewModel>()
             .AddSingleton<SettingsPageViewModel>()
             .AddSingleton<StartupPageViewModel>()

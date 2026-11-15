@@ -21,11 +21,11 @@
                 </community:SettingsCard.HeaderIcon>
                 <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsHomePageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
-            <community:SettingsCard Header="{x:Bind strings:Resources.Popular}">
+            <community:SettingsCard Header="{x:Bind strings:Resources.Rank}">
                 <community:SettingsCard.HeaderIcon>
                     <ic:SymbolIcon Symbol="Rocket"/>
                 </community:SettingsCard.HeaderIcon>
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsPopularPageVisible, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.IsRankPageVisible, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.DynamicFeed}">
                 <community:SettingsCard.HeaderIcon>

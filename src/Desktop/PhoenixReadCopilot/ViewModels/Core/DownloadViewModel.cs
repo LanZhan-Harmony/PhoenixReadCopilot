@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
@@ -12,13 +13,36 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// </summary>
 public sealed partial class DownloadViewModel : ViewModelBase
 {
+    private readonly IDownloadService _downloadService;
+    private readonly INotificationService _notificationService;
+
+    private int _currentPartIndex;
+    private string _dramaId = string.Empty;
+    private string _dramaTitle = string.Empty;
+    private string _coverUrl = string.Empty;
+
+    [ObservableProperty]
+    public partial List<PlayerFormatInformation>? Formats { get; set; }
+
+    [ObservableProperty]
+    public partial List<Episode>? Episodes { get; set; }
+
+    [ObservableProperty]
+    public partial Episode? CurrentEpisode { get; set; }
+
+    [ObservableProperty]
+    public partial bool HasAvailableSubtitle { get; set; }
+
+    /// <summary>
+    /// 元数据初始化完成事件.
+    /// </summary>
+    public event EventHandler? MetaInitialized;
+
     public DownloadViewModel(
-        ILogger<DownloadViewModel> logger,
         IDownloadService downloadService,
         INotificationService notificationService
     )
     {
-        _logger = logger;
         _downloadService = downloadService;
         _notificationService = notificationService;
     }
@@ -48,7 +72,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     )
     {
         _dramaId = dramaId;
-        _seriesTitle = title;
+        _dramaTitle = title;
         _coverUrl = coverUrl;
         Episodes = episodes is not null ? [.. episodes] : null;
         CurrentEpisode = currentEpisode;
@@ -60,7 +84,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     public void Clear()
     {
         _dramaId = string.Empty;
-        _seriesTitle = string.Empty;
+        _dramaTitle = string.Empty;
         _coverUrl = string.Empty;
         _currentPartIndex = 0;
         Episodes = null;
@@ -92,7 +116,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             ep.VideoId,
             ep.Number,
             epTitle,
-            _seriesTitle,
+            _dramaTitle,
             format
         );
     }
@@ -103,7 +127,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
     [RelayCommand]
     private async Task DownloadCoverAsync()
     {
-        await _downloadService.DownloadCoverAsync(_coverUrl, _seriesTitle);
+        await _downloadService.DownloadCoverAsync(_coverUrl, _dramaTitle);
     }
 
     /// <summary>
@@ -117,14 +141,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
             ?? Episodes?.FirstOrDefault();
         if (ep is null || string.IsNullOrWhiteSpace(ep.VideoId))
         {
-            await _notificationService.ShowInAppNotificationAsync(
-                "无可用弹幕数据",
-                NotificationType.Warning
-            );
             return;
         }
 
-        await _downloadService.DownloadDanmakuAsync(_dramaId, ep.VideoId, ep.Number, _seriesTitle);
+        await _downloadService.DownloadDanmakuAsync(_dramaId, ep.VideoId, ep.Number, _dramaTitle);
     }
 
     /// <summary>
@@ -135,17 +155,10 @@ public sealed partial class DownloadViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(_dramaId) || Episodes is not { Count: > 0 })
         {
-            await _notificationService.ShowInAppNotificationAsync(
-                "无分集可下载",
-                NotificationType.Warning
-            );
             return;
         }
 
-        _ = Task.Run(async () =>
-        {
-            await _downloadService.BatchDownloadEpisodesAsync(_dramaId, _seriesTitle, Episodes);
-        });
+        await _downloadService.BatchDownloadEpisodesAsync(_dramaId, _dramaTitle, Episodes);
     }
 
     /// <summary>
@@ -169,7 +182,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        List<Episode> selectedEpisodes = Episodes.Where(e => indices.Contains(e.Number)).ToList();
+        List<Episode> selectedEpisodes = [.. Episodes.Where(e => indices.Contains(e.Number))];
 
         if (selectedEpisodes.Count == 0)
         {
@@ -180,14 +193,11 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        _ = Task.Run(async () =>
-        {
-            await _downloadService.BatchDownloadEpisodesAsync(
-                _dramaId,
-                _seriesTitle,
-                selectedEpisodes
-            );
-        });
+        await _downloadService.BatchDownloadEpisodesAsync(
+            _dramaId,
+            _dramaTitle,
+            selectedEpisodes
+        );
     }
 
     private static List<int> ParseSelection(string selection, int max)

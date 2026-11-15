@@ -1,17 +1,17 @@
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
 
-namespace PhoenixReadCopilot.Controls.Popular;
+namespace PhoenixReadCopilot.Controls.Rank;
 
 /// <summary>
-/// 流行视频页面侧边栏主体.
+/// 榜单页面侧边栏主体.
 /// </summary>
-public sealed partial class PopularSideBody : PopularPageControlBase
+public sealed partial class RankSideBody : RankPageControlBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PopularSideBody"/> class.
+    /// Initializes a new instance of the <see cref="RankSideBody"/> class.
     /// </summary>
-    public PopularSideBody()
+    public RankSideBody()
     {
         InitializeComponent();
     }
@@ -39,7 +39,7 @@ public sealed partial class PopularSideBody : PopularPageControlBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        IPopularSectionItemViewModel? item = sender.SelectedItem as IPopularSectionItemViewModel;
+        IRankSectionItemViewModel? item = sender.SelectedItem as IRankSectionItemViewModel;
         ViewModel.SelectSectionCommand.Execute(item);
     }
 

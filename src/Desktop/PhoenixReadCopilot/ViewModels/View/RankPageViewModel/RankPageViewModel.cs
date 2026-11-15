@@ -13,16 +13,16 @@ using PhoenixReadCopilot.ViewModels.Items;
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 流行与榜单页面视图模型.
+/// 榜单页面视图模型.
 /// </summary>
-public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
+public sealed partial class RankPageViewModel : LayoutPageViewModelBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PopularPageViewModel"/> class.
+    /// Initializes a new instance of the <see cref="RankPageViewModel"/> class.
     /// </summary>
-    public PopularPageViewModel(
+    public RankPageViewModel(
         PhoenixReadApiClient apiClient,
-        ILogger<PopularPageViewModel> logger,
+        ILogger<RankPageViewModel> logger,
         NavigationViewModel navigationViewModel,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService
@@ -36,7 +36,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     }
 
     /// <inheritdoc/>
-    protected override string GetPageKey() => nameof(PopularPage);
+    protected override string GetPageKey() => nameof(RankPage);
 
     [RelayCommand]
     private async Task InitializeAsync()
@@ -48,66 +48,66 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         // 1. 推荐榜
         Sections.Add(
-            new PopularSectionItemViewModel(
+            new RankSectionItemViewModel(
                 FluentIcons.Common.Symbol.RibbonStar,
                 Resources.BoardRecommend,
-                PopularSectionType.LeaderboardRecommend,
+                RankSectionType.LeaderboardRecommend,
                 leaderboardType: ShortDramaLeaderboardType.Recommend
             )
         );
 
         // 2. 热播榜
         Sections.Add(
-            new PopularSectionItemViewModel(
+            new RankSectionItemViewModel(
                 FluentIcons.Common.Symbol.Fire,
                 Resources.BoardHotPlay,
-                PopularSectionType.LeaderboardHotPlay,
+                RankSectionType.LeaderboardHotPlay,
                 leaderboardType: ShortDramaLeaderboardType.HotPlay
             )
         );
 
         // 3. 新剧榜
         Sections.Add(
-            new PopularSectionItemViewModel(
+            new RankSectionItemViewModel(
                 FluentIcons.Common.Symbol.Sparkle,
                 Resources.BoardNewRelease,
-                PopularSectionType.LeaderboardNewRelease,
+                RankSectionType.LeaderboardNewRelease,
                 leaderboardType: ShortDramaLeaderboardType.NewRelease
             )
         );
 
         // 4. 热搜榜
         Sections.Add(
-            new PopularSectionItemViewModel(
+            new RankSectionItemViewModel(
                 FluentIcons.Common.Symbol.Search,
                 Resources.BoardHotSearch,
-                PopularSectionType.LeaderboardHotSearch,
+                RankSectionType.LeaderboardHotSearch,
                 leaderboardType: ShortDramaLeaderboardType.HotSearch
             )
         );
 
         // 5. 演员排行榜
         Sections.Add(
-            new PopularSectionItemViewModel(
+            new RankSectionItemViewModel(
                 FluentIcons.Common.Symbol.PeopleStar,
                 Resources.LeaderboardActor,
-                PopularSectionType.LeaderboardActor,
+                RankSectionType.LeaderboardActor,
                 isActorLeaderboard: true
             )
         );
 
-        string lastSelectedSectionId = _settings.PopularPageLastSelectedSectionId;
-        IPopularSectionItemViewModel? targetSection = null;
+        string lastSelectedSectionId = _settings.RankPageLastSelectedSectionId;
+        IRankSectionItemViewModel? targetSection = null;
         if (
             !string.IsNullOrEmpty(lastSelectedSectionId)
-            && Enum.TryParse<PopularSectionType>(
+            && Enum.TryParse<RankSectionType>(
                 lastSelectedSectionId,
-                out PopularSectionType sectionType
+                out RankSectionType sectionType
             )
         )
         {
             targetSection = Sections
-                .OfType<PopularSectionItemViewModel>()
+                .OfType<RankSectionItemViewModel>()
                 .FirstOrDefault(p => p.Type == sectionType);
         }
 
@@ -116,7 +116,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     }
 
     [RelayCommand]
-    private async Task SelectSectionAsync(IPopularSectionItemViewModel vm)
+    private async Task SelectSectionAsync(IRankSectionItemViewModel vm)
     {
         if (vm is null || vm == SelectedSection)
         {
@@ -134,9 +134,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         Actors.Clear();
 
         SelectedSection = vm;
-        if (vm is PopularSectionItemViewModel pSection)
+        if (vm is RankSectionItemViewModel pSection)
         {
-            _settings.PopularPageLastSelectedSectionId = pSection.Type.ToString();
+            _settings.RankPageLastSelectedSectionId = pSection.Type.ToString();
             IsLeaderboardSection = pSection.LeaderboardType.HasValue;
             IsActorLeaderboard = pSection.IsActorLeaderboard;
         }
@@ -262,7 +262,7 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
 
         try
         {
-            if (SelectedSection is PopularSectionItemViewModel section)
+            if (SelectedSection is RankSectionItemViewModel section)
             {
                 if (section.LeaderboardType.HasValue)
                 {
@@ -312,9 +312,9 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
         await LoadVideosAsync();
     }
 
-    private void ResetPagination(IPopularSectionItemViewModel section)
+    private void ResetPagination(IRankSectionItemViewModel section)
     {
-        if (section is PopularSectionItemViewModel pSection)
+        if (section is RankSectionItemViewModel pSection)
         {
             if (pSection.LeaderboardType.HasValue)
             {
@@ -332,11 +332,11 @@ public sealed partial class PopularPageViewModel : LayoutPageViewModelBase
     }
 
     private static string GetCacheKey(
-        IPopularSectionItemViewModel section,
+        IRankSectionItemViewModel section,
         ShortDramaLeaderboardChannel channel
     )
     {
-        if (section is PopularSectionItemViewModel pSection)
+        if (section is RankSectionItemViewModel pSection)
         {
             if (pSection.IsActorLeaderboard)
             {

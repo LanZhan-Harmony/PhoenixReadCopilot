@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,9 +14,9 @@ using ZLogger;
 namespace PhoenixReadCopilot.Core.Services;
 
 /// <summary>
-/// 短剧与媒体下载服务实现 (基于纯 C# CENC 解密引擎，无外部 FFmpeg 进程依赖).
+/// 短剧与媒体下载服务实现 (基于纯 C# CENC 就地极速解密引擎，高度并行化下载).
 /// </summary>
-public sealed class DownloadService : IDownloadService, IDisposable
+public sealed class DownloadService : IDownloadService
 {
     private readonly ILogger<DownloadService> _logger;
     private readonly ISettingsService _settingsService;
@@ -27,14 +29,14 @@ public sealed class DownloadService : IDownloadService, IDisposable
         ISettingsService settingsService,
         INotificationService notificationService,
         PhoenixReadApiClient apiClient,
-        HttpClient? httpClient = null
+        IHttpClientFactory httpClientFactory
     )
     {
         _logger = logger;
         _settingsService = settingsService;
         _notificationService = notificationService;
         _apiClient = apiClient;
-        _httpClient = httpClient ?? new HttpClient();
+        _httpClient = httpClientFactory.CreateClient("PhoenixReadClient");
     }
 
     /// <inheritdoc/>
@@ -60,168 +62,54 @@ public sealed class DownloadService : IDownloadService, IDisposable
         }
     }
 
+    /// <summary>
+    /// 获取并确保某部短剧专属下载目录存在.
+    /// </summary>
+    public string GetDramaFolderPath(string dramaTitle)
+    {
+        string sanitized = SanitizeFileName(dramaTitle);
+        string dramaDir = Path.Combine(DownloadFolderPath, sanitized);
+        if (!Directory.Exists(dramaDir))
+        {
+            Directory.CreateDirectory(dramaDir);
+        }
+        return dramaDir;
+    }
+
     /// <inheritdoc/>
     public async Task<string?> DownloadSingleEpisodeAsync(
         string dramaId,
         string videoId,
         int episodeNumber,
         string episodeTitle,
-        string seriesTitle,
+        string dramaTitle,
         PlayerFormatInformation? preferFormat = null,
-        bool silent = false,
         CancellationToken cancellationToken = default
     )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dramaId);
         ArgumentException.ThrowIfNullOrWhiteSpace(videoId);
 
-        try
+        return await Task.Run(async () =>
         {
-            if (!silent)
-            {
-                await _notificationService.ShowInAppNotificationAsync(
-                    $"正在解析第 {episodeNumber} 集直链地址...",
-                    NotificationType.Information
-                );
-            }
-
-            IReadOnlyList<PlaybackMedia>? mediaList = await _apiClient.ResolveMediaAsync(
-                dramaId,
-                videoId,
-                cancellationToken
-            );
-
-            if (mediaList is null || mediaList.Count == 0)
-            {
-                if (!silent)
-                {
-                    await _notificationService.ShowInAppNotificationAsync(
-                        $"第 {episodeNumber} 集视频地址解析失败",
-                        NotificationType.Error
-                    );
-                }
-                return null;
-            }
-
-            // 优先匹配指定清晰度，若未指定或未匹配则选取码率/分辨率最高者
-            PlaybackMedia? targetMedia = null;
-            if (preferFormat is not null)
-            {
-                targetMedia = mediaList.FirstOrDefault(m =>
-                    GetQualityScore(m) == preferFormat.Quality
-                );
-            }
-            targetMedia ??= mediaList.OrderByDescending(GetQualityScore).FirstOrDefault();
-
-            if (targetMedia is null || string.IsNullOrWhiteSpace(targetMedia.Url))
-            {
-                if (!silent)
-                {
-                    await _notificationService.ShowInAppNotificationAsync(
-                        $"第 {episodeNumber} 集视频播放源不存在",
-                        NotificationType.Error
-                    );
-                }
-                return null;
-            }
-
-            string downloadDir = DownloadFolderPath;
-            string fileName = $"{SanitizeFileName(seriesTitle)} - 第{episodeNumber}集.mp4";
-            string outputPath = Path.Combine(downloadDir, fileName);
-            string tempPath = Path.Combine(
-                downloadDir,
-                $".temp_{episodeNumber}_{Guid.NewGuid():N}.mp4"
-            );
-
             try
             {
-                if (!silent)
+                string dramaDir = GetDramaFolderPath(dramaTitle);
+                string? outputPath = await DownloadSingleEpisodeCoreAsync(
+                    dramaId,
+                    videoId,
+                    episodeNumber,
+                    dramaDir,
+                    preferFormat,
+                    cancellationToken
+                );
+
+                if (outputPath is not null)
                 {
-                    await _notificationService.ShowInAppNotificationAsync(
-                        $"正在高速下载第 {episodeNumber} 集数据...",
-                        NotificationType.Information
-                    );
-                }
-
-                // 1. 发起流式 HTTP 下载请求
-                using (HttpRequestMessage request = new(HttpMethod.Get, targetMedia.Url))
-                {
-                    string referer = !string.IsNullOrEmpty(targetMedia.Referer)
-                        ? targetMedia.Referer
-                        : "https://novel.snssdk.com";
-                    request.Headers.Referrer = new Uri(referer);
-                    request.Headers.TryAddWithoutValidation(
-                        "User-Agent",
-                        "com.phoenix.read/73532 (Linux; U; Android 16; zh_CN; 25053RT47C; Build/BP2A.250605.031.A3; Cronet/TTNetVersion:04657795 2026-01-23 QuicVersion:c67e9834 2025-09-08)"
-                    );
-
-                    using HttpResponseMessage response = await _httpClient.SendAsync(
-                        request,
-                        HttpCompletionOption.ResponseHeadersRead,
-                        cancellationToken
-                    );
-                    response.EnsureSuccessStatusCode();
-
-                    await using (
-                        FileStream fs = new(
-                            tempPath,
-                            FileMode.Create,
-                            FileAccess.Write,
-                            FileShare.None
-                        )
-                    )
-                    {
-                        await response.Content.CopyToAsync(fs, cancellationToken);
-                    }
-                }
-
-                // 2. 判断是否具有 CENC AES-128 加密
-                if (!string.IsNullOrWhiteSpace(targetMedia.DecryptionKey))
-                {
-                    if (!silent)
-                    {
-                        await _notificationService.ShowInAppNotificationAsync(
-                            $"正在通过纯 C# 解密第 {episodeNumber} 集...",
-                            NotificationType.Information
-                        );
-                    }
-
-                    byte[] keyBytes = Convert.FromHexString(targetMedia.DecryptionKey);
-
-                    // 在独立后台线程中执行极速就地解密
-                    await Task.Run(
-                        () =>
-                        {
-                            using FileStream encFs = new(
-                                tempPath,
-                                FileMode.Open,
-                                FileAccess.ReadWrite,
-                                FileShare.None,
-                                bufferSize: 65536,
-                                useAsync: false
-                            );
-                            Mp4CencDecryptor.DecryptInPlace(encFs, keyBytes, cancellationToken);
-                        },
-                        cancellationToken
-                    );
-                }
-
-                // 3. 将临时文件移动为最终目标文件
-                if (File.Exists(outputPath))
-                {
-                    File.Delete(outputPath);
-                }
-                File.Move(tempPath, outputPath);
-
-                if (!silent)
-                {
-                    await _notificationService.ShowInAppNotificationAsync(
-                        $"第 {episodeNumber} 集下载完成: {fileName}",
-                        NotificationType.Success
-                    );
+                    // 单集成功时使用原生系统通知，不弹应用内提示
                     _notificationService.ShowSystemNotification(
-                        seriesTitle,
-                        $"第 {episodeNumber} 集下载成功！"
+                        dramaTitle,
+                        $"第 {episodeNumber} 集下载完成！"
                     );
 
                     if (_settingsService.Settings.OpenFolderAfterDownload)
@@ -229,44 +117,37 @@ public sealed class DownloadService : IDownloadService, IDisposable
                         TryOpenFolderAndSelect(outputPath);
                     }
                 }
+                else
+                {
+                    await _notificationService.ShowInAppNotificationAsync(
+                        $"第 {episodeNumber} 集下载失败: 未获取到可用播放源",
+                        NotificationType.Error
+                    );
+                }
 
                 return outputPath;
             }
-            finally
+            catch (OperationCanceledException)
             {
-                if (File.Exists(tempPath))
-                {
-                    try
-                    {
-                        File.Delete(tempPath);
-                    }
-                    catch { }
-                }
+                _logger.ZLogInformation($"下载第 {episodeNumber} 集任务已取消.");
+                return null;
             }
-        }
-        catch (OperationCanceledException)
-        {
-            _logger.ZLogInformation($"下载第 {episodeNumber} 集任务已取消.");
-            return null;
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"下载第 {episodeNumber} 集失败: {ex.Message}");
-            if (!silent)
+            catch (Exception ex)
             {
+                _logger.ZLogError(ex, $"下载第 {episodeNumber} 集失败: {ex.Message}");
                 await _notificationService.ShowInAppNotificationAsync(
-                    $"下载第 {episodeNumber} 集失败: {ex.Message}",
+                    $"第 {episodeNumber} 集下载失败: {ex.Message}",
                     NotificationType.Error
                 );
+                return null;
             }
-            return null;
-        }
+        }, cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task BatchDownloadEpisodesAsync(
         string dramaId,
-        string seriesTitle,
+        string dramaTitle,
         IReadOnlyList<Episode> episodes,
         PlayerFormatInformation? preferFormat = null,
         CancellationToken cancellationToken = default
@@ -275,117 +156,248 @@ public sealed class DownloadService : IDownloadService, IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(dramaId);
         if (episodes is null || episodes.Count == 0)
         {
-            await _notificationService.ShowInAppNotificationAsync(
-                "无分集可下载",
-                NotificationType.Warning
-            );
             return;
         }
 
         List<Episode> list = [.. episodes];
         int total = list.Count;
         string tag = $"batch_download_{dramaId}";
+        string dramaDir = GetDramaFolderPath(dramaTitle);
 
-        await _notificationService.ShowInAppNotificationAsync(
-            $"开始后台批量下载 {seriesTitle} (共 {total} 集)...",
-            NotificationType.Information
-        );
-
+        // 初始原生通知
         _notificationService.UpdateProgressNotification(
             tag,
-            $"{seriesTitle} 批量下载",
-            $"准备下载共 {total} 集...",
+            $"{dramaTitle} 批量下载",
+            $"下载进度: 0/{total} (0%)",
             0.0,
             isCompleted: false
         );
 
-        int completed = 0;
-        foreach (Episode ep in list)
+        int completedCount = 0;
+        ConcurrentBag<(int Episode, string Reason)> failedEpisodes = [];
+
+        // 高度并行化下载
+        ParallelOptions parallelOptions = new()
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            MaxDegreeOfParallelism = Math.Clamp(Environment.ProcessorCount * 2, 4, 16),
+            CancellationToken = cancellationToken,
+        };
 
-            double currentProgress = (double)completed / total;
-            string status = $"正在下载 ({completed + 1}/{total}): 第{ep.Number}集 {ep.Title}";
+        await Parallel.ForEachAsync(list, parallelOptions, async (ep, ct) =>
+        {
+            try
+            {
+                string? result = await DownloadSingleEpisodeCoreAsync(
+                    dramaId,
+                    ep.VideoId,
+                    ep.Number,
+                    dramaDir,
+                    preferFormat,
+                    ct
+                );
 
+                if (result is not null)
+                {
+                    int done = Interlocked.Increment(ref completedCount);
+                    double progress = (double)done / total;
+
+                    // 仅当整集完全下载并解密完成后，才更新一次系统进度通知
+                    _notificationService.UpdateProgressNotification(
+                        tag,
+                        $"{dramaTitle} 批量下载",
+                        $"下载进度: {done}/{total} ({Math.Round(progress * 100)}%)",
+                        progress,
+                        isCompleted: false
+                    );
+                }
+                else
+                {
+                    failedEpisodes.Add((ep.Number, "无法获取视频播放源"));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.ZLogError(ex, $"第 {ep.Number} 集下载异常: {ex.Message}");
+                failedEpisodes.Add((ep.Number, ex.Message));
+            }
+        });
+
+        // 最终通知结算
+        if (failedEpisodes.IsEmpty)
+        {
+            // 全部成功：仅用原生系统通知，无需应用内提示
             _notificationService.UpdateProgressNotification(
                 tag,
-                $"{seriesTitle} 批量下载",
-                status,
-                currentProgress,
-                isCompleted: false
+                $"{dramaTitle} 批量下载",
+                $"全部 {total} 集已下载完成！",
+                1.0,
+                isCompleted: true
             );
 
-            string epTitle = string.IsNullOrWhiteSpace(ep.Title) ? $"第{ep.Number}集" : ep.Title;
-            string? result = await DownloadSingleEpisodeAsync(
-                dramaId,
-                ep.VideoId,
-                ep.Number,
-                epTitle,
-                seriesTitle,
-                preferFormat,
-                silent: true,
-                cancellationToken
-            );
-
-            if (result is not null)
-            {
-                completed++;
-            }
+            _notificationService.ShowSystemNotification(dramaTitle, $"全部 {total} 集已下载完成！");
         }
+        else
+        {
+            // 存在失败分集：更新系统通知并统一在应用内汇总报错
+            int successCount = completedCount;
+            _notificationService.UpdateProgressNotification(
+                tag,
+                $"{dramaTitle} 批量下载",
+                $"下载完成: 成功 {successCount}/{total} 集",
+                1.0,
+                isCompleted: true
+            );
 
-        // 最终完成通知
-        _notificationService.UpdateProgressNotification(
-            tag,
-            $"{seriesTitle} 批量下载",
-            $"全部 {completed}/{total} 集已下载完成！",
-            1.0,
-            isCompleted: true
-        );
+            _notificationService.ShowSystemNotification(
+                dramaTitle,
+                $"批量下载完成: 成功 {successCount}/{total} 集，失败 {failedEpisodes.Count} 集。"
+            );
 
-        await _notificationService.ShowInAppNotificationAsync(
-            $"{seriesTitle} 批量下载完成，成功 {completed}/{total} 集！",
-            NotificationType.Success
-        );
+            string failedEpNumbers = string.Join(
+                "、",
+                failedEpisodes.Select(f => f.Episode).OrderBy(n => n)
+            );
 
-        _notificationService.ShowSystemNotification(
-            seriesTitle,
-            $"批量下载任务已完成 (成功 {completed}/{total} 集)！"
-        );
+            await _notificationService.ShowInAppNotificationAsync(
+                $"《{dramaTitle}》批量下载完成，但第 {failedEpNumbers} 集下载失败，请稍后重试。",
+                NotificationType.Warning
+            );
+        }
 
         if (_settingsService.Settings.OpenFolderAfterDownload)
         {
-            TryOpenFolder(DownloadFolderPath);
+            TryOpenFolder(dramaDir);
+        }
+    }
+
+    /// <summary>
+    /// 内部单集下载与解密核心实现.
+    /// </summary>
+    private async Task<string?> DownloadSingleEpisodeCoreAsync(
+        string dramaId,
+        string videoId,
+        int episodeNumber,
+        string dramaDir,
+        PlayerFormatInformation? preferFormat,
+        CancellationToken cancellationToken
+    )
+    {
+        IReadOnlyList<PlaybackMedia>? mediaList = await _apiClient.ResolveMediaAsync(
+            dramaId,
+            videoId,
+            cancellationToken
+        );
+
+        if (mediaList is null || mediaList.Count == 0)
+        {
+            return null;
+        }
+
+        PlaybackMedia? targetMedia = null;
+        if (preferFormat is not null)
+        {
+            targetMedia = mediaList.FirstOrDefault(m => GetQualityScore(m) == preferFormat.Quality);
+        }
+        targetMedia ??= mediaList.OrderByDescending(GetQualityScore).FirstOrDefault();
+
+        if (targetMedia is null || string.IsNullOrWhiteSpace(targetMedia.Url))
+        {
+            return null;
+        }
+
+        // 文件命名规范: {episodeNumber}.mp4 (如 1.mp4, 2.mp4)
+        string outputPath = Path.Combine(dramaDir, $"{episodeNumber}.mp4");
+        string tempPath = Path.Combine(dramaDir, $".temp_{episodeNumber}_{Guid.NewGuid():N}.mp4");
+
+        try
+        {
+            // 1. 流式网络下载
+            using (HttpRequestMessage request = new(HttpMethod.Get, targetMedia.Url))
+            {
+                string referer = !string.IsNullOrEmpty(targetMedia.Referer)
+                    ? targetMedia.Referer
+                    : "https://novel.snssdk.com";
+                request.Headers.Referrer = new Uri(referer);
+                request.Headers.TryAddWithoutValidation(
+                    "User-Agent",
+                    "com.phoenix.read/69132 (Linux; U; Android 16; zh_CN; WKL-AN20; Build/CP2A.260605.012; Cronet/TTNetVersion:04657795 2026-01-23 QuicVersion:c67e9834 2025-09-08)"
+                );
+
+                using HttpResponseMessage response = await _httpClient.SendAsync(
+                    request,
+                    HttpCompletionOption.ResponseHeadersRead,
+                    cancellationToken
+                );
+                response.EnsureSuccessStatusCode();
+
+                await using FileStream fs = new(
+                    tempPath,
+                    FileMode.Create,
+                    FileAccess.Write,
+                    FileShare.None,
+                    bufferSize: 81920,
+                    FileOptions.Asynchronous
+                );
+                await response.Content.CopyToAsync(fs, cancellationToken);
+            }
+
+            // 2. CENC 就地解密 (直接在当前并行 Worker 线程执行)
+            if (!string.IsNullOrWhiteSpace(targetMedia.DecryptionKey))
+            {
+                byte[] keyBytes = Convert.FromHexString(targetMedia.DecryptionKey);
+                using FileStream encFs = new(
+                    tempPath,
+                    FileMode.Open,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    bufferSize: 65536,
+                    useAsync: false
+                );
+
+                Mp4CencDecryptor.DecryptInPlace(encFs, keyBytes, cancellationToken);
+            }
+
+            // 3. 移动临时文件为正式目标分集文件
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+            File.Move(tempPath, outputPath);
+
+            return outputPath;
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                try
+                {
+                    File.Delete(tempPath);
+                }
+                catch { }
+            }
         }
     }
 
     /// <inheritdoc/>
     public async Task<string?> DownloadCoverAsync(
         string coverUrl,
-        string seriesTitle,
+        string dramaTitle,
         CancellationToken cancellationToken = default
     )
     {
         if (string.IsNullOrWhiteSpace(coverUrl))
         {
-            await _notificationService.ShowInAppNotificationAsync(
-                "未找到封面图片地址",
-                NotificationType.Warning
-            );
             return null;
         }
 
         try
         {
-            string fileName = $"{SanitizeFileName(seriesTitle)}_cover.jpg";
-            string savePath = Path.Combine(DownloadFolderPath, fileName);
+            string dramaDir = GetDramaFolderPath(dramaTitle);
+            string savePath = Path.Combine(dramaDir, "cover.jpg");
 
             byte[] bytes = await _httpClient.GetByteArrayAsync(coverUrl, cancellationToken);
             await File.WriteAllBytesAsync(savePath, bytes, cancellationToken);
-
-            await _notificationService.ShowInAppNotificationAsync(
-                $"封面已保存至: {savePath}",
-                NotificationType.Success
-            );
 
             if (_settingsService.Settings.OpenFolderAfterDownload)
             {
@@ -397,10 +409,6 @@ public sealed class DownloadService : IDownloadService, IDisposable
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"下载封面失败.");
-            await _notificationService.ShowInAppNotificationAsync(
-                "下载封面失败",
-                NotificationType.Error
-            );
             return null;
         }
     }
@@ -410,16 +418,12 @@ public sealed class DownloadService : IDownloadService, IDisposable
         string dramaId,
         string videoId,
         int episodeNumber,
-        string seriesTitle,
+        string dramaTitle,
         CancellationToken cancellationToken = default
     )
     {
         if (string.IsNullOrWhiteSpace(dramaId) || string.IsNullOrWhiteSpace(videoId))
         {
-            await _notificationService.ShowInAppNotificationAsync(
-                "无可用弹幕数据",
-                NotificationType.Warning
-            );
             return null;
         }
 
@@ -433,8 +437,13 @@ public sealed class DownloadService : IDownloadService, IDisposable
                 cancellationToken
             );
 
-            string fileName = $"{SanitizeFileName(seriesTitle)}_第{episodeNumber}集_弹幕.xml";
-            string savePath = Path.Combine(DownloadFolderPath, fileName);
+            if (danmakuPage.Items is null || danmakuPage.Items.Count == 0)
+            {
+                return null;
+            }
+
+            string dramaDir = GetDramaFolderPath(dramaTitle);
+            string savePath = Path.Combine(dramaDir, $"{episodeNumber}.xml");
 
             StringBuilder sb = new();
             sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -455,11 +464,6 @@ public sealed class DownloadService : IDownloadService, IDisposable
 
             await File.WriteAllTextAsync(savePath, sb.ToString(), Encoding.UTF8, cancellationToken);
 
-            await _notificationService.ShowInAppNotificationAsync(
-                $"弹幕已保存至: {savePath}",
-                NotificationType.Success
-            );
-
             if (_settingsService.Settings.OpenFolderAfterDownload)
             {
                 TryOpenFolderAndSelect(savePath);
@@ -469,30 +473,9 @@ public sealed class DownloadService : IDownloadService, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"下载弹幕失败.");
-            await _notificationService.ShowInAppNotificationAsync(
-                "下载弹幕失败",
-                NotificationType.Error
-            );
+            _logger.ZLogError(ex, $"下载第 {episodeNumber} 集弹幕失败.");
             return null;
         }
-    }
-
-    /// <inheritdoc/>
-    public async Task DecryptVideoAsync(
-        string inputFilePath,
-        string outputFilePath,
-        string hexKey,
-        CancellationToken cancellationToken = default
-    )
-    {
-        byte[] keyBytes = Convert.FromHexString(hexKey);
-        await Mp4CencDecryptor.DecryptFileAsync(
-            inputFilePath,
-            outputFilePath,
-            keyBytes,
-            cancellationToken
-        );
     }
 
     private static int GetQualityScore(PlaybackMedia media)
@@ -538,10 +521,5 @@ public sealed class DownloadService : IDownloadService, IDisposable
             Process.Start("explorer.exe", folderPath);
         }
         catch { }
-    }
-
-    public void Dispose()
-    {
-        // Don't dispose _httpClient if it was injected from outside, but clean if created locally
     }
 }

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:PopularPageControlBase x:Class="PhoenixReadCopilot.Controls.Popular.PopularMainBody"
+<local:RankPageControlBase x:Class="PhoenixReadCopilot.Controls.Rank.RankMainBody"
                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                               xmlns:base="using:WinUIKernel.Share.Base"
                               xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                               xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
-                              xmlns:local="using:PhoenixReadCopilot.Controls.Popular"
+                              xmlns:local="using:PhoenixReadCopilot.Controls.Rank"
                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                               xmlns:strings="using:PhoenixReadCopilot.Strings"
                               mc:Ignorable="d">
@@ -43,4 +43,4 @@
         </ScrollViewer>
         <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}"/>
     </Grid>
-</local:PopularPageControlBase>
+</local:RankPageControlBase>

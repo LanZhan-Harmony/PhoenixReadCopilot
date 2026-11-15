@@ -1,7 +1,7 @@
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
 
-namespace PhoenixReadCopilot.Controls.Popular;
+namespace PhoenixReadCopilot.Controls.Rank;
 
 /// <summary>
 /// 演员排行榜单卡片控件.
