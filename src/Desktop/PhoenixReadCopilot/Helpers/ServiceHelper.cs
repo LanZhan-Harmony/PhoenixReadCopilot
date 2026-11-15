@@ -4,17 +4,15 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.Toolkits;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share;
 using WinUIKernel.Share.Toolkits;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.Helpers;
 
-internal class ServiceHelper
+internal static class ServiceHelper
 {
     /// <summary>
     /// 配置依赖注入容器服务.
@@ -24,8 +22,8 @@ internal class ServiceHelper
         IServiceCollection services = new ServiceCollection()
             // 1. 通用工具
             .AddSingleton<IPathService, PathService>()
+            .AddSingleton<ILocalizationService, LocalizationService>()
             .AddSingleton<ILocalViewLaterService, LocalViewLaterService>()
-            .AddSingleton<IAppToolkit, AppToolkit>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>()
             .AddSingleton<IResourceToolkit, SharedResourceToolkit>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
@@ -39,10 +37,6 @@ internal class ServiceHelper
             .AddTransient<DramaReviewSectionDetailViewModel>()
             .AddTransient<DownloadViewModel>()
             .AddTransient<FFmpegPlayerViewModel>()
-            .AddSingleton<NotificationViewModel>()
-            .AddSingleton<INotificationViewModel>(sp =>
-                sp.GetRequiredService<NotificationViewModel>()
-            )
             .AddSingleton<NavigationViewModel>()
             .AddSingleton<PinnerViewModel>()
             .AddTransient<SubtitleViewModel>()

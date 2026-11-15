@@ -22,15 +22,15 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        SeasonScrollView.ViewChanged += OnViewChanged;
-        SeasonScrollView.SizeChanged += OnScrollViewSizeChanged;
+        IndexScrollView.ViewChanged += OnViewChanged;
+        IndexScrollView.SizeChanged += OnScrollViewSizeChanged;
 
         if (ViewModel is null)
         {
             return;
         }
 
-        CheckSeasonCount();
+        CheckIndexCount();
     }
 
     /// <inheritdoc/>
@@ -38,9 +38,9 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
     {
         ViewModel?.ItemsUpdated -= OnItemsUpdatedAsync;
 
-        SeasonRepeater.ItemsSource = null;
-        SeasonScrollView.ViewChanged -= OnViewChanged;
-        SeasonScrollView.SizeChanged -= OnScrollViewSizeChanged;
+        IndexRepeater.ItemsSource = null;
+        IndexScrollView.ViewChanged -= OnViewChanged;
+        IndexScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
     /// <inheritdoc/>
@@ -56,14 +56,14 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
             return;
         }
 
-        SeasonScrollView?.ChangeView(0, 0, null, true);
+        IndexScrollView?.ChangeView(0, 0, null, true);
         newValue.ItemsUpdated += OnItemsUpdatedAsync;
     }
 
     private async void OnItemsUpdatedAsync(object? sender, EventArgs e)
     {
         await Task.Delay(500);
-        CheckSeasonCount();
+        CheckIndexCount();
     }
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
@@ -72,9 +72,9 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (
-                SeasonScrollView.ExtentHeight
-                    - SeasonScrollView.ViewportHeight
-                    - SeasonScrollView.VerticalOffset
+                IndexScrollView.ExtentHeight
+                    - IndexScrollView.ViewportHeight
+                    - IndexScrollView.VerticalOffset
                 <= 240
             )
             {
@@ -87,15 +87,15 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
     {
         if (e.NewSize.Width > 100)
         {
-            CheckSeasonCount();
+            CheckIndexCount();
         }
     }
 
-    private void CheckSeasonCount()
+    private void CheckIndexCount()
     {
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
-            if (SeasonScrollView.ScrollableHeight <= 240 && ViewModel is not null)
+            if (IndexScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
                 ViewModel.RequestIndexCommand.Execute(null);
             }

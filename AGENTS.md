@@ -6,8 +6,7 @@
 
 ## 1. 项目概述与核心约束
 
-- **技术栈**：.NET 10 + WinUI 3 (Windows App SDK 2.6) + C# 14 + CommunityToolkit.Mvvm 8.4+。
-- **重构目标**：本项目正在从原 Bilibili 客户端（BiliKernel）全面迁移重构为**红果短剧（PhoenixRead）**桌面客户端。
+- **技术栈**：.NET 11 + WinUI 3 (Windows App SDK 2.6) + C# 15 + CommunityToolkit.Mvvm 8.4+。
 - **本地 API 依赖**：`PhoenixReadApi` 本地 NuGet 包已在项目中配置就绪，命名空间为 `using PhoenixReadApi;`，严禁再引入旧版 B 站接口依赖。
 - **编译性能基准**：本项目多平台（x86/x64/ARM64）配置庞大，**构建和调试时必须显式指定 `x64` 平台**以实现最快编译速度：
 
@@ -80,21 +79,7 @@ d:\code\WinUI3\PhoenixReadCopilot\
 
 本项目强依赖 `CommunityToolkit.Mvvm` 的源代码生成器。为了保证单个文件职责单一、避免上千行臃肿代码，**所有复杂的页面级 ViewModel 必须建立独立文件夹，并采用 `partial class` 分离拆分**：
 
-### 3.1 拆分结构标准
-
-以 `RankPageViewModel` 或 `DramaPlayerPageViewModel` 为例：
-
-| 文件命名                     | 包含内容与职责                                                                                                                                                                                |
-| :--------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `XxxViewModel.cs`            | **主类与生命周期**：构造函数、服务依赖注入绑定、初始化入口 (`InitializeAsync`)、清理 (`Dispose`/`OnCloseAsync`)、主要页面路由。                                                               |
-| `XxxViewModel.Properties.cs` | **私有状态与公开属性**：私有字段（`_service`, `_logger`, 游标/偏移量、`CancellationTokenSource`）、公开属性 (`[ObservableProperty] public partial ...`) 以及事件定义 (`event EventHandler`)。 |
-| `XxxViewModel.Requests.cs`   | **网络与数据请求**：对 `PhoenixReadApiClient` 的异步数据拉取、分页加载、游标更新、列表拼装 (`LoadRecommendVideosAsync` 等)。                                                                  |
-| `XxxViewModel.Operations.cs` | **用户交互命令**：响应用户主动点击的命令 (`[RelayCommand]`，如收藏、点赞、关注、换清晰度、分享、选集等)。                                                                                     |
-| `XxxViewModel.Methods.cs`    | **内部辅助与数据转换**：非请求类的内部计算、视图初始化数据映射、格式化方法等。                                                                                                                |
-
-> **注意**：较简单的小型 ViewModel（如简单的卡片列表项 `ItemViewModel`），若代码量少于 100 行，可保留在单个文件中；一旦属性或操作复杂，必须立即遵循上述规则拆分为 `.cs` 与 `.Properties.cs`。
-
-### 3.2 属性定义语法（强制 Partial Property 语法）
+### 3.1 属性定义语法（强制 Partial Property 语法）
 
 本项目全面采用 C# 13 + CommunityToolkit.Mvvm 8.4+ 的分部属性生成方式，**禁止使用旧式的私有字段注解**：
 
@@ -111,7 +96,7 @@ public partial ObservableCollection<DramaItemViewModel> Dramas { get; set; }
 private bool _isLoading;
 ```
 
-### 3.3 命令定义语法
+### 3.2 命令定义语法
 
 使用 `[RelayCommand]` 特性生成 IRelayCommand / AsyncRelayCommand，命令方法名以操作语义命名：
 

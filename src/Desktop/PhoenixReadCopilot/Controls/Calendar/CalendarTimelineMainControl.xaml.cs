@@ -13,5 +13,5 @@ public sealed partial class CalendarTimelineMainControl : CalendarTimelineContro
         InitializeComponent();
     }
 
-    protected override void OnControlUnloaded() => SeasonRepeater.ItemsSource = null;
+    protected override void OnControlUnloaded() => TimelineRepeater.ItemsSource = null;
 }
