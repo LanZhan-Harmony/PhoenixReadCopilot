@@ -29,7 +29,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 是否自动控制密度.
     /// </summary>
-    public bool AutoControlDensity
+    internal bool AutoControlDensity
     {
         get => _autoControlDensity;
         set => _autoControlDensity = value;
@@ -38,7 +38,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 文本是否粗体.
     /// </summary>
-    public bool IsTextBold
+    internal bool IsTextBold
     {
         get => _isTextBold;
         set => _isTextBold = value;
@@ -47,7 +47,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 字幕是否不重叠.
     /// </summary>
-    public bool NoOverlapSubtitle
+    internal bool NoOverlapSubtitle
     {
         get => _noOverlapSubtitle;
         set => _noOverlapSubtitle = value;
@@ -56,7 +56,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 是否启用并行更新（多线程优化）.
     /// </summary>
-    public bool EnableParallelUpdate
+    internal bool EnableParallelUpdate
     {
         get => _enableParallelUpdate;
         set => _enableParallelUpdate = value;
@@ -65,7 +65,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 滚动弹幕密度限制.
     /// </summary>
-    public int RollingDensity
+    internal int RollingDensity
     {
         get => _rollingDensity;
         set => _rollingDensity = value;
@@ -74,7 +74,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 弹幕字体大小缩放比例.
     /// </summary>
-    public double FontSizeScale
+    internal double FontSizeScale
     {
         get => _fontSizeScale;
         set => _fontSizeScale = value;
@@ -83,7 +83,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 滚动区域比例（占画布高度的比例）.
     /// </summary>
-    public float RollingAreaRatio
+    internal float RollingAreaRatio
     {
         get => _rollingAreaRatio;
         set
@@ -98,7 +98,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 滚动速度.
     /// </summary>
-    public float RollingSpeed
+    internal float RollingSpeed
     {
         get => _rollingSpeed;
         set => _rollingSpeed = value;
@@ -107,7 +107,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 文本不透明度.
     /// </summary>
-    public double TextOpacity
+    internal double TextOpacity
     {
         get => _textOpacity;
         set
@@ -122,7 +122,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 描边大小.
     /// </summary>
-    public double OutlineSize
+    internal double OutlineSize
     {
         get => _outlineSize;
         set
@@ -137,7 +137,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 边框颜色.
     /// </summary>
-    public Color BorderColor
+    internal Color BorderColor
     {
         get => _borderColor;
         set => _borderColor = value;
@@ -146,7 +146,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 字体名称.
     /// </summary>
-    public string FontFamilyName
+    internal string FontFamilyName
     {
         get => _fontFamilyName;
         set =>
@@ -160,7 +160,7 @@ internal sealed class DanmakuConfigurationState
     /// <summary>
     /// 从 DanmakuConfiguration 创建配置状态.
     /// </summary>
-    public static DanmakuConfigurationState FromConfiguration(DanmakuConfiguration config)
+    internal static DanmakuConfigurationState FromConfiguration(DanmakuConfiguration config)
     {
         DanmakuConfigurationState state = new();
         state.ApplyConfiguration(config);
@@ -173,7 +173,7 @@ internal sealed class DanmakuConfigurationState
     /// <param name="config">配置对象.</param>
     /// <param name="scale">DPI 缩放比例（用于计算滚动速度）.</param>
     /// <param name="updateYSlotManager">更新 Y 轴槽管理器的回调（用于滚动区域比例变化）.</param>
-    public void ApplyConfiguration(
+    internal void ApplyConfiguration(
         DanmakuConfiguration config,
         float? scale = null,
         Action<float>? updateYSlotManager = null

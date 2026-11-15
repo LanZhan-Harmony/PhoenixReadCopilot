@@ -34,8 +34,8 @@ public sealed partial class RootLayout : RootLayoutBase
     /// <summary>
     /// 获取二级标题栏.
     /// </summary>
-    /// <returns><see cref="AppTitleBar"/>.</returns>
-    public AppTitleBar GetSecondaryTitleBar() => SecondaryTitleBar;
+    /// <returns><see cref="TitleBar"/>.</returns>
+    public TitleBar GetSecondaryTitleBar() => SecondaryTitleBar;
 
     /// <summary>
     /// 准备隐藏除播放器外的其它控件.
@@ -54,7 +54,7 @@ public sealed partial class RootLayout : RootLayoutBase
             ? Visibility.Visible
             : Visibility.Collapsed;
         SecondaryTitleBar.IsBackButtonVisible = isSecondaryTitleBarVisible;
-        SecondaryTitleBar.IsBackEnabled = isSecondaryTitleBarVisible;
+        SecondaryTitleBar.IsBackButtonEnabled = isSecondaryTitleBarVisible;
         _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
             TitleBarHeightOption.Standard;
         NavView.IsPaneOpen = false;
@@ -65,12 +65,6 @@ public sealed partial class RootLayout : RootLayoutBase
         {
             SecondaryTitleBar.Title = vPage.ViewModel.Title;
             vPage.EnterPlayerHostMode();
-        }
-
-        if (isSecondaryTitleBarVisible)
-        {
-            SecondaryTitleBar.UpdatePadding();
-            SecondaryTitleBar.DelayUpdateAsync(100);
         }
     }
 
@@ -116,7 +110,7 @@ public sealed partial class RootLayout : RootLayoutBase
         bool isHandled = false;
         if (OverlayFrame.Content is VideoPlayerPage vPage)
         {
-            vPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
+            vPage.ViewModel.Player.BackToDefaultMode();
             isHandled = true;
         }
 
@@ -213,10 +207,10 @@ public sealed partial class RootLayout : RootLayoutBase
     private void OnBackRequested(object sender, EventArgs e) => ViewModel.Back();
 
     private void OnUpdateActionButtonClick(TeachingTip sender, object args) =>
-        _appViewModel.ShowUpdateCommand.Execute(null);
+        _ = _appViewModel.ShowUpdateAsync();
 
     private void OnUpdateCloseButtonClick(TeachingTip sender, object args) =>
-        _appViewModel.HideUpdateCommand.Execute(null);
+        _appViewModel.HideUpdate();
 
     private void OnFavoriteButtonClick(object sender, EventArgs e) =>
         ViewModel.NavigateToOver(typeof(FavoritesPage), null);
@@ -227,7 +221,7 @@ public sealed partial class RootLayout : RootLayoutBase
     private void OnHistoryButtonClick(object sender, EventArgs e) =>
         ViewModel.NavigateToOver(typeof(HistoryPage), null);
 
-    private void OnVideoBackRequested(object sender, EventArgs e) =>
+    private void OnVideoBackRequested(TitleBar sender, object args) =>
         TryBackToDefaultIfPlayerHostMode();
 }
 

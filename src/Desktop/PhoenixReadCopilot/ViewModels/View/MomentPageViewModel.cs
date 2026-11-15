@@ -58,7 +58,7 @@ public sealed partial class MomentPageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Initialize()
+    public void Initialize()
     {
         if (Sections?.Count > 0)
         {
@@ -86,15 +86,17 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         IMomentSectionDetailViewModel section = isLastVideoSection
             ? Sections.First()
             : Sections.Last();
-        SelectSectionCommand.Execute(section);
+        SelectSection(section);
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low,
             () =>
                 Initialized?.Invoke(this, EventArgs.Empty)
         );
     }
 
-    [RelayCommand]
-    private void SelectSection(IMomentSectionDetailViewModel section)
+    /// <summary>
+    /// 选择分区.
+    /// </summary>
+    public void SelectSection(IMomentSectionDetailViewModel section)
     {
         if (section is null || section == SelectedSection)
         {
@@ -102,11 +104,11 @@ public sealed partial class MomentPageViewModel : ViewModelBase
         }
 
         SelectedSection = section;
-        SelectedSection.InitializeCommand.Execute(null);
+        _ = SelectedSection.InitializeAsync();
     }
 
     [RelayCommand]
-    private void ShowComment(MomentInformation data)
+    public void ShowComment(MomentInformation data)
     {
         if (string.IsNullOrEmpty(data.CommentId) || CommentModule.Id == data.CommentId)
         {

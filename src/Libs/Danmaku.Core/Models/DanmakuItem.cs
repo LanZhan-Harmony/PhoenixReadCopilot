@@ -7,15 +7,12 @@ namespace Danmaku.Core.Models;
 /// <summary>
 /// 弹幕数据项.
 /// </summary>
-#pragma warning disable CA1051 // 不要声明可见实例字段
 public class DanmakuItem
 {
     /// <summary>
     /// 默认基础字体大小.
     /// </summary>
-#pragma warning disable CA2211 // 非常量字段应当不可见
     public static float DefaultBaseFontSize = 22;
-#pragma warning restore CA2211 // 非常量字段应当不可见
 
     /// <summary>
     /// 弹幕唯一标识符，用于排序具有相同 StartMs 的弹幕.
@@ -140,4 +137,3 @@ public class DanmakuItem
         DurationMs = source.DurationMs;
     }
 }
-#pragma warning restore CA1051 // 不要声明可见实例字段

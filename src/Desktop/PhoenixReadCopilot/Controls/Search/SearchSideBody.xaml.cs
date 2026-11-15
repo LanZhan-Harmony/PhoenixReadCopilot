@@ -40,7 +40,7 @@ public sealed partial class SearchSideBody : SearchPageControlBase
     )
     {
         ISearchSectionDetailViewModel? item = sender.SelectedItem as ISearchSectionDetailViewModel;
-        ViewModel.SelectSectionCommand.Execute(item);
+        ViewModel.SelectSection(item);
     }
 
     private void CheckSectionSelection()

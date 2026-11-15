@@ -3,6 +3,7 @@
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:essential="using:WinUI3Package"
                           xmlns:local="using:PhoenixReadCopilot.Controls.Player"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:strings="using:PhoenixReadCopilot.Strings"
@@ -27,6 +28,7 @@
             </DropDownButton.Flyout>
         </DropDownButton>
         <TeachingTip x:Name="SelectionTip"
+                     essential:TeachingTipHelper.AcrylicWorkaround="True"
                      IsLightDismissEnabled="True"
                      PreferredPlacement="Top"
                      ShouldConstrainToRootBounds="False"
@@ -35,6 +37,7 @@
             <AutoSuggestBox x:Name="SelectionBox"
                             Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"
+                            essential:AutoSuggestBoxHelper.AcrylicWorkaround="True"
                             QuerySubmitted="OnSelectionSubmitted"/>
         </TeachingTip>
     </Grid>

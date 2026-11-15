@@ -85,7 +85,7 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
                 <= 240
             )
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }
@@ -110,7 +110,7 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
         {
             if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }
@@ -141,7 +141,7 @@ public sealed partial class CommentMainPanel : CommentMainPanelBase
             && sortOrder != ViewModel.SortType
         )
         {
-            ViewModel.ChangeSortTypeCommand.Execute(sortOrder);
+            _ = ViewModel.ChangeSortTypeAsync(sortOrder);
         }
     }
 }

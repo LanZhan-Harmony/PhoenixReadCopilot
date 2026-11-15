@@ -18,7 +18,7 @@ public sealed partial class MomentPage : MomentPageBase
     }
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
+    protected override void OnPageLoaded() => ViewModel.Initialize();
 }
 
 /// <summary>

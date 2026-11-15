@@ -31,7 +31,7 @@ public sealed partial class IndexFilterItemControl : IndexFilterItemControlBase
         Condition? condition = ConditionComboBox.SelectedItem as Condition;
         if (condition is not null)
         {
-            ViewModel.ChangeConditionCommand.Execute(condition);
+            ViewModel.ChangeCondition(condition);
         }
     }
 }

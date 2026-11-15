@@ -18,7 +18,7 @@ public sealed partial class HistoryPage : HistoryPageBase
     }
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
+    protected override void OnPageLoaded() => ViewModel.Initialize();
 }
 
 /// <summary>

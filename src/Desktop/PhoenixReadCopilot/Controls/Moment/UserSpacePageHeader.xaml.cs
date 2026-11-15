@@ -44,7 +44,7 @@ public sealed partial class UserSpacePageHeader : UserSpacePageControlBase
         UserMomentDetailViewModel? item = sender.SelectedItem.Tag as UserMomentDetailViewModel;
         if (item is not null && item != ViewModel.SelectedSection)
         {
-            ViewModel.SelectSectionCommand.Execute(item);
+            ViewModel.SelectSection(item);
         }
     }
 

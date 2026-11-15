@@ -66,8 +66,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         _logger = logger;
     }
 
-    [RelayCommand]
-    private async Task TryFirstLoadAsync()
+    public async Task TryFirstLoadAsync()
     {
         if (Items.Count > 0 || _preventLoadMore)
         {
@@ -87,8 +86,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         await LoadItemsAsync();
     }
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (IsEmpty || IsLoading || _preventLoadMore)
         {
@@ -146,7 +144,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         }
 
         VideoItemViewModel first = Items.First();
-        first.PlayCommand.Execute(null);
+        first.Play();
     }
 
     private void RemoveVideo(VideoItemViewModel item)

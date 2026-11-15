@@ -148,7 +148,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
         }
 
         ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
-        _appViewModel.ChangeThemeCommand.Execute(localTheme);
+        _appViewModel.ChangeTheme(localTheme);
         _isFirstActivated = false;
     }
 
@@ -188,7 +188,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     {
         if (MainFrame.Content is VideoPlayerPage vPage)
         {
-            vPage.ViewModel.Player.BackToDefaultModeCommand.Execute(null);
+            vPage.ViewModel.Player.BackToDefaultMode();
             return true;
         }
 
@@ -229,7 +229,7 @@ public sealed partial class PlayerWindow : WinUIEx.WindowEx, IPlayerHostWindow, 
     {
         if (MainFrame.Content is VideoPlayerPage vPage)
         {
-            vPage.ViewModel.CleanCommand.Execute(null);
+            vPage.ViewModel.Clean();
         }
     }
 

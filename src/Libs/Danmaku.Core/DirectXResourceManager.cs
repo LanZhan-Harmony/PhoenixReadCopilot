@@ -30,14 +30,14 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 渲染呈现与交换链尺寸调整的互斥锁.
     /// </summary>
-    public Lock RenderLock { get; } = new();
+    internal Lock RenderLock { get; } = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DirectXResourceManager"/> class.
     /// </summary>
     /// <param name="swapChainPanel">SwapChainPanel 控件.</param>
     /// <param name="scale">缩放比例.</param>
-    public DirectXResourceManager(SwapChainPanel swapChainPanel, float scale)
+    internal DirectXResourceManager(SwapChainPanel swapChainPanel, float scale)
     {
         _swapChainPanel = swapChainPanel ?? throw new ArgumentNullException(nameof(swapChainPanel));
         _scale = scale;
@@ -60,77 +60,77 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// D3D11 设备.
     /// </summary>
-    public ID3D11Device D3DDevice { get; private set; }
+    internal ID3D11Device D3DDevice { get; private set; }
 
     /// <summary>
     /// D3D11 设备上下文.
     /// </summary>
-    public ID3D11DeviceContext D3DContext { get; private set; }
+    internal ID3D11DeviceContext D3DContext { get; private set; }
 
     /// <summary>
     /// DXGI 交换链.
     /// </summary>
-    public IDXGISwapChain1 SwapChain { get; private set; }
+    internal IDXGISwapChain1 SwapChain { get; private set; }
 
     /// <summary>
     /// D3D11 渲染目标视图.
     /// </summary>
-    public ID3D11RenderTargetView RenderTargetView { get; private set; }
+    internal ID3D11RenderTargetView RenderTargetView { get; private set; }
 
     /// <summary>
     /// D2D1 工厂.
     /// </summary>
-    public ID2D1Factory1 D2DFactory { get; private set; }
+    internal ID2D1Factory1 D2DFactory { get; private set; }
 
     /// <summary>
     /// D2D1 设备.
     /// </summary>
-    public ID2D1Device D2DDevice { get; private set; }
+    internal ID2D1Device D2DDevice { get; private set; }
 
     /// <summary>
     /// D2D1 设备上下文.
     /// </summary>
-    public ID2D1DeviceContext D2DContext { get; private set; }
+    internal ID2D1DeviceContext D2DContext { get; private set; }
 
     /// <summary>
     /// D2D1 目标位图.
     /// </summary>
-    public ID2D1Bitmap1 D2DTargetBitmap { get; private set; }
+    internal ID2D1Bitmap1 D2DTargetBitmap { get; private set; }
 
     /// <summary>
     /// DirectWrite 工厂.
     /// </summary>
-    public IDWriteFactory DWriteFactory { get; private set; }
+    internal IDWriteFactory DWriteFactory { get; private set; }
 
     /// <summary>
     /// DPI 值.
     /// </summary>
-    public float Dpi => _dpi;
+    internal float Dpi => _dpi;
 
     /// <summary>
     /// 缩放比例.
     /// </summary>
-    public float Scale => _scale;
+    internal float Scale => _scale;
 
     /// <summary>
     /// 画布宽度（物理像素）.
     /// </summary>
-    public float CanvasWidth => _canvasWidth;
+    internal float CanvasWidth => _canvasWidth;
 
     /// <summary>
     /// 画布高度（物理像素）.
     /// </summary>
-    public float CanvasHeight => _canvasHeight;
+    internal float CanvasHeight => _canvasHeight;
 
     /// <summary>
     /// 逻辑宽度（线程安全的缓存值）.
     /// </summary>
-    public double LogicalWidth => _logicalWidth;
+    internal double LogicalWidth => _logicalWidth;
 
     /// <summary>
     /// 逻辑高度（线程安全的缓存值）.
     /// </summary>
-    public double LogicalHeight => _logicalHeight;
+    internal double LogicalHeight => _logicalHeight;
 
     #endregion
 
@@ -139,22 +139,22 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 文本格式缓存.
     /// </summary>
-    public Dictionary<string, IDWriteTextFormat> TextFormatCache { get; private set; }
+    internal Dictionary<string, IDWriteTextFormat> TextFormatCache { get; private set; }
 
     /// <summary>
     /// 画刷缓存.
     /// </summary>
-    public Dictionary<uint, ID2D1SolidColorBrush> BrushCache { get; private set; }
+    internal Dictionary<uint, ID2D1SolidColorBrush> BrushCache { get; private set; }
 
     /// <summary>
     /// 对象池管理器（替代 LRU 缓存）.
     /// </summary>
-    public ObjectPoolManager ObjectPool { get; private set; }
+    internal ObjectPoolManager ObjectPool { get; private set; }
 
     /// <summary>
     /// 缓存锁.
     /// </summary>
-    public Lock CacheLock { get; } = new();
+    internal Lock CacheLock { get; } = new();
 
     #endregion
 
@@ -374,7 +374,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 重新创建渲染目标视图（当窗口大小改变时调用）.
     /// </summary>
-    public void RecreateRenderTargetView()
+    internal void RecreateRenderTargetView()
     {
         RenderTargetView?.Dispose();
         CreateRenderTargetView();
@@ -383,7 +383,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 重新创建 D2D 渲染目标（当窗口大小改变时调用）.
     /// </summary>
-    public void RecreateD2DRenderTarget()
+    internal void RecreateD2DRenderTarget()
     {
         D2DTargetBitmap?.Dispose();
         CreateD2DRenderTarget();
@@ -393,7 +393,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// 更新缩放比例和 DPI.
     /// </summary>
     /// <param name="scale">新的缩放比例.</param>
-    public void UpdateScale(float scale)
+    internal void UpdateScale(float scale)
     {
         _scale = scale;
         _dpi = 96.0f * _scale;
@@ -409,7 +409,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     /// <param name="width">新宽度（逻辑像素）.</param>
     /// <param name="height">新高度（逻辑像素）.</param>
-    public void ResizeSwapChain(float width, float height)
+    internal void ResizeSwapChain(float width, float height)
     {
         lock (RenderLock)
         {
@@ -601,17 +601,17 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 缩放变化事件.
     /// </summary>
-    public event EventHandler<float> ScaleChanged;
+    internal event EventHandler<float> ScaleChanged;
 
     /// <summary>
     /// 尺寸变化事件.
     /// </summary>
-    public event EventHandler<(double Width, double Height)> SizeChanged;
+    internal event EventHandler<(double Width, double Height)> SizeChanged;
 
     /// <summary>
     /// 清空所有缓存.
     /// </summary>
-    public void ClearAllCaches()
+    internal void ClearAllCaches()
     {
         lock (CacheLock)
         {

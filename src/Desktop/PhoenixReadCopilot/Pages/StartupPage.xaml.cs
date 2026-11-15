@@ -21,11 +21,11 @@ public sealed partial class StartupPage : StartupPageBase
     /// <inheritdoc/>
     protected override void OnPageLoaded()
     {
-        ViewModel.InitializeCommand.Execute(QRCodeImage);
+        _ = ViewModel.InitializeAsync(QRCodeImage);
     }
 
     private void OnRefreshQRButtonClick(object sender, RoutedEventArgs e) =>
-        ViewModel.ReloadQRCodeCommand.Execute(null);
+        _ = ViewModel.ReloadQRCodeAsync();
 }
 
 /// <summary>

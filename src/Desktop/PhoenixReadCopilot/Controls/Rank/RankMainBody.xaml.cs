@@ -74,7 +74,7 @@ public sealed partial class RankMainBody : RankPageControlBase
                 && ViewModel is { IsVideoLoading: false }
             )
             {
-                ViewModel.LoadVideosCommand.Execute(null);
+                _ = ViewModel.LoadVideosAsync();
             }
         });
     }
@@ -101,7 +101,7 @@ public sealed partial class RankMainBody : RankPageControlBase
                 && hasItems
             )
             {
-                ViewModel.LoadVideosCommand.Execute(null);
+                _ = ViewModel.LoadVideosAsync();
             }
         });
     }

@@ -26,7 +26,7 @@ public sealed partial class VideoInfoSection : VideoPlayerPageControlBase
     private void OnTagButtonClick(object sender, RoutedEventArgs e)
     {
         string? data = (sender as FrameworkElement).DataContext as string;
-        _searchBoxViewModel.SearchCommand.Execute(data);
+        _searchBoxViewModel.Search(data);
     }
 
     private void OnLoopSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -46,7 +46,7 @@ public sealed partial class VideoInfoSection : VideoPlayerPageControlBase
     {
         if (e.ClickedItem is DramaCreditItemViewModel vm)
         {
-            vm.ShowUserSpaceCommand.Execute(null);
+            vm.ShowUserSpace();
         }
     }
 }

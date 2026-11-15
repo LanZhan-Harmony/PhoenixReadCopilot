@@ -66,7 +66,7 @@ public sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
 
         IPlayerSectionDetailViewModel? item =
             sender.SelectedItem.Tag as IPlayerSectionDetailViewModel;
-        ViewModel.SelectSectionCommand.Execute(item);
+        ViewModel.SelectSection(item);
     }
 
     private void InitializeChildPartitions()

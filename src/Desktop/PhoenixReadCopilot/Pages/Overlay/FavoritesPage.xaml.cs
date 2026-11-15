@@ -18,7 +18,7 @@ public sealed partial class FavoritesPage : FavoritesPageBase
     }
 
     /// <inheritdoc/>
-    protected override void OnPageLoaded() => ViewModel.InitializeCommand.Execute(null);
+    protected override void OnPageLoaded() => _ = ViewModel.InitializeAsync();
 }
 
 /// <summary>

@@ -1,12 +1,11 @@
-using Windows.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Danmaku.Core.Enums;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
+using Windows.UI;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
@@ -197,7 +196,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// </summary>
     public void ResetData()
     {
-        ReloadFontsCommand.Execute(null);
+        _ = ReloadFontsAsync();
         ResetOptions();
     }
 
@@ -276,8 +275,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// <returns>结果.</returns>
     public bool IsEmpty() => string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId);
 
-    [RelayCommand]
-    private async Task LoadDanmakusAsync(int duration)
+    public async Task LoadDanmakusAsync(int duration)
     {
         if (
             IsLoading
@@ -371,8 +369,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task SendDanmakuAsync(string text)
+    public async Task SendDanmakuAsync(string text)
     {
         if (
             string.IsNullOrWhiteSpace(text)
@@ -394,27 +391,18 @@ public sealed partial class DanmakuViewModel : ViewModelBase
             if (result.Succeeded)
             {
                 RequestAddSingleDanmaku?.Invoke(this, text.Trim());
-                _appViewModel.ShowTipCommand.Execute(("弹幕发送成功", InfoType.Success));
+                _appViewModel.ShowTip("弹幕发送成功", InfoType.Success);
             }
             else
             {
-                _appViewModel.ShowTipCommand.Execute(
-                    (result.Message ?? "弹幕发送失败", InfoType.Warning)
-                );
+                _appViewModel.ShowTip(result.Message ?? "弹幕发送失败", InfoType.Warning);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"弹幕发送失败.");
-            _appViewModel.ShowTipCommand.Execute(("弹幕发送出现异常", InfoType.Error));
+            _appViewModel.ShowTip("弹幕发送出现异常", InfoType.Error);
         }
-    }
-
-    [RelayCommand]
-    private void AddDanmaku(string text)
-    {
-        CanShowDanmaku = true;
-        RequestAddSingleDanmaku?.Invoke(this, text);
     }
 
     private void ResetOptions()
@@ -437,8 +425,10 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         ResetStyle();
     }
 
-    [RelayCommand]
-    private async Task ReloadFontsAsync()
+    /// <summary>
+    /// 重新加载系统字体列表.
+    /// </summary>
+    public async Task ReloadFontsAsync()
     {
         IReadOnlyList<string> fonts = await _fontToolkit.GetFontsAsync();
         Fonts = [.. fonts];
@@ -448,6 +438,11 @@ public sealed partial class DanmakuViewModel : ViewModelBase
             DanmakuFontFamily = "Segoe UI";
         }
     }
+
+    /// <summary>
+    /// 重新加载字体 (同步触发).
+    /// </summary>
+    public void ReloadFonts() => _ = ReloadFontsAsync();
 
     partial void OnIsShowDanmakuChanged(bool value)
     {

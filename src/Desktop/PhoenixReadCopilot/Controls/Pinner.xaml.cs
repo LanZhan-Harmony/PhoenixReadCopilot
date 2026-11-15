@@ -27,7 +27,7 @@ public sealed partial class Pinner : PinnerBase
     }
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(null);
+    protected override void OnControlLoaded() => _ = ViewModel.InitializeAsync();
 
     protected override void OnControlUnloaded() => Repeater.ItemsSource = null;
 
@@ -66,7 +66,7 @@ public sealed partial class Pinner : PinnerBase
     private void OnRemoveItemClick(object sender, RoutedEventArgs e)
     {
         bool isLastItem = ViewModel.Items.Count == 1;
-        ViewModel.RemoveItemCommand.Execute((sender as FrameworkElement)?.DataContext as PinItem);
+        if ((sender as FrameworkElement)?.DataContext is PinItem item) ViewModel.RemoveItem(item);
         if (isLastItem)
         {
             ItemsFlyout.Hide();

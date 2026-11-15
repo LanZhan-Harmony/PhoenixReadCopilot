@@ -143,8 +143,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void Reset(object userParam)
+    public void Reset(object userParam)
     {
         Clear();
         if (userParam is UserProfile profile)
@@ -177,8 +176,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Items.Count > 0 || _preventLoadMore)
         {
@@ -189,14 +187,13 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         Clear();
         await LoadItemsAsync();
     }
 
-    [RelayCommand]
-    private void Clear()
+    public void Clear()
     {
         _offset = null;
         IsEmpty = false;
@@ -204,8 +201,7 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         Items.Clear();
     }
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (IsLoading || _preventLoadMore || string.IsNullOrEmpty(_userId))
         {

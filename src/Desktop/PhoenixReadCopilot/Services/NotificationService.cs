@@ -63,7 +63,7 @@ public sealed class NotificationService : INotificationService
                     _ => InfoType.Information,
                 };
 
-                appViewModel.ShowTipCommand.Execute((message, infoType));
+                await appViewModel.ShowTipAsync(message, infoType);
             }
         }
         catch (Exception ex)

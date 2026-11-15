@@ -19,7 +19,7 @@ internal sealed class GameLoopThread : IDisposable
     /// <summary>
     /// 是否暂停渲染循环.
     /// </summary>
-    public bool IsPaused
+    internal bool IsPaused
     {
         get => _isPaused;
         set
@@ -32,7 +32,7 @@ internal sealed class GameLoopThread : IDisposable
         }
     }
 
-    public GameLoopThread(Action renderFrameAction)
+    internal GameLoopThread(Action renderFrameAction)
     {
         _renderFrameAction = renderFrameAction ?? throw new ArgumentNullException(nameof(renderFrameAction));
 
@@ -50,7 +50,7 @@ internal sealed class GameLoopThread : IDisposable
     /// <summary>
     /// 唤醒渲染线程（例如新增弹幕或尺寸发生变化时）.
     /// </summary>
-    public void Wake()
+    internal void Wake()
     {
         if (!_isDisposed && !_shutdownRequested)
         {
@@ -62,7 +62,7 @@ internal sealed class GameLoopThread : IDisposable
     /// 在无弹幕时让渲染线程进入低功耗等待状态.
     /// </summary>
     /// <param name="timeoutMs">超时毫秒数.</param>
-    public void WaitForWork(int timeoutMs)
+    internal void WaitForWork(int timeoutMs)
     {
         if (!_isDisposed && !_shutdownRequested)
         {

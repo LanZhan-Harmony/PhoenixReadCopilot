@@ -70,8 +70,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(FollowsPage);
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Groups.Count > 0)
         {
@@ -83,14 +82,16 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         UserGroup? group = Groups.FirstOrDefault();
         if (group is not null)
         {
-            SelectGroupCommand.Execute(group);
+            SelectGroup(group);
         }
 
         GroupInitialized?.Invoke(this, EventArgs.Empty);
     }
 
-    [RelayCommand]
-    private void SelectGroup(UserGroup group)
+    /// <summary>
+    /// 选择分组.
+    /// </summary>
+    public void SelectGroup(UserGroup group)
     {
         if (group is null || group == SelectedGroup)
         {
@@ -109,8 +110,7 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
             });
     }
 
-    [RelayCommand]
-    private async Task LoadUsersAsync()
+    public async Task LoadUsersAsync()
     {
         if (IsUserLoading || SelectedGroup is null)
         {

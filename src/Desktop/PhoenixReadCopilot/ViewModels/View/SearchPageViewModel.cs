@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
@@ -68,8 +67,9 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(SearchPage);
 
-    [RelayCommand]
-    private async Task SearchAsync(string keyword)
+    public void Search(string keyword) => _ = SearchAsync(keyword);
+
+    public async Task SearchAsync(string keyword)
     {
         if (string.IsNullOrEmpty(keyword))
         {
@@ -114,8 +114,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// 选择分区.
     /// </summary>
-    [RelayCommand]
-    private void SelectSection(ISearchSectionDetailViewModel? section)
+    public void SelectSection(ISearchSectionDetailViewModel? section)
     {
         if (section is null || section == SelectedSection)
         {
@@ -123,7 +122,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection = section;
-        section.TryFirstLoadCommand.Execute(null);
+        _ = section.TryFirstLoadAsync();
     }
 
     private VideoSearchSectionDetailViewModel CreateVideoSection(

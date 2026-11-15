@@ -54,8 +54,7 @@ public sealed partial class AccountViewModel : ViewModelBase
         _logger = logger;
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (MyProfile is not null)
         {
@@ -107,8 +106,7 @@ public sealed partial class AccountViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task UpdateCommunityInformationAsync()
+    public async Task UpdateCommunityInformationAsync()
     {
         if (MyProfile is null)
         {
@@ -133,7 +131,7 @@ public sealed partial class AccountViewModel : ViewModelBase
     {
         _apiClient.Logout();
         MyProfile = null;
-        _appViewModel.RestartCommand.Execute(null);
+        AppViewModel.Restart();
         await Task.CompletedTask;
     }
 
@@ -157,7 +155,4 @@ public sealed partial class AccountViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowFavorites() => _navService.NavigateToOver(typeof(FavoritesPage));
-
-    [RelayCommand]
-    private static async Task UpdateUnreadAsync() => await Task.CompletedTask;
 }

@@ -6,6 +6,7 @@
                                xmlns:constants="using:PhoenixReadCopilot.Core.Enums"
                                xmlns:converters="using:PhoenixReadCopilot.Converters"
                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                               xmlns:essential="using:WinUI3Package"
                                xmlns:ic="using:FluentIcons.WinUI"
                                xmlns:local="using:PhoenixReadCopilot.Controls.Settings"
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -24,6 +25,7 @@
         <community:SettingsExpander.Items>
             <community:SettingsCard Description="{x:Bind strings:Resources.PlayerTypeDescription}" Header="{x:Bind strings:Resources.PlayerType}">
                 <ComboBox MinWidth="120"
+                          essential:ComboBoxHelper.AcrylicWorkaround="True"
                           ItemsSource="{x:Bind ViewModel.PlayerTypeCollection, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.Settings.PlayerType, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -35,6 +37,7 @@
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.PreferQuality}">
                 <ComboBox MinWidth="120"
+                          essential:ComboBoxHelper.AcrylicWorkaround="True"
                           ItemsSource="{x:Bind ViewModel.PreferQualityCollection, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.Settings.PreferQuality, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -46,6 +49,7 @@
             </community:SettingsCard>
             <community:SettingsCard Header="{x:Bind strings:Resources.DefaultPlayerDisplayMode}">
                 <ComboBox MinWidth="120"
+                          essential:ComboBoxHelper.AcrylicWorkaround="True"
                           ItemsSource="{x:Bind ViewModel.PlayerDisplayModeCollection, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.Settings.DefaultPlayerDisplayMode, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>

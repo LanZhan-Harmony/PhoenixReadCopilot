@@ -6,6 +6,7 @@ using SharpGen.Runtime;
 using Vortice.Direct2D1;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
+using Vortice.Mathematics;
 
 namespace Danmaku.Core;
 
@@ -93,7 +94,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     /// 更新弹幕配置.
     /// </summary>
     /// <param name="config">新的配置（只有非空值会被应用）.</param>
-    public void UpdateConfiguration(DanmakuConfiguration config)
+    internal void UpdateConfiguration(DanmakuConfiguration config)
     {
         if (config is null)
         {
@@ -101,25 +102,22 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         }
 
         // 应用配置，传入回调用于更新 Y 轴槽管理器
-        _configState.ApplyConfiguration(
-            config,
-            _scale,
-            rollingAreaRatio =>
+        _configState.ApplyConfiguration(config, _scale, rollingAreaRatio =>
+        {
+            // 当滚动区域比例变化时，更新所有层的 Y 轴槽管理器
+            if (_renderLayerList is not null)
             {
-                // 当滚动区域比例变化时，更新所有层的 Y 轴槽管理器
-                if (_renderLayerList is not null)
-                {
-                    float topMarginPx = DanmakuTopMargin * _scale;
-                    float bottomMarginPx = DanmakuBottomMargin * _scale;
-                    uint usableHeight = (uint)Math.Max(0, CanvasHeight - (topMarginPx + bottomMarginPx));
+                float topMarginPx = DanmakuTopMargin * _scale;
+                float bottomMarginPx = DanmakuBottomMargin * _scale;
+                uint usableHeight = (uint)
+                    Math.Max(0, CanvasHeight - (topMarginPx + bottomMarginPx));
 
-                    foreach (RenderLayer layer in _renderLayerList)
-                    {
-                        layer.UpdateYSlotManagerLength(usableHeight, rollingAreaRatio);
-                    }
+                foreach (RenderLayer layer in _renderLayerList)
+                {
+                    layer.UpdateYSlotManagerLength(usableHeight, rollingAreaRatio);
                 }
             }
-        );
+        });
 
         Logger.Log($"Configuration updated");
     }
@@ -168,7 +166,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         Logger.Log($"Size changed: Canvas={CanvasWidth}x{CanvasHeight}");
     }
 
-    public void RenderDanmakuItem(uint layerId, DanmakuItem danmakuItem)
+    internal void RenderDanmakuItem(uint layerId, DanmakuItem danmakuItem)
     {
         if (_resourceManager.D2DContext is null || _isStopped || CanvasWidth <= 0)
         {
@@ -203,11 +201,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             }
 
             if (
-                _configState is
-                {
-                    AutoControlDensity: false,
-                    RollingDensity: > 0
-                }
+                _configState is { AutoControlDensity: false, RollingDensity: > 0 }
                 && renderItem.Item.Mode == DanmakuMode.Rolling
                 && _renderLayerList[layerId].RenderList.Count >= _configState.RollingDensity
             )
@@ -381,10 +375,8 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         if (_configState.EnableParallelUpdate)
         {
             // 并行处理每一层
-            Parallel.For(
-                0,
-                _renderLayerList.Length,
-                layerId => UpdateLayerDanmaku((uint)layerId, elapsedMs, totalTime)
+            Parallel.For(0, _renderLayerList.Length, layerId =>
+                UpdateLayerDanmaku((uint)layerId, elapsedMs, totalTime)
             );
         }
         else
@@ -485,11 +477,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                                     renderItem.Width
                                 );
                         }
-                        if (renderItem is
-                            {
-                                NeedToReleaseYSlot: true,
-                                X: > 48f
-                            })
+                        if (renderItem is { NeedToReleaseYSlot: true, X: > 48f })
                         {
                             ySlotManager.ReleaseYSlot(renderItem.Id, (uint)renderItem.StartY);
                             renderItem.NeedToReleaseYSlot = false;
@@ -581,16 +569,17 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                     float x = renderItem.X;
                     float y = renderItem.Item.Mode switch
                     {
-                        DanmakuMode.Rolling or DanmakuMode.ReverseRolling => topMarginPx + renderItem.StartY,
+                        DanmakuMode.Rolling or DanmakuMode.ReverseRolling => topMarginPx
+                            + renderItem.StartY,
                         DanmakuMode.Bottom => Math.Max(
                             (
                                 _configState.NoOverlapSubtitle
                                     ? Math.Max(CanvasHeight - (100f * _scale), CanvasHeight * 0.8f)
                                     : CanvasHeight
                             )
-                            - bottomMarginPx
-                            - renderItem.Height
-                            - renderItem.StartY,
+                                - bottomMarginPx
+                                - renderItem.Height
+                                - renderItem.StartY,
                             topMarginPx
                         ),
                         DanmakuMode.Top => topMarginPx + renderItem.StartY,
@@ -628,7 +617,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         }
     }
 
-    public void SetLayerRenderState(uint layerId, bool render)
+    internal void SetLayerRenderState(uint layerId, bool render)
     {
         if (_renderLayerList is not null && layerId < _renderLayerList.Length)
         {
@@ -636,7 +625,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         }
     }
 
-    public void ClearLayer(uint layerId)
+    internal void ClearLayer(uint layerId)
     {
         if (_renderLayerList is not null && layerId < _renderLayerList.Length)
         {
@@ -644,7 +633,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         }
     }
 
-    public void Clear()
+    internal void Clear()
     {
         if (_renderLayerList is null)
         {
@@ -673,7 +662,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     /// <summary>
     /// 设置并立即呈现切集冻结帧（用于防闪黑过渡）.
     /// </summary>
-    public void SetFrozenFrame(byte[] pixels, int width, int height)
+    internal void SetFrozenFrame(byte[] pixels, int width, int height)
     {
         if (pixels == null || width <= 0 || height <= 0)
         {
@@ -729,7 +718,11 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     /// </summary>
     private void DrawFrozenFrameInternal()
     {
-        if (_frozenBitmap is null || _resourceManager.D2DContext is null || _resourceManager.SwapChain is null)
+        if (
+            _frozenBitmap is null
+            || _resourceManager.D2DContext is null
+            || _resourceManager.SwapChain is null
+        )
         {
             return;
         }
@@ -782,7 +775,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     /// 强制以硬件方式将双缓冲完全清空并立即呈现.
     /// </summary>
     /// <param name="opaqueBlack">是否使用纯黑色填充（切集/无视频时为 true，透出视频时为 false）.</param>
-    public void ForceClearAndPresent(bool opaqueBlack = false)
+    internal void ForceClearAndPresent(bool opaqueBlack = false)
     {
         lock (_resourceManager.RenderLock)
         {
@@ -798,7 +791,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
             try
             {
-                var targetColor = opaqueBlack ? _blackColor : _clearColor;
+                Color4 targetColor = opaqueBlack ? _blackColor : _clearColor;
                 for (int i = 0; i < 2; i++)
                 {
                     _resourceManager.D2DContext.BeginDraw();
@@ -814,7 +807,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         }
     }
 
-    public void Start()
+    internal void Start()
     {
         _isStopped = false;
         _isPaused = false;
@@ -841,7 +834,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         Logger.Log("DanmakuDirectXRender is started (Independent Game Loop Mode)");
     }
 
-    public void Pause()
+    internal void Pause()
     {
         _isPaused = true;
         _gameLoopThread?.IsPaused = true;
@@ -849,7 +842,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         Logger.Log("DanmakuDirectXRender is paused");
     }
 
-    public void Stop()
+    internal void Stop()
     {
         _isStopped = true;
         _isPaused = true;
@@ -1055,10 +1048,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 // 1. 由显卡/DWM 硬件垂直同步驱动，精准匹配显示器物理刷新率（60Hz/120Hz/144Hz/240Hz）
                 // 2. 在后台独立高优先级线程阻塞等待硬件 V-Blank，完全避开 WinUI 3 UI 消息循环抖动
                 Result? presentResult = _resourceManager.SwapChain?.Present(1, PresentFlags.None);
-                if (presentResult is
-                    {
-                        Failure: true
-                    })
+                if (presentResult is { Failure: true })
                 {
                     Logger.Log($"Present failed: {presentResult.Value}");
                 }

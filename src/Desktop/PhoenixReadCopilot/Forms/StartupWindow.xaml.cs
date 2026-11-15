@@ -65,7 +65,7 @@ public sealed partial class StartupWindow : WindowEx
 
         if (!isAuthenticated)
         {
-            _startupViewModel.ExitCommand.Execute(false);
+            _startupViewModel.Exit(false);
         }
     }
 }

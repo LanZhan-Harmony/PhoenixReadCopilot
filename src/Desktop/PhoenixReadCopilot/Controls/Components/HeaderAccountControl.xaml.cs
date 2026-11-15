@@ -23,10 +23,10 @@ public sealed partial class HeaderAccountControl : HeaderAccountControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnControlLoaded() => ViewModel.InitializeCommand.Execute(null);
+    protected override void OnControlLoaded() => _ = ViewModel.InitializeAsync();
 
     private void OnFlyoutOpened(object sender, object e) =>
-        ViewModel.UpdateCommunityInformationCommand.Execute(null);
+        _ = ViewModel.UpdateCommunityInformationAsync();
 
     private void OnAvatarButtonClick(object sender, RoutedEventArgs e)
     {

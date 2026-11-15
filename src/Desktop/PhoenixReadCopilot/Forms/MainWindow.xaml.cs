@@ -156,7 +156,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx, IPlayerHostWindow, IT
         }
 
         ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
-        _appViewModel.ChangeThemeCommand.Execute(localTheme);
+        _appViewModel.ChangeTheme(localTheme);
         _isFirstActivated = false;
     }
 

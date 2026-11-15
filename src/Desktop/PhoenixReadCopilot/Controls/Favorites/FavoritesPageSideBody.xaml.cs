@@ -41,7 +41,7 @@ public sealed partial class FavoritesPageSideBody : FavoritesPageControlBase
     {
         IFavoriteSectionDetailViewModel? item =
             sender.SelectedItem as IFavoriteSectionDetailViewModel;
-        ViewModel.SelectSectionCommand.Execute(item);
+        ViewModel.SelectSection(item);
     }
 
     private void CheckSectionSelection()

@@ -77,7 +77,7 @@ public sealed partial class CalendarTimelineSideControl : CalendarTimelineContro
 
         if (TimelineView.SelectedItem is TimelineItemViewModel item)
         {
-            ViewModel.SelectTimelineCommand.Execute(item);
+            ViewModel.SelectTimeline(item);
         }
     }
 }

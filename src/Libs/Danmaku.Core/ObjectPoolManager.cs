@@ -26,20 +26,14 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="ObjectPoolManager"/> class.
     /// </summary>
-    public ObjectPoolManager()
+    internal ObjectPoolManager()
     {
         // 创建 DanmakuItem 对象池（使用默认策略）
-        DefaultObjectPoolProvider danmakuItemPolicy = new()
-        {
-            MaximumRetained = 2000
-        };
+        DefaultObjectPoolProvider danmakuItemPolicy = new() { MaximumRetained = 2000 };
         _danmakuItemPool = danmakuItemPolicy.Create(new DanmakuItemPoolPolicy());
 
         // 创建 RenderItem 对象池（使用默认策略）
-        DefaultObjectPoolProvider renderItemPolicy = new()
-        {
-            MaximumRetained = 2000
-        };
+        DefaultObjectPoolProvider renderItemPolicy = new() { MaximumRetained = 2000 };
         _renderItemPool = renderItemPolicy.Create(new RenderItemPoolPolicy());
 
         // 纹理缓存（不使用对象池，因为纹理生命周期复杂）
@@ -52,10 +46,10 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     private sealed class TexturePoolEntry
     {
-        public ID2D1Bitmap1? Bitmap;
-        public float Width;
-        public float Height;
-        public int RefCount; // 引用计数
+        internal ID2D1Bitmap1? Bitmap;
+        internal float Width;
+        internal float Height;
+        internal int RefCount; // 引用计数
     }
 
     #region DanmakuItem 对象池
@@ -101,7 +95,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 从对象池获取 DanmakuItem.
     /// </summary>
-    public DanmakuItem RentDanmakuItem()
+    internal DanmakuItem RentDanmakuItem()
     {
         return _danmakuItemPool.Get();
     }
@@ -109,7 +103,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 归还 DanmakuItem 到对象池.
     /// </summary>
-    public void ReturnDanmakuItem(DanmakuItem? item)
+    internal void ReturnDanmakuItem(DanmakuItem? item)
     {
         if (item is not null)
         {
@@ -163,7 +157,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 从对象池获取 DanmakuDirectXRenderItem.
     /// </summary>
-    public DanmakuDirectXRenderItem RentRenderItem(DanmakuItem item)
+    internal DanmakuDirectXRenderItem RentRenderItem(DanmakuItem item)
     {
         DanmakuDirectXRenderItem renderItem = _renderItemPool.Get();
         renderItem.Initialize(item);
@@ -173,7 +167,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 归还 DanmakuDirectXRenderItem 到对象池.
     /// </summary>
-    public void ReturnRenderItem(DanmakuDirectXRenderItem? item)
+    internal void ReturnRenderItem(DanmakuDirectXRenderItem? item)
     {
         if (item is not null)
         {
@@ -185,7 +179,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// 归还 DanmakuDirectXRenderItem 到对象池，并清理对应的纹理缓存.
     /// </summary>
     /// <param name="item">要归还的渲染项.</param>
-    public void ReturnRenderItemAndClearTexture(DanmakuDirectXRenderItem? item)
+    internal void ReturnRenderItemAndClearTexture(DanmakuDirectXRenderItem? item)
     {
         if (item is null)
         {
@@ -214,7 +208,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 存储纹理到缓存（无引用计数模式）.
     /// </summary>
-    public void PreRenderTexture(
+    internal void PreRenderTexture(
         TextureCacheKey key,
         ID2D1Bitmap1 bitmap,
         float width,
@@ -244,7 +238,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 从缓存获取纹理（简化版：无引用计数）.
     /// </summary>
-    public bool TryGetTexture(
+    internal bool TryGetTexture(
         TextureCacheKey key,
         out ID2D1Bitmap1? bitmap,
         out float width,
@@ -272,7 +266,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 从缓存获取 TextLayout（无锁，高性能）.
     /// </summary>
-    public bool TryGetTextLayout(TextureCacheKey key, out IDWriteTextLayout? textLayout)
+    internal bool TryGetTextLayout(TextureCacheKey key, out IDWriteTextLayout? textLayout)
     {
         return _textLayoutCache.TryGetValue(key, out textLayout);
     }
@@ -280,7 +274,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 标记纹理为未使用状态，并立即释放资源（无缓存模式）.
     /// </summary>
-    public void MarkTextureUnused(TextureCacheKey key)
+    internal void MarkTextureUnused(TextureCacheKey key)
     {
         // � 优化：弹幕已去重，不需要缓存共享
         // 弹幕消失后立即释放 Bitmap，避免进入 Gen2
@@ -298,7 +292,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 获取纹理缓存统计信息.
     /// </summary>
-    public (int Total, int InUse) GetTextureStats()
+    internal (int Total, int InUse) GetTextureStats()
     {
         var total = _textureCache.Count;
         var inUse = _textureCache.Values.Count(e => e.RefCount > 0);
@@ -308,7 +302,7 @@ internal sealed class ObjectPoolManager : IDisposable
     /// <summary>
     /// 获取对象池统计信息（注意：ObjectPool 不提供 Count）.
     /// </summary>
-    public (int TextureCache, int TextLayoutCache) GetPoolStats()
+    internal (int TextureCache, int TextLayoutCache) GetPoolStats()
     {
         return (_textureCache.Count, _textLayoutCache.Count);
     }

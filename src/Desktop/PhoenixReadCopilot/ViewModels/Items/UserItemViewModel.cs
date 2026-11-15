@@ -123,7 +123,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     {
         string coverUri = Avatar?.ToString() ?? string.Empty;
         PinItem pinItem = new(Id, Name, coverUri, PinContentType.User);
-        ItemServices.Pinner.AddItemCommand.Execute(pinItem);
+        ItemServices.Pinner.AddItem(pinItem);
     }
 
     [RelayCommand]
@@ -133,14 +133,12 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         {
             await ItemServices.PhoenixRead.SetFollowAsync(Id, !IsFollowed);
             IsFollowed = !IsFollowed;
-            ItemServices.App.ShowTipCommand.Execute(
-                (IsFollowed ? Resources.Followed : Resources.Unfollowed, InfoType.Success)
-            );
+            ItemServices.App.ShowTip(IsFollowed ? Resources.Followed : Resources.Unfollowed, InfoType.Success);
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"修改关注状态失败");
-            ItemServices.App.ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
+            ItemServices.App.ShowTip(Resources.FailedToFollowUser, InfoType.Error);
         }
     }
 }

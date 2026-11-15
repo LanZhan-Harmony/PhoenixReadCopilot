@@ -82,7 +82,7 @@ public sealed partial class GalleryWindow : WinUIEx.WindowEx, ITipWindow
             }
 
             ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
-            _appViewModel.ChangeThemeCommand.Execute(localTheme);
+            _appViewModel.ChangeTheme(localTheme);
         }
 
         _isActivated = true;

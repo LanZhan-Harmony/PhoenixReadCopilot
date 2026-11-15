@@ -39,7 +39,7 @@ public sealed partial class FollowsSideBody : FollowsPageControlBase
         UserGroup? item = sender.SelectedItem as UserGroup;
         if (item is not null)
         {
-            ViewModel.SelectGroupCommand.Execute(item);
+            ViewModel.SelectGroup(item);
         }
     }
 

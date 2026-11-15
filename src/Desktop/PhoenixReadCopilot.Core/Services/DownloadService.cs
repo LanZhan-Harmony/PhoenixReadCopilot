@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -90,58 +89,61 @@ public sealed class DownloadService : IDownloadService
         ArgumentException.ThrowIfNullOrWhiteSpace(dramaId);
         ArgumentException.ThrowIfNullOrWhiteSpace(videoId);
 
-        return await Task.Run(async () =>
-        {
-            try
+        return await Task.Run(
+            async () =>
             {
-                string dramaDir = GetDramaFolderPath(dramaTitle);
-                string? outputPath = await DownloadSingleEpisodeCoreAsync(
-                    dramaId,
-                    videoId,
-                    episodeNumber,
-                    dramaDir,
-                    preferFormat,
-                    cancellationToken
-                );
-
-                if (outputPath is not null)
+                try
                 {
-                    // 单集成功时使用原生系统通知，不弹应用内提示
-                    _notificationService.ShowSystemNotification(
-                        dramaTitle,
-                        $"第 {episodeNumber} 集下载完成！"
+                    string dramaDir = GetDramaFolderPath(dramaTitle);
+                    string? outputPath = await DownloadSingleEpisodeCoreAsync(
+                        dramaId,
+                        videoId,
+                        episodeNumber,
+                        dramaDir,
+                        preferFormat,
+                        cancellationToken
                     );
 
-                    if (_settingsService.Settings.OpenFolderAfterDownload)
+                    if (outputPath is not null)
                     {
-                        TryOpenFolderAndSelect(outputPath);
+                        // 单集成功时使用原生系统通知，不弹应用内提示
+                        _notificationService.ShowSystemNotification(
+                            dramaTitle,
+                            $"第 {episodeNumber} 集下载完成！"
+                        );
+
+                        if (_settingsService.Settings.OpenFolderAfterDownload)
+                        {
+                            TryOpenFolderAndSelect(outputPath);
+                        }
                     }
+                    else
+                    {
+                        await _notificationService.ShowInAppNotificationAsync(
+                            $"第 {episodeNumber} 集下载失败: 未获取到可用播放源",
+                            NotificationType.Error
+                        );
+                    }
+
+                    return outputPath;
                 }
-                else
+                catch (OperationCanceledException)
                 {
+                    _logger.ZLogInformation($"下载第 {episodeNumber} 集任务已取消.");
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    _logger.ZLogError(ex, $"下载第 {episodeNumber} 集失败: {ex.Message}");
                     await _notificationService.ShowInAppNotificationAsync(
-                        $"第 {episodeNumber} 集下载失败: 未获取到可用播放源",
+                        $"第 {episodeNumber} 集下载失败: {ex.Message}",
                         NotificationType.Error
                     );
+                    return null;
                 }
-
-                return outputPath;
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.ZLogInformation($"下载第 {episodeNumber} 集任务已取消.");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                _logger.ZLogError(ex, $"下载第 {episodeNumber} 集失败: {ex.Message}");
-                await _notificationService.ShowInAppNotificationAsync(
-                    $"第 {episodeNumber} 集下载失败: {ex.Message}",
-                    NotificationType.Error
-                );
-                return null;
-            }
-        }, cancellationToken);
+            },
+            cancellationToken
+        );
     }
 
     /// <inheritdoc/>

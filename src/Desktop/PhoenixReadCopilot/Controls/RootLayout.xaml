@@ -6,6 +6,7 @@
                       xmlns:base="using:WinUIKernel.Share.Base"
                       xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:essential="using:WinUI3Package"
                       xmlns:ic="using:FluentIcons.WinUI"
                       xmlns:local="using:PhoenixReadCopilot.Controls"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -108,17 +109,17 @@
             </base:AppTitleBar.Footer>
         </base:AppTitleBar>
 
-        <base:AppTitleBar x:Name="SecondaryTitleBar"
-                          Title="{x:Bind strings:Resources.AppName}"
-                          BackRequested="OnVideoBackRequested"
-                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                          BorderThickness="0,0,0,1"
-                          IsBackButtonVisible="False"
-                          Visibility="Collapsed">
-            <base:AppTitleBar.IconElement>
-                <ImageIcon Source="/Assets/Logo/Icon.ico"/>
-            </base:AppTitleBar.IconElement>
-        </base:AppTitleBar>
+        <TitleBar x:Name="SecondaryTitleBar"
+                  Title="{x:Bind strings:Resources.AppName}"
+                  BackRequested="OnVideoBackRequested"
+                  BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                  BorderThickness="0,0,0,1"
+                  IsBackButtonVisible="False"
+                  Visibility="Collapsed">
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="/Assets/Logo/Icon.ico"/>
+            </TitleBar.IconSource>
+        </TitleBar>
 
         <NavigationView x:Name="NavView"
                         Grid.Row="1"
@@ -157,12 +158,12 @@
         <TeachingTip Title="{x:Bind strings:Resources.HasUpdate}"
                      Grid.Row="1"
                      MinWidth="320"
+                     essential:TeachingTipHelper.AcrylicWorkaround="True"
                      ActionButtonClick="OnUpdateActionButtonClick"
                      ActionButtonContent="{x:Bind strings:Resources.OpenUpdate}"
                      CloseButtonClick="OnUpdateCloseButtonClick"
                      IsLightDismissEnabled="False"
                      IsOpen="{x:Bind _appViewModel.IsUpdateShown, Mode=OneWay}"
-                     PlacementMargin="0,20,0,0"
                      PreferredPlacement="RightTop"
                      Subtitle="{x:Bind strings:Resources.HasUpdateDescription}">
             <TeachingTip.IconSource>

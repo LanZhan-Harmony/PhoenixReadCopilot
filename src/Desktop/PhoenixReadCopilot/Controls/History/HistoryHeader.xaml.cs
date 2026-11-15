@@ -57,7 +57,7 @@ public sealed partial class HistoryHeader : HistoryPageControlBase
             sender.SelectedItem.Tag as IHistorySectionDetailViewModel;
         if (item is not null)
         {
-            ViewModel.SelectSectionCommand.Execute(item);
+            ViewModel.SelectSection(item);
         }
     }
 

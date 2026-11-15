@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
@@ -53,19 +52,19 @@ public sealed partial class VideoPlayerPartSectionDetailViewModel
     /// <inheritdoc/>
     public string Title { get; } = Resources.Parts;
 
-    [RelayCommand]
-    private static Task TryFirstLoadAsync() => Task.CompletedTask;
+    public Task TryFirstLoadAsync() => Task.CompletedTask;
 
-    [RelayCommand]
-    private void SelectPart(Episode part)
+    public void SelectPart(Episode part)
     {
         SelectedPart = part;
         _partSelectedAction?.Invoke(part);
         RaisePartChanged();
     }
 
-    [RelayCommand]
-    private void UpdateSelectedPart(Episode part)
+    /// <summary>
+    /// 更新当前选中的分集.
+    /// </summary>
+    public void UpdateSelectedPart(Episode part)
     {
         if (SelectedPart != part)
         {

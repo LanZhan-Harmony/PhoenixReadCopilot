@@ -82,11 +82,9 @@ public sealed partial class UserSearchSectionDetailViewModel
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Items.Clear);
     }
 
-    [RelayCommand]
-    private Task TryFirstLoadAsync() => Items.Count > 0 ? Task.CompletedTask : LoadItemsAsync();
+    public Task TryFirstLoadAsync() => Items.Count > 0 ? Task.CompletedTask : LoadItemsAsync();
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (!_canRequest || IsEmpty || IsLoading || string.IsNullOrWhiteSpace(_keyword))
         {

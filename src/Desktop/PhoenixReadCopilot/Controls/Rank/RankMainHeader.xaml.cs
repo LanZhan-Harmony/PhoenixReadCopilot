@@ -128,7 +128,7 @@ public sealed partial class RankMainHeader : RankPageControlBase
 
         if (sender.SelectedItem?.Tag is string channelName)
         {
-            ViewModel?.ChangeChannelCommand.Execute(channelName);
+            _ = ViewModel?.ChangeChannelAsync(channelName);
         }
     }
 }

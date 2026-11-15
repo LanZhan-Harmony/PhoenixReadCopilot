@@ -75,7 +75,7 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
     public partial bool IsLoading { get; set; }
 
     [RelayCommand]
-    private void ShowUserSpace()
+    public void ShowUserSpace()
     {
         if (Data is not null)
         {
@@ -97,7 +97,7 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
 
         if (!_apiClient.GetAuthenticationState().IsAuthenticated)
         {
-            _appViewModel.ShowTipCommand.Execute(("请先登录后再关注", InfoType.Warning));
+            _appViewModel.ShowTip("请先登录后再关注", InfoType.Warning);
             return;
         }
 
@@ -109,19 +109,17 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
             if (res.Succeeded)
             {
                 IsFollowed = next;
-                _appViewModel.ShowTipCommand.Execute(
-                    (next ? "关注成功" : "已取消关注", InfoType.Success)
-                );
+                _appViewModel.ShowTip(next ? "关注成功" : "已取消关注", InfoType.Success);
             }
             else
             {
-                _appViewModel.ShowTipCommand.Execute((res.Message ?? "操作失败", InfoType.Error));
+                _appViewModel.ShowTip(res.Message ?? "操作失败", InfoType.Error);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"关注用户操作异常.");
-            _appViewModel.ShowTipCommand.Execute(("关注操作失败", InfoType.Error));
+            _appViewModel.ShowTip("关注操作失败", InfoType.Error);
         }
         finally
         {

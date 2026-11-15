@@ -13,7 +13,7 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
     /// Initializes a new instance of the <see cref="DanmakuDirectXRenderItem"/> class.
     /// </summary>
     /// <param name="item">弹幕数据项.</param>
-    public DanmakuDirectXRenderItem(DanmakuItem item)
+    internal DanmakuDirectXRenderItem(DanmakuItem item)
     {
         Initialize(item);
     }
@@ -56,79 +56,77 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
     /// <summary>
     /// 弹幕数据项（由对象池管理，不再深拷贝）.
     /// </summary>
-    public DanmakuItem Item;
+    internal DanmakuItem Item;
 
     /// <summary>
     /// 弹幕唯一标识符.
     /// </summary>
-    public uint Id;
+    internal uint Id;
 
     /// <summary>
     /// 字体大小（经过计算的实际大小）.
     /// </summary>
-    public float FontSize;
+    internal float FontSize;
 
     /// <summary>
     /// 是否已设置首次渲染时间.
     /// </summary>
-    public volatile bool IsFirstRenderTimeSet;
+    internal volatile bool IsFirstRenderTimeSet;
 
     /// <summary>
     /// 是否已增加缓存引用计数.
     /// </summary>
-    public volatile bool HasIncrementedCacheRef;
+    internal volatile bool HasIncrementedCacheRef;
 
     /// <summary>
     /// 首次渲染时间.
     /// </summary>
-    public TimeSpan FirstRenderTime;
+    internal TimeSpan FirstRenderTime;
 
     /// <summary>
     /// DirectWrite 文本布局（纯文本弹幕使用）.
     /// </summary>
-    public IDWriteTextLayout? TextLayout;
+    internal IDWriteTextLayout? TextLayout;
 
     /// <summary>
     /// 混合图文分段（含表情弹幕使用）.
     /// </summary>
-    public List<DanmakuSegment>? Segments;
+    internal List<DanmakuSegment>? Segments;
 
     /// <summary>
     /// DirectWrite 文本格式.
     /// </summary>
-    public IDWriteTextFormat TextFormat;
+    internal IDWriteTextFormat TextFormat;
 
     /// <summary>
     /// 宽度.
     /// </summary>
-    public volatile float Width;
+    internal volatile float Width;
 
     /// <summary>
     /// 高度.
     /// </summary>
-    public volatile float Height;
+    internal volatile float Height;
 
     /// <summary>
     /// X 坐标.
     /// </summary>
-    public volatile float X;
+    internal volatile float X;
 
     /// <summary>
     /// Y 坐标.
     /// </summary>
-#pragma warning disable CS0649 // 字段从未赋值
-    public volatile float Y;
-#pragma warning restore CS0649 // 字段从未赋值
+    internal volatile float Y;
 
     /// <summary>
     /// 是否需要释放 Y 槽位.
     /// </summary>
-    public volatile bool NeedToReleaseYSlot;
+    internal volatile bool NeedToReleaseYSlot;
 
     /// <summary>
     /// 起始 Y 坐标（分配的槽位 Y）.
     /// </summary>
-    public volatile float StartY;
+    internal volatile float StartY;
 
     /// <inheritdoc/>
     public void Dispose()

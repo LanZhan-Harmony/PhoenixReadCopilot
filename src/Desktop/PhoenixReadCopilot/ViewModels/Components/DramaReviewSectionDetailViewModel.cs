@@ -106,7 +106,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
     {
         if (!_apiClient.GetAuthenticationState().IsAuthenticated)
         {
-            _appViewModel.ShowTipCommand.Execute(("请先登录后再点赞", InfoType.Warning));
+            _appViewModel.ShowTip("请先登录后再点赞", InfoType.Warning);
             return;
         }
 
@@ -121,7 +121,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
             }
             else
             {
-                _appViewModel.ShowTipCommand.Execute((res.Message ?? "点赞失败", InfoType.Error));
+                _appViewModel.ShowTip(res.Message ?? "点赞失败", InfoType.Error);
             }
         }
         catch (Exception ex)
@@ -244,7 +244,6 @@ public sealed partial class DramaReviewSectionDetailViewModel
         OnPropertyChanged(nameof(ReviewPlaceholderText));
     }
 
-    [RelayCommand]
     public async Task TryFirstLoadAsync()
     {
         if (Reviews.Count > 0 || string.IsNullOrEmpty(DramaId))
@@ -262,14 +261,12 @@ public sealed partial class DramaReviewSectionDetailViewModel
         await LoadItemsAsync();
     }
 
-    [RelayCommand]
     public async Task ChangeSortTypeAsync(CommentSortOrder type)
     {
         SortType = type;
         await RefreshAsync();
     }
 
-    [RelayCommand]
     public async Task LoadMoreAsync()
     {
         if (!_hasMore || IsLoading)
@@ -290,7 +287,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
 
         if (!_apiClient.GetAuthenticationState().IsAuthenticated)
         {
-            _appViewModel.ShowTipCommand.Execute(("请先登录后再发表剧评", InfoType.Warning));
+            _appViewModel.ShowTip("请先登录后再发表剧评", InfoType.Warning);
             return;
         }
 
@@ -307,20 +304,18 @@ public sealed partial class DramaReviewSectionDetailViewModel
             );
             if (result.Succeeded)
             {
-                _appViewModel.ShowTipCommand.Execute(("剧评发表成功", InfoType.Success));
+                _appViewModel.ShowTip("剧评发表成功", InfoType.Success);
                 await RefreshAsync();
             }
             else
             {
-                _appViewModel.ShowTipCommand.Execute(
-                    (result.Message ?? "发表失败", InfoType.Error)
-                );
+                _appViewModel.ShowTip(result.Message ?? "发表失败", InfoType.Error);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"发送剧评失败.");
-            _appViewModel.ShowTipCommand.Execute(("发送剧评失败", InfoType.Error));
+            _appViewModel.ShowTip("发送剧评失败", InfoType.Error);
         }
         finally
         {
@@ -352,7 +347,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
             DramaId,
             videoId: null
         );
-        SelectedItem.InitializeCommand.Execute(null);
+        SelectedItem.Initialize();
     }
 
     private async Task LoadItemsAsync()

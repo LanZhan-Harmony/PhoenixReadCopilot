@@ -4,6 +4,7 @@
                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                 xmlns:base="using:WinUIKernel.Share.Base"
                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                xmlns:essential="using:WinUI3Package"
                                 xmlns:ic="using:FluentIcons.WinUI"
                                 xmlns:local="using:PhoenixReadCopilot.Controls.Moment"
                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -31,7 +32,9 @@
                     <Run Text="{x:Bind strings:Resources.UserSpaceTitle}"/>
                 </TextBlock>
                 <Button.Flyout>
-                    <Flyout Placement="Bottom" ShouldConstrainToRootBounds="False">
+                    <Flyout essential:FlyoutHelper.AcrylicWorkaround="True"
+                            Placement="Bottom"
+                            ShouldConstrainToRootBounds="False">
                         <Grid Width="320">
                             <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
                                 <Grid ColumnSpacing="12">

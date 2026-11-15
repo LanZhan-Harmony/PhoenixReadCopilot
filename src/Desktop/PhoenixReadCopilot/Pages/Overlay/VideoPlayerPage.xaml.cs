@@ -77,13 +77,13 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
 
         if (e.Parameter is not null)
         {
-            ViewModel.InitializePageCommand.Execute(e.Parameter);
+            _ = ViewModel.InitializePageAsync(e.Parameter);
         }
     }
 
     /// <inheritdoc/>
     protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
-        ViewModel.CleanCommand.Execute(null);
+        ViewModel.Clean();
 
     private DanmakuControlBase CreateDanmakuPanel() =>
         new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };

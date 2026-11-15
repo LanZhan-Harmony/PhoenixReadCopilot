@@ -77,18 +77,17 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     }
 
     [RelayCommand]
-    private void Initialize()
+    public void Initialize()
     {
         if (Comments.Count > 0)
         {
             return;
         }
 
-        LoadItemsCommand.Execute(null);
+        _ = LoadItemsAsync();
     }
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (IsLoading || _preventLoadMore || IsEmpty || _apiClient is null)
         {
@@ -173,8 +172,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         );
     }
 
-    [RelayCommand]
-    private void Clear()
+    public void Clear()
     {
         Comments.Clear();
         _cursor = string.Empty;
@@ -187,7 +185,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void ShowMore()
     {
         _showMoreAction?.Invoke(this);
-        InitializeCommand.Execute(null);
+        Initialize();
     }
 
     [RelayCommand]
@@ -207,7 +205,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
 
         if (!_apiClient.GetAuthenticationState().IsAuthenticated)
         {
-            _appViewModel?.ShowTipCommand.Execute(("请先登录后再发表回复", InfoType.Warning));
+            _appViewModel?.ShowTip("请先登录后再发表回复", InfoType.Warning);
             return;
         }
 
@@ -247,19 +245,19 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
 
             if (res.Succeeded)
             {
-                _appViewModel?.ShowTipCommand.Execute(("回复已发送", InfoType.Success));
+                _appViewModel?.ShowTip("回复已发送", InfoType.Success);
                 ResetReplyTarget();
                 Refresh();
             }
             else
             {
-                _appViewModel?.ShowTipCommand.Execute((res.Message ?? "发送失败", InfoType.Error));
+                _appViewModel?.ShowTip(res.Message ?? "发送失败", InfoType.Error);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"发送红果评论回复失败");
-            _appViewModel?.ShowTipCommand.Execute(("发送回复失败", InfoType.Error));
+            _appViewModel?.ShowTip("发送回复失败", InfoType.Error);
         }
         finally
         {

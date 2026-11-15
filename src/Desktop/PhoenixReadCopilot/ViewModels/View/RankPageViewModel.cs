@@ -109,8 +109,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(RankPage);
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Sections.Count > 0)
         {
@@ -182,12 +181,11 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                 .FirstOrDefault(p => p.Type == sectionType);
         }
 
-        SelectSectionCommand.Execute(targetSection ?? Sections.First());
+        _ = SelectSectionAsync(targetSection ?? Sections.First());
         SectionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
-    [RelayCommand]
-    private async Task SelectSectionAsync(IRankSectionItemViewModel vm)
+    public async Task SelectSectionAsync(IRankSectionItemViewModel vm)
     {
         if (vm is null || vm == SelectedSection)
         {
@@ -260,8 +258,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task ChangeChannelAsync(string channelName)
+    public async Task ChangeChannelAsync(string channelName)
     {
         if (
             !Enum.TryParse<ShortDramaLeaderboardChannel>(
@@ -313,11 +310,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
         }
     }
 
-    [RelayCommand]
-    private Task ChangeBoardAsync(string boardName) => ChangeChannelAsync(boardName);
-
-    [RelayCommand]
-    private async Task LoadVideosAsync()
+    public async Task LoadVideosAsync()
     {
         if (IsVideoLoading)
         {

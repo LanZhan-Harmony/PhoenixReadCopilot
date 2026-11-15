@@ -1,4 +1,3 @@
-using Windows.System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Windows.Storage.Pickers;
@@ -9,6 +8,7 @@ using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
+using Windows.System;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -89,7 +89,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
             {
                 case nameof(AppSettings.AppTheme):
                     OnPropertyChanged(nameof(AppThemeText));
-                    _appViewModel.ChangeThemeCommand.Execute(Settings.AppTheme.ToElementTheme());
+                    _appViewModel.ChangeTheme(Settings.AppTheme.ToElementTheme());
                     break;
                 case nameof(AppSettings.IsTopNavBarShown):
                     OnPropertyChanged(nameof(IsTopNavShown));
@@ -100,7 +100,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Initialize()
+    public void Initialize()
     {
         if (_isInitialized)
         {

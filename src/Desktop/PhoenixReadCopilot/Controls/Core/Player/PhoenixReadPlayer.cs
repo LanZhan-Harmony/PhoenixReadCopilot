@@ -86,7 +86,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             || DateTimeOffset.Now - _lastPressedTime < TimeSpan.FromSeconds(1)
         )
         {
-            ViewModel.ForwardSkipCommand.Execute(null);
+            ViewModel.ForwardSkip();
         }
 
         _lastRightArrowPressedTime = null;
@@ -183,12 +183,12 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
         if (isQuick)
         {
             _lastSpeed = ViewModel.Speed;
-            ViewModel.SetSpeedCommand.Execute(3d);
+            ViewModel.SetSpeed(3d);
         }
         else
         {
             _lastSpeed = _lastSpeed == 0 ? 1.0 : _lastSpeed;
-            ViewModel.SetSpeedCommand.Execute(_lastSpeed);
+            ViewModel.SetSpeed(_lastSpeed);
             _lastSpeed = 0;
             _lastPressedTime = null;
         }
@@ -283,7 +283,7 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
             && _notificationContainer.Children.FirstOrDefault() is PlayerNotificationControl control
         )
         {
-            control.ViewModel.CancelCommand.Execute(null);
+            control.ViewModel.Cancel();
             _notificationContainer.Children.Clear();
         }
     }
@@ -311,15 +311,15 @@ public sealed partial class PhoenixReadPlayer : PlayerControlBase
         bool isManual = _settings.MTCBehavior == MTCBehavior.Manual;
         if (isManual)
         {
-            ViewModel.TogglePlayPauseCommand.Execute(null);
+            ViewModel.TogglePlayPause();
         }
         else
         {
-            ViewModel.ToggleFullScreenCommand.Execute(null);
+            ViewModel.ToggleFullScreen();
 
             if (ViewModel.IsPaused)
             {
-                ViewModel.TogglePlayPauseCommand.Execute(null);
+                ViewModel.TogglePlayPause();
             }
         }
     }

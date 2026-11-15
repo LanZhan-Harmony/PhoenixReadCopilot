@@ -5,6 +5,7 @@
                             xmlns:appearance="using:PhoenixReadCopilot.Core.Models.Appearance"
                             xmlns:base="using:WinUIKernel.Share.Base"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:essential="using:WinUI3Package"
                             xmlns:ic="using:FluentIcons.WinUI"
                             xmlns:local="using:PhoenixReadCopilot.Controls.Components"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -61,7 +62,9 @@
                 Visibility="Collapsed">
             <ic:SymbolIcon FontSize="12" Symbol="MoreHorizontal"/>
             <Button.Flyout>
-                <Flyout Opened="OnOverflowFlyoutOpened" ShouldConstrainToRootBounds="False">
+                <Flyout essential:FlyoutHelper.AcrylicWorkaround="True"
+                        Opened="OnOverflowFlyoutOpened"
+                        ShouldConstrainToRootBounds="False">
                     <RichTextBlock x:Name="FlyoutRichBlock"
                                    MaxWidth="360"
                                    IsTextSelectionEnabled="True"
