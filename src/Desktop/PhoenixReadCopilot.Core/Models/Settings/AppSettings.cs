@@ -219,13 +219,13 @@ public sealed partial class AppSettings : ObservableObject
 
     // ================= 页面导航与栏宽 =================
     [ObservableProperty]
-    public partial double PopularPageNavColumnWidth { get; set; } = 0;
+    public partial double RankPageNavColumnWidth { get; set; } = 0;
 
     [ObservableProperty]
-    public partial bool IsPopularPageNavColumnManualHide { get; set; } = false;
+    public partial bool IsRankPageNavColumnManualHide { get; set; } = false;
 
     [ObservableProperty]
-    public partial string PopularPageLastSelectedSectionId { get; set; } = string.Empty;
+    public partial string RankPageLastSelectedSectionId { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial double CalendarPageNavColumnWidth { get; set; } = 0;
@@ -256,7 +256,7 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool IsHomePageVisible { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsPopularPageVisible { get; set; } = true;
+    public partial bool IsRankPageVisible { get; set; } = true;
 
     [ObservableProperty]
     public partial bool IsMomentPageVisible { get; set; } = true;
@@ -277,9 +277,9 @@ public sealed partial class AppSettings : ObservableObject
     public double GetNavColumnWidth(string pageKey, double defaultValue) =>
         pageKey switch
         {
-            "PopularPage" => PopularPageNavColumnWidth <= 0
+            "RankPage" => RankPageNavColumnWidth <= 0
                 ? defaultValue
-                : PopularPageNavColumnWidth,
+                : RankPageNavColumnWidth,
             "CalendarPage" => CalendarPageNavColumnWidth <= 0
                 ? defaultValue
                 : CalendarPageNavColumnWidth,
@@ -296,8 +296,8 @@ public sealed partial class AppSettings : ObservableObject
     {
         switch (pageKey)
         {
-            case "PopularPage":
-                PopularPageNavColumnWidth = value;
+            case "RankPage":
+                RankPageNavColumnWidth = value;
                 break;
             case "CalendarPage":
                 CalendarPageNavColumnWidth = value;
@@ -314,7 +314,7 @@ public sealed partial class AppSettings : ObservableObject
     public bool GetNavColumnManualHide(string pageKey, bool defaultValue) =>
         pageKey switch
         {
-            "PopularPage" => IsPopularPageNavColumnManualHide,
+            "RankPage" => IsRankPageNavColumnManualHide,
             "CalendarPage" => IsCalendarPageNavColumnManualHide,
             "FilterPage" => IsFilterPageNavColumnManualHide,
             _ => defaultValue,
@@ -327,8 +327,8 @@ public sealed partial class AppSettings : ObservableObject
     {
         switch (pageKey)
         {
-            case "PopularPage":
-                IsPopularPageNavColumnManualHide = value;
+            case "RankPage":
+                IsRankPageNavColumnManualHide = value;
                 break;
             case "CalendarPage":
                 IsCalendarPageNavColumnManualHide = value;
@@ -348,7 +348,7 @@ public sealed partial class AppSettings : ObservableObject
         return name switch
         {
             "HomePage" => IsHomePageVisible,
-            "PopularPage" => IsPopularPageVisible,
+            "RankPage" => IsRankPageVisible,
             "MomentPage" => IsMomentPageVisible,
             "CalendarPage" => IsCalendarPageVisible,
             "FilterPage" => IsFilterPageVisible,
@@ -367,8 +367,8 @@ public sealed partial class AppSettings : ObservableObject
             case "HomePage":
                 IsHomePageVisible = isVisible;
                 break;
-            case "PopularPage":
-                IsPopularPageVisible = isVisible;
+            case "RankPage":
+                IsRankPageVisible = isVisible;
                 break;
             case "MomentPage":
                 IsMomentPageVisible = isVisible;

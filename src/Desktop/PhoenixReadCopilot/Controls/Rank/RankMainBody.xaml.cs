@@ -3,17 +3,17 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WinUIKernel.Share;
 
-namespace PhoenixReadCopilot.Controls.Popular;
+namespace PhoenixReadCopilot.Controls.Rank;
 
 /// <summary>
-/// 流行与榜单页面主体.
+/// 榜单页面主体.
 /// </summary>
-public sealed partial class PopularMainBody : PopularPageControlBase
+public sealed partial class RankMainBody : RankPageControlBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PopularMainBody"/> class.
+    /// Initializes a new instance of the <see cref="RankMainBody"/> class.
     /// </summary>
-    public PopularMainBody()
+    public RankMainBody()
     {
         InitializeComponent();
     }

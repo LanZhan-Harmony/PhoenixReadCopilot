@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
@@ -27,6 +28,19 @@ public static class ServiceHelper
                 }
             );
         });
+
+        services
+            .AddHttpClient("PhoenixReadClient")
+            .UseSocketsHttpHandler(
+                (handler, _) =>
+                {
+                    handler.AutomaticDecompression = DecompressionMethods.All;
+                    handler.PooledConnectionLifetime = TimeSpan.FromMinutes(15);
+                    handler.PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2);
+                    handler.EnableMultipleHttp2Connections = true;
+                }
+            )
+            .SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IDownloadService, DownloadService>();

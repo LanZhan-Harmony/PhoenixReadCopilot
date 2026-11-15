@@ -135,7 +135,7 @@ public sealed partial class VideoPlayerPageViewModel
         // 4. 专属关联好剧推荐（调用红果推荐接口）
         try
         {
-            DramaRecommendations rec = await _apiClient.GetSeriesRecommendationsAsync(_dramaId);
+            DramaRecommendations rec = await _apiClient.GetDramaRecommendationsAsync(_dramaId);
             if (rec?.Items is { Count: > 0 } recItems)
             {
                 sections.Add(new VideoPlayerRecommendSectionDetailViewModel(recItems));

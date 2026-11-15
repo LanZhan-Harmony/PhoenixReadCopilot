@@ -4,10 +4,13 @@
     <Features>$(Features);runtime-async=on</Features>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="PhoenixReadApi" />
     <PackageReference Include="ZLogger" />
   </ItemGroup>

@@ -5,17 +5,17 @@ using WinUIKernel.Share.ViewModels;
 namespace PhoenixReadCopilot.ViewModels.Items;
 
 /// <summary>
-/// 流行与榜单区块项视图模型.
+/// 榜单区块项视图模型.
 /// </summary>
-public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSectionItemViewModel
+public sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemViewModel
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PopularSectionItemViewModel"/> class.
+    /// Initializes a new instance of the <see cref="RankSectionItemViewModel"/> class.
     /// </summary>
-    public PopularSectionItemViewModel(
+    public RankSectionItemViewModel(
         FluentIcons.Common.Symbol symbol,
         string title,
-        PopularSectionType type,
+        RankSectionType type,
         ShortDramaLeaderboardType? leaderboardType = null,
         bool isActorLeaderboard = false
     )
@@ -40,7 +40,7 @@ public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSection
     /// <summary>
     /// 类型.
     /// </summary>
-    public PopularSectionType Type { get; init; }
+    public RankSectionType Type { get; init; }
 
     /// <summary>
     /// 红果短剧榜单类型 (如果是短剧榜单).
@@ -54,7 +54,7 @@ public sealed class PopularSectionItemViewModel : ViewModelBase, IPopularSection
 
     /// <inheritdoc/>
     public override bool Equals(object? obj) =>
-        obj is PopularSectionItemViewModel model && Type == model.Type;
+        obj is RankSectionItemViewModel model && Type == model.Type;
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Type);

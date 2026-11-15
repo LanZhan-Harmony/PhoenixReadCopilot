@@ -3,9 +3,9 @@ using System.ComponentModel;
 namespace PhoenixReadCopilot.ViewModels.Items;
 
 /// <summary>
-/// 流行视频区块项视图模型.
+/// 榜单区块项视图模型.
 /// </summary>
-public interface IPopularSectionItemViewModel : INotifyPropertyChanged
+public interface IRankSectionItemViewModel : INotifyPropertyChanged
 {
     /// <summary>
     /// 区块标题.

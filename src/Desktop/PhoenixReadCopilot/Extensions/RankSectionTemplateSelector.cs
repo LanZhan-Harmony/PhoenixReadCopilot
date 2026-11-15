@@ -4,13 +4,13 @@ using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Extensions;
 
-internal sealed partial class PopularSectionTemplateSelector : DataTemplateSelector
+internal sealed partial class RankSectionTemplateSelector : DataTemplateSelector
 {
     public DataTemplate SectionTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
-        if (item is PopularSectionItemViewModel)
+        if (item is RankSectionItemViewModel)
         {
             return SectionTemplate;
         }

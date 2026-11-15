@@ -6,9 +6,9 @@ using ZLogger;
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 流行与榜单页面视图模型 (数据请求分部).
+/// 榜单页面视图模型 (数据请求分部).
 /// </summary>
-public sealed partial class PopularPageViewModel
+public sealed partial class RankPageViewModel
 {
     private async Task LoadDramaLeaderboardAsync(
         ShortDramaLeaderboardType type,
