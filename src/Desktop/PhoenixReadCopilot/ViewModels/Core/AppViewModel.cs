@@ -1,6 +1,4 @@
-using Windows.System;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.BadgeNotifications;
@@ -10,6 +8,7 @@ using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Items;
+using Windows.System;
 using WinUIEx;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -50,8 +49,10 @@ public sealed partial class AppViewModel : ViewModelBase
         _settings = settingsService.Settings;
     }
 
-    [RelayCommand]
-    private static void Restart()
+    /// <summary>
+    /// 重启应用程序.
+    /// </summary>
+    public static void Restart()
     {
         Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().UnregisterKey();
         Microsoft.Windows.AppLifecycle.AppInstance.Restart(null);
@@ -60,7 +61,6 @@ public sealed partial class AppViewModel : ViewModelBase
     /// <summary>
     /// 进入主窗口并关闭启动窗口.
     /// </summary>
-    [RelayCommand]
     public void EnterMainWindow()
     {
         _settings.ShouldSkipStartup = true;
@@ -68,7 +68,7 @@ public sealed partial class AppViewModel : ViewModelBase
         if (Windows.FirstOrDefault(p => p is MainWindow) is { } mainWindow)
         {
             mainWindow.Activate();
-            ItemServices.Account.InitializeCommand.Execute(null);
+            _ = ItemServices.Account.InitializeAsync();
         }
         else
         {
@@ -83,8 +83,10 @@ public sealed partial class AppViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void Launch()
+    /// <summary>
+    /// 启动应用主逻辑.
+    /// </summary>
+    public void Launch()
     {
         // 清除所有之前的badges（仅在 MSIX 打包环境下支持）.
         if (RuntimeHelper.IsMSIX)
@@ -99,8 +101,10 @@ public sealed partial class AppViewModel : ViewModelBase
         EnterMainWindow();
     }
 
-    [RelayCommand]
-    private void ChangeTheme(ElementTheme theme)
+    /// <summary>
+    /// 更改所有窗口主题.
+    /// </summary>
+    public void ChangeTheme(ElementTheme theme)
     {
         foreach (Window window in Windows)
         {
@@ -108,8 +112,7 @@ public sealed partial class AppViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void MakeCurrentWindowEnterFullScreen()
+    public void MakeCurrentWindowEnterFullScreen()
     {
         Window window = ActivatedWindow;
         window.SetWindowPresenter(AppWindowPresenterKind.FullScreen);
@@ -119,8 +122,7 @@ public sealed partial class AppViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void MakeCurrentWindowExitFullScreen()
+    public void MakeCurrentWindowExitFullScreen()
     {
         Window window = ActivatedWindow;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
@@ -130,8 +132,7 @@ public sealed partial class AppViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void MakeCurrentWindowEnterOverlap()
+    public void MakeCurrentWindowEnterOverlap()
     {
         Window window = ActivatedWindow;
         if (window.AppWindow.Presenter is not OverlappedPresenter)
@@ -145,8 +146,7 @@ public sealed partial class AppViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void MakeCurrentWindowExitOverlap()
+    public void MakeCurrentWindowExitOverlap()
     {
         Window window = ActivatedWindow;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
@@ -156,8 +156,7 @@ public sealed partial class AppViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void MakeCurrentWindowEnterCompactOverlay()
+    public void MakeCurrentWindowEnterCompactOverlay()
     {
         Window window = ActivatedWindow;
         (window as WinUIEx.WindowEx).MinHeight = 320;
@@ -170,8 +169,7 @@ public sealed partial class AppViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void MakeCurrentWindowExitCompactOverlay()
+    public void MakeCurrentWindowExitCompactOverlay()
     {
         Window window = ActivatedWindow;
         (window as WinUIEx.WindowEx).MinHeight = 480;
@@ -188,9 +186,7 @@ public sealed partial class AppViewModel : ViewModelBase
     /// <summary>
     /// 显示提示.
     /// </summary>
-    /// <returns><see cref="Task"/>.</returns>
-    [RelayCommand]
-    private async Task ShowTipAsync((string, InfoType) data)
+    public async Task ShowTipAsync(string text, InfoType type = InfoType.Information)
     {
         ITipWindow? tipWindow =
             ActivatedWindow as ITipWindow ?? Windows.OfType<ITipWindow>().FirstOrDefault();
@@ -206,7 +202,7 @@ public sealed partial class AppViewModel : ViewModelBase
             {
                 try
                 {
-                    await tipWindow.ShowTipAsync(data.Item1, data.Item2);
+                    await tipWindow.ShowTipAsync(text, type);
                     tcs.TrySetResult();
                 }
                 catch (Exception ex)
@@ -218,26 +214,24 @@ public sealed partial class AppViewModel : ViewModelBase
             return;
         }
 
-        await tipWindow.ShowTipAsync(data.Item1, data.Item2);
+        await tipWindow.ShowTipAsync(text, type);
     }
 
-    [RelayCommand]
-    private void CheckUpate()
-    {
-        string localVersion = _settings.AppVersion;
-        string currentVersion = RuntimeHelper.AppVersion;
-        if (localVersion != currentVersion)
-        {
-            _settings.AppVersion = currentVersion;
-            IsUpdateShown = true;
-        }
-    }
+    /// <summary>
+    /// 显示提示 (同步触发).
+    /// </summary>
+    public void ShowTip(string text, InfoType type = InfoType.Information) =>
+        _ = ShowTipAsync(text, type);
 
-    [RelayCommand]
-    private void HideUpdate() => IsUpdateShown = false;
+    /// <summary>
+    /// 兼容 INotificationViewModel 接口的命令封装.
+    /// </summary>
+    public async Task ShowTipAsync((string, InfoType) data) =>
+        await ShowTipAsync(data.Item1, data.Item2);
 
-    [RelayCommand]
-    private async Task ShowUpdateAsync()
+    public void HideUpdate() => IsUpdateShown = false;
+
+    public async Task ShowUpdateAsync()
     {
         string packVersion = RuntimeHelper.AppVersion;
         string url =

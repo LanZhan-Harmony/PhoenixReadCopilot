@@ -143,7 +143,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
 
         SelectionTip.IsOpen = false;
         SelectionBox.Text = string.Empty;
-        ViewModel.BatchDownloadSelectedPartsCommand.Execute(text);
+        ViewModel.BatchDownloadSelectedParts(text);
     }
 
     private void OnBtnClick(object sender, RoutedEventArgs e)

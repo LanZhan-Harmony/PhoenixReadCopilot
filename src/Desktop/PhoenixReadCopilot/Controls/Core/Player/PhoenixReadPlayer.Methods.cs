@@ -248,7 +248,7 @@ public sealed partial class PhoenixReadPlayer
 
         if (_manipulationBeforeIsPlay && ViewModel.IsPaused && !ViewModel.IsBuffering)
         {
-            ViewModel.TogglePlayPauseCommand.Execute(null);
+            ViewModel.TogglePlayPause();
         }
 
         _manipulationBeforeIsPlay = false;
@@ -324,7 +324,7 @@ public sealed partial class PhoenixReadPlayer
                     progress = 0;
                 }
 
-                ViewModel.SeekCommand.Execute(progress);
+                ViewModel.Seek(progress);
             }
         }
     }
@@ -438,7 +438,7 @@ public sealed partial class PhoenixReadPlayer
             }
             else if (!_isHolding)
             {
-                ViewModel?.TogglePlayPauseCommand.Execute(null);
+                ViewModel?.TogglePlayPause();
             }
         }
     }

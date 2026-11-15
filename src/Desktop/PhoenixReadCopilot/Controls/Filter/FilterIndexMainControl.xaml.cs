@@ -78,7 +78,7 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
                 <= 240
             )
             {
-                ViewModel.RequestIndexCommand.Execute(null);
+                _ = ViewModel.RequestIndexAsync();
             }
         });
     }
@@ -97,7 +97,7 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
         {
             if (IndexScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.RequestIndexCommand.Execute(null);
+                _ = ViewModel.RequestIndexAsync();
             }
         });
     }

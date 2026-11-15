@@ -80,7 +80,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Initialize()
+    public void Initialize()
     {
         if (IsSearchMode)
         {
@@ -105,13 +105,15 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         SectionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
-    [RelayCommand]
-    private void Search(string text)
+    /// <summary>
+    /// 搜索历史记录.
+    /// </summary>
+    public void Search(string text)
     {
         ExitSearch();
         SearchKeyword = text;
         IsSearchMode = true;
-        LoadMoreSearchResultCommand.Execute(null);
+        _ = LoadMoreSearchResultAsync();
     }
 
     [RelayCommand]
@@ -120,13 +122,13 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         if (IsSearchMode)
         {
             string keyword = SearchKeyword;
-            SearchCommand.Execute(keyword);
+            Search(keyword);
             return;
         }
 
         if (SelectedSection is not null)
         {
-            await SelectedSection.RefreshCommand.ExecuteAsync(this);
+            await SelectedSection.RefreshAsync();
         }
     }
 
@@ -159,11 +161,10 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             }
         }
 
-        await SelectedSection.RefreshCommand.ExecuteAsync(this);
+        await SelectedSection.RefreshAsync();
     }
 
-    [RelayCommand]
-    private void SelectSection(IHistorySectionDetailViewModel section)
+    public void SelectSection(IHistorySectionDetailViewModel section)
     {
         if (section is null || section == SelectedSection)
         {
@@ -171,11 +172,10 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         }
 
         SelectedSection = section;
-        section.TryFirstLoadCommand.Execute(this);
+        _ = section.TryFirstLoadAsync();
     }
 
-    [RelayCommand]
-    private async Task LoadMoreSearchResultAsync()
+    public async Task LoadMoreSearchResultAsync()
     {
         if (
             _preventLoadMoreSearch
@@ -225,9 +225,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"搜索历史记录失败");
-            _appViewModel.ShowTipCommand.Execute(
-                (Resources.FailedToSearchUserVideos, InfoType.Error)
-            );
+            _appViewModel.ShowTip(Resources.FailedToSearchUserVideos, InfoType.Error);
         }
         finally
         {

@@ -4,6 +4,7 @@
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:animations="using:CommunityToolkit.WinUI.Animations"
                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:essential="using:WinUI3Package"
                          xmlns:ic="using:FluentIcons.WinUI"
                          xmlns:local="using:PhoenixReadCopilot.Controls.Core"
                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,6 +15,7 @@
           BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
           BorderThickness="1"
           CornerRadius="{StaticResource OverlayCornerRadius}">
+
         <Grid Padding="12,8" RowSpacing="4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -33,11 +35,12 @@
                         Grid.Column="1"
                         MinHeight="0"
                         HorizontalAlignment="Stretch"
+                        essential:SliderHelper.AcrylicWorkaround="True"
                         IsThumbToolTipEnabled="False"
                         Maximum="{x:Bind ViewModel.Duration, Mode=OneWay}"
-                        ValueChanged="OnProgressSliderValueChanged"
-                        PointerReleased="OnProgressSliderPointerReleased"
                         PointerCaptureLost="OnProgressSliderPointerCaptureLost"
+                        PointerReleased="OnProgressSliderPointerReleased"
+                        ValueChanged="OnProgressSliderValueChanged"
                         Value="{x:Bind ViewModel.Position, Mode=OneWay}"/>
                 <TextBlock x:Name="DurationText"
                            Grid.Column="2"
@@ -97,7 +100,8 @@
                             ToolTipService.ToolTip="{x:Bind strings:Resources.CurrentVolume}">
                         <ic:SymbolIcon FontSize="14" Symbol="Speaker2"/>
                         <Button.Flyout>
-                            <Flyout FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}"
+                            <Flyout essential:FlyoutHelper.AcrylicWorkaround="True"
+                                    FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}"
                                     Placement="Top"
                                     ShouldConstrainToRootBounds="False">
                                 <StackPanel>
@@ -107,6 +111,7 @@
                                                Text="{x:Bind strings:Resources.CurrentVolume}"/>
                                     <Slider x:Name="VolumeSlider"
                                             Width="200"
+                                            essential:SliderHelper.AcrylicWorkaround="True"
                                             IsThumbToolTipEnabled="True"
                                             Maximum="100"
                                             Minimum="0"
@@ -126,7 +131,8 @@
                             <Run Text="{x:Bind ViewModel.Speed, Mode=OneWay}"/><Run Text="x"/>
                         </TextBlock>
                         <Button.Flyout>
-                            <Flyout FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}"
+                            <Flyout essential:FlyoutHelper.AcrylicWorkaround="True"
+                                    FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}"
                                     Placement="Top"
                                     ShouldConstrainToRootBounds="False">
                                 <StackPanel>
@@ -136,6 +142,7 @@
                                                Text="{x:Bind strings:Resources.PlaybackRate}"/>
                                     <Slider x:Name="SpeedSlider"
                                             Width="360"
+                                            essential:SliderHelper.AcrylicWorkaround="True"
                                             IsThumbToolTipEnabled="True"
                                             Maximum="{x:Bind ViewModel.MaxSpeed, Mode=OneWay}"
                                             Minimum="{x:Bind ViewModel.SpeedStep, Mode=OneWay}"

@@ -141,8 +141,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         IsLoggedIn = _apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
     }
 
-    [RelayCommand]
-    private async Task TryFirstLoadAsync()
+    public async Task TryFirstLoadAsync()
     {
         if (Comments.Count > 0)
         {
@@ -153,7 +152,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         string targetDramaId = _dramaId;
         string targetVideoId = _videoId;
@@ -170,8 +169,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         await LoadItemsAsync();
     }
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (
             string.IsNullOrEmpty(Id)
@@ -248,8 +246,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         }
     }
 
-    [RelayCommand]
-    private async Task ChangeSortTypeAsync(CommentSortOrder type)
+    public async Task ChangeSortTypeAsync(CommentSortOrder type)
     {
         SortType = type;
         await RefreshAsync();
@@ -275,7 +272,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         if (!_apiClient.GetAuthenticationState().IsAuthenticated)
         {
-            _appViewModel?.ShowTipCommand.Execute(("请先登录后再发表评论", InfoType.Warning));
+            _appViewModel?.ShowTip("请先登录后再发表评论", InfoType.Warning);
             return;
         }
 
@@ -300,21 +297,19 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
             if (result.Succeeded)
             {
-                _appViewModel?.ShowTipCommand.Execute(("评论已发表", InfoType.Success));
+                _appViewModel?.ShowTip("评论已发表", InfoType.Success);
                 ResetReplyTarget();
                 await RefreshAsync();
             }
             else
             {
-                _appViewModel?.ShowTipCommand.Execute(
-                    (result.Message ?? "发表失败", InfoType.Error)
-                );
+                _appViewModel?.ShowTip(result.Message ?? "发表失败", InfoType.Error);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"发送红果评论失败");
-            _appViewModel?.ShowTipCommand.Execute(("发送评论失败", InfoType.Error));
+            _appViewModel?.ShowTip("发送评论失败", InfoType.Error);
         }
         finally
         {
@@ -339,12 +334,12 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
     private void Clear()
     {
-        TopItem?.ClearCommand.Execute(null);
+        TopItem?.Clear();
         if (Comments is not null)
         {
             foreach (CommentDetailViewModel item in Comments)
             {
-                item.ClearCommand.Execute(null);
+                item.Clear();
             }
         }
 

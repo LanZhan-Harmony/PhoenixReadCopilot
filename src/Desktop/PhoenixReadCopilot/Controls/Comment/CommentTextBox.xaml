@@ -5,6 +5,7 @@
                             xmlns:base="using:WinUIKernel.Share.Base"
                             xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:essential="using:WinUI3Package"
                             xmlns:ic="using:FluentIcons.WinUI"
                             xmlns:local="using:PhoenixReadCopilot.Controls.Comment"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -80,7 +81,9 @@
                 ToolTipService.ToolTip="{x:Bind strings:Resources.Emote}">
             <ic:SymbolIcon FontSize="14" Symbol="Emoji"/>
             <Button.Flyout>
-                <Flyout Closed="OnFlyoutClosed" ShouldConstrainToRootBounds="False">
+                <Flyout essential:FlyoutHelper.AcrylicWorkaround="True"
+                        Closed="OnFlyoutClosed"
+                        ShouldConstrainToRootBounds="False">
                     <Flyout.FlyoutPresenterStyle>
                         <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
                             <Setter Property="Padding" Value="4,8"/>

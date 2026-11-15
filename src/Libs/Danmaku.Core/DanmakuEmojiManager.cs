@@ -25,13 +25,13 @@ internal enum DanmakuSegmentType
 /// </summary>
 internal sealed class DanmakuSegment : IDisposable
 {
-    public DanmakuSegmentType Type { get; }
-    public string Content { get; }
-    public IDWriteTextLayout? TextLayout { get; set; }
-    public float Width { get; set; }
-    public float Height { get; set; }
+    internal DanmakuSegmentType Type { get; }
+    internal string Content { get; }
+    internal IDWriteTextLayout? TextLayout { get; set; }
+    internal float Width { get; set; }
+    internal float Height { get; set; }
 
-    public DanmakuSegment(
+    internal DanmakuSegment(
         DanmakuSegmentType type,
         string content,
         float width,
@@ -138,17 +138,17 @@ internal sealed partial class DanmakuEmojiManager : IDisposable
     private readonly DirectXResourceManager _resourceManager;
     private bool _isDisposed;
 
-    public DanmakuEmojiManager(DirectXResourceManager resourceManager)
+    internal DanmakuEmojiManager(DirectXResourceManager resourceManager)
     {
-        _resourceManager =
-            resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
+        _resourceManager = resourceManager
+            ?? throw new ArgumentNullException(nameof(resourceManager));
     }
 
     /// <summary>
     /// 检查文本是否可能包含表情代码.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool HasEmojiPattern(string? text)
+    internal static bool HasEmojiPattern(string? text)
     {
         return !string.IsNullOrEmpty(text) && text.Contains('[') && text.Contains(']');
     }
@@ -157,7 +157,7 @@ internal sealed partial class DanmakuEmojiManager : IDisposable
     /// 检查是否为合法的红果表情名.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsValidEmoji(string name)
+    internal static bool IsValidEmoji(string name)
     {
         return ValidEmojiNames.Contains(name);
     }
@@ -165,7 +165,7 @@ internal sealed partial class DanmakuEmojiManager : IDisposable
     /// <summary>
     /// 解析文本为混合图文分段. 如果不包含任何有效表情，返回 null 以便走纯文本快速路径.
     /// </summary>
-    public List<DanmakuSegment>? ParseSegments(
+    internal List<DanmakuSegment>? ParseSegments(
         string rawText,
         IDWriteTextFormat textFormat,
         float fontSize,
@@ -270,7 +270,7 @@ internal sealed partial class DanmakuEmojiManager : IDisposable
     /// <summary>
     /// 获取或加载表情的 Direct2D GPU 纹理.
     /// </summary>
-    public ID2D1Bitmap1? GetOrCreateEmojiBitmap(string emojiName)
+    internal ID2D1Bitmap1? GetOrCreateEmojiBitmap(string emojiName)
     {
         if (_isDisposed || _resourceManager.D2DContext is null)
         {
@@ -381,7 +381,7 @@ internal sealed partial class DanmakuEmojiManager : IDisposable
     /// <summary>
     /// 清理 GPU 资源（例如设备丢失重建时）.
     /// </summary>
-    public void ClearGpuCache()
+    internal void ClearGpuCache()
     {
         foreach ((_, ID2D1Bitmap1? bmp) in _gpuBitmapCache)
         {

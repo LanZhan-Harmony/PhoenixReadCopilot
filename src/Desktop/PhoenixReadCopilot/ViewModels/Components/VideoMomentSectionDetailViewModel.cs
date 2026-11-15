@@ -64,8 +64,7 @@ public sealed partial class VideoMomentSectionDetailViewModel
         _logger = logger;
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Items.Count > 0 || _preventLoadMore)
         {
@@ -90,8 +89,7 @@ public sealed partial class VideoMomentSectionDetailViewModel
             });
     }
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (IsEmpty || IsLoading || _preventLoadMore)
         {
@@ -118,5 +116,5 @@ public sealed partial class VideoMomentSectionDetailViewModel
     }
 
     private void ShowComment(MomentItemViewModel item) =>
-        _momentPageViewModel.ShowCommentCommand.Execute(item.Data);
+        _momentPageViewModel.ShowComment(item.Data);
 }

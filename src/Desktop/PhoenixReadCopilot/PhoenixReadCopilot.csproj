@@ -83,6 +83,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="ReswPlus" />
+    <PackageReference Include="WinUIEssential.WinUI3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\Danmaku.Core\Danmaku.Core.csproj" />

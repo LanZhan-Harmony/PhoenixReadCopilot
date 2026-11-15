@@ -46,6 +46,6 @@ public sealed partial class LoggerSettingControl : SettingsPageControlBase
             }
         }
 
-        _appViewModel.ShowTipCommand.Execute((Strings.Resources.LogEmptied, InfoType.Success));
+        _appViewModel.ShowTip(Strings.Resources.LogEmptied, InfoType.Success);
     }
 }

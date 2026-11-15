@@ -42,7 +42,7 @@ public sealed partial class SearchPage : SearchPageBase
     {
         if (!string.IsNullOrEmpty(_keyword))
         {
-            ViewModel.SearchCommand.Execute(_keyword);
+            ViewModel.Search(_keyword);
         }
     }
 }

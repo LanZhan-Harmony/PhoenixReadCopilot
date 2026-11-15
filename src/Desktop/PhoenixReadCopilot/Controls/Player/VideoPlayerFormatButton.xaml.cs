@@ -30,6 +30,6 @@ public sealed partial class VideoPlayerFormatButton : VideoPlayerPageControlBase
     private void OnFormatSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
         PlayerFormatItemViewModel? format = sender.SelectedItem as PlayerFormatItemViewModel;
-        ViewModel.ChangeFormatCommand.Execute(format);
+        _ = ViewModel.ChangeFormatAsync(format);
     }
 }

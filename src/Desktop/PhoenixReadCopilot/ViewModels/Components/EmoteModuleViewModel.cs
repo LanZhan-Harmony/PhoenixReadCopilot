@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Helpers;
 using WinUIKernel.Share.ViewModels;
 
@@ -23,8 +22,7 @@ public sealed partial class EmoteModuleViewModel : ViewModelBase
     /// </summary>
     public EmoteModuleViewModel() { }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         await Task.CompletedTask;
     }

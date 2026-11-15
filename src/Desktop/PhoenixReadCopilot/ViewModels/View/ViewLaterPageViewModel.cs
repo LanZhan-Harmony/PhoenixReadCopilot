@@ -59,8 +59,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         _settings = settingsService.Settings;
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Videos.Count > 0 || IsEmpty)
         {
@@ -79,8 +78,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         await InitializeAsync();
     }
 
-    [RelayCommand]
-    private async Task LoadVideosAsync()
+    public async Task LoadVideosAsync()
     {
         if (IsLoading)
         {
@@ -141,7 +139,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         }
 
         VideoItemViewModel first = Videos.First();
-        first.PlayCommand.Execute(null);
+        first.Play();
     }
 
     private void RemoveVideo(VideoItemViewModel item)

@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
@@ -89,8 +88,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         _extraRegionName = regionName;
     }
 
-    [RelayCommand]
-    private async Task ReloadSuggestionsAsync()
+    public async Task ReloadSuggestionsAsync()
     {
         TryCancelSuggest();
 
@@ -178,8 +176,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task LoadHotSearchAsync()
+    public async Task LoadHotSearchAsync()
     {
         if (HotSearchItems.Count > 0)
         {
@@ -205,10 +202,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                     && Uri.TryCreate(item.CoverUrl, UriKind.Absolute, out Uri? coverUri)
                 )
                 {
-                    icon = new SearchItemIcon
-                    {
-                        Uri = coverUri
-                    };
+                    icon = new SearchItemIcon { Uri = coverUri };
                 }
 
                 string heat = !string.IsNullOrEmpty(item.CardTips) ? item.CardTips : item.Heat;
@@ -233,8 +227,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         IsHotSearchLoading = false;
     }
 
-    [RelayCommand]
-    private void TryCancelSuggest()
+    public void TryCancelSuggest()
     {
         if (_cancellationTokenSource is not null)
         {
@@ -244,8 +237,20 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void Search(SearchSuggestItemViewModel vm)
+    /// <summary>
+    /// 根据关键词直接执行搜索.
+    /// </summary>
+    public void Search(string keyword)
+    {
+        if (string.IsNullOrEmpty(keyword))
+        {
+            return;
+        }
+
+        Search(new SearchSuggestItemViewModel(new SearchSuggestItem(keyword, keyword)));
+    }
+
+    public void Search(SearchSuggestItemViewModel vm)
     {
         string keyword = vm.Keyword;
         if (string.IsNullOrEmpty(keyword))

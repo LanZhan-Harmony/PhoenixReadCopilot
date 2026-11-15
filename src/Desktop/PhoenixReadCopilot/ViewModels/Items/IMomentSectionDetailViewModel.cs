@@ -15,9 +15,9 @@ public interface IMomentSectionDetailViewModel : INotifyPropertyChanged
     MomentSectionType SectionType { get; }
 
     /// <summary>
-    /// 初始化命令.
+    /// 初始化.
     /// </summary>
-    IAsyncRelayCommand InitializeCommand { get; }
+    Task InitializeAsync();
 
     /// <summary>
     /// 刷新命令.

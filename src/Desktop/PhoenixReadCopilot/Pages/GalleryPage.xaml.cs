@@ -72,15 +72,15 @@ public sealed partial class GalleryPage : GalleryPageBase
         ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor - 0.1f, null);
 
     private void OnSettingToBackgroundClickAsync(object sender, RoutedEventArgs e) =>
-        ViewModel.SetWallPaperOrLockScreenCommand.Execute(true);
+        _ = ViewModel.SetWallPaperOrLockScreenAsync(true);
 
     private void OnSettingToLockScreenClickAsync(object sender, RoutedEventArgs e) =>
-        ViewModel.SetWallPaperOrLockScreenCommand.Execute(false);
+        _ = ViewModel.SetWallPaperOrLockScreenAsync(false);
 
     private void OnImageSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
         AppImage? image = sender.SelectedItem as AppImage;
-        ViewModel.ChangeImageCommand.Execute(image);
+        ViewModel.ChangeImage(image);
     }
 }
 

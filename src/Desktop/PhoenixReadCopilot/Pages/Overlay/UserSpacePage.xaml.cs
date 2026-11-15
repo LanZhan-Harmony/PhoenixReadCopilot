@@ -23,7 +23,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase
     {
         if (e.Parameter is not null)
         {
-            ViewModel.InitializeCommand.Execute(e.Parameter);
+            _ = ViewModel.InitializeAsync(e.Parameter);
         }
     }
 }

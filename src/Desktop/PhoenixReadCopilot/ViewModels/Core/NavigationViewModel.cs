@@ -114,7 +114,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         ActiveMainWindow();
         if (pageType == typeof(VideoPlayerPage) && _overFrame.Content is VideoPlayerPage page)
         {
-            page.ViewModel.InitializePageCommand.Execute(parameter);
+            _ = page.ViewModel.InitializePageAsync(parameter);
             IsOverlayOpen = true;
             return;
         }
@@ -131,7 +131,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     {
         if (_overFrame is not null && _overFrame.Content is SearchPage page)
         {
-            page.ViewModel.SearchCommand.Execute(keyword);
+            _ = page.ViewModel.SearchAsync(keyword);
             return;
         }
 
@@ -156,11 +156,11 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
     {
         if (_overFrame.Content is UserSpacePage usp)
         {
-            usp.ViewModel.SearchCommand.Execute(keyword);
+            usp.ViewModel.Search(keyword);
         }
         else if (_overFrame.Content is HistoryPage hp)
         {
-            hp.ViewModel.SearchCommand.Execute(keyword);
+            hp.ViewModel.Search(keyword);
         }
     }
 

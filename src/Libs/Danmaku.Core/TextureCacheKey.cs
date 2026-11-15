@@ -1,3 +1,5 @@
+using Windows.UI;
+
 namespace Danmaku.Core;
 
 /// <summary>
@@ -12,36 +14,36 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     /// <summary>
     /// 文本内容.
     /// </summary>
-    public readonly string? Text;
+    internal readonly string? Text;
 
     /// <summary>
     /// 文本颜色的 RGB 值（R &lt;&lt; 16 | G &lt;&lt; 8 | B）.
     /// 不包含 Alpha 通道，因为透明度在绘制时应用.
     /// </summary>
-    public readonly uint TextColorRGB;
+    internal readonly uint TextColorRGB;
 
     /// <summary>
     /// 描边颜色的 RGB 值（R &lt;&lt; 16 | G &lt;&lt; 8 | B）.
     /// </summary>
-    public readonly uint OutlineColorRGB;
+    internal readonly uint OutlineColorRGB;
 
     /// <summary>
     /// 字体大小.
     /// </summary>
-    public readonly float FontSize;
+    internal readonly float FontSize;
 
     /// <summary>
     /// 是否有描边.
     /// </summary>
-    public readonly bool HasOutline;
+    internal readonly bool HasOutline;
 
     /// <summary>
     /// 初始化纹理缓存键.
     /// </summary>
-    public TextureCacheKey(
+    internal TextureCacheKey(
         string text,
-        Windows.UI.Color textColor,
-        Windows.UI.Color outlineColor,
+        Color textColor,
+        Color outlineColor,
         float fontSize,
         bool hasOutline
     )
@@ -81,8 +83,9 @@ internal readonly struct TextureCacheKey : IEquatable<TextureCacheKey>
     /// </summary>
     public override int GetHashCode()
     {
-        int textHash =
-            Text is not null ? string.GetHashCode(Text.AsSpan(), StringComparison.Ordinal) : 0;
+        int textHash = Text is not null
+            ? string.GetHashCode(Text.AsSpan(), StringComparison.Ordinal)
+            : 0;
         return HashCode.Combine(textHash, TextColorRGB, OutlineColorRGB, FontSize, HasOutline);
     }
 

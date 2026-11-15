@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
@@ -106,8 +105,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
         Metas = null;
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Metas is not null)
         {
@@ -121,7 +119,7 @@ public sealed partial class SubtitleViewModel : ViewModelBase
             SubtitleMeta? firstMeta = GetInitialMeta();
             if (firstMeta is not null)
             {
-                ChangeSubtitleCommand.Execute(firstMeta);
+                _ = ChangeSubtitleAsync(firstMeta);
             }
 
             _initializedAction?.Invoke();
@@ -132,15 +130,13 @@ public sealed partial class SubtitleViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void DeselectSubtitle()
+    public void DeselectSubtitle()
     {
         SelectedMeta = null;
         CurrentSubtitle = string.Empty;
     }
 
-    [RelayCommand]
-    private async Task ChangeSubtitleAsync(SubtitleMeta meta)
+    public async Task ChangeSubtitleAsync(SubtitleMeta meta)
     {
         if (meta is null || meta == SelectedMeta)
         {

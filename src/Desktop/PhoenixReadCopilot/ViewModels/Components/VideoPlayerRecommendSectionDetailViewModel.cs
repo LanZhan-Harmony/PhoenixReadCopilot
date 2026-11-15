@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -38,6 +37,5 @@ public sealed partial class VideoPlayerRecommendSectionDetailViewModel
     /// <inheritdoc/>
     public string Title { get; } = Resources.Recommend;
 
-    [RelayCommand]
-    private static Task TryFirstLoadAsync() => Task.CompletedTask;
+    public Task TryFirstLoadAsync() => Task.CompletedTask;
 }

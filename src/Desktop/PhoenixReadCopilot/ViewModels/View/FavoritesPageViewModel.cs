@@ -66,8 +66,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(FavoritesPage);
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Sections.Count > 0)
         {
@@ -114,8 +113,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
             });
     }
 
-    [RelayCommand]
-    private void SelectSection(IFavoriteSectionDetailViewModel? vm)
+    public void SelectSection(IFavoriteSectionDetailViewModel? vm)
     {
         if (vm is null || vm == CurrentSection)
         {
@@ -123,7 +121,7 @@ public sealed partial class FavoritesPageViewModel : LayoutPageViewModelBase
         }
 
         CurrentSection = vm;
-        CurrentSection.TryFirstLoadCommand.Execute(null);
+        _ = CurrentSection.TryFirstLoadAsync();
     }
 
     private void RestoreSelection()

@@ -38,8 +38,7 @@ public sealed partial class PlayerNotificationItemViewModel : ViewModelBase<Play
         _timer.Tick += OnTimerTick;
     }
 
-    [RelayCommand]
-    private void Start()
+    public void Start()
     {
         _startTime = DateTimeOffset.Now;
         DurationInMilliseconds = Data.Duration * 1000;
@@ -50,7 +49,7 @@ public sealed partial class PlayerNotificationItemViewModel : ViewModelBase<Play
     }
 
     [RelayCommand]
-    private void Cancel()
+    public void Cancel()
     {
         _isCancelled = true;
         IsProgressVisible = false;

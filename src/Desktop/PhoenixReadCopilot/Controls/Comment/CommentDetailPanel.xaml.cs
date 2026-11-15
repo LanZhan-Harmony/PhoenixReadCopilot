@@ -74,7 +74,7 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
                 <= 240
             )
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }
@@ -93,7 +93,7 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
         {
             if (CommentScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }

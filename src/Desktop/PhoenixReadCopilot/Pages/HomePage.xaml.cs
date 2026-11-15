@@ -24,7 +24,7 @@ public sealed partial class HomePage : HomePageBase
     /// <inheritdoc/>
     protected override void OnPageLoaded()
     {
-        ViewModel.InitializeCommand.Execute(null);
+        _ = ViewModel.InitializeAsync();
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
         VideoScrollView.ViewChanged += OnViewChanged;
         VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
@@ -60,7 +60,7 @@ public sealed partial class HomePage : HomePageBase
                 && ViewModel is { IsVideoLoading: false }
             )
             {
-                ViewModel.LoadVideosCommand.Execute(null);
+                _ = ViewModel.LoadVideosAsync();
             }
         });
     }
@@ -82,9 +82,17 @@ public sealed partial class HomePage : HomePageBase
                 && ViewModel is { IsVideoLoading: false, Videos.Count: > 0 }
             )
             {
-                ViewModel.LoadVideosCommand.Execute(null);
+                _ = ViewModel.LoadVideosAsync();
             }
         });
+    }
+
+    private void VideoRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        (args.Element as FrameworkElement).Tag = sender.Tag;
     }
 }
 

@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Player;
@@ -162,10 +161,14 @@ public sealed partial class DownloadViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// 选择分集下载 (同步触发).
+    /// </summary>
+    public void BatchDownloadSelectedParts(string selection) => _ = BatchDownloadSelectedPartsAsync(selection);
+
+    /// <summary>
     /// 选择分集下载.
     /// </summary>
-    [RelayCommand]
-    private async Task BatchDownloadSelectedPartsAsync(string selection)
+    public async Task BatchDownloadSelectedPartsAsync(string selection)
     {
         if (string.IsNullOrWhiteSpace(_dramaId) || Episodes is not { Count: > 0 })
         {
@@ -193,11 +196,7 @@ public sealed partial class DownloadViewModel : ViewModelBase
             return;
         }
 
-        await _downloadService.BatchDownloadEpisodesAsync(
-            _dramaId,
-            _dramaTitle,
-            selectedEpisodes
-        );
+        await _downloadService.BatchDownloadEpisodesAsync(_dramaId, _dramaTitle, selectedEpisodes);
     }
 
     private static List<int> ParseSelection(string selection, int max)

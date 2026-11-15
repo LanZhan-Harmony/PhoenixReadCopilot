@@ -70,8 +70,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(FilterPage);
 
-    [RelayCommand]
-    private async Task InitializeAsync() => await RequestFilterPanelAsync();
+    public async Task InitializeAsync() => await RequestFilterPanelAsync();
 
     [RelayCommand]
     private Task Refresh()
@@ -147,8 +146,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task RequestIndexAsync()
+    public async Task RequestIndexAsync()
     {
         if (IsIndexLoading)
         {

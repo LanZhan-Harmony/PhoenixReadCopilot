@@ -225,17 +225,17 @@ internal partial class DanmakuDirectXRender
     /// <summary>
     /// 画布宽度（物理像素）.
     /// </summary>
-    public float CanvasWidth { get; private set; }
+    internal float CanvasWidth { get; private set; }
 
     /// <summary>
     /// 画布高度（物理像素）.
     /// </summary>
-    public float CanvasHeight { get; private set; }
+    internal float CanvasHeight { get; private set; }
 
     /// <summary>
     /// 是否启用调试模式.
     /// </summary>
-    public bool DebugMode { get; set; }
+    internal bool DebugMode { get; set; }
 
     #endregion
 }

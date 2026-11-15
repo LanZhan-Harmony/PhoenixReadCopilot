@@ -7,6 +7,7 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
+using WinUI3Package;
 using ZLogger;
 
 namespace PhoenixReadCopilot;
@@ -41,7 +42,7 @@ public partial class App : Application
         if (instance.IsCurrent)
         {
             instance.Activated += OnInstanceActivated;
-            Ioc.Default.GetRequiredService<AppViewModel>().LaunchCommand.Execute(null);
+            Ioc.Default.GetRequiredService<AppViewModel>().Launch();
             MainWindow? mainWindow = GetMainWindow();
             mainWindow?.Closed += OnMainWindowClosed;
         }
@@ -53,6 +54,8 @@ public partial class App : Application
                 .AsTask()
                 .ContinueWith(_ => Current.Exit());
         }
+
+        CursorController.ApplyCursorWorkaround();
     }
 
     private static MainWindow? GetMainWindow() =>
@@ -91,7 +94,7 @@ public partial class App : Application
         {
             Ioc.Default.GetRequiredService<ISettingsService>().Settings.LastSelectedFeaturePage =
                 string.Empty;
-            Ioc.Default.GetRequiredService<AppViewModel>().RestartCommand.Execute(null);
+            AppViewModel.Restart();
         }
     }
 }

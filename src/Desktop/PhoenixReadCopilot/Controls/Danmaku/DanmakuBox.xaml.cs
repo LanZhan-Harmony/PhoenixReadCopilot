@@ -64,7 +64,7 @@ public sealed partial class DanmakuBox : DanmakuControlBase
         }
 
         sender.IsEnabled = false;
-        await ViewModel.SendDanmakuCommand.ExecuteAsync(args.QueryText);
+        await ViewModel.SendDanmakuAsync(args.QueryText);
         DispatcherQueue.TryEnqueue(() =>
         {
             UpdateLoginState();

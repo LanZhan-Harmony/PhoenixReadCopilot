@@ -23,24 +23,24 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 当需要渲染弹幕时触发.
     /// </summary>
-    public event Action<uint, DanmakuItem> DanmakuRendered;
+    internal event Action<uint, DanmakuItem> DanmakuRendered;
 
     /// <summary>
     /// 当需要暂停时触发.
     /// </summary>
-    public event Action PauseRequested;
+    internal event Action PauseRequested;
 
     /// <summary>
     /// 当需要恢复时触发.
     /// </summary>
-    public event Action ResumeRequested;
+    internal event Action ResumeRequested;
 
     /// <summary>
     /// 当需要停止时触发.
     /// </summary>
-    public event Action StopRequested;
+    internal event Action StopRequested;
 
-    public DanmakuScheduler()
+    internal DanmakuScheduler()
     {
         _updateThread = new Thread(UpdaterWorker)
         {
@@ -53,7 +53,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 设置弹幕类型的启用状态.
     /// </summary>
-    public void SetDanmakuEnabledType(
+    internal void SetDanmakuEnabledType(
         bool? isRollingEnabled,
         bool? isTopEnabled,
         bool? isBottomEnabled
@@ -78,7 +78,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 更新当前播放时间.
     /// </summary>
-    public void UpdateTime(uint currentMs)
+    internal void UpdateTime(uint currentMs)
     {
         lock (_updateTimeQueue)
         {
@@ -96,7 +96,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 暂停调度.
     /// </summary>
-    public void Pause()
+    internal void Pause()
     {
         if (!_isClosing)
         {
@@ -107,7 +107,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 恢复调度.
     /// </summary>
-    public void Resume()
+    internal void Resume()
     {
         ResumeRequested?.Invoke();
     }
@@ -115,7 +115,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 停止调度.
     /// </summary>
-    public void Stop()
+    internal void Stop()
     {
         Pause();
         StopRequested?.Invoke();
@@ -128,7 +128,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 重新开始（从0开始）.
     /// </summary>
-    public void Restart()
+    internal void Restart()
     {
         Seek(0);
     }
@@ -136,7 +136,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 跳转到指定时间.
     /// </summary>
-    public void Seek(uint targetMs)
+    internal void Seek(uint targetMs)
     {
         _isSeeking = true;
         Stop();
@@ -183,7 +183,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 清空弹幕列表.
     /// </summary>
-    public void Clear()
+    internal void Clear()
     {
         lock (_danmakuList)
         {
@@ -197,7 +197,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 添加实时弹幕.
     /// </summary>
-    public void AddRealtimeDanmaku(DanmakuItem item, bool insertToList)
+    internal void AddRealtimeDanmaku(DanmakuItem item, bool insertToList)
     {
         item.AllowDensityControl = false;
         item.IsRealtime = true;
@@ -231,7 +231,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 获取弹幕列表.
     /// </summary>
-    public List<DanmakuItem> GetDanmakuList()
+    internal List<DanmakuItem> GetDanmakuList()
     {
         lock (_danmakuList)
         {
@@ -245,7 +245,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 设置弹幕列表（必须按 StartMs 排序）.
     /// </summary>
-    public void SetDanmakuList(List<DanmakuItem> danmakuList)
+    internal void SetDanmakuList(List<DanmakuItem> danmakuList)
     {
         Clear();
         lock (_danmakuList)
@@ -257,7 +257,7 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 添加弹幕列表.
     /// </summary>
-    public void AddDanmakuList(List<DanmakuItem> danmakuList)
+    internal void AddDanmakuList(List<DanmakuItem> danmakuList)
     {
         if (danmakuList is null || danmakuList.Count == 0)
         {

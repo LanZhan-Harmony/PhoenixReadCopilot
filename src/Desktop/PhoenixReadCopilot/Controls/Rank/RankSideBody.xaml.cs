@@ -40,7 +40,7 @@ public sealed partial class RankSideBody : RankPageControlBase
     )
     {
         IRankSectionItemViewModel? item = sender.SelectedItem as IRankSectionItemViewModel;
-        ViewModel.SelectSectionCommand.Execute(item);
+        _ = ViewModel.SelectSectionAsync(item);
     }
 
     private void CheckSectionSelection()

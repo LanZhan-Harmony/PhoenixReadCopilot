@@ -113,8 +113,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         _loggerFactory = loggerFactory;
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync(object parameter)
+    public async Task InitializeAsync(object parameter)
     {
         if (IsSearchMode)
         {
@@ -219,7 +218,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         foreach (UserMomentDetailViewModel item in Sections)
         {
             item.SetShowCommentAction(ShowComment);
-            item.ResetCommand.Execute((object?)_phoenixProfile ?? _userId);
+            item.Reset((object?)_phoenixProfile ?? _userId);
         }
 
         if (SelectedSection is null)
@@ -232,19 +231,21 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         else
         {
-            SelectedSection.InitializeCommand.Execute(null);
+            _ = SelectedSection.InitializeAsync();
         }
 
         Initialized?.Invoke(this, EventArgs.Empty);
     }
 
-    [RelayCommand]
-    private void Search(string text)
+    /// <summary>
+    /// 搜索空间动态.
+    /// </summary>
+    public void Search(string text)
     {
         ExitSearch();
         SearchKeyword = text;
         IsSearchMode = true;
-        LoadMoreSearchResultCommand.Execute(null);
+        _ = LoadMoreSearchResultAsync();
     }
 
     [RelayCommand]
@@ -253,18 +254,17 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         if (IsSearchMode)
         {
             string keyword = SearchKeyword;
-            SearchCommand.Execute(keyword);
+            Search(keyword);
             return;
         }
 
         if (SelectedSection is not null)
         {
-            await SelectedSection.RefreshCommand.ExecuteAsync(null);
+            await SelectedSection.RefreshAsync();
         }
     }
 
-    [RelayCommand]
-    private void SelectSection(UserMomentDetailViewModel section)
+    public void SelectSection(UserMomentDetailViewModel section)
     {
         if (section is null || section == SelectedSection)
         {
@@ -273,7 +273,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         SelectedSection = section;
         _settings.LastUserSpaceSectionIsVideo = SelectedSection.IsVideo();
-        SelectedSection.InitializeCommand.Execute(null);
+        _ = SelectedSection.InitializeAsync();
     }
 
     [RelayCommand]
@@ -286,7 +286,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         if (!_apiClient.GetAuthenticationState().IsAuthenticated)
         {
-            _appViewModel.ShowTipCommand.Execute(("请先登录后再关注", InfoType.Warning));
+            _appViewModel.ShowTip("请先登录后再关注", InfoType.Warning);
             return;
         }
 
@@ -297,21 +297,17 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             if (res.Succeeded)
             {
                 IsFollowed = next;
-                _appViewModel.ShowTipCommand.Execute(
-                    (next ? Resources.Followed : Resources.Unfollowed, InfoType.Success)
-                );
+                _appViewModel.ShowTip(next ? Resources.Followed : Resources.Unfollowed, InfoType.Success);
             }
             else
             {
-                _appViewModel.ShowTipCommand.Execute(
-                    (res.Message ?? "关注操作失败", InfoType.Error)
-                );
+                _appViewModel.ShowTip(res.Message ?? "关注操作失败", InfoType.Error);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"切换关注状态时失败");
-            _appViewModel.ShowTipCommand.Execute((Resources.FailedToFollowUser, InfoType.Error));
+            _appViewModel.ShowTip(Resources.FailedToFollowUser, InfoType.Error);
         }
     }
 
@@ -320,7 +316,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     {
         string avatarUri = Card?.Profile?.User?.Avatar?.Uri?.ToString() ?? string.Empty;
         PinItem pinItem = new(_userId, UserName, avatarUri, PinContentType.User);
-        _pinnerViewModel.AddItemCommand.Execute(pinItem);
+        _pinnerViewModel.AddItem(pinItem);
     }
 
     [RelayCommand]
@@ -342,8 +338,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task LoadMoreSearchResultAsync()
+    public async Task LoadMoreSearchResultAsync()
     {
         if (
             _preventLoadMoreSearch
@@ -473,7 +468,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
 
         IsCommentsOpened = true;
         CommentModule.Initialize(moment.CommentId);
-        CommentModule.RefreshCommand.Execute(null);
+        _ = CommentModule.RefreshAsync();
     }
 
     private void CancelSearch()

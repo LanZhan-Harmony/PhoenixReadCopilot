@@ -65,8 +65,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
     /// <inheritdoc/>
     protected override string GetPageKey() => "ComprehensiveMoment";
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Upers.Count > 0)
         {
@@ -77,7 +76,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         Upers.Add(
             new MomentUperSectionViewModel(null,
                 data =>
-                    _momentPageViewModel.ShowCommentCommand.Execute(data)
+                    _momentPageViewModel.ShowComment(data)
             )
         );
         await LoadUpersAsync();
@@ -103,12 +102,11 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         }
         else
         {
-            SelectedUper?.RefreshCommand.Execute(null);
+            _ = SelectedUper?.RefreshAsync();
         }
     }
 
-    [RelayCommand]
-    private void SelectUper(MomentUperSectionViewModel item)
+    public void SelectUper(MomentUperSectionViewModel item)
     {
         if (item is null)
         {
@@ -116,7 +114,7 @@ public sealed partial class ComprehensiveMomentSectionDetailViewModel
         }
 
         SelectedUper = item;
-        SelectedUper.InitializeCommand.Execute(null);
+        _ = SelectedUper.InitializeAsync();
     }
 
     private async Task LoadUpersAsync()

@@ -42,7 +42,7 @@ public sealed partial class ComprehensiveSideBody : ComprehensiveSectionControlB
     )
     {
         MomentUperSectionViewModel? item = sender.SelectedItem as MomentUperSectionViewModel;
-        ViewModel?.SelectUperCommand.Execute(item);
+        ViewModel?.SelectUper(item);
     }
 
     private void CheckSelection()

@@ -4,6 +4,7 @@
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:base="using:WinUIKernel.Share.Base"
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:essential="using:WinUI3Package"
                            xmlns:ic="using:FluentIcons.WinUI"
                            xmlns:local="using:PhoenixReadCopilot.Controls.Player"
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,7 +18,9 @@
                 ToolTipService.ToolTip="{x:Bind strings:Resources.Subtitle}">
             <ic:SymbolIcon FontSize="14" Symbol="ClosedCaption"/>
             <Button.Flyout>
-                <Flyout FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}" Opened="OnFlyoutOpened">
+                <Flyout essential:FlyoutHelper.AcrylicWorkaround="True"
+                        FlyoutPresenterStyle="{StaticResource TransportButtonFlyoutPresenterStyle}"
+                        Opened="OnFlyoutOpened">
                     <StackPanel Width="200" Spacing="4">
                         <Grid ColumnSpacing="8">
                             <Grid.ColumnDefinitions>

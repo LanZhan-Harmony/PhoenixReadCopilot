@@ -1,9 +1,3 @@
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Media;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.System;
-using Windows.System.Display;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -14,6 +8,12 @@ using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Media;
+using Windows.Storage;
+using Windows.Storage.Streams;
+using Windows.System;
+using Windows.System.Display;
 using WinUIEx;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -219,15 +219,15 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             PlayerDisplayMode defaultDisplay = _settings.DefaultPlayerDisplayMode;
             if (!IsFullScreen && defaultDisplay == PlayerDisplayMode.FullScreen)
             {
-                ToggleFullScreenCommand.Execute(null);
+                ToggleFullScreen();
             }
             else if (!IsCompactOverlay && defaultDisplay == PlayerDisplayMode.CompactOverlay)
             {
-                ToggleCompactOverlayCommand.Execute(null);
+                ToggleCompactOverlay();
             }
             else if (!IsFullWindow && defaultDisplay == PlayerDisplayMode.FullWindow)
             {
-                ToggleFullWindowCommand.Execute(null);
+                ToggleFullWindow();
             }
         }
 
@@ -397,7 +397,6 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// </summary>
     public virtual void ReleaseCurrentSource() { }
 
-
     /// <summary>
     /// 尝试切换播放/暂停. 如果此时输入框获得焦点，则不执行.
     /// </summary>
@@ -409,7 +408,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             return false;
         }
 
-        TogglePlayPauseCommand.Execute(null);
+        TogglePlayPause();
         IsPaused = !IsPaused;
         return true;
     }
@@ -460,12 +459,16 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     /// <returns><see cref="Task"/>.</returns>
     protected abstract Task OnTakeScreenshotAsync(string path);
 
-    [RelayCommand]
-    private async Task RestartAsync()
+    public async Task RestartAsync()
     {
         await SeekAsync(0);
         await ForcePlayAsync();
     }
+
+    /// <summary>
+    /// 重新播放 (同步触发).
+    /// </summary>
+    public void Restart() => _ = RestartAsync();
 
     /// <summary>
     /// 暂停播放.
@@ -479,7 +482,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task TogglePlayPauseAsync()
+    public async Task TogglePlayPauseAsync()
     {
         if (IsPaused && !IsMediaLoaded() && Math.Abs(Position - Duration) <= 1)
         {
@@ -490,8 +493,12 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         await OnTogglePlayPauseAsync();
     }
 
-    [RelayCommand]
-    private async Task SeekAsync(double value)
+    /// <summary>
+    /// 切换播放/暂停 (同步触发).
+    /// </summary>
+    public void TogglePlayPause() => _ = TogglePlayPauseAsync();
+
+    public async Task SeekAsync(double value)
     {
         if (Math.Abs(value - Position) < 3 || IsPlayerDataLoading || value > Duration)
         {
@@ -522,8 +529,12 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void SetVolume(int value)
+    /// <summary>
+    /// 跳转播放进度 (同步触发).
+    /// </summary>
+    public void Seek(double value) => _ = SeekAsync(value);
+
+    public void SetVolume(int value)
     {
         if (value < 0)
         {
@@ -542,8 +553,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void SetSpeed(double speed)
+    public void SetSpeed(double speed)
     {
         if (speed > MaxSpeed)
         {
@@ -563,103 +573,55 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     }
 
     [RelayCommand]
-    private void ToggleFullScreen()
+    public void ToggleFullScreen()
     {
         IsFullScreen = !IsFullScreen;
         if (IsFullScreen)
         {
-            _appViewModel.MakeCurrentWindowEnterFullScreenCommand.Execute(null);
+            _appViewModel.MakeCurrentWindowEnterFullScreen();
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitFullScreenCommand.Execute(null);
+            _appViewModel.MakeCurrentWindowExitFullScreen();
         }
 
         _windowStateChangeAction?.Invoke();
     }
 
     [RelayCommand]
-    private void ToggleFullWindow()
+    public void ToggleFullWindow()
     {
         IsFullWindow = !IsFullWindow;
         if (IsFullWindow)
         {
-            _appViewModel.MakeCurrentWindowEnterOverlapCommand.Execute(null);
+            _appViewModel.MakeCurrentWindowEnterOverlap();
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitOverlapCommand.Execute(null);
+            _appViewModel.MakeCurrentWindowExitOverlap();
         }
 
         _windowStateChangeAction?.Invoke();
     }
 
     [RelayCommand]
-    private void ToggleCompactOverlay()
+    public void ToggleCompactOverlay()
     {
         IsCompactOverlay = !IsCompactOverlay;
         if (IsCompactOverlay)
         {
-            _appViewModel.MakeCurrentWindowEnterCompactOverlayCommand.Execute(null);
+            _appViewModel.MakeCurrentWindowEnterCompactOverlay();
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitCompactOverlayCommand.Execute(null);
+            _appViewModel.MakeCurrentWindowExitCompactOverlay();
         }
 
         _windowStateChangeAction?.Invoke();
     }
 
     [RelayCommand]
-    private void IncreaseSpeed()
-    {
-        double speed = Speed + 0.5;
-        if (speed > MaxSpeed)
-        {
-            speed = MaxSpeed;
-        }
-
-        SetSpeed(speed);
-    }
-
-    [RelayCommand]
-    private void DecreaseSpeed()
-    {
-        double speed = Speed - 0.5;
-        if (speed < 0.5)
-        {
-            speed = 0.5;
-        }
-
-        SetSpeed(speed);
-    }
-
-    [RelayCommand]
-    private void IncreaseVolume()
-    {
-        int volume = Volume + 5;
-        if (volume > 100)
-        {
-            volume = 100;
-        }
-
-        SetVolume(volume);
-    }
-
-    [RelayCommand]
-    private void DecreaseVolume()
-    {
-        int volume = Volume - 5;
-        if (volume < 0)
-        {
-            volume = 0;
-        }
-
-        SetVolume(volume);
-    }
-
-    [RelayCommand]
-    private void BackToDefaultMode()
+    public void BackToDefaultMode()
     {
         if (IsFullScreen)
         {
@@ -676,7 +638,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
     }
 
     [RelayCommand]
-    private void ForwardSkip()
+    public void ForwardSkip()
     {
         double seconds = _settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
@@ -688,17 +650,17 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         {
             if (Duration - Position < seconds)
             {
-                SeekCommand.Execute(Duration);
+                Seek(Duration);
             }
             else
             {
-                SeekCommand.Execute(Position + seconds);
+                Seek(Position + seconds);
             }
         });
     }
 
     [RelayCommand]
-    private void BackwardSkip()
+    public void BackwardSkip()
     {
         double seconds = _settings.SingleFastForwardAndRewindSpan;
         if (seconds <= 0 || !IsMediaLoaded())
@@ -710,11 +672,11 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
         {
             if (Position < seconds)
             {
-                SeekCommand.Execute(0);
+                Seek(0);
             }
             else
             {
-                SeekCommand.Execute(Position - seconds);
+                Seek(Position - seconds);
             }
         });
     }
@@ -745,7 +707,7 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
                         )
                     );
                     Clipboard.SetContent(dp);
-                    _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+                    _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
                 }
 
                 bool shouldOpenFile = _settings.OpenAfterScreenshot;
@@ -777,7 +739,6 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
 
     [RelayCommand]
     private void PlayPrevious() => _playPreviousAction?.Invoke();
-
 
     /// <summary>
     /// 更新进度.
@@ -858,14 +819,13 @@ public abstract partial class PlayerViewModelBase : ViewModelBase
             case SystemMediaTransportControlsButton.Pause:
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    TogglePlayPauseCommand.Execute(null);
+                    TogglePlayPause();
                 });
                 break;
             default:
                 break;
         }
     }
-
 
     /// <summary>
     /// 尝试加载播放数据.

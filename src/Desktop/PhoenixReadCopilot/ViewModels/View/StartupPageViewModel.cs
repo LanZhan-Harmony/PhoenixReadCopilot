@@ -96,16 +96,14 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     /// <summary>
     /// 初始化视图模型.
     /// </summary>
-    [RelayCommand]
-    private async Task InitializeAsync(Image qrcodeImageControl)
+    public async Task InitializeAsync(Image qrcodeImageControl)
     {
         Version = RuntimeHelper.AppVersion;
         QRCodeImage = qrcodeImageControl;
         await ReloadQRCodeAsync();
     }
 
-    [RelayCommand]
-    private async Task ReloadQRCodeAsync()
+    public async Task ReloadQRCodeAsync()
     {
         if (_cancellationTokenSource is not null)
         {
@@ -157,11 +155,11 @@ public sealed partial class StartupPageViewModel : ViewModelBase
                                     RequestClose?.Invoke(this, EventArgs.Empty);
                                     if (_appViewModel.Windows.Any(p => p is StartupWindow))
                                     {
-                                        _appViewModel.EnterMainWindowCommand.Execute(null);
+                                        _appViewModel.EnterMainWindow();
                                     }
                                     else
                                     {
-                                        ItemServices.Account.InitializeCommand.Execute(null);
+                                        _ = ItemServices.Account.InitializeAsync();
                                     }
                                 });
                                 break;
@@ -276,11 +274,11 @@ public sealed partial class StartupPageViewModel : ViewModelBase
                 RequestClose?.Invoke(this, EventArgs.Empty);
                 if (_appViewModel.Windows.Any(p => p is StartupWindow))
                 {
-                    _appViewModel.EnterMainWindowCommand.Execute(null);
+                    _appViewModel.EnterMainWindow();
                 }
                 else
                 {
-                    ItemServices.Account.InitializeCommand.Execute(null);
+                    _ = ItemServices.Account.InitializeAsync();
                 }
             });
         }
@@ -309,12 +307,13 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         RequestClose?.Invoke(this, EventArgs.Empty);
         if (_appViewModel.Windows.Any(p => p is StartupWindow))
         {
-            _appViewModel.EnterMainWindowCommand.Execute(null);
+            _appViewModel.EnterMainWindow();
         }
     }
 
-    [RelayCommand]
-    private async Task ExitAsync(bool shouldRestart)
+    public void Exit(bool shouldRestart) => _ = ExitAsync(shouldRestart);
+
+    public async Task ExitAsync(bool shouldRestart)
     {
         if (_cancellationTokenSource is not null)
         {
@@ -327,12 +326,11 @@ public sealed partial class StartupPageViewModel : ViewModelBase
 
         if (shouldRestart)
         {
-            _appViewModel.RestartCommand.Execute(null);
+            AppViewModel.Restart();
         }
     }
 
-    [RelayCommand]
-    private void RenderQRCode(byte[] imageData)
+    public void RenderQRCode(byte[] imageData)
     {
         if (QRCodeImage is null)
         {

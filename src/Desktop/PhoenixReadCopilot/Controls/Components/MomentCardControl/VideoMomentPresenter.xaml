@@ -4,6 +4,7 @@
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:base="using:WinUIKernel.Share.Base"
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:essential="using:WinUI3Package"
                            xmlns:ic="using:FluentIcons.WinUI"
                            xmlns:local="using:PhoenixReadCopilot.Controls.Components"
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -53,7 +54,7 @@
                     Visibility="{x:Bind ViewModel.Description, Converter={StaticResource ObjectToVisibilityConverter}, Mode=OneWay}">
                 <ic:SymbolIcon FontSize="12" Symbol="Feed"/>
                 <Button.Flyout>
-                    <Flyout Placement="Bottom">
+                    <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" Placement="Bottom">
                         <local:EmoteTextBlock MaxWidth="400"
                                               MaxLines="99"
                                               Text="{x:Bind ViewModel.Description, Mode=OneWay}"/>

@@ -69,8 +69,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(HomePage);
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Videos.Count > 0)
         {
@@ -107,8 +106,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task LoadVideosAsync()
+    public async Task LoadVideosAsync()
     {
         if (IsVideoLoading)
         {

@@ -15,7 +15,7 @@ internal sealed class RenderLayer
     /// </summary>
     /// <param name="layerId">图层 ID (0 为最低层，数值越大层级越高).</param>
     /// <param name="requireStrictRenderOrder">是否要求严格的渲染顺序.</param>
-    public RenderLayer(uint layerId, bool requireStrictRenderOrder)
+    internal RenderLayer(uint layerId, bool requireStrictRenderOrder)
     {
         _layerId = layerId;
         RequireStrictRenderOrder = requireStrictRenderOrder;
@@ -24,34 +24,34 @@ internal sealed class RenderLayer
     /// <summary>
     /// 渲染项列表.
     /// </summary>
-    public readonly List<DanmakuDirectXRenderItem> RenderList = [];
+    internal readonly List<DanmakuDirectXRenderItem> RenderList = [];
 
     /// <summary>
     /// Y 轴槽位管理器.
     /// </summary>
-    public readonly DanmakuYSlotManager YSlotManager = new(0);
+    internal readonly DanmakuYSlotManager YSlotManager = new(0);
 
     /// <summary>
     /// 是否要求严格的渲染顺序.
     /// </summary>
-    public readonly bool RequireStrictRenderOrder;
+    internal readonly bool RequireStrictRenderOrder;
 
     /// <summary>
     /// 是否启用该图层.
     /// </summary>
-    public bool IsEnabled = true;
+    internal bool IsEnabled = true;
 
     /// <summary>
     /// 是否为字幕图层.
     /// </summary>
-    public bool IsSubtitleLayer { get; private set; }
+    internal bool IsSubtitleLayer { get; private set; }
 
     /// <summary>
     /// 更新 Y 轴槽位管理器的长度.
     /// </summary>
     /// <param name="newLength">新长度.</param>
     /// <param name="rollingLayerAreaRatio">滚动图层区域比例.</param>
-    public void UpdateYSlotManagerLength(uint newLength, float rollingLayerAreaRatio)
+    internal void UpdateYSlotManagerLength(uint newLength, float rollingLayerAreaRatio)
     {
         if (
             _layerId == DanmakuDefaultLayerDef.RollingLayerId
@@ -80,7 +80,7 @@ internal sealed class RenderLayer
     /// 清空渲染列表（线程安全）.
     /// </summary>
     /// <param name="objectPool">对象池管理器（可选，用于归还对象）.</param>
-    public void Clear(ObjectPoolManager objectPool = null)
+    internal void Clear(ObjectPoolManager objectPool = null)
     {
         lock (RenderList)
         {
@@ -111,7 +111,7 @@ internal sealed class RenderLayer
     /// 设置是否为字幕图层.
     /// </summary>
     /// <param name="isSubtitleLayer">是否为字幕图层.</param>
-    public void SetSubtitleLayer(bool isSubtitleLayer)
+    internal void SetSubtitleLayer(bool isSubtitleLayer)
     {
         IsSubtitleLayer = isSubtitleLayer;
     }

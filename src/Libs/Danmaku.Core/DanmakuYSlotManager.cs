@@ -6,13 +6,13 @@ internal sealed class DanmakuYSlotManager
     private readonly Random _random;
     private Slot[] _ySlotArray;
 
-    public DanmakuYSlotManager(uint length)
+    internal DanmakuYSlotManager(uint length)
     {
         _ySlotArray = new Slot[length];
         _random = new Random();
     }
 
-    public void UpdateLength(uint newLength)
+    internal void UpdateLength(uint newLength)
     {
         lock (_lock)
         {
@@ -24,7 +24,7 @@ internal sealed class DanmakuYSlotManager
     /// Get an available Y position for Danmaku.
     /// </summary>
     /// <returns>Is any slot occupied.</returns>
-    public bool GetY(uint danmakuId, uint height, out uint y)
+    internal bool GetY(uint danmakuId, uint height, out uint y)
     {
         lock (_lock)
         {
@@ -65,7 +65,7 @@ internal sealed class DanmakuYSlotManager
         }
     }
 
-    public void ReleaseYSlot(uint danmakuId, uint y)
+    internal void ReleaseYSlot(uint danmakuId, uint y)
     {
         lock (_lock)
         {
@@ -80,7 +80,7 @@ internal sealed class DanmakuYSlotManager
     /// <summary>
     /// Thread safe.
     /// </summary>
-    public void Clear()
+    internal void Clear()
     {
         lock (_lock)
         {
@@ -94,7 +94,7 @@ internal sealed class DanmakuYSlotManager
 
     private struct Slot
     {
-        public uint Id;
-        public uint Length;
+        internal uint Id;
+        internal uint Length;
     }
 }

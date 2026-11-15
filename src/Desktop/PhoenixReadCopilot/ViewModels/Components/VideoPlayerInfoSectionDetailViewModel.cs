@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
@@ -29,6 +28,5 @@ public sealed partial class VideoPlayerInfoSectionDetailViewModel
     /// <inheritdoc/>
     public string Title { get; } = Resources.Information;
 
-    [RelayCommand]
-    private static Task TryFirstLoadAsync() => Task.CompletedTask;
+    public Task TryFirstLoadAsync() => Task.CompletedTask;
 }

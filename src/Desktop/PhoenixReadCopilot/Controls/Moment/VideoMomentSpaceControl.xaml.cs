@@ -53,7 +53,7 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
                 <= 240
             )
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }
@@ -72,7 +72,7 @@ public sealed partial class VideoMomentSpaceControl : UserMomentDetailControlBas
         {
             if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }

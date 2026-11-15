@@ -117,11 +117,9 @@ public sealed partial class VideoSearchSectionDetailViewModel
             });
     }
 
-    [RelayCommand]
-    private static async Task TryFirstLoadAsync() => await Task.CompletedTask;
+    public async Task TryFirstLoadAsync() => await Task.CompletedTask;
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (!_canRequest || IsEmpty || _isPreventLoadMore || IsLoading)
         {
@@ -169,7 +167,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low,
             async () =>
@@ -183,17 +181,5 @@ public sealed partial class VideoSearchSectionDetailViewModel
             });
 
         await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private void ChangeSortType(ComprehensiveSearchSortType type)
-    {
-        if (Sort == type)
-        {
-            return;
-        }
-
-        Sort = type;
-        RefreshCommand.Execute(null);
     }
 }

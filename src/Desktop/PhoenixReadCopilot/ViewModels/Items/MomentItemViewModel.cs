@@ -171,7 +171,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
             PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
             if (preferDisplayMode == PlayerDisplayMode.NewWindow)
             {
-                OpenInNewWindowCommand.Execute(null);
+                OpenInNewWindow();
                 return true;
             }
 
@@ -215,14 +215,12 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                     CoverUrl = cover,
                 }
             );
-            ItemServices.App.ShowTipCommand.Execute(
-                (Resources.AddViewLaterSucceed, InfoType.Success)
-            );
+            ItemServices.App.ShowTip(Resources.AddViewLaterSucceed, InfoType.Success);
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"添加稍后再看失败");
-            ItemServices.App.ShowTipCommand.Execute((Resources.AddViewLaterFailed, InfoType.Error));
+            ItemServices.App.ShowTip(Resources.AddViewLaterFailed, InfoType.Error);
         }
     }
 
@@ -251,7 +249,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
 
         if (pinItem is not null)
         {
-            ItemServices.Pinner.AddItemCommand.Execute(pinItem);
+            ItemServices.Pinner.AddItem(pinItem);
         }
     }
 

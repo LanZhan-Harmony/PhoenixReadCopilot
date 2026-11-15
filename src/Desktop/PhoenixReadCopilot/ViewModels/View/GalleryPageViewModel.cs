@@ -1,7 +1,3 @@
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.System.UserProfile;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
@@ -10,6 +6,10 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
+using Windows.Storage.Streams;
+using Windows.System.UserProfile;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
 
@@ -47,8 +47,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         _appViewModel = appViewModel;
     }
 
-    [RelayCommand]
-    private void ChangeImage(AppImage image)
+    public void ChangeImage(AppImage image)
     {
         if (image is null || SelectedImage == image)
         {
@@ -96,7 +95,7 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
         dp.SetWebLink(SelectedImage.Uri);
         dp.SetBitmap(RandomAccessStreamReference.CreateFromUri(SelectedImage.Uri));
         Clipboard.SetContent(dp);
-        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
     }
 
     [RelayCommand]
@@ -136,11 +135,10 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
             FileOptions.Asynchronous
         );
         await response.Content.CopyToAsync(fileStream);
-        _appViewModel.ShowTipCommand.Execute((Resources.Saved, InfoType.Success));
+        _appViewModel.ShowTip(Resources.Saved, InfoType.Success);
     }
 
-    [RelayCommand]
-    private async Task SetWallPaperOrLockScreenAsync(bool isWallPaper)
+    public async Task SetWallPaperOrLockScreenAsync(bool isWallPaper)
     {
         if (SelectedImage is null)
         {
@@ -174,11 +172,11 @@ public sealed partial class GalleryPageViewModel : ViewModelBase
             : await profileSettings.TrySetLockScreenImageAsync(file);
         if (result)
         {
-            _appViewModel.ShowTipCommand.Execute((Resources.SetSuccess, InfoType.Success));
+            _appViewModel.ShowTip(Resources.SetSuccess, InfoType.Success);
         }
         else
         {
-            _appViewModel.ShowTipCommand.Execute((Resources.SetFailed, InfoType.Error));
+            _appViewModel.ShowTip(Resources.SetFailed, InfoType.Error);
         }
     }
 }

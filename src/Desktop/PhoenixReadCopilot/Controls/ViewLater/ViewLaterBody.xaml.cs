@@ -53,7 +53,7 @@ public sealed partial class ViewLaterBody : ViewLaterPageControlBase
                 <= 240
             )
             {
-                ViewModel.LoadVideosCommand.Execute(null);
+                _ = ViewModel.LoadVideosAsync();
             }
         });
     }
@@ -72,7 +72,7 @@ public sealed partial class ViewLaterBody : ViewLaterPageControlBase
         {
             if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.LoadVideosCommand.Execute(null);
+                _ = ViewModel.LoadVideosAsync();
             }
         });
     }

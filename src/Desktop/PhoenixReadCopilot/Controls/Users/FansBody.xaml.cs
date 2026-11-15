@@ -53,7 +53,7 @@ public sealed partial class FansBody : FansPageControlBase
                 <= 240
             )
             {
-                ViewModel.LoadUsersCommand.Execute(null);
+                _ = ViewModel.LoadUsersAsync();
             }
         });
     }
@@ -72,7 +72,7 @@ public sealed partial class FansBody : FansPageControlBase
         {
             if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.LoadUsersCommand.Execute(null);
+                _ = ViewModel.LoadUsersAsync();
             }
         });
     }

@@ -60,7 +60,7 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
     {
         if (IsLoaded && sender.SelectedItem is Episode episode && episode != ViewModel.SelectedPart)
         {
-            ViewModel.SelectPartCommand.Execute(episode);
+            ViewModel.SelectPart(episode);
         }
     }
 

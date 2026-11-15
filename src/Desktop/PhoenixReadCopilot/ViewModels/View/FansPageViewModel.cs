@@ -45,8 +45,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
         _dispatcherQueue = dispatcherQueue;
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (Users.Count > 0 || IsEmpty)
         {
@@ -69,8 +68,7 @@ public sealed partial class FansPageViewModel : ViewModelBase
             });
     }
 
-    [RelayCommand]
-    private async Task LoadUsersAsync()
+    public async Task LoadUsersAsync()
     {
         if (IsUserLoading || IsEmpty)
         {

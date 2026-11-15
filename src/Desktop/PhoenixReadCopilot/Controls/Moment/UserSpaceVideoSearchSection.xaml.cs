@@ -53,7 +53,7 @@ public sealed partial class UserSpaceVideoSearchSection : UserSpacePageControlBa
                 <= 240
             )
             {
-                ViewModel.LoadMoreSearchResultCommand.Execute(null);
+                _ = ViewModel.LoadMoreSearchResultAsync();
             }
         });
     }
@@ -72,7 +72,7 @@ public sealed partial class UserSpaceVideoSearchSection : UserSpacePageControlBa
         {
             if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.LoadMoreSearchResultCommand.Execute(null);
+                _ = ViewModel.LoadMoreSearchResultAsync();
             }
         });
     }

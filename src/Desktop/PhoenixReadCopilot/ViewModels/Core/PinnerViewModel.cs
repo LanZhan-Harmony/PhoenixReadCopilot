@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Helpers;
@@ -52,8 +51,7 @@ public sealed partial class PinnerViewModel : ViewModelBase
         _pathService = pathService;
     }
 
-    [RelayCommand]
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         string currentUserId = _accountViewModel.MyProfile?.User?.Id ?? "default";
         _filePath = Path.Combine(_pathService.DataFolderPath, "Pin", $"pin_{currentUserId}.json");
@@ -67,22 +65,24 @@ public sealed partial class PinnerViewModel : ViewModelBase
         IsEmpty = Items.Count == 0;
     }
 
-    [RelayCommand]
-    private async Task AddItemAsync(PinItem item)
+    public void AddItem(PinItem item) => _ = AddItemAsync(item);
+
+    public async Task AddItemAsync(PinItem item)
     {
         if (Items.Contains(item))
         {
-            _appViewModel.ShowTipCommand.Execute((Resources.AlreadyPinned, InfoType.Warning));
+            _appViewModel.ShowTip(Resources.AlreadyPinned, InfoType.Warning);
             return;
         }
 
         Items.Add(item);
         await SaveDataAsync();
-        _appViewModel.ShowTipCommand.Execute((Resources.Fixed, InfoType.Success));
+        _appViewModel.ShowTip(Resources.Fixed, InfoType.Success);
     }
 
-    [RelayCommand]
-    private async Task RemoveItemAsync(PinItem item)
+    public void RemoveItem(PinItem item) => _ = RemoveItemAsync(item);
+
+    public async Task RemoveItemAsync(PinItem item)
     {
         Items.Remove(item);
         await SaveDataAsync();

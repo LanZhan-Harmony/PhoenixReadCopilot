@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Core.Models.Filter;
 using WinUIKernel.Share.ViewModels;
 
@@ -44,8 +43,7 @@ public sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
         _reloadAction?.Invoke();
     }
 
-    [RelayCommand]
-    private void ChangeCondition(Condition condition)
+    public void ChangeCondition(Condition condition)
     {
         if (condition is null || condition == CurrentCondition)
         {

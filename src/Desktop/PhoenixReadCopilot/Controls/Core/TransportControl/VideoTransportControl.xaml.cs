@@ -78,7 +78,7 @@ public sealed partial class VideoTransportControl : PlayerControlBase
     }
 
     private void OnVolumeSliderValueChanged(object sender, RangeBaseValueChangedEventArgs e) =>
-        ViewModel?.SetVolumeCommand.Execute(Convert.ToInt32(e.NewValue));
+        ViewModel?.SetVolume(Convert.ToInt32(e.NewValue));
 
     private void OnProgressSliderValueChanged(object sender, RangeBaseValueChangedEventArgs e)
     {
@@ -125,10 +125,10 @@ public sealed partial class VideoTransportControl : PlayerControlBase
         {
             double target = _pendingSeekPosition;
             _pendingSeekPosition = -1;
-            ViewModel?.SeekCommand.Execute(Convert.ToInt32(target));
+            ViewModel?.Seek(Convert.ToInt32(target));
         }
     }
 
     private void OnSpeedSliderValueChanged(object sender, RangeBaseValueChangedEventArgs e) =>
-        ViewModel?.SetSpeedCommand.Execute(Math.Round(e.NewValue, 1));
+        ViewModel?.SetSpeed(Math.Round(e.NewValue, 1));
 }

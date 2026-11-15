@@ -25,12 +25,12 @@ public sealed partial class SubtitleButton : SubtitleControlBase
         {
             if (ViewModel.SelectedMeta != meta)
             {
-                ViewModel.ChangeSubtitleCommand.Execute(meta);
+                _ = ViewModel.ChangeSubtitleAsync(meta);
             }
         }
         else
         {
-            ViewModel.DeselectSubtitleCommand.Execute(null);
+            ViewModel.DeselectSubtitle();
         }
     }
 

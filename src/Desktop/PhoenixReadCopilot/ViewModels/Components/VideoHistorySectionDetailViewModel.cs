@@ -54,8 +54,7 @@ public sealed partial class VideoHistorySectionDetailViewModel
         _logger = logger;
     }
 
-    [RelayCommand]
-    private async Task TryFirstLoadAsync()
+    public async Task TryFirstLoadAsync()
     {
         if (Items.Count > 0 || _isPreventLoadMore)
         {
@@ -66,7 +65,7 @@ public sealed partial class VideoHistorySectionDetailViewModel
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         IsEmpty = false;
         _isPreventLoadMore = false;
@@ -75,8 +74,7 @@ public sealed partial class VideoHistorySectionDetailViewModel
         await LoadItemsAsync();
     }
 
-    [RelayCommand]
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         if (IsEmpty || _isPreventLoadMore || IsLoading)
         {

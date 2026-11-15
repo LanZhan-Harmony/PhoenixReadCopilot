@@ -8,10 +8,11 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public interface IFavoriteSectionDetailViewModel : INotifyPropertyChanged
 {
+
     /// <summary>
-    /// 首次加载数据.
+    /// 尝试首次加载.
     /// </summary>
-    IAsyncRelayCommand TryFirstLoadCommand { get; }
+    Task TryFirstLoadAsync();
 
     /// <summary>
     /// 刷新命令.

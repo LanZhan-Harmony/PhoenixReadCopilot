@@ -1,5 +1,4 @@
 using System.Text;
-using Windows.Media.Playback;
 using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
@@ -8,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
+using Windows.Media.Playback;
 using WinUIKernel.Share.Base;
 using ZLogger;
 
@@ -309,7 +309,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 
             if (duration > 0)
             {
-                UpdatePosition(Position, Convert.ToInt32(duration));
+                UpdatePosition(Position, System.Convert.ToInt32(duration));
             }
 
             if (Position > 0)
@@ -364,7 +364,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 
                 if (duration > 0)
                 {
-                    UpdatePosition(Position, Convert.ToInt32(duration));
+                    UpdatePosition(Position, System.Convert.ToInt32(duration));
                 }
             }
             catch { }
@@ -419,21 +419,23 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                         catch { }
 
                         _hasEnded = true;
-                        UpdatePosition(Convert.ToInt32(duration), Convert.ToInt32(duration));
+                        UpdatePosition(
+                            System.Convert.ToInt32(duration),
+                            System.Convert.ToInt32(duration)
+                        );
                         ReachEnd();
                     }
                     return;
                 }
 
                 UpdatePosition(
-                    Convert.ToInt32(position),
-                    duration > 0 ? Convert.ToInt32(duration) : 0
+                    System.Convert.ToInt32(position),
+                    duration > 0 ? System.Convert.ToInt32(duration) : 0
                 );
             }
             catch { }
         });
     }
-
 
     /// <inheritdoc/>
     protected override Task OnCloseAsync()
@@ -558,7 +560,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         {
             if (Player.PlaybackSession?.CanSeek == false && !Player.CanSeek)
             {
-                _appViewModel.ShowTipCommand.Execute((Resources.CanNotSeek, InfoType.Warning));
+                _appViewModel.ShowTip(Resources.CanNotSeek, InfoType.Warning);
                 return Task.CompletedTask;
             }
 
@@ -682,7 +684,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 _ffmpegSource = preloaded;
                 if (_ffmpegSource.Duration > TimeSpan.Zero)
                 {
-                    Duration = Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
+                    Duration = System.Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
                 }
 
                 MediaPlaybackItem playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
@@ -804,7 +806,7 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         {
             if (_ffmpegSource.Duration > TimeSpan.Zero)
             {
-                Duration = Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
+                Duration = System.Convert.ToInt32(_ffmpegSource.Duration.TotalSeconds);
             }
 
             MediaPlaybackItem playbackItem = _ffmpegSource.CreateMediaPlaybackItem();

@@ -57,7 +57,7 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
                 <= 240
             )
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }
@@ -76,7 +76,7 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
         {
             if (UserScrollView.ScrollableHeight <= 240 && ViewModel is not null)
             {
-                ViewModel.LoadItemsCommand.Execute(null);
+                _ = ViewModel.LoadItemsAsync();
             }
         });
     }

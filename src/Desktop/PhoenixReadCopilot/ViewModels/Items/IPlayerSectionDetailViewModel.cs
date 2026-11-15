@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -9,9 +8,9 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 public interface IPlayerSectionDetailViewModel : INotifyPropertyChanged
 {
     /// <summary>
-    /// 尝试首次加载命令.
+    /// 尝试首次加载.
     /// </summary>
-    IAsyncRelayCommand TryFirstLoadCommand { get; }
+    Task TryFirstLoadAsync();
 
     /// <summary>
     /// 标题.

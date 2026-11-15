@@ -36,10 +36,10 @@
 
             <UniformGridLayout x:Key="VideoLayout"
                                ItemsStretch="Fill"
-                               MinColumnSpacing="16"
-                               MinItemHeight="385"
+                               MinColumnSpacing="4"
+                               MinItemHeight="370"
                                MinItemWidth="200"
-                               MinRowSpacing="16"/>
+                               MinRowSpacing="10"/>
 
             <UniformGridLayout x:Key="CalendarLayout"
                                ItemsStretch="Fill"

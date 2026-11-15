@@ -1,4 +1,3 @@
-using Windows.ApplicationModel.DataTransfer;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -14,6 +13,7 @@ using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
+using Windows.ApplicationModel.DataTransfer;
 using WinUIKernel.Share.Base;
 using ZLogger;
 
@@ -199,8 +199,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         Player.SetEndAction(PlayerMediaEnded);
         Player.SetReloadAction(ReloadPart);
         Player.SetSpeedAction(PlayerSpeedChanged);
-        Player.SetPlayNextAction(() => PlayNextVideoCommand.Execute(null));
-        Player.SetPlayPreviousAction(() => PlayPreviousVideoCommand.Execute(null));
+        Player.SetPlayNextAction(() => _ = PlayNextVideoAsync());
+        Player.SetPlayPreviousAction(() => _ = PlayPreviousVideoAsync());
     }
 
     /// <inheritdoc/>
@@ -209,8 +209,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     /// <inheritdoc/>
     protected override double GetDefaultNavColumnWidth() => 360d;
 
-    [RelayCommand]
-    private async Task InitializePageAsync(object parameter)
+    public async Task InitializePageAsync(object parameter)
     {
         if (IsPageLoading)
         {
@@ -289,7 +288,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    [RelayCommand]
     private async Task InitializeDashMediaAsync(Episode episode)
     {
         if (IsMediaLoading)
@@ -355,8 +353,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void CancelPageLoad()
+    public void CancelPageLoad()
     {
         if (_pageLoadCancellationTokenSource is not null)
         {
@@ -367,8 +364,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void CancelDashLoad()
+    public void CancelDashLoad()
     {
         if (_dashLoadCancellationTokenSource is not null)
         {
@@ -379,8 +375,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task ChangeFormatAsync(PlayerFormatItemViewModel vm)
+    public async Task ChangeFormatAsync(PlayerFormatItemViewModel vm)
     {
         if (vm is null || vm == SelectedFormat)
         {
@@ -437,7 +432,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     }
 
     [RelayCommand]
-    private async Task CleanAsync()
+    public async Task CleanAsync()
     {
         await ReportProgressAsync(Player.Position);
         ClearView();
@@ -446,8 +441,12 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         await Player?.CloseAsync();
     }
 
-    [RelayCommand]
-    private void SelectSection(IPlayerSectionDetailViewModel section)
+    /// <summary>
+    /// 清理播放器与页面数据 (同步触发).
+    /// </summary>
+    public void Clean() => _ = CleanAsync();
+
+    public void SelectSection(IPlayerSectionDetailViewModel section)
     {
         if (section is null || section == SelectedSection)
         {
@@ -455,10 +454,9 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         SelectedSection = section;
-        SelectedSection.TryFirstLoadCommand.Execute(null);
+        _ = SelectedSection.TryFirstLoadAsync();
     }
 
-    [RelayCommand]
     private async Task ReportProgressAsync(int progress)
     {
         bool shouldReport = _settings.ShouldReportProgress;
@@ -519,9 +517,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 }
                 else
                 {
-                    _appViewModel.ShowTipCommand.Execute(
-                        (res.Message ?? "点赞操作失败", InfoType.Warning)
-                    );
+                    _appViewModel.ShowTip(res.Message ?? "点赞操作失败", InfoType.Warning);
                 }
             }
         }
@@ -552,9 +548,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 }
                 else
                 {
-                    _appViewModel.ShowTipCommand.Execute(
-                        (res.Message ?? "收藏操作失败", InfoType.Warning)
-                    );
+                    _appViewModel.ShowTip(res.Message ?? "收藏操作失败", InfoType.Warning);
                 }
             }
         }
@@ -563,9 +557,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _logger.ZLogError(ex, $"尝试收藏/取消收藏剧集时失败.");
         }
     }
-
-    [RelayCommand]
-    private Task FavoriteAsync() => ToggleFavoriteAsync();
 
     [RelayCommand]
     private async Task ShareAsync()
@@ -580,7 +571,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             package.SetText(url);
             package.SetWebLink(new Uri(url));
             Clipboard.SetContent(package);
-            _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+            _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
         }
         catch (Exception ex)
         {
@@ -598,18 +589,18 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
                 await _apiClient.SetFavoriteAsync(_dramaId, targetVideoId, true);
                 IsFavorited = true;
-                _appViewModel.ShowTipCommand.Execute(("已加入追剧列表", InfoType.Success));
+                _appViewModel.ShowTip("已加入追剧列表", InfoType.Success);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"加入追剧列表失败");
-            _appViewModel.ShowTipCommand.Execute(("加入追剧列表失败", InfoType.Error));
+            _appViewModel.ShowTip("加入追剧列表失败", InfoType.Error);
         }
     }
 
     [RelayCommand]
-    private async Task PlayNextVideoAsync()
+    public async Task PlayNextVideoAsync()
     {
         if (IsPageLoading || Player.IsPlayerDataLoading)
         {
@@ -619,8 +610,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         object? nextPart = FindNextVideo();
         if (nextPart is null)
         {
-            _appViewModel.ShowTipCommand.Execute(("已经是最后一集了", InfoType.Information));
-            Player.BackToDefaultModeCommand.Execute(null);
+            _appViewModel.ShowTip("已经是最后一集了", InfoType.Information);
+            Player.BackToDefaultMode();
             return;
         }
 
@@ -632,16 +623,15 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
         else if (nextPart is Drama rec)
         {
-            InitializePageCommand.Execute(rec.Id);
+            _ = InitializePageAsync(rec.Id);
         }
         else
         {
-            Player.BackToDefaultModeCommand.Execute(null);
+            Player.BackToDefaultMode();
         }
     }
 
-    [RelayCommand]
-    private async Task PlayPreviousVideoAsync()
+    public async Task PlayPreviousVideoAsync()
     {
         if (IsPageLoading || Player.IsPlayerDataLoading)
         {
@@ -651,7 +641,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         object? prevPart = FindPreviousVideo();
         if (prevPart is null)
         {
-            _appViewModel.ShowTipCommand.Execute(("已经是第一集了", InfoType.Information));
+            _appViewModel.ShowTip("已经是第一集了", InfoType.Information);
             return;
         }
 
@@ -668,12 +658,12 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     {
         if (Player.Position > 0)
         {
-            ReportProgressCommand.Execute(Player.Position);
+            _ = ReportProgressAsync(Player.Position);
         }
 
         if (!Player.IsPaused)
         {
-            Player.TogglePlayPauseCommand.Execute(null);
+            Player.TogglePlayPause();
         }
 
         new PlayerWindow().OpenDrama(_dramaId);
@@ -688,7 +678,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             Cover?.ToString() ?? string.Empty,
             PinContentType.Video
         );
-        _pinnerViewModel.AddItemCommand.Execute(pinItem);
+        _pinnerViewModel.AddItem(pinItem);
     }
 
     [RelayCommand]
@@ -697,7 +687,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         DataPackage dp = new();
         dp.SetText(Title);
         Clipboard.SetContent(dp);
-        _appViewModel.ShowTipCommand.Execute((Resources.Copied, InfoType.Success));
+        _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
     }
 
     private void ChangePart(Episode episode)
@@ -732,25 +722,25 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         Danmaku?.ResetData(_dramaId, episode.VideoId);
         var episodeDuration = (int)episode.Duration.TotalSeconds;
-        Danmaku?.LoadDanmakusCommand.Execute(episodeDuration);
+        _ = Danmaku?.LoadDanmakusAsync(episodeDuration);
         Subtitle?.ResetData(_dramaId, episode.VideoId);
 
         // 加载分集媒体
-        InitializeDashMediaCommand.Execute(episode);
-        Subtitle.InitializeCommand.Execute(null);
+        _ = InitializeDashMediaAsync(episode);
+        _ = Subtitle.InitializeAsync();
 
         // 切换分集评论
         _comments.Initialize(_dramaId, episode.VideoId, CommentSortOrder.Hot);
         if (SelectedSection == _comments)
         {
-            _comments.TryFirstLoadCommand.Execute(null);
+            _ = _comments.TryFirstLoadAsync();
         }
 
         InitializeNextVideo();
         VideoPlayerPartSectionDetailViewModel? partSection =
             Sections?.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
-                as VideoPlayerPartSectionDetailViewModel;
-        partSection?.UpdateSelectedPartCommand.Execute(episode);
+            as VideoPlayerPartSectionDetailViewModel;
+        partSection?.UpdateSelectedPart(episode);
     }
 
     private void PlayerProgressChanged(int progress, int duration)
@@ -763,7 +753,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             && !string.IsNullOrEmpty(_currentVideoId)
         )
         {
-            Danmaku.LoadDanmakusCommand.Execute(duration);
+            _ = Danmaku.LoadDanmakusAsync(duration);
         }
 
         Danmaku?.UpdatePosition(progress);
@@ -786,7 +776,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             if (state == PlayerState.Paused)
             {
                 // 记录播放进度.
-                ReportProgressCommand.Execute(Player.Position);
+                _ = ReportProgressAsync(Player.Position);
             }
 
             Danmaku?.Pause();
@@ -816,12 +806,12 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             Danmaku.ClearDanmaku();
             Subtitle.ClearSubtitle();
 
-            ReportProgressCommand.Execute(Player.Duration);
+            _ = ReportProgressAsync(Player.Duration);
 
             // 单视频循环.
             if (CurrentLoop == VideoLoopType.Single)
             {
-                Player.RestartCommand.Execute(null);
+                Player.Restart();
                 return;
             }
 
@@ -830,7 +820,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             {
                 if (!_isFormatChanging)
                 {
-                    Player.BackToDefaultModeCommand.Execute(null);
+                    Player.BackToDefaultMode();
                 }
                 return;
             }
@@ -850,7 +840,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             {
                 if (!_isFormatChanging)
                 {
-                    Player.BackToDefaultModeCommand.Execute(null);
+                    Player.BackToDefaultMode();
                 }
                 return;
             }
@@ -861,7 +851,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             }
 
             // 直接播放下一集或下一个短剧，无需触发倒计时浮层弹窗
-            PlayNextVideoCommand.Execute(null);
+            _ = PlayNextVideoAsync();
         });
     }
 
@@ -891,8 +881,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             : "红果独播";
 
         Credits = drama
-                .Credits?.Select(c => new DramaCreditItemViewModel(c, _apiClient, _appViewModel))
-                .ToList()
+            .Credits?.Select(c => new DramaCreditItemViewModel(c, _apiClient, _appViewModel))
+            .ToList()
             ?? [];
         Tags = drama.Tags?.ToList() ?? [];
 
@@ -950,7 +940,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             }
         }
 
-        ChangeFormatCommand.Execute(selectedFormat);
+        _ = ChangeFormatAsync(selectedFormat);
     }
 
     private async Task InitializeSectionsAsync()
@@ -1241,7 +1231,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _initialProgress = Player.Position;
         }
 
-        InitializeDashMediaCommand.Execute(_currentEpisode);
+        _ = InitializeDashMediaAsync(_currentEpisode);
     }
 
     private void SyncDownloadAndSubtitle()

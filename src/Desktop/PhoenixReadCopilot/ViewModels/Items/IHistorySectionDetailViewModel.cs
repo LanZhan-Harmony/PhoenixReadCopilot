@@ -25,12 +25,17 @@ public interface IHistorySectionDetailViewModel : INotifyPropertyChanged
     public bool IsLoading { get; }
 
     /// <summary>
-    /// 首次加载数据.
+    /// 尝试首次加载.
     /// </summary>
-    IAsyncRelayCommand TryFirstLoadCommand { get; }
+    Task TryFirstLoadAsync();
 
     /// <summary>
     /// 刷新命令.
     /// </summary>
     IAsyncRelayCommand RefreshCommand { get; }
+
+    /// <summary>
+    /// 刷新数据.
+    /// </summary>
+    Task RefreshAsync();
 }

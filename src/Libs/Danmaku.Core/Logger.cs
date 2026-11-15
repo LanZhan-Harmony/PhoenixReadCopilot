@@ -14,7 +14,7 @@ internal static class Logger
         _logger = logger;
     }
 
-    public static void Log(
+    internal static void Log(
         string message,
         LoggingLevel level = LoggingLevel.Information,
         [CallerMemberName] string? memberName = null,

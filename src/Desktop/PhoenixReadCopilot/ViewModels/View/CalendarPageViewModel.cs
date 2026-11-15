@@ -74,8 +74,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(CalendarPage);
 
-    [RelayCommand]
-    private async Task InitializeAsync() => await RequestDailyReleasesAsync();
+    public async Task InitializeAsync() => await RequestDailyReleasesAsync();
 
     [RelayCommand]
     private async Task RefreshAsync()
@@ -89,8 +88,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
         await RequestDailyReleasesAsync();
     }
 
-    [RelayCommand]
-    private void SelectTimeline(TimelineItemViewModel vm)
+    public void SelectTimeline(TimelineItemViewModel vm)
     {
         if (vm is null)
         {

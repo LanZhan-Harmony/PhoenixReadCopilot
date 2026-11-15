@@ -85,7 +85,7 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
             {
                 if (ViewModel is not null && ViewModel is { HasMore: true, IsLoading: false })
                 {
-                    ViewModel.LoadMoreCommand.Execute(null);
+                    _ = ViewModel.LoadMoreAsync();
                 }
             }
         });
@@ -116,7 +116,7 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
                 && ViewModel is { HasMore: true, IsLoading: false }
             )
             {
-                ViewModel.LoadMoreCommand.Execute(null);
+                _ = ViewModel.LoadMoreAsync();
             }
         });
     }
@@ -147,7 +147,7 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
             && sortOrder != ViewModel.SortType
         )
         {
-            ViewModel.ChangeSortTypeCommand.Execute(sortOrder);
+            _ = ViewModel.ChangeSortTypeAsync(sortOrder);
         }
     }
 }

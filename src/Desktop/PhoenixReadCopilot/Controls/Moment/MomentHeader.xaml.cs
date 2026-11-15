@@ -56,7 +56,7 @@ public sealed partial class MomentHeader : MomentHeaderBase
             sender.SelectedItem.Tag as IMomentSectionDetailViewModel;
         if (item is not null && item != ViewModel.SelectedSection)
         {
-            ViewModel.SelectSectionCommand.Execute(item);
+            ViewModel.SelectSection(item);
         }
     }
 
