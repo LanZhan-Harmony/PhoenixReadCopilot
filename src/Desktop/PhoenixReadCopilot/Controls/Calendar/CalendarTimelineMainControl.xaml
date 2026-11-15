@@ -12,9 +12,9 @@
                                    mc:Ignorable="d">
 
     <Grid>
-        <ScrollViewer x:Name="SeasonScrollView" Style="{StaticResource PageScrollViewerStyle}">
+        <ScrollViewer x:Name="TimelineScrollView" Style="{StaticResource PageScrollViewerStyle}">
             <Grid Margin="16,12">
-                <ItemsRepeater x:Name="SeasonRepeater"
+                <ItemsRepeater x:Name="TimelineRepeater"
                                ItemsSource="{x:Bind ViewModel.SelectedTimeline.Items, Mode=OneWay}"
                                Layout="{StaticResource CalendarLayout}">
                     <ItemsRepeater.ItemTemplate>

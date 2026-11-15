@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.Toolkits;
+using PhoenixReadCopilot.Helpers;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -8,7 +8,7 @@ internal sealed partial class CountConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         long count = System.Convert.ToInt64(value);
-        return AppToolkit.FormatCount(count);
+        return FormatHelper.FormatCount(count);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>

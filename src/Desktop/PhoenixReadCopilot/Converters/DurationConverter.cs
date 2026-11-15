@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Data;
-using PhoenixReadCopilot.Toolkits;
+using PhoenixReadCopilot.Helpers;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -9,7 +9,7 @@ internal sealed partial class DurationConverter : IValueConverter
     {
         if (value is int d)
         {
-            return AppToolkit.FormatDuration(TimeSpan.FromSeconds(d));
+            return FormatHelper.FormatDuration(TimeSpan.FromSeconds(d));
         }
 
         return null;

@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Runtime.InteropServices;
+using Windows.ApplicationModel;
 
 namespace PhoenixReadCopilot.Helpers;
 
@@ -22,6 +24,22 @@ internal static partial class RuntimeHelper
         {
             int length = 0;
             return GetCurrentPackageFullName(ref length, nint.Zero) != 15700; // APPMODEL_ERROR_NO_PACKAGE = 15700
+        }
+    }
+
+    public static string AppVersion
+    {
+        get
+        {
+            if (IsMSIX)
+            {
+                PackageVersion appVersion = Package.Current.Id.Version;
+                return $"{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}.{appVersion.Revision}";
+            }
+
+            Version? version = Assembly.GetEntryAssembly()?.GetName().Version
+                ?? Assembly.GetExecutingAssembly().GetName().Version;
+            return $"{version?.Major}.{version?.Minor}.{version?.Build}.{version?.Revision}";
         }
     }
 }
