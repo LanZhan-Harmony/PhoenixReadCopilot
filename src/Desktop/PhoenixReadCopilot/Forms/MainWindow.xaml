@@ -4,6 +4,7 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:controls="using:PhoenixReadCopilot.Controls"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:essential="using:WinUI3Package"
                   xmlns:local="using:PhoenixReadCopilot"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:winuiex="using:WinUIEx"
@@ -14,6 +15,10 @@
     </Window.SystemBackdrop>
 
     <Grid PointerPressed="OnPointerPressed">
+        <Grid.Resources>
+            <essential:ModernStandardWindowContextMenu x:Name="Menu" Window="{x:Bind}"/>
+        </Grid.Resources>
+        <essential:WindowCaptionButtonThemeWorkaround Window="{x:Bind}"/>
         <controls:RootLayout x:Name="RootLayout"/>
         <Grid x:Name="TipContainer" Visibility="Collapsed"/>
     </Grid>

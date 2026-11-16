@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -19,7 +20,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class HistoryPageViewModel : ViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IHistoryService _historyService;
     private readonly ILogger<HistoryPageViewModel> _logger;
     private readonly AppViewModel _appViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -65,14 +66,14 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="HistoryPageViewModel"/> class.
     /// </summary>
     public HistoryPageViewModel(
-        PhoenixReadApiClient apiClient,
+        IHistoryService historyService,
         ILogger<HistoryPageViewModel> logger,
         AppViewModel appViewModel,
         DispatcherQueue dispatcherQueue,
         ILoggerFactory loggerFactory
     )
     {
-        _apiClient = apiClient;
+        _historyService = historyService;
         _logger = logger;
         _appViewModel = appViewModel;
         _dispatcherQueue = dispatcherQueue;
@@ -95,7 +96,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
         List<IHistorySectionDetailViewModel> sections =
         [
             new VideoHistorySectionDetailViewModel(
-                _apiClient,
+                _historyService,
                 _loggerFactory.CreateLogger<VideoHistorySectionDetailViewModel>()
             ),
         ];
@@ -148,7 +149,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
                 {
                     try
                     {
-                        await _apiClient.DeleteHistoryAsync(
+                        await _historyService.DeleteHistoryAsync(
                             item.HistoryItem.DramaId,
                             item.HistoryItem.VideoId
                         );
@@ -194,7 +195,7 @@ public sealed partial class HistoryPageViewModel : ViewModelBase
             _searchCancellationTokenSource = new CancellationTokenSource();
             CancellationToken ct = _searchCancellationTokenSource.Token;
 
-            ReadHistoryPage historyPage = await _apiClient.GetHistoryAsync(
+            ReadHistoryPage historyPage = await _historyService.GetHistoryAsync(
                 count: 50,
                 offset: _searchOffset,
                 cancellationToken: ct

@@ -75,7 +75,7 @@ public static class Animation
                     // 6. If we're a group of transforms, convert each child individually
                     if (element.RenderTransform is TransformGroup group)
                     {
-                        foreach (var tran in group.Children)
+                        foreach (Transform? tran in group.Children)
                         {
                             ApplyTransform(ref ct, tran);
                         }

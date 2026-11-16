@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
@@ -17,7 +18,7 @@ public sealed partial class VideoHistorySectionDetailViewModel
     : ViewModelBase,
         IHistorySectionDetailViewModel
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IHistoryService _historyService;
     private readonly ILogger<VideoHistorySectionDetailViewModel> _logger;
 
     private bool _isPreventLoadMore;
@@ -46,12 +47,21 @@ public sealed partial class VideoHistorySectionDetailViewModel
     /// Initializes a new instance of the <see cref="VideoHistorySectionDetailViewModel"/> class.
     /// </summary>
     public VideoHistorySectionDetailViewModel(
-        PhoenixReadApiClient apiClient,
+        IHistoryService historyService,
         ILogger<VideoHistorySectionDetailViewModel> logger
     )
     {
-        _apiClient = apiClient;
+        _historyService = historyService;
         _logger = logger;
+        _historyService.HistoryChanged += OnHistoryChanged;
+    }
+
+    private void OnHistoryChanged(object? sender, EventArgs e)
+    {
+        if (Items.Count > 0 || IsEmpty)
+        {
+            _ = RefreshAsync();
+        }
     }
 
     public async Task TryFirstLoadAsync()
@@ -84,7 +94,7 @@ public sealed partial class VideoHistorySectionDetailViewModel
         try
         {
             IsLoading = true;
-            ReadHistoryPage page = await _apiClient.GetHistoryAsync(count: 20, offset: _offset);
+            ReadHistoryPage page = await _historyService.GetHistoryAsync(count: 20, offset: _offset);
             _offset = page.NextOffset;
             _isPreventLoadMore = !page.HasMore || page.Items.Count == 0;
             if (page.Items.Count > 0)
@@ -123,5 +133,9 @@ public sealed partial class VideoHistorySectionDetailViewModel
     {
         Items.Remove(vm);
         IsEmpty = Items.Count == 0;
+        if (vm.HistoryItem is not null)
+        {
+            _ = _historyService.DeleteHistoryAsync(vm.HistoryItem.DramaId, vm.HistoryItem.VideoId);
+        }
     }
 }

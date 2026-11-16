@@ -11,10 +11,11 @@
                          xmlns:strings="using:PhoenixReadCopilot.Strings"
                          mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource TransportBackground}"
-          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+    <Grid BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
           BorderThickness="1"
           CornerRadius="{StaticResource OverlayCornerRadius}">
+
+        <essential:InAppAcrylicVisual CornerRadius="{StaticResource OverlayCornerRadius}"/>
 
         <Grid Padding="12,8" RowSpacing="4">
             <Grid.RowDefinitions>

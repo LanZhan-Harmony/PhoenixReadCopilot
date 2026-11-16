@@ -1,222 +1,298 @@
-using System.Collections.Concurrent;
-using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.UI.Xaml;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Windows.Foundation;
-using WinUIKernel.Share.Base;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using PhoenixReadCopilot.Helpers.Animations;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
-/// 视频封面图片.
+/// 视频封面图片控件.
 /// </summary>
-public sealed partial class VideoCoverImage : ImageExBase
+public sealed partial class VideoCoverImage : Control
 {
-    private static readonly ConcurrentDictionary<Uri, double> _aspectRatioCache = new();
+    private Image? _image;
 
+    #region 依赖属性定义
     /// <summary>
-    /// <see cref="AspectRatio"/> 的依赖属性.
+    /// <see cref="Source"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty AspectRatioProperty = DependencyProperty.Register(
-        nameof(AspectRatio),
-        typeof(double),
+    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+        nameof(Source),
+        typeof(Uri),
         typeof(VideoCoverImage),
-        new PropertyMetadata(16.0 / 9.0, OnAspectRatioPropertyChanged)
+        new PropertyMetadata(null, OnSourcePropertyChanged)
     );
 
     /// <summary>
-    /// <see cref="AutoAdjustAspectRatio"/> 的依赖属性.
+    /// <see cref="DecodePixelWidth"/> 的依赖属性.
     /// </summary>
-    public static readonly DependencyProperty AutoAdjustAspectRatioProperty =
+    public static readonly DependencyProperty DecodePixelWidthProperty =
         DependencyProperty.Register(
-            nameof(AutoAdjustAspectRatio),
-            typeof(bool),
+            nameof(DecodePixelWidth),
+            typeof(int),
             typeof(VideoCoverImage),
-            new PropertyMetadata(true)
+            new PropertyMetadata(300, OnDecodePixelWidthPropertyChanged)
         );
+
+    /// <summary>
+    /// <see cref="Stretch"/> 的依赖属性.
+    /// </summary>
+    public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(
+        nameof(Stretch),
+        typeof(Stretch),
+        typeof(VideoCoverImage),
+        new PropertyMetadata(Stretch.UniformToFill)
+    );
+    #endregion
+
+    #region 属性包装器
+    /// <summary>
+    /// 封面图片地址.
+    /// </summary>
+    public Uri? Source
+    {
+        get => (Uri?)GetValue(SourceProperty);
+        set => SetValue(SourceProperty, value);
+    }
+
+    /// <summary>
+    /// 解码目标像素宽度，默认为 300.
+    /// </summary>
+    public int DecodePixelWidth
+    {
+        get => (int)GetValue(DecodePixelWidthProperty);
+        set => SetValue(DecodePixelWidthProperty, value);
+    }
+
+    /// <summary>
+    /// 封面拉伸方式 (默认为 UniformToFill).
+    /// </summary>
+    public Stretch Stretch
+    {
+        get => (Stretch)GetValue(StretchProperty);
+        set => SetValue(StretchProperty, value);
+    }
+    #endregion
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoCoverImage"/> class.
     /// </summary>
     public VideoCoverImage()
     {
-        DecodeWidth = 336;
-        DecodeHeight = 189;
-        RegisterPropertyChangedCallback(SourceProperty, OnSourcePropertyChanged);
-        RegisterPropertyChangedCallback(DecodeWidthProperty, OnDecodeWidthPropertyChanged);
+        DefaultStyleKey = typeof(VideoCoverImage);
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
-    /// <summary>
-    /// 宽高比 (宽 / 高).
-    /// </summary>
-    public double AspectRatio
+    /// <inheritdoc/>
+    protected override void OnApplyTemplate()
     {
-        get => (double)GetValue(AspectRatioProperty);
-        set => SetValue(AspectRatioProperty, value);
+        base.OnApplyTemplate();
+
+        if (_image is not null)
+        {
+            _image.ImageOpened -= OnImageOpened;
+            _image.ImageFailed -= OnImageFailed;
+        }
+
+        _image = GetTemplateChild("CoverImage") as Image;
+
+        if (_image is not null)
+        {
+            _image.ImageOpened += OnImageOpened;
+            _image.ImageFailed += OnImageFailed;
+        }
+
+        QueueLoadImage();
     }
 
-    /// <summary>
-    /// 是否在图片加载后自动根据实际图片宽高调整 AspectRatio.
-    /// </summary>
-    public bool AutoAdjustAspectRatio
-    {
-        get => (bool)GetValue(AutoAdjustAspectRatioProperty);
-        set => SetValue(AutoAdjustAspectRatioProperty, value);
-    }
-
-    private static void OnAspectRatioPropertyChanged(
+    private static void OnSourcePropertyChanged(
         DependencyObject d,
         DependencyPropertyChangedEventArgs e
     )
     {
         if (d is VideoCoverImage control)
         {
-            double ratio = (double)e.NewValue;
-            if (ratio > 0)
+            control.QueueLoadImage();
+        }
+    }
+
+    private static void OnDecodePixelWidthPropertyChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
+    {
+        if (d is VideoCoverImage control)
+        {
+            control.QueueLoadImage();
+        }
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        QueueLoadImage();
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        if (_image is not null)
+        {
+            _image.Tag = null;
+            _image.Source = null;
+            Visual? visual = _image.GetElementVisual();
+            if (visual is not null)
             {
-                control.DecodeHeight = Math.Max(1, Math.Round(control.DecodeWidth / ratio));
-                control.InvalidateMeasure();
+                visual.StopAnimation(nameof(visual.Opacity));
+                visual.Opacity = 0f;
             }
         }
     }
 
-    private static void OnDecodeWidthPropertyChanged(DependencyObject sender, DependencyProperty dp)
+    private void QueueLoadImage()
     {
-        if (sender is VideoCoverImage
-            {
-                AspectRatio: > 0
-            } control)
-        {
-            control.DecodeHeight = Math.Max(
-                1,
-                Math.Round(control.DecodeWidth / control.AspectRatio)
-            );
-        }
-    }
-
-    private void OnSourcePropertyChanged(DependencyObject sender, DependencyProperty dp)
-    {
-        if (!AutoAdjustAspectRatio)
+        if (_image is null)
         {
             return;
         }
 
-        if (Source is not null && _aspectRatioCache.TryGetValue(Source, out double cachedRatio))
+        Visual? visual = _image.GetElementVisual();
+
+        if (Source is null)
         {
-            if (Math.Abs(AspectRatio - cachedRatio) > 0.01)
+            _image.Tag = null;
+            if (visual is not null)
             {
-                AspectRatio = cachedRatio;
+                visual.StopAnimation(nameof(visual.Opacity));
+                visual.Opacity = 0f;
             }
-        }
-    }
-
-    /// <inheritdoc/>
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        // 如果显式设置了 Width 和 Height，直接使用显式尺寸
-        if (!double.IsNaN(Width) && !double.IsNaN(Height))
-        {
-            return new Size(Width, Height);
-        }
-
-        double ratio = AspectRatio > 0 ? AspectRatio : (16.0 / 9.0);
-
-        // 仅显式设置了 Width
-        if (!double.IsNaN(Width))
-        {
-            return new Size(Width, Width / ratio);
-        }
-
-        // 仅显式设置了 Height
-        if (!double.IsNaN(Height))
-        {
-            return new Size(Height * ratio, Height);
-        }
-
-        // 高度无限制（例如 StaggeredLayout 或 RowDefinition Height="Auto"），极速返回尺寸，避开模板遍历
-        if (double.IsPositiveInfinity(availableSize.Height))
-        {
-            double targetWidth =
-                double.IsPositiveInfinity(availableSize.Width) || availableSize.Width <= 0
-                    ? DecodeWidth
-                    : availableSize.Width;
-            double targetHeight = targetWidth / ratio;
-            return new Size(targetWidth, targetHeight);
-        }
-
-        // 宽度无限制（例如水平滚动列表），根据高度自适应宽度
-        if (double.IsPositiveInfinity(availableSize.Width))
-        {
-            double targetHeight = availableSize.Height <= 0 ? DecodeHeight : availableSize.Height;
-            double targetWidth = targetHeight * ratio;
-            return new Size(targetWidth, targetHeight);
-        }
-
-        // 两个方向都有约束时才走基类测量
-        Size baseSize = base.MeasureOverride(availableSize);
-        if (baseSize.Width <= 0 || baseSize.Height <= 0)
-        {
-            return availableSize;
-        }
-
-        return baseSize;
-    }
-
-    /// <inheritdoc/>
-    protected override void DrawImage(CanvasBitmap canvasBitmap)
-    {
-        uint bitmapWidth = canvasBitmap.SizeInPixels.Width;
-        uint bitmapHeight = canvasBitmap.SizeInPixels.Height;
-
-        if (bitmapWidth > 0 && bitmapHeight > 0)
-        {
-            double realRatio = (double)bitmapWidth / bitmapHeight;
-            // 限制极端比例，避免瀑布流中过长或过扁的异常卡片影响体验 (0.5 ~ 2.0，涵盖 9:16 到 2:1)
-            realRatio = Math.Clamp(realRatio, 0.5, 2.0);
-
-            if (Source is not null)
+            if (_image.Source is BitmapImage currentBmp)
             {
-                if (_aspectRatioCache.Count > 1000)
-                {
-                    _aspectRatioCache.Clear();
-                }
-
-                _aspectRatioCache[Source] = realRatio;
+                currentBmp.UriSource = null;
             }
-
-            if (AutoAdjustAspectRatio && Math.Abs(AspectRatio - realRatio) > 0.01)
-            {
-                AspectRatio = realRatio;
-            }
+            return;
         }
 
-        float targetWidth = (float)DecodeWidth;
-        float targetHeight = (float)DecodeHeight;
-
-        // 确保 CanvasImageSource 具有与当前 DecodeWidth / DecodeHeight 匹配的分辨率
         if (
-            CanvasImageSource is null
-            || Math.Abs(CanvasImageSource.Size.Width - targetWidth) > 0.5
-            || Math.Abs(CanvasImageSource.Size.Height - targetHeight) > 0.5
+            _image.Source is BitmapImage loadedBmp
+            && loadedBmp.UriSource == Source
+            && visual is not null
+            && visual.Opacity >= 1f
         )
         {
-            CanvasDevice device = CanvasDevice.GetSharedDevice();
-            CanvasImageSource = new CanvasImageSource(
-                device,
-                targetWidth,
-                targetHeight,
-                96,
-                CanvasAlphaMode.Ignore
-            );
+            _image.Tag = Source;
+            return;
         }
 
-        Rect sourceRect = new(0, 0, bitmapWidth, bitmapHeight);
-        Rect destRect = new(0, 0, targetWidth, targetHeight);
-        Rect cropRect = GetCenterCropRect(destRect, sourceRect);
+        if (Equals(_image.Tag, Source))
+        {
+            return;
+        }
 
-        using CanvasDrawingSession drawingSession = CanvasImageSource.CreateDrawingSession(
-            ClearColor
+        _image.Tag = Source;
+        if (visual is not null)
+        {
+            visual.StopAnimation(nameof(visual.Opacity));
+            visual.Opacity = 0f;
+        }
+
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (IsLoaded && Equals(_image.Tag, Source))
+            {
+                if (_image.Source is not BitmapImage bitmap)
+                {
+                    bitmap = new BitmapImage
+                    {
+                        DecodePixelType = DecodePixelType.Logical,
+                        DecodePixelWidth = DecodePixelWidth > 0 ? DecodePixelWidth : 300,
+                        CreateOptions = BitmapCreateOptions.IgnoreImageCache,
+                    };
+                    _image.Source = bitmap;
+                }
+
+                if (bitmap.UriSource != Source)
+                {
+                    bitmap.UriSource = Source;
+                }
+            }
+        });
+    }
+
+    private void OnImageOpened(object sender, RoutedEventArgs e)
+    {
+        if (_image is null)
+        {
+            return;
+        }
+
+        Visual visual = _image.GetElementVisual()!;
+        CompositionAnimation fadeAnimation = CompositionFactory.CreateFade(
+            visual.Compositor,
+            1f,
+            0f,
+            180
         );
-        drawingSession.DrawImage(canvasBitmap, destRect, cropRect);
+        visual.StartAnimation(nameof(visual.Opacity), fadeAnimation);
+    }
+
+    private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
+    {
+        if (_image is null)
+        {
+            return;
+        }
+
+        Visual? visual = _image.GetElementVisual();
+        if (visual is not null)
+        {
+            visual.StopAnimation(nameof(visual.Opacity));
+            visual.Opacity = 0f;
+        }
+    }
+
+    /// <summary>
+    /// 当容器被 ItemsRepeater 回收移出视口时清理图片，避免离屏容器常驻显存.
+    /// </summary>
+    public void Clear()
+    {
+        if (_image is null)
+        {
+            return;
+        }
+
+        _image.Tag = null;
+        Visual? visual = _image.GetElementVisual();
+        if (visual is not null)
+        {
+            visual.StopAnimation(nameof(visual.Opacity));
+            visual.Opacity = 0f;
+        }
+
+        if (!IsLoaded)
+        {
+            _image.Source = null;
+        }
+        else if (_image.Source is BitmapImage bmp)
+        {
+            bmp.UriSource = null;
+        }
+    }
+
+    /// <summary>
+    /// 静态清理辅助方法，供 ItemsRepeater.ElementClearing 快捷调用.
+    /// </summary>
+    public static void Clear(FrameworkElement container)
+    {
+        if (container is VideoCoverImage cover)
+        {
+            cover.Clear();
+        }
+        else if (container.FindName("CoverImage") is VideoCoverImage innerCover)
+        {
+            innerCover.Clear();
+        }
     }
 }

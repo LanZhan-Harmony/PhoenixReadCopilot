@@ -2,6 +2,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.View;
+using WinUI3Package;
 using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.Controls.Filter;
@@ -100,5 +101,27 @@ public sealed partial class FilterIndexMainControl : FilterIndexControlBase
                 _ = ViewModel.RequestIndexAsync();
             }
         });
+    }
+
+    private void ItemRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+        }
+    }
+
+    private void ItemRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            FilterVideoItemTemplate.ClearImage(element);
+        }
     }
 }

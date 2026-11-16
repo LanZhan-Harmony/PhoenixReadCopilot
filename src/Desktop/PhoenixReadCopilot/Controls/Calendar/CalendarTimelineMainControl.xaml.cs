@@ -1,3 +1,8 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Controls.Home;
+using WinUI3Package;
+
 namespace PhoenixReadCopilot.Controls.Calendar;
 
 /// <summary>
@@ -14,4 +19,26 @@ public sealed partial class CalendarTimelineMainControl : CalendarTimelineContro
     }
 
     protected override void OnControlUnloaded() => TimelineRepeater.ItemsSource = null;
+
+    private void TimelineRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+        }
+    }
+
+    private void TimelineRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            CalendarVideoItemTemplate.ClearImage(element);
+        }
+    }
 }

@@ -45,7 +45,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     public partial bool IsVideoLoading { get; set; }
 
     [ObservableProperty]
-    public partial IRankSectionItemViewModel? SelectedSection { get; set; }
+    public partial RankSectionItemViewModel? SelectedSection { get; set; }
 
     [ObservableProperty]
     public partial bool IsLeaderboardSection { get; set; }
@@ -76,7 +76,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// 分区与榜单列表.
     /// </summary>
-    public ObservableCollection<IRankSectionItemViewModel> Sections { get; } = [];
+    public ObservableCollection<RankSectionItemViewModel> Sections { get; } = [];
 
     /// <summary>
     /// 短剧视频榜单列表 (供短剧榜单 Repeater 使用).
@@ -122,7 +122,8 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                 FluentIcons.Common.Symbol.RibbonStar,
                 Resources.BoardRecommend,
                 RankSectionType.LeaderboardRecommend,
-                leaderboardType: ShortDramaLeaderboardType.Recommend
+                leaderboardType: ShortDramaLeaderboardType.Recommend,
+                pageViewModel: this
             )
         );
 
@@ -132,7 +133,8 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                 FluentIcons.Common.Symbol.Fire,
                 Resources.BoardHotPlay,
                 RankSectionType.LeaderboardHotPlay,
-                leaderboardType: ShortDramaLeaderboardType.HotPlay
+                leaderboardType: ShortDramaLeaderboardType.HotPlay,
+                pageViewModel: this
             )
         );
 
@@ -142,7 +144,8 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                 FluentIcons.Common.Symbol.Sparkle,
                 Resources.BoardNewRelease,
                 RankSectionType.LeaderboardNewRelease,
-                leaderboardType: ShortDramaLeaderboardType.NewRelease
+                leaderboardType: ShortDramaLeaderboardType.NewRelease,
+                pageViewModel: this
             )
         );
 
@@ -152,7 +155,8 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                 FluentIcons.Common.Symbol.Search,
                 Resources.BoardHotSearch,
                 RankSectionType.LeaderboardHotSearch,
-                leaderboardType: ShortDramaLeaderboardType.HotSearch
+                leaderboardType: ShortDramaLeaderboardType.HotSearch,
+                pageViewModel: this
             )
         );
 
@@ -162,12 +166,13 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                 FluentIcons.Common.Symbol.PeopleStar,
                 Resources.LeaderboardActor,
                 RankSectionType.LeaderboardActor,
-                isActorLeaderboard: true
+                isActorLeaderboard: true,
+                pageViewModel: this
             )
         );
 
         string lastSelectedSectionId = _settings.RankPageLastSelectedSectionId;
-        IRankSectionItemViewModel? targetSection = null;
+        RankSectionItemViewModel? targetSection = null;
         if (
             !string.IsNullOrEmpty(lastSelectedSectionId)
             && Enum.TryParse<RankSectionType>(
@@ -176,16 +181,14 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
             )
         )
         {
-            targetSection = Sections
-                .OfType<RankSectionItemViewModel>()
-                .FirstOrDefault(p => p.Type == sectionType);
+            targetSection = Sections.FirstOrDefault(p => p.Type == sectionType);
         }
 
         _ = SelectSectionAsync(targetSection ?? Sections.First());
         SectionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
-    public async Task SelectSectionAsync(IRankSectionItemViewModel vm)
+    public async Task SelectSectionAsync(RankSectionItemViewModel? vm)
     {
         if (vm is null || vm == SelectedSection)
         {
@@ -203,17 +206,9 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
         Actors.Clear();
 
         SelectedSection = vm;
-        if (vm is RankSectionItemViewModel pSection)
-        {
-            _settings.RankPageLastSelectedSectionId = pSection.Type.ToString();
-            IsLeaderboardSection = pSection.LeaderboardType.HasValue;
-            IsActorLeaderboard = pSection.IsActorLeaderboard;
-        }
-        else
-        {
-            IsLeaderboardSection = false;
-            IsActorLeaderboard = false;
-        }
+        _settings.RankPageLastSelectedSectionId = vm.Type.ToString();
+        IsLeaderboardSection = vm.LeaderboardType.HasValue;
+        IsActorLeaderboard = vm.IsActorLeaderboard;
 
         string cacheKey = GetCacheKey(vm, CurrentChannel);
         if (IsActorLeaderboard)
@@ -348,9 +343,8 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
             if (requestId == _currentRequestId)
             {
                 VideoListUpdated?.Invoke(this, EventArgs.Empty);
-                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low,
-                    () =>
-                        IsVideoLoading = false
+                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                    IsVideoLoading = false
                 );
             }
         }
@@ -377,46 +371,38 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
         await LoadVideosAsync();
     }
 
-    private void ResetPagination(IRankSectionItemViewModel section)
+    private void ResetPagination(RankSectionItemViewModel section)
     {
-        if (section is RankSectionItemViewModel pSection)
+        if (section.LeaderboardType.HasValue)
         {
-            if (pSection.LeaderboardType.HasValue)
-            {
-                _leaderboardOffset = 0;
-                _leaderboardSessionId = null;
-                _hasMoreLeaderboard = true;
-            }
-            else if (pSection.IsActorLeaderboard)
-            {
-                _actorOffset = 0;
-                _actorSessionId = null;
-                _hasMoreActor = true;
-            }
+            _leaderboardOffset = 0;
+            _leaderboardSessionId = null;
+            _hasMoreLeaderboard = true;
+        }
+        else if (section.IsActorLeaderboard)
+        {
+            _actorOffset = 0;
+            _actorSessionId = null;
+            _hasMoreActor = true;
         }
     }
 
     private static string GetCacheKey(
-        IRankSectionItemViewModel section,
+        RankSectionItemViewModel section,
         ShortDramaLeaderboardChannel channel
     )
     {
-        if (section is RankSectionItemViewModel pSection)
+        if (section.IsActorLeaderboard)
         {
-            if (pSection.IsActorLeaderboard)
-            {
-                return "Actor";
-            }
-
-            if (pSection.LeaderboardType.HasValue)
-            {
-                return $"Leaderboard_{pSection.LeaderboardType.Value}_{channel}";
-            }
-
-            return pSection.Type.ToString();
+            return "Actor";
         }
 
-        return section?.ToString() ?? string.Empty;
+        if (section.LeaderboardType.HasValue)
+        {
+            return $"Leaderboard_{section.LeaderboardType.Value}_{channel}";
+        }
+
+        return section.Type.ToString();
     }
 
     /// <summary>
@@ -425,7 +411,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     public static readonly IReadOnlyList<(
         string Title,
         ShortDramaLeaderboardChannel Channel
-        )> Channels =
+    )> Channels =
     [
         (Resources.ChannelAll, ShortDramaLeaderboardChannel.All),
         (Resources.ChannelFemale, ShortDramaLeaderboardChannel.Female),

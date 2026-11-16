@@ -25,8 +25,6 @@
                                HorizontalAlignment="Stretch"
                                VerticalAlignment="Stretch"
                                CornerRadius="{StaticResource ControlCornerRadius}"
-                               DecodeHeight="280"
-                               DecodeWidth="380"
                                Source="{x:Bind ViewModel.VideoCover, Mode=OneWay}"/>
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Left"

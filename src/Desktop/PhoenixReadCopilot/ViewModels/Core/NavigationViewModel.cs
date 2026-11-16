@@ -96,6 +96,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
 
         _settings.LastSelectedFeaturePage = pageType.FullName;
         _navFrame.Navigate(pageType, parameter, new EntranceNavigationTransitionInfo());
+        _navFrame.BackStack.Clear();
     }
 
     /// <inheritdoc/>
@@ -204,6 +205,7 @@ public sealed partial class NavigationViewModel : ViewModelBase, INavServiceView
         }
 
         _navFrame = navFrame;
+        _navFrame.CacheSize = 0;
         _overFrame = overFrame;
         _overFrame.Navigated += OnOverlayNavigated;
         IsTopNavBarShown = _settings.IsTopNavBarShown;

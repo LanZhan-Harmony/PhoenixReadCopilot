@@ -5,26 +5,33 @@
                                    xmlns:base="using:WinUIKernel.Share.Base"
                                    xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                   xmlns:essential="using:WinUI3Package"
                                    xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                                    xmlns:local="using:PhoenixReadCopilot.Controls.Calendar"
                                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                    xmlns:strings="using:PhoenixReadCopilot.Strings"
                                    mc:Ignorable="d">
 
+    <local:CalendarTimelineControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <local:CalendarVideoItemTemplate/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </local:CalendarTimelineControlBase.Resources>
+
     <Grid>
-        <ScrollViewer x:Name="TimelineScrollView" Style="{StaticResource PageScrollViewerStyle}">
-            <Grid Margin="16,12">
+        <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
+            <ScrollViewer x:Name="TimelineScrollView" Style="{StaticResource PageScrollViewerStyle}">
                 <ItemsRepeater x:Name="TimelineRepeater"
+                               Margin="16,12"
+                               ElementClearing="TimelineRepeater_ElementClearing"
+                               ElementPrepared="TimelineRepeater_ElementPrepared"
+                               ItemTemplate="{StaticResource CalendarVideoItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.SelectedTimeline.Items, Mode=OneWay}"
-                               Layout="{StaticResource CalendarLayout}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="items:VideoItemViewModel">
-                            <components:VideoCardControl Style="{StaticResource CalendarVideoCardStyle}" ViewModel="{x:Bind}"/>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-            </Grid>
-        </ScrollViewer>
+                               Layout="{StaticResource CalendarLayout}"/>
+            </ScrollViewer>
+        </essential:RevealFocusPanel>
 
         <base:EmptyHolder Description="{x:Bind strings:Resources.TimelineHasNoVideo}"
                           Emoji="&#x1F92A;"

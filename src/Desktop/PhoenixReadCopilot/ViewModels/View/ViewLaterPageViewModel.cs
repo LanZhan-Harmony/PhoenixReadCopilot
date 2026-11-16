@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
@@ -23,6 +24,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     private readonly ILogger<ViewLaterPageViewModel> _logger;
     private readonly NavigationViewModel _navigationViewModel;
     private readonly AppSettings _settings;
+    private readonly DispatcherQueue _dispatcherQueue;
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -32,11 +34,6 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial int TotalCount { get; set; }
-
-    /// <summary>
-    /// 视频列表已完成更新.
-    /// </summary>
-    public event EventHandler? ListUpdated;
 
     /// <summary>
     /// 视频列表.
@@ -50,13 +47,28 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         ILocalViewLaterService localService,
         ILogger<ViewLaterPageViewModel> logger,
         NavigationViewModel navigationViewModel,
-        ISettingsService settingsService
+        ISettingsService settingsService,
+        DispatcherQueue dispatcherQueue
     )
     {
         _localService = localService;
         _logger = logger;
         _navigationViewModel = navigationViewModel;
         _settings = settingsService.Settings;
+        _dispatcherQueue = dispatcherQueue;
+
+        _localService.ViewLaterChanged += OnViewLaterChanged;
+    }
+
+    private void OnViewLaterChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            if (Videos.Count > 0 || IsEmpty)
+            {
+                _ = RefreshAsync();
+            }
+        });
     }
 
     public async Task InitializeAsync()
@@ -72,10 +84,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        IsEmpty = false;
-        TotalCount = 0;
-        Videos.Clear();
-        await InitializeAsync();
+        await LoadVideosAsync();
     }
 
     public async Task LoadVideosAsync()
@@ -89,6 +98,15 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         try
         {
             IReadOnlyList<Drama> dramas = await _localService.GetAllAsync();
+
+            // 如果已有项且ID序列完全一致，无需清空重建避免卡片闪烁
+            if (Videos.Count == dramas.Count && Videos.Select(v => v.Drama?.Id).SequenceEqual(dramas.Select(d => d.Id)))
+            {
+                TotalCount = Videos.Count;
+                IsEmpty = Videos.Count == 0;
+                return;
+            }
+
             Videos.Clear();
             foreach (Drama item in dramas)
             {
@@ -103,7 +121,6 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
 
             TotalCount = Videos.Count;
             IsEmpty = Videos.Count == 0;
-            ListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
@@ -122,7 +139,9 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
         try
         {
             await _localService.ClearAsync();
-            await RefreshAsync();
+            Videos.Clear();
+            TotalCount = 0;
+            IsEmpty = true;
         }
         catch (Exception ex)
         {

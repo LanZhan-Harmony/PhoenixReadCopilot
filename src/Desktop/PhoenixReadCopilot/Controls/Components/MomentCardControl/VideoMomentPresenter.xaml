@@ -66,8 +66,6 @@
                                HorizontalAlignment="Stretch"
                                VerticalAlignment="Stretch"
                                CornerRadius="{StaticResource ControlCornerRadius}"
-                               DecodeHeight="280"
-                               DecodeWidth="380"
                                Source="{x:Bind ViewModel.VideoCover, Mode=OneWay}"/>
         <Border Grid.Row="1"
                 Margin="4"

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:RankPageControlBase x:Class="PhoenixReadCopilot.Controls.Rank.RankDramaBody"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:essential="using:WinUI3Package"
+                           xmlns:local="using:PhoenixReadCopilot.Controls.Rank"
+                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           xmlns:rank="using:PhoenixReadCopilot.Controls.Rank"
+                           mc:Ignorable="d">
+
+    <local:RankPageControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <rank:RankVideoItemTemplate/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </local:RankPageControlBase.Resources>
+
+    <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
+        <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
+            <ItemsRepeater x:Name="DramaRepeater"
+                           Margin="16,12"
+                           ElementClearing="DramaRepeater_ElementClearing"
+                           ElementPrepared="DramaRepeater_ElementPrepared"
+                           ItemTemplate="{StaticResource RankVideoItemTemplate}"
+                           ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
+                           Layout="{StaticResource VideoLayout}"/>
+        </ScrollViewer>
+    </essential:RevealFocusPanel>
+</local:RankPageControlBase>

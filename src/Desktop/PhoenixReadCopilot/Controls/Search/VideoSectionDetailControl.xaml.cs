@@ -2,6 +2,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Components;
+using WinUI3Package;
 using WinUIKernel.Share;
 using WinUIKernel.Share.Base;
 
@@ -79,6 +80,28 @@ public sealed partial class VideoSectionDetailControl : VideoSectionDetailContro
                 _ = ViewModel.LoadItemsAsync();
             }
         });
+    }
+
+    private void VideoRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+        }
+    }
+
+    private void VideoRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            SearchVideoItemTemplate.ClearImage(element);
+        }
     }
 }
 

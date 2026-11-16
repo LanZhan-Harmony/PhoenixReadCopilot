@@ -42,6 +42,8 @@ namespace PhoenixReadCopilot.Core.Helpers;
 [JsonSerializable(typeof(List<PinItem>))]
 [JsonSerializable(typeof(Drama))]
 [JsonSerializable(typeof(List<Drama>))]
+[JsonSerializable(typeof(ReadHistoryItem))]
+[JsonSerializable(typeof(List<ReadHistoryItem>))]
 public sealed partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class JsonAotSerializer

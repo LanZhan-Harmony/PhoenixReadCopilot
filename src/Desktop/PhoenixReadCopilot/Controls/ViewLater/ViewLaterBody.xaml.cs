@@ -1,6 +1,7 @@
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using WinUI3Package;
+using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.Controls.ViewLater;
 
@@ -20,60 +21,39 @@ public sealed partial class ViewLaterBody : ViewLaterPageControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        ViewModel.ListUpdated += OnVideoListUpdatedAsync;
         VideoScrollView.ViewChanged += OnViewChanged;
-        VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
-
-        CheckVideoCount();
     }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        VideoRepeater.ItemsSource = null;
-        ViewModel.ListUpdated -= OnVideoListUpdatedAsync;
         VideoScrollView.ViewChanged -= OnViewChanged;
-        VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
-    }
-
-    private async void OnVideoListUpdatedAsync(object? sender, EventArgs e)
-    {
-        await Task.Delay(500);
-        CheckVideoCount();
     }
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
-        {
-            if (
-                VideoScrollView.ExtentHeight
-                    - VideoScrollView.ViewportHeight
-                    - VideoScrollView.VerticalOffset
-                <= 240
-            )
-            {
-                _ = ViewModel.LoadVideosAsync();
-            }
-        });
+        WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
     }
 
-    private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
+    private void VideoRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
     {
-        if (e.NewSize.Width > 100)
+        if (args.Element is FrameworkElement element)
         {
-            CheckVideoCount();
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
         }
     }
 
-    private void CheckVideoCount()
+    private void VideoRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
     {
-        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        if (args.Element is FrameworkElement element)
         {
-            if (VideoScrollView.ScrollableHeight <= 240 && ViewModel is not null)
-            {
-                _ = ViewModel.LoadVideosAsync();
-            }
-        });
+            ViewLaterVideoItemTemplate.ClearImage(element);
+        }
     }
 }

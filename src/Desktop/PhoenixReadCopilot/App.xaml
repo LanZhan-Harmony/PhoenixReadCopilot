@@ -11,10 +11,12 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
                 <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/CustomNavigationViewResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/ItemsRepeaterItemStyle.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/VideoCardControl/VideoCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/MomentCardControl/MomentCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Core/Player/PlayerResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/ShimmerLayout/ShimmerLayout.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Controls/Components/VideoCoverImage.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <x:Double x:Key="WindowNarrowMinWidth">850</x:Double>
@@ -43,17 +45,17 @@
 
             <UniformGridLayout x:Key="CalendarLayout"
                                ItemsStretch="Fill"
-                               MinColumnSpacing="16"
-                               MinItemHeight="385"
+                               MinColumnSpacing="4"
+                               MinItemHeight="375"
                                MinItemWidth="200"
-                               MinRowSpacing="16"/>
+                               MinRowSpacing="10"/>
 
             <UniformGridLayout x:Key="FilterLayout"
                                ItemsStretch="Fill"
-                               MinColumnSpacing="16"
-                               MinItemHeight="385"
+                               MinColumnSpacing="4"
+                               MinItemHeight="370"
                                MinItemWidth="200"
-                               MinRowSpacing="16"/>
+                               MinRowSpacing="10"/>
 
             <UniformGridLayout x:Key="UserLayout"
                                ItemsStretch="Fill"

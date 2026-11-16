@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -21,7 +22,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 public sealed partial class StartupPageViewModel : ViewModelBase
 {
     private DispatcherTimer? _countdownTimer;
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IAuthenticationService _authService;
     private readonly ILogger<StartupPageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly AppViewModel _appViewModel;
@@ -81,13 +82,13 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="StartupPageViewModel"/> class.
     /// </summary>
     public StartupPageViewModel(
-        PhoenixReadApiClient apiClient,
+        IAuthenticationService authService,
         ILogger<StartupPageViewModel> logger,
         DispatcherQueue dispatcherQueue,
         AppViewModel appViewModel
     )
     {
-        _apiClient = apiClient;
+        _authService = authService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
         _appViewModel = appViewModel;
@@ -120,7 +121,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
             IsQRCodeLoading = true;
             ErrorTip = string.Empty;
 
-            QrCodeLoginSession session = await _apiClient.CreateQrCodeLoginAsync(ct);
+            QrCodeLoginSession session = await _authService.CreateQrCodeLoginAsync(ct);
             if (session.QrCodeImageBytes is { Length: > 0 })
             {
                 RenderQRCode(session.QrCodeImageBytes);
@@ -144,7 +145,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
                                 break;
                             }
 
-                            QrCodeCheckResult result = await _apiClient.CheckQrCodeStatusAsync(
+                            QrCodeCheckResult result = await _authService.CheckQrCodeStatusAsync(
                                 session.Token,
                                 ct
                             );
@@ -212,7 +213,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         {
             IsSmsSending = true;
             ErrorTip = string.Empty;
-            VerificationCodeResult result = await _apiClient.SendVerificationCodeAsync(phone);
+            VerificationCodeResult result = await _authService.SendVerificationCodeAsync(phone);
             int wait = result.RetryAfterSeconds > 0 ? result.RetryAfterSeconds : 60;
             StartCountdown(wait);
         }
@@ -268,7 +269,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
         {
             IsLoggingIn = true;
             ErrorTip = string.Empty;
-            await _apiClient.LoginAsync(phone, code);
+            await _authService.LoginWithSmsAsync(phone, code);
             _dispatcherQueue.TryEnqueue(() =>
             {
                 RequestClose?.Invoke(this, EventArgs.Empty);

@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
+using PhoenixReadCopilot.Activation;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Services;
@@ -20,10 +22,13 @@ internal static class ServiceHelper
     public static void ConfigureServices()
     {
         IServiceCollection services = new ServiceCollection()
+            // 0. 生命周期与激活服务
+            .AddTransient<IActivationHandler, AppNotificationActivationHandler>()
+            .AddTransient<DefaultActivationHandler>()
+            .AddSingleton<IActivationService, ActivationService>()
             // 1. 通用工具
             .AddSingleton<IPathService, PathService>()
             .AddSingleton<ILocalizationService, LocalizationService>()
-            .AddSingleton<ILocalViewLaterService, LocalViewLaterService>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>()
             .AddSingleton<IResourceToolkit, SharedResourceToolkit>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
@@ -35,7 +40,6 @@ internal static class ServiceHelper
             .AddSingleton<AppViewModel>()
             .AddTransient<DanmakuViewModel>()
             .AddTransient<DramaReviewSectionDetailViewModel>()
-            .AddTransient<DownloadViewModel>()
             .AddTransient<FFmpegPlayerViewModel>()
             .AddSingleton<NavigationViewModel>()
             .AddSingleton<PinnerViewModel>()

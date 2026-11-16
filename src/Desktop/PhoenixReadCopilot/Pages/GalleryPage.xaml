@@ -7,6 +7,7 @@
                        xmlns:base="using:WinUIKernel.Share.Base"
                        xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:essential="using:WinUI3Package"
                        xmlns:ic="using:FluentIcons.WinUI"
                        xmlns:local="using:PhoenixReadCopilot.Pages"
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -63,6 +64,7 @@
               Visibility="{x:Bind ViewModel.IsMenuHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
             <CommandBar x:Name="TopBar"
                         VerticalAlignment="Center"
+                        essential:CommandBarHelper.AcrylicWorkaround="True"
                         DefaultLabelPosition="Collapsed">
                 <AppBarButton x:Name="ZoomInButton"
                               Click="OnZoomInButtonClick"

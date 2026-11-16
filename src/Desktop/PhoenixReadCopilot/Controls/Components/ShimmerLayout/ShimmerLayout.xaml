@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:base="using:WinUIKernel.Share.Base"
+                    xmlns:lab="using:CommunityToolkit.Labs.WinUI"
                     xmlns:local="using:PhoenixReadCopilot.Controls.Components">
     <Style TargetType="local:ShimmerLayout">
         <Setter Property="Template">
@@ -19,31 +19,31 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <base:Shimmer HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      CornerRadius="{StaticResource OverlayCornerRadius}"
-                                      IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                        <lab:Shimmer HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     CornerRadius="{StaticResource OverlayCornerRadius}"
+                                     IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
 
                         <StackPanel Grid.Row="1" Spacing="12">
-                            <base:Shimmer Height="40"
-                                          HorizontalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Height="40"
-                                          HorizontalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Height="40"
-                                          HorizontalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Height="40"
+                                         HorizontalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Height="40"
+                                         HorizontalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Height="40"
+                                         HorizontalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
                         </StackPanel>
 
-                        <base:Shimmer Grid.Column="1"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      CornerRadius="{StaticResource OverlayCornerRadius}"
-                                      IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                        <lab:Shimmer Grid.Column="1"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     CornerRadius="{StaticResource OverlayCornerRadius}"
+                                     IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
 
                         <Grid Grid.Row="1"
                               Grid.Column="1"
@@ -60,54 +60,54 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <base:Shimmer HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Column="1"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Column="2"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Row="1"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Row="1"
-                                          Grid.Column="1"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Row="1"
-                                          Grid.Column="2"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Row="2"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Row="2"
-                                          Grid.Column="1"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Row="2"
-                                          Grid.Column="2"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Column="1"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Column="2"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Row="1"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Row="1"
+                                         Grid.Column="1"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Row="1"
+                                         Grid.Column="2"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Row="2"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Row="2"
+                                         Grid.Column="1"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Row="2"
+                                         Grid.Column="2"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
                         </Grid>
                     </Grid>
                 </ControlTemplate>
@@ -131,39 +131,39 @@
                             <ColumnDefinition Width="280"/>
                         </Grid.ColumnDefinitions>
 
-                        <base:Shimmer HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      CornerRadius="{StaticResource OverlayCornerRadius}"
-                                      IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                        <lab:Shimmer HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     CornerRadius="{StaticResource OverlayCornerRadius}"
+                                     IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
 
                         <Grid Grid.Row="1" RowSpacing="20">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="3*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <base:Shimmer HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
-                            <base:Shimmer Grid.Row="1"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          CornerRadius="{StaticResource OverlayCornerRadius}"
-                                          IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                            <lab:Shimmer Grid.Row="1"
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         CornerRadius="{StaticResource OverlayCornerRadius}"
+                                         IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
                         </Grid>
 
-                        <base:Shimmer Grid.Column="1"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      CornerRadius="{StaticResource OverlayCornerRadius}"
-                                      IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                        <lab:Shimmer Grid.Column="1"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     CornerRadius="{StaticResource OverlayCornerRadius}"
+                                     IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
 
-                        <base:Shimmer Grid.Row="1"
-                                      Grid.Column="1"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      CornerRadius="{StaticResource OverlayCornerRadius}"
-                                      IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
+                        <lab:Shimmer Grid.Row="1"
+                                     Grid.Column="1"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     CornerRadius="{StaticResource OverlayCornerRadius}"
+                                     IsActive="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsActive}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

@@ -2,6 +2,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Components;
+using WinUI3Package;
 using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.Controls.Favorites;
@@ -98,5 +99,27 @@ public sealed partial class VideoFavoriteBody : VideoFavoriteControlBase
                 _ = ViewModel.LoadItemsAsync();
             }
         });
+    }
+
+    private void VideoRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+        }
+    }
+
+    private void VideoRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            FavoriteVideoItemTemplate.ClearImage(element);
+        }
     }
 }

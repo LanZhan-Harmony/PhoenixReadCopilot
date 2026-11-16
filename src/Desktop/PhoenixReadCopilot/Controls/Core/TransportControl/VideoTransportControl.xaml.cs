@@ -97,10 +97,7 @@ public sealed partial class VideoTransportControl : PlayerControlBase
 
         if (_seekDebounceTimer is null)
         {
-            _seekDebounceTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(160)
-            };
+            _seekDebounceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(160) };
             _seekDebounceTimer.Tick += (_, _) =>
             {
                 _seekDebounceTimer.Stop();

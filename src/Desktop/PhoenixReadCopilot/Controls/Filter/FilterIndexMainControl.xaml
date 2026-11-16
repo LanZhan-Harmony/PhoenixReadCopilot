@@ -5,26 +5,33 @@
                               xmlns:base="using:WinUIKernel.Share.Base"
                               xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                              xmlns:essential="using:WinUI3Package"
                               xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                               xmlns:local="using:PhoenixReadCopilot.Controls.Filter"
                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                               xmlns:strings="using:PhoenixReadCopilot.Strings"
                               mc:Ignorable="d">
 
+    <local:FilterIndexControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <local:FilterVideoItemTemplate/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </local:FilterIndexControlBase.Resources>
+
     <Grid>
-        <ScrollViewer x:Name="IndexScrollView" Style="{StaticResource PageScrollViewerStyle}">
-            <Grid Margin="16,12">
+        <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
+            <ScrollViewer x:Name="IndexScrollView" Style="{StaticResource PageScrollViewerStyle}">
                 <ItemsRepeater x:Name="IndexRepeater"
+                               Margin="16,12"
+                               ElementClearing="ItemRepeater_ElementClearing"
+                               ElementPrepared="ItemRepeater_ElementPrepared"
+                               ItemTemplate="{StaticResource FilterVideoItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                               Layout="{StaticResource FilterLayout}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="items:VideoItemViewModel">
-                            <components:VideoCardControl Style="{StaticResource FilterVideoCardStyle}" ViewModel="{x:Bind}"/>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-            </Grid>
-        </ScrollViewer>
+                               Layout="{StaticResource FilterLayout}"/>
+            </ScrollViewer>
+        </essential:RevealFocusPanel>
         <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsIndexLoading, Mode=OneWay}"/>
     </Grid>
 </local:FilterIndexControlBase>
