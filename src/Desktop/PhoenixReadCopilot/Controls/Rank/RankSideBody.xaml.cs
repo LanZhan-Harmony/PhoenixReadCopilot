@@ -39,8 +39,11 @@ public sealed partial class RankSideBody : RankPageControlBase
         ItemsViewSelectionChangedEventArgs args
     )
     {
-        IRankSectionItemViewModel? item = sender.SelectedItem as IRankSectionItemViewModel;
-        _ = ViewModel.SelectSectionAsync(item);
+        RankSectionItemViewModel? item = sender.SelectedItem as RankSectionItemViewModel;
+        if (item is not null)
+        {
+            _ = ViewModel.SelectSectionAsync(item);
+        }
     }
 
     private void CheckSectionSelection()

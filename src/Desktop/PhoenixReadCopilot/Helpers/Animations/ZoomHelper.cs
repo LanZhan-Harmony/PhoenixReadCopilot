@@ -1,3 +1,4 @@
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -123,7 +124,7 @@ public sealed class ZoomHelper : DependencyObject, IAttached
         if (isCtrlPressed || (TriggerWhenFocused && Target is Control c && c.ContainsFocus()))
         {
             // Get the delta of the scroll wheel
-            var pointerPoint = e.GetCurrentPoint(sender as FrameworkElement);
+            PointerPoint pointerPoint = e.GetCurrentPoint(sender as FrameworkElement);
             var delta = pointerPoint.Properties.MouseWheelDelta;
 
             if (Mode is ZoomTriggerMode.Threshold)

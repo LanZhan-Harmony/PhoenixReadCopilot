@@ -25,7 +25,7 @@ public static class Composition
         public T GetCached<T>(string key, Func<T> create)
             where T : notnull
         {
-            if (!_objCache.TryGetValue(c, out var dic))
+            if (!_objCache.TryGetValue(c, out Dictionary<string, object>? dic))
             {
                 _objCache[c] = dic = [];
             }
@@ -128,8 +128,8 @@ public static class Composition
 
     public static InsetClip ClipToBounds(UIElement element)
     {
-        var v = GetElementVisual(element);
-        var c = v!.Compositor.CreateInsetClip();
+        Visual? v = GetElementVisual(element);
+        InsetClip c = v!.Compositor.CreateInsetClip();
         v.Clip = c;
         return c;
     }
@@ -169,7 +169,7 @@ public static class Composition
 
         public UIElement EnableCompositionTranslation(Vector3? defaultTranslation)
         {
-            var visual = GetElementVisual(element)!;
+            Visual visual = GetElementVisual(element)!;
             if (
                 visual.Properties.TryGetVector3(CompositionFactory.TRANSLATION, out _)
                 == CompositionGetValueStatus.NotFound
@@ -204,7 +204,10 @@ public static class Composition
     {
         public Vector3 GetTranslation()
         {
-            visual.Properties.TryGetVector3(CompositionFactory.TRANSLATION, out var translation);
+            visual.Properties.TryGetVector3(
+                CompositionFactory.TRANSLATION,
+                out Vector3 translation
+            );
             return translation;
         }
 
@@ -1063,9 +1066,9 @@ public static class Composition
     {
         public CompositionGradientBrush AsCompositionBrush(Compositor compositor)
         {
-            var compBrush = compositor.CreateLinearGradientBrush();
+            CompositionLinearGradientBrush compBrush = compositor.CreateLinearGradientBrush();
 
-            foreach (var stop in brush.GradientStops)
+            foreach (GradientStop? stop in brush.GradientStops)
             {
                 compBrush.ColorStops.Add(
                     compositor.CreateColorGradientStop((float)stop.Offset, stop.Color)
@@ -1103,8 +1106,8 @@ public static class Composition
             params CompositionAnimation[] animations
         )
         {
-            var group = c.CreateAnimationGroup();
-            foreach (var a in animations)
+            CompositionAnimationGroup group = c.CreateAnimationGroup();
+            foreach (CompositionAnimation a in animations)
             {
                 group.Add(a);
             }
@@ -1119,7 +1122,7 @@ public static class Composition
         public bool HasImplicitAnimation(string path)
         {
             return c.ImplicitAnimations is not null
-                && c.ImplicitAnimations.TryGetValue(path, out var v)
+                && c.ImplicitAnimations.TryGetValue(path, out ICompositionAnimationBase? v)
                 && v is not null;
         }
 

@@ -31,6 +31,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     private readonly CommentMainViewModel _comments;
     private readonly PhoenixReadApiClient _apiClient;
     private readonly DramaReviewSectionDetailViewModel _dramaReviews;
+    private readonly IHistoryService _historyService;
 
     private DramaDetails? _dramaDetails;
     private string _dramaId = string.Empty;
@@ -159,9 +160,29 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     public SubtitleViewModel Subtitle { get; }
 
     /// <summary>
-    /// 下载视图模型.
+    /// 当前剧集 ID.
     /// </summary>
-    public DownloadViewModel Downloader { get; }
+    public string DramaId => _dramaId;
+
+    /// <summary>
+    /// 当前剧集名称.
+    /// </summary>
+    public string DramaTitle => _dramaDetails?.Drama?.Title ?? Title ?? string.Empty;
+
+    /// <summary>
+    /// 当前封面 URL.
+    /// </summary>
+    public string CoverUrl => _dramaDetails?.Drama?.CoverUrl ?? Cover?.ToString() ?? string.Empty;
+
+    /// <summary>
+    /// 当前剧集所有分集.
+    /// </summary>
+    public IReadOnlyList<Episode>? Episodes => _episodes;
+
+    /// <summary>
+    /// 当前正在播放的分集.
+    /// </summary>
+    public Episode? CurrentEpisode => _currentEpisode;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPageViewModel"/> class.
@@ -171,14 +192,14 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         DanmakuViewModel danmaku,
         SubtitleViewModel subtitle,
         CommentMainViewModel comments,
-        DownloadViewModel download,
         ISettingsService settingsService,
         AppViewModel appViewModel,
         NavigationViewModel navigationViewModel,
         PinnerViewModel pinnerViewModel,
         DispatcherQueue dispatcherQueue,
         PhoenixReadApiClient apiClient,
-        DramaReviewSectionDetailViewModel dramaReviews
+        DramaReviewSectionDetailViewModel dramaReviews,
+        IHistoryService historyService
     )
         : base(settingsService, appViewModel)
     {
@@ -189,11 +210,10 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         _comments = comments;
         _apiClient = apiClient;
         _dramaReviews = dramaReviews;
+        _historyService = historyService;
         Danmaku = danmaku;
         Subtitle = subtitle;
-        Downloader = download;
         CurrentLoop = VideoLoopType.None;
-        Subtitle.SetInitializedCallback(SyncDownloadAndSubtitle);
         Player.SetProgressAction(PlayerProgressChanged);
         Player.SetStateAction(PlayerStateChanged);
         Player.SetEndAction(PlayerMediaEnded);
@@ -473,8 +493,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         try
         {
-            CancellationTokenSource cancellationToken = new(TimeSpan.FromSeconds(2));
-            await _apiClient.ReportProgressAsync(
+            using CancellationTokenSource cancellationToken = new(TimeSpan.FromSeconds(2));
+            await _historyService.ReportProgressAsync(
                 new ProgressUpdate
                 {
                     DramaId = _dramaId,
@@ -483,7 +503,9 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                     CurrentPositionMs = progress * 1000L,
                     DurationMs = (long)_currentEpisode.Duration.TotalMilliseconds,
                 },
-                cancellationToken.Token
+                title: _dramaDetails?.Drama?.Title ?? string.Empty,
+                coverUrl: _dramaDetails?.Drama?.CoverUrl ?? string.Empty,
+                cancellationToken: cancellationToken.Token
             );
         }
         catch (Exception ex)
@@ -717,7 +739,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         _currentEpisode = episode;
         _currentVideoId = episode.VideoId;
-        Downloader.CurrentEpisode = episode;
         Player.CancelNotification();
 
         Danmaku?.ResetData(_dramaId, episode.VideoId);
@@ -892,15 +913,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
     private void InitializePlaybackMedias(IReadOnlyList<PlaybackMedia> mediaList)
     {
-        Downloader.Clear();
-        Downloader.InitializeDrama(
-            _dramaId,
-            Title,
-            Cover?.ToString() ?? string.Empty,
-            _episodes,
-            _currentEpisode
-        );
-
         // 按清晰度文案去重，每种清晰度只保留一条，优先保留带解密密钥与高码率的
         List<PlaybackMedia> distinctMedias =
         [
@@ -915,16 +927,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         ];
 
         Formats = [.. distinctMedias.Select(m => new PlayerFormatItemViewModel(m))];
-
-        int partIndex =
-            _episodes is not null && _currentEpisode is not null
-                ? _episodes.ToList().FindIndex(e => e.VideoId == _currentEpisode.VideoId)
-                : 0;
-
-        Downloader.InitializeMetas(
-            [.. Formats.Select(p => p.Data)],
-            partIndex >= 0 ? partIndex + 1 : 1
-        );
 
         // 选择最佳画质或用户偏好画质
         PlayerFormatItemViewModel? selectedFormat = Formats.FirstOrDefault();
@@ -1232,13 +1234,6 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         _ = InitializeDashMediaAsync(_currentEpisode);
-    }
-
-    private void SyncDownloadAndSubtitle()
-    {
-        bool isAISubtitleFiltered = _settings.FilterAISubtitle;
-        Downloader.HasAvailableSubtitle =
-            Subtitle.IsAvailable && (!isAISubtitleFiltered || Subtitle.Metas.Any(p => !p.IsAI));
     }
 
     private void InitializeLoops()

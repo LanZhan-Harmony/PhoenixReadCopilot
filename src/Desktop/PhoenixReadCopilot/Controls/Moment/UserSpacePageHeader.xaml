@@ -2,10 +2,10 @@
 <local:UserSpacePageControlBase x:Class="PhoenixReadCopilot.Controls.Moment.UserSpacePageHeader"
                                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                xmlns:base="using:WinUIKernel.Share.Base"
                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                 xmlns:essential="using:WinUI3Package"
                                 xmlns:ic="using:FluentIcons.WinUI"
+                                xmlns:lab="using:CommunityToolkit.Labs.WinUI"
                                 xmlns:local="using:PhoenixReadCopilot.Controls.Moment"
                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                 xmlns:strings="using:PhoenixReadCopilot.Strings"
@@ -114,21 +114,21 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
-                                    <base:Shimmer Height="48"
-                                                  HorizontalAlignment="Stretch"
-                                                  CornerRadius="24"
-                                                  IsActive="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
-                                    <base:Shimmer Grid.Column="1"
-                                                  Height="48"
-                                                  HorizontalAlignment="Stretch"
-                                                  CornerRadius="{StaticResource ControlCornerRadius}"
-                                                  IsActive="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
+                                    <lab:Shimmer Height="48"
+                                                 HorizontalAlignment="Stretch"
+                                                 CornerRadius="24"
+                                                 IsActive="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
+                                    <lab:Shimmer Grid.Column="1"
+                                                 Height="48"
+                                                 HorizontalAlignment="Stretch"
+                                                 CornerRadius="{StaticResource ControlCornerRadius}"
+                                                 IsActive="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
                                 </Grid>
 
-                                <base:Shimmer Height="48"
-                                              HorizontalAlignment="Stretch"
-                                              CornerRadius="{StaticResource ControlCornerRadius}"
-                                              IsActive="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
+                                <lab:Shimmer Height="48"
+                                             HorizontalAlignment="Stretch"
+                                             CornerRadius="{StaticResource ControlCornerRadius}"
+                                             IsActive="{x:Bind ViewModel.Card, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
                             </StackPanel>
                         </Grid>
                     </Flyout>

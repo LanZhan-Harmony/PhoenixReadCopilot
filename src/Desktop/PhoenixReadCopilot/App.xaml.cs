@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
@@ -21,8 +22,7 @@ public partial class App : Application
     private readonly DispatcherQueue _dispatcherQueue;
 
     /// <summary>
-    /// Initializes the singleton application object.  This is the first line of authored code
-    /// executed, and as such is the logical equivalent of main() or WinMain().
+    /// Initializes the singleton application object.
     /// </summary>
     public App()
     {
@@ -36,15 +36,21 @@ public partial class App : Application
     /// Invoked when the application is launched.
     /// </summary>
     /// <param name="args">Details about the launch request and process.</param>
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
+        base.OnLaunched(args);
+
         AppInstance instance = AppInstance.FindOrRegisterForKey(Id);
         if (instance.IsCurrent)
         {
             instance.Activated += OnInstanceActivated;
-            Ioc.Default.GetRequiredService<AppViewModel>().Launch();
+            await Ioc.Default.GetRequiredService<IActivationService>().ActivateAsync(args);
+
             MainWindow? mainWindow = GetMainWindow();
-            mainWindow?.Closed += OnMainWindowClosed;
+            if (mainWindow is not null)
+            {
+                mainWindow.Closed += OnMainWindowClosed;
+            }
         }
         else
         {
@@ -58,7 +64,10 @@ public partial class App : Application
         CursorController.ApplyCursorWorkaround();
     }
 
-    private static MainWindow? GetMainWindow() =>
+    /// <summary>
+    /// 获取当前应用主窗口.
+    /// </summary>
+    public static MainWindow? GetMainWindow() =>
         Ioc.Default.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow)
         as MainWindow;
 
@@ -69,9 +78,9 @@ public partial class App : Application
 
     private void OnInstanceActivated(object? sender, AppActivationArguments e)
     {
-        _dispatcherQueue.TryEnqueue(() =>
+        _dispatcherQueue.TryEnqueue(async () =>
         {
-            GetMainWindow()?.Activate();
+            await Ioc.Default.GetRequiredService<IActivationService>().ActivateAsync(e);
         });
     }
 

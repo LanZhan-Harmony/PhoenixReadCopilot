@@ -59,7 +59,7 @@
         <!--Register COM CLSID-->
         <com:Extension Category="windows.comServer">
           <com:ComServer>
-            <com:ExeServer Executable="PhoenixReadCopilot\PhoenixReadCopilot.exe" DisplayName="红果助理" Arguments="----AppNotificationActivated:">
+            <com:ExeServer Executable="PhoenixReadCopilot.exe" DisplayName="Toast activator" Arguments="----AppNotificationActivated:">
               <com:Class Id="E3D99E22-57A2-41B9-BB2D-E1547E68DEBA" />
             </com:ExeServer>
           </com:ComServer>

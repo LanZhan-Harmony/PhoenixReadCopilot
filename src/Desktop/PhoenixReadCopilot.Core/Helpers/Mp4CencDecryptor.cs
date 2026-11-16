@@ -37,6 +37,56 @@ public static class Mp4CencDecryptor
     private static readonly uint FourCcFree = BinaryPrimitives.ReadUInt32BigEndian("free"u8);
 
     /// <summary>
+    /// 解密指定路径的 MP4 视频文件.
+    /// 若输入输出路径一致，直接在原地解密；若不同，复制至目标路径后在目标上执行就地解密.
+    /// </summary>
+    /// <param name="inputPath">输入加密文件路径.</param>
+    /// <param name="outputPath">输出解密文件路径.</param>
+    /// <param name="key">16 字节 AES-128 密钥.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    public static void DecryptFile(
+        string inputPath,
+        string outputPath,
+        byte[] key,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(inputPath);
+        ArgumentException.ThrowIfNullOrWhiteSpace(outputPath);
+        ArgumentNullException.ThrowIfNull(key);
+
+        if (!File.Exists(inputPath))
+        {
+            throw new FileNotFoundException("待解密的输入文件不存在.", inputPath);
+        }
+
+        string fullInput = Path.GetFullPath(inputPath);
+        string fullOutput = Path.GetFullPath(outputPath);
+
+        if (!string.Equals(fullInput, fullOutput, StringComparison.OrdinalIgnoreCase))
+        {
+            string? outDir = Path.GetDirectoryName(fullOutput);
+            if (!string.IsNullOrWhiteSpace(outDir) && !Directory.Exists(outDir))
+            {
+                Directory.CreateDirectory(outDir);
+            }
+
+            File.Copy(fullInput, fullOutput, overwrite: true);
+        }
+
+        using FileStream fs = new(
+            fullOutput,
+            FileMode.Open,
+            FileAccess.ReadWrite,
+            FileShare.None,
+            bufferSize: 65536,
+            useAsync: false
+        );
+
+        DecryptInPlace(fs, key, cancellationToken);
+    }
+
+    /// <summary>
     /// 对指定的文件流就地执行 CENC 解密.
     /// 针对 FileStream 采用 MemoryMappedFile 零拷贝 I/O；针对普通流自动回退至池化流式模式.
     /// </summary>

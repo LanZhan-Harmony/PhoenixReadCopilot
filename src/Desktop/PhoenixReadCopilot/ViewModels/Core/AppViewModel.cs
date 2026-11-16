@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.BadgeNotifications;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
@@ -54,8 +55,8 @@ public sealed partial class AppViewModel : ViewModelBase
     /// </summary>
     public static void Restart()
     {
-        Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().UnregisterKey();
-        Microsoft.Windows.AppLifecycle.AppInstance.Restart(null);
+        AppInstance.GetCurrent().UnregisterKey();
+        AppInstance.Restart(null);
     }
 
     /// <summary>

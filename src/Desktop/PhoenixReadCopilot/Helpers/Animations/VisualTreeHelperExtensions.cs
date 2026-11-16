@@ -54,8 +54,8 @@ public static class VisualTreeHelperExtensions
                 return new Rect(0, 0, relativeTo.ActualWidth, relativeTo.ActualHeight);
             }
 
-            var pos = dob.TransformToVisual(relativeTo).TransformPoint(new Point());
-            var pos2 = dob.TransformToVisual(relativeTo)
+            Point pos = dob.TransformToVisual(relativeTo).TransformPoint(new Point());
+            Point pos2 = dob.TransformToVisual(relativeTo)
                 .TransformPoint(new Point(dob.ActualWidth, dob.ActualHeight));
 
             return new Rect(pos, pos2);
@@ -131,7 +131,7 @@ public static class VisualTreeHelperExtensions
 
             while (queue.Count > 0)
             {
-                var parent = queue.Dequeue();
+                FrameworkElement parent = queue.Dequeue();
                 var count2 = VisualTreeHelper.GetChildrenCount(parent);
 
                 for (var i = 0; i < count2; i++)

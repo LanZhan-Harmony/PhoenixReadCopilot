@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -16,6 +17,8 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 public sealed partial class AccountViewModel : ViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
+    private readonly IAuthenticationService _authService;
+    private readonly IHistoryService _historyService;
     private readonly NavigationViewModel _navService;
     private readonly ILogger<AccountViewModel> _logger;
     private readonly AppViewModel _appViewModel;
@@ -43,15 +46,37 @@ public sealed partial class AccountViewModel : ViewModelBase
     /// </summary>
     public AccountViewModel(
         PhoenixReadApiClient apiClient,
+        IAuthenticationService authService,
+        IHistoryService historyService,
         NavigationViewModel navService,
         AppViewModel appViewModel,
         ILogger<AccountViewModel> logger
     )
     {
         _apiClient = apiClient;
+        _authService = authService;
+        _historyService = historyService;
         _navService = navService;
         _appViewModel = appViewModel;
         _logger = logger;
+
+        _authService.StateChanged += OnAuthStateChanged;
+    }
+
+    private void OnAuthStateChanged(object? sender, bool isAuthenticated)
+    {
+        if (!isAuthenticated)
+        {
+            MyProfile = null;
+            MomentCount = 0;
+            FollowCount = 0;
+            FansCount = 0;
+            Introduce = string.Empty;
+        }
+        else
+        {
+            _ = InitializeAsync();
+        }
     }
 
     public async Task InitializeAsync()
@@ -64,10 +89,9 @@ public sealed partial class AccountViewModel : ViewModelBase
         IsInitializing = true;
         try
         {
-            bool isValid = await _apiClient.ValidateSessionAsync();
-            if (isValid)
+            bool isValid = await _authService.InitializeAsync();
+            if (isValid && _authService.CurrentUser is { } info)
             {
-                AuthenticatedUser info = await _apiClient.GetCurrentUserInfoAsync();
                 UserAvatar? avatar =
                     !string.IsNullOrEmpty(info.AvatarUrl)
                     && Uri.TryCreate(info.AvatarUrl, UriKind.Absolute, out Uri? uri)
@@ -116,7 +140,7 @@ public sealed partial class AccountViewModel : ViewModelBase
         try
         {
             DramaPage favs = await _apiClient.GetFavoritesAsync(count: 1);
-            ReadHistoryPage history = await _apiClient.GetHistoryAsync(count: 1);
+            ReadHistoryPage history = await _historyService.GetHistoryAsync(count: 1);
             FollowCount = (int)favs.Total;
             MomentCount = (int)history.Total;
         }
@@ -129,10 +153,8 @@ public sealed partial class AccountViewModel : ViewModelBase
     [RelayCommand]
     private async Task SignOutAsync()
     {
-        _apiClient.Logout();
+        await _authService.LogoutAsync();
         MyProfile = null;
-        AppViewModel.Restart();
-        await Task.CompletedTask;
     }
 
     [RelayCommand]

@@ -46,6 +46,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Shimmer" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
@@ -102,7 +103,7 @@
 
   <!-- Publish Properties -->
   <PropertyGroup>
-    <PublishAot>True</PublishAot>
+    <!--<PublishAot>True</PublishAot>-->
     <!--<OptimizationPreference>Speed</OptimizationPreference>-->
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>

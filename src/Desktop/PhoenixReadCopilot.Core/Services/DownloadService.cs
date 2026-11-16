@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,7 +12,7 @@ using ZLogger;
 namespace PhoenixReadCopilot.Core.Services;
 
 /// <summary>
-/// 短剧与媒体下载服务实现 (基于纯 C# CENC 就地极速解密引擎，高度并行化下载).
+/// 短剧与媒体下载服务实现.
 /// </summary>
 public sealed class DownloadService : IDownloadService
 {
@@ -61,9 +60,7 @@ public sealed class DownloadService : IDownloadService
         }
     }
 
-    /// <summary>
-    /// 获取并确保某部短剧专属下载目录存在.
-    /// </summary>
+    /// <inheritdoc/>
     public string GetDramaFolderPath(string dramaTitle)
     {
         string sanitized = SanitizeFileName(dramaTitle);
@@ -82,6 +79,7 @@ public sealed class DownloadService : IDownloadService
         int episodeNumber,
         string episodeTitle,
         string dramaTitle,
+        string? coverUrl = null,
         PlayerFormatInformation? preferFormat = null,
         CancellationToken cancellationToken = default
     )
@@ -92,9 +90,11 @@ public sealed class DownloadService : IDownloadService
         return await Task.Run(
             async () =>
             {
+                string dramaDir = GetDramaFolderPath(dramaTitle);
+                string? logoUri = ResolveCoverUri(dramaDir, coverUrl);
+
                 try
                 {
-                    string dramaDir = GetDramaFolderPath(dramaTitle);
                     string? outputPath = await DownloadSingleEpisodeCoreAsync(
                         dramaId,
                         videoId,
@@ -106,22 +106,19 @@ public sealed class DownloadService : IDownloadService
 
                     if (outputPath is not null)
                     {
-                        // 单集成功时使用原生系统通知，不弹应用内提示
                         _notificationService.ShowSystemNotification(
-                            dramaTitle,
-                            $"第 {episodeNumber} 集下载完成！"
+                            title: $"下载完成 {dramaTitle}",
+                            message: $"第 {episodeNumber} 集下载完成！",
+                            logoUri: logoUri,
+                            folderPath: dramaDir
                         );
-
-                        if (_settingsService.Settings.OpenFolderAfterDownload)
-                        {
-                            TryOpenFolderAndSelect(outputPath);
-                        }
                     }
                     else
                     {
-                        await _notificationService.ShowInAppNotificationAsync(
-                            $"第 {episodeNumber} 集下载失败: 未获取到可用播放源",
-                            NotificationType.Error
+                        _notificationService.ShowSystemNotification(
+                            title: $"下载失败 {dramaTitle}",
+                            message: $"第 {episodeNumber} 集未获取到可用播放源",
+                            logoUri: logoUri
                         );
                     }
 
@@ -135,9 +132,10 @@ public sealed class DownloadService : IDownloadService
                 catch (Exception ex)
                 {
                     _logger.ZLogError(ex, $"下载第 {episodeNumber} 集失败: {ex.Message}");
-                    await _notificationService.ShowInAppNotificationAsync(
-                        $"第 {episodeNumber} 集下载失败: {ex.Message}",
-                        NotificationType.Error
+                    _notificationService.ShowSystemNotification(
+                        title: $"下载失败 {dramaTitle}",
+                        message: $"第 {episodeNumber} 集下载失败: {ex.Message}",
+                        logoUri: logoUri
                     );
                     return null;
                 }
@@ -151,6 +149,7 @@ public sealed class DownloadService : IDownloadService
         string dramaId,
         string dramaTitle,
         IReadOnlyList<Episode> episodes,
+        string? coverUrl = null,
         PlayerFormatInformation? preferFormat = null,
         CancellationToken cancellationToken = default
     )
@@ -165,20 +164,22 @@ public sealed class DownloadService : IDownloadService
         int total = list.Count;
         string tag = $"batch_download_{dramaId}";
         string dramaDir = GetDramaFolderPath(dramaTitle);
+        string? logoUri = ResolveCoverUri(dramaDir, coverUrl);
 
-        // 初始原生通知
+        // 初始原生通知：顶部大标题为 "正在下载 剧名"，进度条上的标题为 "剧名"
         _notificationService.UpdateProgressNotification(
-            tag,
-            $"{dramaTitle} 批量下载",
-            $"下载进度: 0/{total} (0%)",
-            0.0,
-            isCompleted: false
+            tag: tag,
+            headerTitle: $"正在下载 {dramaTitle}",
+            progressBarTitle: dramaTitle,
+            status: $"准备下载共 {total} 集...",
+            progress: 0.0,
+            isCompleted: false,
+            logoUri: logoUri
         );
 
         int completedCount = 0;
         ConcurrentBag<(int Episode, string Reason)> failedEpisodes = [];
 
-        // 高度并行化下载
         ParallelOptions parallelOptions = new()
         {
             MaxDegreeOfParallelism = Math.Clamp(Environment.ProcessorCount * 2, 4, 16),
@@ -203,13 +204,14 @@ public sealed class DownloadService : IDownloadService
                     int done = Interlocked.Increment(ref completedCount);
                     double progress = (double)done / total;
 
-                    // 仅当整集完全下载并解密完成后，才更新一次系统进度通知
                     _notificationService.UpdateProgressNotification(
-                        tag,
-                        $"{dramaTitle} 批量下载",
-                        $"下载进度: {done}/{total} ({Math.Round(progress * 100)}%)",
-                        progress,
-                        isCompleted: false
+                        tag: tag,
+                        headerTitle: $"正在下载 {dramaTitle}",
+                        progressBarTitle: dramaTitle,
+                        status: $"已下载 {done}/{total} 集",
+                        progress: progress,
+                        isCompleted: false,
+                        logoUri: logoUri
                     );
                 }
                 else
@@ -224,56 +226,37 @@ public sealed class DownloadService : IDownloadService
             }
         });
 
-        // 最终通知结算
+        // 批量完成后，先移除进度条通知，然后展示带“打开文件夹”按钮和封面 Logo 的完成系统通知
+        await _notificationService.RemoveNotificationAsync(tag);
+
         if (failedEpisodes.IsEmpty)
         {
-            // 全部成功：仅用原生系统通知，无需应用内提示
-            _notificationService.UpdateProgressNotification(
-                tag,
-                $"{dramaTitle} 批量下载",
-                $"全部 {total} 集已下载完成！",
-                1.0,
-                isCompleted: true
+            _notificationService.ShowSystemNotification(
+                title: $"下载完成 {dramaTitle}",
+                message: $"全部 {total} 集已下载完成！",
+                logoUri: logoUri,
+                folderPath: dramaDir
             );
-
-            _notificationService.ShowSystemNotification(dramaTitle, $"全部 {total} 集已下载完成！");
         }
         else
         {
-            // 存在失败分集：更新系统通知并统一在应用内汇总报错
             int successCount = completedCount;
-            _notificationService.UpdateProgressNotification(
-                tag,
-                $"{dramaTitle} 批量下载",
-                $"下载完成: 成功 {successCount}/{total} 集",
-                1.0,
-                isCompleted: true
-            );
-
-            _notificationService.ShowSystemNotification(
-                dramaTitle,
-                $"批量下载完成: 成功 {successCount}/{total} 集，失败 {failedEpisodes.Count} 集。"
-            );
-
             string failedEpNumbers = string.Join(
                 "、",
                 failedEpisodes.Select(f => f.Episode).OrderBy(n => n)
             );
 
-            await _notificationService.ShowInAppNotificationAsync(
-                $"《{dramaTitle}》批量下载完成，但第 {failedEpNumbers} 集下载失败，请稍后重试。",
-                NotificationType.Warning
+            _notificationService.ShowSystemNotification(
+                title: $"下载完成 {dramaTitle}",
+                message: $"成功 {successCount}/{total} 集，第 {failedEpNumbers} 集下载失败。",
+                logoUri: logoUri,
+                folderPath: dramaDir
             );
-        }
-
-        if (_settingsService.Settings.OpenFolderAfterDownload)
-        {
-            TryOpenFolder(dramaDir);
         }
     }
 
     /// <summary>
-    /// 内部单集下载与解密核心实现.
+    /// 内部单集下载与解密核心实现（命名为 {episodeNumber}.mp4，纯后台执行）.
     /// </summary>
     private async Task<string?> DownloadSingleEpisodeCoreAsync(
         string dramaId,
@@ -307,7 +290,6 @@ public sealed class DownloadService : IDownloadService
             return null;
         }
 
-        // 文件命名规范: {episodeNumber}.mp4 (如 1.mp4, 2.mp4)
         string outputPath = Path.Combine(dramaDir, $"{episodeNumber}.mp4");
         string tempPath = Path.Combine(dramaDir, $".temp_{episodeNumber}_{Guid.NewGuid():N}.mp4");
 
@@ -343,7 +325,7 @@ public sealed class DownloadService : IDownloadService
                 await response.Content.CopyToAsync(fs, cancellationToken);
             }
 
-            // 2. CENC 就地解密 (直接在当前并行 Worker 线程执行)
+            // 2. 纯 C# CENC 就地解密
             if (!string.IsNullOrWhiteSpace(targetMedia.DecryptionKey))
             {
                 byte[] keyBytes = Convert.FromHexString(targetMedia.DecryptionKey);
@@ -388,29 +370,38 @@ public sealed class DownloadService : IDownloadService
         CancellationToken cancellationToken = default
     )
     {
+        string dramaDir = GetDramaFolderPath(dramaTitle);
         if (string.IsNullOrWhiteSpace(coverUrl))
         {
+            _notificationService.ShowSystemNotification(
+                title: $"封面下载失败 {dramaTitle}",
+                message: "未找到封面图片地址"
+            );
             return null;
         }
 
         try
         {
-            string dramaDir = GetDramaFolderPath(dramaTitle);
             string savePath = Path.Combine(dramaDir, "cover.jpg");
-
             byte[] bytes = await _httpClient.GetByteArrayAsync(coverUrl, cancellationToken);
             await File.WriteAllBytesAsync(savePath, bytes, cancellationToken);
 
-            if (_settingsService.Settings.OpenFolderAfterDownload)
-            {
-                TryOpenFolderAndSelect(savePath);
-            }
+            _notificationService.ShowSystemNotification(
+                title: $"封面下载完成 {dramaTitle}",
+                message: "封面已成功保存至本地！",
+                logoUri: savePath,
+                folderPath: dramaDir
+            );
 
             return savePath;
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"下载封面失败.");
+            _notificationService.ShowSystemNotification(
+                title: $"封面下载失败 {dramaTitle}",
+                message: $"下载封面失败: {ex.Message}"
+            );
             return null;
         }
     }
@@ -421,11 +412,20 @@ public sealed class DownloadService : IDownloadService
         string videoId,
         int episodeNumber,
         string dramaTitle,
+        string? coverUrl = null,
         CancellationToken cancellationToken = default
     )
     {
+        string dramaDir = GetDramaFolderPath(dramaTitle);
+        string? logoUri = ResolveCoverUri(dramaDir, coverUrl);
+
         if (string.IsNullOrWhiteSpace(dramaId) || string.IsNullOrWhiteSpace(videoId))
         {
+            _notificationService.ShowSystemNotification(
+                title: $"弹幕下载提示 {dramaTitle}",
+                message: $"第 {episodeNumber} 集无可用弹幕数据",
+                logoUri: logoUri
+            );
             return null;
         }
 
@@ -441,10 +441,15 @@ public sealed class DownloadService : IDownloadService
 
             if (danmakuPage.Items is null || danmakuPage.Items.Count == 0)
             {
+                _notificationService.ShowSystemNotification(
+                    title: $"弹幕下载提示 {dramaTitle}",
+                    message: $"第 {episodeNumber} 集无可用弹幕数据",
+                    logoUri: logoUri,
+                    folderPath: dramaDir
+                );
                 return null;
             }
 
-            string dramaDir = GetDramaFolderPath(dramaTitle);
             string savePath = Path.Combine(dramaDir, $"{episodeNumber}.xml");
 
             StringBuilder sb = new();
@@ -466,18 +471,49 @@ public sealed class DownloadService : IDownloadService
 
             await File.WriteAllTextAsync(savePath, sb.ToString(), Encoding.UTF8, cancellationToken);
 
-            if (_settingsService.Settings.OpenFolderAfterDownload)
-            {
-                TryOpenFolderAndSelect(savePath);
-            }
+            _notificationService.ShowSystemNotification(
+                title: $"弹幕下载完成 {dramaTitle}",
+                message: $"第 {episodeNumber} 集弹幕已下载完成！",
+                logoUri: logoUri,
+                folderPath: dramaDir
+            );
 
             return savePath;
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"下载第 {episodeNumber} 集弹幕失败.");
+            _notificationService.ShowSystemNotification(
+                title: $"弹幕下载失败 {dramaTitle}",
+                message: $"下载第 {episodeNumber} 集弹幕失败: {ex.Message}",
+                logoUri: logoUri
+            );
             return null;
         }
+    }
+
+    /// <inheritdoc/>
+    public Task DecryptVideoAsync(
+        string inputFilePath,
+        string outputFilePath,
+        string hexKey,
+        CancellationToken cancellationToken = default
+    )
+    {
+        byte[] keyBytes = Convert.FromHexString(hexKey);
+        Mp4CencDecryptor.DecryptFile(inputFilePath, outputFilePath, keyBytes, cancellationToken);
+        return Task.CompletedTask;
+    }
+
+    private static string? ResolveCoverUri(string dramaDir, string? fallbackUrl)
+    {
+        string localCover = Path.Combine(dramaDir, "cover.jpg");
+        if (File.Exists(localCover))
+        {
+            return localCover;
+        }
+
+        return !string.IsNullOrWhiteSpace(fallbackUrl) ? fallbackUrl : null;
     }
 
     private static int GetQualityScore(PlaybackMedia media)
@@ -505,23 +541,5 @@ public sealed class DownloadService : IDownloadService
             new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
         Regex regex = new($"[{Regex.Escape(invalid)}]");
         return regex.Replace(name, "_");
-    }
-
-    private static void TryOpenFolderAndSelect(string filePath)
-    {
-        try
-        {
-            Process.Start("explorer.exe", $"/select,\"{filePath}\"");
-        }
-        catch { }
-    }
-
-    private static void TryOpenFolder(string folderPath)
-    {
-        try
-        {
-            Process.Start("explorer.exe", folderPath);
-        }
-        catch { }
     }
 }

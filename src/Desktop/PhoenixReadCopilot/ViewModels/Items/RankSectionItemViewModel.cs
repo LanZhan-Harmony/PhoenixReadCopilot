@@ -1,5 +1,6 @@
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -17,7 +18,8 @@ public sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemVi
         string title,
         RankSectionType type,
         ShortDramaLeaderboardType? leaderboardType = null,
-        bool isActorLeaderboard = false
+        bool isActorLeaderboard = false,
+        RankPageViewModel? pageViewModel = null
     )
     {
         Icon = symbol;
@@ -25,6 +27,7 @@ public sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemVi
         Type = type;
         LeaderboardType = leaderboardType;
         IsActorLeaderboard = isActorLeaderboard;
+        PageViewModel = pageViewModel;
     }
 
     /// <summary>
@@ -51,6 +54,11 @@ public sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemVi
     /// 是否为演员榜单.
     /// </summary>
     public bool IsActorLeaderboard { get; init; }
+
+    /// <summary>
+    /// 所属榜单页面视图模型.
+    /// </summary>
+    public RankPageViewModel? PageViewModel { get; set; }
 
     /// <inheritdoc/>
     public override bool Equals(object? obj) =>

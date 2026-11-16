@@ -4,17 +4,33 @@ using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Extensions;
 
+/// <summary>
+/// 榜单主内容数据模板选择器.
+/// </summary>
 internal sealed partial class RankSectionTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate SectionTemplate { get; set; }
+    /// <summary>
+    /// 短剧榜单模板.
+    /// </summary>
+    public DataTemplate? DramaTemplate { get; set; }
 
-    protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+    /// <summary>
+    /// 演员榜单模板.
+    /// </summary>
+    public DataTemplate? ActorTemplate { get; set; }
+
+    /// <inheritdoc/>
+    protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
+        => SelectTemplateCore(item);
+
+    /// <inheritdoc/>
+    protected override DataTemplate? SelectTemplateCore(object item)
     {
-        if (item is RankSectionItemViewModel)
+        if (item is RankSectionItemViewModel section)
         {
-            return SectionTemplate;
+            return section.IsActorLeaderboard ? ActorTemplate : DramaTemplate;
         }
 
-        return null;
+        return DramaTemplate;
     }
 }

@@ -91,9 +91,9 @@ public sealed class FluentAnimationHelper
             && GetPointerTarget(e.Control) is FrameworkElement target
         )
         {
-            var visual = target.EnableCompositionTranslation().GetElementVisual()!;
+            Visual visual = target.EnableCompositionTranslation().GetElementVisual()!;
             var offset = (float)FluentAnimation.GetPointerOverOffset(e.Control);
-            var axis = FluentAnimation.GetPointerOverAxis(e.Control);
+            Orientation axis = FluentAnimation.GetPointerOverAxis(e.Control);
             PlayPointerOver(visual, offset, axis);
         }
         else if (
@@ -104,7 +104,7 @@ public sealed class FluentAnimationHelper
             && GetPointerTarget(e.Control) is FrameworkElement target2
         )
         {
-            var visual = target2.EnableCompositionTranslation().GetElementVisual()!;
+            Visual visual = target2.EnableCompositionTranslation().GetElementVisual()!;
             PlayPointerOverExit(visual);
         }
 
@@ -117,7 +117,7 @@ public sealed class FluentAnimationHelper
             && GetPressedTarget(e.Control) is FrameworkElement pressedTarget
         )
         {
-            var vs = pressedTarget.GetElementVisual()!;
+            Visual vs = pressedTarget.GetElementVisual()!;
             var scale = (float)FluentAnimation.GetPointerDownScale(e.Control);
             vs.StartAnimation(CreatePointerDown(vs, scale));
         }
@@ -130,7 +130,7 @@ public sealed class FluentAnimationHelper
             && GetPressedTarget(e.Control) is FrameworkElement f
         )
         {
-            var vs = f.GetElementVisual()!;
+            Visual vs = f.GetElementVisual()!;
             vs.StartAnimation(CreatePointerUp(vs));
         }
     }

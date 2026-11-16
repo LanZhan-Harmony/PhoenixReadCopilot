@@ -2,8 +2,9 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Controls.Home;
 using PhoenixReadCopilot.ViewModels.View;
-using WinUIKernel.Share;
+using WinUI3Package;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages;
@@ -38,6 +39,7 @@ public sealed partial class HomePage : HomePageBase
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
         VideoScrollView.ViewChanged -= OnViewChanged;
         VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
+        ViewModel.Videos.Clear();
     }
 
     private async void OnVideoListUpdatedAsync(object? sender, EventArgs e)
@@ -48,8 +50,6 @@ public sealed partial class HomePage : HomePageBase
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
-
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (
@@ -92,7 +92,21 @@ public sealed partial class HomePage : HomePageBase
         ItemsRepeaterElementPreparedEventArgs args
     )
     {
-        (args.Element as FrameworkElement).Tag = sender.Tag;
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+        }
+    }
+
+    private void VideoRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RecommendedVideoItemTemplate.ClearImage(element);
+        }
     }
 }
 

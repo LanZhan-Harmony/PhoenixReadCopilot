@@ -1,5 +1,6 @@
 using System.Collections;
 using CommunityToolkit.WinUI;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -158,7 +159,7 @@ public sealed class Properties : DependencyObject
 
                     if (parts.Length > 1 && parts[1] == "Scale")
                     {
-                        var v = target.GetElementVisual()!;
+                        Visual v = target.GetElementVisual()!;
                         v.StartAnimation(FluentAnimationHelper.CreatePointerUp(v));
                     }
                     else
@@ -170,11 +171,12 @@ public sealed class Properties : DependencyObject
                             EasingMode = EasingMode.EaseOut,
                         };
                         // Create translate animation
-                        var t = sb.CreateTimeline<DoubleAnimationUsingKeyFrames>(
-                                target,
-                                TargetProperty.CompositeTransform.TranslateY
-                            )
-                            .AddKeyFrame(duration, 0, ease);
+                        DoubleAnimationUsingKeyFrames t =
+                            sb.CreateTimeline<DoubleAnimationUsingKeyFrames>(
+                                    target,
+                                    TargetProperty.CompositeTransform.TranslateY
+                                )
+                                .AddKeyFrame(duration, 0, ease);
                         sb.Begin();
                     }
                 }
@@ -193,7 +195,7 @@ public sealed class Properties : DependencyObject
                 {
                     if (parts.Length > 1 && parts[1] == "Scale")
                     {
-                        var v = target.GetElementVisual()!;
+                        Visual v = target.GetElementVisual()!;
                         v.StartAnimation(FluentAnimationHelper.CreatePointerDown(v, (float)offset));
                     }
                     else
@@ -302,7 +304,7 @@ public sealed class Properties : DependencyObject
             {
                 if (parts.Length > 1 && parts[1] == "Scale")
                 {
-                    var v = target.GetElementVisual()!;
+                    Visual v = target.GetElementVisual()!;
                     v.StartAnimation(FluentAnimationHelper.CreatePointerUp(v));
                 }
                 else
@@ -325,7 +327,8 @@ public sealed class Properties : DependencyObject
                             ? TargetProperty.CompositeTransform.TranslateX
                             : TargetProperty.CompositeTransform.TranslateY;
 
-                    var t = sb.CreateTimeline<DoubleAnimationUsingKeyFrames>(target, path);
+                    DoubleAnimationUsingKeyFrames t =
+                        sb.CreateTimeline<DoubleAnimationUsingKeyFrames>(target, path);
                     if (over || hasPressed is false)
                     {
                         if (offset == 0)

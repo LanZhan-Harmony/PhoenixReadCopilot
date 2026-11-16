@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using WinUI3Package;
 
 namespace PhoenixReadCopilot.Controls.History;
 
@@ -75,5 +76,27 @@ public sealed partial class HistoryVideoSearchSection : HistoryPageControlBase
                 _ = ViewModel.LoadMoreSearchResultAsync();
             }
         });
+    }
+
+    private void VideoRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+        }
+    }
+
+    private void VideoRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            HistoryVideoItemTemplate.ClearImage(element);
+        }
     }
 }

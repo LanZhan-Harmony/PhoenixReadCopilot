@@ -42,7 +42,7 @@ public sealed class CompositionFactory : DependencyObject
     {
         if (d is FrameworkElement f)
         {
-            var v = f.GetElementVisual()!;
+            Visual v = f.GetElementVisual()!;
             if (e.NewValue is double w && w > 0)
             {
                 EnableStandardTranslation(v, w);
@@ -73,7 +73,7 @@ public sealed class CompositionFactory : DependencyObject
             {
                 if (d is FrameworkElement f)
                 {
-                    var v = f.GetElementVisual()!;
+                    Visual v = f.GetElementVisual()!;
                     if (e.NewValue is bool b && b)
                     {
                         EnableStandardTranslation(v, 0.15);
@@ -140,7 +140,7 @@ public sealed class CompositionFactory : DependencyObject
     {
         return c.GetCached("RepoColl", () =>
         {
-            var g = c.CreateAnimationGroup();
+            CompositionAnimationGroup g = c.CreateAnimationGroup();
             g.Add(
                 c.CreateVector3KeyFrameAnimation()
                     .SetTarget(nameof(Visual.Offset))
@@ -148,7 +148,7 @@ public sealed class CompositionFactory : DependencyObject
                     .SetDuration(DefaultOffsetDuration)
             );
 
-            var s = c.CreateImplicitAnimationCollection();
+            ImplicitAnimationCollection s = c.CreateImplicitAnimationCollection();
             s.Add(nameof(Visual.Offset), g);
             return s;
         });
@@ -169,8 +169,8 @@ public sealed class CompositionFactory : DependencyObject
     {
         if (t.TotalMilliseconds > 0)
         {
-            var v = e.GetElementVisual()!;
-            var ani = v.CreateScalarKeyFrameAnimation(nameof(Visual.Opacity))
+            Visual v = e.GetElementVisual()!;
+            ScalarKeyFrameAnimation ani = v.CreateScalarKeyFrameAnimation(nameof(Visual.Opacity))
                 .AddKeyFrame(1, FINAL_VALUE, v.Compositor.GetLinearEase())
                 .SetDuration(t);
 
@@ -184,15 +184,15 @@ public sealed class CompositionFactory : DependencyObject
 
     public static void SetupOverlayPanelAnimation(UIElement e)
     {
-        var v = e.EnableTranslation(true).GetElementVisual()!;
+        Visual v = e.EnableTranslation(true).GetElementVisual()!;
 
-        var g = v.GetCached("OPA", () =>
+        CompositionAnimationGroup g = v.GetCached("OPA", () =>
         {
-            var t = v.CreateVector3KeyFrameAnimation(TRANSLATION)
+            Vector3KeyFrameAnimation t = v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(1, 0, 200)
                 .SetDuration(0.375);
 
-            var o = CreateFade(v.Compositor, 0, null, 200);
+            CompositionAnimation o = CreateFade(v.Compositor, 0, null, 200);
             return v.Compositor.CreateAnimationGroup(t, o);
         });
 
@@ -202,15 +202,15 @@ public sealed class CompositionFactory : DependencyObject
 
     public static void SetupOverlayPanelAnimationX(UIElement e)
     {
-        var v = e.EnableTranslation(true).GetElementVisual()!;
+        Visual v = e.EnableTranslation(true).GetElementVisual()!;
 
-        var g = v.GetCached("OPAX", () =>
+        CompositionAnimationGroup g = v.GetCached("OPAX", () =>
         {
-            var t = v.CreateVector3KeyFrameAnimation(TRANSLATION)
+            Vector3KeyFrameAnimation t = v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(1, 200, 0)
                 .SetDuration(0.375);
 
-            var o = CreateFade(v.Compositor, 0, null, 200);
+            CompositionAnimation o = CreateFade(v.Compositor, 0, null, 200);
             return v.Compositor.CreateAnimationGroup(t, o);
         });
 
@@ -226,7 +226,7 @@ public sealed class CompositionFactory : DependencyObject
         int durationMs = 1000
     )
     {
-        var animation = CreateEntranceAnimation(
+        ICompositionAnimationBase animation = CreateEntranceAnimation(
             target,
             new Vector3(fromOffsetX, fromOffsetY, 0),
             delayMs,
@@ -260,13 +260,13 @@ public sealed class CompositionFactory : DependencyObject
     )
     {
         var key = $"CEA{from.X}{from.Y}{delayMs}{durationMs}";
-        var c = target.EnableTranslation(true).GetElementVisual()!.Compositor;
+        Compositor c = target.EnableTranslation(true).GetElementVisual()!.Compositor;
 
         return c.GetCached(key, () =>
         {
             var delay = TimeSpan.FromMilliseconds(delayMs);
-            var e = c.GetCachedFluentEntranceEase();
-            var t = c.CreateVector3KeyFrameAnimation()
+            CubicBezierEasingFunction e = c.GetCachedFluentEntranceEase();
+            Vector3KeyFrameAnimation t = c.CreateVector3KeyFrameAnimation()
                 .SetTarget(TRANSLATION)
                 .SetInitialValueBeforeDelay()
                 .SetDelayTime(delay)
@@ -274,18 +274,18 @@ public sealed class CompositionFactory : DependencyObject
                 .AddKeyFrame(1, 0, e)
                 .SetDuration(TimeSpan.FromMilliseconds(durationMs));
 
-            var o = CreateFade(c, 1, 0, (int)(durationMs * 0.33), delayMs);
+            CompositionAnimation o = CreateFade(c, 1, 0, (int)(durationMs * 0.33), delayMs);
             return c.CreateAnimationGroup(t, o);
         });
     }
 
     public static void SetCornerRadius(UIElement target, float size)
     {
-        var vis = target.GetElementVisual()!;
-        var rec = vis.Compositor.CreateRoundedRectangleGeometry();
+        Visual vis = target.GetElementVisual()!;
+        CompositionRoundedRectangleGeometry rec = vis.Compositor.CreateRoundedRectangleGeometry();
         rec.CornerRadius = new(size);
         rec.LinkShapeSize(vis);
-        var clip = vis.Compositor.CreateGeometricClip(rec);
+        CompositionGeometricClip clip = vis.Compositor.CreateGeometricClip(rec);
         vis.Clip = clip;
     }
 
@@ -300,14 +300,14 @@ public sealed class CompositionFactory : DependencyObject
     {
         var start = delayMs;
 
-        foreach (var target in targets)
+        foreach (UIElement? target in targets)
         {
             if (target is null)
             {
                 continue;
             }
 
-            var animation = CreateEntranceAnimation(
+            ICompositionAnimationBase animation = CreateEntranceAnimation(
                 target,
                 new Vector3(fromOffsetX, fromOffsetY, 0),
                 start,
@@ -329,7 +329,8 @@ public sealed class CompositionFactory : DependencyObject
         var key = $"SFade{to}{from}{durationMs}{delayMs}";
         return c.GetCached(key, () =>
         {
-            var o = c.CreateScalarKeyFrameAnimation().SetTarget(nameof(Visual.Opacity));
+            ScalarKeyFrameAnimation o = c.CreateScalarKeyFrameAnimation()
+                .SetTarget(nameof(Visual.Opacity));
 
             if (from is not null && from.HasValue)
             {
@@ -349,7 +350,7 @@ public sealed class CompositionFactory : DependencyObject
     {
         v.StopAnimation(nameof(Visual.CenterPoint));
 
-        var e = v.GetCached($"CP{x}{y}", () =>
+        ExpressionAnimation e = v.GetCached($"CP{x}{y}", () =>
             v.CreateExpressionAnimation(nameof(Visual.CenterPoint))
                 .SetExpression(
                     string.Format(
@@ -371,7 +372,7 @@ public sealed class CompositionFactory : DependencyObject
         double duration = 0.6
     )
     {
-        var v = target.GetElementVisual()!;
+        Visual v = target.GetElementVisual()!;
 
         if (target.Tag is null)
         {
@@ -379,24 +380,24 @@ public sealed class CompositionFactory : DependencyObject
             target.Tag = target;
         }
 
-        var e = CubicBezierPoints.FluentDecelerate; // v.Compositor.CreateEntranceEasingFunction();
+        CubicBezierPoints e = CubicBezierPoints.FluentDecelerate; // v.Compositor.CreateEntranceEasingFunction();
 
-        var t = v.CreateVector3KeyFrameAnimation(nameof(Visual.Scale))
+        Vector3KeyFrameAnimation t = v.CreateVector3KeyFrameAnimation(nameof(Visual.Scale))
             .AddKeyFrame(0, new Vector3(from, from, 0))
             .AddKeyFrame(1, new Vector3(to, to, 0), e)
             .SetDuration(duration);
 
-        var o = CreateFade(v.Compositor, 1, 0, 200);
+        CompositionAnimation o = CreateFade(v.Compositor, 1, 0, 200);
 
-        var g = v.Compositor.CreateAnimationGroup(t, o);
+        CompositionAnimationGroup g = v.Compositor.CreateAnimationGroup(t, o);
         v.StartAnimationGroup(g);
     }
 
     public static void SetStandardReposition(UIElement e)
     {
-        var v = e.GetElementVisual()!;
+        Visual v = e.GetElementVisual()!;
 
-        var value = v.GetCached("DefaultOffsetAnimation", () =>
+        Vector3KeyFrameAnimation value = v.GetCached("DefaultOffsetAnimation", () =>
             v.CreateVector3KeyFrameAnimation(nameof(Visual.Offset))
                 .AddKeyFrame(0, STARTING_VALUE)
                 .AddKeyFrame(1, FINAL_VALUE)
@@ -413,7 +414,7 @@ public sealed class CompositionFactory : DependencyObject
 
     public static Visual EnableStandardTranslation(Visual v, double? duration = null)
     {
-        var o = v.GetCached($"__ST{(duration ?? DefaultOffsetDuration)}", () =>
+        Vector3KeyFrameAnimation o = v.GetCached($"__ST{(duration ?? DefaultOffsetDuration)}", () =>
             v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(0, STARTING_VALUE)
                 .AddKeyFrame(1, FINAL_VALUE, CubicBezierPoints.FluentDecelerate)
@@ -437,10 +438,10 @@ public sealed class CompositionFactory : DependencyObject
 
         var delay = 0.15;
 
-        var bv = background.EnableTranslation(true).GetElementVisual()!;
-        var ease = bv.Compositor.GetCachedFluentEntranceEase();
+        Visual bv = background.EnableTranslation(true).GetElementVisual()!;
+        CubicBezierEasingFunction ease = bv.Compositor.GetCachedFluentEntranceEase();
 
-        var bt = bv.CreateVector3KeyFrameAnimation(TRANSLATION)
+        Vector3KeyFrameAnimation bt = bv.CreateVector3KeyFrameAnimation(TRANSLATION)
             .AddKeyFrame(0, "Vector3(0, -this.Target.Size.Y, 0)")
             .AddKeyFrame(1, Vector3.Zero, ease)
             .SetInitialValueBeforeDelay()
@@ -451,10 +452,10 @@ public sealed class CompositionFactory : DependencyObject
 
         delay += 0.15;
 
-        foreach (var child in children)
+        foreach (FrameworkElement child in children)
         {
-            var v = child.EnableTranslation(true).GetElementVisual()!;
-            var t = v.CreateVector3KeyFrameAnimation(TRANSLATION)
+            Visual v = child.EnableTranslation(true).GetElementVisual()!;
+            Vector3KeyFrameAnimation t = v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(0, "Vector3(0, -this.Target.Size.Y, 0)")
                 .AddKeyFrame(1, Vector3.Zero, ease)
                 .SetInitialValueBeforeDelay()
@@ -467,8 +468,8 @@ public sealed class CompositionFactory : DependencyObject
 
         if (container is not null)
         {
-            var c = container.GetElementVisual()!;
-            var clip = c.Compositor.CreateInsetClip();
+            Visual c = container.GetElementVisual()!;
+            InsetClip clip = c.Compositor.CreateInsetClip();
             c.Clip = clip;
         }
 
@@ -476,13 +477,13 @@ public sealed class CompositionFactory : DependencyObject
         List<FrameworkElement> list = [background];
         list.AddRange(children);
 
-        var ht = bv
+        Vector3KeyFrameAnimation ht = bv
             .Compositor.CreateVector3KeyFrameAnimation()
             .SetTarget(TRANSLATION)
             .AddKeyFrame(1, "Vector3(0, -this.Target.Size.Y, 0)", ease)
             .SetDuration(0.5);
 
-        foreach (var child in list)
+        foreach (FrameworkElement child in list)
         {
             child.SetHideAnimation(ht);
         }
@@ -498,14 +499,14 @@ public sealed class CompositionFactory : DependencyObject
 
     private static void SetFadeInOut(FrameworkElement e, int durationMs)
     {
-        var v = e.GetElementVisual()!;
+        Visual v = e.GetElementVisual()!;
         e.SetHideAnimation(CreateFade(v.Compositor, 0, null, durationMs));
         e.SetShowAnimation(CreateFade(v.Compositor, 1, null, durationMs));
     }
 
     public static void PlayFluentStartupAnimation(FrameworkElement bar, FrameworkElement content)
     {
-        var bv = bar.EnableTranslation(true).GetElementVisual()!;
+        Visual bv = bar.EnableTranslation(true).GetElementVisual()!;
         bv.StartAnimation(
             bv.CreateScalarKeyFrameAnimation(nameof(Visual.Opacity))
                 .AddKeyFrame(0, 0)
@@ -522,7 +523,7 @@ public sealed class CompositionFactory : DependencyObject
                 .SetDuration(1.2)
         );
 
-        var cv = content.EnableCompositionTranslation().GetElementVisual()!;
+        Visual cv = content.EnableCompositionTranslation().GetElementVisual()!;
         cv.StartAnimation(
             cv.CreateScalarKeyFrameAnimation(nameof(Visual.Opacity))
                 .AddKeyFrame(0, 0)
@@ -547,13 +548,13 @@ public sealed class CompositionFactory : DependencyObject
     {
         var duration1 = TimeSpan.FromSeconds(0.7);
 
-        var c = barElements[0].GetElementVisual()!.Compositor;
-        var backOut = c.CreateEase(0.2f, 0.885f, 0.25f, 1.125f);
+        Compositor c = barElements[0].GetElementVisual()!.Compositor;
+        CubicBezierEasingFunction backOut = c.CreateEase(0.2f, 0.885f, 0.25f, 1.125f);
 
         var delay = 0.1;
-        foreach (var element in barElements)
+        foreach (FrameworkElement element in barElements)
         {
-            var v = element.EnableTranslation(true).GetElementVisual()!;
+            Visual v = element.EnableTranslation(true).GetElementVisual()!;
             v.StartAnimationGroup(
                 v.CreateVector3KeyFrameAnimation(TRANSLATION)
                     .AddKeyFrame(0, 0, -100)
@@ -577,7 +578,7 @@ public sealed class CompositionFactory : DependencyObject
 
             ThemeShadow shadow = new();
             target.Shadow = shadow;
-            foreach (var r in recievers)
+            foreach (UIElement r in recievers)
             {
                 shadow.Receivers.Add(r);
             }
@@ -587,8 +588,8 @@ public sealed class CompositionFactory : DependencyObject
 
     public static void PlayFullHeightSlideUpEntrance(FrameworkElement target)
     {
-        var v = target.EnableTranslation(true).GetElementVisual()!;
-        var t = v.GetCached("_FHSU", () =>
+        Visual v = target.EnableTranslation(true).GetElementVisual()!;
+        Vector3KeyFrameAnimation t = v.GetCached("_FHSU", () =>
             v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(0, "Vector3(0, this.Target.Size.Y, 0)")
                 .AddKeyFrame(1, "Vector3(0, 0, 0)")
@@ -600,7 +601,7 @@ public sealed class CompositionFactory : DependencyObject
 
     public static Vector3KeyFrameAnimation CreateSlideOut(UIElement e, float x, float y)
     {
-        var v = e.EnableTranslation(true).GetElementVisual()!;
+        Visual v = e.EnableTranslation(true).GetElementVisual()!;
         return v.GetCached("_SLDO", () =>
             v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(0, STARTING_VALUE)
@@ -611,7 +612,7 @@ public sealed class CompositionFactory : DependencyObject
 
     public static Vector3KeyFrameAnimation CreateSlideOutX(UIElement e)
     {
-        var v = e.EnableTranslation(true).GetElementVisual()!;
+        Visual v = e.EnableTranslation(true).GetElementVisual()!;
         return v.GetCached("SOX", () =>
             v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(0, STARTING_VALUE)
@@ -622,7 +623,7 @@ public sealed class CompositionFactory : DependencyObject
 
     public static Vector3KeyFrameAnimation CreateSlideOutY(UIElement e)
     {
-        var v = e.EnableTranslation(true).GetElementVisual()!;
+        Visual v = e.EnableTranslation(true).GetElementVisual()!;
         return v.GetCached("SOY", () =>
             v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(0, STARTING_VALUE)
@@ -633,7 +634,7 @@ public sealed class CompositionFactory : DependencyObject
 
     public static Vector3KeyFrameAnimation CreateSlideIn(UIElement e)
     {
-        var v = e.EnableTranslation(true).GetElementVisual()!;
+        Visual v = e.EnableTranslation(true).GetElementVisual()!;
         return v.GetCached("_SLDI", () =>
             v.CreateVector3KeyFrameAnimation(TRANSLATION)
                 .AddKeyFrame(1, Vector3.Zero)
