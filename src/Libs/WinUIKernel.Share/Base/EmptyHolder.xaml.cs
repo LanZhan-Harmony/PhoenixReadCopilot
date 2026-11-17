@@ -50,7 +50,10 @@ public sealed partial class EmptyHolder : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="EmptyHolder"/> class.
     /// </summary>
-    public EmptyHolder() => InitializeComponent();
+    public EmptyHolder()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// Title.

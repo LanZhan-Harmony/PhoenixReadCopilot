@@ -48,7 +48,10 @@ public sealed partial class VisibilityToggleButton : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="VisibilityToggleButton"/> class.
     /// </summary>
-    public VisibilityToggleButton() => InitializeComponent();
+    public VisibilityToggleButton()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 点击事件.

@@ -46,7 +46,7 @@ public sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboardI
     public string RepresentativeWorkDisplay =>
         !string.IsNullOrWhiteSpace(RepresentativeWork)
             ? (
-                RepresentativeWork.StartsWith("《")
+                RepresentativeWork.StartsWith('《')
                     ? RepresentativeWork
                     : $"《{RepresentativeWork}》"
             )
@@ -111,9 +111,6 @@ public sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboardI
     [NotifyPropertyChangedFor(nameof(HasRank))]
     [NotifyPropertyChangedFor(nameof(RankDisplay))]
     [NotifyPropertyChangedFor(nameof(IsTopRank))]
-    [NotifyPropertyChangedFor(nameof(IsRank1))]
-    [NotifyPropertyChangedFor(nameof(IsRank2))]
-    [NotifyPropertyChangedFor(nameof(IsRank3))]
     public partial int? Rank { get; set; }
 
     /// <summary>
@@ -130,21 +127,6 @@ public sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboardI
     /// 是否为前三名.
     /// </summary>
     public bool IsTopRank => Rank is >= 1 and <= 3;
-
-    /// <summary>
-    /// 是否为第 1 名.
-    /// </summary>
-    public bool IsRank1 => Rank == 1;
-
-    /// <summary>
-    /// 是否为第 2 名.
-    /// </summary>
-    public bool IsRank2 => Rank == 2;
-
-    /// <summary>
-    /// 是否为第 3 名.
-    /// </summary>
-    public bool IsRank3 => Rank == 3;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ActorItemViewModel"/> class.

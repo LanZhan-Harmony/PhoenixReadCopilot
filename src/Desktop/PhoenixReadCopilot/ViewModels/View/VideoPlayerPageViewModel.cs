@@ -32,6 +32,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     private readonly PhoenixReadApiClient _apiClient;
     private readonly DramaReviewSectionDetailViewModel _dramaReviews;
     private readonly IHistoryService _historyService;
+    private readonly IPlaybackMediaService _playbackMediaService;
 
     private DramaDetails? _dramaDetails;
     private string _dramaId = string.Empty;
@@ -199,7 +200,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         DispatcherQueue dispatcherQueue,
         PhoenixReadApiClient apiClient,
         DramaReviewSectionDetailViewModel dramaReviews,
-        IHistoryService historyService
+        IHistoryService historyService,
+        IPlaybackMediaService playbackMediaService
     )
         : base(settingsService, appViewModel)
     {
@@ -211,6 +213,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         _apiClient = apiClient;
         _dramaReviews = dramaReviews;
         _historyService = historyService;
+        _playbackMediaService = playbackMediaService;
         Danmaku = danmaku;
         Subtitle = subtitle;
         CurrentLoop = VideoLoopType.None;
@@ -308,7 +311,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    private async Task InitializeDashMediaAsync(Episode episode)
+    private async Task InitializeDashMediaAsync(Episode episode, bool forceRefresh = false)
     {
         if (IsMediaLoading)
         {
@@ -316,7 +319,9 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         bool isPreloadHit =
-            _preloadedEpisodeVideoId == episode.VideoId && _preloadedMediaList is { Count: > 0 };
+            !forceRefresh
+            && _preloadedEpisodeVideoId == episode.VideoId
+            && _preloadedMediaList is { Count: > 0 };
         if (!isPreloadHit)
         {
             IsMediaLoading = true;
@@ -338,10 +343,11 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             }
             else
             {
-                // 解析红果短剧媒体源（包含各清晰度与 AES-128 CENC 解密密钥）
-                mediaList = await _apiClient.ResolveMediaAsync(
+                // 解析红果短剧媒体源（统一通过 PlaybackMediaService 调度与缓存）
+                mediaList = await _playbackMediaService.ResolveMediaAsync(
                     _dramaId,
                     episode.VideoId,
+                    forceRefresh: forceRefresh,
                     _dashLoadCancellationTokenSource.Token
                 );
             }
@@ -799,6 +805,11 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 // 记录播放进度.
                 _ = ReportProgressAsync(Player.Position);
             }
+            else if (state == PlayerState.Failed && _currentEpisode is not null)
+            {
+                // 播放失败/地址失效时使当前分集媒体缓存失效，便于重试时刷新覆盖
+                _ = _playbackMediaService.InvalidateCacheAsync(_dramaId, _currentEpisode.VideoId);
+            }
 
             Danmaku?.Pause();
         }
@@ -1158,9 +1169,10 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                         return;
                     }
 
-                    IReadOnlyList<PlaybackMedia> mediaList = await _apiClient.ResolveMediaAsync(
+                    IReadOnlyList<PlaybackMedia> mediaList = await _playbackMediaService.ResolveMediaAsync(
                         _dramaId,
                         nextEpisode.VideoId,
+                        forceRefresh: false,
                         token
                     );
                     if (mediaList is { Count: > 0 } && !token.IsCancellationRequested)
@@ -1233,7 +1245,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _initialProgress = Player.Position;
         }
 
-        _ = InitializeDashMediaAsync(_currentEpisode);
+        _ = InitializeDashMediaAsync(_currentEpisode, forceRefresh: true);
     }
 
     private void InitializeLoops()

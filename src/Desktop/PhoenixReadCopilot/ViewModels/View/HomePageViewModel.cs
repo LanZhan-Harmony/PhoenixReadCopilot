@@ -128,7 +128,6 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
         {
             if (requestId == _currentRequestId)
             {
-                VideoListUpdated?.Invoke(this, EventArgs.Empty);
                 _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low,
                     () =>
                         IsVideoLoading = false
@@ -172,6 +171,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
                         return;
                     }
 
+                    int addedCount = 0;
                     foreach (Drama item in page.Items)
                     {
                         if (string.IsNullOrWhiteSpace(item.Id))
@@ -183,7 +183,13 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
                         if (_seenDramaIds.Add(item.Id) && !Videos.Any(v => v.Drama?.Id == item.Id))
                         {
                             Videos.Add(new VideoItemViewModel(item, VideoCardStyle.Recommend));
+                            addedCount++;
                         }
+                    }
+
+                    if (addedCount > 0)
+                    {
+                        VideoListUpdated?.Invoke(this, EventArgs.Empty);
                     }
                 });
             }

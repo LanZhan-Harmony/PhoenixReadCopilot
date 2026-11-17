@@ -4,22 +4,22 @@
                     xmlns:ic="using:FluentIcons.WinUI"
                     xmlns:local="using:PhoenixReadCopilot.Controls.Components">
 
-    <Style TargetType="local:VideoCoverImage">
+    <Style TargetType="local:CoverImage">
         <Setter Property="Background" Value="{ThemeResource SolidBackgroundFillColorSecondaryBrush}"/>
         <Setter Property="CornerRadius" Value="5"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:VideoCoverImage">
+                <ControlTemplate TargetType="local:CoverImage">
                     <Grid Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
                         <ic:SymbolIcon HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        Canvas.ZIndex="0"
-                                       FontSize="48"
+                                       FontSize="{TemplateBinding IconSize}"
                                        Foreground="{ThemeResource SolidBackgroundFillColorTertiaryBrush}"
-                                       IconVariant="Filled"
-                                       Symbol="VideoClipMultiple"/>
-                        <Image x:Name="CoverImage"
+                                       IconVariant="{TemplateBinding IconVarient}"
+                                       Symbol="{TemplateBinding Symbol}"/>
+                        <Image x:Name="PART_Image"
                                HorizontalAlignment="Stretch"
                                VerticalAlignment="Top"
                                Canvas.ZIndex="1"

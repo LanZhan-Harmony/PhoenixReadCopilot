@@ -21,6 +21,6 @@ public sealed partial class HistoryVideoItemTemplate : ResourceDictionary
     /// </summary>
     public static void ClearImage(FrameworkElement container)
     {
-        VideoCoverImage.Clear(container);
+        CoverImage.Clear(container);
     }
 }

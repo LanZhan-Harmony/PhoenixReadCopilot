@@ -132,7 +132,10 @@ public sealed partial class AppRepeater : UserControl
     /// <summary>
     /// Initializes a new instance of the <see cref="AppRepeater"/> class.
     /// </summary>
-    public AppRepeater() => InitializeComponent();
+    public AppRepeater()
+    {
+        InitializeComponent();
+    }
 
     private static void OnItemsSourceChanged(
         DependencyObject d,

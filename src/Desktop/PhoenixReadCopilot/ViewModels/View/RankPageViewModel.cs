@@ -342,7 +342,6 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
         {
             if (requestId == _currentRequestId)
             {
-                VideoListUpdated?.Invoke(this, EventArgs.Empty);
                 _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
                     IsVideoLoading = false
                 );
@@ -469,6 +468,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                         return;
                     }
 
+                    int addedCount = 0;
                     foreach (Drama item in page.Items)
                     {
                         if (
@@ -484,11 +484,17 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                             Rank = Videos.Count + 1,
                         };
                         Videos.Add(vm);
+                        addedCount++;
                     }
 
                     if (SelectedSection is not null)
                     {
                         _videoCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Videos];
+                    }
+
+                    if (addedCount > 0)
+                    {
+                        VideoListUpdated?.Invoke(this, EventArgs.Empty);
                     }
                 });
             }
@@ -535,6 +541,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                         return;
                     }
 
+                    int addedCount = 0;
                     foreach (ActorLeaderboardItem item in page.Items)
                     {
                         string actorKey = !string.IsNullOrEmpty(item.ActorId)
@@ -553,11 +560,17 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
                             Rank = item.Position > 0 ? item.Position : Actors.Count + 1,
                         };
                         Actors.Add(vm);
+                        addedCount++;
                     }
 
                     if (SelectedSection is not null)
                     {
                         _actorCache[GetCacheKey(SelectedSection, CurrentChannel)] = [.. Actors];
+                    }
+
+                    if (addedCount > 0)
+                    {
+                        VideoListUpdated?.Invoke(this, EventArgs.Empty);
                     }
                 });
             }

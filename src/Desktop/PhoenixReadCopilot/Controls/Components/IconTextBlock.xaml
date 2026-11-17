@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ic="using:FluentIcons.WinUI"
+                    xmlns:local="using:PhoenixReadCopilot.Controls.Components">
+
+    <Style TargetType="local:IconTextBlock">
+        <Setter Property="Foreground" Value="{ThemeResource TextFillColorTertiaryBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:IconTextBlock">
+                    <Grid VerticalAlignment="Center" ColumnSpacing="{TemplateBinding IconTextSpacing}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ic:SymbolIcon x:Name="PART_Icon"
+                                       Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       FontSize="{TemplateBinding IconSize}"
+                                       Symbol="{TemplateBinding Symbol}"/>
+                        <TextBlock x:Name="PART_Text"
+                                   Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   FontSize="{TemplateBinding TextSize}"
+                                   FontWeight="{TemplateBinding TextWeight}"
+                                   Text="{TemplateBinding Text}"
+                                   TextTrimming="{TemplateBinding TextTrimming}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

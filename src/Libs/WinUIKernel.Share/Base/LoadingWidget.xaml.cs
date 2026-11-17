@@ -20,7 +20,10 @@ public sealed partial class LoadingWidget : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="LoadingWidget"/> class.
     /// </summary>
-    public LoadingWidget() => InitializeComponent();
+    public LoadingWidget()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 文本.

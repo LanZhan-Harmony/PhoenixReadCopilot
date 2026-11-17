@@ -20,7 +20,10 @@ public sealed partial class TipPopup : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="TipPopup"/> class.
     /// </summary>
-    public TipPopup() => InitializeComponent();
+    public TipPopup()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 显示文本.

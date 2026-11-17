@@ -16,6 +16,9 @@
     <PackageLogoSource>D:\下载\Browser\Icon.png</PackageLogoSource>
   </PropertyGroup>
   <ItemGroup>
+    <Page Update="Controls\Components\IconTextBlock.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <None Update="Package.appxmanifest">
       <SubType>Designer</SubType>
     </None>

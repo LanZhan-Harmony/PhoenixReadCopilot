@@ -185,7 +185,7 @@
                 <ItemsView.ItemTemplate>
                     <DataTemplate x:DataType="appearance:AppImage">
                         <ItemContainer Style="{StaticResource AppItemContainerStyle}">
-                            <components:VideoCoverImage Width="100"
+                            <components:CoverImage Width="100"
                                                         Height="80"
                                                         Source="{x:Bind Uri}"/>
                         </ItemContainer>

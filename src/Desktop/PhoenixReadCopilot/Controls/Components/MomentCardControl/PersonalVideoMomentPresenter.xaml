@@ -21,7 +21,7 @@
                    Style="{StaticResource CaptionTextBlockStyle}"
                    Text="{x:Bind ViewModel.Tip, Mode=OneWay}"
                    TextTrimming="CharacterEllipsis"/>
-        <local:VideoCoverImage Grid.Row="1"
+        <local:CoverImage Grid.Row="1"
                                HorizontalAlignment="Stretch"
                                VerticalAlignment="Stretch"
                                CornerRadius="{StaticResource ControlCornerRadius}"

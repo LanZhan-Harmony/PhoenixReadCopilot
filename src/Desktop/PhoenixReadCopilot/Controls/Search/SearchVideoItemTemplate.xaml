@@ -14,20 +14,17 @@
                 Style="{StaticResource GridRepeaterItemStyle}">
             <Button.ContextFlyout>
                 <MenuFlyout ShouldConstrainToRootBounds="False">
-                    <MenuFlyoutItem Command="{x:Bind OpenInNewWindowCommand}"
-                                    Text="{x:Bind strings:Resources.OpenInNewWindow}">
+                    <MenuFlyoutItem Command="{x:Bind OpenInNewWindowCommand}" Text="{x:Bind strings:Resources.OpenInNewWindow}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="WindowPlay"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Command="{x:Bind AddToViewLaterCommand}"
-                                    Text="{x:Bind strings:Resources.AddToViewLater}">
+                    <MenuFlyoutItem Command="{x:Bind AddToViewLaterCommand}" Text="{x:Bind strings:Resources.AddToViewLater}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="CalendarAdd"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Command="{x:Bind PinCommand}"
-                                    Text="{x:Bind strings:Resources.FixContent}">
+                    <MenuFlyoutItem Command="{x:Bind PinCommand}" Text="{x:Bind strings:Resources.FixContent}">
                         <MenuFlyoutItem.Icon>
                             <ic:SymbolIcon Symbol="Pin"/>
                         </MenuFlyoutItem.Icon>
@@ -41,11 +38,11 @@
                 </Grid.RowDefinitions>
 
                 <!--  海报封面容器  -->
-                <components:VideoCoverImage x:Name="CoverImage"
-                                            Grid.Row="0"
-                                            Margin="6"
-                                            CornerRadius="5"
-                                            Source="{x:Bind Cover}"/>
+                <components:CoverImage x:Name="CoverImage"
+                                       Grid.Row="0"
+                                       Margin="6"
+                                       CornerRadius="5"
+                                       Source="{x:Bind Cover}"/>
 
                 <!--  信息与元数据  -->
                 <Grid Grid.Row="1"
@@ -73,21 +70,21 @@
                         </Grid.ColumnDefinitions>
 
                         <!--  标签  -->
-                        <base:IconTextBlock Grid.Column="0"
-                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                            IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
-                                            Symbol="Tag"
-                                            Text="{x:Bind Author}"
-                                            Visibility="{x:Bind Author, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                        <components:IconTextBlock Grid.Column="0"
+                                                  IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                  Symbol="Tag"
+                                                  Text="{x:Bind Author}"
+                                                  TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                  Visibility="{x:Bind Author, Converter={StaticResource ObjectToVisibilityConverter}}"/>
 
                         <!--  热度或播放量  -->
-                        <base:IconTextBlock Grid.Column="1"
-                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                            IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                            Symbol="PlayCircle"
-                                            Text="{x:Bind HeatOrPlayCountText}"
-                                            ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"
-                                            Visibility="{x:Bind HeatOrPlayCountText, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                        <components:IconTextBlock Grid.Column="1"
+                                                  IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                                  Symbol="PlayCircle"
+                                                  Text="{x:Bind HeatOrPlayCountText}"
+                                                  TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                  ToolTipService.ToolTip="{x:Bind strings:Resources.PlayCount}"
+                                                  Visibility="{x:Bind HeatOrPlayCountText, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                     </Grid>
                 </Grid>
             </Grid>
