@@ -62,7 +62,7 @@
                 </Button.Flyout>
             </Button>
         </Grid>
-        <local:VideoCoverImage Grid.Row="1"
+        <local:CoverImage Grid.Row="1"
                                HorizontalAlignment="Stretch"
                                VerticalAlignment="Stretch"
                                CornerRadius="{StaticResource ControlCornerRadius}"

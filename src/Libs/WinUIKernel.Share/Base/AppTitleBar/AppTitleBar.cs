@@ -16,7 +16,10 @@ public sealed partial class AppTitleBar : LayoutControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="AppTitleBar"/> class.
     /// </summary>
-    public AppTitleBar() => DefaultStyleKey = typeof(AppTitleBar);
+    public AppTitleBar()
+    {
+        DefaultStyleKey = typeof(AppTitleBar);
+    }
 
     /// <summary>
     /// 后退请求.

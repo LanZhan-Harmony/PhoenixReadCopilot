@@ -20,7 +20,10 @@ public abstract partial class ViewModelBase<TData> : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewModelBase{TData}"/> class.
     /// </summary>
-    protected ViewModelBase(TData data) => Data = data;
+    protected ViewModelBase(TData data)
+    {
+        Data = data;
+    }
 
     /// <inheritdoc/>
     public override bool Equals(object? obj) =>

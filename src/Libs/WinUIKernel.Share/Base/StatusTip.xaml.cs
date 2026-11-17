@@ -30,7 +30,10 @@ public sealed partial class StatusTip : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="StatusTip"/> class.
     /// </summary>
-    public StatusTip() => InitializeComponent();
+    public StatusTip()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 当前状态.

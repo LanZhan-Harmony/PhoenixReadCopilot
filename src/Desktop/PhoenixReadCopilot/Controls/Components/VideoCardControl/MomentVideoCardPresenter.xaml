@@ -19,7 +19,7 @@
             <ColumnDefinition Width="180"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <local:VideoCoverImage CornerRadius="{StaticResource ControlCornerRadius}" Source="{x:Bind ViewModel.Cover}"/>
+        <local:CoverImage CornerRadius="{StaticResource ControlCornerRadius}" Source="{x:Bind ViewModel.Cover}"/>
 
         <Grid Grid.Column="1"
               Padding="0,8,12,8"

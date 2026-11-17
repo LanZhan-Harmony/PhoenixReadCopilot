@@ -144,7 +144,7 @@ public sealed class CompositionFactory : DependencyObject
             g.Add(
                 c.CreateVector3KeyFrameAnimation()
                     .SetTarget(nameof(Visual.Offset))
-                    .AddKeyFrame(1f, FINAL_VALUE)
+                    .AddKeyFrame(1f, FINAL_VALUE, CubicBezierPoints.FluentDecelerate)
                     .SetDuration(DefaultOffsetDuration)
             );
 
@@ -395,12 +395,15 @@ public sealed class CompositionFactory : DependencyObject
 
     public static void SetStandardReposition(UIElement e)
     {
-        Visual v = e.GetElementVisual()!;
+        Visual? v = e.GetElementVisual();
+        if (v is null)
+        {
+            return;
+        }
 
         Vector3KeyFrameAnimation value = v.GetCached("DefaultOffsetAnimation", () =>
             v.CreateVector3KeyFrameAnimation(nameof(Visual.Offset))
-                .AddKeyFrame(0, STARTING_VALUE)
-                .AddKeyFrame(1, FINAL_VALUE)
+                .AddKeyFrame(1, FINAL_VALUE, CubicBezierPoints.FluentDecelerate)
                 .SetDuration(DefaultOffsetDuration)
         );
 
@@ -409,7 +412,7 @@ public sealed class CompositionFactory : DependencyObject
 
     public static void DisableStandardReposition(FrameworkElement f)
     {
-        f.GetElementVisual()!.ImplicitAnimations?.Remove(nameof(Visual.Offset));
+        f.GetElementVisual()?.ImplicitAnimations?.Remove(nameof(Visual.Offset));
     }
 
     public static Visual EnableStandardTranslation(Visual v, double? duration = null)

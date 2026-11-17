@@ -31,7 +31,10 @@ public sealed partial class SideSplitButton : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="SideSplitButton"/> class.
     /// </summary>
-    public SideSplitButton() => InitializeComponent();
+    public SideSplitButton()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 是否进入隐藏状态.

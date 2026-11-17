@@ -3,6 +3,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Controls.Home;
+using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUI3Package;
 using WinUIKernel.Share.Base;
@@ -95,6 +96,15 @@ public sealed partial class HomePage : HomePageBase
         if (args.Element is FrameworkElement element)
         {
             RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+
+            // 确保首次排版与从回收池复用就位前关闭动画，防止产生从 (0,0) 或离屏旧位置的飞入滑行动效
+            CompositionFactory.DisableStandardReposition(element);
+
+            // 待当前帧排版完成（Visual.Offset 坐标就位）后，再挂载平滑重排动画
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
         }
     }
 
@@ -105,6 +115,7 @@ public sealed partial class HomePage : HomePageBase
     {
         if (args.Element is FrameworkElement element)
         {
+            CompositionFactory.DisableStandardReposition(element);
             RecommendedVideoItemTemplate.ClearImage(element);
         }
     }

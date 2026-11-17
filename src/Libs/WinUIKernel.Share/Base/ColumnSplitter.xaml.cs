@@ -104,7 +104,10 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
     /// <summary>
     /// Initializes a new instance of the <see cref="ColumnSplitter"/> class.
     /// </summary>
-    public ColumnSplitter() => InitializeComponent();
+    public ColumnSplitter()
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// 是否进入隐藏状态.
@@ -190,19 +193,16 @@ public sealed partial class ColumnSplitter : LayoutUserControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (IsInvertDirection)
             {
-                if (IsInvertDirection)
-                {
-                    Sizer.IsDragInverted = true;
-                    ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;
-                    ToggleBtn.Margin = new Thickness(-32, 0, 0, 0);
-                    ToggleBtn.CornerRadius = new CornerRadius(6, 0, 0, 6);
-                }
+                Sizer.IsDragInverted = true;
+                ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;
+                ToggleBtn.Margin = new Thickness(-32, 0, 0, 0);
+                ToggleBtn.CornerRadius = new CornerRadius(6, 0, 0, 6);
             }
-        );
+        });
     }
 
     private static void OnInvertDirectionChanged(

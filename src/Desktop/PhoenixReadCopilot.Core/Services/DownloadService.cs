@@ -20,6 +20,7 @@ public sealed class DownloadService : IDownloadService
     private readonly ISettingsService _settingsService;
     private readonly INotificationService _notificationService;
     private readonly PhoenixReadApiClient _apiClient;
+    private readonly IPlaybackMediaService _playbackMediaService;
     private readonly HttpClient _httpClient;
 
     public DownloadService(
@@ -27,6 +28,7 @@ public sealed class DownloadService : IDownloadService
         ISettingsService settingsService,
         INotificationService notificationService,
         PhoenixReadApiClient apiClient,
+        IPlaybackMediaService playbackMediaService,
         IHttpClientFactory httpClientFactory
     )
     {
@@ -34,6 +36,7 @@ public sealed class DownloadService : IDownloadService
         _settingsService = settingsService;
         _notificationService = notificationService;
         _apiClient = apiClient;
+        _playbackMediaService = playbackMediaService;
         _httpClient = httpClientFactory.CreateClient("PhoenixReadClient");
     }
 
@@ -267,9 +270,10 @@ public sealed class DownloadService : IDownloadService
         CancellationToken cancellationToken
     )
     {
-        IReadOnlyList<PlaybackMedia>? mediaList = await _apiClient.ResolveMediaAsync(
+        IReadOnlyList<PlaybackMedia>? mediaList = await _playbackMediaService.ResolveMediaAsync(
             dramaId,
             videoId,
+            forceRefresh: false,
             cancellationToken
         );
 

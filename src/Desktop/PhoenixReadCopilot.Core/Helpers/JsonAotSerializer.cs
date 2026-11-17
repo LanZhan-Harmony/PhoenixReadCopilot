@@ -5,6 +5,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
+using PhoenixReadCopilot.Core.Models.Playback;
 using PhoenixReadCopilot.Core.Models.Settings;
 
 namespace PhoenixReadCopilot.Core.Helpers;
@@ -44,6 +45,12 @@ namespace PhoenixReadCopilot.Core.Helpers;
 [JsonSerializable(typeof(List<Drama>))]
 [JsonSerializable(typeof(ReadHistoryItem))]
 [JsonSerializable(typeof(List<ReadHistoryItem>))]
+[JsonSerializable(typeof(MediaDefinition))]
+[JsonSerializable(typeof(MediaCodec))]
+[JsonSerializable(typeof(PlaybackMedia))]
+[JsonSerializable(typeof(List<PlaybackMedia>))]
+[JsonSerializable(typeof(DramaPlaybackMediaCache))]
+[JsonSerializable(typeof(Dictionary<string, List<PlaybackMedia>>))]
 public sealed partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class JsonAotSerializer

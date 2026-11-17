@@ -15,7 +15,7 @@
             <ColumnDefinition Width="148"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <local:VideoCoverImage Margin="6"
+        <local:CoverImage Margin="6"
                                VerticalAlignment="Stretch"
                                CornerRadius="4"
                                Source="{x:Bind ViewModel.Cover}"/>
