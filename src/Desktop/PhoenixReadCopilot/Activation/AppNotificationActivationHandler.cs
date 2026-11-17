@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;

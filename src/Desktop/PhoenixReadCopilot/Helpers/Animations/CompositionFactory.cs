@@ -3,7 +3,6 @@ using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using PhoenixReadCopilot.Helpers.Animations;
 
 namespace PhoenixReadCopilot.Helpers.Animations;
 

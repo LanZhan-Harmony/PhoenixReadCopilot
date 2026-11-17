@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
-using PhoenixReadCopilot.Helpers.Animations;
 using Windows.UI;
 
 namespace PhoenixReadCopilot.Helpers.Animations;

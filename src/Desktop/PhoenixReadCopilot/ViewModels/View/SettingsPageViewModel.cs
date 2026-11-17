@@ -19,7 +19,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 public sealed partial class SettingsPageViewModel : ViewModelBase
 {
     private readonly AppViewModel _appViewModel;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     public AppSettings Settings;
     private bool _isInitialized;
 
@@ -71,12 +71,12 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
     public SettingsPageViewModel(
         ISettingsService settingsService,
         AppViewModel appViewModel,
-        NavigationViewModel navigationViewModel
+        INavigationService navigationService
     )
     {
         Settings = settingsService.Settings;
         _appViewModel = appViewModel;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         Settings.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName is null)
@@ -93,7 +93,7 @@ public sealed partial class SettingsPageViewModel : ViewModelBase
                     break;
                 case nameof(AppSettings.IsTopNavBarShown):
                     OnPropertyChanged(nameof(IsTopNavShown));
-                    _navigationViewModel.IsTopNavBarShown = Settings.IsTopNavBarShown;
+                    _navigationService.IsTopNavBarShown = Settings.IsTopNavBarShown;
                     break;
             }
         };

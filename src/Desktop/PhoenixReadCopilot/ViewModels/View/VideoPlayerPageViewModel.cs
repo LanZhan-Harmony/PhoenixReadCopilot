@@ -24,7 +24,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 {
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly PinnerViewModel _pinnerViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILogger<VideoPlayerPageViewModel> _logger;
@@ -195,7 +195,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         CommentMainViewModel comments,
         ISettingsService settingsService,
         AppViewModel appViewModel,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         PinnerViewModel pinnerViewModel,
         DispatcherQueue dispatcherQueue,
         PhoenixReadApiClient apiClient,
@@ -205,7 +205,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     )
         : base(settingsService, appViewModel)
     {
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _pinnerViewModel = pinnerViewModel;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
@@ -403,7 +403,15 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
     public async Task ChangeFormatAsync(PlayerFormatItemViewModel vm)
     {
-        if (vm is null || vm == SelectedFormat)
+        if (
+            vm is null
+            || vm == SelectedFormat
+            || (
+                SelectedFormat is not null
+                && vm.Data.Quality == SelectedFormat.Data.Quality
+                && vm.PlaybackMedia?.Url == SelectedFormat.PlaybackMedia?.Url
+            )
+        )
         {
             return;
         }
@@ -834,8 +842,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 }
             }
 
-            // 清除弹幕.
-            Danmaku.ClearDanmaku();
+            // 清除字幕（注意：不清除弹幕数据列表，以便单集循环或手动重播时仍能正常呈现弹幕）.
             Subtitle.ClearSubtitle();
 
             _ = ReportProgressAsync(Player.Duration);
@@ -843,6 +850,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             // 单视频循环.
             if (CurrentLoop == VideoLoopType.Single)
             {
+                Danmaku?.UpdatePosition(0);
                 Player.Restart();
                 return;
             }

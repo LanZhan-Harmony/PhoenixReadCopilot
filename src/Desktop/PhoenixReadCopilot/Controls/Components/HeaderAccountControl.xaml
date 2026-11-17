@@ -56,7 +56,7 @@
             <MenuFlyoutSeparator Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
 
             <!--  其它项：始终显示  -->
-            <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFavoritesCommand}" Text="{x:Bind strings:Resources.MyFavorite}">
+            <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFavoriteCommand}" Text="{x:Bind strings:Resources.MyFavorite}">
                 <MenuFlyoutItem.Icon>
                     <ic:SymbolIcon Symbol="StarLineHorizontal3"/>
                 </MenuFlyoutItem.Icon>

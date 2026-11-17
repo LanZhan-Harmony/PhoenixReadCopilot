@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Helpers.Animations;
 using WinUI3Package;
 
 namespace PhoenixReadCopilot.Controls.History;
@@ -86,6 +87,12 @@ public sealed partial class HistoryVideoSearchSection : HistoryPageControlBase
         if (args.Element is FrameworkElement element)
         {
             RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
         }
     }
 
@@ -96,6 +103,7 @@ public sealed partial class HistoryVideoSearchSection : HistoryPageControlBase
     {
         if (args.Element is FrameworkElement element)
         {
+            CompositionFactory.DisableStandardReposition(element);
             HistoryVideoItemTemplate.ClearImage(element);
         }
     }

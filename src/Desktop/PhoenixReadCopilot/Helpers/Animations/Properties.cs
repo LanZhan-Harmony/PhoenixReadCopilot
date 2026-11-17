@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
-using PhoenixReadCopilot.Helpers.Animations;
 using Windows.UI;
 
 namespace PhoenixReadCopilot.Helpers.Animations;

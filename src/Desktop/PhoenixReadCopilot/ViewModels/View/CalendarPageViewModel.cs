@@ -7,7 +7,6 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -20,7 +19,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<CalendarPageViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly Dictionary<DateOnly, List<VideoItemViewModel>> _dateCache = [];
     private CancellationTokenSource? _timelineCts;
@@ -59,7 +58,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     public CalendarPageViewModel(
         PhoenixReadApiClient apiClient,
         ILogger<CalendarPageViewModel> logger,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService
     )
@@ -67,7 +66,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     {
         _apiClient = apiClient;
         _logger = logger;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
     }
 
@@ -121,7 +120,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     private void ShowMyFavoriteCalendar()
     {
         _settings.LastSelectedFavoriteSection = "drama";
-        _navigationViewModel.NavigateToOver(typeof(FavoritesPage));
+        _navigationService.NavigateToOver(typeof(FavoritePage));
     }
 
     private async Task RequestDailyReleasesAsync()

@@ -531,6 +531,11 @@ public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         }
         else
         {
+            if (_hasEnded || (Duration > 0 && Math.Abs(Position - Duration) <= 1))
+            {
+                _hasEnded = false;
+                Player.Position = TimeSpan.Zero;
+            }
             Player.Play();
         }
 

@@ -11,6 +11,7 @@ using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share;
 using WinUIKernel.Share.Toolkits;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.Helpers;
 
@@ -35,13 +36,18 @@ internal static class ServiceHelper
             .AddSingleton(DispatcherQueue.GetForCurrentThread())
             .AddSingleton<ISubtitleService, SubtitleService>()
             .AddSingleton<INotificationService, NotificationService>()
+            .AddSingleton<IPageService, PageService>()
+            .AddSingleton<NavigationService>()
+            .AddSingleton<INavigationService>(sp => sp.GetRequiredService<NavigationService>())
+            .AddSingleton<INavServiceViewModel>(sp => sp.GetRequiredService<NavigationService>())
+            .AddSingleton<INavigationViewService, NavigationViewService>()
             // 2. ViewModels
             // Core
             .AddSingleton<AppViewModel>()
             .AddTransient<DanmakuViewModel>()
             .AddTransient<DramaReviewSectionDetailViewModel>()
             .AddTransient<FFmpegPlayerViewModel>()
-            .AddSingleton<NavigationViewModel>()
+            .AddSingleton<RootLayoutViewModel>()
             .AddSingleton<PinnerViewModel>()
             .AddTransient<SubtitleViewModel>()
             .AddSingleton<EmoteModuleViewModel>()
@@ -52,7 +58,7 @@ internal static class ServiceHelper
             .AddTransient<CalendarPageViewModel>()
             .AddTransient<FilterPageViewModel>()
             .AddTransient<FansPageViewModel>()
-            .AddTransient<FavoritesPageViewModel>()
+            .AddTransient<FavoritePageViewModel>()
             .AddTransient<FollowsPageViewModel>()
             .AddTransient<GalleryPageViewModel>()
             .AddTransient<HistoryPageViewModel>()

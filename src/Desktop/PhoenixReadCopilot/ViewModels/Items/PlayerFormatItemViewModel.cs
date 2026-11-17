@@ -142,4 +142,47 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
 
         return text;
     }
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        if (obj is PlayerFormatItemViewModel other)
+        {
+            if (PlaybackMedia is not null && other.PlaybackMedia is not null)
+            {
+                return PlaybackMedia.Url == other.PlaybackMedia.Url
+                    && Data.Quality == other.Data.Quality;
+            }
+
+            return Data.Quality == other.Data.Quality;
+        }
+
+        return false;
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Data.Quality, PlaybackMedia?.Url);
+    }
+
+    public static bool operator ==(PlayerFormatItemViewModel? left, PlayerFormatItemViewModel? right)
+    {
+        if (ReferenceEquals(left, right))
+        {
+            return true;
+        }
+
+        if (left is null || right is null)
+        {
+            return false;
+        }
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(PlayerFormatItemViewModel? left, PlayerFormatItemViewModel? right)
+    {
+        return !(left == right);
+    }
 }

@@ -5,7 +5,6 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.ViewModels.Items;
-using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
@@ -48,11 +47,7 @@ public sealed partial class DownloadButton : DownloadButtonBase
             foreach (PlayerFormatItemViewModel formatItem in ViewModel.Formats)
             {
                 PlayerFormatInformation info = formatItem.Data;
-                MenuFlyoutItem menuItem = new()
-                {
-                    Text = info.Description,
-                    MinWidth = ActualWidth,
-                };
+                MenuFlyoutItem menuItem = new() { Text = info.Description, MinWidth = ActualWidth };
                 menuItem.Click += async (_, _) => await DownloadCurrentEpisodeAsync(info);
                 DownloadFlyout.Items.Add(menuItem);
             }
@@ -196,7 +191,10 @@ public sealed partial class DownloadButton : DownloadButtonBase
             return;
         }
 
-        List<Episode> selectedEpisodes = [.. ViewModel.Episodes.Where(e => indices.Contains(e.Number))];
+        List<Episode> selectedEpisodes =
+        [
+            .. ViewModel.Episodes.Where(e => indices.Contains(e.Number)),
+        ];
         if (selectedEpisodes.Count == 0)
         {
             _notificationService.ShowSystemNotification(

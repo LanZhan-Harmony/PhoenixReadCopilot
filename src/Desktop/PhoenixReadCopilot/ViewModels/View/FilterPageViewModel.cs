@@ -9,7 +9,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Filter;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -22,7 +21,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<FilterPageViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
     private int _offset;
     private bool _hasMore;
@@ -55,7 +54,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     public FilterPageViewModel(
         PhoenixReadApiClient apiClient,
         ILogger<FilterPageViewModel> logger,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService
     )
@@ -63,7 +62,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     {
         _apiClient = apiClient;
         _logger = logger;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
     }
 
@@ -77,15 +76,12 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     {
         _offset = 0;
         _hasMore = true;
-        _dispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            async () =>
-            {
-                Items.Clear();
-                Filters = null;
-                await InitializeAsync();
-            }
-        );
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+        {
+            Items.Clear();
+            Filters = null;
+            await InitializeAsync();
+        });
 
         return Task.CompletedTask;
     }
@@ -94,7 +90,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     private void ShowMyFavoriteFilter()
     {
         _settings.LastSelectedFavoriteSection = "drama";
-        _navigationViewModel.NavigateToOver(typeof(FavoritesPage));
+        _navigationService.NavigateToOver(typeof(FavoritePage));
     }
 
     private async Task RequestFilterPanelAsync()
@@ -219,11 +215,10 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     {
         _offset = 0;
         _hasMore = true;
-        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low,
-            () =>
-            {
-                Items.Clear();
-                _ = RequestIndexAsync();
-            });
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            Items.Clear();
+            _ = RequestIndexAsync();
+        });
     }
 }

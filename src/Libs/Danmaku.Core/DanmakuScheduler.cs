@@ -82,7 +82,7 @@ internal sealed class DanmakuScheduler : IDisposable
     {
         lock (_updateTimeQueue)
         {
-            if (_updateTimeQueue.LastOrDefault() == currentMs)
+            if (_updateTimeQueue.Count > 0 && _updateTimeQueue.Last() == currentMs)
             {
                 // 避免重复更新
                 return;
@@ -295,15 +295,17 @@ internal sealed class DanmakuScheduler : IDisposable
                 }
 
                 uint currentTimeMs = 0;
+                bool hasTime = false;
                 lock (_updateTimeQueue)
                 {
                     if (_updateTimeQueue.Count > 0)
                     {
                         currentTimeMs = _updateTimeQueue.Dequeue();
+                        hasTime = true;
                     }
                 }
 
-                if (currentTimeMs == 0)
+                if (!hasTime)
                 {
                     continue;
                 }

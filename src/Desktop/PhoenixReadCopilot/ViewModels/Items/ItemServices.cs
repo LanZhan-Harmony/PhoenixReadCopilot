@@ -3,7 +3,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 
@@ -14,8 +13,8 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 internal static class ItemServices
 {
-    public static NavigationViewModel Navigation =
-        Ioc.Default.GetRequiredService<NavigationViewModel>();
+    public static INavigationService Navigation =
+        Ioc.Default.GetRequiredService<INavigationService>();
 
     public static AppViewModel App = Ioc.Default.GetRequiredService<AppViewModel>();
 

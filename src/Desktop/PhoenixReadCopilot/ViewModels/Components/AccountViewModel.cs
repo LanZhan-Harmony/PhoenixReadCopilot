@@ -19,7 +19,7 @@ public sealed partial class AccountViewModel : ViewModelBase
     private readonly PhoenixReadApiClient _apiClient;
     private readonly IAuthenticationService _authService;
     private readonly IHistoryService _historyService;
-    private readonly NavigationViewModel _navService;
+    private readonly INavigationService _navService;
     private readonly ILogger<AccountViewModel> _logger;
     private readonly AppViewModel _appViewModel;
 
@@ -48,7 +48,7 @@ public sealed partial class AccountViewModel : ViewModelBase
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,
         IHistoryService historyService,
-        NavigationViewModel navService,
+        INavigationService navService,
         AppViewModel appViewModel,
         ILogger<AccountViewModel> logger
     )
@@ -158,7 +158,7 @@ public sealed partial class AccountViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowFollows() => ShowFavorites();
+    private void ShowFollows() => ShowFavorite();
 
     [RelayCommand]
     private void ShowMoments()
@@ -176,5 +176,5 @@ public sealed partial class AccountViewModel : ViewModelBase
     private void ShowHistory() => _navService.NavigateToOver(typeof(HistoryPage));
 
     [RelayCommand]
-    private void ShowFavorites() => _navService.NavigateToOver(typeof(FavoritesPage));
+    private void ShowFavorite() => _navService.NavigateToOver(typeof(FavoritePage));
 }

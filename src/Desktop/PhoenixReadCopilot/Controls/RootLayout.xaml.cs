@@ -2,8 +2,11 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -16,6 +19,8 @@ namespace PhoenixReadCopilot.Controls;
 public sealed partial class RootLayout : RootLayoutBase
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+    private readonly INavigationService _navigationService = Ioc.Default.GetRequiredService<INavigationService>();
+    private readonly INavigationViewService _navigationViewService = Ioc.Default.GetRequiredService<INavigationViewService>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayout"/> class.
@@ -177,8 +182,13 @@ public sealed partial class RootLayout : RootLayoutBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        ViewModel.Initialize(MainFrame, OverlayFrame);
-        AppNavigationItemViewModel? selectedItem = ViewModel.MenuItems.FirstOrDefault(p =>
+        if (_navigationService is NavigationService navService)
+        {
+            navService.Initialize(MainFrame, OverlayFrame);
+        }
+        _navigationViewService.Initialize(NavView);
+
+        AppNavigationItemViewModel? selectedItem = _navigationViewService.MenuItems.FirstOrDefault(p =>
             p.IsSelected
         );
         if (selectedItem is not null)
@@ -188,20 +198,10 @@ public sealed partial class RootLayout : RootLayoutBase
         }
     }
 
-    private void OnNavViewBackRequested(
-        NavigationView sender,
-        NavigationViewBackRequestedEventArgs args
-    ) => OnBackRequested(null, null);
-
-    private void OnNavViewItemInvoked(
-        NavigationView sender,
-        NavigationViewItemInvokedEventArgs args
-    )
+    /// <inheritdoc/>
+    protected override void OnControlUnloaded()
     {
-        _ = this;
-        AppNavigationViewItem? item = args.InvokedItemContainer as AppNavigationViewItem;
-        AppNavigationItemViewModel? context = item?.Tag as AppNavigationItemViewModel;
-        context?.NavigateCommand.Execute(null);
+        _navigationViewService.UnregisterEvents();
     }
 
     private void OnBackRequested(object sender, EventArgs e) => ViewModel.Back();
@@ -213,7 +213,7 @@ public sealed partial class RootLayout : RootLayoutBase
         _appViewModel.HideUpdate();
 
     private void OnFavoriteButtonClick(object sender, EventArgs e) =>
-        ViewModel.NavigateToOver(typeof(FavoritesPage), null);
+        ViewModel.NavigateToOver(typeof(FavoritePage), null);
 
     private void OnViewLaterButtonClick(object sender, EventArgs e) =>
         ViewModel.NavigateToOver(typeof(ViewLaterPage), null);
@@ -228,13 +228,13 @@ public sealed partial class RootLayout : RootLayoutBase
 /// <summary>
 /// 根布局基类.
 /// </summary>
-public abstract class RootLayoutBase : LayoutUserControlBase<NavigationViewModel>
+public abstract class RootLayoutBase : LayoutUserControlBase<RootLayoutViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayoutBase"/> class.
     /// </summary>
     protected RootLayoutBase()
     {
-        ViewModel = Ioc.Default.GetRequiredService<NavigationViewModel>();
+        ViewModel = Ioc.Default.GetRequiredService<RootLayoutViewModel>();
     }
 }

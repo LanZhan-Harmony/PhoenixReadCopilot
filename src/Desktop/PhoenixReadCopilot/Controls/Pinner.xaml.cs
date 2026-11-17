@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
@@ -15,8 +16,8 @@ namespace PhoenixReadCopilot.Controls;
 /// </summary>
 public sealed partial class Pinner : PinnerBase
 {
-    private readonly NavigationViewModel _navigationViewModel =
-        Ioc.Default.GetRequiredService<NavigationViewModel>();
+    private readonly INavigationService _navigationService =
+        Ioc.Default.GetRequiredService<INavigationService>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Pinner"/> class.
@@ -33,13 +34,12 @@ public sealed partial class Pinner : PinnerBase
 
     private void OnItemClick(object sender, RoutedEventArgs e)
     {
-        PinItem? item = (sender as FrameworkElement)?.DataContext as PinItem;
-        if (item is null)
+        if ((sender as FrameworkElement)?.DataContext is not PinItem item)
         {
             return;
         }
 
-        NavigationViewModel navVM = _navigationViewModel;
+        INavigationService navVM = _navigationService;
         if (item.Type == PinContentType.User)
         {
             User user = new()
@@ -66,7 +66,8 @@ public sealed partial class Pinner : PinnerBase
     private void OnRemoveItemClick(object sender, RoutedEventArgs e)
     {
         bool isLastItem = ViewModel.Items.Count == 1;
-        if ((sender as FrameworkElement)?.DataContext is PinItem item) ViewModel.RemoveItem(item);
+        if (sender is FrameworkElement { DataContext: PinItem item })
+            ViewModel.RemoveItem(item);
         if (isLastItem)
         {
             ItemsFlyout.Hide();
