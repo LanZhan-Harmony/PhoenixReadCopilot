@@ -15,7 +15,7 @@ internal sealed partial class PlayerTypeConverter : IValueConverter
             result = type switch
             {
                 PlayerType.FFmpeg => Resources.FFmpegPlayer,
-                PlayerType.Web => Resources.Web,
+                // PlayerType.Web => Resources.Web,
                 _ => Resources.FFmpegPlayer,
             };
         }

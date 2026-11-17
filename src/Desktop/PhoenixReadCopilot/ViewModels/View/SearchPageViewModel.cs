@@ -7,7 +7,6 @@ using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -20,7 +19,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<SearchPageViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILoggerFactory _loggerFactory;
 
@@ -50,7 +49,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     public SearchPageViewModel(
         PhoenixReadApiClient apiClient,
         ILogger<SearchPageViewModel> logger,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         ISettingsService settingsService,
         DispatcherQueue dispatcherQueue,
         ILoggerFactory loggerFactory
@@ -59,7 +58,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     {
         _apiClient = apiClient;
         _logger = logger;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
         _loggerFactory = loggerFactory;
     }

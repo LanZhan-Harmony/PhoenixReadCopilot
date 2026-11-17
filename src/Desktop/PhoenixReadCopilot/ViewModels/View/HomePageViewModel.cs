@@ -8,7 +8,6 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -21,7 +20,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<HomePageViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
 
     private int _recommendOffset;
@@ -54,7 +53,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
     public HomePageViewModel(
         PhoenixReadApiClient apiClient,
         ILogger<HomePageViewModel> logger,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService
     )
@@ -62,7 +61,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
     {
         _apiClient = apiClient;
         _logger = logger;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
     }
 
@@ -102,7 +101,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
         VideoItemViewModel? first = Videos.FirstOrDefault();
         if (first?.Drama is not null)
         {
-            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
+            _navigationService.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
         }
     }
 
@@ -128,9 +127,8 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
         {
             if (requestId == _currentRequestId)
             {
-                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low,
-                    () =>
-                        IsVideoLoading = false
+                _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                    IsVideoLoading = false
                 );
             }
         }

@@ -544,12 +544,6 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             return;
         }
 
-        PlayerType preferPlayer = ItemServices.Settings.PlayerType;
-        if (preferPlayer == PlayerType.Web)
-        {
-            return;
-        }
-
         if (HistoryItem is not null)
         {
             ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), HistoryItem.DramaId);
@@ -667,7 +661,10 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"移除稍后再看视频失败");
-            ItemServices.App.ShowTip(Strings.Resources.FailedToRemoveVideoFromViewLater, InfoType.Error);
+            ItemServices.App.ShowTip(
+                Strings.Resources.FailedToRemoveVideoFromViewLater,
+                InfoType.Error
+            );
         }
     }
 
@@ -692,7 +689,10 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"移除历史记录视频失败");
-            ItemServices.App.ShowTip(Strings.Resources.FailedToRemoveVideoFromHistory, InfoType.Error);
+            ItemServices.App.ShowTip(
+                Strings.Resources.FailedToRemoveVideoFromHistory,
+                InfoType.Error
+            );
         }
     }
 
@@ -722,7 +722,10 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"移除收藏视频失败");
-            ItemServices.App.ShowTip(Strings.Resources.FailedToRemoveVideoFromFavorite, InfoType.Error);
+            ItemServices.App.ShowTip(
+                Strings.Resources.FailedToRemoveVideoFromFavorite,
+                InfoType.Error
+            );
         }
     }
 

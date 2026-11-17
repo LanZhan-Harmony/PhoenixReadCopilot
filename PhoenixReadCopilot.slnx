@@ -25,6 +25,9 @@
       <Platform Solution="*|x64" Project="x64" />
     </Project>
   </Folder>
+  <Folder Name="/Updater/">
+    <Project Path="src/Updater/PhoenixReadCopilot.Updater/PhoenixReadCopilot.Updater.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".csharpierignore" />
     <File Path="src/.editorconfig" />

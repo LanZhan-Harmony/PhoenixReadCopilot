@@ -1,6 +1,7 @@
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.Controls.Home;
+using PhoenixReadCopilot.Helpers.Animations;
 using WinUI3Package;
 
 namespace PhoenixReadCopilot.Controls.Calendar;
@@ -28,6 +29,12 @@ public sealed partial class CalendarTimelineMainControl : CalendarTimelineContro
         if (args.Element is FrameworkElement element)
         {
             RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
         }
     }
 
@@ -38,6 +45,7 @@ public sealed partial class CalendarTimelineMainControl : CalendarTimelineContro
     {
         if (args.Element is FrameworkElement element)
         {
+            CompositionFactory.DisableStandardReposition(element);
             CalendarVideoItemTemplate.ClearImage(element);
         }
     }

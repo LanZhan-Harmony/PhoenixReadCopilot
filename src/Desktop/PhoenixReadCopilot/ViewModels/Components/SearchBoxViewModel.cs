@@ -7,7 +7,6 @@ using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
@@ -22,7 +21,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<SearchBoxViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;
     private readonly List<string> _recommendItems = [];
     private CancellationTokenSource? _cancellationTokenSource;
@@ -50,16 +49,16 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     /// </summary>
     public SearchBoxViewModel(
         PhoenixReadApiClient apiClient,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         ISettingsService settingsService,
         ILogger<SearchBoxViewModel> logger
     )
     {
         _apiClient = apiClient;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _settings = settingsService.Settings;
         _logger = logger;
-        _navigationViewModel.OverlayNavigated += OnOverlayNavigated;
+        _navigationService.OverlayNavigated += OnOverlayNavigated;
     }
 
     private void OnOverlayNavigated(object? sender, Type sourcePageType)
@@ -260,11 +259,11 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
         if (string.IsNullOrEmpty(vm.RegionId) || vm.RegionId == "global")
         {
-            _navigationViewModel.Search(keyword);
+            _navigationService.Search(keyword);
         }
         else
         {
-            _navigationViewModel.SearchInRegion(keyword);
+            _navigationService.SearchInRegion(keyword);
         }
     }
 }

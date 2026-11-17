@@ -7,8 +7,6 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Services;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
@@ -22,7 +20,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
 {
     private readonly ILocalViewLaterService _localService;
     private readonly ILogger<ViewLaterPageViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;
     private readonly DispatcherQueue _dispatcherQueue;
 
@@ -46,14 +44,14 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     public ViewLaterPageViewModel(
         ILocalViewLaterService localService,
         ILogger<ViewLaterPageViewModel> logger,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         ISettingsService settingsService,
         DispatcherQueue dispatcherQueue
     )
     {
         _localService = localService;
         _logger = logger;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _settings = settingsService.Settings;
         _dispatcherQueue = dispatcherQueue;
 
@@ -100,7 +98,10 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
             IReadOnlyList<Drama> dramas = await _localService.GetAllAsync();
 
             // 如果已有项且ID序列完全一致，无需清空重建避免卡片闪烁
-            if (Videos.Count == dramas.Count && Videos.Select(v => v.Drama?.Id).SequenceEqual(dramas.Select(d => d.Id)))
+            if (
+                Videos.Count == dramas.Count
+                && Videos.Select(v => v.Drama?.Id).SequenceEqual(dramas.Select(d => d.Id))
+            )
             {
                 TotalCount = Videos.Count;
                 IsEmpty = Videos.Count == 0;

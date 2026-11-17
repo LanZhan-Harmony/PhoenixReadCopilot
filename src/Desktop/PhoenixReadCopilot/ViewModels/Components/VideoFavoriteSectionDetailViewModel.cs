@@ -7,7 +7,6 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
@@ -23,7 +22,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<VideoFavoriteSectionDetailViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;
 
     private int _offset;
@@ -54,14 +53,14 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     public VideoFavoriteSectionDetailViewModel(
         VideoFavoriteFolder data,
         PhoenixReadApiClient apiClient,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         ISettingsService settingsService,
         ILogger<VideoFavoriteSectionDetailViewModel> logger
     )
         : base(data)
     {
         _apiClient = apiClient;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _settings = settingsService.Settings;
         _logger = logger;
     }

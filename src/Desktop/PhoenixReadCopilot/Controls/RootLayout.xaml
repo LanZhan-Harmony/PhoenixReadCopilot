@@ -80,7 +80,7 @@
                             Spacing="2"
                             Visibility="{x:Bind ViewModel.IsTopNavBarShown, Mode=OneWay}">
                     <components:TopNavigationItem Click="OnFavoriteButtonClick"
-                                                  IsSelected="{x:Bind ViewModel.IsFavoritesPage, Mode=OneWay}"
+                                                  IsSelected="{x:Bind ViewModel.IsFavoritePage, Mode=OneWay}"
                                                   Symbol="StarLineHorizontal3"
                                                   ToolTipService.ToolTip="{x:Bind strings:Resources.MyFavorite}"/>
                     <components:TopNavigationItem Click="OnViewLaterButtonClick"
@@ -123,9 +123,7 @@
 
         <NavigationView x:Name="NavView"
                         Grid.Row="1"
-                        BackRequested="OnNavViewBackRequested"
                         FooterMenuItemsSource="{x:Bind ViewModel.FooterItems, Mode=OneWay}"
-                        ItemInvoked="OnNavViewItemInvoked"
                         MenuItemTemplate="{StaticResource AppNavItemTemplate}"
                         MenuItemsSource="{x:Bind ViewModel.MenuItems, Mode=OneWay}"
                         SelectionFollowsFocus="Disabled"

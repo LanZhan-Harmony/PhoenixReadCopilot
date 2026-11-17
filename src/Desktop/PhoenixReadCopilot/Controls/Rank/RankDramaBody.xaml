@@ -17,15 +17,17 @@
         </ResourceDictionary>
     </local:RankPageControlBase.Resources>
 
-    <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
-        <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
-            <ItemsRepeater x:Name="DramaRepeater"
-                           Margin="16,12"
-                           ElementClearing="DramaRepeater_ElementClearing"
-                           ElementPrepared="DramaRepeater_ElementPrepared"
-                           ItemTemplate="{StaticResource RankVideoItemTemplate}"
-                           ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
-                           Layout="{StaticResource VideoLayout}"/>
-        </ScrollViewer>
-    </essential:RevealFocusPanel>
+    <Grid>
+        <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
+            <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
+                <ItemsRepeater x:Name="DramaRepeater"
+                               Margin="16,12"
+                               ElementClearing="DramaRepeater_ElementClearing"
+                               ElementPrepared="DramaRepeater_ElementPrepared"
+                               ItemTemplate="{StaticResource RankVideoItemTemplate}"
+                               ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
+                               Layout="{StaticResource VideoLayout}"/>
+            </ScrollViewer>
+        </essential:RevealFocusPanel>
+    </Grid>
 </local:RankPageControlBase>

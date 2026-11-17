@@ -38,9 +38,6 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Grid.ChildrenTransitions>
-            <RepositionThemeTransition IsStaggeringEnabled="False"/>
-        </Grid.ChildrenTransitions>
 
         <Border Grid.Row="1"
                 Grid.ColumnSpan="3"

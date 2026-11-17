@@ -9,7 +9,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -22,7 +21,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<RankPageViewModel> _logger;
-    private readonly NavigationViewModel _navigationViewModel;
+    private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly Dictionary<string, List<VideoItemViewModel>> _videoCache = [];
     private readonly Dictionary<string, List<ActorItemViewModel>> _actorCache = [];
@@ -94,7 +93,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     public RankPageViewModel(
         PhoenixReadApiClient apiClient,
         ILogger<RankPageViewModel> logger,
-        NavigationViewModel navigationViewModel,
+        INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService
     )
@@ -102,7 +101,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     {
         _apiClient = apiClient;
         _logger = logger;
-        _navigationViewModel = navigationViewModel;
+        _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
     }
 
@@ -423,7 +422,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
         VideoItemViewModel? first = Videos.FirstOrDefault();
         if (first?.Drama is not null)
         {
-            _navigationViewModel.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
+            _navigationService.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
         }
     }
 
