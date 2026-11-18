@@ -5,8 +5,8 @@
 
     <Style x:Key="ListRepeaterItemStyle" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource ListViewItemBackground}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="{StaticResource ListViewItemCornerRadius}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="{StaticResource OverlayCornerRadius}"/>
         <Setter Property="FocusVisualMargin" Value="1"/>
         <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource ListViewItemFocusVisualPrimaryBrush}"/>
         <Setter Property="FocusVisualPrimaryThickness" Value="2"/>
@@ -21,7 +21,7 @@
         <Setter Property="Margin" Value="0"/>
         <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
         <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
-        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Padding" Value="16,10,16,10"/>
         <Setter Property="TabNavigation" Value="Local"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -31,7 +31,6 @@
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                       Background="{TemplateBinding Background}"
-                                      BorderBrush="Transparent"
                                       BorderThickness="{TemplateBinding BorderThickness}"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -54,7 +53,6 @@
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ListViewItemForegroundPointerOver}"/>
                                         <Setter Target="ContentPresenter.Background" Value="{ThemeResource ListViewItemBackgroundPointerOver}"/>
-                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ListViewItemPointerOverBorderBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">

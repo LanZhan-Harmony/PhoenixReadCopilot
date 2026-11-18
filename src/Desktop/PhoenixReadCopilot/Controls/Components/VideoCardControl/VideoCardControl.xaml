@@ -13,16 +13,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style x:Key="PlayerRecommendVideoCardStyle" TargetType="local:VideoCardControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:VideoCardControl">
-                    <base:CardControl x:Name="RootCard" Height="104">
-                        <local:PlayerRecommendVideoPresenter ViewModel="{TemplateBinding ViewModel}"/>
-                    </base:CardControl>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 </ResourceDictionary>

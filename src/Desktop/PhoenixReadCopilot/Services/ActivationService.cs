@@ -15,18 +15,21 @@ public sealed class ActivationService : IActivationService
     private readonly IEnumerable<IActivationHandler> _activationHandlers;
     private readonly IActivationHandler _defaultHandler;
     private readonly ISettingsService _settingsService;
+    private readonly AppUpdateService _appUpdateService;
     private readonly ILogger<ActivationService> _logger;
 
     public ActivationService(
         IEnumerable<IActivationHandler> activationHandlers,
         DefaultActivationHandler defaultHandler,
         ISettingsService settingsService,
+        AppUpdateService appUpdateService,
         ILogger<ActivationService> logger
     )
     {
         _activationHandlers = activationHandlers;
         _defaultHandler = defaultHandler;
         _settingsService = settingsService;
+        _appUpdateService = appUpdateService;
         _logger = logger;
     }
 
@@ -77,6 +80,7 @@ public sealed class ActivationService : IActivationService
 
     private async Task StartupAsync()
     {
+        _ = _appUpdateService.CheckForUpdateOnStartupAsync();
         await Task.CompletedTask;
     }
 }

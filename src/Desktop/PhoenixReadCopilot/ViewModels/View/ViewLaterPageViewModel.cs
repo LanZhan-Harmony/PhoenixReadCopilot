@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class ViewLaterPageViewModel : ViewModelBase
 {
-    private readonly ILocalViewLaterService _localService;
+    private readonly IViewLaterService _localService;
     private readonly ILogger<ViewLaterPageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;
@@ -42,7 +42,7 @@ public sealed partial class ViewLaterPageViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="ViewLaterPageViewModel"/> class.
     /// </summary>
     public ViewLaterPageViewModel(
-        ILocalViewLaterService localService,
+        IViewLaterService localService,
         ILogger<ViewLaterPageViewModel> logger,
         INavigationService navigationService,
         ISettingsService settingsService,

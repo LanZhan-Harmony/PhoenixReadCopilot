@@ -207,7 +207,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
         string cover = vinfo?.Identifier.Cover?.Uri?.ToString() ?? string.Empty;
         try
         {
-            await ItemServices.LocalViewLater.AddAsync(
+            await ItemServices.ViewLater.AddAsync(
                 new PhoenixReadApi.Drama
                 {
                     Id = aid,

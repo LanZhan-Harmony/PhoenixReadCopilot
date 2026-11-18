@@ -27,8 +27,12 @@ internal static class ItemServices
         .Default.GetRequiredService<ISettingsService>()
         .Settings;
 
-    public static ILocalViewLaterService LocalViewLater =
-        Ioc.Default.GetRequiredService<ILocalViewLaterService>();
+    public static IViewLaterService ViewLater = Ioc.Default.GetRequiredService<IViewLaterService>();
+
+    public static IPinService Pin => Ioc.Default.GetRequiredService<IPinService>();
+
+    public static IReservationService Reservation =>
+        Ioc.Default.GetRequiredService<IReservationService>();
 
     public static AccountViewModel Account = Ioc.Default.GetRequiredService<AccountViewModel>();
 

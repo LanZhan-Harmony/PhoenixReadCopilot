@@ -1,16 +1,19 @@
 namespace PhoenixReadCopilot.Updater;
 
+/// <summary>
+/// 更新操作的结果状态.
+/// </summary>
 public enum UpdateOutcome
 {
-    /// <summary>Already on the latest version (or newer).</summary>
+    /// <summary>已经是最新版本.</summary>
     UpToDate,
 
-    /// <summary>A newer build was downloaded, validated, and handed off; the caller should now exit.</summary>
+    /// <summary>发现新版本可用.</summary>
+    UpdateAvailable,
+
+    /// <summary>新版本已下载并准备就绪，等待应用退出后替换.</summary>
     Staged,
 
-    /// <summary>The running process is not a self-contained single file, so it cannot replace itself.</summary>
-    NotSelfContained,
-
-    /// <summary>The update could not be completed (network, checksum, validation, ...).</summary>
+    /// <summary>更新失败（网络、校验或其他错误）.</summary>
     Failed,
 }

@@ -401,6 +401,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
                     ? $"{statusText} · 全 {item.Drama.EpisodeCount} 集"
                     : statusText
             );
+
+        if (!string.IsNullOrEmpty(item.Drama.Id))
+        {
+            IsReserved = ItemServices.Reservation.IsReserved(item.Drama.Id);
+        }
     }
 
     /// <summary>
@@ -583,12 +588,16 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         try
         {
             bool targetActive = !IsReserved;
-            PhoenixOperationResult result = await ItemServices.PhoenixRead.SetReservationAsync(
+            long releaseTimeSeconds = DailyRelease?.PublishTime?.ToUnixTimeSeconds() ?? 0;
+            bool success = await ItemServices.Reservation.SetReservationAsync(
                 dramaId,
-                targetActive
+                targetActive,
+                title: Drama?.Title ?? Title,
+                coverUrl: Drama?.CoverUrl ?? Cover?.ToString(),
+                releaseAtUnixSeconds: releaseTimeSeconds
             );
 
-            if (result.Succeeded)
+            if (success)
             {
                 IsReserved = targetActive;
                 string msg = targetActive
@@ -598,10 +607,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
             }
             else
             {
-                string msg = !string.IsNullOrEmpty(result.Message)
-                    ? result.Message
-                    : Strings.Resources.ReserveFailed;
-                ItemServices.App.ShowTip(msg, InfoType.Warning);
+                ItemServices.App.ShowTip(Strings.Resources.ReserveFailed, InfoType.Warning);
             }
         }
         catch (Exception ex)
@@ -622,7 +628,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             if (Drama is not null)
             {
-                await ItemServices.LocalViewLater.AddAsync(Drama);
+                await ItemServices.ViewLater.AddAsync(Drama);
             }
             else if (Data is not null)
             {
@@ -632,7 +638,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
                     Title = Data.Identifier?.Title ?? string.Empty,
                     CoverUrl = Data.Identifier?.Cover?.Uri?.ToString() ?? string.Empty,
                 };
-                await ItemServices.LocalViewLater.AddAsync(drama);
+                await ItemServices.ViewLater.AddAsync(drama);
             }
             ItemServices.App.ShowTip(Strings.Resources.AddViewLaterSucceed, InfoType.Success);
         }
@@ -650,11 +656,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             if (Drama is not null)
             {
-                await ItemServices.LocalViewLater.RemoveAsync(Drama.Id);
+                await ItemServices.ViewLater.RemoveAsync(Drama.Id);
             }
             else if (Data is not null && !string.IsNullOrEmpty(Data.Identifier?.Id))
             {
-                await ItemServices.LocalViewLater.RemoveAsync(Data.Identifier.Id);
+                await ItemServices.ViewLater.RemoveAsync(Data.Identifier.Id);
             }
             _removeAction?.Invoke(this);
         }

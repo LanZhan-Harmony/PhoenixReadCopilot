@@ -169,7 +169,11 @@ public sealed class NavigationService : INavigationService, INavServiceViewModel
         }
 
         _settings.LastSelectedFeaturePage = pageType.FullName ?? string.Empty;
-        bool navigated = _frame.Navigate(pageType, parameter, new EntranceNavigationTransitionInfo());
+        bool navigated = _frame.Navigate(
+            pageType,
+            parameter,
+            new EntranceNavigationTransitionInfo()
+        );
         _frame.BackStack.Clear();
         return navigated;
     }
@@ -208,7 +212,11 @@ public sealed class NavigationService : INavigationService, INavServiceViewModel
             return true;
         }
 
-        bool navigated = _overFrame.Navigate(pageType, parameter, new EntranceNavigationTransitionInfo());
+        bool navigated = _overFrame.Navigate(
+            pageType,
+            parameter,
+            new EntranceNavigationTransitionInfo()
+        );
         IsOverlayOpen = true;
         CheckSubPageStatus();
         return navigated;
@@ -294,26 +302,17 @@ public sealed class NavigationService : INavigationService, INavServiceViewModel
 
     private void UnregisterFrameEvents()
     {
-        if (_frame != null)
-        {
-            _frame.Navigated -= OnFrameNavigated;
-        }
+        _frame?.Navigated -= OnFrameNavigated;
     }
 
     private void RegisterOverlayEvents()
     {
-        if (_overFrame != null)
-        {
-            _overFrame.Navigated += OnOverlayNavigated;
-        }
+        _overFrame?.Navigated += OnOverlayNavigated;
     }
 
     private void UnregisterOverlayEvents()
     {
-        if (_overFrame != null)
-        {
-            _overFrame.Navigated -= OnOverlayNavigated;
-        }
+        _overFrame?.Navigated -= OnOverlayNavigated;
     }
 
     private void OnFrameNavigated(object sender, NavigationEventArgs e)

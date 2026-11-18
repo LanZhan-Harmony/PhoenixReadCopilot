@@ -22,6 +22,7 @@
     <IsAotCompatible>true</IsAotCompatible>
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -90,6 +91,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\Danmaku.Core\Danmaku.Core.csproj" />
     <ProjectReference Include="..\..\Libs\WinUIKernel.Share\WinUIKernel.Share.csproj" />
+    <ProjectReference Include="..\..\Updater\PhoenixReadCopilot.Updater\PhoenixReadCopilot.Updater.csproj" />
     <ProjectReference Include="..\PhoenixReadCopilot.Core\PhoenixReadCopilot.Core.csproj" />
   </ItemGroup>
 

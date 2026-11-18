@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Services;
 /// </summary>
 public sealed class PageService : IPageService
 {
-    private readonly Dictionary<string, Type> _pages = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, Type> _pages = [with(StringComparer.OrdinalIgnoreCase)];
 
     public PageService()
     {
@@ -43,7 +43,9 @@ public sealed class PageService : IPageService
         {
             if (!_pages.TryGetValue(key, out Type? pageType))
             {
-                throw new ArgumentException($"Page not found: {key}. Did you forget to call PageService.Configure?");
+                throw new ArgumentException(
+                    $"Page not found: {key}. Did you forget to call PageService.Configure?"
+                );
             }
 
             return pageType;

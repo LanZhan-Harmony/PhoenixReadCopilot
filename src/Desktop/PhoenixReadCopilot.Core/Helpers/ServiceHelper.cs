@@ -47,7 +47,9 @@ public static class ServiceHelper
         services.AddSingleton<IPlaybackMediaService, PlaybackMediaService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
         services.AddSingleton<IHistoryService, HistoryService>();
-        services.AddSingleton<ILocalViewLaterService, LocalViewLaterService>();
+        services.AddSingleton<IViewLaterService, ViewLaterService>();
+        services.AddSingleton<IPinService, PinService>();
+        services.AddSingleton<IReservationService, ReservationService>();
 
         services.AddSingleton<PhoenixReadApiClient>(sp =>
         {

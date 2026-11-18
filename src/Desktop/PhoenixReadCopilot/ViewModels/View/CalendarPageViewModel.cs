@@ -21,6 +21,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     private readonly ILogger<CalendarPageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
+    private readonly IReservationService _reservationService;
     private readonly Dictionary<DateOnly, List<VideoItemViewModel>> _dateCache = [];
     private CancellationTokenSource? _timelineCts;
     private CancellationTokenSource? _dateReleasesCts;
@@ -60,7 +61,8 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
         ILogger<CalendarPageViewModel> logger,
         INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
-        ISettingsService settingsService
+        ISettingsService settingsService,
+        IReservationService reservationService
     )
         : base(settingsService)
     {
@@ -68,6 +70,26 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
         _logger = logger;
         _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
+        _reservationService = reservationService;
+
+        _reservationService.ReservationChanged += OnReservationChanged;
+    }
+
+    private void OnReservationChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            foreach (List<VideoItemViewModel> list in _dateCache.Values)
+            {
+                foreach (VideoItemViewModel item in list)
+                {
+                    if (item.Drama is not null && !string.IsNullOrEmpty(item.Drama.Id))
+                    {
+                        item.IsReserved = _reservationService.IsReserved(item.Drama.Id);
+                    }
+                }
+            }
+        });
     }
 
     /// <inheritdoc/>
@@ -84,6 +106,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
         _isInitialized = false;
         IsError = false;
         UpdateVisibilityStates();
+        await _reservationService.RefreshAsync();
         await RequestDailyReleasesAsync();
     }
 
@@ -140,6 +163,16 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
             _timelineCts?.Dispose();
             _timelineCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
             CancellationToken ct = _timelineCts.Token;
+
+            // 预热预约缓存
+            try
+            {
+                await _reservationService.GetReservationsAsync(cancellationToken: ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.ZLogWarning(ex, $"预热预约列表失败.");
+            }
 
             DailyReleasePage page = await _apiClient.GetDailyReleasesAsync(
                 targetDate: null,

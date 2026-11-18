@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Contracts.Services;
@@ -21,7 +22,7 @@ public sealed class NavigationViewService : INavigationViewService
     private NavigationView? _navigationView;
 
     /// <inheritdoc/>
-    public IReadOnlyList<AppNavigationItemViewModel> MenuItems { get; }
+    public ObservableCollection<AppNavigationItemViewModel> MenuItems { get; } = [];
 
     /// <inheritdoc/>
     public ObservableCollection<AppNavigationItemViewModel> FooterItems { get; } = [];
@@ -34,11 +35,17 @@ public sealed class NavigationViewService : INavigationViewService
         _navigationService = navigationService;
         _settings = settingsService.Settings;
 
-        MenuItems = CreateMenuItems();
+        foreach (AppNavigationItemViewModel item in CreateMenuItems())
+        {
+            MenuItems.Add(item);
+        }
+
         foreach (AppNavigationItemViewModel item in CreateFooterItems())
         {
             FooterItems.Add(item);
         }
+
+        _settings.PropertyChanged += OnSettingsPropertyChanged;
     }
 
     /// <inheritdoc/>
@@ -61,6 +68,7 @@ public sealed class NavigationViewService : INavigationViewService
         }
 
         _navigationService.Navigated -= OnNavigated;
+        _settings.PropertyChanged -= OnSettingsPropertyChanged;
     }
 
     /// <inheritdoc/>
@@ -83,6 +91,45 @@ public sealed class NavigationViewService : INavigationViewService
         if (item != null)
         {
             item.IsVisible = isVisible;
+
+            if (!isVisible && item.IsSelected)
+            {
+                AppNavigationItemViewModel? firstVisible = MenuItems.FirstOrDefault(p => p.IsVisible);
+                if (firstVisible != null)
+                {
+                    firstVisible.NavigateCommand.Execute(null);
+                }
+            }
+        }
+    }
+
+    private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is null)
+        {
+            return;
+        }
+
+        Action? action = e.PropertyName switch
+        {
+            nameof(AppSettings.IsHomePageVisible) => () => SetNavItemVisibility(typeof(HomePage), _settings.IsHomePageVisible),
+            nameof(AppSettings.IsRankPageVisible) => () => SetNavItemVisibility(typeof(RankPage), _settings.IsRankPageVisible),
+            nameof(AppSettings.IsMomentPageVisible) => () => SetNavItemVisibility(typeof(MomentPage), _settings.IsMomentPageVisible),
+            nameof(AppSettings.IsCalendarPageVisible) => () => SetNavItemVisibility(typeof(CalendarPage), _settings.IsCalendarPageVisible),
+            nameof(AppSettings.IsFilterPageVisible) => () => SetNavItemVisibility(typeof(FilterPage), _settings.IsFilterPageVisible),
+            _ => null,
+        };
+
+        if (action != null)
+        {
+            if (_navigationView?.DispatcherQueue is { } dq && !dq.HasThreadAccess)
+            {
+                dq.TryEnqueue(() => action());
+            }
+            else
+            {
+                action();
+            }
         }
     }
 
@@ -94,7 +141,8 @@ public sealed class NavigationViewService : INavigationViewService
     private void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
     {
         AppNavigationViewItem? item = args.InvokedItemContainer as AppNavigationViewItem;
-        AppNavigationItemViewModel? context = item?.Tag as AppNavigationItemViewModel
+        AppNavigationItemViewModel? context =
+            item?.Tag as AppNavigationItemViewModel
             ?? args.InvokedItem as AppNavigationItemViewModel;
         context?.NavigateCommand.Execute(null);
     }
@@ -114,10 +162,7 @@ public sealed class NavigationViewService : INavigationViewService
                 f.IsSelected = (f == item);
             }
 
-            if (_navigationView != null)
-            {
-                _navigationView.SelectedItem = item;
-            }
+            _navigationView?.SelectedItem = item;
         }
     }
 

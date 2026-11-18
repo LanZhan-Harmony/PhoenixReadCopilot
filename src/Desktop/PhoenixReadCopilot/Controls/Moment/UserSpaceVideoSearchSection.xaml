@@ -5,26 +5,34 @@
                                 xmlns:base="using:WinUIKernel.Share.Base"
                                 xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                xmlns:essential="using:WinUI3Package"
                                 xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                                 xmlns:local="using:PhoenixReadCopilot.Controls.Moment"
                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                xmlns:search="using:PhoenixReadCopilot.Controls.Search"
                                 xmlns:strings="using:PhoenixReadCopilot.Strings"
                                 mc:Ignorable="d">
 
+    <local:UserSpacePageControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <search:SearchVideoItemTemplate/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </local:UserSpacePageControlBase.Resources>
+
     <Grid>
-        <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
-            <Grid Margin="16,12">
+        <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
+            <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
                 <ItemsRepeater x:Name="VideoRepeater"
+                               Margin="16,12"
+                               ElementClearing="VideoRepeater_ElementClearing"
+                               ElementPrepared="VideoRepeater_ElementPrepared"
+                               ItemTemplate="{StaticResource SearchVideoItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.SearchVideos, Mode=OneWay}"
-                               Layout="{StaticResource VideoLayout}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="items:VideoItemViewModel">
-                            <components:VideoCardControl Style="{StaticResource SearchVideoCardStyle}" ViewModel="{x:Bind}"/>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-            </Grid>
-        </ScrollViewer>
+                               Layout="{StaticResource VideoLayout}"/>
+            </ScrollViewer>
+        </essential:RevealFocusPanel>
 
         <base:EmptyHolder Description="{x:Bind strings:Resources.NoSpecificData}"
                           Emoji="&#x1F39E;"

@@ -1,26 +1,17 @@
 namespace PhoenixReadCopilot.Updater;
 
 /// <summary>
-/// A raw, source-provided build artifact, identified by the publisher's own
-/// <see cref="Name"/> (a GitHub asset file name, a directory file name, ...). The
-/// name is interpreted only by the updater's naming convention (see
-/// <see cref="AssetNameParser"/>). <see cref="Location"/> is opaque to the shared
-/// engine and interpreted only by the updater that produced it (a URL for
-/// <see cref="GitHubUpdater"/>, a file path for <see cref="DirectoryUpdater"/>).
+/// 表示一个可下载的发行版资源.
 /// </summary>
-/// <param name="Name">The source's own asset name, fed to the naming convention.</param>
-/// <param name="Location">Where the asset can be opened from (path or URL).</param>
-/// <param name="Sha256">Optional integrity hash, if the source published one.</param>
-/// <param name="Size">Optional asset size in bytes, if known.</param>
-/// <param name="IsPrerelease">
-/// A source-side prerelease signal (e.g. GitHub's <c>prerelease</c> flag) OR-ed into
-/// the resulting release's <see cref="Release.IsPrerelease"/>, on top of whatever the
-/// parsed version itself indicates.
-/// </param>
+/// <param name="Name">资源文件名 (如 PhoenixReadCopilot_0.1.0.0_x64.zip).</param>
+/// <param name="DownloadUrl">原始 GitHub 下载地址.</param>
+/// <param name="TagName">所属 Release 的 tag 名称 (如 Pre-Release-0.1.0.0).</param>
+/// <param name="Size">资源文件大小 (字节).</param>
+/// <param name="IsPrerelease">是否为预发布版本.</param>
 public sealed record SourceAsset(
     string Name,
-    string Location,
-    string? Sha256 = null,
-    long? Size = null,
+    string DownloadUrl,
+    string TagName,
+    long Size,
     bool IsPrerelease = false
 );

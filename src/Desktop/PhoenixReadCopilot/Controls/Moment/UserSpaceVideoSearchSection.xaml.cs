@@ -1,6 +1,9 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Controls.Search;
+using PhoenixReadCopilot.Helpers.Animations;
+using WinUI3Package;
 
 namespace PhoenixReadCopilot.Controls.Moment;
 
@@ -75,5 +78,34 @@ public sealed partial class UserSpaceVideoSearchSection : UserSpacePageControlBa
                 _ = ViewModel.LoadMoreSearchResultAsync();
             }
         });
+    }
+
+    private void VideoRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
+        }
+    }
+
+    private void VideoRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            CompositionFactory.DisableStandardReposition(element);
+            SearchVideoItemTemplate.ClearImage(element);
+        }
     }
 }
