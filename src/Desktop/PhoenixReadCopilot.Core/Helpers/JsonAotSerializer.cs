@@ -51,26 +51,28 @@ namespace PhoenixReadCopilot.Core.Helpers;
 [JsonSerializable(typeof(List<PlaybackMedia>))]
 [JsonSerializable(typeof(DramaPlaybackMediaCache))]
 [JsonSerializable(typeof(Dictionary<string, List<PlaybackMedia>>))]
+[JsonSerializable(typeof(ReservationItem))]
+[JsonSerializable(typeof(List<ReservationItem>))]
+[JsonSerializable(typeof(ReservationPage))]
 public sealed partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class JsonAotSerializer
 {
+    private static class TypeCache<T>
+    {
+        internal static readonly JsonTypeInfo<T> Info =
+            SourceGenerationContext.Default.GetTypeInfo(typeof(T)) as JsonTypeInfo<T>
+            ?? throw new ArgumentException(
+                $"{typeof(T)} is not declared in the SourceGenerationContext attributes."
+            );
+    }
+
     /// <summary>
     /// Serializes an object to a JSON string.
     /// </summary>
     public static string Serialize<T>(T value)
     {
-        if (
-            SourceGenerationContext.Default.GetTypeInfo(typeof(T))
-            is not JsonTypeInfo<T> jsonTypeInfo
-        )
-        {
-            throw new ArgumentNullException(
-                nameof(value),
-                $"{typeof(T)} is not declared in the SourceGenerationContext attributes."
-            );
-        }
-        return JsonSerializer.Serialize(value, jsonTypeInfo);
+        return JsonSerializer.Serialize(value, TypeCache<T>.Info);
     }
 
     /// <summary>
@@ -78,30 +80,11 @@ public static class JsonAotSerializer
     /// </summary>
     public static T? Deserialize<T>(string value)
     {
-        if (
-            SourceGenerationContext.Default.GetTypeInfo(typeof(T))
-            is not JsonTypeInfo<T> jsonTypeInfo
-        )
-        {
-            throw new ArgumentNullException(
-                nameof(value),
-                $"{typeof(T)} is not declared in the SourceGenerationContext attributes."
-            );
-        }
-        return JsonSerializer.Deserialize(value, jsonTypeInfo);
+        return JsonSerializer.Deserialize(value, TypeCache<T>.Info);
     }
 
     public static JsonTypeInfo<T> GetTypeInfo<T>()
     {
-        if (
-            SourceGenerationContext.Default.GetTypeInfo(typeof(T))
-            is not JsonTypeInfo<T> jsonTypeInfo
-        )
-        {
-            throw new InvalidOperationException(
-                $"{typeof(T)} is not declared in the SourceGenerationContext attributes."
-            );
-        }
-        return jsonTypeInfo;
+        return TypeCache<T>.Info;
     }
 }

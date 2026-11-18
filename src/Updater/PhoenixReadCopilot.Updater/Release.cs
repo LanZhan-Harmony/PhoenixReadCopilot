@@ -1,13 +1,9 @@
-using Semver;
-
 namespace PhoenixReadCopilot.Updater;
 
-/// <summary>A release for the configured platform, parsed from a source's assets.</summary>
-/// <param name="Version">The release version, parsed from the asset's name.</param>
-/// <param name="Asset">The raw asset for the configured <see cref="UpdaterOptions.Rid"/>.</param>
-/// <param name="IsPrerelease">
-/// True when the publisher marked this a prerelease (GitHub's <c>prerelease</c> flag,
-/// or a SemVer prerelease suffix). Surfaced so a consumer can choose to skip
-/// prereleases via <see cref="UpdaterOptions.ReleaseFilter"/>.
-/// </param>
-public sealed record Release(SemVersion Version, SourceAsset Asset, bool IsPrerelease = false);
+/// <summary>
+/// 一个可用的发行版，包含版本号和对应架构的下载资源.
+/// </summary>
+/// <param name="Version">版本号 (如 0.1.0.0).</param>
+/// <param name="Asset">对应当前架构的下载资源.</param>
+/// <param name="IsPrerelease">是否为预发布版本.</param>
+public sealed record AppRelease(Version Version, SourceAsset Asset, bool IsPrerelease = false);

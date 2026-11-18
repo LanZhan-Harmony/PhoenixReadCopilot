@@ -9,9 +9,9 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 本地稍后再看服务实现.
 /// </summary>
-public sealed class LocalViewLaterService : ILocalViewLaterService
+public sealed class ViewLaterService : IViewLaterService
 {
-    private readonly ILogger<LocalViewLaterService> _logger;
+    private readonly ILogger<ViewLaterService> _logger;
     private readonly IAuthenticationService _authService;
     private readonly string _folderPath;
     private readonly SemaphoreSlim _lock = new(1, 1);
@@ -22,10 +22,10 @@ public sealed class LocalViewLaterService : ILocalViewLaterService
     public event EventHandler? ViewLaterChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LocalViewLaterService"/> class.
+    /// Initializes a new instance of the <see cref="ViewLaterService"/> class.
     /// </summary>
-    public LocalViewLaterService(
-        ILogger<LocalViewLaterService> logger,
+    public ViewLaterService(
+        ILogger<ViewLaterService> logger,
         IPathService pathService,
         IAuthenticationService authService
     )
@@ -199,7 +199,10 @@ public sealed class LocalViewLaterService : ILocalViewLaterService
             }
             catch (Exception ex)
             {
-                _logger.ZLogWarning(ex, $"读取稍后再看缓存文件失败，将重新初始化: {currentFilePath}");
+                _logger.ZLogWarning(
+                    ex,
+                    $"读取稍后再看缓存文件失败，将重新初始化: {currentFilePath}"
+                );
             }
         }
 

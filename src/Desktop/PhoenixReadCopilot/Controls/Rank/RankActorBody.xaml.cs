@@ -2,6 +2,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.View;
+using WinUI3Package;
 
 namespace PhoenixReadCopilot.Controls.Rank;
 
@@ -123,5 +124,16 @@ public sealed partial class RankActorBody : RankPageControlBase
                 _ = ViewModel.LoadVideosAsync();
             }
         });
+    }
+
+    private void ActorRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, ListViewRevealFocusPanel);
+        }
     }
 }

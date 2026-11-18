@@ -1,14 +1,12 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadCopilot.Core.Contracts.Services;
-using PhoenixReadCopilot.Core.Helpers;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.ViewModels.Components;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
-using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 
@@ -17,12 +15,10 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// </summary>
 public sealed partial class PinnerViewModel : ViewModelBase
 {
-    private readonly IPathService _pathService;
+    private readonly IPinService _pinService;
     private readonly AppViewModel _appViewModel;
-    private readonly AccountViewModel _accountViewModel;
+    private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILogger<PinnerViewModel> _logger;
-
-    private string _filePath;
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
@@ -39,29 +35,49 @@ public sealed partial class PinnerViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.
     /// </summary>
     public PinnerViewModel(
-        IPathService pathService,
+        IPinService pinService,
         AppViewModel appViewModel,
-        AccountViewModel accountViewModel,
+        DispatcherQueue dispatcherQueue,
         ILogger<PinnerViewModel> logger
     )
     {
+        _pinService = pinService;
         _appViewModel = appViewModel;
-        _accountViewModel = accountViewModel;
+        _dispatcherQueue = dispatcherQueue;
         _logger = logger;
-        _pathService = pathService;
+
+        _pinService.PinChanged += OnPinChanged;
+    }
+
+    private void OnPinChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(async () =>
+        {
+            await LoadItemsAsync();
+        });
     }
 
     public async Task InitializeAsync()
     {
-        string currentUserId = _accountViewModel.MyProfile?.User?.Id ?? "default";
-        _filePath = Path.Combine(_pathService.DataFolderPath, "Pin", $"pin_{currentUserId}.json");
-        List<PinItem> data = await ReadDataAsync();
-        Items.Clear();
-        if (data.Count > 0)
+        IsLoading = true;
+        try
         {
-            data.ForEach(Items.Add);
+            await LoadItemsAsync();
         }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
+    private async Task LoadItemsAsync()
+    {
+        IReadOnlyList<PinItem> data = await _pinService.GetPinnedItemsAsync();
+        Items.Clear();
+        foreach (PinItem item in data)
+        {
+            Items.Add(item);
+        }
         IsEmpty = Items.Count == 0;
     }
 
@@ -69,62 +85,21 @@ public sealed partial class PinnerViewModel : ViewModelBase
 
     public async Task AddItemAsync(PinItem item)
     {
-        if (Items.Contains(item))
+        bool success = await _pinService.PinAsync(item);
+        if (success)
+        {
+            _appViewModel.ShowTip(Resources.Fixed, InfoType.Success);
+        }
+        else
         {
             _appViewModel.ShowTip(Resources.AlreadyPinned, InfoType.Warning);
-            return;
         }
-
-        Items.Add(item);
-        await SaveDataAsync();
-        _appViewModel.ShowTip(Resources.Fixed, InfoType.Success);
     }
 
     public void RemoveItem(PinItem item) => _ = RemoveItemAsync(item);
 
     public async Task RemoveItemAsync(PinItem item)
     {
-        Items.Remove(item);
-        await SaveDataAsync();
-    }
-
-    private async Task<List<PinItem>> ReadDataAsync()
-    {
-        if (File.Exists(_filePath))
-        {
-            try
-            {
-                string json = await File.ReadAllTextAsync(_filePath);
-                return JsonAotSerializer.Deserialize<List<PinItem>>(json) ?? [];
-            }
-            catch (Exception ex)
-            {
-                _logger.ZLogWarning(ex, $"读取固定组件缓存文件失败，将重新初始化.");
-                return [];
-            }
-        }
-        else
-        {
-            return [];
-        }
-    }
-
-    private async Task SaveDataAsync()
-    {
-        try
-        {
-            string json = JsonAotSerializer.Serialize(Items);
-            string targetFolder = Path.Combine(_pathService.DataFolderPath, "Pin");
-            Directory.CreateDirectory(targetFolder);
-            await File.WriteAllTextAsync(_filePath, json).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"保存固定组件缓存文件失败.");
-        }
-        finally
-        {
-            IsEmpty = Items.Count == 0;
-        }
+        await _pinService.UnpinAsync(item);
     }
 }

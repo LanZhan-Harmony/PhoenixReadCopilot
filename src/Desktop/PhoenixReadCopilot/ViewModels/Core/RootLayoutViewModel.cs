@@ -32,7 +32,7 @@ public sealed partial class RootLayoutViewModel : ViewModelBase
     /// <summary>
     /// 主菜单条目列表.
     /// </summary>
-    public IReadOnlyList<AppNavigationItemViewModel> MenuItems => _navigationViewService.MenuItems;
+    public ObservableCollection<AppNavigationItemViewModel> MenuItems => _navigationViewService.MenuItems;
 
     /// <summary>
     /// 底部菜单条目列表.

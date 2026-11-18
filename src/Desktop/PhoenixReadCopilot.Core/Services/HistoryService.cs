@@ -130,7 +130,10 @@ public sealed class HistoryService : IHistoryService
         }
         catch (Exception ex)
         {
-            _logger.ZLogWarning(ex, $"向服务端上报播放进度失败: DramaId={update.DramaId}, VideoId={update.VideoId}");
+            _logger.ZLogWarning(
+                ex,
+                $"向服务端上报播放进度失败: DramaId={update.DramaId}, VideoId={update.VideoId}"
+            );
         }
 
         // 2. 本地持久化保存
@@ -159,9 +162,10 @@ public sealed class HistoryService : IHistoryService
                 Id = existing?.Id ?? $"{update.DramaId}_{update.VideoId}",
                 DramaId = update.DramaId,
                 VideoId = update.VideoId,
-                EpisodeNumber = update.EpisodeNumber > 0
-                    ? update.EpisodeNumber
-                    : (existing?.EpisodeNumber ?? 1),
+                EpisodeNumber =
+                    update.EpisodeNumber > 0
+                        ? update.EpisodeNumber
+                        : (existing?.EpisodeNumber ?? 1),
                 Title = resolvedTitle,
                 CoverUrl = resolvedCoverUrl,
                 CurrentPositionMs = Math.Max(0, update.CurrentPositionMs),
@@ -232,10 +236,7 @@ public sealed class HistoryService : IHistoryService
         {
             await EnsureLoadedAsync();
             int total = _cache!.Count;
-            List<ReadHistoryItem> pagedItems = _cache!
-                .Skip(offset)
-                .Take(count)
-                .ToList();
+            List<ReadHistoryItem> pagedItems = [.. _cache!.Skip(offset).Take(count)];
 
             return new ReadHistoryPage
             {
@@ -271,7 +272,10 @@ public sealed class HistoryService : IHistoryService
             }
             catch (Exception ex)
             {
-                _logger.ZLogWarning(ex, $"向服务端删除历史记录失败: DramaId={dramaId}, VideoId={videoId}");
+                _logger.ZLogWarning(
+                    ex,
+                    $"向服务端删除历史记录失败: DramaId={dramaId}, VideoId={videoId}"
+                );
             }
         }
 
@@ -280,8 +284,7 @@ public sealed class HistoryService : IHistoryService
         {
             await EnsureLoadedAsync();
             int removed = _cache!.RemoveAll(x =>
-                x.DramaId == dramaId
-                && (string.IsNullOrWhiteSpace(videoId) || x.VideoId == videoId)
+                x.DramaId == dramaId && (string.IsNullOrWhiteSpace(videoId) || x.VideoId == videoId)
             );
             if (removed > 0)
             {
@@ -356,7 +359,10 @@ public sealed class HistoryService : IHistoryService
             }
             catch (Exception ex)
             {
-                _logger.ZLogWarning(ex, $"读取历史记录缓存文件失败，将重新初始化: {currentFilePath}");
+                _logger.ZLogWarning(
+                    ex,
+                    $"读取历史记录缓存文件失败，将重新初始化: {currentFilePath}"
+                );
             }
         }
 

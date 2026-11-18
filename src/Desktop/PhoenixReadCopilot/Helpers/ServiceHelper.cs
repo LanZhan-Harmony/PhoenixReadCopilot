@@ -41,6 +41,7 @@ internal static class ServiceHelper
             .AddSingleton<INavigationService>(sp => sp.GetRequiredService<NavigationService>())
             .AddSingleton<INavServiceViewModel>(sp => sp.GetRequiredService<NavigationService>())
             .AddSingleton<INavigationViewService, NavigationViewService>()
+            .AddSingleton<AppUpdateService>()
             // 2. ViewModels
             // Core
             .AddSingleton<AppViewModel>()

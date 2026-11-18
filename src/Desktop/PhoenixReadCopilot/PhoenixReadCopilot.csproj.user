@@ -5,27 +5,5 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>PhoenixReadCopilot (Unpackaged)</ActiveDebugProfile>
-    <Source>D:\下载\Browser\Icon.png</Source>
-    <SmallTileSource>D:\下载\Browser\Icon.png</SmallTileSource>
-    <MediumTileSource>D:\下载\Browser\Icon.png</MediumTileSource>
-    <WideTileSource>D:\下载\Browser\Icon.png</WideTileSource>
-    <LargeTileSource>D:\下载\Browser\Icon.png</LargeTileSource>
-    <AppIconSource>D:\下载\Browser\Icon.png</AppIconSource>
-    <SplashScreenSource>D:\下载\Browser\Icon.png</SplashScreenSource>
-    <BadgeLogoSource>D:\下载\Browser\Icon.png</BadgeLogoSource>
-    <PackageLogoSource>D:\下载\Browser\Icon.png</PackageLogoSource>
   </PropertyGroup>
-  <ItemGroup>
-    <Page Update="Controls\Components\IconTextBlock.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <None Update="Package.appxmanifest">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PRIResource Update="Strings\zh-Hans\Resources.resw">
-      <SubType>Designer</SubType>
-    </PRIResource>
-  </ItemGroup>
 </Project>

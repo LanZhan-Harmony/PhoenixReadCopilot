@@ -12,7 +12,7 @@ public interface INavigationViewService
     /// <summary>
     /// 主菜单条目列表.
     /// </summary>
-    IReadOnlyList<AppNavigationItemViewModel> MenuItems { get; }
+    ObservableCollection<AppNavigationItemViewModel> MenuItems { get; }
 
     /// <summary>
     /// 底部菜单条目列表.

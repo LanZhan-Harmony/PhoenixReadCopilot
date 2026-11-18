@@ -47,10 +47,7 @@ public partial class App : Application
             await Ioc.Default.GetRequiredService<IActivationService>().ActivateAsync(args);
 
             MainWindow? mainWindow = GetMainWindow();
-            if (mainWindow is not null)
-            {
-                mainWindow.Closed += OnMainWindowClosed;
-            }
+            mainWindow?.Closed += OnMainWindowClosed;
         }
         else
         {

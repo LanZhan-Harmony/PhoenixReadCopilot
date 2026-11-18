@@ -16,8 +16,8 @@
                 <ResourceDictionary Source="ms-appx:///Controls/Components/MomentCardControl/MomentCardControl.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Core/Player/PlayerResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/ShimmerLayout/ShimmerLayout.xaml"/>
-                <ResourceDictionary Source="ms-appx:///Controls/Components/CoverImage.xaml"/>
-                <ResourceDictionary Source="ms-appx:///Controls/Components/IconTextBlock.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Controls/Components/CoverImage/CoverImage.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Controls/Components/IconTextBlock/IconTextBlock.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <x:Double x:Key="WindowNarrowMinWidth">850</x:Double>

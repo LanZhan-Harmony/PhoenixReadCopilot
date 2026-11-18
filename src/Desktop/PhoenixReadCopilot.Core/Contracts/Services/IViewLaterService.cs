@@ -5,7 +5,7 @@ namespace PhoenixReadCopilot.Core.Contracts.Services;
 /// <summary>
 /// 本地稍后再看服务接口.
 /// </summary>
-public interface ILocalViewLaterService
+public interface IViewLaterService
 {
     /// <summary>
     /// 稍后再看列表变更事件（添加、移除、清空或切换登录状态时触发）.

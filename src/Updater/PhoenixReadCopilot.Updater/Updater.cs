@@ -1,532 +1,305 @@
 using System.Diagnostics;
-using System.Formats.Tar;
 using System.IO.Compression;
-using Semver;
 
 namespace PhoenixReadCopilot.Updater;
 
 /// <summary>
-/// Source-agnostic self-update engine, modeled on dnvm. A concrete updater
-/// (<see cref="GitHubUpdater"/>, <see cref="DirectoryUpdater"/>) supplies just two
-/// things — how to list a source's raw assets and how to open one's bytes — and this
-/// base does the rest: turn asset names into releases for the configured platform,
-/// pick the newest, download and verify it, then hand off to the new binary which
-/// replaces the old one in place (a two-process swap so a running executable can
-/// update itself, including on Windows).
+/// 更新应用引擎：负责将下载的 zip 包解压并替换当前程序目录.
 /// <para>
-/// The caller owns its current version (<see cref="UpdaterOptions.CurrentVersion"/>);
-/// the engine owns naming, platform selection, and the "newest wins" comparison.
+/// 更新流程:
+/// 1. 下载 zip 到临时目录
+/// 2. 解压 zip 到临时目录
+/// 3. 启动新版本的 exe 执行替换操作 (handoff)
+/// 4. 旧进程退出后，新进程将临时目录的文件复制到目标目录，同时保留 AppData 文件夹
+/// 5. 重新启动应用
 /// </para>
 /// </summary>
-public abstract class Updater
+public static class UpdateApplier
 {
-    // Wire contract for the handoff (new-process) side. The host app registers a
-    // command/handler with these exact names; keeping them here makes this the
-    // single source of truth shared by both processes.
+    /// <summary>
+    /// 要在目录替换时保留（不删除）的文件夹名称.
+    /// exe 所在目录的 AppData 是用户数据存储路径，更新时必须保留.
+    /// </summary>
+    private static readonly HashSet<string> PreservedDirectories =
+    [
+        with(StringComparer.OrdinalIgnoreCase),
+        "AppData",
+    ];
+
+    // 命令行参数常量
     public const string HandoffVerb = "apply-update";
     public const string DestOption = "--dest";
     public const string PidOption = "--pid";
+    public const string SourceDirOption = "--source-dir";
     public const string RelaunchOption = "--relaunch";
 
     /// <summary>
-    /// Handoff flag carrying the staged source directory for a directory (multi-file)
-    /// update. Present only when <see cref="UpdaterOptions.TargetDirectory"/> is set;
-    /// its absence selects the single-file swap. The host's <see cref="HandoffVerb"/>
-    /// handler should parse it and forward it to <see cref="ApplySwap"/>.
+    /// 下载并准备更新，然后启动新版本 exe 执行替换.
     /// </summary>
-    public const string SourceDirOption = "--source-dir";
-
-    private readonly UpdaterOptions _options;
-    private readonly AssetNameParser _parse;
-    private readonly TextWriter _log;
-
-    protected Updater(UpdaterOptions options)
-    {
-        _options = options;
-        _parse = options.Parser ?? AssetNaming.DefaultParser(options.AppName, options.Rid);
-        _log = options.Log;
-    }
-
-    /// <summary>
-    /// List every raw artifact this source can see, with whatever metadata it knows
-    /// (location, integrity hash, size, prerelease hint). Returns an empty list if the
-    /// source could not be reached or parsed. Order is not significant.
-    /// </summary>
-    internal abstract Task<IReadOnlyList<SourceAsset>> GetAssetsAsync(CancellationToken ct);
-
-    /// <summary>Open a read stream over an asset's bytes for downloading.</summary>
-    internal abstract Task<Stream> OpenAssetAsync(SourceAsset asset, CancellationToken ct);
-
-    /// <summary>
-    /// List the releases available for the configured platform, with asset names
-    /// parsed into versions and filtered to <see cref="UpdaterOptions.Rid"/>. A
-    /// naming/selection testing seam; applies no version comparison and no
-    /// <see cref="UpdaterOptions.ReleaseFilter"/>.
-    /// </summary>
-    internal async Task<IReadOnlyList<Release>> GetReleasesAsync(CancellationToken ct = default)
-    {
-        IReadOnlyList<SourceAsset> assets = await GetAssetsAsync(ct).ConfigureAwait(false);
-        return AssetNaming.ToReleases(assets, _parse, _options.Rid);
-    }
-
-    /// <summary>
-    /// Resolve the exact release this updater would move to: the newest release for the
-    /// configured platform (after <see cref="UpdaterOptions.ReleaseFilter"/>) whose
-    /// version is newer than <see cref="UpdaterOptions.CurrentVersion"/>. Returns
-    /// <c>null</c> when nothing applies — already up to date, or the source has no build
-    /// for this platform. This is the network round-trip; hand the result to
-    /// <see cref="ApplyAsync"/> to download and stage it (or just call
-    /// <see cref="UpdateAsync"/>, which does both).
-    /// </summary>
-    public async Task<Release?> FetchAsync(CancellationToken ct = default)
-    {
-        SemVersion current = _options.CurrentVersion;
-        _log.WriteLine($"Checking for updates (current {current})...");
-        IReadOnlyList<SourceAsset> assets = await GetAssetsAsync(ct).ConfigureAwait(false);
-        IReadOnlyList<Release> releases = AssetNaming.ToReleases(assets, _parse, _options.Rid);
-        Release? newest = Newest(releases, _options.ReleaseFilter);
-        if (newest is null)
-        {
-            if (assets.Count > 0)
-            {
-                _log.WriteLine($"Source has builds, but none for {_options.Rid}.");
-            }
-            else
-            {
-                _log.WriteLine("Update source returned no release information.");
-            }
-
-            return null;
-        }
-
-        if (newest.Version.ComparePrecedenceTo(current) <= 0)
-        {
-            _log.WriteLine($"Up to date (latest {newest.Version}).");
-            return null;
-        }
-
-        _log.WriteLine($"Update available: {newest.Version}");
-        return newest;
-    }
-
-    /// <summary>
-    /// Download, validate, and stage a release resolved by <see cref="FetchAsync"/>,
-    /// then hand off to the new binary. Applies exactly the given release — it does no
-    /// version comparison of its own.
-    /// </summary>
-    public async Task<UpdateResult> ApplyAsync(Release release, CancellationToken ct = default)
-    {
-        if (!_options.AllowNonSingleFile && !Utilities.IsSingleFile())
-        {
-            _log.WriteLine(
-                "Cannot self-update: not deployed as a single file (e.g. running via 'dotnet run')."
-            );
-            return new UpdateResult(UpdateOutcome.NotSelfContained, release.Version);
-        }
-
-        return _options.TargetDirectory is { Length: > 0 } targetDir
-            ? await ApplyDirectoryAsync(release, targetDir, ct).ConfigureAwait(false)
-            : await ApplyFileAsync(release, ct).ConfigureAwait(false);
-    }
-
-    /// <summary>Single-file swap: download the binary, validate it, hand off to replace the target file.</summary>
-    private async Task<UpdateResult> ApplyFileAsync(Release release, CancellationToken ct)
-    {
-        var target = _options.TargetPath ?? Utilities.ProcessPath;
-        if (string.IsNullOrEmpty(target))
-        {
-            _log.WriteLine("Cannot self-update: unable to determine the target executable path.");
-            return new UpdateResult(UpdateOutcome.Failed, release.Version, "Unknown target path.");
-        }
-
-        var staged = await DownloadAndValidateAsync(release.Asset, target, ct)
-            .ConfigureAwait(false);
-        if (staged is null)
-        {
-            return new UpdateResult(
-                UpdateOutcome.Failed,
-                release.Version,
-                "Download or validation failed."
-            );
-        }
-
-        if (!LaunchHandoff(staged, target))
-        {
-            return new UpdateResult(
-                UpdateOutcome.Failed,
-                release.Version,
-                "Could not launch the handoff process."
-            );
-        }
-
-        return new UpdateResult(UpdateOutcome.Staged, release.Version);
-    }
-
-    /// <summary>
-    /// Directory (multi-file) swap: download the archive, extract it, validate the
-    /// staged executable, then hand off to replace the whole target directory tree.
-    /// </summary>
-    private async Task<UpdateResult> ApplyDirectoryAsync(
-        Release release,
-        string targetDir,
-        CancellationToken ct
+    /// <param name="updater">GitHub 更新器实例.</param>
+    /// <param name="release">要更新到的版本.</param>
+    /// <param name="targetDirectory">当前应用程序目录 (exe 所在目录).</param>
+    /// <param name="progress">下载进度回调.</param>
+    /// <param name="log">日志输出.</param>
+    /// <param name="ct">取消令牌.</param>
+    /// <returns>更新结果.</returns>
+    public static async Task<UpdateResult> DownloadAndStageAsync(
+        GitHubUpdater updater,
+        AppRelease release,
+        string targetDirectory,
+        IProgress<(long Downloaded, long Total)>? progress = null,
+        TextWriter? log = null,
+        CancellationToken ct = default
     )
     {
-        targetDir = Path.GetFullPath(targetDir);
-        var exePath = _options.TargetPath ?? Utilities.ProcessPath;
+        log ??= Console.Out;
+        targetDirectory = Path.GetFullPath(targetDirectory);
+
+        string exePath = Environment.ProcessPath ?? string.Empty;
         if (string.IsNullOrEmpty(exePath))
         {
-            _log.WriteLine("Cannot self-update: unable to determine the target executable path.");
-            return new UpdateResult(UpdateOutcome.Failed, release.Version, "Unknown target path.");
+            log.WriteLine("无法确定当前可执行文件路径.");
+            return new UpdateResult(
+                UpdateOutcome.Failed,
+                release.Version,
+                "无法确定当前可执行文件路径."
+            );
         }
 
-        // The executable must live under the directory we are going to replace; its
-        // relative location is how we find the staged build and relaunch the new one.
-        var relExe = Path.GetRelativePath(targetDir, Path.GetFullPath(exePath));
+        // 确认 exe 在目标目录内
+        string relExe = Path.GetRelativePath(targetDirectory, Path.GetFullPath(exePath));
         if (relExe.StartsWith("..", StringComparison.Ordinal) || Path.IsPathRooted(relExe))
         {
-            _log.WriteLine(
-                $"Cannot self-update: the running executable is not inside TargetDirectory ({targetDir})."
-            );
+            log.WriteLine("当前可执行文件不在目标目录内.");
             return new UpdateResult(
                 UpdateOutcome.Failed,
                 release.Version,
-                "Executable is outside the target directory."
+                "当前可执行文件不在目标目录内."
             );
         }
 
-        var stagedDir = await DownloadAndExtractAsync(release.Asset, ct).ConfigureAwait(false);
-        if (stagedDir is null)
+        // 1. 下载 zip 到临时目录
+        string stagingDir = Path.Combine(
+            Path.GetTempPath(),
+            $"PhoenixReadCopilot-update-{Path.GetRandomFileName()}"
+        );
+        Directory.CreateDirectory(stagingDir);
+
+        string zipPath = Path.Combine(stagingDir, release.Asset.Name);
+        log.WriteLine($"下载更新包到 {zipPath}...");
+
+        bool downloaded = await updater
+            .DownloadUpdateAsync(release, zipPath, progress, ct)
+            .ConfigureAwait(false);
+
+        if (!downloaded)
         {
+            return new UpdateResult(UpdateOutcome.Failed, release.Version, "下载更新包失败.");
+        }
+
+        // 2. 解压
+        string extractDir = Path.Combine(stagingDir, "extracted");
+        try
+        {
+            log.WriteLine("解压更新包...");
+            ZipFile.ExtractToDirectory(zipPath, extractDir);
+        }
+        catch (Exception ex)
+        {
+            log.WriteLine($"解压失败: {ex.Message}");
             return new UpdateResult(
                 UpdateOutcome.Failed,
                 release.Version,
-                "Download or extraction failed."
+                $"解压失败: {ex.Message}"
             );
         }
 
-        var stagedExe = Path.Combine(stagedDir, relExe);
+        // 检查解压结果: 如果解压出的是单一目录，则使用该目录作为源
+        string[] dirs = Directory.GetDirectories(extractDir);
+        string[] files = Directory.GetFiles(extractDir);
+        string sourceDir = dirs.Length == 1 && files.Length == 0 ? dirs[0] : extractDir;
+
+        // 3. 验证新版本中存在对应的 exe
+        string stagedExe = Path.Combine(sourceDir, relExe);
         if (!File.Exists(stagedExe))
         {
-            _log.WriteLine($"Staged build does not contain the expected executable ({relExe}).");
+            log.WriteLine($"新版本中未找到可执行文件: {relExe}");
             return new UpdateResult(
                 UpdateOutcome.Failed,
                 release.Version,
-                "Staged build is missing the executable."
-            );
-        }
-        if (!OperatingSystem.IsWindows())
-        {
-            Utilities.MakeExecutable(stagedExe);
-        }
-
-        if (!await ValidateAsync(stagedExe, ct).ConfigureAwait(false))
-        {
-            return new UpdateResult(UpdateOutcome.Failed, release.Version, "Validation failed.");
-        }
-
-        if (!LaunchHandoff(stagedExe, targetDir, stagedDir))
-        {
-            return new UpdateResult(
-                UpdateOutcome.Failed,
-                release.Version,
-                "Could not launch the handoff process."
+                "新版本中未找到可执行文件."
             );
         }
 
-        return new UpdateResult(UpdateOutcome.Staged, release.Version);
-    }
-
-    /// <summary>
-    /// Shorthand for <see cref="FetchAsync"/> followed by <see cref="ApplyAsync"/>:
-    /// resolve the release to move to and, if there is one, download, validate, stage,
-    /// and hand off. Reports <see cref="UpdateOutcome.UpToDate"/> when nothing applies.
-    /// </summary>
-    public async Task<UpdateResult> UpdateAsync(CancellationToken ct = default)
-    {
-        Release? release = await FetchAsync(ct).ConfigureAwait(false);
-        if (release is null)
-        {
-            return new UpdateResult(UpdateOutcome.UpToDate);
-        }
-
-        return await ApplyAsync(release, ct).ConfigureAwait(false);
-    }
-
-    private static Release? Newest(IReadOnlyList<Release> releases, Func<Release, bool>? filter)
-    {
-        Release? best = null;
-        foreach (Release release in releases)
-        {
-            if (filter is not null && !filter(release))
-            {
-                continue;
-            }
-
-            if (best is null || release.Version.ComparePrecedenceTo(best.Version) > 0)
-            {
-                best = release;
-            }
-        }
-        return best;
-    }
-
-    private async Task<string?> DownloadAndValidateAsync(
-        SourceAsset asset,
-        string target,
-        CancellationToken ct
-    )
-    {
-        var tempDir = NewStagingDir();
-        // Name the staged file after the target so the swapped-in binary keeps its name.
-        var staged = Path.Combine(tempDir, Path.GetFileName(target));
-
-        if (!await DownloadToFileAsync(asset, staged, ct).ConfigureAwait(false))
-        {
-            return null;
-        }
-
-        if (!await VerifyChecksumAsync(staged, asset, ct).ConfigureAwait(false))
-        {
-            return null;
-        }
-
-        if (!OperatingSystem.IsWindows())
-        {
-            Utilities.MakeExecutable(staged);
-        }
-
-        if (!await ValidateAsync(staged, ct).ConfigureAwait(false))
-        {
-            return null;
-        }
-
-        return staged;
-    }
-
-    /// <summary>
-    /// Download the release archive, verify its checksum, and extract it to a staging
-    /// directory. Returns the staged build root — the single top-level directory inside
-    /// the archive (e.g. <c>Bower.app</c>), or the extraction directory itself when the
-    /// archive has no single wrapping directory — or <c>null</c> on failure.
-    /// </summary>
-    private async Task<string?> DownloadAndExtractAsync(SourceAsset asset, CancellationToken ct)
-    {
-        var tempDir = NewStagingDir();
-        // Keep the asset's own file name so extraction can dispatch on its extension.
-        var fileName = Path.GetFileName(asset.Name);
-        if (string.IsNullOrEmpty(fileName))
-        {
-            fileName = "download.zip";
-        }
-
-        var archive = Path.Combine(tempDir, fileName);
-
-        if (!await DownloadToFileAsync(asset, archive, ct).ConfigureAwait(false))
-        {
-            return null;
-        }
-
-        if (!await VerifyChecksumAsync(archive, asset, ct).ConfigureAwait(false))
-        {
-            return null;
-        }
-
-        var extractDir = Path.Combine(tempDir, "extracted");
-        try
-        {
-            ExtractArchive(archive, extractDir);
-        }
-        catch (Exception e)
-        {
-            _log.WriteLine($"Extraction failed: {e.Message}");
-            return null;
-        }
-
-        var dirs = Directory.GetDirectories(extractDir);
-        var files = Directory.GetFiles(extractDir);
-        return dirs.Length == 1 && files.Length == 0 ? dirs[0] : extractDir;
-    }
-
-    /// <summary>
-    /// Extract a release archive to <paramref name="extractDir"/>, dispatching on the
-    /// archive's file extension: <c>.tar.gz</c>/<c>.tgz</c> via gzip + tar, everything
-    /// else as a <c>.zip</c>. Both restore Unix file permissions recorded in the archive
-    /// (and tar restores symlinks), so executable bits inside a bundle survive the
-    /// round-trip.
-    /// </summary>
-    internal static void ExtractArchive(string archivePath, string extractDir)
-    {
-        if (IsTarball(archivePath))
-        {
-            Directory.CreateDirectory(extractDir);
-            using FileStream file = File.OpenRead(archivePath);
-            using GZipStream gzip = new(file, CompressionMode.Decompress);
-            TarFile.ExtractToDirectory(gzip, extractDir, overwriteFiles: true);
-        }
-        else
-        {
-            ZipFile.ExtractToDirectory(archivePath, extractDir);
-        }
-    }
-
-    private static bool IsTarball(string name) =>
-        name.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase)
-        || name.EndsWith(".tgz", StringComparison.OrdinalIgnoreCase);
-
-    private static string NewStagingDir()
-    {
-        var dir = Path.Combine(Path.GetTempPath(), "selfupdater-" + Path.GetRandomFileName());
-        Directory.CreateDirectory(dir);
-        return dir;
-    }
-
-    private async Task<bool> DownloadToFileAsync(
-        SourceAsset asset,
-        string path,
-        CancellationToken ct
-    )
-    {
-        _log.WriteLine($"Downloading {asset.Location}...");
-        try
-        {
-            await using Stream src = await OpenAssetAsync(asset, ct).ConfigureAwait(false);
-            await using FileStream file = new(
-                path,
-                FileMode.CreateNew,
-                FileAccess.Write,
-                FileShare.None
-            );
-            await src.CopyToAsync(file, ct).ConfigureAwait(false);
-            return true;
-        }
-        catch (Exception e) when (e is not OperationCanceledException)
-        {
-            _log.WriteLine($"Download failed: {e.Message}");
-            return false;
-        }
-    }
-
-    private async Task<bool> VerifyChecksumAsync(
-        string path,
-        SourceAsset asset,
-        CancellationToken ct
-    )
-    {
-        if (string.IsNullOrEmpty(asset.Sha256))
-        {
-            return true;
-        }
-
-        var actual = await Utilities.ComputeSha256Async(path, ct).ConfigureAwait(false);
-        if (!actual.Equals(asset.Sha256, StringComparison.OrdinalIgnoreCase))
-        {
-            _log.WriteLine($"Checksum mismatch: expected {asset.Sha256}, got {actual}.");
-            return false;
-        }
-        _log.WriteLine("Checksum OK.");
-        return true;
-    }
-
-    private async Task<bool> ValidateAsync(string path, CancellationToken ct)
-    {
-        // Validation is opt-in: with no args configured we do not execute the
-        // freshly downloaded binary, since there is no universally safe probe.
-        if (_options.ValidateArgs is not { Count: > 0 } validateArgs)
-        {
-            return true;
-        }
-
-        try
-        {
-            ProcessStartInfo psi = new()
-            {
-                FileName = path,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-            };
-            foreach (var a in validateArgs)
-            {
-                psi.ArgumentList.Add(a);
-            }
-
-            using Process? proc = Process.Start(psi);
-            if (proc is null)
-            {
-                _log.WriteLine("Could not start the downloaded binary for validation.");
-                return false;
-            }
-            await proc.WaitForExitAsync(ct).ConfigureAwait(false);
-            if (proc.ExitCode != 0)
-            {
-                _log.WriteLine($"Downloaded binary failed validation (exit {proc.ExitCode}).");
-                return false;
-            }
-            return true;
-        }
-        catch (Exception e)
-        {
-            _log.WriteLine($"Validation error: {e.Message}");
-            return false;
-        }
-    }
-
-    private bool LaunchHandoff(string stagedPath, string target, string? sourceDir = null)
-    {
-        _log.WriteLine($"Staged update ready; handing off to replace {target}.");
+        // 4. 启动新版本 exe 执行替换
+        log.WriteLine($"启动新版本进行替换...");
         ProcessStartInfo psi = new()
         {
-            FileName = stagedPath,
+            FileName = stagedExe,
             ArgumentList =
             {
                 HandoffVerb,
                 DestOption,
-                target,
+                targetDirectory,
                 PidOption,
                 Environment.ProcessId.ToString(),
+                SourceDirOption,
+                sourceDir,
+                RelaunchOption,
             },
         };
-        if (sourceDir is not null)
+
+        if (Process.Start(psi) is null)
         {
-            psi.ArgumentList.Add(SourceDirOption);
-            psi.ArgumentList.Add(sourceDir);
-        }
-        if (_options.Relaunch)
-        {
-            psi.ArgumentList.Add(RelaunchOption);
+            return new UpdateResult(UpdateOutcome.Failed, release.Version, "无法启动更新替换进程.");
         }
 
-        return Process.Start(psi) is not null;
+        return new UpdateResult(UpdateOutcome.Staged, release.Version);
     }
 
     /// <summary>
-    /// The handoff (new-process) side of the swap. Runs from the freshly staged build:
-    /// waits for the previous process to exit, replaces the target in place, and
-    /// optionally relaunches. Wire this up in your entry point under
-    /// <see cref="HandoffVerb"/>.
-    /// <para>
-    /// When <paramref name="sourceDir"/> is <c>null</c> this performs a single-file
-    /// swap (copy the running binary over <paramref name="destPath"/>). When set — for
-    /// a directory (multi-file) update — <paramref name="destPath"/> is a directory and
-    /// its whole tree is replaced with <paramref name="sourceDir"/>; relaunch targets
-    /// the executable at the same relative location inside the swapped tree.
-    /// </para>
+    /// Handoff 端: 由新版本 exe 调用，等待旧进程退出后替换目标目录.
+    /// 保留 <see cref="PreservedDirectories"/> 中列出的文件夹.
     /// </summary>
+    /// <param name="destDir">目标应用程序目录.</param>
+    /// <param name="sourceDir">解压后的新版本目录.</param>
+    /// <param name="oldPid">旧进程 PID (等待其退出).</param>
+    /// <param name="relaunch">替换完成后是否重新启动应用.</param>
+    /// <param name="log">日志输出.</param>
+    /// <returns>退出代码 (0=成功, 1=失败).</returns>
     public static int ApplySwap(
-        string destPath,
+        string destDir,
+        string sourceDir,
         int oldPid,
-        IReadOnlyList<string>? relaunchArgs = null,
-        string? sourceDir = null,
+        bool relaunch = true,
         TextWriter? log = null
     )
     {
         log ??= Console.Out;
+        destDir = Path.GetFullPath(destDir);
+        sourceDir = Path.GetFullPath(sourceDir);
 
+        // 确定可执行文件的相对路径（用于替换后重新启动）
+        string? processPath = Environment.ProcessPath;
+        string? relExe = null;
+        if (!string.IsNullOrEmpty(processPath))
+        {
+            string rel = Path.GetRelativePath(sourceDir, Path.GetFullPath(processPath));
+            if (
+                !Path.IsPathRooted(rel)
+                && !rel.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)
+                && rel != ".."
+            )
+            {
+                relExe = rel;
+            }
+        }
+
+        // 等待旧进程退出
         WaitForExit(oldPid, log);
 
-        return sourceDir is { Length: > 0 }
-            ? ApplyDirectorySwap(destPath, sourceDir, relaunchArgs, log)
-            : ApplyFileSwap(destPath, relaunchArgs, log);
+        try
+        {
+            // 删除目标目录中的文件和非保留目录
+            if (Directory.Exists(destDir))
+            {
+                log.WriteLine($"清理目标目录 (保留 {string.Join(", ", PreservedDirectories)})...");
+
+                // 删除目标目录中所有文件
+                foreach (string file in Directory.GetFiles(destDir))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.WriteLine($"删除文件失败 {Path.GetFileName(file)}: {ex.Message}");
+                    }
+                }
+
+                // 删除非保留的子目录
+                foreach (string dir in Directory.GetDirectories(destDir))
+                {
+                    string dirName = Path.GetFileName(dir);
+                    if (PreservedDirectories.Contains(dirName))
+                    {
+                        log.WriteLine($"保留目录: {dirName}");
+                        continue;
+                    }
+
+                    try
+                    {
+                        Directory.Delete(dir, recursive: true);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.WriteLine($"删除目录失败 {dirName}: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(destDir);
+            }
+
+            // 复制新版本文件到目标目录 (不覆盖保留目录)
+            log.WriteLine("复制新版本文件...");
+            CopyDirectorySelective(sourceDir, destDir);
+
+            log.WriteLine($"更新完成: {destDir}");
+        }
+        catch (Exception ex)
+        {
+            log.WriteLine($"替换失败: {ex.Message}");
+            return 1;
+        }
+
+        // 重新启动
+        if (relaunch && relExe is not null)
+        {
+            string launchExe = Path.Combine(destDir, relExe);
+            if (File.Exists(launchExe))
+            {
+                log.WriteLine("重新启动应用...");
+                Process.Start(new ProcessStartInfo { FileName = launchExe });
+            }
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    /// 递归复制目录，但跳过保留目录 (如 AppData).
+    /// </summary>
+    private static void CopyDirectorySelective(string sourceDir, string destDir)
+    {
+        Directory.CreateDirectory(destDir);
+
+        // 复制文件
+        foreach (string file in Directory.GetFiles(sourceDir))
+        {
+            string destFile = Path.Combine(destDir, Path.GetFileName(file));
+            File.Copy(file, destFile, overwrite: true);
+        }
+
+        // 递归复制子目录 (跳过保留目录)
+        foreach (string dir in Directory.GetDirectories(sourceDir))
+        {
+            string dirName = Path.GetFileName(dir);
+
+            // 如果目标目录中已有同名保留目录，跳过
+            if (PreservedDirectories.Contains(dirName))
+            {
+                string destSubDir = Path.Combine(destDir, dirName);
+                if (Directory.Exists(destSubDir))
+                {
+                    continue;
+                }
+            }
+
+            CopyDirectorySelective(dir, Path.Combine(destDir, dirName));
+        }
     }
 
     private static void WaitForExit(int oldPid, TextWriter log)
@@ -539,185 +312,15 @@ public abstract class Updater
         try
         {
             using Process old = Process.GetProcessById(oldPid);
-            log.WriteLine($"Waiting for previous process (pid {oldPid}) to exit...");
+            log.WriteLine($"等待旧进程 (PID {oldPid}) 退出...");
             if (!old.WaitForExit(30_000))
             {
-                log.WriteLine("Previous process did not exit in time; attempting swap anyway.");
+                log.WriteLine("旧进程超时未退出，尝试强制替换.");
             }
         }
         catch (ArgumentException)
         {
-            // Process already gone.
+            // 进程已退出
         }
-    }
-
-    private static int ApplyFileSwap(
-        string destPath,
-        IReadOnlyList<string>? relaunchArgs,
-        TextWriter log
-    )
-    {
-        var src = Utilities.ProcessPath;
-        if (string.IsNullOrEmpty(src))
-        {
-            log.WriteLine("Cannot apply update: unknown source path.");
-            return 1;
-        }
-
-        var backup = destPath + ".bak";
-        try
-        {
-            if (File.Exists(destPath))
-            {
-                File.Move(destPath, backup, overwrite: true);
-            }
-
-            // Copy (rather than move) the still-running staged binary so the swap
-            // works across volumes and the running image stays valid.
-            File.Copy(src, destPath, overwrite: true);
-            File.SetLastWriteTimeUtc(destPath, DateTime.UtcNow);
-            if (!OperatingSystem.IsWindows())
-            {
-                Utilities.MakeExecutable(destPath);
-            }
-
-            if (File.Exists(backup))
-            {
-                try
-                {
-                    File.Delete(backup);
-                }
-                catch
-                { /* a locked .bak on Windows is harmless; leave it for next run */
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            log.WriteLine($"Swap failed: {e.Message}");
-            if (File.Exists(backup) && !File.Exists(destPath))
-            {
-                try
-                {
-                    File.Move(backup, destPath);
-                }
-                catch
-                { /* best effort */
-                }
-            }
-            return 1;
-        }
-
-        log.WriteLine($"Updated in place: {destPath}");
-        Relaunch(destPath, relaunchArgs, log);
-        return 0;
-    }
-
-    private static int ApplyDirectorySwap(
-        string destDir,
-        string sourceDir,
-        IReadOnlyList<string>? relaunchArgs,
-        TextWriter log
-    )
-    {
-        destDir = Path.GetFullPath(destDir);
-        sourceDir = Path.GetFullPath(sourceDir);
-
-        // The running process is expected to live inside sourceDir; reuse its relative
-        // location to find the executable to relaunch inside the swapped-in tree. If it
-        // does not (the relative path escapes sourceDir or stays rooted), we cannot know
-        // what to launch in the new tree, so skip relaunch rather than touch a path
-        // outside destDir.
-        var processPath = Utilities.ProcessPath;
-        string? relExe = null;
-        if (!string.IsNullOrEmpty(processPath))
-        {
-            var rel = Path.GetRelativePath(sourceDir, Path.GetFullPath(processPath));
-            if (
-                !Path.IsPathRooted(rel)
-                && rel != ".."
-                && !rel.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)
-            )
-            {
-                relExe = rel;
-            }
-        }
-
-        var backup =
-            destDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + ".bak";
-        try
-        {
-            if (Directory.Exists(backup))
-            {
-                Directory.Delete(backup, recursive: true);
-            }
-
-            // Move the old tree aside, then copy the staged tree in. Copy (rather than
-            // move) so the swap works across volumes and the still-running staged image
-            // stays valid; the temp staging dir is reclaimed by the OS later.
-            if (Directory.Exists(destDir))
-            {
-                Directory.Move(destDir, backup);
-            }
-
-            Utilities.CopyDirectory(sourceDir, destDir);
-
-            if (Directory.Exists(backup))
-            {
-                try
-                {
-                    Directory.Delete(backup, recursive: true);
-                }
-                catch
-                { /* leftover .bak is harmless; leave it for next run */
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            log.WriteLine($"Swap failed: {e.Message}");
-            if (Directory.Exists(backup) && !Directory.Exists(destDir))
-            {
-                try
-                {
-                    Directory.Move(backup, destDir);
-                }
-                catch
-                { /* best effort */
-                }
-            }
-            return 1;
-        }
-
-        log.WriteLine($"Updated in place: {destDir}");
-
-        if (relExe is not null)
-        {
-            var exe = Path.Combine(destDir, relExe);
-            if (!OperatingSystem.IsWindows() && File.Exists(exe))
-            {
-                Utilities.MakeExecutable(exe);
-            }
-
-            Relaunch(exe, relaunchArgs, log);
-        }
-        return 0;
-    }
-
-    private static void Relaunch(string exe, IReadOnlyList<string>? relaunchArgs, TextWriter log)
-    {
-        if (relaunchArgs is null)
-        {
-            return;
-        }
-
-        log.WriteLine("Relaunching...");
-        ProcessStartInfo psi = new() { FileName = exe };
-        foreach (var a in relaunchArgs)
-        {
-            psi.ArgumentList.Add(a);
-        }
-
-        Process.Start(psi);
     }
 }
