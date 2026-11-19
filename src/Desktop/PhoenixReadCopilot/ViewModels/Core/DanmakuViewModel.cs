@@ -19,7 +19,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// </summary>
 public sealed partial class DanmakuViewModel : ViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IDanmakuService _danmakuService;
     private readonly AppViewModel _appViewModel;
     private readonly ILogger<DanmakuViewModel> _logger;
     private readonly IFontToolkit _fontToolkit;
@@ -151,14 +151,14 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="DanmakuViewModel"/> class.
     /// </summary>
     public DanmakuViewModel(
-        PhoenixReadApiClient apiClient,
+        IDanmakuService danmakuService,
         AppViewModel appViewModel,
         ILogger<DanmakuViewModel> logger,
         ISettingsService settingsService,
         IFontToolkit fontToolkit
     )
     {
-        _apiClient = apiClient;
+        _danmakuService = danmakuService;
         _appViewModel = appViewModel;
         _logger = logger;
         _settings = settingsService.Settings;
@@ -300,12 +300,12 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         try
         {
             long durationMs = duration > 0 ? duration * 1000L : 3600000L;
-            DanmakuPage page = await _apiClient.GetDanmakuAsync(
+            DanmakuPage page = await _danmakuService.GetDanmakuAsync(
                 currentLoadingDramaId,
                 currentLoadingVideoId,
                 0,
                 durationMs,
-                token
+                cancellationToken: token
             );
 
             if (token.IsCancellationRequested)
@@ -382,7 +382,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
 
         try
         {
-            PhoenixOperationResult result = await _apiClient.SendDanmakuAsync(
+            PhoenixOperationResult result = await _danmakuService.SendDanmakuAsync(
                 _dramaId,
                 _videoId,
                 text.Trim()

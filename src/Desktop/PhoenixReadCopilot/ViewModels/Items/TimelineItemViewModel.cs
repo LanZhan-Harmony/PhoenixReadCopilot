@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Windows.Globalization;
@@ -11,13 +12,38 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 public sealed partial class TimelineItemViewModel : ViewModelBase
 {
     [ObservableProperty]
-    public partial List<VideoItemViewModel>? Items { get; set; }
+    public partial ObservableCollection<VideoItemViewModel> Items { get; set; } = [];
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
 
     [ObservableProperty]
     public partial int Count { get; set; }
+
+    /// <summary>
+    /// 分页下一页偏移量.
+    /// </summary>
+    public int NextOffset { get; set; }
+
+    /// <summary>
+    /// 是否还有更多数据.
+    /// </summary>
+    public bool HasMore { get; set; } = true;
+
+    /// <summary>
+    /// 跨页会话标识.
+    /// </summary>
+    public string? SessionId { get; set; }
+
+    /// <summary>
+    /// 该日期的数据是否已完成首屏加载.
+    /// </summary>
+    public bool IsLoaded { get; set; }
+
+    /// <summary>
+    /// 是否正在加载更多.
+    /// </summary>
+    public bool IsLoadingMore { get; set; }
 
     /// <summary>
     /// 目标日期.
@@ -45,7 +71,7 @@ public sealed partial class TimelineItemViewModel : ViewModelBase
     public TimelineItemViewModel(
         DateOnly targetDate,
         bool isToday = false,
-        List<VideoItemViewModel>? items = null
+        IEnumerable<VideoItemViewModel>? items = null
     )
     {
         TargetDate = targetDate;
@@ -57,8 +83,20 @@ public sealed partial class TimelineItemViewModel : ViewModelBase
             ? "今天"
             : targetDate.ToDateTime(TimeOnly.MinValue).ToString("ddd", culture);
         Date = targetDate.ToString("MM-dd");
-        Items = items;
-        Count = items?.Count ?? 0;
-        IsEmpty = items is not null && items.Count == 0;
+
+        if (items is not null)
+        {
+            Items = [.. items];
+            Count = Items.Count;
+            IsLoaded = true;
+            IsEmpty = Items.Count == 0;
+        }
+        else
+        {
+            Items = [];
+            Count = 0;
+            IsLoaded = false;
+            IsEmpty = false;
+        }
     }
 }

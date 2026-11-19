@@ -55,6 +55,8 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
         {
             RoleText = "参演";
         }
+
+        IsFollowed = User is not null && !string.IsNullOrEmpty(User.Id) && ItemServices.Follow.IsFollowing(User.Id);
     }
 
     public User User { get; }
@@ -95,17 +97,11 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
             return;
         }
 
-        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
-        {
-            _appViewModel.ShowTip("请先登录后再关注", InfoType.Warning);
-            return;
-        }
-
         IsLoading = true;
         try
         {
             bool next = !IsFollowed;
-            PhoenixOperationResult res = await _apiClient.SetFollowAsync(User.Id, next);
+            PhoenixOperationResult res = await ItemServices.Follow.SetFollowAsync(User.Id, next, User);
             if (res.Succeeded)
             {
                 IsFollowed = next;

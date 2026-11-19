@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly ISearchService _searchService;
     private readonly ILogger<SearchPageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -47,7 +47,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="SearchPageViewModel"/> class.
     /// </summary>
     public SearchPageViewModel(
-        PhoenixReadApiClient apiClient,
+        ISearchService searchService,
         ILogger<SearchPageViewModel> logger,
         INavigationService navigationService,
         ISettingsService settingsService,
@@ -56,7 +56,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _apiClient = apiClient;
+        _searchService = searchService;
         _logger = logger;
         _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
@@ -87,7 +87,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
         try
         {
             IsSearching = true;
-            SearchResult searchResult = await _apiClient.SearchAsync(keyword);
+            SearchResult searchResult = await _searchService.SearchAsync(keyword);
 
             VideoSearchSectionDetailViewModel videoSection = CreateVideoSection(
                 searchResult.Dramas,
@@ -130,7 +130,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     )
     {
         VideoSearchSectionDetailViewModel newSection = new(
-            _apiClient,
+            _searchService,
             _dispatcherQueue,
             _loggerFactory.CreateLogger<VideoSearchSectionDetailViewModel>()
         );
@@ -142,7 +142,7 @@ public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     private UserSearchSectionDetailViewModel CreateUserSection()
     {
         UserSearchSectionDetailViewModel userSection = new(
-            _apiClient,
+            _searchService,
             _dispatcherQueue,
             _loggerFactory.CreateLogger<UserSearchSectionDetailViewModel>()
         );

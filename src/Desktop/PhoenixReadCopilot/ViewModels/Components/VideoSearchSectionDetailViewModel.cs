@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.ViewModels.Items;
@@ -19,7 +20,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
     : ViewModelBase,
         ISearchSectionDetailViewModel
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly ISearchService _searchService;
     private readonly ILogger<VideoSearchSectionDetailViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
 
@@ -58,12 +59,12 @@ public sealed partial class VideoSearchSectionDetailViewModel
     /// Initializes a new instance of the <see cref="VideoSearchSectionDetailViewModel"/> class.
     /// </summary>
     public VideoSearchSectionDetailViewModel(
-        PhoenixReadApiClient apiClient,
+        ISearchService searchService,
         DispatcherQueue dispatcherQueue,
         ILogger<VideoSearchSectionDetailViewModel> logger
     )
     {
-        _apiClient = apiClient;
+        _searchService = searchService;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
         Sorts = [.. Enum.GetValues<ComprehensiveSearchSortType>()];
@@ -129,7 +130,7 @@ public sealed partial class VideoSearchSectionDetailViewModel
         try
         {
             IsLoading = true;
-            SearchResult result = await _apiClient.SearchAsync(
+            SearchResult result = await _searchService.SearchAsync(
                 new SearchQuery
                 {
                     Keyword = _keyword,

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
@@ -20,10 +21,11 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     : ViewModelBase<VideoFavoriteFolder>,
         IFavoriteSectionDetailViewModel
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IFavoriteService _favoriteService;
     private readonly ILogger<VideoFavoriteSectionDetailViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;
+    private readonly DispatcherQueue _dispatcherQueue;
 
     private int _offset;
     private bool _preventLoadMore;
@@ -52,17 +54,32 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
     /// </summary>
     public VideoFavoriteSectionDetailViewModel(
         VideoFavoriteFolder data,
-        PhoenixReadApiClient apiClient,
+        IFavoriteService favoriteService,
         INavigationService navigationService,
         ISettingsService settingsService,
+        DispatcherQueue dispatcherQueue,
         ILogger<VideoFavoriteSectionDetailViewModel> logger
     )
         : base(data)
     {
-        _apiClient = apiClient;
+        _favoriteService = favoriteService;
         _navigationService = navigationService;
         _settings = settingsService.Settings;
+        _dispatcherQueue = dispatcherQueue;
         _logger = logger;
+
+        _favoriteService.FavoriteChanged += OnFavoriteChanged;
+    }
+
+    private void OnFavoriteChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            if (Items.Count > 0 || IsEmpty)
+            {
+                _ = RefreshAsync();
+            }
+        });
     }
 
     public async Task TryFirstLoadAsync()
@@ -95,7 +112,7 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         try
         {
             IsLoading = true;
-            DramaPage page = await _apiClient.GetFavoritesAsync(count: 20, offset: _offset);
+            DramaPage page = await _favoriteService.GetFavoritesAsync(count: 20, offset: _offset);
             _preventLoadMore = !page.HasMore || page.Items.Count == 0;
             _offset = page.NextOffset;
             TotalCount = (int)page.Total;
@@ -151,5 +168,9 @@ public sealed partial class VideoFavoriteSectionDetailViewModel
         Items.Remove(item);
         TotalCount = Math.Max(0, TotalCount - 1);
         IsEmpty = Items.Count == 0;
+        if (item.Drama is not null && !string.IsNullOrEmpty(item.Drama.Id))
+        {
+            _ = _favoriteService.SetFavoriteAsync(item.Drama.Id, false, item.Drama);
+        }
     }
 }

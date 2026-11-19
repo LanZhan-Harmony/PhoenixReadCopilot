@@ -78,11 +78,17 @@ public sealed class ReservationService : IReservationService
 
     private string GetStorageFilePath()
     {
-        string fileName =
+        string userFolder =
             _authService.IsAuthenticated && !string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id)
-                ? $"{_authService.CurrentUser.Id}.json"
-                : "anonymous.json";
-        return Path.Combine(_folderPath, fileName);
+                ? _authService.CurrentUser.Id
+                : "anonymous";
+        string targetDir = Path.Combine(_folderPath, userFolder);
+        if (!Directory.Exists(targetDir))
+        {
+            Directory.CreateDirectory(targetDir);
+        }
+
+        return Path.Combine(targetDir, "drama.json");
     }
 
     /// <inheritdoc/>

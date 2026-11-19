@@ -40,7 +40,7 @@ public sealed partial class Pinner : PinnerBase
         }
 
         INavigationService navVM = _navigationService;
-        if (item.Type == PinContentType.User)
+        if (item.Type == PinType.User)
         {
             User user = new()
             {
@@ -52,7 +52,7 @@ public sealed partial class Pinner : PinnerBase
             };
             navVM.NavigateToOver(typeof(UserSpacePage), user);
         }
-        else if (item.Type == PinContentType.Video)
+        else if (item.Type == PinType.Drama)
         {
             VideoSnapshot snapshot = new(
                 new VideoInformation(new MediaIdentifier(item.Id, item.Title, null), null)

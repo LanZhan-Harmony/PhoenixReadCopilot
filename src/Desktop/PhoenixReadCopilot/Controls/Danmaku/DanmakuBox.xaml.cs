@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.Controls.Danmaku;
 
@@ -37,8 +37,8 @@ public sealed partial class DanmakuBox : DanmakuControlBase
 
     public void UpdateLoginState()
     {
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
-        bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        IAuthenticationService authService = Ioc.Default.GetRequiredService<IAuthenticationService>();
+        bool isAuthenticated = authService.IsAuthenticated;
 
         DanmakuInputBox.IsEnabled = isAuthenticated;
         DanmakuInputBox.PlaceholderText = isAuthenticated
@@ -56,9 +56,8 @@ public sealed partial class DanmakuBox : DanmakuControlBase
             return;
         }
 
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
-        bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
-        if (!isAuthenticated)
+        IAuthenticationService authService = Ioc.Default.GetRequiredService<IAuthenticationService>();
+        if (!authService.IsAuthenticated)
         {
             return;
         }

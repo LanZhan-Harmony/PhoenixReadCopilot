@@ -33,6 +33,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     private readonly DramaReviewSectionDetailViewModel _dramaReviews;
     private readonly IHistoryService _historyService;
     private readonly IPlaybackMediaService _playbackMediaService;
+    private readonly IFavoriteService _favoriteService;
 
     private DramaDetails? _dramaDetails;
     private string _dramaId = string.Empty;
@@ -201,7 +202,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         PhoenixReadApiClient apiClient,
         DramaReviewSectionDetailViewModel dramaReviews,
         IHistoryService historyService,
-        IPlaybackMediaService playbackMediaService
+        IPlaybackMediaService playbackMediaService,
+        IFavoriteService favoriteService
     )
         : base(settingsService, appViewModel)
     {
@@ -214,6 +216,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         _dramaReviews = dramaReviews;
         _historyService = historyService;
         _playbackMediaService = playbackMediaService;
+        _favoriteService = favoriteService;
         Danmaku = danmaku;
         Subtitle = subtitle;
         CurrentLoop = VideoLoopType.None;
@@ -224,6 +227,19 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         Player.SetSpeedAction(PlayerSpeedChanged);
         Player.SetPlayNextAction(() => _ = PlayNextVideoAsync());
         Player.SetPlayPreviousAction(() => _ = PlayPreviousVideoAsync());
+
+        _favoriteService.FavoriteChanged += OnFavoriteChanged;
+    }
+
+    private void OnFavoriteChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            if (!string.IsNullOrEmpty(_dramaId))
+            {
+                IsFavorited = _favoriteService.IsFavorited(_dramaId);
+            }
+        });
     }
 
     /// <inheritdoc/>
@@ -568,29 +584,36 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     {
         try
         {
-            bool state = !IsFavorited;
-            if (!string.IsNullOrEmpty(_dramaId))
+            if (string.IsNullOrEmpty(_dramaId))
             {
-                string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-                PhoenixOperationResult res = await _apiClient.SetFavoriteAsync(
-                    _dramaId,
-                    targetVideoId,
-                    state
-                );
-                if (res.Succeeded)
-                {
-                    IsFavorited = state;
-                    FavoriteCount += state ? 1 : -1;
-                }
-                else
-                {
-                    _appViewModel.ShowTip(res.Message ?? "收藏操作失败", InfoType.Warning);
-                }
+                return;
+            }
+
+            bool targetState = !IsFavorited;
+            bool success = await _favoriteService.SetFavoriteAsync(
+                _dramaId,
+                targetState,
+                _dramaDetails?.Drama
+            );
+
+            if (success)
+            {
+                IsFavorited = targetState;
+                FavoriteCount += targetState ? 1 : -1;
+                string tip = targetState
+                    ? Resources.AddFavoriteSucceed
+                    : Resources.CancelFavoriteSucceed;
+                _appViewModel.ShowTip(tip, InfoType.Success);
+            }
+            else
+            {
+                _appViewModel.ShowTip(Resources.FavoriteFailed, InfoType.Warning);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"尝试收藏/取消收藏剧集时失败.");
+            _appViewModel.ShowTip(Resources.FavoriteFailed, InfoType.Error);
         }
     }
 
@@ -622,16 +645,22 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         {
             if (!string.IsNullOrEmpty(_dramaId))
             {
-                string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-                await _apiClient.SetFavoriteAsync(_dramaId, targetVideoId, true);
-                IsFavorited = true;
-                _appViewModel.ShowTip("已加入追剧列表", InfoType.Success);
+                bool success = await _favoriteService.SetFavoriteAsync(
+                    _dramaId,
+                    true,
+                    _dramaDetails?.Drama
+                );
+                if (success)
+                {
+                    IsFavorited = true;
+                    _appViewModel.ShowTip(Resources.AddFavoriteSucceed, InfoType.Success);
+                }
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"加入追剧列表失败");
-            _appViewModel.ShowTip("加入追剧列表失败", InfoType.Error);
+            _appViewModel.ShowTip(Resources.FavoriteFailed, InfoType.Error);
         }
     }
 
@@ -708,12 +737,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     private void Pin()
     {
-        PinItem pinItem = new(
-            _dramaId,
-            Title,
-            Cover?.ToString() ?? string.Empty,
-            PinContentType.Video
-        );
+        PinItem pinItem = new(_dramaId, Title, Cover?.ToString() ?? string.Empty, PinType.Drama);
         _pinnerViewModel.AddItem(pinItem);
     }
 
@@ -925,6 +949,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             .ToList()
             ?? [];
         Tags = drama.Tags?.ToList() ?? [];
+        IsFavorited = _favoriteService.IsFavorited(_dramaId);
 
         Player.Title = Title;
         CalcPlayerHeight();
@@ -1177,12 +1202,13 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                         return;
                     }
 
-                    IReadOnlyList<PlaybackMedia> mediaList = await _playbackMediaService.ResolveMediaAsync(
-                        _dramaId,
-                        nextEpisode.VideoId,
-                        forceRefresh: false,
-                        token
-                    );
+                    IReadOnlyList<PlaybackMedia> mediaList =
+                        await _playbackMediaService.ResolveMediaAsync(
+                            _dramaId,
+                            nextEpisode.VideoId,
+                            forceRefresh: false,
+                            token
+                        );
                     if (mediaList is { Count: > 0 } && !token.IsCancellationRequested)
                     {
                         _preloadedEpisodeVideoId = nextEpisode.VideoId;

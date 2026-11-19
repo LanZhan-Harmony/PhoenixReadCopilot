@@ -19,7 +19,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IFilterService _filterService;
     private readonly ILogger<FilterPageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -52,7 +52,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="FilterPageViewModel"/> class.
     /// </summary>
     public FilterPageViewModel(
-        PhoenixReadApiClient apiClient,
+        IFilterService filterService,
         ILogger<FilterPageViewModel> logger,
         INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
@@ -60,7 +60,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _apiClient = apiClient;
+        _filterService = filterService;
         _logger = logger;
         _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
@@ -109,7 +109,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
             CancellationToken ct = _filterCts.Token;
 
             IReadOnlyList<ShortDramaFilterGroup> rows =
-                await _apiClient.GetShortDramaFilterPanelAsync(ShortDramaGenre.ShortPlay, ct);
+                await _filterService.GetFilterPanelAsync(ShortDramaGenre.ShortPlay, ct);
             List<IndexFilterViewModel> filterList = [];
             foreach (ShortDramaFilterGroup group in rows)
             {
@@ -185,7 +185,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
                 SessionId = _sessionId,
             };
 
-            ShortDramaFilterPage page = await _apiClient.FilterShortDramasAsync(query, ct);
+            ShortDramaFilterPage page = await _filterService.FilterShortDramasAsync(query, ct);
             _offset = page.NextOffset;
             _hasMore = page.HasMore;
             _sessionId = page.SessionId;

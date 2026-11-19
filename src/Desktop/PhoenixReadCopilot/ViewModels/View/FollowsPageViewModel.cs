@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages.Overlay;
@@ -16,6 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
 {
+    private readonly IFollowService _followService;
     private readonly ILogger<FollowsPageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly Dictionary<UserGroup, List<UserItemViewModel>> _userCache = [];
@@ -57,12 +59,14 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="FollowsPageViewModel"/> class.
     /// </summary>
     public FollowsPageViewModel(
+        IFollowService followService,
         ILogger<FollowsPageViewModel> logger,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService
     )
         : base(settingsService)
     {
+        _followService = followService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
     }
@@ -120,13 +124,19 @@ public sealed partial class FollowsPageViewModel : LayoutPageViewModelBase
         IsUserLoading = true;
         try
         {
-            // TODO: 红果关注用户列表 API 暂未开放
-            await Task.CompletedTask;
-            IsEmpty = true;
+            UserRelationPage page = await _followService.GetFollowingsAsync();
+            Users.Clear();
+            foreach (UserRelationItem item in page.Items)
+            {
+                Users.Add(new UserItemViewModel(item));
+            }
+            IsEmpty = Users.Count == 0;
+            UserListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"尝试加载关注用户时出错.");
+            IsEmpty = true;
         }
         finally
         {

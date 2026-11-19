@@ -1,13 +1,14 @@
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Helpers;
 using ZLogger;
 
 namespace PhoenixReadCopilot.Core.Services;
 
 /// <summary>
-/// 本地稍后再看服务实现.
+/// 稍后再看服务实现（支持短剧，并预留视频、图文、书籍等扩展，支持登录与未登录隔离分文件存储）.
 /// </summary>
 public sealed class ViewLaterService : IViewLaterService
 {
@@ -15,8 +16,10 @@ public sealed class ViewLaterService : IViewLaterService
     private readonly IAuthenticationService _authService;
     private readonly string _folderPath;
     private readonly SemaphoreSlim _lock = new(1, 1);
-    private List<Drama>? _cache;
-    private string? _cachedFilePath;
+
+    private List<Drama>? _dramaCache;
+    private readonly HashSet<string> _viewLaterIds = new(StringComparer.OrdinalIgnoreCase);
+    private string? _cachedUserKey;
 
     /// <inheritdoc/>
     public event EventHandler? ViewLaterChanged;
@@ -33,8 +36,8 @@ public sealed class ViewLaterService : IViewLaterService
         _logger = logger;
         _authService = authService;
         _folderPath = Path.Combine(pathService.DataFolderPath, "ViewLater");
+
         EnsureDirectory();
-        MigrateLegacyFile(pathService);
 
         _authService.StateChanged += OnAuthStateChanged;
     }
@@ -54,31 +57,14 @@ public sealed class ViewLaterService : IViewLaterService
         }
     }
 
-    private void MigrateLegacyFile(IPathService pathService)
-    {
-        try
-        {
-            string oldPath = Path.Combine(pathService.DataFolderPath, "view_later.json");
-            string anonymousPath = Path.Combine(_folderPath, "anonymous.json");
-            if (File.Exists(oldPath) && !File.Exists(anonymousPath))
-            {
-                File.Copy(oldPath, anonymousPath, overwrite: false);
-                _logger.ZLogInformation($"已将旧版本稍后再看数据迁移至: {anonymousPath}");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogWarning(ex, $"迁移旧版本稍后再看数据失败.");
-        }
-    }
-
     private void OnAuthStateChanged(object? sender, bool isAuthenticated)
     {
         _lock.Wait();
         try
         {
-            _cache = null;
-            _cachedFilePath = null;
+            _dramaCache = null;
+            _viewLaterIds.Clear();
+            _cachedUserKey = null;
         }
         finally
         {
@@ -88,90 +74,87 @@ public sealed class ViewLaterService : IViewLaterService
         ViewLaterChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private string GetStorageFilePath()
+    private string GetStorageFilePath(ViewLaterType type)
     {
-        string fileName =
+        string userFolder =
             _authService.IsAuthenticated && !string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id)
-                ? $"{_authService.CurrentUser.Id}.json"
-                : "anonymous.json";
-        return Path.Combine(_folderPath, fileName);
+                ? _authService.CurrentUser.Id
+                : "anonymous";
+        string targetDir = Path.Combine(_folderPath, userFolder);
+        if (!Directory.Exists(targetDir))
+        {
+            Directory.CreateDirectory(targetDir);
+        }
+
+        string fileName = type switch
+        {
+            ViewLaterType.Drama => "drama.json",
+            ViewLaterType.Video => "video.json",
+            ViewLaterType.Post => "post.json",
+            ViewLaterType.Novel => "novel.json",
+            _ => "drama.json",
+        };
+        return Path.Combine(targetDir, fileName);
     }
 
     /// <inheritdoc/>
-    public async Task AddAsync(Drama drama)
+    public bool IsInViewLater(string id, ViewLaterType type = ViewLaterType.Drama)
     {
-        if (drama is null || string.IsNullOrWhiteSpace(drama.Id))
+        if (string.IsNullOrEmpty(id) || type != ViewLaterType.Drama)
         {
-            return;
+            return false;
         }
 
-        await _lock.WaitAsync();
+        if (_dramaCache != null)
+        {
+            return _viewLaterIds.Contains(id);
+        }
+
+        string filePath = GetStorageFilePath(ViewLaterType.Drama);
+        if (!File.Exists(filePath))
+        {
+            return false;
+        }
+
         try
         {
-            await EnsureLoadedAsync();
-            _cache!.RemoveAll(d => d.Id == drama.Id);
-            _cache.Insert(0, drama);
-            await SaveToFileAsync();
-        }
-        finally
-        {
-            _lock.Release();
-        }
-
-        ViewLaterChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <inheritdoc/>
-    public async Task RemoveAsync(string dramaId)
-    {
-        if (string.IsNullOrWhiteSpace(dramaId))
-        {
-            return;
-        }
-
-        await _lock.WaitAsync();
-        try
-        {
-            await EnsureLoadedAsync();
-            int removed = _cache!.RemoveAll(d => d.Id == dramaId);
-            if (removed > 0)
+            string json = File.ReadAllText(filePath);
+            List<Drama>? items = JsonAotSerializer.Deserialize<List<Drama>>(json);
+            if (items != null)
             {
-                await SaveToFileAsync();
+                foreach (Drama item in items)
+                {
+                    if (!string.IsNullOrEmpty(item.Id))
+                    {
+                        _viewLaterIds.Add(item.Id);
+                    }
+                }
             }
+            return _viewLaterIds.Contains(id);
         }
-        finally
+        catch
         {
-            _lock.Release();
+            return false;
         }
-
-        ViewLaterChanged?.Invoke(this, EventArgs.Empty);
     }
 
     /// <inheritdoc/>
-    public async Task ClearAsync()
+    public async Task<bool> IsInViewLaterAsync(
+        string id,
+        ViewLaterType type = ViewLaterType.Drama,
+        CancellationToken cancellationToken = default
+    )
     {
-        await _lock.WaitAsync();
-        try
+        if (string.IsNullOrEmpty(id) || type != ViewLaterType.Drama)
         {
-            _cache = [];
-            await SaveToFileAsync();
-        }
-        finally
-        {
-            _lock.Release();
+            return false;
         }
 
-        ViewLaterChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <inheritdoc/>
-    public async Task<IReadOnlyList<Drama>> GetAllAsync()
-    {
-        await _lock.WaitAsync();
+        await _lock.WaitAsync(cancellationToken);
         try
         {
-            await EnsureLoadedAsync();
-            return [.. _cache!];
+            await EnsureLoadedLockedAsync(ViewLaterType.Drama);
+            return _viewLaterIds.Contains(id);
         }
         finally
         {
@@ -179,47 +162,191 @@ public sealed class ViewLaterService : IViewLaterService
         }
     }
 
-    private async Task EnsureLoadedAsync()
+    private async Task EnsureLoadedLockedAsync(ViewLaterType type = ViewLaterType.Drama)
     {
-        string currentFilePath = GetStorageFilePath();
-        if (_cache is not null && _cachedFilePath == currentFilePath)
-        {
-            return;
-        }
+        string userFolder =
+            _authService.IsAuthenticated && !string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id)
+                ? _authService.CurrentUser.Id
+                : "anonymous";
 
-        _cachedFilePath = currentFilePath;
-
-        if (File.Exists(currentFilePath))
+        if (type == ViewLaterType.Drama)
         {
-            try
+            if (_dramaCache != null && _cachedUserKey == userFolder)
             {
-                string json = await File.ReadAllTextAsync(currentFilePath);
-                _cache = JsonAotSerializer.Deserialize<List<Drama>>(json) ?? [];
                 return;
             }
-            catch (Exception ex)
-            {
-                _logger.ZLogWarning(
-                    ex,
-                    $"读取稍后再看缓存文件失败，将重新初始化: {currentFilePath}"
-                );
-            }
-        }
 
-        _cache = [];
+            _viewLaterIds.Clear();
+
+            string filePath = GetStorageFilePath(ViewLaterType.Drama);
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    string json = await File.ReadAllTextAsync(filePath);
+                    List<Drama>? items = JsonAotSerializer.Deserialize<List<Drama>>(json);
+                    _dramaCache = items ?? [];
+                    foreach (Drama item in _dramaCache)
+                    {
+                        if (!string.IsNullOrEmpty(item.Id))
+                        {
+                            _viewLaterIds.Add(item.Id);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ZLogWarning(ex, $"加载稍后再看文件失败: {filePath}");
+                    _dramaCache = [];
+                }
+            }
+            else
+            {
+                _dramaCache = [];
+            }
+
+            _cachedUserKey = userFolder;
+        }
     }
 
-    private async Task SaveToFileAsync()
+    private async Task SaveCacheLockedAsync(ViewLaterType type = ViewLaterType.Drama)
     {
-        string targetFilePath = _cachedFilePath ?? GetStorageFilePath();
         try
         {
-            string json = JsonAotSerializer.Serialize(_cache);
-            await File.WriteAllTextAsync(targetFilePath, json);
+            if (type == ViewLaterType.Drama)
+            {
+                string filePath = GetStorageFilePath(ViewLaterType.Drama);
+                string json = JsonAotSerializer.Serialize(_dramaCache ?? []);
+                await File.WriteAllTextAsync(filePath, json);
+            }
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"保存稍后再看文件失败: {targetFilePath}");
+            _logger.ZLogError(ex, $"持久化稍后再看数据失败: 类型={type}");
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task AddAsync(
+        Drama drama,
+        ViewLaterType type = ViewLaterType.Drama,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (drama is null || string.IsNullOrEmpty(drama.Id))
+        {
+            return;
+        }
+
+        if (type != ViewLaterType.Drama)
+        {
+            _logger.ZLogInformation($"图文或书籍稍后再看暂无业务数据模型，仅记录操作: 类型={type}");
+            return;
+        }
+
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            await EnsureLoadedLockedAsync(ViewLaterType.Drama);
+
+            int index = _dramaCache!.FindIndex(p => p.Id == drama.Id);
+            if (index >= 0)
+            {
+                _dramaCache.RemoveAt(index);
+            }
+
+            _dramaCache.Insert(0, drama);
+            _viewLaterIds.Add(drama.Id);
+
+            await SaveCacheLockedAsync(ViewLaterType.Drama);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+
+        ViewLaterChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveAsync(
+        string id,
+        ViewLaterType type = ViewLaterType.Drama,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (string.IsNullOrEmpty(id) || type != ViewLaterType.Drama)
+        {
+            return;
+        }
+
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            await EnsureLoadedLockedAsync(ViewLaterType.Drama);
+
+            int count = _dramaCache!.RemoveAll(p => p.Id == id);
+            if (count > 0)
+            {
+                _viewLaterIds.Remove(id);
+                await SaveCacheLockedAsync(ViewLaterType.Drama);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+
+        ViewLaterChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <inheritdoc/>
+    public async Task ClearAsync(
+        ViewLaterType type = ViewLaterType.Drama,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (type != ViewLaterType.Drama)
+        {
+            return;
+        }
+
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            await EnsureLoadedLockedAsync(ViewLaterType.Drama);
+            _dramaCache!.Clear();
+            _viewLaterIds.Clear();
+            await SaveCacheLockedAsync(ViewLaterType.Drama);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+
+        ViewLaterChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Drama>> GetAllAsync(
+        ViewLaterType type = ViewLaterType.Drama,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (type != ViewLaterType.Drama)
+        {
+            return [];
+        }
+
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            await EnsureLoadedLockedAsync(ViewLaterType.Drama);
+            return [.. _dramaCache!];
+        }
+        finally
+        {
+            _lock.Release();
         }
     }
 }

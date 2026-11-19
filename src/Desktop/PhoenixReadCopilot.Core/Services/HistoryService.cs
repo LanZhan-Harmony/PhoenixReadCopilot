@@ -1,13 +1,14 @@
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Helpers;
 using ZLogger;
 
 namespace PhoenixReadCopilot.Core.Services;
 
 /// <summary>
-/// 播放历史记录服务实现.
+/// 播放/阅读历史记录服务实现（支持短剧，并预留视频、图文、书籍等扩展，支持登录与未登录隔离分文件存储）.
 /// </summary>
 public sealed class HistoryService : IHistoryService
 {
@@ -16,8 +17,9 @@ public sealed class HistoryService : IHistoryService
     private readonly ILogger<HistoryService> _logger;
     private readonly string _folderPath;
     private readonly SemaphoreSlim _lock = new(1, 1);
-    private List<ReadHistoryItem>? _cache;
-    private string? _cachedFilePath;
+
+    private List<ReadHistoryItem>? _dramaCache;
+    private string? _cachedUserKey;
 
     /// <inheritdoc/>
     public event EventHandler? HistoryChanged;
@@ -36,6 +38,7 @@ public sealed class HistoryService : IHistoryService
         _authService = authService;
         _logger = logger;
         _folderPath = Path.Combine(pathService.DataFolderPath, "History");
+
         EnsureDirectory();
 
         _authService.StateChanged += OnAuthStateChanged;
@@ -61,8 +64,8 @@ public sealed class HistoryService : IHistoryService
         _lock.Wait();
         try
         {
-            _cache = null;
-            _cachedFilePath = null;
+            _dramaCache = null;
+            _cachedUserKey = null;
         }
         finally
         {
@@ -72,13 +75,82 @@ public sealed class HistoryService : IHistoryService
         HistoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private string GetStorageFilePath()
+    private string GetStorageFilePath(HistoryType type)
     {
-        string fileName =
+        string userFolder =
             _authService.IsAuthenticated && !string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id)
-                ? $"{_authService.CurrentUser.Id}.json"
-                : "anonymous.json";
-        return Path.Combine(_folderPath, fileName);
+                ? _authService.CurrentUser.Id
+                : "anonymous";
+        string targetDir = Path.Combine(_folderPath, userFolder);
+        if (!Directory.Exists(targetDir))
+        {
+            Directory.CreateDirectory(targetDir);
+        }
+
+        string fileName = type switch
+        {
+            HistoryType.Drama => "drama.json",
+            HistoryType.Video => "video.json",
+            HistoryType.Post => "post.json",
+            HistoryType.Novel => "novel.json",
+            _ => "drama.json",
+        };
+        return Path.Combine(targetDir, fileName);
+    }
+
+    private async Task EnsureLoadedLockedAsync(HistoryType type = HistoryType.Drama)
+    {
+        string userFolder =
+            _authService.IsAuthenticated && !string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id)
+                ? _authService.CurrentUser.Id
+                : "anonymous";
+
+        if (type == HistoryType.Drama)
+        {
+            if (_dramaCache != null && _cachedUserKey == userFolder)
+            {
+                return;
+            }
+
+            string filePath = GetStorageFilePath(HistoryType.Drama);
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    string json = await File.ReadAllTextAsync(filePath);
+                    List<ReadHistoryItem>? items = JsonAotSerializer.Deserialize<List<ReadHistoryItem>>(json);
+                    _dramaCache = items ?? [];
+                }
+                catch (Exception ex)
+                {
+                    _logger.ZLogWarning(ex, $"加载本地历史记录失败: {filePath}");
+                    _dramaCache = [];
+                }
+            }
+            else
+            {
+                _dramaCache = [];
+            }
+
+            _cachedUserKey = userFolder;
+        }
+    }
+
+    private async Task SaveCacheLockedAsync(HistoryType type = HistoryType.Drama)
+    {
+        try
+        {
+            if (type == HistoryType.Drama)
+            {
+                string filePath = GetStorageFilePath(HistoryType.Drama);
+                string json = JsonAotSerializer.Serialize(_dramaCache ?? []);
+                await File.WriteAllTextAsync(filePath, json);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(ex, $"持久化历史记录数据失败: 类型={type}");
+        }
     }
 
     /// <inheritdoc/>
@@ -90,6 +162,7 @@ public sealed class HistoryService : IHistoryService
         long durationMs,
         string? title = null,
         string? coverUrl = null,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     ) =>
         ReportProgressAsync(
@@ -103,6 +176,7 @@ public sealed class HistoryService : IHistoryService
             },
             title,
             coverUrl,
+            type,
             cancellationToken
         );
 
@@ -111,82 +185,87 @@ public sealed class HistoryService : IHistoryService
         ProgressUpdate update,
         string? title = null,
         string? coverUrl = null,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     )
     {
-        if (
-            update is null
-            || string.IsNullOrWhiteSpace(update.DramaId)
-            || string.IsNullOrWhiteSpace(update.VideoId)
-        )
+        if (type != HistoryType.Drama)
+        {
+            _logger.ZLogInformation($"图文或书籍暂无在线进度上报支持，仅记录操作: 类型={type}");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(update.DramaId))
         {
             return;
         }
 
-        // 1. 发送到在线接口（未登录时匿名上报；发生网络异常不阻断本地存储）
-        try
+        // 1. 若已登录，尝试在线上报
+        if (_authService.IsAuthenticated)
         {
-            await _apiClient.ReportProgressAsync(update, cancellationToken);
+            try
+            {
+                await _apiClient.ReportProgressAsync(update, cancellationToken);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                _logger.ZLogWarning(ex, $"在线上报播放进度失败，保存至本地缓存: {update.DramaId}");
+            }
         }
-        catch (Exception ex)
+        else
         {
-            _logger.ZLogWarning(
-                ex,
-                $"向服务端上报播放进度失败: DramaId={update.DramaId}, VideoId={update.VideoId}"
-            );
+            // 未登录模式：尝试在线请求（若支持），但不阻塞本地保存
+            try
+            {
+                await _apiClient.ReportProgressAsync(update, cancellationToken);
+            }
+            catch
+            {
+                // 匿名状态服务端可能拒绝，忽略并保存到本地
+            }
         }
 
         // 2. 本地持久化保存
         await _lock.WaitAsync(cancellationToken);
         try
         {
-            await EnsureLoadedAsync();
+            await EnsureLoadedLockedAsync(HistoryType.Drama);
 
-            ReadHistoryItem? existing = _cache!.FirstOrDefault(x => x.DramaId == update.DramaId);
-
-            string resolvedTitle = !string.IsNullOrWhiteSpace(title)
-                ? title
-                : (existing?.Title ?? string.Empty);
-
-            string resolvedCoverUrl = !string.IsNullOrWhiteSpace(coverUrl)
-                ? coverUrl
-                : (existing?.CoverUrl ?? string.Empty);
-
-            long timestamp =
-                update.UpdatedAtUnixMilliseconds > 0
-                    ? update.UpdatedAtUnixMilliseconds
-                    : DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
-            ReadHistoryItem newItem = new()
+            int index = _dramaCache!.FindIndex(p => p.DramaId == update.DramaId);
+            ReadHistoryItem item;
+            if (index >= 0)
             {
-                Id = existing?.Id ?? $"{update.DramaId}_{update.VideoId}",
-                DramaId = update.DramaId,
-                VideoId = update.VideoId,
-                EpisodeNumber =
-                    update.EpisodeNumber > 0
-                        ? update.EpisodeNumber
-                        : (existing?.EpisodeNumber ?? 1),
-                Title = resolvedTitle,
-                CoverUrl = resolvedCoverUrl,
-                CurrentPositionMs = Math.Max(0, update.CurrentPositionMs),
-                DurationMs = Math.Max(
-                    0,
-                    update.DurationMs > 0 ? update.DurationMs : (existing?.DurationMs ?? 0)
-                ),
-                UpdatedAtUnixMilliseconds = timestamp,
-            };
-
-            if (existing is not null)
+                ReadHistoryItem old = _dramaCache[index];
+                _dramaCache.RemoveAt(index);
+                item = new ReadHistoryItem
+                {
+                    DramaId = update.DramaId,
+                    VideoId = update.VideoId,
+                    Title = !string.IsNullOrEmpty(title) ? title : old.Title,
+                    CoverUrl = !string.IsNullOrEmpty(coverUrl) ? coverUrl : old.CoverUrl,
+                    EpisodeNumber = update.EpisodeNumber > 0 ? update.EpisodeNumber : old.EpisodeNumber,
+                    CurrentPositionMs = update.CurrentPositionMs,
+                    DurationMs = update.DurationMs > 0 ? update.DurationMs : old.DurationMs,
+                    UpdatedAtUnixMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                };
+            }
+            else
             {
-                _cache!.Remove(existing);
+                item = new ReadHistoryItem
+                {
+                    DramaId = update.DramaId,
+                    VideoId = update.VideoId,
+                    Title = title ?? string.Empty,
+                    CoverUrl = coverUrl ?? string.Empty,
+                    EpisodeNumber = update.EpisodeNumber,
+                    CurrentPositionMs = update.CurrentPositionMs,
+                    DurationMs = update.DurationMs,
+                    UpdatedAtUnixMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                };
             }
 
-            _cache!.Insert(0, newItem);
-            await SaveToFileAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"本地保存播放进度记录失败: DramaId={update.DramaId}");
+            _dramaCache.Insert(0, item);
+            await SaveCacheLockedAsync(HistoryType.Drama);
         }
         finally
         {
@@ -200,10 +279,22 @@ public sealed class HistoryService : IHistoryService
     public async Task<ReadHistoryPage> GetHistoryAsync(
         int count = 20,
         int offset = 0,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     )
     {
-        // 登录状态优先从服务端获取
+        if (type != HistoryType.Drama)
+        {
+            return new ReadHistoryPage
+            {
+                Items = [],
+                Total = 0,
+                NextOffset = 0,
+                HasMore = false,
+            };
+        }
+
+        // 1. 已登录模式优先在线拉取
         if (_authService.IsAuthenticated)
         {
             try
@@ -211,39 +302,75 @@ public sealed class HistoryService : IHistoryService
                 ReadHistoryPage onlinePage = await _apiClient.GetHistoryAsync(
                     count: count,
                     offset: offset,
-                    querySoftDeleted: false,
-                    lastMinReadTimestampMilliseconds: 0,
                     cancellationToken: cancellationToken
                 );
 
-                // 可选：将第一页同步一份到本地缓存
-                if (offset == 0 && onlinePage.Items.Count > 0)
+                await _lock.WaitAsync(cancellationToken);
+                try
                 {
-                    _ = SyncOnlineItemsToLocalCacheAsync(onlinePage.Items);
+                    await EnsureLoadedLockedAsync(HistoryType.Drama);
+                    if (onlinePage.Items is { Count: > 0 } items)
+                    {
+                        foreach (ReadHistoryItem onlineItem in items)
+                        {
+                            if (string.IsNullOrEmpty(onlineItem.DramaId))
+                            {
+                                continue;
+                            }
+
+                            int idx = _dramaCache!.FindIndex(p => p.DramaId == onlineItem.DramaId);
+                            if (idx >= 0)
+                            {
+                                ReadHistoryItem local = _dramaCache[idx];
+                                _dramaCache[idx] = new ReadHistoryItem
+                                {
+                                    DramaId = onlineItem.DramaId,
+                                    VideoId = !string.IsNullOrEmpty(onlineItem.VideoId) ? onlineItem.VideoId : local.VideoId,
+                                    Title = !string.IsNullOrEmpty(onlineItem.Title) ? onlineItem.Title : local.Title,
+                                    CoverUrl = !string.IsNullOrEmpty(onlineItem.CoverUrl) ? onlineItem.CoverUrl : local.CoverUrl,
+                                    EpisodeNumber = onlineItem.EpisodeNumber > 0 ? onlineItem.EpisodeNumber : local.EpisodeNumber,
+                                    CurrentPositionMs = onlineItem.CurrentPositionMs > 0 ? onlineItem.CurrentPositionMs : local.CurrentPositionMs,
+                                    DurationMs = onlineItem.DurationMs > 0 ? onlineItem.DurationMs : local.DurationMs,
+                                    UpdatedAtUnixMilliseconds = onlineItem.UpdatedAtUnixMilliseconds > 0 ? onlineItem.UpdatedAtUnixMilliseconds : local.UpdatedAtUnixMilliseconds,
+                                };
+                            }
+                            else
+                            {
+                                _dramaCache.Add(onlineItem);
+                            }
+                        }
+
+                        await SaveCacheLockedAsync(HistoryType.Drama);
+                    }
+                }
+                finally
+                {
+                    _lock.Release();
                 }
 
                 return onlinePage;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                _logger.ZLogWarning(ex, $"从服务端获取阅读历史失败，将降级读取本地缓存.");
+                _logger.ZLogWarning(ex, $"获取在线播放历史失败，降级使用本地历史记录.");
             }
         }
 
-        // 未登录或服务端请求失败时，直接读取本地持久化数据
+        // 2. 未登录模式或在线降级：使用本地历史
         await _lock.WaitAsync(cancellationToken);
         try
         {
-            await EnsureLoadedAsync();
-            int total = _cache!.Count;
-            List<ReadHistoryItem> pagedItems = [.. _cache!.Skip(offset).Take(count)];
+            await EnsureLoadedLockedAsync(HistoryType.Drama);
 
+            int safeCount = Math.Max(1, count);
+            int safeOffset = Math.Max(0, offset);
+            List<ReadHistoryItem> slice = _dramaCache!.Skip(safeOffset).Take(safeCount).ToList();
             return new ReadHistoryPage
             {
-                Items = pagedItems,
-                Total = total,
-                NextOffset = offset + pagedItems.Count,
-                HasMore = offset + pagedItems.Count < total,
+                Items = slice,
+                Total = _dramaCache.Count,
+                NextOffset = safeOffset + slice.Count,
+                HasMore = safeOffset + slice.Count < _dramaCache.Count,
             };
         }
         finally
@@ -256,10 +383,11 @@ public sealed class HistoryService : IHistoryService
     public async Task DeleteHistoryAsync(
         string dramaId,
         string videoId,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     )
     {
-        if (string.IsNullOrWhiteSpace(dramaId))
+        if (type != HistoryType.Drama || string.IsNullOrEmpty(dramaId))
         {
             return;
         }
@@ -270,26 +398,18 @@ public sealed class HistoryService : IHistoryService
             {
                 await _apiClient.DeleteHistoryAsync(dramaId, videoId, cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                _logger.ZLogWarning(
-                    ex,
-                    $"向服务端删除历史记录失败: DramaId={dramaId}, VideoId={videoId}"
-                );
+                _logger.ZLogWarning(ex, $"在线删除历史记录失败，仍同步从本地移除: {dramaId}");
             }
         }
 
         await _lock.WaitAsync(cancellationToken);
         try
         {
-            await EnsureLoadedAsync();
-            int removed = _cache!.RemoveAll(x =>
-                x.DramaId == dramaId && (string.IsNullOrWhiteSpace(videoId) || x.VideoId == videoId)
-            );
-            if (removed > 0)
-            {
-                await SaveToFileAsync();
-            }
+            await EnsureLoadedLockedAsync(HistoryType.Drama);
+            _dramaCache!.RemoveAll(p => p.DramaId == dramaId);
+            await SaveCacheLockedAsync(HistoryType.Drama);
         }
         finally
         {
@@ -300,14 +420,37 @@ public sealed class HistoryService : IHistoryService
     }
 
     /// <inheritdoc/>
-    public async Task ClearHistoryAsync(CancellationToken cancellationToken = default)
+    public async Task ClearHistoryAsync(
+        HistoryType type = HistoryType.Drama,
+        CancellationToken cancellationToken = default
+    )
     {
+        if (type != HistoryType.Drama)
+        {
+            return;
+        }
+
+        if (_authService.IsAuthenticated && _dramaCache is { Count: > 0 } items)
+        {
+            foreach (ReadHistoryItem item in items.ToList())
+            {
+                try
+                {
+                    await _apiClient.DeleteHistoryAsync(item.DramaId, item.VideoId, cancellationToken);
+                }
+                catch
+                {
+                    // 忽略单个删除异常
+                }
+            }
+        }
+
         await _lock.WaitAsync(cancellationToken);
         try
         {
-            await EnsureLoadedAsync();
-            _cache!.Clear();
-            await SaveToFileAsync();
+            await EnsureLoadedLockedAsync(HistoryType.Drama);
+            _dramaCache!.Clear();
+            await SaveCacheLockedAsync(HistoryType.Drama);
         }
         finally
         {
@@ -315,71 +458,5 @@ public sealed class HistoryService : IHistoryService
         }
 
         HistoryChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    private async Task SyncOnlineItemsToLocalCacheAsync(IReadOnlyList<ReadHistoryItem> items)
-    {
-        try
-        {
-            await _lock.WaitAsync();
-            try
-            {
-                _cache = [.. items];
-                _cachedFilePath = GetStorageFilePath();
-                await SaveToFileAsync();
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogWarning(ex, $"同步在线历史记录到本地失败.");
-        }
-    }
-
-    private async Task EnsureLoadedAsync()
-    {
-        string currentFilePath = GetStorageFilePath();
-        if (_cache is not null && _cachedFilePath == currentFilePath)
-        {
-            return;
-        }
-
-        _cachedFilePath = currentFilePath;
-
-        if (File.Exists(currentFilePath))
-        {
-            try
-            {
-                string json = await File.ReadAllTextAsync(currentFilePath);
-                _cache = JsonAotSerializer.Deserialize<List<ReadHistoryItem>>(json) ?? [];
-                return;
-            }
-            catch (Exception ex)
-            {
-                _logger.ZLogWarning(
-                    ex,
-                    $"读取历史记录缓存文件失败，将重新初始化: {currentFilePath}"
-                );
-            }
-        }
-
-        _cache = [];
-    }
-
-    private async Task SaveToFileAsync()
-    {
-        string targetFilePath = _cachedFilePath ?? GetStorageFilePath();
-        try
-        {
-            string json = JsonAotSerializer.Serialize(_cache);
-            await File.WriteAllTextAsync(targetFilePath, json);
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"保存历史记录文件失败: {targetFilePath}");
-        }
     }
 }

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
@@ -15,7 +16,8 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class CommentItemViewModel : ViewModelBase
 {
-    private readonly PhoenixReadApiClient? _apiClient;
+    private readonly ICommentService _commentService;
+    private readonly IAuthenticationService _authService;
 
     private static readonly ILogger<CommentItemViewModel> _logger = Ioc.Default.GetRequiredService<
         ILogger<CommentItemViewModel>
@@ -85,6 +87,11 @@ public sealed partial class CommentItemViewModel : ViewModelBase
     public bool IsDramaReview { get; init; }
 
     /// <summary>
+    /// 是否为二级回复.
+    /// </summary>
+    public bool IsReply { get; init; }
+
+    /// <summary>
     /// 是否为置顶评论.
     /// </summary>
     public bool IsTop { get; init; }
@@ -106,7 +113,8 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         Comment comment,
         string dramaId,
         string? videoId,
-        PhoenixReadApiClient apiClient,
+        ICommentService? commentService = null,
+        IAuthenticationService? authService = null,
         bool isDramaReview = false,
         Action<CommentItemViewModel>? markReplyTargetAction = null
     )
@@ -116,7 +124,9 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         DramaId = dramaId;
         VideoId = videoId;
         IsDramaReview = isDramaReview;
-        _apiClient = apiClient;
+        IsReply = false;
+        _commentService = commentService ?? ItemServices.Comment;
+        _authService = authService ?? Ioc.Default.GetRequiredService<IAuthenticationService>();
         _markReplyTargetAction = markReplyTargetAction;
 
         IsTop = false;
@@ -171,7 +181,8 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         CommentReply reply,
         string dramaId,
         string? videoId,
-        PhoenixReadApiClient apiClient,
+        ICommentService? commentService = null,
+        IAuthenticationService? authService = null,
         bool isDramaReview = false,
         Action<CommentItemViewModel>? markReplyTargetAction = null
     )
@@ -181,7 +192,9 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         DramaId = dramaId;
         VideoId = videoId;
         IsDramaReview = isDramaReview;
-        _apiClient = apiClient;
+        IsReply = true;
+        _commentService = commentService ?? ItemServices.Comment;
+        _authService = authService ?? Ioc.Default.GetRequiredService<IAuthenticationService>();
         _markReplyTargetAction = markReplyTargetAction;
 
         IsTop = false;
@@ -232,12 +245,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        if (_apiClient is null)
-        {
-            return;
-        }
-
-        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        if (!_authService.IsAuthenticated)
         {
             return;
         }
@@ -246,9 +254,18 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         try
         {
             PhoenixOperationResult res;
-            if (IsDramaReview && !string.IsNullOrEmpty(DramaId))
+            if (IsReply)
             {
-                res = await _apiClient.SetReviewLikeAsync(Id, DramaId, state);
+                string? targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : DramaId;
+                if (string.IsNullOrEmpty(targetId))
+                {
+                    return;
+                }
+                res = await _commentService.SetReplyLikeAsync(Id, targetId, state);
+            }
+            else if (IsDramaReview && !string.IsNullOrEmpty(DramaId))
+            {
+                res = await _commentService.SetDramaReviewLikeAsync(Id, DramaId, state);
             }
             else
             {
@@ -257,7 +274,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
                 {
                     return;
                 }
-                res = await _apiClient.SetCommentLikeAsync(Id, targetId, state);
+                res = await _commentService.SetCommentLikeAsync(Id, targetId, state);
             }
 
             if (res.Succeeded)

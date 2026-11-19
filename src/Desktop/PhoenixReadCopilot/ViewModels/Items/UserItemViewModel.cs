@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Core.Models.User;
@@ -62,7 +63,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         Description = string.IsNullOrEmpty(data.Profile.Introduce)
             ? Resources.NoSelfIntroduce
             : data.Profile.Introduce;
-        IsFollowed = false;
+        IsFollowed = ItemServices.Follow.IsFollowing(Id);
     }
 
     /// <summary>
@@ -84,7 +85,16 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         Description = string.IsNullOrEmpty(user.Introduction)
             ? Resources.NoSelfIntroduce
             : user.Introduction;
-        IsFollowed = false;
+        IsFollowed = ItemServices.Follow.IsFollowing(Id);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserItemViewModel"/> class from <see cref="UserRelationItem"/>.
+    /// </summary>
+    public UserItemViewModel(UserRelationItem item)
+        : this(item.User)
+    {
+        IsFollowed = item.IsFollowing || ItemServices.Follow.IsFollowing(Id);
     }
 
     private static UserCard CreateUserCard(PhoenixReadApi.User user)
@@ -92,10 +102,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
         UserAvatar? avatar =
             !string.IsNullOrEmpty(user.AvatarUrl)
             && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out Uri? uri)
-                ? new UserAvatar
-                {
-                    Uri = uri
-                }
+                ? new UserAvatar { Uri = uri }
                 : null;
 
         return new UserCard
@@ -122,7 +129,7 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     private void Pin()
     {
         string coverUri = Avatar?.ToString() ?? string.Empty;
-        PinItem pinItem = new(Id, Name, coverUri, PinContentType.User);
+        PinItem pinItem = new(Id, Name, coverUri, PinType.User);
         ItemServices.Pinner.AddItem(pinItem);
     }
 
@@ -131,9 +138,13 @@ public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     {
         try
         {
-            await ItemServices.PhoenixRead.SetFollowAsync(Id, !IsFollowed);
-            IsFollowed = !IsFollowed;
-            ItemServices.App.ShowTip(IsFollowed ? Resources.Followed : Resources.Unfollowed, InfoType.Success);
+            bool next = !IsFollowed;
+            await ItemServices.Follow.SetFollowAsync(Id, next, UserData);
+            IsFollowed = next;
+            ItemServices.App.ShowTip(
+                IsFollowed ? Resources.Followed : Resources.Unfollowed,
+                InfoType.Success
+            );
         }
         catch (Exception ex)
         {

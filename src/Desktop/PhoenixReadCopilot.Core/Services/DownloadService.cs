@@ -21,6 +21,7 @@ public sealed class DownloadService : IDownloadService
     private readonly INotificationService _notificationService;
     private readonly PhoenixReadApiClient _apiClient;
     private readonly IPlaybackMediaService _playbackMediaService;
+    private readonly IDanmakuService _danmakuService;
     private readonly HttpClient _httpClient;
 
     public DownloadService(
@@ -29,6 +30,7 @@ public sealed class DownloadService : IDownloadService
         INotificationService notificationService,
         PhoenixReadApiClient apiClient,
         IPlaybackMediaService playbackMediaService,
+        IDanmakuService danmakuService,
         IHttpClientFactory httpClientFactory
     )
     {
@@ -37,6 +39,7 @@ public sealed class DownloadService : IDownloadService
         _notificationService = notificationService;
         _apiClient = apiClient;
         _playbackMediaService = playbackMediaService;
+        _danmakuService = danmakuService;
         _httpClient = httpClientFactory.CreateClient("PhoenixReadClient");
     }
 
@@ -435,12 +438,12 @@ public sealed class DownloadService : IDownloadService
 
         try
         {
-            DanmakuPage danmakuPage = await _apiClient.GetDanmakuAsync(
+            DanmakuPage danmakuPage = await _danmakuService.GetDanmakuAsync(
                 dramaId,
                 videoId,
                 0,
                 3600000,
-                cancellationToken
+                cancellationToken: cancellationToken
             );
 
             if (danmakuPage.Items is null || danmakuPage.Items.Count == 0)

@@ -6,6 +6,7 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -21,7 +22,8 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly ICommentService _commentService;
+    private readonly IAuthenticationService _authService;
     private readonly AppViewModel _appViewModel;
     private readonly ILogger _logger;
     private readonly string _dramaId;
@@ -30,7 +32,8 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
     public DramaReviewItemViewModel(
         Comment comment,
         string dramaId,
-        PhoenixReadApiClient apiClient,
+        ICommentService commentService,
+        IAuthenticationService authService,
         AppViewModel appViewModel,
         ILogger logger,
         Action<DramaReviewItemViewModel>? showMoreAction = null
@@ -38,7 +41,8 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
         : base(comment)
     {
         _dramaId = dramaId;
-        _apiClient = apiClient;
+        _commentService = commentService;
+        _authService = authService;
         _appViewModel = appViewModel;
         _logger = logger;
         _showMoreAction = showMoreAction;
@@ -104,7 +108,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        if (!_authService.IsAuthenticated)
         {
             _appViewModel.ShowTip("请先登录后再点赞", InfoType.Warning);
             return;
@@ -113,7 +117,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
         try
         {
             bool next = !IsLiked;
-            PhoenixOperationResult res = await _apiClient.SetReviewLikeAsync(Id, _dramaId, next);
+            PhoenixOperationResult res = await _commentService.SetDramaReviewLikeAsync(Id, _dramaId, next);
             if (res.Succeeded)
             {
                 IsLiked = next;
@@ -141,7 +145,8 @@ public sealed partial class DramaReviewSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly ICommentService _commentService;
+    private readonly IAuthenticationService _authService;
     private readonly AppViewModel _appViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILogger<DramaReviewSectionDetailViewModel> _logger;
@@ -150,13 +155,15 @@ public sealed partial class DramaReviewSectionDetailViewModel
     private bool _hasMore = true;
 
     public DramaReviewSectionDetailViewModel(
-        PhoenixReadApiClient apiClient,
+        ICommentService commentService,
+        IAuthenticationService authService,
         AppViewModel appViewModel,
         DispatcherQueue dispatcherQueue,
         ILogger<DramaReviewSectionDetailViewModel> logger
     )
     {
-        _apiClient = apiClient;
+        _commentService = commentService;
+        _authService = authService;
         _appViewModel = appViewModel;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
@@ -239,7 +246,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
 
     public void UpdateLoginState()
     {
-        IsLoggedIn = _apiClient.GetAuthenticationState().IsAuthenticated;
+        IsLoggedIn = _authService.IsAuthenticated;
         OnPropertyChanged(nameof(CanSendReview));
         OnPropertyChanged(nameof(ReviewPlaceholderText));
     }
@@ -285,7 +292,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
             return;
         }
 
-        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        if (!_authService.IsAuthenticated)
         {
             _appViewModel.ShowTip("请先登录后再发表剧评", InfoType.Warning);
             return;
@@ -297,7 +304,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         try
         {
             double sendRating = Math.Clamp(Math.Round(Rating * 2.0) / 2.0, 0.5, 5.0);
-            PhoenixOperationResult result = await _apiClient.SendDramaReviewAsync(
+            PhoenixOperationResult result = await _commentService.SendDramaReviewAsync(
                 DramaId,
                 sendRating,
                 formatted
@@ -333,7 +340,8 @@ public sealed partial class DramaReviewSectionDetailViewModel
             item.Data,
             DramaId,
             videoId: null,
-            _apiClient,
+            _commentService,
+            _authService,
             isDramaReview: true
         );
 
@@ -342,7 +350,8 @@ public sealed partial class DramaReviewSectionDetailViewModel
             showMoreAction: _ => { },
             _dispatcherQueue,
             Ioc.Default.GetRequiredService<ILogger<CommentDetailViewModel>>(),
-            _apiClient,
+            _commentService,
+            _authService,
             _appViewModel,
             DramaId,
             videoId: null
@@ -361,7 +370,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         UpdateLoginState();
         try
         {
-            CommentPage page = await _apiClient.GetDramaReviewsAsync(
+            CommentPage page = await _commentService.GetDramaReviewsAsync(
                 DramaId,
                 count: 20,
                 cursor: _cursor,
@@ -379,7 +388,8 @@ public sealed partial class DramaReviewSectionDetailViewModel
                         new DramaReviewItemViewModel(
                             item,
                             DramaId,
-                            _apiClient,
+                            _commentService,
+                            _authService,
                             _appViewModel,
                             _logger,
                             ShowReviewDetail

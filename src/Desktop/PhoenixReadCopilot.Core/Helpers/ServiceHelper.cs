@@ -50,6 +50,14 @@ public static class ServiceHelper
         services.AddSingleton<IViewLaterService, ViewLaterService>();
         services.AddSingleton<IPinService, PinService>();
         services.AddSingleton<IReservationService, ReservationService>();
+        services.AddSingleton<IFavoriteService, FavoriteService>();
+        services.AddSingleton<ISearchService, SearchService>();
+        services.AddSingleton<IDanmakuService, DanmakuService>();
+        services.AddSingleton<IFollowService, FollowService>();
+        services.AddSingleton<ICommentService, CommentService>();
+        services.AddSingleton<IRankService, RankService>();
+        services.AddSingleton<ICalendarService, CalendarService>();
+        services.AddSingleton<IFilterService, FilterService>();
 
         services.AddSingleton<PhoenixReadApiClient>(sp =>
         {
