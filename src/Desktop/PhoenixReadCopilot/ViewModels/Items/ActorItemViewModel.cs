@@ -169,7 +169,7 @@ public sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboardI
     private void Pin()
     {
         string coverUri = Avatar?.ToString() ?? string.Empty;
-        PinItem pinItem = new(ActorId, Name, coverUri, PinContentType.User);
+        PinItem pinItem = new(ActorId, Name, coverUri, PinType.User);
         ItemServices.Pinner.AddItem(pinItem);
     }
 }

@@ -54,6 +54,18 @@ namespace PhoenixReadCopilot.Core.Helpers;
 [JsonSerializable(typeof(ReservationItem))]
 [JsonSerializable(typeof(List<ReservationItem>))]
 [JsonSerializable(typeof(ReservationPage))]
+[JsonSerializable(typeof(DanmakuItem))]
+[JsonSerializable(typeof(List<DanmakuItem>))]
+[JsonSerializable(typeof(DanmakuPage))]
+[JsonSerializable(typeof(PhoenixReadApi.User))]
+[JsonSerializable(typeof(List<PhoenixReadApi.User>))]
+[JsonSerializable(typeof(UserRelationItem))]
+[JsonSerializable(typeof(List<UserRelationItem>))]
+[JsonSerializable(typeof(UserRelationPage))]
+[JsonSerializable(typeof(FavoriteType))]
+[JsonSerializable(typeof(PinType))]
+[JsonSerializable(typeof(HistoryType))]
+[JsonSerializable(typeof(ViewLaterType))]
 public sealed partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class JsonAotSerializer

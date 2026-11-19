@@ -26,6 +26,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 public sealed partial class UserSpacePageViewModel : ViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
+    private readonly IFollowService _followService;
     private readonly ILogger<UserSpacePageViewModel> _logger;
     private readonly AppViewModel _appViewModel;
     private readonly PinnerViewModel _pinnerViewModel;
@@ -94,6 +95,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     /// </summary>
     public UserSpacePageViewModel(
         PhoenixReadApiClient apiClient,
+        IFollowService followService,
         CommentMainViewModel comment,
         ILogger<UserSpacePageViewModel> logger,
         AppViewModel appViewModel,
@@ -104,6 +106,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     )
     {
         _apiClient = apiClient;
+        _followService = followService;
         CommentModule = comment;
         _logger = logger;
         _appViewModel = appViewModel;
@@ -169,7 +172,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             {
                 _phoenixProfile = profile;
                 UserName = !string.IsNullOrEmpty(profile.User.Name) ? profile.User.Name : UserName;
-                IsFollowed = false;
+                IsFollowed = _followService.IsFollowing(_userId);
                 Card = CreateUserCard(profile, UserName, fallbackAvatarUrl);
             }
             else if (!string.IsNullOrEmpty(UserName))
@@ -177,10 +180,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
                 UserAvatar? avatar =
                     !string.IsNullOrEmpty(fallbackAvatarUrl)
                     && Uri.TryCreate(fallbackAvatarUrl, UriKind.Absolute, out Uri? uri)
-                        ? new UserAvatar
-                        {
-                            Uri = uri
-                        }
+                        ? new UserAvatar { Uri = uri }
                         : null;
 
                 Card = new UserCard
@@ -284,20 +284,18 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             return;
         }
 
-        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
-        {
-            _appViewModel.ShowTip("请先登录后再关注", InfoType.Warning);
-            return;
-        }
-
         try
         {
             bool next = !IsFollowed;
-            PhoenixOperationResult res = await _apiClient.SetFollowAsync(_userId, next);
+            PhoenixReadApi.User? user = _phoenixProfile?.User;
+            PhoenixOperationResult res = await _followService.SetFollowAsync(_userId, next, user);
             if (res.Succeeded)
             {
                 IsFollowed = next;
-                _appViewModel.ShowTip(next ? Resources.Followed : Resources.Unfollowed, InfoType.Success);
+                _appViewModel.ShowTip(
+                    next ? Resources.Followed : Resources.Unfollowed,
+                    InfoType.Success
+                );
             }
             else
             {
@@ -315,7 +313,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     private void Pin()
     {
         string avatarUri = Card?.Profile?.User?.Avatar?.Uri?.ToString() ?? string.Empty;
-        PinItem pinItem = new(_userId, UserName, avatarUri, PinContentType.User);
+        PinItem pinItem = new(_userId, UserName, avatarUri, PinType.User);
         _pinnerViewModel.AddItem(pinItem);
     }
 
@@ -431,10 +429,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         UserAvatar? avatar =
             !string.IsNullOrEmpty(avatarUrl)
             && Uri.TryCreate(avatarUrl, UriKind.Absolute, out Uri? uri)
-                ? new UserAvatar
-                {
-                    Uri = uri
-                }
+                ? new UserAvatar { Uri = uri }
                 : null;
 
         return new UserCard

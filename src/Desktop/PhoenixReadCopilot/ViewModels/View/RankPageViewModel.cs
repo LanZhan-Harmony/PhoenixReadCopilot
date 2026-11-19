@@ -19,7 +19,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class RankPageViewModel : LayoutPageViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IRankService _rankService;
     private readonly ILogger<RankPageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -91,7 +91,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="RankPageViewModel"/> class.
     /// </summary>
     public RankPageViewModel(
-        PhoenixReadApiClient apiClient,
+        IRankService rankService,
         ILogger<RankPageViewModel> logger,
         INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
@@ -99,7 +99,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _apiClient = apiClient;
+        _rankService = rankService;
         _logger = logger;
         _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
@@ -440,7 +440,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
 
         try
         {
-            ShortDramaLeaderboardPage page = await _apiClient.GetShortDramaLeaderboardAsync(
+            ShortDramaLeaderboardPage page = await _rankService.GetShortDramaLeaderboardAsync(
                 type: type,
                 channel: channel,
                 offset: _leaderboardOffset,
@@ -517,7 +517,7 @@ public sealed partial class RankPageViewModel : LayoutPageViewModelBase
 
         try
         {
-            ActorLeaderboardPage page = await _apiClient.GetActorLeaderboardAsync(
+            ActorLeaderboardPage page = await _rankService.GetActorLeaderboardAsync(
                 offset: _actorOffset,
                 cancellationToken: ct
             );

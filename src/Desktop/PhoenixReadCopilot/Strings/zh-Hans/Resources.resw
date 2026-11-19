@@ -935,4 +935,13 @@
   <data name="Upcoming" xml:space="preserve">
     <value>待播</value>
   </data>
+  <data name="AddFavoriteSucceed" xml:space="preserve">
+    <value>追剧成功</value>
+  </data>
+  <data name="CancelFavoriteSucceed" xml:space="preserve">
+    <value>已取消追剧</value>
+  </data>
+  <data name="FavoriteFailed" xml:space="preserve">
+    <value>追剧操作失败</value>
+  </data>
 </root>

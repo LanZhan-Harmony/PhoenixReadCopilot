@@ -19,6 +19,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 public sealed partial class FavoritePageViewModel : LayoutPageViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
+    private readonly IFavoriteService _favoriteService;
     private readonly ILogger<FavoritePageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ISettingsService _settingsService;
@@ -46,6 +47,7 @@ public sealed partial class FavoritePageViewModel : LayoutPageViewModelBase
     /// </summary>
     public FavoritePageViewModel(
         PhoenixReadApiClient apiClient,
+        IFavoriteService favoriteService,
         ILogger<FavoritePageViewModel> logger,
         DispatcherQueue dispatcherQueue,
         ISettingsService settingsService,
@@ -55,6 +57,7 @@ public sealed partial class FavoritePageViewModel : LayoutPageViewModelBase
         : base(settingsService)
     {
         _apiClient = apiClient;
+        _favoriteService = favoriteService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
         _settingsService = settingsService;
@@ -80,9 +83,10 @@ public sealed partial class FavoritePageViewModel : LayoutPageViewModelBase
             VideoFavoriteFolder defaultFolder = new("Favorite", "追剧收藏", null, null, null, 0);
             VideoFavoriteSectionDetailViewModel defaultSection = new(
                 defaultFolder,
-                _apiClient,
+                _favoriteService,
                 _navigationService,
                 _settingsService,
+                _dispatcherQueue,
                 _loggerFactory.CreateLogger<VideoFavoriteSectionDetailViewModel>()
             );
             Sections.Add(defaultSection);

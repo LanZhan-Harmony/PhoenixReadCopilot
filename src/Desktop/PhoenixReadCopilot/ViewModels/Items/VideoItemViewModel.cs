@@ -61,6 +61,12 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     public partial bool IsReserved { get; set; }
 
     /// <summary>
+    /// 是否已追剧/收藏.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsFavorited { get; set; }
+
+    /// <summary>
     /// 是否正在操作预约.
     /// </summary>
     [ObservableProperty]
@@ -351,6 +357,11 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         {
             PlayCount = vc;
         }
+
+        if (!string.IsNullOrEmpty(drama.Id))
+        {
+            IsFavorited = ItemServices.Favorite.IsFavorited(drama.Id);
+        }
     }
 
     /// <summary>
@@ -405,6 +416,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         if (!string.IsNullOrEmpty(item.Drama.Id))
         {
             IsReserved = ItemServices.Reservation.IsReserved(item.Drama.Id);
+            IsFavorited = ItemServices.Favorite.IsFavorited(item.Drama.Id);
         }
     }
 
@@ -703,25 +715,40 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
     }
 
     [RelayCommand]
+    private async Task ToggleFavoriteAsync()
+    {
+        string? dramaId = Drama?.Id ?? Data?.Identifier?.Id;
+        if (string.IsNullOrEmpty(dramaId))
+        {
+            return;
+        }
+
+        bool targetState = !IsFavorited;
+        bool success = await ItemServices.Favorite.SetFavoriteAsync(dramaId, targetState, Drama);
+        if (success)
+        {
+            IsFavorited = targetState;
+            string msg = targetState
+                ? Strings.Resources.AddFavoriteSucceed
+                : Strings.Resources.CancelFavoriteSucceed;
+            ItemServices.App.ShowTip(msg, InfoType.Success);
+        }
+        else
+        {
+            ItemServices.App.ShowTip(Strings.Resources.FavoriteFailed, InfoType.Warning);
+        }
+    }
+
+    [RelayCommand]
     private async Task RemoveFavoriteAsync()
     {
         try
         {
-            if (Drama is not null)
+            string? dramaId = Drama?.Id ?? Data?.Identifier?.Id;
+            if (!string.IsNullOrEmpty(dramaId))
             {
-                await ItemServices.PhoenixRead.SetFavoriteAsync(
-                    Drama.Id,
-                    string.Empty,
-                    active: false
-                );
-            }
-            else if (Data is not null && !string.IsNullOrEmpty(Data.Identifier?.Id))
-            {
-                await ItemServices.PhoenixRead.SetFavoriteAsync(
-                    Data.Identifier.Id,
-                    string.Empty,
-                    active: false
-                );
+                await ItemServices.Favorite.SetFavoriteAsync(dramaId, false, Drama);
+                IsFavorited = false;
             }
             _removeAction?.Invoke(this);
         }
@@ -744,12 +771,7 @@ public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
         string coverUri = Cover?.ToString()
             ?? Data.Identifier.Cover?.Uri?.ToString()
             ?? string.Empty;
-        PinItem pinItem = new(
-            Data.Identifier.Id,
-            Data.Identifier.Title,
-            coverUri,
-            PinContentType.Video
-        );
+        PinItem pinItem = new(Data.Identifier.Id, Data.Identifier.Title, coverUri, PinType.Drama);
         ItemServices.Pinner.AddItem(pinItem);
     }
 }

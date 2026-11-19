@@ -15,7 +15,7 @@ public sealed class PinItem
     /// <summary>
     /// Initializes a new instance of the <see cref="PinItem"/> class.
     /// </summary>
-    public PinItem(string id, string title, string cover, PinContentType type)
+    public PinItem(string id, string title, string cover, PinType type)
     {
         Cover = cover;
         Title = title;
@@ -41,7 +41,7 @@ public sealed class PinItem
     /// <summary>
     /// 类型.
     /// </summary>
-    public PinContentType Type { get; set; }
+    public PinType Type { get; set; }
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)

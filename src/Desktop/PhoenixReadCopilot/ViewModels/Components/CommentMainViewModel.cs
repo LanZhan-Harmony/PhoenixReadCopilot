@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -22,7 +23,8 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     private readonly ILogger<CommentMainViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILoggerFactory _loggerFactory;
-    private readonly PhoenixReadApiClient? _apiClient;
+    private readonly ICommentService _commentService;
+    private readonly IAuthenticationService _authService;
     private readonly AppViewModel? _appViewModel;
 
     private bool _preventLoadMore;
@@ -89,14 +91,16 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         ILogger<CommentMainViewModel> logger,
         DispatcherQueue dispatcherQueue,
         ILoggerFactory loggerFactory,
-        PhoenixReadApiClient? apiClient = null,
+        ICommentService commentService,
+        IAuthenticationService authService,
         AppViewModel? appViewModel = null
     )
     {
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
         _loggerFactory = loggerFactory;
-        _apiClient = apiClient;
+        _commentService = commentService;
+        _authService = authService;
         _appViewModel = appViewModel;
 
         Sorts = [CommentSortOrder.Hot, CommentSortOrder.Latest];
@@ -138,7 +142,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     /// </summary>
     public void UpdateLoginState()
     {
-        IsLoggedIn = _apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        IsLoggedIn = _authService.IsAuthenticated;
     }
 
     public async Task TryFirstLoadAsync()
@@ -176,7 +180,6 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             || IsLoading
             || _preventLoadMore
             || IsEmpty
-            || _apiClient is null
         )
         {
             return;
@@ -192,7 +195,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         try
         {
             IsLoading = true;
-            CommentPage page = await _apiClient.GetEpisodeCommentsAsync(
+            CommentPage page = await _commentService.GetEpisodeCommentsAsync(
                 _dramaId,
                 _videoId,
                 count: 20,
@@ -214,7 +217,8 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                     item,
                     _dramaId,
                     _videoId,
-                    _apiClient,
+                    _commentService,
+                    _authService,
                     isDramaReview: false,
                     markReplyTargetAction: SetReplyTarget
                 );
@@ -224,7 +228,8 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                         ShowMore,
                         _dispatcherQueue,
                         _loggerFactory.CreateLogger<CommentDetailViewModel>(),
-                        _apiClient,
+                        _commentService,
+                        _authService,
                         _appViewModel,
                         _dramaId,
                         _videoId
@@ -265,12 +270,12 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         content = EmojiHelper.FormatEmojiText(content.Trim());
 
-        if (_apiClient is null || string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId))
+        if (string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId))
         {
             return;
         }
 
-        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        if (!_authService.IsAuthenticated)
         {
             _appViewModel?.ShowTip("请先登录后再发表评论", InfoType.Warning);
             return;
@@ -282,11 +287,11 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
             PhoenixOperationResult result;
             if (_replyItem is null)
             {
-                result = await _apiClient.SendEpisodeCommentAsync(_dramaId, _videoId, content);
+                result = await _commentService.SendEpisodeCommentAsync(_dramaId, _videoId, content);
             }
             else
             {
-                result = await _apiClient.SendEpisodeCommentReplyAsync(
+                result = await _commentService.SendEpisodeCommentReplyAsync(
                     commentId: _replyItem.Id,
                     dramaId: _dramaId,
                     videoId: _videoId,

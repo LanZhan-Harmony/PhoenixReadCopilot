@@ -243,7 +243,7 @@ public sealed partial class MomentItemViewModel : ViewModelBase<MomentInformatio
                 vinfo.Identifier.Id,
                 vinfo.Identifier.Title,
                 vinfo.Identifier.Cover?.Uri?.ToString() ?? string.Empty,
-                PinContentType.Video
+                PinType.Drama
             );
         }
 

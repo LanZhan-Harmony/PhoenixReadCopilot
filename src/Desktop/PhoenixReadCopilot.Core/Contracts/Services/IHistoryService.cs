@@ -1,9 +1,10 @@
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Enums;
 
 namespace PhoenixReadCopilot.Core.Contracts.Services;
 
 /// <summary>
-/// 播放历史记录服务接口.
+/// 播放/阅读历史记录服务接口（支持短剧，并预留视频、图文、书籍等扩展，支持登录与未登录隔离分文件存储）.
 /// </summary>
 public interface IHistoryService
 {
@@ -19,6 +20,7 @@ public interface IHistoryService
         ProgressUpdate update,
         string? title = null,
         string? coverUrl = null,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     );
 
@@ -33,15 +35,17 @@ public interface IHistoryService
         long durationMs,
         string? title = null,
         string? coverUrl = null,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     );
 
     /// <summary>
-    /// 分页获取播放历史.
+    /// 分页获取播放/阅读历史.
     /// </summary>
     Task<ReadHistoryPage> GetHistoryAsync(
         int count = 20,
         int offset = 0,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     );
 
@@ -51,11 +55,15 @@ public interface IHistoryService
     Task DeleteHistoryAsync(
         string dramaId,
         string videoId,
+        HistoryType type = HistoryType.Drama,
         CancellationToken cancellationToken = default
     );
 
     /// <summary>
     /// 清空播放历史.
     /// </summary>
-    Task ClearHistoryAsync(CancellationToken cancellationToken = default);
+    Task ClearHistoryAsync(
+        HistoryType type = HistoryType.Drama,
+        CancellationToken cancellationToken = default
+    );
 }

@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
@@ -14,6 +16,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class FansPageViewModel : ViewModelBase
 {
+    private readonly IFollowService _followService;
     private readonly ILogger<FansPageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
 
@@ -39,8 +42,13 @@ public sealed partial class FansPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="FansPageViewModel"/> class.
     /// </summary>
-    public FansPageViewModel(ILogger<FansPageViewModel> logger, DispatcherQueue dispatcherQueue)
+    public FansPageViewModel(
+        IFollowService followService,
+        ILogger<FansPageViewModel> logger,
+        DispatcherQueue dispatcherQueue
+    )
     {
+        _followService = followService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
     }
@@ -78,9 +86,15 @@ public sealed partial class FansPageViewModel : ViewModelBase
         IsUserLoading = true;
         try
         {
-            // TODO: 红果粉丝列表 API 暂未开放
-            await Task.CompletedTask;
-            IsEmpty = true;
+            UserRelationPage page = await _followService.GetFollowersAsync();
+            Users.Clear();
+            foreach (UserRelationItem item in page.Items)
+            {
+                Users.Add(new UserItemViewModel(item));
+            }
+            TotalCount = Users.Count;
+            IsEmpty = Users.Count == 0;
+            UserListUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {

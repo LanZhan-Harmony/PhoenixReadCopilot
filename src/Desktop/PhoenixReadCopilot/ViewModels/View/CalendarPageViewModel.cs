@@ -17,12 +17,12 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly ICalendarService _calendarService;
     private readonly ILogger<CalendarPageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly IReservationService _reservationService;
-    private readonly Dictionary<DateOnly, List<VideoItemViewModel>> _dateCache = [];
+
     private CancellationTokenSource? _timelineCts;
     private CancellationTokenSource? _dateReleasesCts;
     private bool _isInitialized;
@@ -49,15 +49,20 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     public partial ObservableCollection<TimelineItemViewModel> Timelines { get; set; } = [];
 
     /// <summary>
-    /// 时间线加载完成.
+    /// 时间线初始化完成.
     /// </summary>
     public event EventHandler? TimelineInitialized;
+
+    /// <summary>
+    /// 时间线短剧条目已更新（加载首屏或加载更多完成）.
+    /// </summary>
+    public event EventHandler? TimelineItemsUpdated;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarPageViewModel"/> class.
     /// </summary>
     public CalendarPageViewModel(
-        PhoenixReadApiClient apiClient,
+        ICalendarService calendarService,
         ILogger<CalendarPageViewModel> logger,
         INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
@@ -66,7 +71,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _apiClient = apiClient;
+        _calendarService = calendarService;
         _logger = logger;
         _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
@@ -79,9 +84,9 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     {
         _dispatcherQueue.TryEnqueue(() =>
         {
-            foreach (List<VideoItemViewModel> list in _dateCache.Values)
+            foreach (TimelineItemViewModel timeline in Timelines)
             {
-                foreach (VideoItemViewModel item in list)
+                foreach (VideoItemViewModel item in timeline.Items)
                 {
                     if (item.Drama is not null && !string.IsNullOrEmpty(item.Drama.Id))
                     {
@@ -100,7 +105,6 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        _dateCache.Clear();
         Timelines.Clear();
         SelectedTimeline = null;
         _isInitialized = false;
@@ -119,19 +123,9 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
 
         SelectedTimeline = vm;
 
-        if (vm.Items is null)
+        if (!vm.IsLoaded)
         {
-            if (_dateCache.TryGetValue(vm.TargetDate, out List<VideoItemViewModel>? cached))
-            {
-                vm.Items = cached;
-                vm.Count = cached.Count;
-                vm.IsEmpty = cached.Count == 0;
-                UpdateVisibilityStates();
-            }
-            else
-            {
-                _ = LoadDateReleasesAsync(vm);
-            }
+            _ = LoadDateReleasesAsync(vm);
         }
         else
         {
@@ -174,7 +168,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
                 _logger.ZLogWarning(ex, $"预热预约列表失败.");
             }
 
-            DailyReleasePage page = await _apiClient.GetDailyReleasesAsync(
+            DailyReleasePage page = await _calendarService.GetDailyReleasesAsync(
                 targetDate: null,
                 offset: 0,
                 sessionId: null,
@@ -185,7 +179,6 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
             [
                 .. page.Items.Select(item => new VideoItemViewModel(item)),
             ];
-            _dateCache[page.Date] = initialItems;
 
             IReadOnlyList<DateOnly> dates = page.AvailableDates is { Count: > 0 }
                 ? page.AvailableDates
@@ -195,8 +188,15 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
             foreach (DateOnly date in dates)
             {
                 bool isToday = date == page.Date;
-                List<VideoItemViewModel>? items = isToday ? initialItems : null;
-                viewModels.Add(new TimelineItemViewModel(date, isToday, items));
+                TimelineItemViewModel vm = new(date, isToday, isToday ? initialItems : null);
+                if (isToday)
+                {
+                    vm.NextOffset = page.NextOffset;
+                    vm.HasMore = page.HasMore;
+                    vm.SessionId = page.SessionId;
+                    vm.IsLoaded = true;
+                }
+                viewModels.Add(vm);
             }
 
             _dispatcherQueue.TryEnqueue(() =>
@@ -217,6 +217,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
                 _isInitialized = true;
                 UpdateVisibilityStates();
                 TimelineInitialized?.Invoke(this, EventArgs.Empty);
+                TimelineItemsUpdated?.Invoke(this, EventArgs.Empty);
             });
         }
         catch (OperationCanceledException)
@@ -253,25 +254,29 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
             _dateReleasesCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
             CancellationToken ct = _dateReleasesCts.Token;
 
-            DailyReleasePage page = await _apiClient.GetDailyReleasesAsync(
+            DailyReleasePage page = await _calendarService.GetDailyReleasesAsync(
                 targetDate: vm.TargetDate,
                 offset: 0,
                 sessionId: null,
                 cancellationToken: ct
             );
 
-            List<VideoItemViewModel> items =
-            [
-                .. page.Items.Select(item => new VideoItemViewModel(item)),
-            ];
-            _dateCache[vm.TargetDate] = items;
-
             _dispatcherQueue.TryEnqueue(() =>
             {
-                vm.Items = items;
-                vm.Count = items.Count;
-                vm.IsEmpty = items.Count == 0;
+                vm.Items.Clear();
+                foreach (DailyReleaseItem item in page.Items)
+                {
+                    vm.Items.Add(new VideoItemViewModel(item));
+                }
+
+                vm.NextOffset = page.NextOffset;
+                vm.HasMore = page.HasMore;
+                vm.SessionId = page.SessionId;
+                vm.IsLoaded = true;
+                vm.Count = vm.Items.Count;
+                vm.IsEmpty = vm.Items.Count == 0;
                 UpdateVisibilityStates();
+                TimelineItemsUpdated?.Invoke(this, EventArgs.Empty);
             });
         }
         catch (OperationCanceledException) { }
@@ -286,6 +291,71 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
                 IsTimelineLoading = false;
                 UpdateVisibilityStates();
             });
+        }
+    }
+
+    /// <summary>
+    /// 为当前选中的日期时间线请求更多短剧（触底加载）.
+    /// </summary>
+    public async Task RequestMoreDateReleasesAsync()
+    {
+        TimelineItemViewModel? current = SelectedTimeline;
+        if (
+            current is null
+            || !current.IsLoaded
+            || !current.HasMore
+            || current.IsLoadingMore
+            || IsTimelineLoading
+        )
+        {
+            return;
+        }
+
+        current.IsLoadingMore = true;
+        try
+        {
+            DailyReleasePage page = await _calendarService.GetDailyReleasesAsync(
+                targetDate: current.TargetDate,
+                offset: current.NextOffset,
+                sessionId: current.SessionId
+            );
+
+            current.NextOffset = page.NextOffset;
+            current.HasMore = page.HasMore;
+            current.SessionId = page.SessionId;
+
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                int added = 0;
+                foreach (DailyReleaseItem item in page.Items)
+                {
+                    if (current.Items.Any(v => v.Drama?.Id == item.Drama.Id))
+                    {
+                        continue;
+                    }
+
+                    current.Items.Add(new VideoItemViewModel(item));
+                    added++;
+                }
+
+                current.Count = current.Items.Count;
+                current.IsEmpty = current.Items.Count == 0;
+                UpdateVisibilityStates();
+
+                if (added > 0)
+                {
+                    TimelineItemsUpdated?.Invoke(this, EventArgs.Empty);
+                }
+            });
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(ex, $"获取更多日期 ({current.TargetDate}) 上新短剧失败.");
+        }
+        finally
+        {
+            current.IsLoadingMore = false;
         }
     }
 

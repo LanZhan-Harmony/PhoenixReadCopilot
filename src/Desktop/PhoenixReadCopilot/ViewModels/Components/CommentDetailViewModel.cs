@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
@@ -21,7 +22,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private readonly ILogger<CommentDetailViewModel> _logger;
     private readonly Action<CommentDetailViewModel>? _showMoreAction;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly PhoenixReadApiClient? _apiClient;
+    private readonly ICommentService _commentService;
+    private readonly IAuthenticationService _authService;
     private readonly AppViewModel? _appViewModel;
     private readonly string? _dramaId;
     private readonly string? _videoId;
@@ -60,7 +62,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         Action<CommentDetailViewModel>? showMoreAction,
         DispatcherQueue dispatcherQueue,
         ILogger<CommentDetailViewModel> logger,
-        PhoenixReadApiClient? apiClient,
+        ICommentService commentService,
+        IAuthenticationService authService,
         AppViewModel? appViewModel,
         string? dramaId,
         string? videoId
@@ -70,7 +73,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         _showMoreAction = showMoreAction;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
-        _apiClient = apiClient;
+        _commentService = commentService;
+        _authService = authService;
         _appViewModel = appViewModel;
         _dramaId = dramaId;
         _videoId = videoId;
@@ -89,7 +93,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
 
     public async Task LoadItemsAsync()
     {
-        if (IsLoading || _preventLoadMore || IsEmpty || _apiClient is null)
+        if (IsLoading || _preventLoadMore || IsEmpty)
         {
             return;
         }
@@ -108,7 +112,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             // 剧评回复还是分集评论回复
             if (Data.IsDramaReview || string.IsNullOrEmpty(_videoId))
             {
-                replyPage = await _apiClient.GetDramaReviewRepliesAsync(
+                replyPage = await _commentService.GetDramaReviewRepliesAsync(
                     commentId: Data.Id,
                     dramaId: effectiveDramaId,
                     count: 20,
@@ -117,7 +121,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             }
             else
             {
-                replyPage = await _apiClient.GetEpisodeCommentRepliesAsync(
+                replyPage = await _commentService.GetEpisodeCommentRepliesAsync(
                     commentId: Data.Id,
                     dramaId: effectiveDramaId,
                     videoId: _videoId,
@@ -141,7 +145,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
                         item,
                         effectiveDramaId,
                         _videoId,
-                        _apiClient,
+                        _commentService,
+                        _authService,
                         isDramaReview: Data.IsDramaReview,
                         markReplyTargetAction: SetReplyTarget
                     )
@@ -198,12 +203,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
 
         content = EmojiHelper.FormatEmojiText(content.Trim());
 
-        if (_apiClient is null)
-        {
-            return;
-        }
-
-        if (!_apiClient.GetAuthenticationState().IsAuthenticated)
+        if (!_authService.IsAuthenticated)
         {
             _appViewModel?.ShowTip("请先登录后再发表回复", InfoType.Warning);
             return;
@@ -224,7 +224,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             if (Data.IsDramaReview || string.IsNullOrEmpty(_videoId))
             {
                 // 回复整剧剧评
-                res = await _apiClient.SendDramaReviewReplyAsync(
+                res = await _commentService.SendDramaReviewReplyAsync(
                     commentId: Data.Id,
                     dramaId: effectiveDramaId,
                     text: content,
@@ -234,7 +234,7 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
             else
             {
                 // 回复分集评论
-                res = await _apiClient.SendEpisodeCommentReplyAsync(
+                res = await _commentService.SendEpisodeCommentReplyAsync(
                     commentId: Data.Id,
                     dramaId: effectiveDramaId,
                     videoId: _videoId,

@@ -19,6 +19,8 @@ public sealed partial class AccountViewModel : ViewModelBase
     private readonly PhoenixReadApiClient _apiClient;
     private readonly IAuthenticationService _authService;
     private readonly IHistoryService _historyService;
+    private readonly IFavoriteService _favoriteService;
+    private readonly IFollowService _followService;
     private readonly INavigationService _navService;
     private readonly ILogger<AccountViewModel> _logger;
     private readonly AppViewModel _appViewModel;
@@ -48,6 +50,8 @@ public sealed partial class AccountViewModel : ViewModelBase
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,
         IHistoryService historyService,
+        IFavoriteService favoriteService,
+        IFollowService followService,
         INavigationService navService,
         AppViewModel appViewModel,
         ILogger<AccountViewModel> logger
@@ -56,6 +60,8 @@ public sealed partial class AccountViewModel : ViewModelBase
         _apiClient = apiClient;
         _authService = authService;
         _historyService = historyService;
+        _favoriteService = favoriteService;
+        _followService = followService;
         _navService = navService;
         _appViewModel = appViewModel;
         _logger = logger;
@@ -139,10 +145,17 @@ public sealed partial class AccountViewModel : ViewModelBase
 
         try
         {
-            DramaPage favs = await _apiClient.GetFavoritesAsync(count: 1);
+            DramaPage favs = await _favoriteService.GetFavoritesAsync(count: 1);
             ReadHistoryPage history = await _historyService.GetHistoryAsync(count: 1);
-            FollowCount = (int)favs.Total;
+            UserRelationPage followings = await _followService.GetFollowingsAsync(count: 1);
+            FollowCount = followings.Items.Count;
             MomentCount = (int)history.Total;
+
+            if (_authService.IsAuthenticated)
+            {
+                UserRelationPage followers = await _followService.GetFollowersAsync(count: 1);
+                FansCount = followers.Items.Count;
+            }
         }
         catch (Exception ex)
         {
@@ -158,7 +171,10 @@ public sealed partial class AccountViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowFollows() => ShowFavorite();
+    private void ShowFollows() => _navService.NavigateToOver(typeof(FollowsPage));
+
+    [RelayCommand]
+    private void ShowFans() => _navService.NavigateToOver(typeof(FansPage));
 
     [RelayCommand]
     private void ShowMoments()

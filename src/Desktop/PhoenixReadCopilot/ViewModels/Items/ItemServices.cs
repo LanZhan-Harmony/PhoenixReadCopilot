@@ -34,6 +34,24 @@ internal static class ItemServices
     public static IReservationService Reservation =>
         Ioc.Default.GetRequiredService<IReservationService>();
 
+    public static IFavoriteService Favorite =>
+        Ioc.Default.GetRequiredService<IFavoriteService>();
+
+    public static ISearchService Search => Ioc.Default.GetRequiredService<ISearchService>();
+
+    public static IDanmakuService DanmakuService =>
+        Ioc.Default.GetRequiredService<IDanmakuService>();
+
+    public static IFollowService Follow => Ioc.Default.GetRequiredService<IFollowService>();
+
+    public static ICommentService Comment => Ioc.Default.GetRequiredService<ICommentService>();
+
+    public static IRankService Rank => Ioc.Default.GetRequiredService<IRankService>();
+
+    public static ICalendarService Calendar => Ioc.Default.GetRequiredService<ICalendarService>();
+
+    public static IFilterService Filter => Ioc.Default.GetRequiredService<IFilterService>();
+
     public static AccountViewModel Account = Ioc.Default.GetRequiredService<AccountViewModel>();
 
     public static DispatcherQueue DispatcherQueue =

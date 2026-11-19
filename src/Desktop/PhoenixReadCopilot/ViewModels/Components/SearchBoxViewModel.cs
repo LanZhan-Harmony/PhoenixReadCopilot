@@ -19,11 +19,10 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class SearchBoxViewModel : ViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly ISearchService _searchService;
     private readonly ILogger<SearchBoxViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;
-    private readonly List<string> _recommendItems = [];
     private CancellationTokenSource? _cancellationTokenSource;
     private string _extraRegionId = string.Empty;
     private string _extraRegionName = string.Empty;
@@ -48,13 +47,13 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="SearchBoxViewModel"/> class.
     /// </summary>
     public SearchBoxViewModel(
-        PhoenixReadApiClient apiClient,
+        ISearchService searchService,
         INavigationService navigationService,
         ISettingsService settingsService,
         ILogger<SearchBoxViewModel> logger
     )
     {
-        _apiClient = apiClient;
+        _searchService = searchService;
         _navigationService = navigationService;
         _settings = settingsService.Settings;
         _logger = logger;
@@ -93,43 +92,27 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
 
         if (string.IsNullOrEmpty(Keyword.Trim()))
         {
+            Suggestion.Clear();
             if (string.IsNullOrEmpty(_extraRegionId))
             {
-                bool isRecommendEnabled = _settings.ShowSearchRecommend;
-                if (!isRecommendEnabled)
-                {
-                    _recommendItems.Clear();
-                    Suggestion.Clear();
-                    return;
-                }
-
-                if (_recommendItems.Count == 0)
+                if (_settings.ShowSearchRecommend)
                 {
                     try
                     {
-                        IReadOnlyList<string> cues = await _apiClient.GetSearchCuesAsync();
-                        _recommendItems.AddRange(cues);
+                        IReadOnlyList<string> history = await _searchService.GetSearchHistoryAsync();
+                        foreach (string item in history.Take(8))
+                        {
+                            Suggestion.Add(new(item));
+                        }
                     }
                     catch (Exception ex)
                     {
-                        _logger.ZLogWarning(ex, $"尝试获取搜索占位推荐词时失败.");
+                        _logger.ZLogWarning(ex, $"尝试获取搜索历史时失败.");
                     }
-                }
-
-                if (Suggestion.Count == _recommendItems.Count && Suggestion.Count > 0)
-                {
-                    return;
-                }
-
-                Suggestion.Clear();
-                foreach (string item in _recommendItems)
-                {
-                    Suggestion.Add(new(item));
                 }
             }
             else
             {
-                Suggestion.Clear();
                 Suggestion.Add(new(_extraRegionId, _extraRegionName));
             }
         }
@@ -141,7 +124,7 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 {
                     Suggestion.Clear();
                     _cancellationTokenSource = new CancellationTokenSource();
-                    IReadOnlyList<SearchSuggestion> suggests = await _apiClient.GetSuggestionsAsync(
+                    IReadOnlyList<SearchSuggestion> suggests = await _searchService.GetSuggestionsAsync(
                         Keyword.Trim(),
                         maxResults: 8,
                         _cancellationTokenSource.Token
@@ -185,45 +168,20 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         IsHotSearchLoading = true;
         try
         {
-            HotSearch hotSearch = await _apiClient.GetHotSearchAsync();
-            int index = 1;
-
-            // 优先加载短剧热搜榜，若无则使用第一张榜单或猜你想搜
-            HotSearchBoard? board = hotSearch.Boards.FirstOrDefault(b => b.Title.Contains("短剧"))
-                ?? hotSearch.Boards.FirstOrDefault();
-
-            IEnumerable<PhoenixReadApi.HotSearchItem> items = board?.Items ?? hotSearch.Guesses;
-            foreach (PhoenixReadApi.HotSearchItem item in items)
+            IReadOnlyList<HotSearchItem> items = await _searchService.GetHotSearchesAsync();
+            foreach (HotSearchItem item in items)
             {
-                SearchItemIcon? icon = null;
-                if (
-                    !string.IsNullOrEmpty(item.CoverUrl)
-                    && Uri.TryCreate(item.CoverUrl, UriKind.Absolute, out Uri? coverUri)
-                )
-                {
-                    icon = new SearchItemIcon { Uri = coverUri };
-                }
-
-                string heat = !string.IsNullOrEmpty(item.CardTips) ? item.CardTips : item.Heat;
-                HotSearchItems.Add(
-                    new HotSearchItem
-                    {
-                        Index = index++,
-                        Text = item.Title,
-                        Keyword = item.Title,
-                        Tag = item.Tag,
-                        Heat = heat,
-                        Icon = icon,
-                    }
-                );
+                HotSearchItems.Add(item);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"尝试加载热搜榜单时出错.");
         }
-
-        IsHotSearchLoading = false;
+        finally
+        {
+            IsHotSearchLoading = false;
+        }
     }
 
     public void TryCancelSuggest()
@@ -256,6 +214,8 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         {
             return;
         }
+
+        _ = _searchService.AddSearchHistoryAsync(keyword);
 
         if (string.IsNullOrEmpty(vm.RegionId) || vm.RegionId == "global")
         {
