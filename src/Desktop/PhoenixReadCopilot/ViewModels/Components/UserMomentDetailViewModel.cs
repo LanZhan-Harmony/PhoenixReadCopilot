@@ -110,17 +110,17 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
     /// 设置初始动态列表.
     /// </summary>
     public void SetInitialData(
-        IReadOnlyList<UserActivity>? activities,
+        IReadOnlyList<CircleItem>? items,
         string? cursor,
         bool hasMore
     )
     {
         Clear();
-        if (activities is { Count: > 0 })
+        if (items is { Count: > 0 })
         {
-            foreach (UserActivity activity in activities)
+            foreach (CircleItem item in items)
             {
-                MomentInformation momentInfo = CreateActivityMoment(activity);
+                MomentInformation momentInfo = CreateCircleMoment(item);
                 Items.Add(
                     new MomentItemViewModel(
                         momentInfo,
@@ -151,14 +151,23 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
             _userId = profile.User.Id;
             if (_isVideo)
             {
-                SetInitialData(profile.Works, profile.WorksPage.Cursor, profile.WorksPage.HasMore);
+                List<Drama> dramas = [];
+                foreach (UserWork work in profile.Works)
+                {
+                    if (work is Drama drama)
+                    {
+                        dramas.Add(drama);
+                    }
+                }
+
+                SetInitialData(dramas, profile.WorksPage.Cursor, profile.WorksPage.HasMore);
             }
             else
             {
                 SetInitialData(
-                    profile.Activities,
-                    profile.ActivitiesPage.Cursor,
-                    profile.ActivitiesPage.HasMore
+                    profile.CircleItems,
+                    profile.CirclePage.Cursor,
+                    profile.CirclePage.HasMore
                 );
             }
         }
@@ -219,30 +228,33 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
                     {
                         SubTab = UserWorkSubTab.Drama,
                         Count = 18,
-                        Cursor = _offset.ToString(),
+                        Cursor = _offset?.ToString() ?? string.Empty,
                     }
                 );
                 _offset = page.Cursor;
                 _preventLoadMore = !page.HasMore || string.IsNullOrEmpty(_offset);
                 if (page.Items.Count > 0)
                 {
-                    foreach (Drama drama in page.Items)
+                    foreach (UserWork work in page.Items)
                     {
-                        MomentInformation momentInfo = CreateDramaMoment(drama);
-                        Items.Add(
-                            new MomentItemViewModel(
-                                momentInfo,
-                                MomentCardStyle.Video,
-                                _showCommentAction!
-                            )
-                        );
+                        if (work is Drama drama)
+                        {
+                            MomentInformation momentInfo = CreateDramaMoment(drama);
+                            Items.Add(
+                                new MomentItemViewModel(
+                                    momentInfo,
+                                    MomentCardStyle.Video,
+                                    _showCommentAction!
+                                )
+                            );
+                        }
                     }
                     ListUpdated?.Invoke(this, EventArgs.Empty);
                 }
             }
             else
             {
-                UserActivityPage page = await _apiClient.GetUserActivitiesAsync(
+                CirclePage page = await _apiClient.GetUserCircleAsync(
                     _userId,
                     count: 18,
                     cursor: _offset ?? string.Empty
@@ -251,9 +263,9 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
                 _preventLoadMore = !page.HasMore || string.IsNullOrEmpty(_offset);
                 if (page.Items.Count > 0)
                 {
-                    foreach (UserActivity activity in page.Items)
+                    foreach (CircleItem item in page.Items)
                     {
-                        MomentInformation momentInfo = CreateActivityMoment(activity);
+                        MomentInformation momentInfo = CreateCircleMoment(item);
                         Items.Add(
                             new MomentItemViewModel(
                                 momentInfo,
@@ -302,14 +314,20 @@ public sealed partial class UserMomentDetailViewModel : ViewModelBase
         );
     }
 
-    private static MomentInformation CreateActivityMoment(UserActivity activity)
+    private static MomentInformation CreateCircleMoment(CircleItem item)
     {
         return new MomentInformation(
-            id: activity.Id,
-            user: null,
+            id: item.Id,
+            user: item.Author is not null
+                ? new PhoenixReadCopilot.Core.Models.User.User
+                {
+                    Id = item.Author.Id,
+                    Name = item.Author.Name,
+                }
+                : null,
             communityInformation: null,
             tip: null,
-            description: new EmoteText(activity.Text, null),
+            description: new EmoteText(string.IsNullOrEmpty(item.Text) ? item.Title : item.Text, null),
             data: null
         );
     }

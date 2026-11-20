@@ -6,7 +6,6 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -136,8 +135,7 @@ public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void ShowMyFavoriteCalendar()
     {
-        _settings.LastSelectedFavoriteSection = "drama";
-        _navigationService.NavigateToOver(typeof(FavoritePage));
+        _navigationService.NavigateToOver(typeof(UserSpacePage), "Reservation");
     }
 
     private async Task RequestDailyReleasesAsync()

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:UserControlBase x:Class="PhoenixReadCopilot.Controls.User.UserProfileCard"
+                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:ic="using:FluentIcons.WinUI"
+                       xmlns:local="using:PhoenixReadCopilot.Controls.User"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:strings="using:PhoenixReadCopilot.Strings"
+                       mc:Ignorable="d">
+
+    <Border Margin="12,12,12,6"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="{StaticResource ControlCornerRadius}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!--  顶部背景封面 (若有)  -->
+            <Border CornerRadius="8,8,0,0" Visibility="{x:Bind ViewModel.BackgroundCoverUrl, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+                <Image Source="{x:Bind ViewModel.BackgroundCoverUrl, Mode=OneWay, Converter={StaticResource BitmapConverter}}" Stretch="UniformToFill"/>
+            </Border>
+
+            <!--  头像与核心信息  -->
+            <Grid Grid.Row="1"
+                  Padding="16,12,16,6"
+                  ColumnSpacing="14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <PersonPicture Width="52"
+                               Height="52"
+                               VerticalAlignment="Top"
+                               DisplayName="{x:Bind ViewModel.UserName, Mode=OneWay}"
+                               ProfilePicture="{x:Bind ViewModel.AvatarUrl, Mode=OneWay, Converter={StaticResource BitmapConverter}}"/>
+
+                <StackPanel Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Spacing="4">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock FontWeight="SemiBold"
+                                   Style="{StaticResource SubtitleTextBlockStyle}"
+                                   Text="{x:Bind ViewModel.UserName, Mode=OneWay}"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <ic:SymbolIcon FontSize="16"
+                                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                       Symbol="CheckmarkCircle"
+                                       Visibility="{x:Bind ViewModel.IsVerified, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+
+                    <!--  红果号 / UID / 状态说明  -->
+                    <TextBlock FontSize="11"
+                               Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                               IsTextSelectionEnabled="True"
+                               Text="{x:Bind ViewModel.HongguoId, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Grid>
+
+            <!--  徽章与身份头衔行  -->
+            <ItemsControl Grid.Row="2"
+                          Margin="16,0,16,6"
+                          ItemsSource="{x:Bind ViewModel.Badges, Mode=OneWay}"
+                          Visibility="{x:Bind ViewModel.Badges.Count, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="6"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Border Padding="6,2"
+                                Background="{ThemeResource LayerFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4">
+                            <TextBlock FontSize="10"
+                                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                       Text="{x:Bind}"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!--  个人简介  -->
+            <TextBlock Grid.Row="3"
+                       Margin="16,0,16,10"
+                       FontSize="12"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       Text="{x:Bind ViewModel.Introduce, Mode=OneWay}"
+                       TextWrapping="Wrap"
+                       Visibility="{x:Bind ViewModel.Introduce, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+
+            <!--  分割线  -->
+            <Border Grid.Row="4"
+                    Height="1"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+
+            <!--  统计数据横排: 关注 | 粉丝 | 获赞  -->
+            <Grid Grid.Row="5"
+                  Padding="8,8,8,8"
+                  ColumnSpacing="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!--  关注  -->
+                <Button Padding="6,6"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{x:Bind ViewModel.OpenFollowsCommand}"
+                        IsEnabled="{x:Bind ViewModel.CanOpenFollows, Mode=OneWay}"
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.MyFollow}">
+                    <StackPanel HorizontalAlignment="Center" Spacing="2">
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Text="{x:Bind ViewModel.FollowCountText, Mode=OneWay}"/>
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Text="{x:Bind strings:Resources.Follow}"/>
+                    </StackPanel>
+                </Button>
+
+                <!--  粉丝  -->
+                <Button Grid.Column="1"
+                        Padding="6,6"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{x:Bind ViewModel.OpenFansCommand}"
+                        IsEnabled="{x:Bind ViewModel.CanOpenFans, Mode=OneWay}"
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.MyFans}">
+                    <StackPanel HorizontalAlignment="Center" Spacing="2">
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Text="{x:Bind ViewModel.FansCountText, Mode=OneWay}"/>
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Text="{x:Bind strings:Resources.Fans}"/>
+                    </StackPanel>
+                </Button>
+
+                <!--  获赞  -->
+                <Border Grid.Column="2"
+                        Padding="4,6"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                    <StackPanel HorizontalAlignment="Center" Spacing="2">
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Text="{x:Bind ViewModel.LikeCountText, Mode=OneWay}"/>
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Text="{x:Bind strings:Resources.Likes}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!--  他人主页操作行: 关注与Pin  -->
+            <Grid Grid.Row="6"
+                  Margin="12,0,12,12"
+                  ColumnSpacing="8"
+                  Visibility="{x:Bind ViewModel.IsMe, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ToggleButton Height="32"
+                              HorizontalAlignment="Stretch"
+                              Command="{x:Bind ViewModel.ToggleFollowCommand}"
+                              CornerRadius="16"
+                              IsChecked="{x:Bind ViewModel.IsFollowed, Mode=OneWay}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ic:SymbolIcon FontSize="13"
+                                       IconVariant="{x:Bind ViewModel.IsFollowed, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
+                                       Symbol="Heart"/>
+                        <TextBlock FontSize="12" Text="{x:Bind ViewModel.IsFollowed, Mode=OneWay, Converter={StaticResource BoolToFollowTextConverter}}"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <Button Grid.Column="1"
+                        Width="32"
+                        Height="32"
+                        Padding="0"
+                        Command="{x:Bind ViewModel.PinCommand}"
+                        CornerRadius="16"
+                        ToolTipService.ToolTip="{x:Bind strings:Resources.Fixed}">
+                    <ic:SymbolIcon FontSize="14" Symbol="Pin"/>
+                </Button>
+            </Grid>
+
+            <!--  未登录用户操作行: 登录引导  -->
+            <Button Grid.Row="6"
+                    Height="34"
+                    Margin="12,0,12,12"
+                    HorizontalAlignment="Stretch"
+                    Command="{x:Bind ViewModel.LoginCommand}"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Visibility="{x:Bind ViewModel.IsAnonymous, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <StackPanel HorizontalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="6">
+                    <ic:SymbolIcon FontSize="14" Symbol="PersonKey"/>
+                    <TextBlock Text="{x:Bind strings:Resources.SignIn}"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Border>
+</local:UserControlBase>

@@ -30,7 +30,7 @@ public interface IAuthenticationService
     /// <summary>
     /// 获取支持的国家/地区区号列表.
     /// </summary>
-    Task<IReadOnlyList<LoginRegion>> GetLoginRegionsAsync(CancellationToken cancellationToken = default);
+    IReadOnlyList<LoginRegion> GetLoginRegions();
 
     /// <summary>
     /// 发送手机短信验证码.

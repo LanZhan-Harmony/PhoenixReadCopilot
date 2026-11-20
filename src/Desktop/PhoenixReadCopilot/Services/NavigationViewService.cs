@@ -198,6 +198,7 @@ public sealed class NavigationViewService : INavigationViewService
     {
         List<AppNavigationItemViewModel> list =
         [
+            GetItem<UserSpacePage>(Resources.PersonalSpace, FluentIcons.Common.Symbol.Person),
             GetItem<SettingsPage>(Resources.Settings, FluentIcons.Common.Symbol.Settings),
         ];
         return list;

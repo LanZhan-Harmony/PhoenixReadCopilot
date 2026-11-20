@@ -69,13 +69,14 @@ public sealed partial class AppViewModel : ViewModelBase
         if (Windows.FirstOrDefault(p => p is MainWindow) is { } mainWindow)
         {
             mainWindow.Activate();
-            _ = ItemServices.Account.InitializeAsync();
         }
         else
         {
             IsInitialLoading = true;
             new MainWindow().Activate();
         }
+
+        _ = ItemServices.Account.InitializeAsync();
 
         if (startupWindow is not null)
         {

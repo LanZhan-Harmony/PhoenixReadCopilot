@@ -5,7 +5,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.ViewModels;
@@ -66,10 +66,6 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
         {
             SetExtraRegion("space", Resources.UserSpace);
         }
-        else if (sourcePageType == typeof(HistoryPage))
-        {
-            SetExtraRegion("history", Resources.ViewHistory);
-        }
         else
         {
             SetExtraRegion(string.Empty, string.Empty);
@@ -99,7 +95,8 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 {
                     try
                     {
-                        IReadOnlyList<string> history = await _searchService.GetSearchHistoryAsync();
+                        IReadOnlyList<string> history =
+                            await _searchService.GetSearchHistoryAsync();
                         foreach (string item in history.Take(8))
                         {
                             Suggestion.Add(new(item));
@@ -124,11 +121,12 @@ public sealed partial class SearchBoxViewModel : ViewModelBase
                 {
                     Suggestion.Clear();
                     _cancellationTokenSource = new CancellationTokenSource();
-                    IReadOnlyList<SearchSuggestion> suggests = await _searchService.GetSuggestionsAsync(
-                        Keyword.Trim(),
-                        maxResults: 8,
-                        _cancellationTokenSource.Token
-                    );
+                    IReadOnlyList<SearchSuggestion> suggests =
+                        await _searchService.GetSuggestionsAsync(
+                            Keyword.Trim(),
+                            maxResults: 8,
+                            _cancellationTokenSource.Token
+                        );
 
                     if (suggests is not null)
                     {

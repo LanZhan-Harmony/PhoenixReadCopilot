@@ -9,6 +9,7 @@ using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using WinUIKernel.Share.Base;

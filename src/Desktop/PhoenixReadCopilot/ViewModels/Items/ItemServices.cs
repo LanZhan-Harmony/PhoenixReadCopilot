@@ -52,6 +52,10 @@ internal static class ItemServices
 
     public static IFilterService Filter => Ioc.Default.GetRequiredService<IFilterService>();
 
+    public static IDramaService Drama => Ioc.Default.GetRequiredService<IDramaService>();
+
+    public static IRecommendService Recommend => Ioc.Default.GetRequiredService<IRecommendService>();
+
     public static AccountViewModel Account = Ioc.Default.GetRequiredService<AccountViewModel>();
 
     public static DispatcherQueue DispatcherQueue =

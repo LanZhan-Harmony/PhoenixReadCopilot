@@ -8,7 +8,6 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Filter;
 using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -90,7 +89,7 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     private void ShowMyFavoriteFilter()
     {
         _settings.LastSelectedFavoriteSection = "drama";
-        _navigationService.NavigateToOver(typeof(FavoritePage));
+        _navigationService.NavigateTo(typeof(UserSpacePage), "Favorite");
     }
 
     private async Task RequestFilterPanelAsync()
@@ -108,8 +107,10 @@ public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
             _filterCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
             CancellationToken ct = _filterCts.Token;
 
-            IReadOnlyList<ShortDramaFilterGroup> rows =
-                await _filterService.GetFilterPanelAsync(ShortDramaGenre.ShortPlay, ct);
+            IReadOnlyList<ShortDramaFilterGroup> rows = await _filterService.GetFilterPanelAsync(
+                ShortDramaGenre.ShortPlay,
+                ct
+            );
             List<IndexFilterViewModel> filterList = [];
             foreach (ShortDramaFilterGroup group in rows)
             {

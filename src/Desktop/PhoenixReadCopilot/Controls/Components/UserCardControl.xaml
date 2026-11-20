@@ -13,67 +13,40 @@
     <base:CardControl x:Name="RootCard"
                       BorderThickness="0"
                       Command="{x:Bind ViewModel.ShowUserSpaceCommand, Mode=OneWay}">
-        <Grid Padding="12,12,12,8" ColumnSpacing="16">
+        <Grid Padding="12" ColumnSpacing="16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Grid VerticalAlignment="Top">
-                <PersonPicture Width="48"
-                               Height="48"
-                               DisplayName="{x:Bind ViewModel.Name, Mode=OneWay}"
-                               ProfilePicture="{x:Bind ViewModel.Avatar, Mode=OneWay, Converter={StaticResource BitmapConverter}}"/>
-            </Grid>
-            <Grid Grid.Column="1" RowSpacing="4">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid ColumnSpacing="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock FontWeight="Bold"
-                               MaxLines="1"
-                               Text="{x:Bind ViewModel.Name, Mode=OneWay}"
-                               TextTrimming="CharacterEllipsis"/>
-                </Grid>
-                <TextBlock Grid.Row="1"
-                           FontSize="12"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                           Text="{x:Bind ViewModel.Description, Mode=OneWay}"
-                           TextTrimming="CharacterEllipsis"/>
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               Foreground="{ThemeResource TextFillColorDisabledBrush}"
-                               IsTextSelectionEnabled="True"
-                               Style="{StaticResource CaptionTextBlockStyle}"
-                               Text="{x:Bind ViewModel.Id, Mode=OneWay}"/>
-                    <ToggleButton x:Name="FollowButton"
-                                  Grid.Column="1"
-                                  Width="20"
-                                  Height="20"
-                                  Margin="0,-4,0,0"
-                                  Padding="0"
-                                  VerticalAlignment="Center"
-                                  HorizontalContentAlignment="Center"
-                                  VerticalContentAlignment="Center"
-                                  Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
-                                  CornerRadius="10">
-                        <ic:SymbolIcon x:Name="FollowIcon"
-                                       FontSize="10"
-                                       Symbol="Heart"
-                                       ToolTipService.ToolTip="{x:Bind strings:Resources.Follow}"/>
-                    </ToggleButton>
-                </Grid>
-            </Grid>
+            <PersonPicture Grid.Column="0"
+                           Width="48"
+                           Height="48"
+                           DisplayName="{x:Bind ViewModel.Name, Mode=OneWay}"
+                           ProfilePicture="{x:Bind ViewModel.Avatar, Mode=OneWay, Converter={StaticResource BitmapConverter}}"/>
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       MaxLines="3"
+                       Text="{x:Bind ViewModel.Name, Mode=OneWay}"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"/>
+            <ToggleButton x:Name="FollowButton"
+                          Grid.Column="2"
+                          Width="40"
+                          Height="30"
+                          Padding="0"
+                          VerticalAlignment="Center"
+                          HorizontalContentAlignment="Center"
+                          VerticalContentAlignment="Center"
+                          Command="{x:Bind ViewModel.ToggleFollowCommand, Mode=OneWay}"
+                          CornerRadius="4">
+                <ic:SymbolIcon x:Name="FollowIcon"
+                               FontSize="16"
+                               Symbol="Heart"
+                               ToolTipService.ToolTip="{x:Bind strings:Resources.Follow}"/>
+            </ToggleButton>
+
         </Grid>
     </base:CardControl>
 </local:UserCardControlBase>

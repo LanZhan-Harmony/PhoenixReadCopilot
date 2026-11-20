@@ -1,285 +1,1333 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentIcons.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models.Moment;
 using PhoenixReadCopilot.Core.Models.Pin;
-using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Core.Models.User;
+using PhoenixReadCopilot.Forms;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
-using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
 /// <summary>
-/// 用户空间/主页视图模型.
+/// 用户空间与个人主页视图模型（支持个人主页与他人空间共用）.
 /// </summary>
-public sealed partial class UserSpacePageViewModel : ViewModelBase
+public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IUserService _userService;
+    private readonly IAuthenticationService _authService;
     private readonly IFollowService _followService;
-    private readonly ILogger<UserSpacePageViewModel> _logger;
+    private readonly IHistoryService _historyService;
+    private readonly IFavoriteService _favoriteService;
+    private readonly IViewLaterService _viewLaterService;
+    private readonly IReservationService _reservationService;
+    private readonly INavigationService _navigationService;
     private readonly AppViewModel _appViewModel;
     private readonly PinnerViewModel _pinnerViewModel;
-    private readonly AppSettings _settings;
-    private readonly ILoggerFactory _loggerFactory;
+    private readonly ILogger<UserSpacePageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
 
+    private CancellationTokenSource? _loadingCts;
+    private long _currentRequestId;
     private string _userId = string.Empty;
     private UserProfile? _phoenixProfile;
-    private int _searchOffset;
-    private bool _preventLoadMoreSearch;
-    private CancellationTokenSource? _searchCancellationTokenSource;
+    private string _worksCursor = string.Empty;
+    private string _circleCursor = string.Empty;
+    private int _offset;
+
+    private readonly UserSpaceSectionItemViewModel _followsSection;
+    private readonly UserSpaceSectionItemViewModel _fansSection;
+
+    public event EventHandler? Initialized;
+    public event EventHandler? SectionInitialized;
+    public event EventHandler? DataUpdated;
 
     [ObservableProperty]
-    public partial List<UserMomentDetailViewModel>? Sections { get; set; }
+    [NotifyPropertyChangedFor(nameof(ShowEmptyHolder))]
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    public partial UserMomentDetailViewModel? SelectedSection { get; set; }
+    public partial bool HasMore { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsCommentsOpened { get; set; }
+    [NotifyPropertyChangedFor(nameof(ShowEmptyHolder))]
+    public partial bool IsEmpty { get; set; }
+
+    public bool ShowEmptyHolder => !IsLoading && IsEmpty;
 
     [ObservableProperty]
-    public partial string UserName { get; set; } = string.Empty;
+    public partial string EmptyDescription { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanOpenFollows))]
+    [NotifyPropertyChangedFor(nameof(CanOpenFans))]
+    public partial bool IsMe { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsAnonymous { get; set; }
+
+    [ObservableProperty]
+    public partial string UserName { get; set; }
+
+    [ObservableProperty]
+    public partial string HongguoId { get; set; }
+
+    [ObservableProperty]
+    public partial string AvatarUrl { get; set; }
+
+    [ObservableProperty]
+    public partial string BackgroundCoverUrl { get; set; }
+
+    [ObservableProperty]
+    public partial string Introduce { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsVerified { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsCreator { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FansCountText))]
+    [NotifyPropertyChangedFor(nameof(CanOpenFans))]
+    public partial long FansCount { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FollowCountText))]
+    [NotifyPropertyChangedFor(nameof(CanOpenFollows))]
+    public partial long FollowCount { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(LikeCountText))]
+    public partial long LikeCount { get; set; }
+
+    public string FansCountText => FormatHelper.FormatCount(FansCount);
+    public string FollowCountText => FormatHelper.FormatCount(FollowCount);
+    public string LikeCountText => FormatHelper.FormatCount(LikeCount);
+
+    public bool CanOpenFollows =>
+        !string.IsNullOrEmpty(_userId) && FollowCount > 0 && (IsMe || IsFollowsAccessible);
+    public bool CanOpenFans =>
+        !string.IsNullOrEmpty(_userId) && FansCount > 0 && (IsMe || IsFansAccessible);
+
+    [ObservableProperty]
+    public partial bool CanFollow { get; set; }
 
     [ObservableProperty]
     public partial bool IsFollowed { get; set; }
 
     [ObservableProperty]
-    public partial bool IsSearching { get; set; }
+    [NotifyPropertyChangedFor(nameof(CanOpenFans))]
+    public partial bool IsFansAccessible { get; set; }
 
     [ObservableProperty]
-    public partial bool IsSearchMode { get; set; }
+    [NotifyPropertyChangedFor(nameof(CanOpenFollows))]
+    public partial bool IsFollowsAccessible { get; set; }
 
     [ObservableProperty]
-    public partial string SearchKeyword { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    public partial bool IsSearchEmpty { get; set; }
+    public partial ObservableCollection<string> Badges { get; set; }
 
     [ObservableProperty]
     public partial UserCard? Card { get; set; }
 
-    /// <summary>
-    /// 区块初始化完成.
-    /// </summary>
-    public event EventHandler? Initialized;
+    [ObservableProperty]
+    public partial ObservableCollection<UserSpaceSectionItemViewModel> Sections { get; set; }
 
-    /// <summary>
-    /// 搜索更新.
-    /// </summary>
-    public event EventHandler? SearchUpdated;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsVideoViewVisible))]
+    [NotifyPropertyChangedFor(nameof(IsReviewViewVisible))]
+    [NotifyPropertyChangedFor(nameof(IsCircleViewVisible))]
+    [NotifyPropertyChangedFor(nameof(IsRelationViewVisible))]
+    public partial UserSpaceSectionItemViewModel? SelectedSection { get; set; }
 
-    /// <summary>
-    /// 评论模块.
-    /// </summary>
-    public CommentMainViewModel CommentModule { get; }
+    public bool IsVideoViewVisible =>
+        SelectedSection?.Id is "History" or "Favorite" or "ViewLater" or "Reservation" or "Likes"
+        || (
+            SelectedSection?.Id == "Works"
+            && SelectedSection.SelectedSubTab?.Value is not UserWorkSubTab.Review
+        );
 
-    /// <summary>
-    /// 搜索视频结果.
-    /// </summary>
-    public ObservableCollection<VideoItemViewModel> SearchVideos { get; } = [];
+    public bool IsReviewViewVisible =>
+        SelectedSection?.Id == "Reviews"
+        || (
+            SelectedSection?.Id == "Works"
+            && SelectedSection.SelectedSubTab?.Value is UserWorkSubTab.Review
+        );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UserSpacePageViewModel"/> class.
-    /// </summary>
-    public UserSpacePageViewModel(
-        PhoenixReadApiClient apiClient,
-        IFollowService followService,
-        CommentMainViewModel comment,
-        ILogger<UserSpacePageViewModel> logger,
-        AppViewModel appViewModel,
-        PinnerViewModel pinnerViewModel,
-        ISettingsService settingsService,
-        DispatcherQueue dispatcherQueue,
-        ILoggerFactory loggerFactory
-    )
+    public bool IsCircleViewVisible => SelectedSection?.Id == "Circle";
+
+    public bool IsRelationViewVisible => SelectedSection?.Id is "Follows" or "Fans";
+
+    public void NotifyViewVisibilityChanged()
     {
-        _apiClient = apiClient;
-        _followService = followService;
-        CommentModule = comment;
-        _logger = logger;
-        _appViewModel = appViewModel;
-        _pinnerViewModel = pinnerViewModel;
-        _settings = settingsService.Settings;
-        _dispatcherQueue = dispatcherQueue;
-        _loggerFactory = loggerFactory;
+        OnPropertyChanged(nameof(IsVideoViewVisible));
+        OnPropertyChanged(nameof(IsReviewViewVisible));
+        OnPropertyChanged(nameof(IsCircleViewVisible));
+        OnPropertyChanged(nameof(IsRelationViewVisible));
     }
 
-    public async Task InitializeAsync(object parameter)
-    {
-        if (IsSearchMode)
-        {
-            ExitSearch();
-        }
+    [ObservableProperty]
+    public partial ObservableCollection<VideoItemViewModel> Videos { get; set; }
 
+    [ObservableProperty]
+    public partial ObservableCollection<UserReviewItemViewModel> Reviews { get; set; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<CircleFeedItemViewModel> CircleFeeds { get; set; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<UserItemViewModel> Relations { get; set; }
+
+    public UserSpacePageViewModel(
+        IUserService userService,
+        IAuthenticationService authService,
+        IFollowService followService,
+        IHistoryService historyService,
+        IFavoriteService favoriteService,
+        IViewLaterService viewLaterService,
+        IReservationService reservationService,
+        INavigationService navigationService,
+        ISettingsService settingsService,
+        AppViewModel appViewModel,
+        PinnerViewModel pinnerViewModel,
+        ILogger<UserSpacePageViewModel> logger,
+        DispatcherQueue dispatcherQueue
+    )
+        : base(settingsService)
+    {
+        _userService = userService;
+        _authService = authService;
+        _followService = followService;
+        _historyService = historyService;
+        _favoriteService = favoriteService;
+        _viewLaterService = viewLaterService;
+        _reservationService = reservationService;
+        _navigationService = navigationService;
+        _appViewModel = appViewModel;
+        _pinnerViewModel = pinnerViewModel;
+        _logger = logger;
+        _dispatcherQueue = dispatcherQueue;
+
+        _followsSection = new("Follows", Resources.Follow, Symbol.PeopleCommunity);
+        _fansSection = new("Fans", Resources.Fans, Symbol.HeartPulse);
+
+        Sections = [];
+        Videos = [];
+        Reviews = [];
+        CircleFeeds = [];
+        Relations = [];
+        Badges = [];
+
+        SetupCollectionWatchers();
+
+        EmptyDescription = Resources.NoSpecificData;
+        UserName = string.Empty;
+        HongguoId = string.Empty;
+        AvatarUrl = string.Empty;
+        BackgroundCoverUrl = string.Empty;
+        Introduce = string.Empty;
+
+        NavColumnWidth = 260;
+    }
+
+    /// <inheritdoc/>
+    protected override string GetPageKey() => "UserSpacePage";
+
+    public async Task InitializeAsync(object? parameter)
+    {
+        long requestId = ++_currentRequestId;
+        _loadingCts?.Cancel();
+        _loadingCts?.Dispose();
+        _loadingCts = new CancellationTokenSource();
+        CancellationToken ct = _loadingCts.Token;
+
+        IsLoading = true;
         try
         {
             UserProfile? profile = null;
-            string fallbackAvatarUrl = string.Empty;
-            if (parameter is DramaCredit credit)
+            string fallbackAvatar = string.Empty;
+            string fallbackName = string.Empty;
+            string targetUserId = string.Empty;
+            string? targetSection = null;
+
+            if (parameter is null)
             {
-                _userId = credit.User?.Id ?? string.Empty;
-                UserName = credit.User?.Name ?? string.Empty;
-                fallbackAvatarUrl = credit.User?.AvatarUrl ?? string.Empty;
-                profile = await _apiClient.GetUserProfileAsync(credit);
+                IsMe = true;
+                if (_authService.IsAuthenticated && _authService.CurrentUser is { } myUser)
+                {
+                    targetUserId = myUser.Id;
+                    fallbackName = myUser.Name;
+                    fallbackAvatar = myUser.AvatarUrl;
+                }
+            }
+            else if (parameter is UserSpaceNavArgs navArgs)
+            {
+                targetUserId = navArgs.UserId ?? string.Empty;
+                targetSection = navArgs.TargetSection;
+                IsMe =
+                    string.IsNullOrEmpty(targetUserId)
+                    || (
+                        _authService.IsAuthenticated && _authService.CurrentUser?.Id == targetUserId
+                    );
+                if (IsMe && _authService.IsAuthenticated && _authService.CurrentUser is { } myUser)
+                {
+                    targetUserId = myUser.Id;
+                    fallbackName = myUser.Name;
+                    fallbackAvatar = myUser.AvatarUrl;
+                }
+            }
+            else if (parameter is string str)
+            {
+                if (
+                    str
+                    is "History"
+                        or "Favorite"
+                        or "ViewLater"
+                        or "Reservation"
+                        or "Works"
+                        or "Likes"
+                        or "Reviews"
+                        or "Circle"
+                        or "Follows"
+                        or "Fans"
+                )
+                {
+                    IsMe = true;
+                    targetSection = str;
+                    if (_authService.IsAuthenticated && _authService.CurrentUser is { } myUser)
+                    {
+                        targetUserId = myUser.Id;
+                        fallbackName = myUser.Name;
+                        fallbackAvatar = myUser.AvatarUrl;
+                    }
+                }
+                else
+                {
+                    targetUserId = str;
+                    IsMe = _authService.IsAuthenticated && _authService.CurrentUser?.Id == str;
+                }
+            }
+            else if (parameter is DramaCredit credit)
+            {
+                targetUserId = credit.User?.Id ?? string.Empty;
+                fallbackName = credit.User?.Name ?? string.Empty;
+                fallbackAvatar = credit.User?.AvatarUrl ?? string.Empty;
+                IsMe = _authService.IsAuthenticated && _authService.CurrentUser?.Id == targetUserId;
             }
             else if (parameter is ActorLeaderboardItem actor)
             {
-                _userId = !string.IsNullOrEmpty(actor.UserId) ? actor.UserId : actor.ActorId;
-                UserName = actor.Name;
-                fallbackAvatarUrl = actor.AvatarUrl ?? string.Empty;
-                profile = await _apiClient.GetUserProfileAsync(_userId);
-            }
-            else if (parameter is string id)
-            {
-                _userId = id;
-                profile = await _apiClient.GetUserProfileAsync(id);
-            }
-            else if (parameter is PhoenixReadCopilot.Core.Models.User.User user)
-            {
-                _userId = user.Id;
-                UserName = user.Name;
-                fallbackAvatarUrl = user.Avatar?.Uri?.ToString() ?? string.Empty;
-                profile = await _apiClient.GetUserProfileAsync(user.Id);
-            }
-            else if (parameter is PhoenixReadApi.User apiUser)
-            {
-                _userId = apiUser.Id;
-                UserName = apiUser.Name;
-                fallbackAvatarUrl = apiUser.AvatarUrl ?? string.Empty;
-                profile = await _apiClient.GetUserProfileAsync(apiUser.Id);
+                targetUserId = !string.IsNullOrEmpty(actor.UserId) ? actor.UserId : actor.ActorId;
+                fallbackName = actor.Name;
+                fallbackAvatar = actor.AvatarUrl ?? string.Empty;
+                IsMe = _authService.IsAuthenticated && _authService.CurrentUser?.Id == targetUserId;
             }
             else if (parameter is UserProfile up)
             {
-                _userId = up.User.Id;
-                UserName = up.User.Name;
-                fallbackAvatarUrl = up.User.AvatarUrl ?? string.Empty;
+                targetUserId = up.User.Id;
                 profile = up;
+                IsMe = _authService.IsAuthenticated && _authService.CurrentUser?.Id == targetUserId;
+            }
+            else if (parameter is PhoenixReadApi.User apiUser)
+            {
+                targetUserId = apiUser.Id;
+                fallbackName = apiUser.Name;
+                fallbackAvatar = apiUser.AvatarUrl ?? string.Empty;
+                IsMe = _authService.IsAuthenticated && _authService.CurrentUser?.Id == targetUserId;
             }
 
-            if (profile is not null)
-            {
-                _phoenixProfile = profile;
-                UserName = !string.IsNullOrEmpty(profile.User.Name) ? profile.User.Name : UserName;
-                IsFollowed = _followService.IsFollowing(_userId);
-                Card = CreateUserCard(profile, UserName, fallbackAvatarUrl);
-            }
-            else if (!string.IsNullOrEmpty(UserName))
-            {
-                UserAvatar? avatar =
-                    !string.IsNullOrEmpty(fallbackAvatarUrl)
-                    && Uri.TryCreate(fallbackAvatarUrl, UriKind.Absolute, out Uri? uri)
-                        ? new UserAvatar { Uri = uri }
-                        : null;
+            _userId = targetUserId;
 
-                Card = new UserCard
+            if (!string.IsNullOrEmpty(targetUserId))
+            {
+                try
                 {
-                    Profile = new UserDetailProfile
-                    {
-                        User = new PhoenixReadCopilot.Core.Models.User.User
-                        {
-                            Id = _userId,
-                            Name = UserName,
-                            Avatar = avatar,
-                        },
-                    },
-                    Community = new UserCommunity(),
-                };
+                    profile ??= await _userService.GetUserProfileAsync(targetUserId, ct);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "获取网络用户资料失败: {UserId}", targetUserId);
+                }
+            }
+
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            {
+                return;
+            }
+
+            _phoenixProfile = profile;
+            ApplyProfile(profile, fallbackName, fallbackAvatar);
+            BuildSections(profile);
+
+            // 导航到指定 Section 或默认第一个
+            UserSpaceSectionItemViewModel? initialSection = null;
+            if (!string.IsNullOrEmpty(targetSection))
+            {
+                if (targetSection.Equals("Follows", StringComparison.OrdinalIgnoreCase))
+                {
+                    initialSection = _followsSection;
+                }
+                else if (targetSection.Equals("Fans", StringComparison.OrdinalIgnoreCase))
+                {
+                    initialSection = _fansSection;
+                }
+                else
+                {
+                    initialSection = Sections.FirstOrDefault(s =>
+                        s.Id.Equals(targetSection, StringComparison.OrdinalIgnoreCase)
+                    ) ?? Sections.FirstOrDefault();
+                }
+            }
+            else
+            {
+                initialSection = Sections.FirstOrDefault();
+            }
+
+            SectionInitialized?.Invoke(this, EventArgs.Empty);
+            Initialized?.Invoke(this, EventArgs.Empty);
+
+            if (initialSection != null)
+            {
+                await SelectSectionAsync(initialSection, force: true);
+            }
+            else
+            {
+                SelectedSection = null;
+                IsEmpty = true;
+                EmptyDescription = Resources.NoSpecificData;
+                IsLoading = false;
             }
         }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"获取红果创作者主页失败: {_userId}");
+            _logger.LogError(ex, "初始化用户空间失败");
+            IsLoading = false;
         }
+    }
 
-        if (Sections is null)
+    private void SetupCollectionWatchers()
+    {
+        Videos.CollectionChanged += (_, _) => OnAnyCollectionChanged();
+        Reviews.CollectionChanged += (_, _) => OnAnyCollectionChanged();
+        CircleFeeds.CollectionChanged += (_, _) => OnAnyCollectionChanged();
+        Relations.CollectionChanged += (_, _) => OnAnyCollectionChanged();
+    }
+
+    private void OnAnyCollectionChanged()
+    {
+        if (SelectedSection != null)
         {
-            Sections =
-            [
-                new(_apiClient, _loggerFactory.CreateLogger<UserMomentDetailViewModel>()),
-                new(_apiClient, _loggerFactory.CreateLogger<UserMomentDetailViewModel>()),
-            ];
+            bool hasContent = SelectedSection.Id switch
+            {
+                "Works" => Videos.Count > 0 || Reviews.Count > 0,
+                "Circle" => CircleFeeds.Count > 0,
+                "Reviews" => Reviews.Count > 0,
+                "Follows" or "Fans" => Relations.Count > 0,
+                _ => Videos.Count > 0,
+            };
 
-            Sections.ElementAt(0).SetIsVideo(true);
-            Sections.ElementAt(1).SetIsVideo(false);
+            if (hasContent)
+            {
+                IsEmpty = false;
+            }
         }
+    }
 
-        foreach (UserMomentDetailViewModel item in Sections)
+    private void ApplyProfile(UserProfile? profile, string fallbackName, string fallbackAvatar)
+    {
+        if (profile is not null)
         {
-            item.SetShowCommentAction(ShowComment);
-            item.Reset((object?)_phoenixProfile ?? _userId);
-        }
+            UserName = !string.IsNullOrWhiteSpace(profile.User.Name)
+                ? profile.User.Name
+                : fallbackName;
+            HongguoId = !string.IsNullOrWhiteSpace(profile.HongguoId)
+                ? profile.HongguoId
+                : profile.User.Id;
+            AvatarUrl = !string.IsNullOrWhiteSpace(profile.User.AvatarUrl)
+                ? profile.User.AvatarUrl
+                : fallbackAvatar;
+            BackgroundCoverUrl = profile.BackgroundCoverUrl;
+            Introduce = profile.User.Introduction;
+            IsVerified = profile.IsVerified;
+            IsCreator = profile.IsCreator;
+            FansCount = profile.FansCount;
+            FollowCount = profile.FollowCount;
+            LikeCount = profile.LikeCount;
+            CanFollow = !IsMe && profile.CanFollow;
+            IsFollowed = !IsMe && (profile.IsFollowing || _followService.IsFollowing(_userId));
 
-        if (SelectedSection is null)
-        {
-            bool isLastVideoSection = _settings.LastUserSpaceSectionIsVideo;
-            UserMomentDetailViewModel section = isLastVideoSection
-                ? Sections.First()
-                : Sections.Last();
-            SelectSection(section);
+            IsFansAccessible = profile.FansCount > 0;
+            IsFollowsAccessible = profile.FollowCount > 0;
+
+            Badges.Clear();
+            foreach (string role in profile.CreatorRoles)
+            {
+                Badges.Add(role);
+            }
+            foreach (string badge in profile.Badges)
+            {
+                Badges.Add(badge);
+            }
+            foreach (UserHonor honor in profile.Honors)
+            {
+                Badges.Add(honor.Name);
+            }
+
+            Card = CreateUserCard(profile, UserName, AvatarUrl);
         }
         else
         {
-            _ = SelectedSection.InitializeAsync();
+            // 本地未登录或匿名占位状态
+            if (IsMe)
+            {
+                UserName = _authService.IsAuthenticated
+                    ? (_authService.CurrentUser?.Name ?? Resources.User)
+                    : "未登录用户";
+                HongguoId = _authService.IsAuthenticated
+                    ? (_authService.CurrentUser?.Id ?? string.Empty)
+                    : "点击登录可同步云端数据";
+                AvatarUrl = _authService.IsAuthenticated
+                    ? (_authService.CurrentUser?.AvatarUrl ?? string.Empty)
+                    : string.Empty;
+                BackgroundCoverUrl = string.Empty;
+                Introduce = _authService.IsAuthenticated
+                    ? string.Empty
+                    : "登录后可同步播放历史、短剧收藏、追剧预约与个人评论";
+            }
+            else
+            {
+                UserName = !string.IsNullOrEmpty(fallbackName) ? fallbackName : Resources.User;
+                HongguoId = _userId;
+                AvatarUrl = fallbackAvatar;
+                BackgroundCoverUrl = string.Empty;
+                Introduce = string.Empty;
+            }
+
+            IsVerified = false;
+            IsCreator = false;
+            FansCount = 0;
+            FollowCount = 0;
+            LikeCount = 0;
+            CanFollow = false;
+            IsFollowed = false;
+            IsFansAccessible = false;
+            IsFollowsAccessible = false;
+            Badges.Clear();
+            Card = null;
         }
 
-        Initialized?.Invoke(this, EventArgs.Empty);
+        IsAnonymous = IsMe && !_authService.IsAuthenticated;
     }
 
-    /// <summary>
-    /// 搜索空间动态.
-    /// </summary>
-    public void Search(string text)
+    private void BuildSections(UserProfile? profile)
     {
-        ExitSearch();
-        SearchKeyword = text;
-        IsSearchMode = true;
-        _ = LoadMoreSearchResultAsync();
-    }
+        Sections.Clear();
 
-    [RelayCommand]
-    private async Task RefreshAsync()
-    {
-        if (IsSearchMode)
+        if (IsMe)
         {
-            string keyword = SearchKeyword;
-            Search(keyword);
+            // 个人主页模式
+            // 1. 播放历史（未登录支持本地持久化）
+            Sections.Add(
+                new UserSpaceSectionItemViewModel("History", Resources.History, Symbol.History)
+            );
+
+            // 2. 我的收藏（未登录支持本地持久化）
+            Sections.Add(
+                new UserSpaceSectionItemViewModel(
+                    "Favorite",
+                    Resources.Favorite,
+                    Symbol.StarLineHorizontal3
+                )
+            );
+
+            // 3. 稍后再看（未登录支持本地持久化）
+            Sections.Add(
+                new UserSpaceSectionItemViewModel(
+                    "ViewLater",
+                    Resources.ViewLater,
+                    Symbol.CalendarClock
+                )
+            );
+
+            // 4. 作品（登录后可用）
+            if (_authService.IsAuthenticated)
+            {
+                UserSpaceSectionItemViewModel worksSection = new(
+                    "Works",
+                    Resources.UserWorks,
+                    Symbol.VideoClip
+                );
+                worksSection.SubTabs.Add(
+                    new UserSpaceSubTabItemViewModel("Drama", Resources.Drama, UserWorkSubTab.Drama)
+                );
+                worksSection.SubTabs.Add(
+                    new UserSpaceSubTabItemViewModel(
+                        "Collection",
+                        Resources.UserCollections,
+                        UserWorkSubTab.Collection
+                    )
+                );
+                worksSection.SelectedSubTab = worksSection.SubTabs[0];
+                Sections.Add(worksSection);
+            }
+
+            // 5. 剧集预约：待上线、已上线
+            UserSpaceSectionItemViewModel reservationSection = new(
+                "Reservation",
+                Resources.Reserve,
+                Symbol.Calendar
+            );
+            reservationSection.SubTabs.Add(
+                new UserSpaceSubTabItemViewModel("Upcoming", Resources.Upcoming, false)
+            );
+            reservationSection.SubTabs.Add(
+                new UserSpaceSubTabItemViewModel("Online", Resources.Online, true)
+            );
+            reservationSection.SelectedSubTab = reservationSection.SubTabs[0];
+            Sections.Add(reservationSection);
+
+            // 6. 我的点赞（需登录）
+            if (_authService.IsAuthenticated)
+            {
+                Sections.Add(
+                    new UserSpaceSectionItemViewModel("Likes", Resources.UserLikes, Symbol.Heart)
+                );
+            }
+
+            // 7. 我的评论（预留接口）
+            if (_authService.IsAuthenticated)
+            {
+                UserSpaceSectionItemViewModel reviewsSection = new(
+                    "Reviews",
+                    Resources.UserReviews,
+                    Symbol.Comment
+                );
+                reviewsSection.SubTabs.Add(
+                    new UserSpaceSubTabItemViewModel(
+                        "Review",
+                        Resources.UserReviews,
+                        UserWorkSubTab.Review
+                    )
+                );
+                reviewsSection.SelectedSubTab = reviewsSection.SubTabs[0];
+                Sections.Add(reviewsSection);
+            }
+        }
+        else
+        {
+            // 他人/创作者/演职人员主页模式
+            if (profile != null)
+            {
+                foreach (UserProfileTab tab in profile.AvailableTabs)
+                {
+                    bool isWorks = tab.Type is 23 or 16 or 8 || tab.Name?.Contains("作品") == true;
+                    bool isCircle =
+                        tab.Type is 7 or 5
+                        || tab.Name?.Contains("红果圈") == true
+                        || tab.Name?.Contains("动态") == true;
+                    bool isFavorites = tab.Type == 10 || tab.Name?.Contains("收藏") == true;
+                    bool isLikes = tab.Type == 9 || tab.Name?.Contains("点赞") == true;
+
+                    // 数量为 0 的 Tab 不要显示（同时若本地有内容则保留）
+                    long effectiveTotal = tab.Total;
+                    if (isWorks && effectiveTotal <= 0 && profile.Works.Count > 0)
+                    {
+                        effectiveTotal = profile.Works.Count;
+                    }
+                    else if (isCircle && effectiveTotal <= 0 && profile.CircleItems.Count > 0)
+                    {
+                        effectiveTotal = profile.CircleItems.Count;
+                    }
+                    else if (isFavorites && effectiveTotal <= 0 && profile.Collections.Count > 0)
+                    {
+                        effectiveTotal = profile.Collections.Count;
+                    }
+                    else if (isLikes && effectiveTotal <= 0 && profile.Likes.Count > 0)
+                    {
+                        effectiveTotal = profile.Likes.Count;
+                    }
+
+                    if (effectiveTotal <= 0)
+                    {
+                        continue;
+                    }
+
+                    if (isWorks)
+                    {
+                        UserSpaceSectionItemViewModel worksSection = new(
+                            "Works",
+                            Resources.UserWorks,
+                            Symbol.VideoClip,
+                            effectiveTotal
+                        );
+                        worksSection.SubTabs.Add(
+                            new UserSpaceSubTabItemViewModel(
+                                "Drama",
+                                Resources.Drama,
+                                UserWorkSubTab.Drama
+                            )
+                        );
+                        worksSection.SubTabs.Add(
+                            new UserSpaceSubTabItemViewModel(
+                                "Reservation",
+                                Resources.Reserve,
+                                UserWorkSubTab.Reservation
+                            )
+                        );
+                        worksSection.SubTabs.Add(
+                            new UserSpaceSubTabItemViewModel(
+                                "Collection",
+                                Resources.UserCollections,
+                                UserWorkSubTab.Collection
+                            )
+                        );
+                        worksSection.SubTabs.Add(
+                            new UserSpaceSubTabItemViewModel(
+                                "Review",
+                                Resources.UserReviews,
+                                UserWorkSubTab.Review
+                            )
+                        );
+                        worksSection.SelectedSubTab = worksSection.SubTabs[0];
+                        Sections.Add(worksSection);
+                    }
+                    else if (isCircle)
+                    {
+                        UserSpaceSectionItemViewModel circleSection = new(
+                            "Circle",
+                            Resources.CircleFeed,
+                            Symbol.DesignIdeas,
+                            effectiveTotal
+                        );
+                        circleSection.SubTabs.Add(
+                            new UserSpaceSubTabItemViewModel(
+                                "Post",
+                                Resources.Article,
+                                CircleItemType.Post
+                            )
+                        );
+                        circleSection.SubTabs.Add(
+                            new UserSpaceSubTabItemViewModel(
+                                "Video",
+                                Resources.ShortVideo,
+                                CircleItemType.Video
+                            )
+                        );
+                        circleSection.SelectedSubTab = circleSection.SubTabs[0];
+                        Sections.Add(circleSection);
+                    }
+                    else if (isFavorites)
+                    {
+                        Sections.Add(
+                            new UserSpaceSectionItemViewModel(
+                                "Favorite",
+                                Resources.Favorite,
+                                Symbol.StarLineHorizontal3,
+                                effectiveTotal
+                            )
+                        );
+                    }
+                    else if (isLikes)
+                    {
+                        Sections.Add(
+                            new UserSpaceSectionItemViewModel(
+                                "Likes",
+                                Resources.UserLikes,
+                                Symbol.Heart,
+                                effectiveTotal
+                            )
+                        );
+                    }
+                }
+            }
+
+            // 若无公开 Tab 兜底显示作品
+            if (Sections.Count == 0 && profile is not null)
+            {
+                UserSpaceSectionItemViewModel worksSection = new(
+                    "Works",
+                    Resources.UserWorks,
+                    Symbol.VideoClip
+                );
+                worksSection.SubTabs.Add(
+                    new UserSpaceSubTabItemViewModel("Drama", Resources.Drama, UserWorkSubTab.Drama)
+                );
+                worksSection.SelectedSubTab = worksSection.SubTabs[0];
+                Sections.Add(worksSection);
+            }
+        }
+    }
+
+    public void SelectSection(UserSpaceSectionItemViewModel? section)
+    {
+        _ = SelectSectionAsync(section);
+    }
+
+    public async Task SelectSectionAsync(UserSpaceSectionItemViewModel? section, bool force = false)
+    {
+        if (section == null)
+        {
             return;
         }
 
-        if (SelectedSection is not null)
-        {
-            await SelectedSection.RefreshAsync();
-        }
-    }
-
-    public void SelectSection(UserMomentDetailViewModel section)
-    {
-        if (section is null || section == SelectedSection)
+        if (!force && SelectedSection == section)
         {
             return;
         }
 
         SelectedSection = section;
-        _settings.LastUserSpaceSectionIsVideo = SelectedSection.IsVideo();
-        _ = SelectedSection.InitializeAsync();
+        NotifyViewVisibilityChanged();
+        await LoadSectionDataAsync(section, section.SelectedSubTab, reset: true);
     }
+
+    public void SelectSubTab(UserSpaceSubTabItemViewModel? subTab)
+    {
+        _ = SelectSubTabAsync(subTab);
+    }
+
+    public async Task SelectSubTabAsync(UserSpaceSubTabItemViewModel? subTab)
+    {
+        if (SelectedSection == null || subTab == null || SelectedSection.SelectedSubTab == subTab)
+        {
+            return;
+        }
+
+        SelectedSection.SelectedSubTab = subTab;
+        NotifyViewVisibilityChanged();
+        await LoadSectionDataAsync(SelectedSection, subTab, reset: true);
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        if (SelectedSection != null)
+        {
+            await LoadSectionDataAsync(
+                SelectedSection,
+                SelectedSection.SelectedSubTab,
+                reset: true
+            );
+        }
+    }
+
+    [RelayCommand]
+    public async Task LoadMoreAsync()
+    {
+        if (IsLoading || !HasMore || SelectedSection == null)
+        {
+            return;
+        }
+
+        await LoadSectionDataAsync(SelectedSection, SelectedSection.SelectedSubTab, reset: false);
+    }
+
+    public async Task LoadSectionDataAsync(
+        UserSpaceSectionItemViewModel section,
+        UserSpaceSubTabItemViewModel? subTab,
+        bool reset = false
+    )
+    {
+        if (!reset && IsLoading)
+        {
+            return;
+        }
+
+        long requestId;
+        CancellationToken ct;
+
+        if (reset)
+        {
+            requestId = ++_currentRequestId;
+            _loadingCts?.Cancel();
+            _loadingCts?.Dispose();
+            _loadingCts = new CancellationTokenSource();
+            ct = _loadingCts.Token;
+
+            await RunOnUIThreadAsync(() =>
+            {
+                Videos.Clear();
+                Reviews.Clear();
+                CircleFeeds.Clear();
+                Relations.Clear();
+            });
+            _worksCursor = string.Empty;
+            _circleCursor = string.Empty;
+            _offset = 0;
+            HasMore = true;
+            IsEmpty = false;
+        }
+        else
+        {
+            requestId = _currentRequestId;
+            ct = _loadingCts?.Token ?? CancellationToken.None;
+        }
+
+        IsLoading = true;
+        try
+        {
+            switch (section.Id)
+            {
+                case "History":
+                    await LoadHistoryDataAsync(requestId, ct);
+                    break;
+                case "Favorite":
+                    await LoadFavoriteDataAsync(requestId, ct);
+                    break;
+                case "ViewLater":
+                    await LoadViewLaterDataAsync(requestId, ct);
+                    break;
+                case "Reservation":
+                    await LoadReservationDataAsync(subTab, requestId, ct);
+                    break;
+                case "Works":
+                    await LoadWorksDataAsync(subTab, requestId, ct);
+                    break;
+                case "Circle":
+                    await LoadCircleDataAsync(subTab, requestId, ct);
+                    break;
+                case "Likes":
+                    await LoadLikesDataAsync(requestId, ct);
+                    break;
+                case "Reviews":
+                    await LoadReviewsDataAsync(requestId, ct);
+                    break;
+                case "Follows":
+                    await LoadFollowsDataAsync(requestId, ct);
+                    break;
+                case "Fans":
+                    await LoadFansDataAsync(requestId, ct);
+                    break;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            if (requestId == _currentRequestId)
+            {
+                _logger.LogError(ex, "加载用户空间数据失败: Section={Section}", section.Id);
+                if (reset)
+                {
+                    IsEmpty = true;
+                    EmptyDescription = Resources.NoSpecificData;
+                }
+            }
+        }
+        finally
+        {
+            if (requestId == _currentRequestId)
+            {
+                IsLoading = false;
+                await RunOnUIThreadAsync(() =>
+                {
+                    CheckEmptyState(section);
+                    DataUpdated?.Invoke(this, EventArgs.Empty);
+                });
+            }
+        }
+    }
+
+    private Task RunOnUIThreadAsync(Action action)
+    {
+        if (_dispatcherQueue.HasThreadAccess)
+        {
+            action();
+            return Task.CompletedTask;
+        }
+
+        TaskCompletionSource tcs = new();
+        bool enqueued = _dispatcherQueue.TryEnqueue(() =>
+        {
+            try
+            {
+                action();
+                tcs.TrySetResult();
+            }
+            catch (Exception ex)
+            {
+                tcs.TrySetException(ex);
+            }
+        });
+
+        if (!enqueued)
+        {
+            tcs.TrySetResult();
+        }
+
+        return tcs.Task;
+    }
+
+    private async Task LoadHistoryDataAsync(long requestId, CancellationToken ct)
+    {
+        ReadHistoryPage historyPage = await _historyService.GetHistoryAsync(
+            count: 30,
+            offset: _offset,
+            cancellationToken: ct
+        );
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (ReadHistoryItem item in historyPage.Items)
+            {
+                Videos.Add(new VideoItemViewModel(item));
+            }
+        });
+        _offset = historyPage.NextOffset;
+        HasMore = historyPage.HasMore;
+    }
+
+    private async Task LoadFavoriteDataAsync(long requestId, CancellationToken ct)
+    {
+        if (IsMe)
+        {
+            DramaPage page = await _favoriteService.GetFavoritesAsync(
+                count: 30,
+                offset: _offset,
+                cancellationToken: ct
+            );
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+
+            await RunOnUIThreadAsync(() =>
+            {
+                if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                    return;
+                foreach (Drama item in page.Items)
+                {
+                    Videos.Add(new VideoItemViewModel(item));
+                }
+            });
+            _offset = page.NextOffset;
+            HasMore = page.HasMore;
+        }
+        else
+        {
+            DramaPage page = await _userService.GetUserFavoritesAsync(
+                _userId,
+                count: 30,
+                offset: _offset,
+                cancellationToken: ct
+            );
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+
+            await RunOnUIThreadAsync(() =>
+            {
+                if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                    return;
+                foreach (Drama item in page.Items)
+                {
+                    Videos.Add(new VideoItemViewModel(item));
+                }
+            });
+            _offset = page.NextOffset;
+            HasMore = page.HasMore;
+        }
+    }
+
+    private async Task LoadViewLaterDataAsync(long requestId, CancellationToken ct)
+    {
+        IReadOnlyList<Drama> items = await _viewLaterService.GetAllAsync(ViewLaterType.Drama, ct);
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (Drama item in items)
+            {
+                Videos.Add(new VideoItemViewModel(item));
+            }
+        });
+        HasMore = false;
+    }
+
+    private async Task LoadReservationDataAsync(
+        UserSpaceSubTabItemViewModel? subTab,
+        long requestId,
+        CancellationToken ct
+    )
+    {
+        bool filterOnline = subTab?.Value is true;
+        if (IsMe)
+        {
+            IReadOnlyList<ReservationItem> items = await _reservationService.GetReservationsAsync(
+                count: 30,
+                offset: _offset,
+                cancellationToken: ct
+            );
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+
+            await RunOnUIThreadAsync(() =>
+            {
+                if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                    return;
+                foreach (ReservationItem item in items)
+                {
+                    if (subTab != null && item.IsAvailable != filterOnline)
+                    {
+                        continue;
+                    }
+
+                    Drama drama = new()
+                    {
+                        Id = item.DramaId,
+                        Title = item.Title,
+                        CoverUrl = item.CoverUrl,
+                    };
+                    Videos.Add(new VideoItemViewModel(drama));
+                }
+            });
+            _offset += items.Count;
+            HasMore = items.Count >= 30;
+        }
+        else
+        {
+            HasMore = false;
+        }
+    }
+
+    private async Task LoadWorksDataAsync(
+        UserSpaceSubTabItemViewModel? subTab,
+        long requestId,
+        CancellationToken ct
+    )
+    {
+        UserWorkSubTab workSubTab = subTab?.Value is UserWorkSubTab st ? st : UserWorkSubTab.All;
+        UserWorksQuery query = new()
+        {
+            SubTab = workSubTab,
+            Cursor = _worksCursor,
+            Count = 30,
+        };
+
+        UserWorkPage page = await _userService.GetUserWorksAsync(_userId, query, ct);
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (UserWork item in page.Items)
+            {
+                if (item is Drama drama)
+                {
+                    Videos.Add(new VideoItemViewModel(drama));
+                }
+                else if (item is UserReview review)
+                {
+                    Reviews.Add(new UserReviewItemViewModel(review));
+                }
+            }
+        });
+        _worksCursor = page.Cursor;
+        HasMore = page.HasMore;
+    }
+
+    private async Task LoadCircleDataAsync(
+        UserSpaceSubTabItemViewModel? subTab,
+        long requestId,
+        CancellationToken ct
+    )
+    {
+        CircleItemType targetType = subTab?.Value is CircleItemType t ? t : CircleItemType.Post;
+        CirclePage page = await _userService.GetUserCircleAsync(
+            _userId,
+            count: 30,
+            cursor: _circleCursor,
+            cancellationToken: ct
+        );
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (CircleItem item in page.Items)
+            {
+                if (item.Type == targetType)
+                {
+                    CircleFeeds.Add(new CircleFeedItemViewModel(item));
+                }
+            }
+        });
+        _circleCursor = page.Cursor;
+        HasMore = page.HasMore;
+    }
+
+    private async Task LoadLikesDataAsync(long requestId, CancellationToken ct)
+    {
+        UserDramaPage page = await _userService.GetUserLikesAsync(
+            _userId,
+            count: 30,
+            offset: _offset,
+            cancellationToken: ct
+        );
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (Drama item in page.Items)
+            {
+                Videos.Add(new VideoItemViewModel(item));
+            }
+        });
+        _offset = page.NextOffset;
+        HasMore = page.HasMore;
+    }
+
+    private async Task LoadReviewsDataAsync(long requestId, CancellationToken ct)
+    {
+        UserWorksQuery query = new()
+        {
+            SubTab = UserWorkSubTab.Review,
+            Cursor = _worksCursor,
+            Count = 30,
+        };
+
+        UserWorkPage page = await _userService.GetUserWorksAsync(_userId, query, ct);
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (UserWork item in page.Items)
+            {
+                if (item is UserReview review)
+                {
+                    Reviews.Add(new UserReviewItemViewModel(review));
+                }
+            }
+        });
+        _worksCursor = page.Cursor;
+        HasMore = page.HasMore;
+    }
+
+    private async Task LoadFollowsDataAsync(long requestId, CancellationToken ct)
+    {
+        if (string.IsNullOrEmpty(_userId))
+        {
+            HasMore = false;
+            return;
+        }
+
+        UserRelationPage page = await _userService.GetUserFollowingsAsync(
+            _userId,
+            cursor: _worksCursor,
+            count: 30,
+            cancellationToken: ct
+        );
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (UserRelationItem relation in page.Items)
+            {
+                if (relation.User != null)
+                {
+                    Relations.Add(new UserItemViewModel(relation.User));
+                }
+            }
+        });
+        _worksCursor = page.Cursor;
+        HasMore = page.HasMore;
+    }
+
+    private async Task LoadFansDataAsync(long requestId, CancellationToken ct)
+    {
+        if (string.IsNullOrEmpty(_userId))
+        {
+            HasMore = false;
+            return;
+        }
+
+        UserRelationPage page = await _userService.GetUserFollowersAsync(
+            _userId,
+            cursor: _worksCursor,
+            count: 30,
+            cancellationToken: ct
+        );
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            return;
+
+        await RunOnUIThreadAsync(() =>
+        {
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+                return;
+            foreach (UserRelationItem relation in page.Items)
+            {
+                if (relation.User != null)
+                {
+                    Relations.Add(new UserItemViewModel(relation.User));
+                }
+            }
+        });
+        _worksCursor = page.Cursor;
+        HasMore = page.HasMore;
+    }
+
+    private void CheckEmptyState(UserSpaceSectionItemViewModel section)
+    {
+        bool hasContent = section.Id switch
+        {
+            "Works" => Videos.Count > 0 || Reviews.Count > 0,
+            "Circle" => CircleFeeds.Count > 0,
+            "Reviews" => Reviews.Count > 0,
+            "Follows" or "Fans" => Relations.Count > 0,
+            _ => Videos.Count > 0,
+        };
+
+        IsEmpty = !hasContent;
+        if (IsEmpty)
+        {
+            EmptyDescription = section.Id switch
+            {
+                "History" => Resources.NoHistoryVideos,
+                "Favorite" => Resources.NoFavoriteVideos,
+                "ViewLater" => Resources.NoViewLaterVideos,
+                "Follows" => Resources.NoFollows,
+                "Fans" => Resources.NoFans,
+                _ => Resources.NoSpecificData,
+            };
+        }
+    }
+
+    /// <summary>
+    /// 在当前空间内搜索/过滤.
+    /// </summary>
+    public void Search(string keyword) { }
 
     [RelayCommand]
     private async Task ToggleFollowAsync()
     {
-        if (string.IsNullOrEmpty(_userId))
+        if (string.IsNullOrEmpty(_userId) || IsMe)
         {
             return;
         }
@@ -304,7 +1352,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"切换关注状态时失败");
+            _logger.LogError(ex, "切换关注状态失败");
             _appViewModel.ShowTip(Resources.FailedToFollowUser, InfoType.Error);
         }
     }
@@ -312,120 +1360,49 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
     [RelayCommand]
     private void Pin()
     {
-        string avatarUri = Card?.Profile?.User?.Avatar?.Uri?.ToString() ?? string.Empty;
-        PinItem pinItem = new(_userId, UserName, avatarUri, PinType.User);
+        PinItem pinItem = new(_userId, UserName, AvatarUrl, PinType.User);
         _pinnerViewModel.AddItem(pinItem);
     }
 
     [RelayCommand]
-    private async Task InitializeUserInformationAsync()
+    public void OpenFollows()
     {
-        if (Card is not null || string.IsNullOrEmpty(_userId))
+        if (!CanOpenFollows)
         {
+            if (!IsFollowsAccessible && !IsMe)
+            {
+                _appViewModel.ShowTip(Resources.PrivacyProtectedTip, InfoType.Warning);
+            }
             return;
         }
 
-        try
-        {
-            UserProfile profile = await _apiClient.GetUserProfileAsync(_userId);
-            Card = CreateUserCard(profile);
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"获取创作者信息失败");
-        }
-    }
-
-    public async Task LoadMoreSearchResultAsync()
-    {
-        if (
-            _preventLoadMoreSearch
-            || IsSearching
-            || !IsSearchMode
-            || string.IsNullOrEmpty(SearchKeyword)
-            || string.IsNullOrEmpty(_userId)
-        )
-        {
-            return;
-        }
-
-        try
-        {
-            IsSearching = true;
-            _searchCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken ct = _searchCancellationTokenSource.Token;
-
-            UserWorkPage dramas = await _apiClient.GetUserWorksAsync(
-                _userId,
-                new UserWorksQuery
-                {
-                    SubTab = UserWorkSubTab.Drama,
-                    Count = 18,
-                    Cursor = _searchOffset.ToString(),
-                },
-                cancellationToken: ct
-            );
-
-            _preventLoadMoreSearch = !dramas.HasMore || dramas.Items.Count == 0;
-            if (int.TryParse(dramas.Cursor, out int nextCursor))
-            {
-                _searchOffset = nextCursor;
-            }
-
-            string kw = SearchKeyword.Trim();
-            List<Drama> matched =
-            [
-                .. dramas.Items.Where(d =>
-                    d.Title.Contains(kw, StringComparison.OrdinalIgnoreCase)
-                ),
-            ];
-
-            foreach (Drama item in matched)
-            {
-                SearchVideos.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
-            }
-
-            SearchUpdated?.Invoke(this, EventArgs.Empty);
-        }
-        catch (TaskCanceledException)
-        {
-            // Do nothing.
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"搜索用户短剧作品时失败");
-        }
-        finally
-        {
-            IsSearchEmpty = SearchVideos.Count == 0;
-            IsSearching = false;
-        }
+        _ = SelectSectionAsync(_followsSection, force: true);
     }
 
     [RelayCommand]
-    private void ExitSearch()
+    public void OpenFans()
     {
-        IsSearchMode = false;
-        SearchKeyword = string.Empty;
-        IsSearchEmpty = false;
-        SearchVideos.Clear();
-        _preventLoadMoreSearch = false;
-        _searchOffset = 0;
-        CancelSearch();
+        if (!CanOpenFans)
+        {
+            if (!IsFansAccessible && !IsMe)
+            {
+                _appViewModel.ShowTip(Resources.PrivacyProtectedTip, InfoType.Warning);
+            }
+            return;
+        }
+
+        _ = SelectSectionAsync(_fansSection, force: true);
     }
 
-    private static UserCard CreateUserCard(
-        UserProfile profile,
-        string fallbackName = "",
-        string fallbackAvatarUrl = ""
-    )
+    [RelayCommand]
+    private void Login()
     {
-        string name = !string.IsNullOrEmpty(profile.User.Name)
-            ? profile.User.Name
-            : (!string.IsNullOrEmpty(fallbackName) ? fallbackName : string.Empty);
-        string avatarUrl = !string.IsNullOrEmpty(profile.User.AvatarUrl)
-            ? profile.User.AvatarUrl
-            : fallbackAvatarUrl;
+        StartupWindow startupWindow = new();
+        startupWindow.Activate();
+    }
+
+    private static UserCard CreateUserCard(UserProfile profile, string name, string avatarUrl)
+    {
         UserAvatar? avatar =
             !string.IsNullOrEmpty(avatarUrl)
             && Uri.TryCreate(avatarUrl, UriKind.Absolute, out Uri? uri)
@@ -438,7 +1415,7 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             {
                 User = new PhoenixReadCopilot.Core.Models.User.User
                 {
-                    Id = !string.IsNullOrEmpty(profile.User.Id) ? profile.User.Id : string.Empty,
+                    Id = profile.User.Id,
                     Name = name,
                     Avatar = avatar,
                 },
@@ -446,33 +1423,10 @@ public sealed partial class UserSpacePageViewModel : ViewModelBase
             },
             Community = new UserCommunity
             {
-                FollowCount = profile.FollowCount,
                 FansCount = profile.FansCount,
+                FollowCount = profile.FollowCount,
                 LikeCount = profile.LikeCount,
             },
         };
-    }
-
-    private void ShowComment(MomentItemViewModel data)
-    {
-        MomentInformation moment = data.Data;
-        if (CommentModule.Id == moment.CommentId)
-        {
-            return;
-        }
-
-        IsCommentsOpened = true;
-        CommentModule.Initialize(moment.CommentId);
-        _ = CommentModule.RefreshAsync();
-    }
-
-    private void CancelSearch()
-    {
-        if (_searchCancellationTokenSource is not null)
-        {
-            _searchCancellationTokenSource.Cancel();
-            _searchCancellationTokenSource.Dispose();
-            _searchCancellationTokenSource = null;
-        }
     }
 }

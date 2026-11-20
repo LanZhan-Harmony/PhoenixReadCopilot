@@ -63,9 +63,7 @@ public sealed class AuthenticationService : IAuthenticationService
     }
 
     /// <inheritdoc/>
-    public Task<IReadOnlyList<LoginRegion>> GetLoginRegionsAsync(
-        CancellationToken cancellationToken = default
-    ) => _apiClient.GetLoginRegionsAsync(cancellationToken);
+    public IReadOnlyList<LoginRegion> GetLoginRegions() => _apiClient.GetLoginRegions();
 
     /// <inheritdoc/>
     public Task<VerificationCodeResult> SendVerificationCodeAsync(
@@ -98,10 +96,14 @@ public sealed class AuthenticationService : IAuthenticationService
         CancellationToken cancellationToken = default
     )
     {
-        QrCodeCheckResult result = await _apiClient.CheckQrCodeStatusAsync(token, cancellationToken);
+        QrCodeCheckResult result = await _apiClient.CheckQrCodeStatusAsync(
+            token,
+            cancellationToken
+        );
         if (result.Status == QrCodeLoginStatus.Confirmed)
         {
-            CurrentUser = result.User ?? await _apiClient.GetCurrentUserInfoAsync(cancellationToken);
+            CurrentUser = result.User
+                ?? await _apiClient.GetCurrentUserInfoAsync(cancellationToken);
             IsAuthenticated = true;
             StateChanged?.Invoke(this, true);
         }

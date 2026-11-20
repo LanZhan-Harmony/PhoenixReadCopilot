@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 public sealed partial class HomePageViewModel : LayoutPageViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IRecommendService _recommendService;
     private readonly ILogger<HomePageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -51,7 +51,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
     /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
     /// </summary>
     public HomePageViewModel(
-        PhoenixReadApiClient apiClient,
+        IRecommendService recommendService,
         ILogger<HomePageViewModel> logger,
         INavigationService navigationService,
         DispatcherQueue dispatcherQueue,
@@ -59,7 +59,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
     )
         : base(settingsService)
     {
-        _apiClient = apiClient;
+        _recommendService = recommendService;
         _logger = logger;
         _navigationService = navigationService;
         _dispatcherQueue = dispatcherQueue;
@@ -143,7 +143,7 @@ public sealed partial class HomePageViewModel : LayoutPageViewModelBase
 
         try
         {
-            RecommendationPage page = await _apiClient.GetRecommendationsAsync(
+            RecommendationPage page = await _recommendService.GetRecommendationsAsync(
                 RecommendationGenre.ShortDrama,
                 offset: _recommendOffset,
                 sessionId: _recommendSessionId,

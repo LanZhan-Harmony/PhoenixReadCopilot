@@ -24,16 +24,12 @@ public sealed class PageService : IPageService
         Configure<SettingsPageViewModel, SettingsPage>();
         Configure<GalleryPageViewModel, GalleryPage>();
         Configure<StartupPageViewModel, StartupPage>();
+        Configure<UserSpacePageViewModel, UserSpacePage>();
 
         // 浮层/详情页面配置
         Configure<VideoPlayerPageViewModel, VideoPlayerPage>();
         Configure<SearchPageViewModel, SearchPage>();
-        Configure<HistoryPageViewModel, HistoryPage>();
-        Configure<FavoritePageViewModel, FavoritePage>();
-        Configure<ViewLaterPageViewModel, ViewLaterPage>();
-        Configure<UserSpacePageViewModel, UserSpacePage>();
-        Configure<FansPageViewModel, FansPage>();
-        Configure<FollowsPageViewModel, FollowsPage>();
+        Configure<ArticlePageViewModel, ArticlePage>();
     }
 
     /// <inheritdoc/>

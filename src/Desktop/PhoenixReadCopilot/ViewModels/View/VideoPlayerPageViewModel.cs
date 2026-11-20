@@ -29,7 +29,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILogger<VideoPlayerPageViewModel> _logger;
     private readonly CommentMainViewModel _comments;
-    private readonly PhoenixReadApiClient _apiClient;
+    private readonly IDramaService _dramaService;
     private readonly DramaReviewSectionDetailViewModel _dramaReviews;
     private readonly IHistoryService _historyService;
     private readonly IPlaybackMediaService _playbackMediaService;
@@ -199,7 +199,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         INavigationService navigationService,
         PinnerViewModel pinnerViewModel,
         DispatcherQueue dispatcherQueue,
-        PhoenixReadApiClient apiClient,
+        IDramaService dramaService,
         DramaReviewSectionDetailViewModel dramaReviews,
         IHistoryService historyService,
         IPlaybackMediaService playbackMediaService,
@@ -212,7 +212,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
         _comments = comments;
-        _apiClient = apiClient;
+        _dramaService = dramaService;
         _dramaReviews = dramaReviews;
         _historyService = historyService;
         _playbackMediaService = playbackMediaService;
@@ -291,9 +291,9 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _dramaId = dramaId;
 
             // 获取红果短剧详情与分集
-            DramaDetails details = await _apiClient.GetDramaDetailsAsync(
+            DramaDetails details = await _dramaService.GetDramaDetailsAsync(
                 _dramaId,
-                _pageLoadCancellationTokenSource.Token
+                cancellationToken: _pageLoadCancellationTokenSource.Token
             );
             _dramaDetails = details;
             _episodes = details.Episodes;
@@ -557,7 +557,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             bool state = !IsLiked;
             if (!string.IsNullOrEmpty(_dramaId) && !string.IsNullOrEmpty(targetVideoId))
             {
-                PhoenixOperationResult res = await _apiClient.SetDramaEpisodeLikeAsync(
+                PhoenixOperationResult res = await _dramaService.SetDramaEpisodeLikeAsync(
                     _dramaId,
                     targetVideoId,
                     state
@@ -623,7 +623,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         try
         {
             string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
-            ShareLink shareInfo = await _apiClient.CreateShareLinkAsync(_dramaId, targetVideoId);
+            ShareLink shareInfo = await _dramaService.CreateShareLinkAsync(_dramaId, targetVideoId);
             string url = !string.IsNullOrEmpty(shareInfo.Url) ? shareInfo.Url : shareInfo.ShortUrl;
 
             DataPackage package = new();
@@ -945,7 +945,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             : "红果独播";
 
         Credits = drama
-            .Credits?.Select(c => new DramaCreditItemViewModel(c, _apiClient, _appViewModel))
+            .Credits?.Select(c => new DramaCreditItemViewModel(c, _appViewModel))
             .ToList()
             ?? [];
         Tags = drama.Tags?.ToList() ?? [];
@@ -1023,7 +1023,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         // 4. 专属关联好剧推荐（调用红果推荐接口）
         try
         {
-            DramaRecommendations rec = await _apiClient.GetDramaRecommendationsAsync(_dramaId);
+            DramaRecommendations rec = await _dramaService.GetDramaRecommendationsAsync(_dramaId);
             if (rec?.Items is { Count: > 0 } recItems)
             {
                 sections.Add(new VideoPlayerRecommendSectionDetailViewModel(recItems));

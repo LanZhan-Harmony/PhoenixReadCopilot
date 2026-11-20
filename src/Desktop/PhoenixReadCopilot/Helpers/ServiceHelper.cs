@@ -58,19 +58,15 @@ internal static class ServiceHelper
             .AddTransient<HomePageViewModel>()
             .AddTransient<CalendarPageViewModel>()
             .AddTransient<FilterPageViewModel>()
-            .AddTransient<FansPageViewModel>()
-            .AddTransient<FavoritePageViewModel>()
-            .AddTransient<FollowsPageViewModel>()
             .AddTransient<GalleryPageViewModel>()
-            .AddTransient<HistoryPageViewModel>()
             .AddTransient<MomentPageViewModel>()
             .AddTransient<RankPageViewModel>()
             .AddTransient<SearchPageViewModel>()
             .AddSingleton<SettingsPageViewModel>()
             .AddSingleton<StartupPageViewModel>()
             .AddTransient<UserSpacePageViewModel>()
+            .AddTransient<ArticlePageViewModel>()
             .AddTransient<VideoPlayerPageViewModel>()
-            .AddTransient<ViewLaterPageViewModel>()
             // Components
             .AddTransient<CommentMainViewModel>();
 

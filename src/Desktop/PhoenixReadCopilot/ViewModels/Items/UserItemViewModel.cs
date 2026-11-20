@@ -6,7 +6,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Core.Models.User;
-using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Strings;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;

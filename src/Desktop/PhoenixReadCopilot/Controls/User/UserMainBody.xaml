@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:UserControlBase
+    x:Class="PhoenixReadCopilot.Controls.User.UserMainBody"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animations="using:CommunityToolkit.WinUI.Animations"
+    xmlns:base="using:WinUIKernel.Share.Base"
+    xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="using:FluentIcons.WinUI"
+    xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+    xmlns:local="using:PhoenixReadCopilot.Controls.User"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:strings="using:PhoenixReadCopilot.Strings"
+    mc:Ignorable="d">
+
+    <local:UserControlBase.Resources>
+        <ResourceDictionary>
+            <!-- 用户短剧卡片专用模板 -->
+            <DataTemplate x:Key="UserVideoItemTemplate" x:DataType="items:VideoItemViewModel">
+                <Button
+                    Padding="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Command="{x:Bind PlayCommand}"
+                    CornerRadius="{StaticResource ControlCornerRadius}"
+                    Style="{StaticResource GridRepeaterItemStyle}">
+                    <Button.ContextFlyout>
+                        <MenuFlyout ShouldConstrainToRootBounds="False">
+                            <MenuFlyoutItem Command="{x:Bind OpenInNewWindowCommand}" Text="{x:Bind strings:Resources.OpenInNewWindow}">
+                                <MenuFlyoutItem.Icon>
+                                    <ic:SymbolIcon Symbol="WindowPlay"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Command="{x:Bind AddToViewLaterCommand}" Text="{x:Bind strings:Resources.AddToViewLater}">
+                                <MenuFlyoutItem.Icon>
+                                    <ic:SymbolIcon Symbol="CalendarAdd"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Command="{x:Bind PinCommand}" Text="{x:Bind strings:Resources.FixContent}">
+                                <MenuFlyoutItem.Icon>
+                                    <ic:SymbolIcon Symbol="Pin"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.ContextFlyout>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- 海报封面容器 -->
+                        <Grid Margin="4" CornerRadius="6">
+                            <components:CoverImage
+                                CornerRadius="6"
+                                Source="{x:Bind Cover}"/>
+
+                            <!-- 评分徽章 (若有评分) -->
+                            <Border
+                                Margin="6"
+                                Padding="6,2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                CornerRadius="4"
+                                Visibility="{x:Bind HasScore, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    Text="{x:Bind Score}"/>
+                            </Border>
+
+                            <!-- 集数徽章 (若有) -->
+                            <Border
+                                Margin="6"
+                                Padding="6,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Background="#B3000000"
+                                CornerRadius="4"
+                                Visibility="{x:Bind EpisodeCountText, Converter={StaticResource ObjectToVisibilityConverter}}">
+                                <TextBlock
+                                    FontSize="10"
+                                    Foreground="White"
+                                    Text="{x:Bind EpisodeCountText}"/>
+                            </Border>
+                        </Grid>
+
+                        <!-- 标题与热度/分类信息 -->
+                        <StackPanel Grid.Row="1" Padding="10,6,10,10" Spacing="4">
+                            <TextBlock
+                                FontWeight="SemiBold"
+                                MaxLines="2"
+                                Text="{x:Bind Title}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="Wrap"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontSize="11"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="{x:Bind Category}"
+                                    TextTrimming="CharacterEllipsis"
+                                    Visibility="{x:Bind Category, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                <components:IconTextBlock
+                                    Grid.Column="1"
+                                    IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                    Symbol="PlayCircle"
+                                    Text="{x:Bind HeatOrPlayCountText}"
+                                    TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                    Visibility="{x:Bind HeatOrPlayCountText, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Button>
+            </DataTemplate>
+
+            <!-- 红果圈动态条目模板 -->
+            <DataTemplate x:Key="CircleFeedItemTemplate" x:DataType="items:CircleFeedItemViewModel">
+                <Button
+                    Padding="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Command="{x:Bind OpenCommand}"
+                    CornerRadius="{StaticResource ControlCornerRadius}"
+                    Style="{StaticResource GridRepeaterItemStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- 封面图片 -->
+                        <Grid CornerRadius="8,8,0,0">
+                            <components:CoverImage
+                                Margin="4"
+                                CornerRadius="6"
+                                Source="{x:Bind CoverUrl}"/>
+
+                            <!-- 短视频标识 (若是短视频) -->
+                            <Border
+                                Margin="10"
+                                Padding="6,2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="#B3000000"
+                                CornerRadius="4"
+                                Visibility="{x:Bind IsVideo, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <ic:SymbolIcon
+                                        FontSize="10"
+                                        Foreground="White"
+                                        Symbol="Video"/>
+                                    <TextBlock
+                                        FontSize="10"
+                                        Foreground="White"
+                                        Text="{x:Bind ViewCount, Converter={StaticResource CountConverter}}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 图文标识 (若是图文) -->
+                            <Border
+                                Margin="10"
+                                Padding="6,2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="#B3000000"
+                                CornerRadius="4"
+                                Visibility="{x:Bind IsVideo, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <ic:SymbolIcon
+                                        FontSize="10"
+                                        Foreground="White"
+                                        Symbol="Document"/>
+                                    <TextBlock
+                                        FontSize="10"
+                                        Foreground="White"
+                                        Text="{x:Bind strings:Resources.Article}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- 文字摘要与作者信息 -->
+                        <StackPanel
+                            Grid.Row="1"
+                            Padding="10,8,10,10"
+                            Spacing="6">
+                            <TextBlock
+                                FontWeight="SemiBold"
+                                MaxLines="2"
+                                Text="{x:Bind Title, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PersonPicture
+                                        Width="18"
+                                        Height="18"
+                                        ProfilePicture="{x:Bind AuthorAvatarUrl, Converter={StaticResource BitmapConverter}}"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="11"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind AuthorName, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+
+                                <StackPanel
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="4">
+                                    <ic:SymbolIcon
+                                        FontSize="10"
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        Symbol="Heart"/>
+                                    <TextBlock
+                                        FontSize="11"
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        Text="{x:Bind LikeCount, Converter={StaticResource CountConverter}}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Button>
+            </DataTemplate>
+        </ResourceDictionary>
+    </local:UserControlBase.Resources>
+
+    <Grid>
+        <!-- 1. 短剧网格模式 -->
+        <ScrollViewer
+            x:Name="VideoScrollView"
+            Padding="0"
+            Style="{StaticResource PageScrollViewerStyle}"
+            Visibility="{x:Bind ViewModel.IsVideoViewVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ItemsRepeater
+                Margin="16,12"
+                ItemTemplate="{StaticResource UserVideoItemTemplate}"
+                ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
+                Layout="{StaticResource VideoLayout}"/>
+        </ScrollViewer>
+
+        <!-- 2. 剧评列表模式 -->
+        <ScrollViewer
+            x:Name="ReviewScrollView"
+            Padding="0"
+            Style="{StaticResource PageScrollViewerStyle}"
+            Visibility="{x:Bind ViewModel.IsReviewViewVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ItemsControl
+                Margin="16,12"
+                ItemsSource="{x:Bind ViewModel.Reviews, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="items:UserReviewItemViewModel">
+                        <local:UserReviewItemControl ViewModel="{x:Bind}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- 3. 红果圈瀑布流/网格模式 -->
+        <ScrollViewer
+            x:Name="CircleScrollView"
+            Padding="0"
+            Style="{StaticResource PageScrollViewerStyle}"
+            Visibility="{x:Bind ViewModel.IsCircleViewVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ItemsRepeater
+                Margin="16,12"
+                ItemTemplate="{StaticResource CircleFeedItemTemplate}"
+                ItemsSource="{x:Bind ViewModel.CircleFeeds, Mode=OneWay}"
+                Layout="{StaticResource VideoLayout}"/>
+        </ScrollViewer>
+
+        <!-- 4. 关注/粉丝用户卡片模式 -->
+        <ScrollViewer
+            x:Name="RelationScrollView"
+            Padding="0"
+            Style="{StaticResource PageScrollViewerStyle}"
+            Visibility="{x:Bind ViewModel.IsRelationViewVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ItemsRepeater
+                Margin="16,12"
+                ItemsSource="{x:Bind ViewModel.Relations, Mode=OneWay}"
+                Layout="{StaticResource UserLayout}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="items:UserItemViewModel">
+                        <components:UserCardControl ViewModel="{x:Bind}"/>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </ScrollViewer>
+
+        <!-- 空状态占位 (仅当非加载中且真正无数据时呈现) -->
+        <base:EmptyHolder
+            Description="{x:Bind ViewModel.EmptyDescription, Mode=OneWay}"
+            Emoji="&#x1F4DA;"
+            Visibility="{x:Bind ViewModel.ShowEmptyHolder, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+        <!-- 加载动画 -->
+        <base:LoadingWidget
+            Text="{x:Bind strings:Resources.LoadingAndWait}"
+            Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+    </Grid>
+</local:UserControlBase>

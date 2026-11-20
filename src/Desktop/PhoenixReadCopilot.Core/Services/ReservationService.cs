@@ -173,7 +173,7 @@ public sealed class ReservationService : IReservationService
             {
                 try
                 {
-                    ReservationPage onlinePage = await _apiClient.GetReservationsAsync(
+                    ReservationPage onlinePage = await _apiClient.GetPendingReservationsAsync(
                         count: count,
                         offset: offset,
                         cancellationToken: cancellationToken
@@ -280,7 +280,7 @@ public sealed class ReservationService : IReservationService
                     CoverUrl = coverUrl ?? string.Empty,
                     ReservedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     ReleaseAtUnixSeconds = releaseAtUnixSeconds,
-                    IsActive = true,
+                    IsAvailable = true,
                 };
 
                 if (index >= 0)

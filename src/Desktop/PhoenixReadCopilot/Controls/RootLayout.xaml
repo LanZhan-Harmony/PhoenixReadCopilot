@@ -82,7 +82,7 @@
                     <components:TopNavigationItem Click="OnFavoriteButtonClick"
                                                   IsSelected="{x:Bind ViewModel.IsFavoritePage, Mode=OneWay}"
                                                   Symbol="StarLineHorizontal3"
-                                                  ToolTipService.ToolTip="{x:Bind strings:Resources.MyFavorite}"/>
+                                                  ToolTipService.ToolTip="{x:Bind strings:Resources.Favorite}"/>
                     <components:TopNavigationItem Click="OnViewLaterButtonClick"
                                                   IsSelected="{x:Bind ViewModel.IsViewLaterPage, Mode=OneWay}"
                                                   Symbol="CalendarClock"
@@ -90,7 +90,7 @@
                     <components:TopNavigationItem Click="OnHistoryButtonClick"
                                                   IsSelected="{x:Bind ViewModel.IsHistoryPage, Mode=OneWay}"
                                                   Symbol="History"
-                                                  ToolTipService.ToolTip="{x:Bind strings:Resources.ViewHistory}"/>
+                                                  ToolTipService.ToolTip="{x:Bind strings:Resources.History}"/>
                 </StackPanel>
             </base:AppTitleBar.Header>
 
