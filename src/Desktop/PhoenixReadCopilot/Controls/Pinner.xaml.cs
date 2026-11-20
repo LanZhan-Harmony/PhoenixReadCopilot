@@ -5,6 +5,7 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Core.Models.User;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
@@ -42,7 +43,7 @@ public sealed partial class Pinner : PinnerBase
         INavigationService navVM = _navigationService;
         if (item.Type == PinType.User)
         {
-            User user = new()
+            PhoenixReadCopilot.Core.Models.User.User user = new()
             {
                 Id = item.Id,
                 Name = item.Title,

@@ -333,6 +333,12 @@
   <data name="FailedToRemoveVideoFromViewLater" xml:space="preserve">
     <value>尝试移除视频失败，请稍后重试</value>
   </data>
+  <data name="Fans" xml:space="preserve">
+    <value>粉丝</value>
+  </data>
+  <data name="Likes" xml:space="preserve">
+    <value>获赞</value>
+  </data>
   <data name="FansCount" xml:space="preserve">
     <value>粉丝数</value>
   </data>
@@ -452,12 +458,6 @@
   </data>
   <data name="MyFans" xml:space="preserve">
     <value>我的粉丝</value>
-  </data>
-  <data name="MyFavorite" xml:space="preserve">
-    <value>我的收藏</value>
-  </data>
-  <data name="MyFavoriteCalendar" xml:space="preserve">
-    <value>我的预约</value>
   </data>
   <data name="MyFavoriteFilm" xml:space="preserve">
     <value>我的追剧</value>
@@ -747,8 +747,8 @@
   <data name="VideoDynamicNotification" xml:space="preserve">
     <value>新视频动态通知</value>
   </data>
-  <data name="ViewHistory" xml:space="preserve">
-    <value>观看历史</value>
+  <data name="History" xml:space="preserve">
+    <value>历史</value>
   </data>
   <data name="ViewLater" xml:space="preserve">
     <value>稍后再看</value>
@@ -943,5 +943,41 @@
   </data>
   <data name="FavoriteFailed" xml:space="preserve">
     <value>追剧操作失败</value>
+  </data>
+  <data name="PersonalSpace" xml:space="preserve">
+    <value>个人主页</value>
+  </data>
+  <data name="UserWorks" xml:space="preserve">
+    <value>作品</value>
+  </data>
+  <data name="UserCollections" xml:space="preserve">
+    <value>合集</value>
+  </data>
+  <data name="UserReviews" xml:space="preserve">
+    <value>剧评</value>
+  </data>
+  <data name="CircleFeed" xml:space="preserve">
+    <value>红果圈</value>
+  </data>
+  <data name="Article" xml:space="preserve">
+    <value>图文</value>
+  </data>
+  <data name="ShortVideo" xml:space="preserve">
+    <value>短视频</value>
+  </data>
+  <data name="PrivacyProtected" xml:space="preserve">
+    <value>隐私保护</value>
+  </data>
+  <data name="PrivacyProtectedTip" xml:space="preserve">
+    <value>该用户设置了隐私保护，暂不可查看</value>
+  </data>
+  <data name="LoginRequiredTip" xml:space="preserve">
+    <value>请登录账号后查看完整内容</value>
+  </data>
+  <data name="UserLikes" xml:space="preserve">
+    <value>点赞</value>
+  </data>
+  <data name="ArticleDetail" xml:space="preserve">
+    <value>图文动态</value>
   </data>
 </root>

@@ -81,4 +81,10 @@ public sealed partial class RootLayoutViewModel : ViewModelBase
     /// </summary>
     public void NavigateToOver(Type pageType, object? parameter = null) =>
         _navigationService.NavigateToOver(pageType, parameter);
+
+    /// <summary>
+    /// 导航到主页面.
+    /// </summary>
+    public void NavigateTo(Type pageType, object? parameter = null) =>
+        _navigationService.NavigateTo(pageType, parameter);
 }

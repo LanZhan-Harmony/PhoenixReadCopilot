@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
-using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Pages;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;

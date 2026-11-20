@@ -10,7 +10,10 @@
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageVersion
+      Include="CommunityToolkit.WinUI.Controls.SettingsControls"
+      Version="8.2.251219"
+    />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Media" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Triggers" Version="8.2.251219" />
@@ -33,7 +36,7 @@
     <PackageVersion Include="Microsoft.WindowsAppSDK.Widgets" Version="2.6.5" />
     <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.6.5" />
     <PackageVersion Include="Microsoft.Windows.AI.MachineLearning" Version="2.4.89" />
-    <PackageVersion Include="PhoenixReadApi" Version="0.5.0" />
+    <PackageVersion Include="PhoenixReadApi" Version="0.5.1" />
     <PackageVersion Include="ReswPlus" Version="0.6.1" />
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="Serde" Version="0.18.3" />

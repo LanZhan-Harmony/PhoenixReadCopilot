@@ -30,6 +30,36 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
     private readonly Action<DramaReviewItemViewModel>? _showMoreAction;
 
     public DramaReviewItemViewModel(
+        DramaReview review,
+        string dramaId,
+        ICommentService commentService,
+        IAuthenticationService authService,
+        AppViewModel appViewModel,
+        ILogger logger,
+        Action<DramaReviewItemViewModel>? showMoreAction = null
+    )
+        : this(
+            new Comment
+            {
+                Id = review.Id,
+                Text = review.Text,
+                Author = review.Author,
+                CreatedAtUnixSeconds = review.CreatedAtUnixSeconds,
+                LikeCount = review.LikeCount,
+                ReplyCount = review.ReplyCount,
+                Images = review.Images,
+            },
+            dramaId,
+            commentService,
+            authService,
+            appViewModel,
+            logger,
+            showMoreAction
+        )
+    {
+    }
+
+    public DramaReviewItemViewModel(
         Comment comment,
         string dramaId,
         ICommentService commentService,
@@ -370,7 +400,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
         UpdateLoginState();
         try
         {
-            CommentPage page = await _commentService.GetDramaReviewsAsync(
+            DramaReviewPage page = await _commentService.GetDramaReviewsAsync(
                 DramaId,
                 count: 20,
                 cursor: _cursor,
@@ -380,7 +410,7 @@ public sealed partial class DramaReviewSectionDetailViewModel
             _hasMore = page.HasMore;
             TotalCount = page.Total;
 
-            foreach (Comment item in page.Items)
+            foreach (DramaReview item in page.Items)
             {
                 if (!Reviews.Any(r => r.Id == item.Id))
                 {

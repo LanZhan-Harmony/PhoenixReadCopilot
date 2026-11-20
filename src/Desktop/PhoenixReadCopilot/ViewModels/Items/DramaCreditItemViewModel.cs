@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -15,19 +15,16 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit>
 {
-    private readonly PhoenixReadApiClient _apiClient;
     private readonly AppViewModel _appViewModel;
     private readonly ILogger<DramaCreditItemViewModel> _logger;
 
     public DramaCreditItemViewModel(
         DramaCredit credit,
-        PhoenixReadApiClient apiClient,
         AppViewModel? appViewModel = null,
         ILogger<DramaCreditItemViewModel>? logger = null
     )
         : base(credit)
     {
-        _apiClient = apiClient;
         _appViewModel = appViewModel ?? ItemServices.App;
         _logger = logger
             ?? CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<
@@ -56,7 +53,10 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
             RoleText = "参演";
         }
 
-        IsFollowed = User is not null && !string.IsNullOrEmpty(User.Id) && ItemServices.Follow.IsFollowing(User.Id);
+        IsFollowed =
+            User is not null
+            && !string.IsNullOrEmpty(User.Id)
+            && ItemServices.Follow.IsFollowing(User.Id);
     }
 
     public User User { get; }
@@ -101,7 +101,11 @@ public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit
         try
         {
             bool next = !IsFollowed;
-            PhoenixOperationResult res = await ItemServices.Follow.SetFollowAsync(User.Id, next, User);
+            PhoenixOperationResult res = await ItemServices.Follow.SetFollowAsync(
+                User.Id,
+                next,
+                User
+            );
             if (res.Succeeded)
             {
                 IsFollowed = next;

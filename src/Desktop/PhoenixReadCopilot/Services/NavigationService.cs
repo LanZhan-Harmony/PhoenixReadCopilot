@@ -6,6 +6,7 @@ using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Forms;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.ViewModels;
@@ -165,6 +166,10 @@ public sealed class NavigationService : INavigationService, INavServiceViewModel
             && _frame.Content.GetType().FullName == lastSelectedPage
         )
         {
+            if (parameter is not null && _frame.Content is UserSpacePage userSpacePage)
+            {
+                _ = userSpacePage.ViewModel.InitializeAsync(parameter);
+            }
             return true;
         }
 
@@ -281,13 +286,9 @@ public sealed class NavigationService : INavigationService, INavServiceViewModel
     /// <inheritdoc/>
     public void SearchInRegion(string keyword)
     {
-        if (_overFrame?.Content is UserSpacePage usp)
+        if ((_overFrame?.Content as UserSpacePage ?? _frame?.Content as UserSpacePage) is { } usp)
         {
             usp.ViewModel.Search(keyword);
-        }
-        else if (_overFrame?.Content is HistoryPage hp)
-        {
-            hp.ViewModel.Search(keyword);
         }
     }
 
@@ -317,6 +318,7 @@ public sealed class NavigationService : INavigationService, INavServiceViewModel
 
     private void OnFrameNavigated(object sender, NavigationEventArgs e)
     {
+        CheckSubPageStatus();
         Navigated?.Invoke(this, e.SourcePageType);
     }
 
@@ -328,10 +330,20 @@ public sealed class NavigationService : INavigationService, INavServiceViewModel
 
     private void CheckSubPageStatus()
     {
-        Type? overPageType = _overFrame?.Content?.GetType();
-        IsFavoritePage = IsOverlayOpen && overPageType == typeof(FavoritePage);
-        IsHistoryPage = IsOverlayOpen && overPageType == typeof(HistoryPage);
-        IsViewLaterPage = IsOverlayOpen && overPageType == typeof(ViewLaterPage);
+        if (!IsOverlayOpen && _frame?.Content is UserSpacePage userSpacePage)
+        {
+            string? sectionId = userSpacePage.ViewModel.SelectedSection?.Id;
+            IsFavoritePage = userSpacePage.ViewModel.IsMe && sectionId == "Favorite";
+            IsHistoryPage = userSpacePage.ViewModel.IsMe && sectionId == "History";
+            IsViewLaterPage = userSpacePage.ViewModel.IsMe && sectionId == "ViewLater";
+        }
+        else
+        {
+            IsFavoritePage = false;
+            IsHistoryPage = false;
+            IsViewLaterPage = false;
+        }
+
         SubPageStatusChanged?.Invoke(this, EventArgs.Empty);
     }
 

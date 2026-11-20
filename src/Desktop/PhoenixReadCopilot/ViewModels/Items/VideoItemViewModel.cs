@@ -11,6 +11,7 @@ using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using Windows.Globalization;
 using WinUIKernel.Share.Base;

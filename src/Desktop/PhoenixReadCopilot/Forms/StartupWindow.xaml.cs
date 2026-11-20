@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
-using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
@@ -18,8 +18,8 @@ public sealed partial class StartupWindow : WindowEx
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
     private readonly StartupPageViewModel _startupViewModel =
         Ioc.Default.GetRequiredService<StartupPageViewModel>();
-    private readonly PhoenixReadApiClient _apiClient =
-        Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
+    private readonly IAuthenticationService _authService =
+        Ioc.Default.GetRequiredService<IAuthenticationService>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupWindow"/> class.
@@ -56,7 +56,7 @@ public sealed partial class StartupWindow : WindowEx
         bool isAuthenticated = false;
         try
         {
-            isAuthenticated = _apiClient.GetAuthenticationState().IsAuthenticated;
+            isAuthenticated = _authService.IsAuthenticated;
         }
         catch
         {

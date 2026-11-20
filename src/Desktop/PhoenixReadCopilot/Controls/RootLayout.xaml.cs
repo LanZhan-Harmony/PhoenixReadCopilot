@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Services;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -213,13 +214,13 @@ public sealed partial class RootLayout : RootLayoutBase
         _appViewModel.HideUpdate();
 
     private void OnFavoriteButtonClick(object sender, EventArgs e) =>
-        ViewModel.NavigateToOver(typeof(FavoritePage), null);
+        ViewModel.NavigateTo(typeof(UserSpacePage), "Favorite");
 
     private void OnViewLaterButtonClick(object sender, EventArgs e) =>
-        ViewModel.NavigateToOver(typeof(ViewLaterPage), null);
+        ViewModel.NavigateTo(typeof(UserSpacePage), "ViewLater");
 
     private void OnHistoryButtonClick(object sender, EventArgs e) =>
-        ViewModel.NavigateToOver(typeof(HistoryPage), null);
+        ViewModel.NavigateTo(typeof(UserSpacePage), "History");
 
     private void OnVideoBackRequested(TitleBar sender, object args) =>
         TryBackToDefaultIfPlayerHostMode();

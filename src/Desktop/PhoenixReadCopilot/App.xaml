@@ -29,6 +29,7 @@
             <converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
             <converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityReverseConverter" IsReverse="True"/>
             <converters:BoolToIconVariantConverter x:Key="BoolToIconVariantConverter"/>
+            <localConverters:BoolToFollowTextConverter x:Key="BoolToFollowTextConverter"/>
             <localConverters:UriToBitmapConverter x:Key="BitmapConverter"/>
             <localConverters:CountConverter x:Key="CountConverter"/>
             <localConverters:GridLengthConverter x:Key="GridLengthConverter"/>

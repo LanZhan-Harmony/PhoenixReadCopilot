@@ -35,7 +35,7 @@ public interface ICommentService
     /// <param name="sort">排序规则（默认最热）.</param>
     /// <param name="cancellationToken">取消令牌.</param>
     /// <returns>剧评分页数据.</returns>
-    Task<CommentPage> GetDramaReviewsAsync(
+    Task<DramaReviewPage> GetDramaReviewsAsync(
         string dramaId,
         int count = 20,
         string cursor = "",

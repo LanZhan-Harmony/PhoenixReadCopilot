@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
 using WinUIKernel.Share.Base;
 
@@ -75,8 +75,8 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
     /// </summary>
     public void UpdateLoginState()
     {
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
-        bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        IAuthenticationService? authService = Ioc.Default.GetService<IAuthenticationService>();
+        bool isAuthenticated = authService?.IsAuthenticated ?? false;
         ReplyBox.IsEnabled = isAuthenticated;
         ReplyBox.PlaceholderText = isAuthenticated
             ? Strings.Resources.ReplyPlaceholderText
@@ -124,8 +124,8 @@ public sealed partial class CommentTextBox : LayoutUserControlBase
         AutoSuggestBoxQuerySubmittedEventArgs args
     )
     {
-        PhoenixReadApiClient? apiClient = Ioc.Default.GetRequiredService<PhoenixReadApiClient>();
-        bool isAuthenticated = apiClient?.GetAuthenticationState().IsAuthenticated ?? false;
+        IAuthenticationService? authService = Ioc.Default.GetService<IAuthenticationService>();
+        bool isAuthenticated = authService?.IsAuthenticated ?? false;
         if (!isAuthenticated)
         {
             UpdateLoginState();

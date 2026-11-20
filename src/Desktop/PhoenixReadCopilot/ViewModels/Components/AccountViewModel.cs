@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.User;
-using PhoenixReadCopilot.Pages.Overlay;
+using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
@@ -16,7 +16,6 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// </summary>
 public sealed partial class AccountViewModel : ViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
     private readonly IAuthenticationService _authService;
     private readonly IHistoryService _historyService;
     private readonly IFavoriteService _favoriteService;
@@ -47,7 +46,6 @@ public sealed partial class AccountViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="AccountViewModel"/> class.
     /// </summary>
     public AccountViewModel(
-        PhoenixReadApiClient apiClient,
         IAuthenticationService authService,
         IHistoryService historyService,
         IFavoriteService favoriteService,
@@ -57,7 +55,6 @@ public sealed partial class AccountViewModel : ViewModelBase
         ILogger<AccountViewModel> logger
     )
     {
-        _apiClient = apiClient;
         _authService = authService;
         _historyService = historyService;
         _favoriteService = favoriteService;
@@ -171,26 +168,23 @@ public sealed partial class AccountViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowFollows() => _navService.NavigateToOver(typeof(FollowsPage));
+    private void ShowFollows() => _navService.NavigateTo(typeof(UserSpacePage), "Follows");
 
     [RelayCommand]
-    private void ShowFans() => _navService.NavigateToOver(typeof(FansPage));
+    private void ShowFans() => _navService.NavigateTo(typeof(UserSpacePage), "Fans");
 
     [RelayCommand]
     private void ShowMoments()
     {
-        if (MyProfile is not null)
-        {
-            _navService.NavigateToOver(typeof(UserSpacePage), MyProfile.User.Id);
-        }
+        _navService.NavigateTo(typeof(UserSpacePage), MyProfile?.User.Id);
     }
 
     [RelayCommand]
-    private void ShowViewLater() => _navService.NavigateToOver(typeof(ViewLaterPage));
+    private void ShowViewLater() => _navService.NavigateTo(typeof(UserSpacePage), "ViewLater");
 
     [RelayCommand]
-    private void ShowHistory() => _navService.NavigateToOver(typeof(HistoryPage));
+    private void ShowHistory() => _navService.NavigateTo(typeof(UserSpacePage), "History");
 
     [RelayCommand]
-    private void ShowFavorite() => _navService.NavigateToOver(typeof(FavoritePage));
+    private void ShowFavorite() => _navService.NavigateTo(typeof(UserSpacePage), "Favorite");
 }

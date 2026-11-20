@@ -58,6 +58,9 @@ public static class ServiceHelper
         services.AddSingleton<IRankService, RankService>();
         services.AddSingleton<ICalendarService, CalendarService>();
         services.AddSingleton<IFilterService, FilterService>();
+        services.AddSingleton<IDramaService, DramaService>();
+        services.AddSingleton<IRecommendService, RecommendService>();
+        services.AddSingleton<IUserService, UserService>();
 
         services.AddSingleton<PhoenixReadApiClient>(sp =>
         {

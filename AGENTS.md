@@ -41,7 +41,7 @@ d:\code\WinUI3\PhoenixReadCopilot\
 │   │   │   ├── Strings/                        # ReswPlus 多语言本地化资源（zh-CN, en-US）
 │   │   │   ├── Styles/                         # XAML 样式与 ResourceDictionary 资源字典
 │   │   │   ├── Toolkits/                       # 偏系统/UI 交互的工具类（AppToolkit, SettingsToolkit 等）
-│   │   │   └── ViewModels/                     # MVVM 视图模型（按层次拆分）
+│   │   │   └── ViewModels/                     # MVVM 视图模型
 │   │   │       ├── Core/                       # 应用级核心 ViewModel（App, Navigation, Player 等）
 │   │   │       ├── View/                       # 页面级 ViewModel（以独立文件夹存放）
 │   │   │       ├── Components/                 # 组件级 ViewModel（评论区、搜索框等）
@@ -75,9 +75,7 @@ d:\code\WinUI3\PhoenixReadCopilot\
 
 ---
 
-## 3. ViewModel 架构与多文件 Partial 拆分规范
-
-本项目强依赖 `CommunityToolkit.Mvvm` 的源代码生成器。为了保证单个文件职责单一、避免上千行臃肿代码，**所有复杂的页面级 ViewModel 必须建立独立文件夹，并采用 `partial class` 分离拆分**：
+## 3. ViewModel 规范：
 
 ### 3.1 属性定义语法（强制 Partial Property 语法）
 

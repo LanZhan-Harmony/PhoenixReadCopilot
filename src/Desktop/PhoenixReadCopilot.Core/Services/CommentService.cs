@@ -54,13 +54,16 @@ public sealed class CommentService : ICommentService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"获取分集评论失败: dramaId={dramaId}, videoId={videoId}, cursor={cursor}");
+            _logger.ZLogError(
+                ex,
+                $"获取分集评论失败: dramaId={dramaId}, videoId={videoId}, cursor={cursor}"
+            );
             throw;
         }
     }
 
     /// <inheritdoc/>
-    public async Task<CommentPage> GetDramaReviewsAsync(
+    public async Task<DramaReviewPage> GetDramaReviewsAsync(
         string dramaId,
         int count = 20,
         string cursor = "",
@@ -113,7 +116,10 @@ public sealed class CommentService : ICommentService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"获取分集评论回复失败: commentId={commentId}, videoId={videoId}");
+            _logger.ZLogError(
+                ex,
+                $"获取分集评论回复失败: commentId={commentId}, videoId={videoId}"
+            );
             throw;
         }
     }
@@ -198,12 +204,7 @@ public sealed class CommentService : ICommentService
 
         try
         {
-            return await _apiClient.SendDramaReviewAsync(
-                dramaId,
-                rating,
-                text,
-                cancellationToken
-            );
+            return await _apiClient.SendDramaReviewAsync(dramaId, rating, text, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -245,7 +246,10 @@ public sealed class CommentService : ICommentService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"发送分集评论回复失败: commentId={commentId}, videoId={videoId}");
+            _logger.ZLogError(
+                ex,
+                $"发送分集评论回复失败: commentId={commentId}, videoId={videoId}"
+            );
             throw;
         }
     }
@@ -335,7 +339,7 @@ public sealed class CommentService : ICommentService
 
         try
         {
-            return await _apiClient.SetReviewLikeAsync(
+            return await _apiClient.SetDramaReviewLikeAsync(
                 commentId,
                 dramaId,
                 active,
@@ -344,7 +348,10 @@ public sealed class CommentService : ICommentService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"设置剧评点赞状态失败: commentId={commentId}, dramaId={dramaId}, active={active}");
+            _logger.ZLogError(
+                ex,
+                $"设置剧评点赞状态失败: commentId={commentId}, dramaId={dramaId}, active={active}"
+            );
             throw;
         }
     }
@@ -367,12 +374,7 @@ public sealed class CommentService : ICommentService
 
         try
         {
-            return await _apiClient.SetReplyLikeAsync(
-                replyId,
-                groupId,
-                active,
-                cancellationToken
-            );
+            return await _apiClient.SetReplyLikeAsync(replyId, groupId, active, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -398,11 +400,7 @@ public sealed class CommentService : ICommentService
 
         try
         {
-            return await _apiClient.DeleteCommentAsync(
-                commentId,
-                groupId,
-                cancellationToken
-            );
+            return await _apiClient.DeleteCommentAsync(commentId, groupId, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -428,11 +426,7 @@ public sealed class CommentService : ICommentService
 
         try
         {
-            return await _apiClient.DeleteDramaReviewAsync(
-                commentId,
-                dramaId,
-                cancellationToken
-            );
+            return await _apiClient.DeleteDramaReviewAsync(commentId, dramaId, cancellationToken);
         }
         catch (Exception ex)
         {
