@@ -2,8 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:converters="using:WinUIKernel.Share.Converters">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/AppTitleBar/AppTitleBar.xaml"/>
-        <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/CardControl/CardControl.xaml"/>
         <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/CustomNavigationViewResources.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 

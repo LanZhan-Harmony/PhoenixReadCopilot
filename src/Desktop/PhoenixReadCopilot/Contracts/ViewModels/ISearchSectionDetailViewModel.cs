@@ -1,28 +1,24 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Search;
 
-namespace PhoenixReadCopilot.ViewModels.Items;
+namespace PhoenixReadCopilot.Contracts.ViewModels;
 
 /// <summary>
-/// 历史记录详情区块.
+/// 搜索分区详情视图模型.
 /// </summary>
-public interface IHistorySectionDetailViewModel : INotifyPropertyChanged
+public interface ISearchSectionDetailViewModel : INotifyPropertyChanged
 {
     /// <summary>
-    /// 历史记录类型.
+    /// 分区类型.
     /// </summary>
-    ViewHistoryTabType Type { get; }
+    public SearchSectionType SectionType { get; }
 
     /// <summary>
     /// 是否为空.
     /// </summary>
     public bool IsEmpty { get; }
-
-    /// <summary>
-    /// 是否正在加载.
-    /// </summary>
-    public bool IsLoading { get; }
 
     /// <summary>
     /// 尝试首次加载.
@@ -35,7 +31,12 @@ public interface IHistorySectionDetailViewModel : INotifyPropertyChanged
     IAsyncRelayCommand RefreshCommand { get; }
 
     /// <summary>
-    /// 刷新数据.
+    /// 初始化.
     /// </summary>
-    Task RefreshAsync();
+    void Initialize(string keyword, SearchPartition partition);
+
+    /// <summary>
+    /// 清理数据.
+    /// </summary>
+    void Clear();
 }

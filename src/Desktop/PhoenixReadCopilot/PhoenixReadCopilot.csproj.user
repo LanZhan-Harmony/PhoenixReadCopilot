@@ -6,4 +6,12 @@
   <PropertyGroup>
     <ActiveDebugProfile>PhoenixReadCopilot (Unpackaged)</ActiveDebugProfile>
   </PropertyGroup>
+  <ItemGroup>
+    <Page Update="Controls\User\UserVideoItemTemplate.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\TitleBar.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
                              xmlns:animations="using:CommunityToolkit.WinUI.Animations"
                              xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                             xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+                             xmlns:items="using:PhoenixReadCopilot.Contracts.ViewModels"
                              xmlns:local="using:PhoenixReadCopilot.Controls.Search"
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                              xmlns:strings="using:PhoenixReadCopilot.Strings"

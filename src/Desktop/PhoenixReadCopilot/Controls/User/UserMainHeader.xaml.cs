@@ -18,12 +18,12 @@ public sealed partial class UserMainHeader : UserControlBase
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(UserSpacePageViewModel? oldViewModel, UserSpacePageViewModel? newViewModel)
+    protected override void OnViewModelChanged(
+        UserSpacePageViewModel? oldViewModel,
+        UserSpacePageViewModel? newViewModel
+    )
     {
-        if (oldViewModel != null)
-        {
-            oldViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        oldViewModel?.PropertyChanged -= OnViewModelPropertyChanged;
 
         if (newViewModel != null)
         {
@@ -58,11 +58,7 @@ public sealed partial class UserMainHeader : UserControlBase
                 SelectorBarItem? targetItem = null;
                 foreach (UserSpaceSubTabItemViewModel subTab in section.SubTabs)
                 {
-                    SelectorBarItem item = new()
-                    {
-                        Text = subTab.Title,
-                        Tag = subTab,
-                    };
+                    SelectorBarItem item = new() { Text = subTab.Title, Tag = subTab };
                     SubTabSelector.Items.Add(item);
 
                     if (subTab == section.SelectedSubTab)
@@ -84,7 +80,10 @@ public sealed partial class UserMainHeader : UserControlBase
         }
     }
 
-    private void OnSubTabSelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    private void OnSubTabSelectionChanged(
+        SelectorBar sender,
+        SelectorBarSelectionChangedEventArgs args
+    )
     {
         if (_isUpdating)
         {

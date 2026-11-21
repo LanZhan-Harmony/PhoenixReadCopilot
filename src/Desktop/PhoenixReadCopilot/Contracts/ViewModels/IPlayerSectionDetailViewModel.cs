@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace PhoenixReadCopilot.ViewModels.Items;
+namespace PhoenixReadCopilot.Contracts.ViewModels;
 
 /// <summary>
 /// 播放器区块详情视图模型.

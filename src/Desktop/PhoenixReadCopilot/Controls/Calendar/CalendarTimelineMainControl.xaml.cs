@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUI3Package;
-using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.Controls.Calendar;
 
@@ -98,7 +97,6 @@ public sealed partial class CalendarTimelineMainControl : CalendarTimelineContro
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (

@@ -97,10 +97,7 @@ public sealed class NavigationViewService : INavigationViewService
                 AppNavigationItemViewModel? firstVisible = MenuItems.FirstOrDefault(p =>
                     p.IsVisible
                 );
-                if (firstVisible != null)
-                {
-                    firstVisible.NavigateCommand.Execute(null);
-                }
+                firstVisible?.NavigateCommand.Execute(null);
             }
         }
     }

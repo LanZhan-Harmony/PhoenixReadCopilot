@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Extensions;
 

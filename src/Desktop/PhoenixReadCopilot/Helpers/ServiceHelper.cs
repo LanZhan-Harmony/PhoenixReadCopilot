@@ -31,7 +31,6 @@ internal static class ServiceHelper
             .AddSingleton<IPathService, PathService>()
             .AddSingleton<ILocalizationService, LocalizationService>()
             .AddSingleton<IFontToolkit, SharedFontToolkit>()
-            .AddSingleton<IResourceToolkit, SharedResourceToolkit>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
             .AddSingleton(DispatcherQueue.GetForCurrentThread())
             .AddSingleton<ISubtitleService, SubtitleService>()

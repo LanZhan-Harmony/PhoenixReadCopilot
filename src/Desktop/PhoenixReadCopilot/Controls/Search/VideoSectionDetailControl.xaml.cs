@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.Components;
 using WinUI3Package;
-using WinUIKernel.Share;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Search;
@@ -49,7 +48,6 @@ public sealed partial class VideoSectionDetailControl : VideoSectionDetailContro
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (

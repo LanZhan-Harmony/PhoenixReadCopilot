@@ -33,6 +33,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Styles\TitleBar.xaml" />
+  </ItemGroup>
   
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
@@ -93,6 +97,20 @@
     <ProjectReference Include="..\..\Libs\WinUIKernel.Share\WinUIKernel.Share.csproj" />
     <ProjectReference Include="..\..\Updater\PhoenixReadCopilot.Updater\PhoenixReadCopilot.Updater.csproj" />
     <ProjectReference Include="..\PhoenixReadCopilot.Core\PhoenixReadCopilot.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\User\UserReviewItemTemplate.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\User\UserItemTemplate.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\User\CircleFeedItemTemplate.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\TitleBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--

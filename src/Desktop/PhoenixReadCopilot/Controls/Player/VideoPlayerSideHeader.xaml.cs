@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.ViewModels.Items;
+using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Player;

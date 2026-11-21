@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.ViewModels.Items;
+using PhoenixReadCopilot.Contracts.ViewModels;
 
 namespace PhoenixReadCopilot.Controls.Search;
 

@@ -20,8 +20,10 @@ namespace PhoenixReadCopilot.Controls;
 public sealed partial class RootLayout : RootLayoutBase
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
-    private readonly INavigationService _navigationService = Ioc.Default.GetRequiredService<INavigationService>();
-    private readonly INavigationViewService _navigationViewService = Ioc.Default.GetRequiredService<INavigationViewService>();
+    private readonly INavigationService _navigationService =
+        Ioc.Default.GetRequiredService<INavigationService>();
+    private readonly INavigationViewService _navigationViewService =
+        Ioc.Default.GetRequiredService<INavigationViewService>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayout"/> class.
@@ -34,8 +36,8 @@ public sealed partial class RootLayout : RootLayoutBase
     /// <summary>
     /// 获取主标题栏.
     /// </summary>
-    /// <returns><see cref="AppTitleBar"/>.</returns>
-    public AppTitleBar GetMainTitleBar() => MainTitleBar;
+    /// <returns><see cref="TitleBar"/>.</returns>
+    public TitleBar GetMainTitleBar() => MainTitleBar;
 
     /// <summary>
     /// 获取二级标题栏.
@@ -97,9 +99,6 @@ public sealed partial class RootLayout : RootLayoutBase
         {
             vPage.ExitPlayerHostMode();
         }
-
-        MainTitleBar.UpdatePadding();
-        MainTitleBar.DelayUpdateAsync(100);
     }
 
     /// <summary>
@@ -189,8 +188,8 @@ public sealed partial class RootLayout : RootLayoutBase
         }
         _navigationViewService.Initialize(NavView);
 
-        AppNavigationItemViewModel? selectedItem = _navigationViewService.MenuItems.FirstOrDefault(p =>
-            p.IsSelected
+        AppNavigationItemViewModel? selectedItem = _navigationViewService.MenuItems.FirstOrDefault(
+            p => p.IsSelected
         );
         if (selectedItem is not null)
         {
@@ -205,13 +204,7 @@ public sealed partial class RootLayout : RootLayoutBase
         _navigationViewService.UnregisterEvents();
     }
 
-    private void OnBackRequested(object sender, EventArgs e) => ViewModel.Back();
-
-    private void OnUpdateActionButtonClick(TeachingTip sender, object args) =>
-        _ = _appViewModel.ShowUpdateAsync();
-
-    private void OnUpdateCloseButtonClick(TeachingTip sender, object args) =>
-        _appViewModel.HideUpdate();
+    private void OnBackRequested(TitleBar sender, object args) => ViewModel.Back();
 
     private void OnFavoriteButtonClick(object sender, EventArgs e) =>
         ViewModel.NavigateTo(typeof(UserSpacePage), "Favorite");

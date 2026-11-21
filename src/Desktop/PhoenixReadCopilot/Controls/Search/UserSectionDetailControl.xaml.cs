@@ -1,8 +1,9 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.Components;
-using WinUIKernel.Share;
+using WinUI3Package;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Search;
@@ -47,7 +48,6 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        WinUIKernelShareExtensions.IsCardAnimationEnabled = !args.IsIntermediate;
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (
@@ -79,6 +79,34 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
                 _ = ViewModel.LoadItemsAsync();
             }
         });
+    }
+
+    private void UserRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, GridViewRevealFocusPanel);
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
+        }
+    }
+
+    private void UserRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            CompositionFactory.DisableStandardReposition(element);
+        }
     }
 }
 

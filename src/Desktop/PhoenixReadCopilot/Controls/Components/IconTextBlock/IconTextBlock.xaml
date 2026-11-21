@@ -18,6 +18,7 @@
                                        Grid.Column="0"
                                        VerticalAlignment="Center"
                                        FontSize="{TemplateBinding IconSize}"
+                                       IconVariant="{TemplateBinding IconVarient}"
                                        Symbol="{TemplateBinding Symbol}"/>
                         <TextBlock x:Name="PART_Text"
                                    Grid.Column="1"

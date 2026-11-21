@@ -5,26 +5,34 @@
                                     xmlns:base="using:WinUIKernel.Share.Base"
                                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                    xmlns:essential="using:WinUI3Package"
                                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                                     xmlns:local="using:PhoenixReadCopilot.Controls.Search"
                                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                     xmlns:strings="using:PhoenixReadCopilot.Strings"
+                                    xmlns:user="using:PhoenixReadCopilot.Controls.User"
                                     mc:Ignorable="d">
 
+    <local:UserSectionDetailControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <user:UserItemTemplate/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </local:UserSectionDetailControlBase.Resources>
+
     <Grid>
-        <ScrollViewer x:Name="UserScrollView" Style="{StaticResource PageScrollViewerStyle}">
-            <Grid Margin="16,12">
+        <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
+            <ScrollViewer x:Name="UserScrollView" Style="{StaticResource PageScrollViewerStyle}">
                 <ItemsRepeater x:Name="UserRepeater"
+                               Margin="16,12"
+                               ElementClearing="UserRepeater_ElementClearing"
+                               ElementPrepared="UserRepeater_ElementPrepared"
+                               ItemTemplate="{StaticResource UserItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                               Layout="{StaticResource UserLayout}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="items:UserItemViewModel">
-                            <components:UserCardControl ViewModel="{x:Bind}"/>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-            </Grid>
-        </ScrollViewer>
+                               Layout="{StaticResource UserLayout}"/>
+            </ScrollViewer>
+        </essential:RevealFocusPanel>
 
         <base:EmptyHolder Description="{x:Bind strings:Resources.NoUsers}"
                           Emoji="&#x1F937;"
