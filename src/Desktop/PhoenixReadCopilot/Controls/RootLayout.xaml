@@ -45,8 +45,6 @@
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="MainTitleBar.Title" Value=""/>
-                        <Setter Target="MainTitleBar.Subtitle" Value=""/>
                         <Setter Target="SearchBox.Margin" Value="40,0,20,0"/>
                         <Setter Target="SearchBox.MinWidth" Value="100"/>
                     </VisualState.Setters>
@@ -62,16 +60,16 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <base:AppTitleBar x:Name="MainTitleBar"
-                          Title="{x:Bind strings:Resources.AppName}"
-                          BackRequested="OnBackRequested"
-                          IsBackButtonVisible="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}"
-                          IsBackEnabled="True">
-            <base:AppTitleBar.IconElement>
-                <ImageIcon Source="/Assets/Logo/Icon.ico"/>
-            </base:AppTitleBar.IconElement>
+        <TitleBar x:Name="MainTitleBar"
+                  Title="{x:Bind strings:Resources.AppName}"
+                  BackRequested="OnBackRequested"
+                  IsBackButtonEnabled="True"
+                  IsBackButtonVisible="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}">
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="/Assets/Logo/Icon.ico"/>
+            </TitleBar.IconSource>
 
-            <base:AppTitleBar.Header>
+            <TitleBar.LeftHeader>
                 <StackPanel Margin="12,0,0,0"
                             VerticalAlignment="Center"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -92,7 +90,7 @@
                                                   Symbol="History"
                                                   ToolTipService.ToolTip="{x:Bind strings:Resources.History}"/>
                 </StackPanel>
-            </base:AppTitleBar.Header>
+            </TitleBar.LeftHeader>
 
             <components:AppSearchBox x:Name="SearchBox"
                                      MinWidth="320"
@@ -101,13 +99,13 @@
                                      HorizontalAlignment="Stretch"
                                      VerticalAlignment="Center"/>
 
-            <base:AppTitleBar.Footer>
+            <TitleBar.RightHeader>
                 <StackPanel Orientation="Horizontal">
                     <local:Pinner Margin="0,0,16,0" VerticalAlignment="Center"/>
                     <components:HeaderAccountControl/>
                 </StackPanel>
-            </base:AppTitleBar.Footer>
-        </base:AppTitleBar>
+            </TitleBar.RightHeader>
+        </TitleBar>
 
         <TitleBar x:Name="SecondaryTitleBar"
                   Title="{x:Bind strings:Resources.AppName}"
@@ -152,23 +150,5 @@
                 </components:ShimmerLayout>
             </Grid>
         </NavigationView>
-
-        <TeachingTip Title="{x:Bind strings:Resources.HasUpdate}"
-                     Grid.Row="1"
-                     MinWidth="320"
-                     essential:TeachingTipHelper.AcrylicWorkaround="True"
-                     ActionButtonClick="OnUpdateActionButtonClick"
-                     ActionButtonContent="{x:Bind strings:Resources.OpenUpdate}"
-                     CloseButtonClick="OnUpdateCloseButtonClick"
-                     IsLightDismissEnabled="False"
-                     IsOpen="{x:Bind _appViewModel.IsUpdateShown, Mode=OneWay}"
-                     PreferredPlacement="RightTop"
-                     Subtitle="{x:Bind strings:Resources.HasUpdateDescription}">
-            <TeachingTip.IconSource>
-                <ic:SymbolIconSource Foreground="{ThemeResource SystemFillColorSuccessBrush}"
-                                     IconVariant="Filled"
-                                     Symbol="CheckmarkCircle"/>
-            </TeachingTip.IconSource>
-        </TeachingTip>
     </Grid>
 </local:RootLayoutBase>

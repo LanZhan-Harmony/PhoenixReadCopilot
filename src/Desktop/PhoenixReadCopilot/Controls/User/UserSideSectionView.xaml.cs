@@ -20,10 +20,7 @@ public sealed partial class UserSideSectionView : UserControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        if (ViewModel != null)
-        {
-            ViewModel.SectionInitialized += OnSectionInitialized;
-        }
+        ViewModel?.SectionInitialized += OnSectionInitialized;
         SectionView.SelectionChanged += OnSectionSelectionChanged;
         CheckSectionSelection();
     }
@@ -31,15 +28,15 @@ public sealed partial class UserSideSectionView : UserControlBase
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel != null)
-        {
-            ViewModel.SectionInitialized -= OnSectionInitialized;
-        }
+        ViewModel?.SectionInitialized -= OnSectionInitialized;
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(UserSpacePageViewModel? oldViewModel, UserSpacePageViewModel? newViewModel)
+    protected override void OnViewModelChanged(
+        UserSpacePageViewModel? oldViewModel,
+        UserSpacePageViewModel? newViewModel
+    )
     {
         if (oldViewModel != null)
         {
@@ -101,7 +98,10 @@ public sealed partial class UserSideSectionView : UserControlBase
         }
     }
 
-    private void OnSectionSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
+    private void OnSectionSelectionChanged(
+        ItemsView sender,
+        ItemsViewSelectionChangedEventArgs args
+    )
     {
         if (_isUpdating)
         {

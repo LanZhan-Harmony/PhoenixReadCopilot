@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace PhoenixReadCopilot.ViewModels.Items;
+namespace PhoenixReadCopilot.Contracts.ViewModels;
 
 /// <summary>
 /// 榜单区块项视图模型.

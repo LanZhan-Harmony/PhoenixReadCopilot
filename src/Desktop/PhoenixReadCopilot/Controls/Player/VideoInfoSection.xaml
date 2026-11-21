@@ -47,13 +47,13 @@
 
             <!--  操作按钮  -->
             <StackPanel Orientation="Horizontal" Spacing="16">
-                <local:LikeButton Command="{x:Bind ViewModel.ToggleLikeCommand, Mode=OneWay}"
+                <local:LikeButton Command="{x:Bind ViewModel.ToggleLikeCommand}"
                                   IsLiked="{x:Bind ViewModel.IsLiked, Mode=OneWay}"
                                   Tip="{x:Bind ViewModel.LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
-                <local:FavoriteButton Command="{x:Bind ViewModel.ToggleFavoriteCommand, Mode=OneWay}"
+                <local:FavoriteButton Command="{x:Bind ViewModel.ToggleFavoriteCommand}"
                                       IsFavorited="{x:Bind ViewModel.IsFavorited, Mode=OneWay}"
                                       Tip="{x:Bind ViewModel.FavoriteCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
-                <local:ShareButton Command="{x:Bind ViewModel.ShareCommand, Mode=OneWay}"/>
+                <local:ShareButton Command="{x:Bind ViewModel.ShareCommand}"/>
             </StackPanel>
 
             <!--  循环播放按钮  -->

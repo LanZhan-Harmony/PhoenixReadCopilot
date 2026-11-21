@@ -1,6 +1,5 @@
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Player;
@@ -41,27 +40,6 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="InitializeCommand"/> 的依赖属性.
-    /// </summary>
-    public static readonly DependencyProperty InitializeCommandProperty =
-        DependencyProperty.Register(
-            nameof(FavoriteButton),
-            typeof(ICommand),
-            typeof(FavoriteButton),
-            new PropertyMetadata(null)
-        );
-
-    /// <summary>
-    /// <see cref="ItemsSource"/> 的依赖属性.
-    /// </summary>
-    public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
-        nameof(ItemsSource),
-        typeof(object),
-        typeof(FavoriteButton),
-        new PropertyMetadata(null)
-    );
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="FavoriteButton"/> class.
     /// </summary>
     public FavoriteButton()
@@ -94,59 +72,5 @@ public sealed partial class FavoriteButton : LayoutUserControlBase
     {
         get => (ICommand)GetValue(CommandProperty);
         set => SetValue(CommandProperty, value);
-    }
-
-    /// <summary>
-    /// 初始化命令.
-    /// </summary>
-    public ICommand InitializeCommand
-    {
-        get => (ICommand)GetValue(InitializeCommandProperty);
-        set => SetValue(InitializeCommandProperty, value);
-    }
-
-    /// <summary>
-    /// 收藏夹数据源.
-    /// </summary>
-    public object ItemsSource
-    {
-        get => (object)GetValue(ItemsSourceProperty);
-        set => SetValue(ItemsSourceProperty, value);
-    }
-
-    protected override void OnControlUnloaded() => FavoriteRepeater.ItemsSource = null;
-
-    private void OnFavoriteButtonClick(object sender, RoutedEventArgs e)
-    {
-        if (ItemsSource is null)
-        {
-            Command?.Execute(null);
-            return;
-        }
-
-        InitializeCommand?.Execute(null);
-        FavoriteTip.IsOpen = true;
-    }
-
-    private void OnChecked(object sender, RoutedEventArgs e)
-    {
-        if (!IsFavorited)
-        {
-            Btn.IsChecked = false;
-        }
-    }
-
-    private void OnUnchecked(object sender, RoutedEventArgs e)
-    {
-        if (IsFavorited)
-        {
-            Btn.IsChecked = true;
-        }
-    }
-
-    private void OnConfirmButtonClick(TeachingTip sender, object args)
-    {
-        Command?.Execute(null);
-        FavoriteTip.IsOpen = false;
     }
 }

@@ -1,7 +1,9 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.View;
+using WinUI3Package;
 
 namespace PhoenixReadCopilot.Controls.User;
 
@@ -23,10 +25,7 @@ public sealed partial class UserMainBody : UserControlBase
         CircleScrollView.ViewChanged += OnScrollViewerViewChanged;
         RelationScrollView.ViewChanged += OnScrollViewerViewChanged;
 
-        if (ViewModel != null)
-        {
-            ViewModel.DataUpdated += OnDataUpdated;
-        }
+        ViewModel?.DataUpdated += OnDataUpdated;
     }
 
     /// <inheritdoc/>
@@ -37,24 +36,18 @@ public sealed partial class UserMainBody : UserControlBase
         CircleScrollView.ViewChanged -= OnScrollViewerViewChanged;
         RelationScrollView.ViewChanged -= OnScrollViewerViewChanged;
 
-        if (ViewModel != null)
-        {
-            ViewModel.DataUpdated -= OnDataUpdated;
-        }
+        ViewModel?.DataUpdated -= OnDataUpdated;
     }
 
     /// <inheritdoc/>
-    protected override void OnViewModelChanged(UserSpacePageViewModel? oldViewModel, UserSpacePageViewModel? newViewModel)
+    protected override void OnViewModelChanged(
+        UserSpacePageViewModel? oldViewModel,
+        UserSpacePageViewModel? newViewModel
+    )
     {
-        if (oldViewModel != null)
-        {
-            oldViewModel.DataUpdated -= OnDataUpdated;
-        }
+        oldViewModel?.DataUpdated -= OnDataUpdated;
 
-        if (newViewModel != null)
-        {
-            newViewModel.DataUpdated += OnDataUpdated;
-        }
+        newViewModel?.DataUpdated += OnDataUpdated;
     }
 
     private void OnScrollViewerViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
@@ -63,8 +56,10 @@ public sealed partial class UserMainBody : UserControlBase
         {
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
             {
-                if (sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset <= 240
-                    && ViewModel is { IsLoading: false, HasMore: true })
+                if (
+                    sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset <= 240
+                    && ViewModel is { IsLoading: false, HasMore: true }
+                )
                 {
                     _ = ViewModel.LoadMoreAsync();
                 }
@@ -95,17 +90,26 @@ public sealed partial class UserMainBody : UserControlBase
                 activeSv = VideoScrollView;
                 hasItems = true;
             }
-            else if (ReviewScrollView.Visibility == Visibility.Visible && ViewModel.Reviews.Count > 0)
+            else if (
+                ReviewScrollView.Visibility == Visibility.Visible
+                && ViewModel.Reviews.Count > 0
+            )
             {
                 activeSv = ReviewScrollView;
                 hasItems = true;
             }
-            else if (CircleScrollView.Visibility == Visibility.Visible && ViewModel.CircleFeeds.Count > 0)
+            else if (
+                CircleScrollView.Visibility == Visibility.Visible
+                && ViewModel.CircleFeeds.Count > 0
+            )
             {
                 activeSv = CircleScrollView;
                 hasItems = true;
             }
-            else if (RelationScrollView.Visibility == Visibility.Visible && ViewModel.Relations.Count > 0)
+            else if (
+                RelationScrollView.Visibility == Visibility.Visible
+                && ViewModel.Relations.Count > 0
+            )
             {
                 activeSv = RelationScrollView;
                 hasItems = true;
@@ -116,5 +120,113 @@ public sealed partial class UserMainBody : UserControlBase
                 _ = ViewModel.LoadMoreAsync();
             }
         });
+    }
+
+    private void VideoItemsRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, VideoRevealFocusPanel);
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
+        }
+    }
+
+    private void VideoItemsRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            CompositionFactory.DisableStandardReposition(element);
+            UserVideoItemTemplate.ClearImage(element);
+        }
+    }
+
+    private void ReviewItemsRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, ReviewRevealFocusPanel);
+        }
+    }
+
+    private void ReviewItemsRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            UserReviewItemTemplate.ClearImage(element);
+        }
+    }
+
+    private void CircleItemsRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, CircleRevealFocusPanel);
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
+        }
+    }
+
+    private void CircleItemsRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            CompositionFactory.DisableStandardReposition(element);
+            CircleFeedItemTemplate.ClearImage(element);
+        }
+    }
+
+    private void RelationItemsRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            RevealFocusPanel.SetAttachToPanel(element, RelationRevealFocusPanel);
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
+        }
+    }
+
+    private void RelationItemsRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            CompositionFactory.DisableStandardReposition(element);
+        }
     }
 }

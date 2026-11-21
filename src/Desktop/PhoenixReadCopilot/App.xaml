@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="ms-appx:///WinUIKernel.Share/Base/CustomNavigationViewResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/ItemsRepeaterItemStyle.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/TitleBar.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Core/Player/PlayerResources.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/ShimmerLayout/ShimmerLayout.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/CoverImage/CoverImage.xaml"/>

@@ -10,26 +10,24 @@
                             xmlns:strings="using:PhoenixReadCopilot.Strings"
                             mc:Ignorable="d">
 
-    <Grid>
-        <StackPanel Spacing="8">
-            <ToggleButton x:Name="Btn"
-                          Width="48"
-                          Height="48"
-                          Padding="0"
-                          HorizontalAlignment="Center"
-                          HorizontalContentAlignment="Center"
-                          VerticalContentAlignment="Center"
-                          Command="{x:Bind Command, Mode=OneWay}"
-                          CornerRadius="24"
-                          IsChecked="{x:Bind IsLiked, Mode=OneWay}"
-                          ToolTipService.ToolTip="{x:Bind strings:Resources.Like}">
-                <ic:SymbolIcon FontSize="16"
-                               IconVariant="{x:Bind IsLiked, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
-                               Symbol="ThumbLike"/>
-            </ToggleButton>
-            <TextBlock HorizontalAlignment="Center"
-                       Style="{StaticResource CaptionTextBlockStyle}"
-                       Text="{x:Bind Tip, Mode=OneWay}"/>
-        </StackPanel>
-    </Grid>
+    <StackPanel Spacing="8">
+        <ToggleButton x:Name="Btn"
+                      Width="48"
+                      Height="48"
+                      Padding="0"
+                      HorizontalAlignment="Center"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      Command="{x:Bind Command, Mode=OneWay}"
+                      CornerRadius="24"
+                      IsChecked="{x:Bind IsLiked, Mode=OneWay}"
+                      ToolTipService.ToolTip="{x:Bind strings:Resources.Like}">
+            <ic:SymbolIcon FontSize="16"
+                           IconVariant="{x:Bind IsLiked, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
+                           Symbol="ThumbLike"/>
+        </ToggleButton>
+        <TextBlock HorizontalAlignment="Center"
+                   Style="{StaticResource CaptionTextBlockStyle}"
+                   Text="{x:Bind Tip, Mode=OneWay}"/>
+    </StackPanel>
 </base:LayoutUserControlBase>

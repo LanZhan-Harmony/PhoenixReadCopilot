@@ -1,13 +1,14 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentIcons.Common;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
 /// <summary>
 /// 用户空间功能区 Section 条目模型.
 /// </summary>
-public sealed partial class UserSpaceSectionItemViewModel : ObservableObject
+public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase
 {
     /// <summary>
     /// Section 唯一标识（例如 Works, Collections, Reviews, History, Favorite, ViewLater, Likes, Reservation, Circle, Follows, Fans）.
@@ -71,7 +72,7 @@ public sealed partial class UserSpaceSectionItemViewModel : ObservableObject
 /// <summary>
 /// 子分类 Tab 模型.
 /// </summary>
-public sealed partial class UserSpaceSubTabItemViewModel : ObservableObject
+public sealed partial class UserSpaceSubTabItemViewModel : ViewModelBase
 {
     /// <summary>
     /// 唯一标识.

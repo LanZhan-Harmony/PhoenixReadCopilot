@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary x:Class="PhoenixReadCopilot.Controls.User.CircleFeedItemTemplate"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:base="using:WinUIKernel.Share.Base"
+                    xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                    xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                    xmlns:ic="using:FluentIcons.WinUI"
+                    xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+                    xmlns:strings="using:PhoenixReadCopilot.Strings">
+
+    <DataTemplate x:Key="CircleFeedItemTemplate" x:DataType="items:CircleFeedItemViewModel">
+        <Button Command="{x:Bind OpenCommand}"
+                DataContext="{x:Bind}"
+                Style="{StaticResource GridRepeaterItemStyle}">
+
+            <Grid x:Name="TemplateContent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="70"/>
+                </Grid.RowDefinitions>
+
+                <!--  海报封面容器  -->
+                <components:CoverImage x:Name="CoverImage"
+                                       Grid.Row="0"
+                                       Margin="6"
+                                       CornerRadius="5"
+                                       Source="{x:Bind CoverUrl}"/>
+
+                <community:SwitchPresenter Grid.Row="0"
+                                           Margin="12"
+                                           Padding="4"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Bottom"
+                                           Background="#99000000"
+                                           CornerRadius="4"
+                                           TargetType="x:Boolean"
+                                           Value="{x:Bind IsVideo}">
+                    <!--  右下角：短视频标识 (若是短视频)  -->
+                    <community:Case Value="True">
+                        <components:IconTextBlock IconBrush="White"
+                                                  Symbol="Video"
+                                                  Text="{x:Bind ViewCount, Converter={StaticResource CountConverter}}"
+                                                  TextBrush="White"/>
+                    </community:Case>
+                    <!--  右下角：图文标识 (若是图文)  -->
+                    <community:Case Value="False">
+                        <components:IconTextBlock IconBrush="White"
+                                                  Symbol="Document"
+                                                  Text="{x:Bind strings:Resources.Article}"
+                                                  TextBrush="White"/>
+
+                    </community:Case>
+                </community:SwitchPresenter>
+
+                <!--  信息与元数据  -->
+                <Grid Grid.Row="1"
+                      Padding="10,0,10,8"
+                      RowSpacing="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!--  标题  -->
+                    <TextBlock Grid.Row="0"
+                               HorizontalAlignment="Left"
+                               FontWeight="SemiBold"
+                               MaxLines="2"
+                               Text="{x:Bind Title}"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="Wrap"/>
+
+                    <!--  底部行：作者信息  -->
+                    <Grid Grid.Row="1" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--  作者  -->
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                            <PersonPicture Width="18" Height="18">
+                                <PersonPicture.ProfilePicture>
+                                    <BitmapImage DecodePixelType="Logical"
+                                                 DecodePixelWidth="18"
+                                                 UriSource="{x:Bind AuthorAvatarUrl}"/>
+                                </PersonPicture.ProfilePicture>
+                            </PersonPicture>
+                            <TextBlock VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       Text="{x:Bind AuthorName}"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+
+                        <!--  点赞数  -->
+                        <components:IconTextBlock Grid.Column="1"
+                                                  IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                                  Symbol="Heart"
+                                                  Text="{x:Bind LikeCount, Converter={StaticResource CountConverter}}"
+                                                  TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                  ToolTipService.ToolTip="{x:Bind strings:Resources.LikeCount}"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Button>
+    </DataTemplate>
+</ResourceDictionary>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary x:Class="PhoenixReadCopilot.Controls.User.UserReviewItemTemplate"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:base="using:WinUIKernel.Share.Base"
+                    xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                    xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                    xmlns:ic="using:FluentIcons.WinUI"
+                    xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+                    xmlns:strings="using:PhoenixReadCopilot.Strings">
+
+    <DataTemplate x:Key="UserReviewItemTemplate" x:DataType="items:UserReviewItemViewModel">
+        <Button Command="{x:Bind PlayDramaCommand}"
+                DataContext="{x:Bind}"
+                Style="{StaticResource ListRepeaterItemStyle}">
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!--  短剧海报封面  -->
+                <components:CoverImage x:Name="CoverImage"
+                                       Grid.Column="0"
+                                       DecodePixelWidth="72"
+                                       IconSize="28"
+                                       Source="{x:Bind DramaCoverUrl}"/>
+
+                <!--  剧评内容区域  -->
+                <Grid Grid.Column="1" RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--  顶部: 短剧标题、时间  -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Text="{x:Bind DramaTitle}"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   FontSize="12"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                   Text="{x:Bind PublishTime}"/>
+                    </Grid>
+
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                Spacing="10">
+                        <!--  评分徽章  -->
+                        <Border Padding="4"
+                                Background="#B0D32F2F"
+                                CornerRadius="{StaticResource ControlCornerRadius}">
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <TextBlock FontWeight="Bold"
+                                           Foreground="Gold"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Text="{x:Bind Rating}"/>
+                                <ic:SymbolIcon FontSize="{StaticResource CaptionTextBlockFontSize}"
+                                               Foreground="Gold"
+                                               IconVariant="Filled"
+                                               Symbol="Star"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!--  评分时已观看时间  -->
+                        <TextBlock VerticalAlignment="Center"
+                                   FontSize="12"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Text="{x:Bind RatingText}"/>
+                    </StackPanel>
+
+                    <!--  底部数据: 获赞与回复  -->
+                    <StackPanel Grid.Row="2"
+                                VerticalAlignment="Bottom"
+                                Orientation="Horizontal"
+                                Spacing="16">
+                        <components:IconTextBlock IconSize="12"
+                                                  IconTextSpacing="6"
+                                                  Symbol="ThumbLike"
+                                                  Text="{x:Bind LikeCount, Converter={StaticResource CountConverter}}"
+                                                  TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                  TextSize="14"/>
+                        <components:IconTextBlock IconSize="12"
+                                                  IconTextSpacing="6"
+                                                  Symbol="Comment"
+                                                  Text="{x:Bind ReplyCount, Converter={StaticResource CountConverter}}"
+                                                  TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
+                                                  TextSize="14"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Button>
+    </DataTemplate>
+</ResourceDictionary>

@@ -1,3 +1,4 @@
+using FluentIcons.Common;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -32,6 +33,22 @@ internal sealed partial class IconTextBlock : Control
         typeof(Symbol),
         typeof(IconTextBlock),
         new PropertyMetadata(null)
+    );
+
+    /// <summary>
+    /// 图标填充类型
+    /// </summary>
+    public IconVariant IconVarient
+    {
+        get => (IconVariant)GetValue(IconVarientProperty);
+        set => SetValue(IconVarientProperty, value);
+    }
+
+    public static readonly DependencyProperty IconVarientProperty = DependencyProperty.Register(
+        nameof(IconVarient),
+        typeof(IconVariant),
+        typeof(IconTextBlock),
+        new PropertyMetadata(IconVariant.Filled)
     );
 
     /// <summary>

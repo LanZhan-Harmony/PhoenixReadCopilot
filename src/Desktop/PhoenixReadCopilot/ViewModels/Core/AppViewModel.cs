@@ -9,7 +9,6 @@ using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Items;
-using Windows.System;
 using WinUIEx;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -28,9 +27,6 @@ public sealed partial class AppViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial bool IsInitialLoading { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsUpdateShown { get; set; }
 
     /// <summary>
     /// 已创建的窗口列表.
@@ -174,8 +170,8 @@ public sealed partial class AppViewModel : ViewModelBase
     public void MakeCurrentWindowExitCompactOverlay()
     {
         Window window = ActivatedWindow;
-        (window as WinUIEx.WindowEx).MinHeight = 480;
-        (window as WinUIEx.WindowEx).MinWidth = 640;
+        (window as WindowEx).MinHeight = 480;
+        (window as WindowEx).MinWidth = 640;
         window.SetWindowPresenter(AppWindowPresenterKind.Default);
         window.AppWindow.TitleBar.PreferredHeightOption =
             window is MainWindow ? TitleBarHeightOption.Tall : TitleBarHeightOption.Standard;
@@ -230,17 +226,6 @@ public sealed partial class AppViewModel : ViewModelBase
     /// </summary>
     public async Task ShowTipAsync((string, InfoType) data) =>
         await ShowTipAsync(data.Item1, data.Item2);
-
-    public void HideUpdate() => IsUpdateShown = false;
-
-    public async Task ShowUpdateAsync()
-    {
-        string packVersion = RuntimeHelper.AppVersion;
-        string url =
-            $"https://github.com/LanZhan-Harmony/PhoenixReadCopilot/releases/tag/v{packVersion}";
-        await Launcher.LaunchUriAsync(new Uri(url));
-        HideUpdate();
-    }
 
     partial void OnIsInitialLoadingChanged(bool value)
     {

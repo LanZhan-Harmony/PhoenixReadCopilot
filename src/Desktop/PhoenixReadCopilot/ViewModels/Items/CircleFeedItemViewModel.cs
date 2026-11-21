@@ -1,71 +1,65 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Pages.Overlay;
+using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
 /// <summary>
 /// 红果圈动态条目模型（图文或短视频）.
 /// </summary>
-public sealed partial class CircleFeedItemViewModel : ObservableObject
+public sealed partial class CircleFeedItemViewModel : ViewModelBase<CircleItem>
 {
-    private readonly CircleItem _item;
+    public string Id => Data.Id;
 
-    public CircleItem Data => _item;
+    public CircleItemType Type => Data.Type;
 
-    public string Id => _item.Id;
+    public bool IsVideo => Data.Type == CircleItemType.Video;
 
-    public CircleItemType Type => _item.Type;
+    public string Title => Data.Title;
 
-    public bool IsVideo => _item.Type == CircleItemType.Video;
+    public string Text => Data.Text;
 
-    public string Title => _item.Title;
+    public string CoverUrl => Data.CoverUrl;
 
-    public string Text => _item.Text;
+    public int CoverWidth => Data.CoverWidth;
 
-    public string CoverUrl => _item.CoverUrl;
+    public int CoverHeight => Data.CoverHeight;
 
-    public int CoverWidth => _item.CoverWidth;
+    public string AuthorName => Data.Author.Name;
 
-    public int CoverHeight => _item.CoverHeight;
+    public string AuthorAvatarUrl => Data.Author.AvatarUrl;
 
-    public string AuthorName => _item.Author.Name;
+    public long LikeCount => Data.LikeCount;
 
-    public string AuthorAvatarUrl => _item.Author.AvatarUrl;
+    public long CommentCount => Data.CommentCount;
 
-    public long LikeCount => _item.LikeCount;
+    public long ViewCount => Data.ViewCount;
 
-    public long CommentCount => _item.CommentCount;
+    public string DramaId => Data.DramaId;
 
-    public long ViewCount => _item.ViewCount;
+    public string DramaTitle => Data.DramaTitle;
 
-    public string DramaId => _item.DramaId;
-
-    public string DramaTitle => _item.DramaTitle;
-
-    public bool HasDrama => !string.IsNullOrEmpty(_item.DramaId);
+    public bool HasDrama => !string.IsNullOrEmpty(Data.DramaId);
 
     public string PublishTime
     {
         get
         {
-            if (_item.CreatedAtUnixSeconds <= 0)
+            if (Data.CreatedAtUnixSeconds <= 0)
             {
                 return string.Empty;
             }
 
             DateTimeOffset time = DateTimeOffset
-                .FromUnixTimeSeconds(_item.CreatedAtUnixSeconds)
+                .FromUnixTimeSeconds(Data.CreatedAtUnixSeconds)
                 .ToLocalTime();
             return time.ToString("yyyy-MM-dd HH:mm");
         }
     }
 
     public CircleFeedItemViewModel(CircleItem item)
-    {
-        _item = item;
-    }
+        : base(item) { }
 
     [RelayCommand]
     private void Open()
@@ -79,7 +73,7 @@ public sealed partial class CircleFeedItemViewModel : ObservableObject
         }
         else
         {
-            ItemServices.Navigation.NavigateToOver(typeof(ArticlePage), _item);
+            ItemServices.Navigation.NavigateToOver(typeof(ArticlePage), Data);
         }
     }
 }
