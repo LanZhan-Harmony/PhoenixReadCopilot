@@ -60,10 +60,10 @@
 
             <UniformGridLayout x:Key="UserLayout"
                                ItemsStretch="Fill"
-                               MinColumnSpacing="16"
+                               MinColumnSpacing="4"
                                MinItemHeight="84"
                                MinItemWidth="220"
-                               MinRowSpacing="16"/>
+                               MinRowSpacing="4"/>
 
         </ResourceDictionary>
     </Application.Resources>

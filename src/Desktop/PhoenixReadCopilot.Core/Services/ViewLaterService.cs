@@ -18,7 +18,7 @@ public sealed class ViewLaterService : IViewLaterService
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     private List<Drama>? _dramaCache;
-    private readonly HashSet<string> _viewLaterIds = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _viewLaterIds = [with(StringComparer.OrdinalIgnoreCase)];
     private string? _cachedUserKey;
 
     /// <inheritdoc/>
@@ -35,7 +35,7 @@ public sealed class ViewLaterService : IViewLaterService
     {
         _logger = logger;
         _authService = authService;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "ViewLater");
+        _folderPath = pathService.ViewLaterFolderPath;
 
         EnsureDirectory();
 

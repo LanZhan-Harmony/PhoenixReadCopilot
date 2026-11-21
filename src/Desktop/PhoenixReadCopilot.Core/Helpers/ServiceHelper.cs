@@ -51,6 +51,7 @@ public static class ServiceHelper
         services.AddSingleton<IPinService, PinService>();
         services.AddSingleton<IReservationService, ReservationService>();
         services.AddSingleton<IFavoriteService, FavoriteService>();
+        services.AddSingleton<ILikeService, LikeService>();
         services.AddSingleton<ISearchService, SearchService>();
         services.AddSingleton<IDanmakuService, DanmakuService>();
         services.AddSingleton<IFollowService, FollowService>();

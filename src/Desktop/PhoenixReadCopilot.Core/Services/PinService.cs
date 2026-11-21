@@ -18,7 +18,7 @@ public sealed class PinService : IPinService
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     private readonly Dictionary<PinType, List<PinItem>> _caches = [];
-    private readonly HashSet<string> _pinnedIds = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _pinnedIds = [with(StringComparer.OrdinalIgnoreCase)];
     private string? _cachedUserKey;
 
     /// <inheritdoc/>
@@ -35,7 +35,7 @@ public sealed class PinService : IPinService
     {
         _authService = authService;
         _logger = logger;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "Pin");
+        _folderPath = pathService.PinFolderPath;
 
         EnsureDirectory();
 
@@ -142,7 +142,10 @@ public sealed class PinService : IPinService
                     }
                 }
 
-                if (items?.Any(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase)) == true)
+                if (
+                    items?.Any(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase))
+                    == true
+                )
                 {
                     return true;
                 }
@@ -261,9 +264,7 @@ public sealed class PinService : IPinService
             await EnsureLoadedLockedAsync();
             if (type.HasValue)
             {
-                return _caches.TryGetValue(type.Value, out List<PinItem>? list)
-                    ? [.. list]
-                    : [];
+                return _caches.TryGetValue(type.Value, out List<PinItem>? list) ? [.. list] : [];
             }
 
             // 返回所有类型的固定项
@@ -340,7 +341,9 @@ public sealed class PinService : IPinService
             {
                 if (_caches.TryGetValue(t, out List<PinItem>? list))
                 {
-                    int count = list.RemoveAll(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase));
+                    int count = list.RemoveAll(p =>
+                        string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase)
+                    );
                     if (count > 0)
                     {
                         removed = true;

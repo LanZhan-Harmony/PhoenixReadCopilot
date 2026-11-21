@@ -37,6 +37,9 @@ internal static class ItemServices
     public static IFavoriteService Favorite =>
         Ioc.Default.GetRequiredService<IFavoriteService>();
 
+    public static ILikeService Like =>
+        Ioc.Default.GetRequiredService<ILikeService>();
+
     public static ISearchService Search => Ioc.Default.GetRequiredService<ISearchService>();
 
     public static IDanmakuService DanmakuService =>

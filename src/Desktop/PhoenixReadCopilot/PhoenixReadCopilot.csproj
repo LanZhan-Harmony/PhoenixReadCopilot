@@ -23,6 +23,7 @@
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    <NoWarn>$(NoWarn);CsWinRT1032</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,10 +33,6 @@
     <Content Include="Assets\Logo\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Styles\TitleBar.xaml" />
   </ItemGroup>
   
   <ItemGroup>
@@ -98,21 +95,7 @@
     <ProjectReference Include="..\..\Updater\PhoenixReadCopilot.Updater\PhoenixReadCopilot.Updater.csproj" />
     <ProjectReference Include="..\PhoenixReadCopilot.Core\PhoenixReadCopilot.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Page Update="Controls\User\UserReviewItemTemplate.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\User\UserItemTemplate.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\User\CircleFeedItemTemplate.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Styles\TitleBar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
+  
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
     Explorer "Package and Publish" context menu entry to be enabled for this project even if

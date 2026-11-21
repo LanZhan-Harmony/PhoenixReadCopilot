@@ -45,7 +45,6 @@
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="SearchBox.Margin" Value="40,0,20,0"/>
                         <Setter Target="SearchBox.MinWidth" Value="100"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -93,7 +92,7 @@
             </TitleBar.LeftHeader>
 
             <components:AppSearchBox x:Name="SearchBox"
-                                     MinWidth="320"
+                                     MinWidth="380"
                                      MaxWidth="500"
                                      Margin="20,0"
                                      HorizontalAlignment="Stretch"

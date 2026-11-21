@@ -14,7 +14,6 @@ namespace PhoenixReadCopilot.Core.Services;
 public sealed class PlaybackMediaService : IPlaybackMediaService
 {
     private readonly PhoenixReadApiClient _apiClient;
-    private readonly IPathService _pathService;
     private readonly ILogger<PlaybackMediaService> _logger;
     private readonly string _folderPath;
 
@@ -31,9 +30,8 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
     )
     {
         _apiClient = apiClient;
-        _pathService = pathService;
         _logger = logger;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "PlaybackMedia");
+        _folderPath = Path.Combine(pathService.MediaFolderPath);
         EnsureDirectory();
     }
 
@@ -55,8 +53,7 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
     private SemaphoreSlim GetLock(string dramaId) =>
         _locks.GetOrAdd(dramaId, _ => new SemaphoreSlim(1, 1));
 
-    private string GetDramaFilePath(string dramaId) =>
-        Path.Combine(_folderPath, $"{dramaId}.json");
+    private string GetDramaFilePath(string dramaId) => Path.Combine(_folderPath, $"{dramaId}.json");
 
     /// <inheritdoc/>
     public async Task<IReadOnlyList<PlaybackMedia>> ResolveMediaAsync(
@@ -78,16 +75,23 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
             DramaPlaybackMediaCache dramaCache = await LoadDramaCacheAsync(dramaId);
 
             // 1. 若非强制刷新，优先检查缓存中的媒体地址及其有效性
-            if (!forceRefresh && dramaCache.Episodes.TryGetValue(videoId, out List<PlaybackMedia>? cachedList))
+            if (
+                !forceRefresh
+                && dramaCache.Episodes.TryGetValue(videoId, out List<PlaybackMedia>? cachedList)
+            )
             {
                 if (IsMediaListValidAndNotExpired(cachedList))
                 {
-                    _logger.ZLogDebug($"命中文档本地媒体缓存: DramaId={dramaId}, VideoId={videoId}, 画质数={cachedList.Count}");
+                    _logger.ZLogDebug(
+                        $"命中文档本地媒体缓存: DramaId={dramaId}, VideoId={videoId}, 画质数={cachedList.Count}"
+                    );
                     return cachedList;
                 }
                 else
                 {
-                    _logger.ZLogInformation($"分集媒体地址已过期或失效，准备向服务端刷新: DramaId={dramaId}, VideoId={videoId}");
+                    _logger.ZLogInformation(
+                        $"分集媒体地址已过期或失效，准备向服务端刷新: DramaId={dramaId}, VideoId={videoId}"
+                    );
                 }
             }
 
@@ -109,7 +113,9 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
                 dramaCache.Episodes[videoId] = [.. freshMedias];
                 dramaCache.LastUpdatedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 await SaveDramaCacheToFileAsync(dramaCache);
-                _logger.ZLogInformation($"已将完整分集媒体缓存写入磁盘: DramaId={dramaId}, VideoId={videoId}, 规格数={freshMedias.Count}");
+                _logger.ZLogInformation(
+                    $"已将完整分集媒体缓存写入磁盘: DramaId={dramaId}, VideoId={videoId}, 规格数={freshMedias.Count}"
+                );
             }
             else
             {
@@ -163,7 +169,9 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
                 if (dramaCache.Episodes.Remove(videoId))
                 {
                     await SaveDramaCacheToFileAsync(dramaCache);
-                    _logger.ZLogInformation($"已从缓存中移除分集媒体: DramaId={dramaId}, VideoId={videoId}");
+                    _logger.ZLogInformation(
+                        $"已从缓存中移除分集媒体: DramaId={dramaId}, VideoId={videoId}"
+                    );
                 }
             }
         }

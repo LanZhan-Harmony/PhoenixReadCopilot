@@ -21,6 +21,13 @@ public sealed partial class UserSpacePage : UserSpacePageBase
         base.OnNavigatedTo(e);
         _ = ViewModel.InitializeAsync(e.Parameter);
     }
+
+    /// <inheritdoc/>
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        base.OnNavigatedFrom(e);
+        ViewModel.Uninitialize();
+    }
 }
 
 /// <summary>

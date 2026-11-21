@@ -48,7 +48,7 @@ internal sealed partial class IconTextBlock : Control
         nameof(IconVarient),
         typeof(IconVariant),
         typeof(IconTextBlock),
-        new PropertyMetadata(IconVariant.Filled)
+        new PropertyMetadata(IconVariant.Regular)
     );
 
     /// <summary>

@@ -36,7 +36,7 @@
     <PackageVersion Include="Microsoft.WindowsAppSDK.Widgets" Version="2.6.5" />
     <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.6.5" />
     <PackageVersion Include="Microsoft.Windows.AI.MachineLearning" Version="2.4.89" />
-    <PackageVersion Include="PhoenixReadApi" Version="0.5.1" />
+    <PackageVersion Include="PhoenixReadApi" Version="0.5.2" />
     <PackageVersion Include="ReswPlus" Version="0.6.1" />
     <PackageVersion Include="Semver" Version="3.0.0" />
     <PackageVersion Include="Serde" Version="0.18.3" />

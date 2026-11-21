@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Core.Contracts.Services;
 public interface IDanmakuService
 {
     /// <summary>
-    /// 获取指定分集在指定时间窗口内的弹幕（优先读取本地/内存缓存）.
+    /// 获取指定分集在指定时间窗口内的最新弹幕.
     /// </summary>
     /// <param name="dramaId">剧集 ID.</param>
     /// <param name="videoId">分集视频 ID.</param>

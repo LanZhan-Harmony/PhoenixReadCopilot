@@ -35,6 +35,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     private readonly IHistoryService _historyService;
     private readonly IPlaybackMediaService _playbackMediaService;
     private readonly IFavoriteService _favoriteService;
+    private readonly ILikeService _likeService;
 
     private DramaDetails? _dramaDetails;
     private string _dramaId = string.Empty;
@@ -204,7 +205,8 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         DramaReviewSectionDetailViewModel dramaReviews,
         IHistoryService historyService,
         IPlaybackMediaService playbackMediaService,
-        IFavoriteService favoriteService
+        IFavoriteService favoriteService,
+        ILikeService likeService
     )
         : base(settingsService, appViewModel)
     {
@@ -218,6 +220,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         _historyService = historyService;
         _playbackMediaService = playbackMediaService;
         _favoriteService = favoriteService;
+        _likeService = likeService;
         Danmaku = danmaku;
         Subtitle = subtitle;
         CurrentLoop = VideoLoopType.None;
@@ -230,6 +233,19 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         Player.SetPlayPreviousAction(() => _ = PlayPreviousVideoAsync());
 
         _favoriteService.FavoriteChanged += OnFavoriteChanged;
+        _likeService.LikeChanged += OnLikeChanged;
+    }
+
+    private void OnLikeChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            string targetVideoId = _currentEpisode?.VideoId ?? _currentVideoId;
+            if (!string.IsNullOrEmpty(_dramaId) && !string.IsNullOrEmpty(targetVideoId))
+            {
+                IsLiked = _likeService.IsLiked(_dramaId, targetVideoId);
+            }
+        });
     }
 
     private void OnFavoriteChanged(object? sender, EventArgs e)
@@ -558,10 +574,11 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             bool state = !IsLiked;
             if (!string.IsNullOrEmpty(_dramaId) && !string.IsNullOrEmpty(targetVideoId))
             {
-                PhoenixOperationResult res = await _dramaService.SetDramaEpisodeLikeAsync(
+                PhoenixOperationResult res = await _likeService.SetDramaEpisodeLikeAsync(
                     _dramaId,
                     targetVideoId,
-                    state
+                    state,
+                    drama: _dramaDetails?.Drama
                 );
                 if (res.Succeeded)
                 {
@@ -778,6 +795,7 @@ public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         _currentEpisode = episode;
         _currentVideoId = episode.VideoId;
+        IsLiked = _likeService.IsLiked(_dramaId, episode.VideoId);
         Player.CancelNotification();
 
         Danmaku?.ResetData(_dramaId, episode.VideoId);

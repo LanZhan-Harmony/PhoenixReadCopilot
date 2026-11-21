@@ -18,7 +18,7 @@ public sealed class FollowService : IFollowService
     private readonly string _folderPath;
     private readonly SemaphoreSlim _lock = new(1, 1);
 
-    private readonly HashSet<string> _followingIds = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _followingIds = [with(StringComparer.OrdinalIgnoreCase)];
     private List<UserRelationItem>? _followingsCache;
     private string? _cachedUserKey;
 
@@ -38,11 +38,29 @@ public sealed class FollowService : IFollowService
         _apiClient = apiClient;
         _authService = authService;
         _logger = logger;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "Follow");
+        _folderPath = pathService.FollowFolderPath;
 
         EnsureDirectory();
 
         _authService.StateChanged += OnAuthStateChanged;
+
+        // 启动后台预热加载关注数据，确保应用启动后关注状态立即可用
+        _ = Task.Run(async () =>
+        {
+            await _lock.WaitAsync();
+            try
+            {
+                await EnsureFollowingsInitializedLockedAsync(CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                _logger.ZLogWarning(ex, $"后台预热加载关注数据失败");
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        });
     }
 
     private void EnsureDirectory()
@@ -126,11 +144,77 @@ public sealed class FollowService : IFollowService
             return false;
         }
 
+        // 若内存缓存尚未初始化（例如冷启动时立刻同步读取），执行一次同步安全兜底加载
+        if (_followingsCache is null)
+        {
+            _lock.Wait();
+            try
+            {
+                if (_followingsCache is null)
+                {
+                    string filePath = GetStorageFilePath("followings.json");
+                    if (File.Exists(filePath))
+                    {
+                        string json = File.ReadAllText(filePath);
+                        if (!string.IsNullOrWhiteSpace(json))
+                        {
+                            List<UserRelationItem>? items = JsonAotSerializer.Deserialize<List<UserRelationItem>>(json);
+                            if (items is not null)
+                            {
+                                _followingsCache = items;
+                                _followingIds.Clear();
+                                foreach (UserRelationItem item in items)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(item.User?.Id))
+                                    {
+                                        _followingIds.Add(item.User.Id);
+                                    }
+                                }
+                                _cachedUserKey = GetCurrentUserKey();
+                            }
+                        }
+                    }
+
+                    if (_followingsCache is null)
+                    {
+                        _followingsCache = [];
+                        _cachedUserKey = GetCurrentUserKey();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.ZLogWarning(ex, $"同步兜底加载关注数据失败");
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
+
         return _followingIds.Contains(userId);
     }
 
     /// <inheritdoc/>
-    public async Task<bool> IsFollowingAsync(string userId, CancellationToken cancellationToken = default)
+    public async Task<int> GetLocalFollowingsCountAsync(CancellationToken cancellationToken = default)
+    {
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            await EnsureFollowingsInitializedLockedAsync(cancellationToken);
+            return _followingIds.Count;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> IsFollowingAsync(
+        string userId,
+        CancellationToken cancellationToken = default
+    )
     {
         if (string.IsNullOrWhiteSpace(userId))
         {
@@ -170,7 +254,10 @@ public sealed class FollowService : IFollowService
             }
             catch (Exception ex)
             {
-                _logger.ZLogWarning(ex, $"调用服务端关注接口失败，降级本地存储: 用户={userId}, 状态={active}");
+                _logger.ZLogWarning(
+                    ex,
+                    $"调用服务端关注接口失败，降级本地存储: 用户={userId}, 状态={active}"
+                );
             }
         }
 
@@ -183,15 +270,21 @@ public sealed class FollowService : IFollowService
             if (active)
             {
                 _followingIds.Add(userId);
-                if (_followingsCache is not null && !_followingsCache.Any(u => u.User?.Id == userId))
+                if (
+                    _followingsCache is not null
+                    && !_followingsCache.Any(u => u.User?.Id == userId)
+                )
                 {
                     User userModel = user ?? new User { Id = userId, Name = $"用户 {userId}" };
-                    _followingsCache.Insert(0, new UserRelationItem
-                    {
-                        User = userModel,
-                        CanFollow = true,
-                        IsFollowing = true,
-                    });
+                    _followingsCache.Insert(
+                        0,
+                        new UserRelationItem
+                        {
+                            User = userModel,
+                            CanFollow = true,
+                            IsFollowing = true,
+                        }
+                    );
                 }
             }
             else
@@ -243,11 +336,18 @@ public sealed class FollowService : IFollowService
         // 如果查询的是其他用户，直接请求服务端接口
         if (!isCurrentUser && !string.IsNullOrWhiteSpace(userId))
         {
-            return await _apiClient.GetUserFollowingsAsync(userId, cursor, count, cancellationToken);
+            return await _apiClient.GetUserFollowingsAsync(
+                userId,
+                cursor,
+                count,
+                cancellationToken
+            );
         }
 
         // 查询当前登录用户的关注列表
-        if (_authService.IsAuthenticated && !string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id))
+        if (
+            _authService.IsAuthenticated && !string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id)
+        )
         {
             try
             {
@@ -342,7 +442,9 @@ public sealed class FollowService : IFollowService
         }
 
         // 粉丝管理只有登录时需要：未登录账号无粉丝
-        if (!_authService.IsAuthenticated || string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id))
+        if (
+            !_authService.IsAuthenticated || string.IsNullOrWhiteSpace(_authService.CurrentUser?.Id)
+        )
         {
             return new UserRelationPage
             {
@@ -376,7 +478,10 @@ public sealed class FollowService : IFollowService
 
             // 失败时尝试读取本地粉丝缓存
             string filePath = GetStorageFilePath("followers.json");
-            List<UserRelationItem> localFollowers = await ReadFileLockedAsync(filePath, cancellationToken);
+            List<UserRelationItem> localFollowers = await ReadFileLockedAsync(
+                filePath,
+                cancellationToken
+            );
             return new UserRelationPage
             {
                 Items = localFollowers,
