@@ -18,7 +18,6 @@ public sealed class PageService : IPageService
         // 顶级主页面配置
         Configure<HomePageViewModel, HomePage>();
         Configure<RankPageViewModel, RankPage>();
-        Configure<MomentPageViewModel, MomentPage>();
         Configure<CalendarPageViewModel, CalendarPage>();
         Configure<FilterPageViewModel, FilterPage>();
         Configure<SettingsPageViewModel, SettingsPage>();

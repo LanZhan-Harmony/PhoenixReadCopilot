@@ -59,7 +59,6 @@ internal static class ServiceHelper
             .AddTransient<CalendarPageViewModel>()
             .AddTransient<FilterPageViewModel>()
             .AddTransient<GalleryPageViewModel>()
-            .AddTransient<MomentPageViewModel>()
             .AddTransient<RankPageViewModel>()
             .AddTransient<SearchPageViewModel>()
             .AddSingleton<SettingsPageViewModel>()

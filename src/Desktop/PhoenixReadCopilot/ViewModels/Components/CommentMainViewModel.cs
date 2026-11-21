@@ -50,7 +50,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
     [ObservableProperty]
     public partial List<CommentSortOrder> Sorts { get; set; } =
-        [CommentSortOrder.Hot, CommentSortOrder.Latest];
+    [CommentSortOrder.Hot, CommentSortOrder.Latest];
 
     [ObservableProperty]
     public partial CommentSortOrder SortType { get; set; } = CommentSortOrder.Hot;
@@ -175,12 +175,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
     public async Task LoadItemsAsync()
     {
-        if (
-            string.IsNullOrEmpty(Id)
-            || IsLoading
-            || _preventLoadMore
-            || IsEmpty
-        )
+        if (string.IsNullOrEmpty(Id) || IsLoading || _preventLoadMore || IsEmpty)
         {
             return;
         }

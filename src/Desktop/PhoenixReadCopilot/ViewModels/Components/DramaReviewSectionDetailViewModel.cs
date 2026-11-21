@@ -55,9 +55,7 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
             appViewModel,
             logger,
             showMoreAction
-        )
-    {
-    }
+        ) { }
 
     public DramaReviewItemViewModel(
         Comment comment,
@@ -147,7 +145,11 @@ public sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
         try
         {
             bool next = !IsLiked;
-            PhoenixOperationResult res = await _commentService.SetDramaReviewLikeAsync(Id, _dramaId, next);
+            PhoenixOperationResult res = await _commentService.SetDramaReviewLikeAsync(
+                Id,
+                _dramaId,
+                next
+            );
             if (res.Succeeded)
             {
                 IsLiked = next;
