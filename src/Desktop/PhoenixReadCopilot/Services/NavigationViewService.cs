@@ -94,7 +94,9 @@ public sealed class NavigationViewService : INavigationViewService
 
             if (!isVisible && item.IsSelected)
             {
-                AppNavigationItemViewModel? firstVisible = MenuItems.FirstOrDefault(p => p.IsVisible);
+                AppNavigationItemViewModel? firstVisible = MenuItems.FirstOrDefault(p =>
+                    p.IsVisible
+                );
                 if (firstVisible != null)
                 {
                     firstVisible.NavigateCommand.Execute(null);
@@ -112,11 +114,14 @@ public sealed class NavigationViewService : INavigationViewService
 
         Action? action = e.PropertyName switch
         {
-            nameof(AppSettings.IsHomePageVisible) => () => SetNavItemVisibility(typeof(HomePage), _settings.IsHomePageVisible),
-            nameof(AppSettings.IsRankPageVisible) => () => SetNavItemVisibility(typeof(RankPage), _settings.IsRankPageVisible),
-            nameof(AppSettings.IsMomentPageVisible) => () => SetNavItemVisibility(typeof(MomentPage), _settings.IsMomentPageVisible),
-            nameof(AppSettings.IsCalendarPageVisible) => () => SetNavItemVisibility(typeof(CalendarPage), _settings.IsCalendarPageVisible),
-            nameof(AppSettings.IsFilterPageVisible) => () => SetNavItemVisibility(typeof(FilterPage), _settings.IsFilterPageVisible),
+            nameof(AppSettings.IsHomePageVisible) => () =>
+                SetNavItemVisibility(typeof(HomePage), _settings.IsHomePageVisible),
+            nameof(AppSettings.IsRankPageVisible) => () =>
+                SetNavItemVisibility(typeof(RankPage), _settings.IsRankPageVisible),
+            nameof(AppSettings.IsCalendarPageVisible) => () =>
+                SetNavItemVisibility(typeof(CalendarPage), _settings.IsCalendarPageVisible),
+            nameof(AppSettings.IsFilterPageVisible) => () =>
+                SetNavItemVisibility(typeof(FilterPage), _settings.IsFilterPageVisible),
             _ => null,
         };
 
@@ -176,7 +181,6 @@ public sealed class NavigationViewService : INavigationViewService
         [
             GetItem<HomePage>(Resources.Home, FluentIcons.Common.Symbol.Home),
             GetItem<RankPage>(Resources.Rank, FluentIcons.Common.Symbol.Rocket),
-            GetItem<MomentPage>(Resources.DynamicFeed, FluentIcons.Common.Symbol.DesignIdeas),
             GetItem<CalendarPage>(Resources.Calendar, FluentIcons.Common.Symbol.Calendar),
             GetItem<FilterPage>(Resources.Filter, FluentIcons.Common.Symbol.SlideSearch),
         ];

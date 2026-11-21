@@ -94,7 +94,10 @@ public sealed partial class VideoHistorySectionDetailViewModel
         try
         {
             IsLoading = true;
-            ReadHistoryPage page = await _historyService.GetHistoryAsync(count: 20, offset: _offset);
+            ReadHistoryPage page = await _historyService.GetHistoryAsync(
+                count: 20,
+                offset: _offset
+            );
             _offset = page.NextOffset;
             _isPreventLoadMore = !page.HasMore || page.Items.Count == 0;
             if (page.Items.Count > 0)

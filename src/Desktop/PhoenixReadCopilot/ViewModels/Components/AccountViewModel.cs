@@ -31,9 +31,6 @@ public sealed partial class AccountViewModel : ViewModelBase
     public partial bool IsInitializing { get; set; }
 
     [ObservableProperty]
-    public partial int MomentCount { get; set; }
-
-    [ObservableProperty]
     public partial int FollowCount { get; set; }
 
     [ObservableProperty]
@@ -71,7 +68,6 @@ public sealed partial class AccountViewModel : ViewModelBase
         if (!isAuthenticated)
         {
             MyProfile = null;
-            MomentCount = 0;
             FollowCount = 0;
             FansCount = 0;
             Introduce = string.Empty;
@@ -146,7 +142,6 @@ public sealed partial class AccountViewModel : ViewModelBase
             ReadHistoryPage history = await _historyService.GetHistoryAsync(count: 1);
             UserRelationPage followings = await _followService.GetFollowingsAsync(count: 1);
             FollowCount = followings.Items.Count;
-            MomentCount = (int)history.Total;
 
             if (_authService.IsAuthenticated)
             {
@@ -172,12 +167,6 @@ public sealed partial class AccountViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowFans() => _navService.NavigateTo(typeof(UserSpacePage), "Fans");
-
-    [RelayCommand]
-    private void ShowMoments()
-    {
-        _navService.NavigateTo(typeof(UserSpacePage), MyProfile?.User.Id);
-    }
 
     [RelayCommand]
     private void ShowViewLater() => _navService.NavigateTo(typeof(UserSpacePage), "ViewLater");

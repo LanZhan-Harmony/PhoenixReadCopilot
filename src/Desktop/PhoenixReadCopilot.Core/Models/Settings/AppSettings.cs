@@ -133,9 +133,6 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool IsNotificationEnabled { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsVideoMomentNotificationEnabled { get; set; } = true;
-
-    [ObservableProperty]
     public partial bool ShowSearchRecommend { get; set; } = false;
 
     [ObservableProperty]
@@ -149,9 +146,6 @@ public sealed partial class AppSettings : ObservableObject
 
     [ObservableProperty]
     public partial string LastSelectedFeaturePage { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    public partial string LastTenMomentIds { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string BewlyExtensionVersion { get; set; } = string.Empty;
@@ -246,9 +240,6 @@ public sealed partial class AppSettings : ObservableObject
     public partial string LastSelectedFavoriteSection { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial bool LastMomentSectionIsVideo { get; set; } = true;
-
-    [ObservableProperty]
     public partial bool LastUserSpaceSectionIsVideo { get; set; } = true;
 
     // ================= 导航项可见性 =================
@@ -257,9 +248,6 @@ public sealed partial class AppSettings : ObservableObject
 
     [ObservableProperty]
     public partial bool IsRankPageVisible { get; set; } = true;
-
-    [ObservableProperty]
-    public partial bool IsMomentPageVisible { get; set; } = true;
 
     [ObservableProperty]
     public partial bool IsCalendarPageVisible { get; set; } = true;
@@ -277,15 +265,11 @@ public sealed partial class AppSettings : ObservableObject
     public double GetNavColumnWidth(string pageKey, double defaultValue) =>
         pageKey switch
         {
-            "RankPage" => RankPageNavColumnWidth <= 0
-                ? defaultValue
-                : RankPageNavColumnWidth,
+            "RankPage" => RankPageNavColumnWidth <= 0 ? defaultValue : RankPageNavColumnWidth,
             "CalendarPage" => CalendarPageNavColumnWidth <= 0
                 ? defaultValue
                 : CalendarPageNavColumnWidth,
-            "FilterPage" => FilterPageNavColumnWidth <= 0
-                ? defaultValue
-                : FilterPageNavColumnWidth,
+            "FilterPage" => FilterPageNavColumnWidth <= 0 ? defaultValue : FilterPageNavColumnWidth,
             _ => defaultValue,
         };
 
@@ -349,7 +333,6 @@ public sealed partial class AppSettings : ObservableObject
         {
             "HomePage" => IsHomePageVisible,
             "RankPage" => IsRankPageVisible,
-            "MomentPage" => IsMomentPageVisible,
             "CalendarPage" => IsCalendarPageVisible,
             "FilterPage" => IsFilterPageVisible,
             _ => true,
@@ -369,9 +352,6 @@ public sealed partial class AppSettings : ObservableObject
                 break;
             case "RankPage":
                 IsRankPageVisible = isVisible;
-                break;
-            case "MomentPage":
-                IsMomentPageVisible = isVisible;
                 break;
             case "CalendarPage":
                 IsCalendarPageVisible = isVisible;

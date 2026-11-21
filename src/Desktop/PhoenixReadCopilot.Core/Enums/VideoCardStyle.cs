@@ -26,11 +26,6 @@ public enum VideoCardStyle
     Search,
 
     /// <summary>
-    /// 动态.
-    /// </summary>
-    Moment,
-
-    /// <summary>
     /// 稍后再看.
     /// </summary>
     ViewLater,
