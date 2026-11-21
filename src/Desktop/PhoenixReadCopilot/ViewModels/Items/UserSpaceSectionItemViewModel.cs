@@ -56,14 +56,21 @@ public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase
     public bool HasSubTabs => SubTabs.Count > 1;
 
     /// <summary>
+    /// 所属用户空间页面视图模型.
+    /// </summary>
+    [ObservableProperty]
+    public partial View.UserSpacePageViewModel? PageViewModel { get; set; }
+
+    /// <summary>
     /// 构造函数.
     /// </summary>
-    public UserSpaceSectionItemViewModel(string id, string title, Symbol symbol, long? count = null)
+    public UserSpaceSectionItemViewModel(string id, string title, Symbol symbol, long? count = null, View.UserSpacePageViewModel? pageViewModel = null)
     {
         Id = id;
         Title = title;
         Symbol = symbol;
         Count = count;
+        PageViewModel = pageViewModel;
         SubTabs = [];
         SubTabs.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasSubTabs));
     }

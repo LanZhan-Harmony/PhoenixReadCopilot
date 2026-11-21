@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUI3Package;
@@ -8,10 +10,13 @@ using WinUI3Package;
 namespace PhoenixReadCopilot.Controls.User;
 
 /// <summary>
-/// 用户空间主体内容展示控件.
+/// 用户空间主体内容展示控件（基于 DataTemplateSelector 按需实例化各模式视图）.
 /// </summary>
 public sealed partial class UserMainBody : UserControlBase
 {
+    private ScrollViewer? _activeScrollViewer;
+    private RevealFocusPanel? _activeRevealFocusPanel;
+
     public UserMainBody()
     {
         InitializeComponent();
@@ -20,23 +25,25 @@ public sealed partial class UserMainBody : UserControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        VideoScrollView.ViewChanged += OnScrollViewerViewChanged;
-        ReviewScrollView.ViewChanged += OnScrollViewerViewChanged;
-        CircleScrollView.ViewChanged += OnScrollViewerViewChanged;
-        RelationScrollView.ViewChanged += OnScrollViewerViewChanged;
-
-        ViewModel?.DataUpdated += OnDataUpdated;
+        if (ViewModel != null)
+        {
+            ViewModel.DataUpdated += OnDataUpdated;
+        }
     }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        VideoScrollView.ViewChanged -= OnScrollViewerViewChanged;
-        ReviewScrollView.ViewChanged -= OnScrollViewerViewChanged;
-        CircleScrollView.ViewChanged -= OnScrollViewerViewChanged;
-        RelationScrollView.ViewChanged -= OnScrollViewerViewChanged;
+        if (ViewModel != null)
+        {
+            ViewModel.DataUpdated -= OnDataUpdated;
+        }
 
-        ViewModel?.DataUpdated -= OnDataUpdated;
+        if (_activeScrollViewer != null)
+        {
+            _activeScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
+            _activeScrollViewer = null;
+        }
     }
 
     /// <inheritdoc/>
@@ -45,14 +52,78 @@ public sealed partial class UserMainBody : UserControlBase
         UserSpacePageViewModel? newViewModel
     )
     {
-        oldViewModel?.DataUpdated -= OnDataUpdated;
+        if (oldViewModel != null)
+        {
+            oldViewModel.DataUpdated -= OnDataUpdated;
+            oldViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
 
-        newViewModel?.DataUpdated += OnDataUpdated;
+        if (newViewModel != null)
+        {
+            newViewModel.DataUpdated += OnDataUpdated;
+            newViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            UpdateTemplate();
+        }
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(UserSpacePageViewModel.SelectedSection)
+            or nameof(UserSpacePageViewModel.IsReviewViewVisible)
+            or nameof(UserSpacePageViewModel.IsVideoViewVisible)
+            or nameof(UserSpacePageViewModel.IsCircleViewVisible)
+            or nameof(UserSpacePageViewModel.IsRelationViewVisible))
+        {
+            UpdateTemplate();
+        }
+    }
+
+    private void UpdateTemplate()
+    {
+        if (Resources.TryGetValue("SectionSelector", out object? selectorObj)
+            && selectorObj is UserSectionTemplateSelector selector
+            && ViewModel?.SelectedSection is { } section)
+        {
+            DataTemplate? targetTemplate = selector.SelectTemplate(section);
+            if (MainContentControl.ContentTemplate != targetTemplate)
+            {
+                MainContentControl.ContentTemplate = targetTemplate;
+            }
+        }
+    }
+
+    private void OnRevealFocusPanelLoaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is RevealFocusPanel panel)
+        {
+            _activeRevealFocusPanel = panel;
+        }
+    }
+
+    private void OnScrollViewerLoaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is ScrollViewer sv)
+        {
+            _activeScrollViewer = sv;
+            sv.ViewChanged += OnScrollViewerViewChanged;
+        }
+    }
+
+    private void OnScrollViewerUnloaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is ScrollViewer sv)
+        {
+            sv.ViewChanged -= OnScrollViewerViewChanged;
+            if (_activeScrollViewer == sv)
+            {
+                _activeScrollViewer = null;
+            }
+        }
     }
 
     private void OnScrollViewerViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        if (sender is ScrollViewer sv && sv.Visibility == Visibility.Visible)
+        if (sender is ScrollViewer sv)
         {
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
             {
@@ -82,40 +153,7 @@ public sealed partial class UserMainBody : UserControlBase
                 return;
             }
 
-            ScrollViewer? activeSv = null;
-            bool hasItems = false;
-
-            if (VideoScrollView.Visibility == Visibility.Visible && ViewModel.Videos.Count > 0)
-            {
-                activeSv = VideoScrollView;
-                hasItems = true;
-            }
-            else if (
-                ReviewScrollView.Visibility == Visibility.Visible
-                && ViewModel.Reviews.Count > 0
-            )
-            {
-                activeSv = ReviewScrollView;
-                hasItems = true;
-            }
-            else if (
-                CircleScrollView.Visibility == Visibility.Visible
-                && ViewModel.CircleFeeds.Count > 0
-            )
-            {
-                activeSv = CircleScrollView;
-                hasItems = true;
-            }
-            else if (
-                RelationScrollView.Visibility == Visibility.Visible
-                && ViewModel.Relations.Count > 0
-            )
-            {
-                activeSv = RelationScrollView;
-                hasItems = true;
-            }
-
-            if (activeSv != null && hasItems && activeSv.ScrollableHeight <= 240)
+            if (_activeScrollViewer != null && _activeScrollViewer.ScrollableHeight <= 240)
             {
                 _ = ViewModel.LoadMoreAsync();
             }
@@ -129,7 +167,10 @@ public sealed partial class UserMainBody : UserControlBase
     {
         if (args.Element is FrameworkElement element)
         {
-            RevealFocusPanel.SetAttachToPanel(element, VideoRevealFocusPanel);
+            if (_activeRevealFocusPanel != null)
+            {
+                RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
+            }
 
             CompositionFactory.DisableStandardReposition(element);
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
@@ -156,9 +197,9 @@ public sealed partial class UserMainBody : UserControlBase
         ItemsRepeaterElementPreparedEventArgs args
     )
     {
-        if (args.Element is FrameworkElement element)
+        if (args.Element is FrameworkElement element && _activeRevealFocusPanel != null)
         {
-            RevealFocusPanel.SetAttachToPanel(element, ReviewRevealFocusPanel);
+            RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
         }
     }
 
@@ -180,7 +221,10 @@ public sealed partial class UserMainBody : UserControlBase
     {
         if (args.Element is FrameworkElement element)
         {
-            RevealFocusPanel.SetAttachToPanel(element, CircleRevealFocusPanel);
+            if (_activeRevealFocusPanel != null)
+            {
+                RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
+            }
 
             CompositionFactory.DisableStandardReposition(element);
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
@@ -209,7 +253,10 @@ public sealed partial class UserMainBody : UserControlBase
     {
         if (args.Element is FrameworkElement element)
         {
-            RevealFocusPanel.SetAttachToPanel(element, RelationRevealFocusPanel);
+            if (_activeRevealFocusPanel != null)
+            {
+                RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
+            }
 
             CompositionFactory.DisableStandardReposition(element);
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>

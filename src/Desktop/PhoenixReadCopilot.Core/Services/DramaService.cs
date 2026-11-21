@@ -12,10 +12,13 @@ public sealed class DramaService : IDramaService
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly IAuthenticationService _authService;
+    private readonly ILikeService _likeService;
     private readonly ILogger<DramaService> _logger;
     private readonly SemaphoreSlim _lock = new(1, 1);
     private readonly Dictionary<string, (DramaDetails Details, DateTime ExpireAt)> _detailsCache =
-        new(StringComparer.OrdinalIgnoreCase);
+    [
+        with(StringComparer.OrdinalIgnoreCase),
+    ];
 
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
 
@@ -25,11 +28,13 @@ public sealed class DramaService : IDramaService
     public DramaService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,
+        ILikeService likeService,
         ILogger<DramaService> logger
     )
     {
         _apiClient = apiClient;
         _authService = authService;
+        _likeService = likeService;
         _logger = logger;
     }
 
@@ -66,7 +71,10 @@ public sealed class DramaService : IDramaService
 
         try
         {
-            DramaDetails details = await _apiClient.GetDramaDetailsAsync(dramaId, cancellationToken);
+            DramaDetails details = await _apiClient.GetDramaDetailsAsync(
+                dramaId,
+                cancellationToken
+            );
 
             await _lock.WaitAsync(cancellationToken);
             try
@@ -210,7 +218,7 @@ public sealed class DramaService : IDramaService
     }
 
     /// <inheritdoc/>
-    public async Task<PhoenixOperationResult> SetDramaEpisodeLikeAsync(
+    public Task<PhoenixOperationResult> SetDramaEpisodeLikeAsync(
         string dramaId,
         string videoId,
         bool active = true,
@@ -220,32 +228,12 @@ public sealed class DramaService : IDramaService
         ArgumentException.ThrowIfNullOrWhiteSpace(dramaId);
         ArgumentException.ThrowIfNullOrWhiteSpace(videoId);
 
-        if (!_authService.IsAuthenticated)
-        {
-            return new PhoenixOperationResult { Succeeded = false, Message = "请先登录" };
-        }
-
-        try
-        {
-            return await _apiClient.SetDramaEpisodeLikeAsync(
-                dramaId,
-                videoId,
-                active,
-                cancellationToken
-            );
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(
-                ex,
-                $"设置短剧分集点赞失败: dramaId={dramaId}, videoId={videoId}, active={active}"
-            );
-            throw;
-        }
+        return _likeService.SetDramaEpisodeLikeAsync(
+            dramaId,
+            videoId,
+            active,
+            cancellationToken: cancellationToken
+        );
     }
 
     /// <inheritdoc/>

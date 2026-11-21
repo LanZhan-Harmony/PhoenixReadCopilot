@@ -38,7 +38,7 @@ public sealed class FavoriteService : IFavoriteService
         _apiClient = apiClient;
         _authService = authService;
         _logger = logger;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "Favorite");
+        _folderPath = pathService.FavoriteFolderPath;
 
         EnsureDirectory();
 

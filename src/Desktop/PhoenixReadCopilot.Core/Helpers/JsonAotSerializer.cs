@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Like;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Core.Models.Playback;
@@ -66,6 +67,9 @@ namespace PhoenixReadCopilot.Core.Helpers;
 [JsonSerializable(typeof(PinType))]
 [JsonSerializable(typeof(HistoryType))]
 [JsonSerializable(typeof(ViewLaterType))]
+[JsonSerializable(typeof(LikeType))]
+[JsonSerializable(typeof(DramaLikeItem))]
+[JsonSerializable(typeof(List<DramaLikeItem>))]
 public sealed partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class JsonAotSerializer

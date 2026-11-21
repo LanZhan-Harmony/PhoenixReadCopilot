@@ -10,10 +10,11 @@
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
 
     <DataTemplate x:Key="UserItemTemplate" x:DataType="items:UserItemViewModel">
-        <Button Command="{x:Bind ShowUserSpaceCommand}"
+        <Button Padding="10,0"
+                Command="{x:Bind ShowUserSpaceCommand}"
                 DataContext="{x:Bind}"
                 Style="{StaticResource GridRepeaterItemStyle}">
-            <Grid>
+            <Grid ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>

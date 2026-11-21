@@ -37,7 +37,7 @@ public sealed class ReservationService : IReservationService
         _apiClient = apiClient;
         _authService = authService;
         _logger = logger;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "Reservation");
+        _folderPath = pathService.ReservationFolderPath;
 
         EnsureDirectory();
 

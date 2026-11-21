@@ -37,7 +37,7 @@ public sealed class HistoryService : IHistoryService
         _apiClient = apiClient;
         _authService = authService;
         _logger = logger;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "History");
+        _folderPath = pathService.HistoryFolderPath;
 
         EnsureDirectory();
 
@@ -118,7 +118,9 @@ public sealed class HistoryService : IHistoryService
                 try
                 {
                     string json = await File.ReadAllTextAsync(filePath);
-                    List<ReadHistoryItem>? items = JsonAotSerializer.Deserialize<List<ReadHistoryItem>>(json);
+                    List<ReadHistoryItem>? items = JsonAotSerializer.Deserialize<
+                        List<ReadHistoryItem>
+                    >(json);
                     _dramaCache = items ?? [];
                 }
                 catch (Exception ex)
@@ -243,7 +245,8 @@ public sealed class HistoryService : IHistoryService
                     VideoId = update.VideoId,
                     Title = !string.IsNullOrEmpty(title) ? title : old.Title,
                     CoverUrl = !string.IsNullOrEmpty(coverUrl) ? coverUrl : old.CoverUrl,
-                    EpisodeNumber = update.EpisodeNumber > 0 ? update.EpisodeNumber : old.EpisodeNumber,
+                    EpisodeNumber =
+                        update.EpisodeNumber > 0 ? update.EpisodeNumber : old.EpisodeNumber,
                     CurrentPositionMs = update.CurrentPositionMs,
                     DurationMs = update.DurationMs > 0 ? update.DurationMs : old.DurationMs,
                     UpdatedAtUnixMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
@@ -325,13 +328,31 @@ public sealed class HistoryService : IHistoryService
                                 _dramaCache[idx] = new ReadHistoryItem
                                 {
                                     DramaId = onlineItem.DramaId,
-                                    VideoId = !string.IsNullOrEmpty(onlineItem.VideoId) ? onlineItem.VideoId : local.VideoId,
-                                    Title = !string.IsNullOrEmpty(onlineItem.Title) ? onlineItem.Title : local.Title,
-                                    CoverUrl = !string.IsNullOrEmpty(onlineItem.CoverUrl) ? onlineItem.CoverUrl : local.CoverUrl,
-                                    EpisodeNumber = onlineItem.EpisodeNumber > 0 ? onlineItem.EpisodeNumber : local.EpisodeNumber,
-                                    CurrentPositionMs = onlineItem.CurrentPositionMs > 0 ? onlineItem.CurrentPositionMs : local.CurrentPositionMs,
-                                    DurationMs = onlineItem.DurationMs > 0 ? onlineItem.DurationMs : local.DurationMs,
-                                    UpdatedAtUnixMilliseconds = onlineItem.UpdatedAtUnixMilliseconds > 0 ? onlineItem.UpdatedAtUnixMilliseconds : local.UpdatedAtUnixMilliseconds,
+                                    VideoId = !string.IsNullOrEmpty(onlineItem.VideoId)
+                                        ? onlineItem.VideoId
+                                        : local.VideoId,
+                                    Title = !string.IsNullOrEmpty(onlineItem.Title)
+                                        ? onlineItem.Title
+                                        : local.Title,
+                                    CoverUrl = !string.IsNullOrEmpty(onlineItem.CoverUrl)
+                                        ? onlineItem.CoverUrl
+                                        : local.CoverUrl,
+                                    EpisodeNumber =
+                                        onlineItem.EpisodeNumber > 0
+                                            ? onlineItem.EpisodeNumber
+                                            : local.EpisodeNumber,
+                                    CurrentPositionMs =
+                                        onlineItem.CurrentPositionMs > 0
+                                            ? onlineItem.CurrentPositionMs
+                                            : local.CurrentPositionMs,
+                                    DurationMs =
+                                        onlineItem.DurationMs > 0
+                                            ? onlineItem.DurationMs
+                                            : local.DurationMs,
+                                    UpdatedAtUnixMilliseconds =
+                                        onlineItem.UpdatedAtUnixMilliseconds > 0
+                                            ? onlineItem.UpdatedAtUnixMilliseconds
+                                            : local.UpdatedAtUnixMilliseconds,
                                 };
                             }
                             else
@@ -436,7 +457,11 @@ public sealed class HistoryService : IHistoryService
             {
                 try
                 {
-                    await _apiClient.DeleteHistoryAsync(item.DramaId, item.VideoId, cancellationToken);
+                    await _apiClient.DeleteHistoryAsync(
+                        item.DramaId,
+                        item.VideoId,
+                        cancellationToken
+                    );
                 }
                 catch
                 {

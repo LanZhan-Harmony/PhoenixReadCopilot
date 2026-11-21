@@ -26,6 +26,7 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
     private readonly IFollowService _followService;
+    private readonly ILikeService _likeService;
     private readonly IHistoryService _historyService;
     private readonly IFavoriteService _favoriteService;
     private readonly IViewLaterService _viewLaterService;
@@ -115,9 +116,9 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     public string LikeCountText => FormatHelper.FormatCount(LikeCount);
 
     public bool CanOpenFollows =>
-        !string.IsNullOrEmpty(_userId) && FollowCount > 0 && (IsMe || IsFollowsAccessible);
+        (IsMe && FollowCount > 0) || (!string.IsNullOrEmpty(_userId) && FollowCount > 0 && IsFollowsAccessible);
     public bool CanOpenFans =>
-        !string.IsNullOrEmpty(_userId) && FansCount > 0 && (IsMe || IsFansAccessible);
+        (IsMe && FansCount > 0) || (!string.IsNullOrEmpty(_userId) && FansCount > 0 && IsFansAccessible);
 
     [ObservableProperty]
     public partial bool CanFollow { get; set; }
@@ -169,6 +170,7 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
     public void NotifyViewVisibilityChanged()
     {
+        OnPropertyChanged(nameof(SelectedSection));
         OnPropertyChanged(nameof(IsVideoViewVisible));
         OnPropertyChanged(nameof(IsReviewViewVisible));
         OnPropertyChanged(nameof(IsCircleViewVisible));
@@ -191,6 +193,7 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         IUserService userService,
         IAuthenticationService authService,
         IFollowService followService,
+        ILikeService likeService,
         IHistoryService historyService,
         IFavoriteService favoriteService,
         IViewLaterService viewLaterService,
@@ -207,6 +210,7 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         _userService = userService;
         _authService = authService;
         _followService = followService;
+        _likeService = likeService;
         _historyService = historyService;
         _favoriteService = favoriteService;
         _viewLaterService = viewLaterService;
@@ -217,8 +221,8 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
 
-        _followsSection = new("Follows", Resources.Follow, Symbol.PeopleCommunity);
-        _fansSection = new("Fans", Resources.Fans, Symbol.HeartPulse);
+        _followsSection = new("Follows", Resources.Follow, Symbol.PeopleCommunity, pageViewModel: this);
+        _fansSection = new("Fans", Resources.Fans, Symbol.HeartPulse, pageViewModel: this);
 
         Sections = [];
         Videos = [];
@@ -228,6 +232,9 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         Badges = [];
 
         SetupCollectionWatchers();
+
+        _followService.FollowChanged += OnFollowServiceChanged;
+        _likeService.LikeChanged += OnLikeServiceChanged;
 
         EmptyDescription = Resources.NoSpecificData;
         UserName = string.Empty;
@@ -365,6 +372,13 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
             _phoenixProfile = profile;
             ApplyProfile(profile, fallbackName, fallbackAvatar);
+
+            if (IsMe && !_authService.IsAuthenticated)
+            {
+                FollowCount = await _followService.GetLocalFollowingsCountAsync(ct);
+                IsFollowsAccessible = FollowCount > 0;
+            }
+
             BuildSections(profile);
 
             // 导航到指定 Section 或默认第一个
@@ -595,13 +609,10 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             reservationSection.SelectedSubTab = reservationSection.SubTabs[0];
             Sections.Add(reservationSection);
 
-            // 6. 我的点赞（需登录）
-            if (_authService.IsAuthenticated)
-            {
-                Sections.Add(
-                    new UserSpaceSectionItemViewModel("Likes", Resources.UserLikes, Symbol.Heart)
-                );
-            }
+            // 6. 我的点赞（未登录支持本地离线分集存储，登录支持云端同步）
+            Sections.Add(
+                new UserSpaceSectionItemViewModel("Likes", Resources.UserLikes, Symbol.Heart)
+            );
 
             // 7. 我的评论（预留接口）
             if (_authService.IsAuthenticated)
@@ -765,6 +776,48 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
                 Sections.Add(worksSection);
             }
         }
+
+        foreach (UserSpaceSectionItemViewModel section in Sections)
+        {
+            section.PageViewModel = this;
+        }
+    }
+
+    private void OnFollowServiceChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(async () =>
+        {
+            if (IsMe && !_authService.IsAuthenticated)
+            {
+                FollowCount = await _followService.GetLocalFollowingsCountAsync();
+                IsFollowsAccessible = FollowCount > 0;
+            }
+            else if (!IsMe && !string.IsNullOrEmpty(_userId))
+            {
+                IsFollowed = _followService.IsFollowing(_userId);
+            }
+        });
+    }
+
+    private void OnLikeServiceChanged(object? sender, EventArgs e)
+    {
+        _dispatcherQueue.TryEnqueue(async () =>
+        {
+            if (IsMe && SelectedSection?.Id == "Likes")
+            {
+                await RefreshAsync();
+            }
+        });
+    }
+
+    /// <summary>
+    /// 离开页面时注销监听与释放资源.
+    /// </summary>
+    public void Uninitialize()
+    {
+        _followService.FollowChanged -= OnFollowServiceChanged;
+        _likeService.LikeChanged -= OnLikeServiceChanged;
+        _loadingCts?.Cancel();
     }
 
     public void SelectSection(UserSpaceSectionItemViewModel? section)
@@ -889,7 +942,14 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
                     await LoadReservationDataAsync(subTab, requestId, ct);
                     break;
                 case "Works":
-                    await LoadWorksDataAsync(subTab, requestId, ct);
+                    if (subTab?.Value is UserWorkSubTab.Review)
+                    {
+                        await LoadReviewsDataAsync(requestId, ct);
+                    }
+                    else
+                    {
+                        await LoadWorksDataAsync(subTab, requestId, ct);
+                    }
                     break;
                 case "Circle":
                     await LoadCircleDataAsync(subTab, requestId, ct);
@@ -1176,12 +1236,34 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
     private async Task LoadLikesDataAsync(long requestId, CancellationToken ct)
     {
-        UserDramaPage page = await _userService.GetUserLikesAsync(
-            _userId,
-            count: 30,
-            offset: _offset,
-            cancellationToken: ct
-        );
+        IReadOnlyList<Drama> dramaList;
+        bool hasMore;
+        int nextOffset;
+
+        if (IsMe)
+        {
+            DramaPage page = await _likeService.GetLikesAsync(
+                count: 30,
+                offset: _offset,
+                cancellationToken: ct
+            );
+            dramaList = page.Items ?? [];
+            hasMore = page.HasMore;
+            nextOffset = page.NextOffset;
+        }
+        else
+        {
+            UserDramaPage page = await _userService.GetUserLikesAsync(
+                _userId,
+                count: 30,
+                offset: _offset,
+                cancellationToken: ct
+            );
+            dramaList = page.Items ?? [];
+            hasMore = page.HasMore;
+            nextOffset = page.NextOffset;
+        }
+
         if (requestId != _currentRequestId || ct.IsCancellationRequested)
             return;
 
@@ -1189,13 +1271,13 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         {
             if (requestId != _currentRequestId || ct.IsCancellationRequested)
                 return;
-            foreach (Drama item in page.Items)
+            foreach (Drama item in dramaList)
             {
                 Videos.Add(new VideoItemViewModel(item));
             }
         });
-        _offset = page.NextOffset;
-        HasMore = page.HasMore;
+        _offset = nextOffset;
+        HasMore = hasMore;
     }
 
     private async Task LoadReviewsDataAsync(long requestId, CancellationToken ct)

@@ -40,7 +40,7 @@ public sealed class SearchService : ISearchService
         _apiClient = apiClient;
         _authService = authService;
         _logger = logger;
-        _folderPath = Path.Combine(pathService.DataFolderPath, "Search");
+        _folderPath = pathService.SearchFolderPath;
 
         EnsureDirectory();
 
@@ -99,14 +99,20 @@ public sealed class SearchService : ISearchService
             : "anonymous";
 
     /// <inheritdoc/>
-    public Task<SearchResult> SearchAsync(string keyword, CancellationToken cancellationToken = default)
+    public Task<SearchResult> SearchAsync(
+        string keyword,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(keyword);
         return _apiClient.SearchAsync(keyword, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<SearchResult> SearchAsync(SearchQuery query, CancellationToken cancellationToken = default)
+    public Task<SearchResult> SearchAsync(
+        SearchQuery query,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(query);
         return _apiClient.SearchAsync(query, cancellationToken);
@@ -136,8 +142,7 @@ public sealed class SearchService : ISearchService
         int index = 1;
 
         // 优先加载短剧热搜榜，若无则使用第一张榜单或猜你想搜
-        HotSearchBoard? board =
-            hotSearch.Boards.FirstOrDefault(b => b.Title.Contains("短剧"))
+        HotSearchBoard? board = hotSearch.Boards.FirstOrDefault(b => b.Title.Contains("短剧"))
             ?? hotSearch.Boards.FirstOrDefault();
 
         IEnumerable<ApiHotSearchItem> sourceItems = board?.Items ?? hotSearch.Guesses;
@@ -202,7 +207,10 @@ public sealed class SearchService : ISearchService
     }
 
     /// <inheritdoc/>
-    public async Task AddSearchHistoryAsync(string keyword, CancellationToken cancellationToken = default)
+    public async Task AddSearchHistoryAsync(
+        string keyword,
+        CancellationToken cancellationToken = default
+    )
     {
         if (string.IsNullOrWhiteSpace(keyword))
         {
@@ -222,7 +230,9 @@ public sealed class SearchService : ISearchService
             }
 
             // 移除非区分大小写的相同词项，并将最新词项置于首位
-            _historyCache.RemoveAll(k => string.Equals(k, trimmed, StringComparison.OrdinalIgnoreCase));
+            _historyCache.RemoveAll(k =>
+                string.Equals(k, trimmed, StringComparison.OrdinalIgnoreCase)
+            );
             _historyCache.Insert(0, trimmed);
 
             if (_historyCache.Count > MaxHistoryCount)
@@ -246,7 +256,10 @@ public sealed class SearchService : ISearchService
     }
 
     /// <inheritdoc/>
-    public async Task RemoveSearchHistoryAsync(string keyword, CancellationToken cancellationToken = default)
+    public async Task RemoveSearchHistoryAsync(
+        string keyword,
+        CancellationToken cancellationToken = default
+    )
     {
         if (string.IsNullOrWhiteSpace(keyword))
         {

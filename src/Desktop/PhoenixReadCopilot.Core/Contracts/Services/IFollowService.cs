@@ -21,6 +21,13 @@ public interface IFollowService
     bool IsFollowing(string userId);
 
     /// <summary>
+    /// 获取当前用户（登录或未登录）本地或已缓存的关注人数.
+    /// </summary>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>关注总人数.</returns>
+    Task<int> GetLocalFollowingsCountAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// 异步检查指定账号是否已关注（若内存未初始化则从本地或云端获取）.
     /// </summary>
     /// <param name="userId">用户账号 ID.</param>
