@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -69,10 +70,7 @@ public sealed partial class RankActorBody : RankPageControlBase
         ActorScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
-    private void OnViewModelPropertyChanged(
-        object? sender,
-        System.ComponentModel.PropertyChangedEventArgs e
-    )
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ViewModel.SelectedSection))
         {

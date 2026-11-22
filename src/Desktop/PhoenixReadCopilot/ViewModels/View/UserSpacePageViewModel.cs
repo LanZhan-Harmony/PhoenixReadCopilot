@@ -116,9 +116,11 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     public string LikeCountText => FormatHelper.FormatCount(LikeCount);
 
     public bool CanOpenFollows =>
-        (IsMe && FollowCount > 0) || (!string.IsNullOrEmpty(_userId) && FollowCount > 0 && IsFollowsAccessible);
+        (IsMe && FollowCount > 0)
+        || (!string.IsNullOrEmpty(_userId) && FollowCount > 0 && IsFollowsAccessible);
     public bool CanOpenFans =>
-        (IsMe && FansCount > 0) || (!string.IsNullOrEmpty(_userId) && FansCount > 0 && IsFansAccessible);
+        (IsMe && FansCount > 0)
+        || (!string.IsNullOrEmpty(_userId) && FansCount > 0 && IsFansAccessible);
 
     [ObservableProperty]
     public partial bool CanFollow { get; set; }
@@ -144,38 +146,13 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     public partial ObservableCollection<UserSpaceSectionItemViewModel> Sections { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsVideoViewVisible))]
-    [NotifyPropertyChangedFor(nameof(IsReviewViewVisible))]
-    [NotifyPropertyChangedFor(nameof(IsCircleViewVisible))]
-    [NotifyPropertyChangedFor(nameof(IsRelationViewVisible))]
     public partial UserSpaceSectionItemViewModel? SelectedSection { get; set; }
 
-    public bool IsVideoViewVisible =>
-        SelectedSection?.Id is "History" or "Favorite" or "ViewLater" or "Reservation" or "Likes"
-        || (
-            SelectedSection?.Id == "Works"
-            && SelectedSection.SelectedSubTab?.Value is not UserWorkSubTab.Review
-        );
-
-    public bool IsReviewViewVisible =>
-        SelectedSection?.Id == "Reviews"
-        || (
-            SelectedSection?.Id == "Works"
-            && SelectedSection.SelectedSubTab?.Value is UserWorkSubTab.Review
-        );
-
-    public bool IsCircleViewVisible => SelectedSection?.Id == "Circle";
-
-    public bool IsRelationViewVisible => SelectedSection?.Id is "Follows" or "Fans";
-
-    public void NotifyViewVisibilityChanged()
-    {
-        OnPropertyChanged(nameof(SelectedSection));
-        OnPropertyChanged(nameof(IsVideoViewVisible));
-        OnPropertyChanged(nameof(IsReviewViewVisible));
-        OnPropertyChanged(nameof(IsCircleViewVisible));
-        OnPropertyChanged(nameof(IsRelationViewVisible));
-    }
+    /// <summary>
+    /// 当前活动主体内容条目（驱动 ContentControl 模板选择器自动感知 Section/SubTab 切换）.
+    /// </summary>
+    [ObservableProperty]
+    public partial IUserSpaceContentItem? CurrentContent { get; set; }
 
     [ObservableProperty]
     public partial ObservableCollection<VideoItemViewModel> Videos { get; set; }
@@ -221,7 +198,12 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
 
-        _followsSection = new("Follows", Resources.Follow, Symbol.PeopleCommunity, pageViewModel: this);
+        _followsSection = new(
+            "Follows",
+            Resources.Follow,
+            Symbol.PeopleCommunity,
+            pageViewModel: this
+        );
         _fansSection = new("Fans", Resources.Fans, Symbol.HeartPulse, pageViewModel: this);
 
         Sections = [];
@@ -253,7 +235,6 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     {
         long requestId = ++_currentRequestId;
         _loadingCts?.Cancel();
-        _loadingCts?.Dispose();
         _loadingCts = new CancellationTokenSource();
         CancellationToken ct = _loadingCts.Token;
 
@@ -640,13 +621,10 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             {
                 foreach (UserProfileTab tab in profile.AvailableTabs)
                 {
-                    bool isWorks = tab.Type is 23 or 16 or 8 || tab.Name?.Contains("作品") == true;
-                    bool isCircle =
-                        tab.Type is 7 or 5
-                        || tab.Name?.Contains("红果圈") == true
-                        || tab.Name?.Contains("动态") == true;
-                    bool isFavorites = tab.Type == 10 || tab.Name?.Contains("收藏") == true;
-                    bool isLikes = tab.Type == 9 || tab.Name?.Contains("点赞") == true;
+                    bool isWorks = tab.Type == UserProfileTabType.Work;
+                    bool isCircle = tab.Type == UserProfileTabType.Circle;
+                    bool isFavorites = tab.Type == UserProfileTabType.Favorite;
+                    bool isLikes = tab.Type == UserProfileTabType.Like;
 
                     // 数量为 0 的 Tab 不要显示（同时若本地有内容则保留）
                     long effectiveTotal = tab.Total;
@@ -796,6 +774,11 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             {
                 IsFollowed = _followService.IsFollowing(_userId);
             }
+
+            if (SelectedSection?.Id == "Follows")
+            {
+                await RefreshAsync();
+            }
         });
     }
 
@@ -838,7 +821,18 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection = section;
-        NotifyViewVisibilityChanged();
+        section.PageViewModel = this;
+
+        if (section.SelectedSubTab != null)
+        {
+            section.SelectedSubTab.PageViewModel = this;
+            CurrentContent = section.SelectedSubTab;
+        }
+        else
+        {
+            CurrentContent = section;
+        }
+
         await LoadSectionDataAsync(section, section.SelectedSubTab, reset: true);
     }
 
@@ -855,7 +849,8 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         }
 
         SelectedSection.SelectedSubTab = subTab;
-        NotifyViewVisibilityChanged();
+        subTab.PageViewModel = this;
+        CurrentContent = subTab;
         await LoadSectionDataAsync(SelectedSection, subTab, reset: true);
     }
 
@@ -901,17 +896,14 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         {
             requestId = ++_currentRequestId;
             _loadingCts?.Cancel();
-            _loadingCts?.Dispose();
             _loadingCts = new CancellationTokenSource();
             ct = _loadingCts.Token;
 
-            await RunOnUIThreadAsync(() =>
-            {
-                Videos.Clear();
-                Reviews.Clear();
-                CircleFeeds.Clear();
-                Relations.Clear();
-            });
+            Videos.Clear();
+            Reviews.Clear();
+            CircleFeeds.Clear();
+            Relations.Clear();
+
             _worksCursor = string.Empty;
             _circleCursor = string.Empty;
             _offset = 0;
@@ -989,43 +981,11 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             if (requestId == _currentRequestId)
             {
                 IsLoading = false;
-                await RunOnUIThreadAsync(() =>
-                {
-                    CheckEmptyState(section);
-                    DataUpdated?.Invoke(this, EventArgs.Empty);
-                });
+
+                CheckEmptyState(section);
+                DataUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
-    }
-
-    private Task RunOnUIThreadAsync(Action action)
-    {
-        if (_dispatcherQueue.HasThreadAccess)
-        {
-            action();
-            return Task.CompletedTask;
-        }
-
-        TaskCompletionSource tcs = new();
-        bool enqueued = _dispatcherQueue.TryEnqueue(() =>
-        {
-            try
-            {
-                action();
-                tcs.TrySetResult();
-            }
-            catch (Exception ex)
-            {
-                tcs.TrySetException(ex);
-            }
-        });
-
-        if (!enqueued)
-        {
-            tcs.TrySetResult();
-        }
-
-        return tcs.Task;
     }
 
     private async Task LoadHistoryDataAsync(long requestId, CancellationToken ct)
@@ -1036,17 +996,20 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             cancellationToken: ct
         );
         if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (ReadHistoryItem item in historyPage.Items)
-            {
-                Videos.Add(new VideoItemViewModel(item));
-            }
-        });
+            return;
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
+            return;
+        }
+
+        foreach (ReadHistoryItem item in historyPage.Items)
+        {
+            Videos.Add(new VideoItemViewModel(item));
+        }
+
         _offset = historyPage.NextOffset;
         HasMore = historyPage.HasMore;
     }
@@ -1061,17 +1024,20 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
                 cancellationToken: ct
             );
             if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-
-            await RunOnUIThreadAsync(() =>
             {
-                if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                    return;
-                foreach (Drama item in page.Items)
-                {
-                    Videos.Add(new VideoItemViewModel(item));
-                }
-            });
+                return;
+            }
+
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            {
+                return;
+            }
+
+            foreach (Drama item in page.Items)
+            {
+                Videos.Add(new VideoItemViewModel(item));
+            }
+
             _offset = page.NextOffset;
             HasMore = page.HasMore;
         }
@@ -1084,17 +1050,20 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
                 cancellationToken: ct
             );
             if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-
-            await RunOnUIThreadAsync(() =>
             {
-                if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                    return;
-                foreach (Drama item in page.Items)
-                {
-                    Videos.Add(new VideoItemViewModel(item));
-                }
-            });
+                return;
+            }
+
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            {
+                return;
+            }
+
+            foreach (Drama item in page.Items)
+            {
+                Videos.Add(new VideoItemViewModel(item));
+            }
+
             _offset = page.NextOffset;
             HasMore = page.HasMore;
         }
@@ -1104,17 +1073,20 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     {
         IReadOnlyList<Drama> items = await _viewLaterService.GetAllAsync(ViewLaterType.Drama, ct);
         if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (Drama item in items)
-            {
-                Videos.Add(new VideoItemViewModel(item));
-            }
-        });
+            return;
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
+            return;
+        }
+
+        foreach (Drama item in items)
+        {
+            Videos.Add(new VideoItemViewModel(item));
+        }
+
         HasMore = false;
     }
 
@@ -1133,28 +1105,31 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
                 cancellationToken: ct
             );
             if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-
-            await RunOnUIThreadAsync(() =>
             {
-                if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                    return;
-                foreach (ReservationItem item in items)
-                {
-                    if (subTab != null && item.IsAvailable != filterOnline)
-                    {
-                        continue;
-                    }
+                return;
+            }
 
-                    Drama drama = new()
-                    {
-                        Id = item.DramaId,
-                        Title = item.Title,
-                        CoverUrl = item.CoverUrl,
-                    };
-                    Videos.Add(new VideoItemViewModel(drama));
+            if (requestId != _currentRequestId || ct.IsCancellationRequested)
+            {
+                return;
+            }
+
+            foreach (ReservationItem item in items)
+            {
+                if (subTab != null && item.IsAvailable != filterOnline)
+                {
+                    continue;
                 }
-            });
+
+                Drama drama = new()
+                {
+                    Id = item.DramaId,
+                    Title = item.Title,
+                    CoverUrl = item.CoverUrl,
+                };
+                Videos.Add(new VideoItemViewModel(drama));
+            }
+
             _offset += items.Count;
             HasMore = items.Count >= 30;
         }
@@ -1180,24 +1155,34 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         UserWorkPage page = await _userService.GetUserWorksAsync(_userId, query, ct);
         if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (UserWork item in page.Items)
+            return;
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
+            return;
+        }
+
+        foreach (UserWork item in page.Items)
+        {
+            if (item is Drama drama)
             {
-                if (item is Drama drama)
-                {
-                    Videos.Add(new VideoItemViewModel(drama));
-                }
-                else if (item is UserReview review)
-                {
-                    Reviews.Add(new UserReviewItemViewModel(review));
-                }
+                bool isReservationTab = workSubTab == UserWorkSubTab.Reservation;
+                Videos.Add(
+                    new VideoItemViewModel(drama)
+                    {
+                        IsOnline = !isReservationTab,
+                        ReleaseNote = isReservationTab ? Resources.Upcoming : null,
+                    }
+                );
             }
-        });
+            else if (item is UserReview review)
+            {
+                Reviews.Add(new UserReviewItemViewModel(review));
+            }
+        }
+
         _worksCursor = page.Cursor;
         HasMore = page.HasMore;
     }
@@ -1216,20 +1201,23 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             cancellationToken: ct
         );
         if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (CircleItem item in page.Items)
+            return;
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
+            return;
+        }
+
+        foreach (CircleItem item in page.Items)
+        {
+            if (item.Type == targetType)
             {
-                if (item.Type == targetType)
-                {
-                    CircleFeeds.Add(new CircleFeedItemViewModel(item));
-                }
+                CircleFeeds.Add(new CircleFeedItemViewModel(item));
             }
-        });
+        }
+
         _circleCursor = page.Cursor;
         HasMore = page.HasMore;
     }
@@ -1265,17 +1253,20 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         }
 
         if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (Drama item in dramaList)
-            {
-                Videos.Add(new VideoItemViewModel(item));
-            }
-        });
+            return;
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
+            return;
+        }
+
+        foreach (Drama item in dramaList)
+        {
+            Videos.Add(new VideoItemViewModel(item));
+        }
+
         _offset = nextOffset;
         HasMore = hasMore;
     }
@@ -1291,86 +1282,111 @@ public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         UserWorkPage page = await _userService.GetUserWorksAsync(_userId, query, ct);
         if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (UserWork item in page.Items)
+            return;
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
+            return;
+        }
+
+        foreach (UserWork item in page.Items)
+        {
+            if (item is UserReview review)
             {
-                if (item is UserReview review)
-                {
-                    Reviews.Add(new UserReviewItemViewModel(review));
-                }
+                Reviews.Add(new UserReviewItemViewModel(review));
             }
-        });
+        }
+
         _worksCursor = page.Cursor;
         HasMore = page.HasMore;
     }
 
     private async Task LoadFollowsDataAsync(long requestId, CancellationToken ct)
     {
-        if (string.IsNullOrEmpty(_userId))
+        UserRelationPage page;
+        if (IsMe)
         {
-            HasMore = false;
+            page = await _followService.GetFollowingsAsync(
+                cursor: _worksCursor,
+                count: 30,
+                cancellationToken: ct
+            );
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(_userId))
+            {
+                HasMore = false;
+                return;
+            }
+
+            page = await _userService.GetUserFollowingsAsync(
+                _userId,
+                cursor: _worksCursor,
+                count: 30,
+                cancellationToken: ct
+            );
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
             return;
         }
 
-        UserRelationPage page = await _userService.GetUserFollowingsAsync(
-            _userId,
-            cursor: _worksCursor,
-            count: 30,
-            cancellationToken: ct
-        );
-        if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
+        foreach (UserRelationItem relation in page.Items)
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (UserRelationItem relation in page.Items)
+            if (relation.User != null)
             {
-                if (relation.User != null)
-                {
-                    Relations.Add(new UserItemViewModel(relation.User));
-                }
+                Relations.Add(new UserItemViewModel(relation));
             }
-        });
+        }
+
         _worksCursor = page.Cursor;
         HasMore = page.HasMore;
     }
 
     private async Task LoadFansDataAsync(long requestId, CancellationToken ct)
     {
-        if (string.IsNullOrEmpty(_userId))
+        UserRelationPage page;
+        if (IsMe)
         {
-            HasMore = false;
+            page = await _followService.GetFollowersAsync(
+                cursor: _worksCursor,
+                count: 30,
+                cancellationToken: ct
+            );
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(_userId))
+            {
+                HasMore = false;
+                return;
+            }
+
+            page = await _userService.GetUserFollowersAsync(
+                _userId,
+                cursor: _worksCursor,
+                count: 30,
+                cancellationToken: ct
+            );
+        }
+
+        if (requestId != _currentRequestId || ct.IsCancellationRequested)
+        {
             return;
         }
 
-        UserRelationPage page = await _userService.GetUserFollowersAsync(
-            _userId,
-            cursor: _worksCursor,
-            count: 30,
-            cancellationToken: ct
-        );
-        if (requestId != _currentRequestId || ct.IsCancellationRequested)
-            return;
-
-        await RunOnUIThreadAsync(() =>
+        foreach (UserRelationItem relation in page.Items)
         {
-            if (requestId != _currentRequestId || ct.IsCancellationRequested)
-                return;
-            foreach (UserRelationItem relation in page.Items)
+            if (relation.User != null)
             {
-                if (relation.User != null)
-                {
-                    Relations.Add(new UserItemViewModel(relation.User));
-                }
+                Relations.Add(new UserItemViewModel(relation));
             }
-        });
+        }
+
         _worksCursor = page.Cursor;
         HasMore = page.HasMore;
     }

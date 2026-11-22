@@ -32,6 +32,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     private string _cursor = string.Empty;
     private string _dramaId = string.Empty;
     private string _videoId = string.Empty;
+    private string _postId = string.Empty;
     private CommentItemViewModel? _replyItem;
 
     [ObservableProperty]
@@ -128,6 +129,19 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     }
 
     /// <summary>
+    /// 初始化红果圈图文帖子评论.
+    /// </summary>
+    /// <param name="postId">图文帖子 ID.</param>
+    public void InitializeForCirclePost(string postId)
+    {
+        Clear();
+        _postId = postId;
+        Id = postId;
+        UpdateLoginState();
+        Initialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
     /// 兼容模式初始化（供旧代码平滑调用）.
     /// </summary>
     public void Initialize(string sourceId, object? targetType = null, object? sortType = null)
@@ -161,6 +175,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
     {
         string targetDramaId = _dramaId;
         string targetVideoId = _videoId;
+        string targetPostId = _postId;
         string targetId = Id;
         CommentSortOrder sortType = SortType;
 
@@ -168,6 +183,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         _dramaId = targetDramaId;
         _videoId = targetVideoId;
+        _postId = targetPostId;
         Id = targetId;
         SortType = sortType;
 
@@ -183,7 +199,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         UpdateLoginState();
 
-        if (string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId))
+        if (string.IsNullOrEmpty(_postId) && (string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId)))
         {
             return;
         }
@@ -191,13 +207,28 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         try
         {
             IsLoading = true;
-            CommentPage page = await _commentService.GetEpisodeCommentsAsync(
-                _dramaId,
-                _videoId,
-                count: 20,
-                cursor: _cursor,
-                sort: SortType
-            );
+            CommentPage page;
+            bool isCircle = !string.IsNullOrEmpty(_postId);
+
+            if (isCircle)
+            {
+                page = await _commentService.GetCirclePostCommentsAsync(
+                    _postId,
+                    count: 20,
+                    cursor: _cursor
+                );
+            }
+            else
+            {
+                page = await _commentService.GetEpisodeCommentsAsync(
+                    _dramaId,
+                    _videoId,
+                    count: 20,
+                    cursor: _cursor,
+                    sort: SortType
+                );
+            }
+
             _cursor = page.Cursor;
             _preventLoadMore = !page.HasMore;
             TopItem = null;
@@ -211,12 +242,13 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
                 CommentItemViewModel itemVm = new(
                     item,
-                    _dramaId,
-                    _videoId,
+                    isCircle ? string.Empty : _dramaId,
+                    isCircle ? _postId : _videoId,
                     _commentService,
                     _authService,
                     isDramaReview: false,
-                    markReplyTargetAction: SetReplyTarget
+                    markReplyTargetAction: SetReplyTarget,
+                    isCirclePost: isCircle
                 );
                 Comments.Add(
                     new CommentDetailViewModel(
@@ -227,8 +259,8 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
                         _commentService,
                         _authService,
                         _appViewModel,
-                        _dramaId,
-                        _videoId
+                        isCircle ? string.Empty : _dramaId,
+                        isCircle ? _postId : _videoId
                     )
                 );
             }
@@ -237,7 +269,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"尝试加载红果分集评论时失败");
+            _logger.ZLogError(ex, $"尝试加载红果评论列表时失败");
             _preventLoadMore = true;
         }
         finally
@@ -350,6 +382,7 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
         Id = string.Empty;
         _dramaId = string.Empty;
         _videoId = string.Empty;
+        _postId = string.Empty;
         IsEmpty = false;
         TopItem = null;
         SelectedItem = null;

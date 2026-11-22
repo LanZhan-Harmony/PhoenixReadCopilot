@@ -7,6 +7,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
+using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using WinUIKernel.Share.Base;
 using WinUIKernel.Share.ViewModels;
@@ -26,9 +27,9 @@ public sealed partial class ArticlePageViewModel : ViewModelBase
     private readonly DispatcherQueue _dispatcherQueue;
 
     private string _postId = string.Empty;
-    private string _commentCursor = string.Empty;
-    private bool _hasMoreComments;
-    private bool _isLoadingComments;
+
+    [ObservableProperty]
+    public partial CommentMainViewModel CommentMainViewModel { get; set; }
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -93,7 +94,8 @@ public sealed partial class ArticlePageViewModel : ViewModelBase
         INavigationService navigationService,
         ILogger<ArticlePageViewModel> logger,
         AppViewModel appViewModel,
-        DispatcherQueue dispatcherQueue
+        DispatcherQueue dispatcherQueue,
+        CommentMainViewModel commentMainViewModel
     )
     {
         _apiClient = apiClient;
@@ -102,6 +104,7 @@ public sealed partial class ArticlePageViewModel : ViewModelBase
         _logger = logger;
         _appViewModel = appViewModel;
         _dispatcherQueue = dispatcherQueue;
+        CommentMainViewModel = commentMainViewModel;
 
         Images = [];
         Comments = [];
@@ -157,12 +160,14 @@ public sealed partial class ArticlePageViewModel : ViewModelBase
         }
 
         _postId = postId;
+        CommentMainViewModel.InitializeForCirclePost(postId);
+        _ = CommentMainViewModel.TryFirstLoadAsync();
+
         IsLoading = true;
         try
         {
             CirclePost detailedPost = await _apiClient.GetCirclePostAsync(postId);
             ApplyPost(detailedPost);
-            await LoadCommentsAsync(reset: true);
         }
         catch (Exception ex)
         {
@@ -208,53 +213,9 @@ public sealed partial class ArticlePageViewModel : ViewModelBase
         }
     }
 
-    public async Task LoadCommentsAsync(bool reset = false)
+    public Task LoadCommentsAsync(bool reset = false)
     {
-        if (string.IsNullOrEmpty(_postId) || _isLoadingComments)
-        {
-            return;
-        }
-
-        if (!reset && !_hasMoreComments)
-        {
-            return;
-        }
-
-        _isLoadingComments = true;
-        try
-        {
-            string cursor = reset ? string.Empty : _commentCursor;
-            CommentPage result = await _apiClient.GetCirclePostCommentsAsync(
-                _postId,
-                count: 20,
-                cursor: cursor
-            );
-
-            _dispatcherQueue.TryEnqueue(() =>
-            {
-                if (reset)
-                {
-                    Comments.Clear();
-                }
-
-                foreach (Comment comment in result.Items)
-                {
-                    Comments.Add(comment);
-                }
-
-                _commentCursor = result.Cursor;
-                _hasMoreComments = result.HasMore;
-                IsEmptyComments = Comments.Count == 0;
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "获取图文评论失败: {PostId}", _postId);
-        }
-        finally
-        {
-            _isLoadingComments = false;
-        }
+        return reset ? CommentMainViewModel.RefreshAsync() : CommentMainViewModel.LoadItemsAsync();
     }
 
     [RelayCommand]

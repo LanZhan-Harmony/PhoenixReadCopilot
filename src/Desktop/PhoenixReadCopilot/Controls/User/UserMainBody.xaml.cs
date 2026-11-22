@@ -1,8 +1,6 @@
-using System.ComponentModel;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUI3Package;
@@ -25,25 +23,15 @@ public sealed partial class UserMainBody : UserControlBase
     /// <inheritdoc/>
     protected override void OnControlLoaded()
     {
-        if (ViewModel != null)
-        {
-            ViewModel.DataUpdated += OnDataUpdated;
-        }
+        ViewModel?.DataUpdated += OnDataUpdated;
     }
 
     /// <inheritdoc/>
     protected override void OnControlUnloaded()
     {
-        if (ViewModel != null)
-        {
-            ViewModel.DataUpdated -= OnDataUpdated;
-        }
-
-        if (_activeScrollViewer != null)
-        {
-            _activeScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
-            _activeScrollViewer = null;
-        }
+        ViewModel?.DataUpdated -= OnDataUpdated;
+        _activeScrollViewer?.ViewChanged -= OnScrollViewerViewChanged;
+        _activeScrollViewer = null;
     }
 
     /// <inheritdoc/>
@@ -55,40 +43,11 @@ public sealed partial class UserMainBody : UserControlBase
         if (oldViewModel != null)
         {
             oldViewModel.DataUpdated -= OnDataUpdated;
-            oldViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
         if (newViewModel != null)
         {
             newViewModel.DataUpdated += OnDataUpdated;
-            newViewModel.PropertyChanged += OnViewModelPropertyChanged;
-            UpdateTemplate();
-        }
-    }
-
-    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName is nameof(UserSpacePageViewModel.SelectedSection)
-            or nameof(UserSpacePageViewModel.IsReviewViewVisible)
-            or nameof(UserSpacePageViewModel.IsVideoViewVisible)
-            or nameof(UserSpacePageViewModel.IsCircleViewVisible)
-            or nameof(UserSpacePageViewModel.IsRelationViewVisible))
-        {
-            UpdateTemplate();
-        }
-    }
-
-    private void UpdateTemplate()
-    {
-        if (Resources.TryGetValue("SectionSelector", out object? selectorObj)
-            && selectorObj is UserSectionTemplateSelector selector
-            && ViewModel?.SelectedSection is { } section)
-        {
-            DataTemplate? targetTemplate = selector.SelectTemplate(section);
-            if (MainContentControl.ContentTemplate != targetTemplate)
-            {
-                MainContentControl.ContentTemplate = targetTemplate;
-            }
         }
     }
 
@@ -189,6 +148,38 @@ public sealed partial class UserMainBody : UserControlBase
         {
             CompositionFactory.DisableStandardReposition(element);
             UserVideoItemTemplate.ClearImage(element);
+        }
+    }
+
+    private void ReservationItemsRepeater_ElementPrepared(
+        ItemsRepeater sender,
+        ItemsRepeaterElementPreparedEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            if (_activeRevealFocusPanel != null)
+            {
+                RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
+            }
+
+            CompositionFactory.DisableStandardReposition(element);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            {
+                CompositionFactory.SetStandardReposition(element);
+            });
+        }
+    }
+
+    private void ReservationItemsRepeater_ElementClearing(
+        ItemsRepeater sender,
+        ItemsRepeaterElementClearingEventArgs args
+    )
+    {
+        if (args.Element is FrameworkElement element)
+        {
+            CompositionFactory.DisableStandardReposition(element);
+            UserReservationVideoItemTemplate.ClearImage(element);
         }
     }
 

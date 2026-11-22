@@ -17,13 +17,14 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <local:UserVideoItemTemplate/>
+                <local:UserReservationVideoItemTemplate/>
                 <local:CircleFeedItemTemplate/>
                 <local:UserReviewItemTemplate/>
                 <local:UserItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- 1. 短剧网格模式模板 -->
-            <DataTemplate x:Key="VideoSectionTemplate" x:DataType="items:UserSpaceSectionItemViewModel">
+            <DataTemplate x:Key="VideoSectionTemplate" x:DataType="items:IUserSpaceContentItem">
                 <essential:RevealFocusPanel Loaded="OnRevealFocusPanelLoaded">
                     <ScrollViewer
                         Loaded="OnScrollViewerLoaded"
@@ -41,7 +42,7 @@
             </DataTemplate>
 
             <!-- 2. 剧评列表模式模板 -->
-            <DataTemplate x:Key="ReviewSectionTemplate" x:DataType="items:UserSpaceSectionItemViewModel">
+            <DataTemplate x:Key="ReviewSectionTemplate" x:DataType="items:IUserSpaceContentItem">
                 <essential:RevealFocusPanel Loaded="OnRevealFocusPanelLoaded">
                     <ScrollViewer
                         Loaded="OnScrollViewerLoaded"
@@ -62,7 +63,7 @@
             </DataTemplate>
 
             <!-- 3. 红果圈瀑布流/网格模式模板 -->
-            <DataTemplate x:Key="CircleSectionTemplate" x:DataType="items:UserSpaceSectionItemViewModel">
+            <DataTemplate x:Key="CircleSectionTemplate" x:DataType="items:IUserSpaceContentItem">
                 <essential:RevealFocusPanel Loaded="OnRevealFocusPanelLoaded">
                     <ScrollViewer
                         Loaded="OnScrollViewerLoaded"
@@ -80,7 +81,7 @@
             </DataTemplate>
 
             <!-- 4. 关注/粉丝用户卡片模式模板 -->
-            <DataTemplate x:Key="RelationSectionTemplate" x:DataType="items:UserSpaceSectionItemViewModel">
+            <DataTemplate x:Key="RelationSectionTemplate" x:DataType="items:IUserSpaceContentItem">
                 <essential:RevealFocusPanel Loaded="OnRevealFocusPanelLoaded">
                     <ScrollViewer
                         Loaded="OnScrollViewerLoaded"
@@ -97,23 +98,42 @@
                 </essential:RevealFocusPanel>
             </DataTemplate>
 
+            <!-- 5. 待播预约网格模式模板（模仿上新日历待播卡片风格，保留预约状态交互） -->
+            <DataTemplate x:Key="ReservationSectionTemplate" x:DataType="items:IUserSpaceContentItem">
+                <essential:RevealFocusPanel Loaded="OnRevealFocusPanelLoaded">
+                    <ScrollViewer
+                        Loaded="OnScrollViewerLoaded"
+                        Unloaded="OnScrollViewerUnloaded"
+                        Style="{StaticResource PageScrollViewerStyle}">
+                        <ItemsRepeater
+                            Margin="16,12"
+                            ElementClearing="ReservationItemsRepeater_ElementClearing"
+                            ElementPrepared="ReservationItemsRepeater_ElementPrepared"
+                            ItemTemplate="{StaticResource UserReservationVideoItemTemplate}"
+                            ItemsSource="{x:Bind PageViewModel.Videos, Mode=OneWay}"
+                            Layout="{StaticResource VideoLayout}"/>
+                    </ScrollViewer>
+                </essential:RevealFocusPanel>
+            </DataTemplate>
+
             <!-- 数据模板选择器 -->
             <ext:UserSectionTemplateSelector
                 x:Key="SectionSelector"
                 CircleTemplate="{StaticResource CircleSectionTemplate}"
                 RelationTemplate="{StaticResource RelationSectionTemplate}"
+                ReservationTemplate="{StaticResource ReservationSectionTemplate}"
                 ReviewTemplate="{StaticResource ReviewSectionTemplate}"
                 VideoTemplate="{StaticResource VideoSectionTemplate}"/>
         </ResourceDictionary>
     </local:UserControlBase.Resources>
 
     <Grid>
-        <!-- 主内容切换容器（按需实例化当前模板，性能更优） -->
+        <!-- 主内容切换容器（纯 MVVM 绑定 CurrentContent，由 TemplateSelector 自动响应切换） -->
         <ContentControl
             x:Name="MainContentControl"
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
-            Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
+            Content="{x:Bind ViewModel.CurrentContent, Mode=OneWay}"
             ContentTemplateSelector="{StaticResource SectionSelector}"
             Style="{StaticResource AppContentControlStyle}"/>
 

@@ -109,8 +109,18 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
         {
             CommentReplyPage replyPage;
 
-            // 剧评回复还是分集评论回复
-            if (Data.IsDramaReview || string.IsNullOrEmpty(_videoId))
+            // 圈子帖子回复、剧评回复还是分集评论回复
+            if (Data.IsCirclePost)
+            {
+                string postId = !string.IsNullOrEmpty(_videoId) ? _videoId : effectiveDramaId;
+                replyPage = await _commentService.GetCirclePostCommentRepliesAsync(
+                    commentId: Data.Id,
+                    postId: postId,
+                    count: 20,
+                    cursor: _cursor
+                );
+            }
+            else if (Data.IsDramaReview || string.IsNullOrEmpty(_videoId))
             {
                 replyPage = await _commentService.GetDramaReviewRepliesAsync(
                     commentId: Data.Id,
@@ -148,7 +158,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
                         _commentService,
                         _authService,
                         isDramaReview: Data.IsDramaReview,
-                        markReplyTargetAction: SetReplyTarget
+                        markReplyTargetAction: SetReplyTarget,
+                        isCirclePost: Data.IsCirclePost
                     )
                 );
             }

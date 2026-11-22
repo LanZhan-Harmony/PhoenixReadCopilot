@@ -6,9 +6,20 @@ using WinUIKernel.Share.ViewModels;
 namespace PhoenixReadCopilot.ViewModels.Items;
 
 /// <summary>
+/// 用户空间主体内容展示条目接口（统一 Section 与 SubTab，支持 DataTemplateSelector 纯 MVVM 自动识别）.
+/// </summary>
+public interface IUserSpaceContentItem
+{
+    /// <summary>
+    /// 所属页面视图模型.
+    /// </summary>
+    View.UserSpacePageViewModel? PageViewModel { get; }
+}
+
+/// <summary>
 /// 用户空间功能区 Section 条目模型.
 /// </summary>
-public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase
+public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase, IUserSpaceContentItem
 {
     /// <summary>
     /// Section 唯一标识（例如 Works, Collections, Reviews, History, Favorite, ViewLater, Likes, Reservation, Circle, Follows, Fans）.
@@ -79,7 +90,7 @@ public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase
 /// <summary>
 /// 子分类 Tab 模型.
 /// </summary>
-public sealed partial class UserSpaceSubTabItemViewModel : ViewModelBase
+public sealed partial class UserSpaceSubTabItemViewModel : ViewModelBase, IUserSpaceContentItem
 {
     /// <summary>
     /// 唯一标识.
@@ -97,11 +108,23 @@ public sealed partial class UserSpaceSubTabItemViewModel : ViewModelBase
     /// </summary>
     public object? Value { get; init; }
 
-    public UserSpaceSubTabItemViewModel(string id, string title, object? value = null)
+    /// <summary>
+    /// 所属用户空间页面视图模型.
+    /// </summary>
+    [ObservableProperty]
+    public partial View.UserSpacePageViewModel? PageViewModel { get; set; }
+
+    public UserSpaceSubTabItemViewModel(
+        string id,
+        string title,
+        object? value = null,
+        View.UserSpacePageViewModel? pageViewModel = null
+    )
     {
         Id = id;
         Title = title;
         Value = value;
+        PageViewModel = pageViewModel;
     }
 
     public override string ToString() => Title;

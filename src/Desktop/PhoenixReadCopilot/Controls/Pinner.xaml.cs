@@ -68,7 +68,10 @@ public sealed partial class Pinner : PinnerBase
     {
         bool isLastItem = ViewModel.Items.Count == 1;
         if (sender is FrameworkElement { DataContext: PinItem item })
+        {
             ViewModel.RemoveItem(item);
+        }
+
         if (isLastItem)
         {
             ItemsFlyout.Hide();

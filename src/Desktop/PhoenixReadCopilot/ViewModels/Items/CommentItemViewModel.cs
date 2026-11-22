@@ -87,6 +87,11 @@ public sealed partial class CommentItemViewModel : ViewModelBase
     public bool IsDramaReview { get; init; }
 
     /// <summary>
+    /// 是否为红果圈图文帖子评论.
+    /// </summary>
+    public bool IsCirclePost { get; init; }
+
+    /// <summary>
     /// 是否为二级回复.
     /// </summary>
     public bool IsReply { get; init; }
@@ -116,7 +121,8 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         ICommentService? commentService = null,
         IAuthenticationService? authService = null,
         bool isDramaReview = false,
-        Action<CommentItemViewModel>? markReplyTargetAction = null
+        Action<CommentItemViewModel>? markReplyTargetAction = null,
+        bool isCirclePost = false
     )
     {
         Id = comment.Id;
@@ -124,6 +130,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         DramaId = dramaId;
         VideoId = videoId;
         IsDramaReview = isDramaReview;
+        IsCirclePost = isCirclePost;
         IsReply = false;
         _commentService = commentService ?? ItemServices.Comment;
         _authService = authService ?? Ioc.Default.GetRequiredService<IAuthenticationService>();
@@ -184,7 +191,8 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         ICommentService? commentService = null,
         IAuthenticationService? authService = null,
         bool isDramaReview = false,
-        Action<CommentItemViewModel>? markReplyTargetAction = null
+        Action<CommentItemViewModel>? markReplyTargetAction = null,
+        bool isCirclePost = false
     )
     {
         Id = reply.Id;
@@ -192,6 +200,7 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         DramaId = dramaId;
         VideoId = videoId;
         IsDramaReview = isDramaReview;
+        IsCirclePost = isCirclePost;
         IsReply = true;
         _commentService = commentService ?? ItemServices.Comment;
         _authService = authService ?? Ioc.Default.GetRequiredService<IAuthenticationService>();
@@ -254,7 +263,18 @@ public sealed partial class CommentItemViewModel : ViewModelBase
         try
         {
             PhoenixOperationResult res;
-            if (IsReply)
+            if (IsCirclePost)
+            {
+                string? targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : DramaId;
+                if (string.IsNullOrEmpty(targetId))
+                {
+                    return;
+                }
+                res = IsReply
+                    ? await _commentService.LikeCirclePostReplyAsync(Id, targetId, state)
+                    : await _commentService.LikeCirclePostCommentAsync(Id, targetId, state);
+            }
+            else if (IsReply)
             {
                 string? targetId = !string.IsNullOrEmpty(VideoId) ? VideoId : DramaId;
                 if (string.IsNullOrEmpty(targetId))

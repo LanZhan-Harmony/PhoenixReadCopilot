@@ -6,7 +6,7 @@ using PhoenixReadCopilot.ViewModels.Items;
 namespace PhoenixReadCopilot.Extensions;
 
 /// <summary>
-/// 用户空间主体内容数据模板选择器（直接基于选中的 Section 选择对应视图模板）.
+/// 用户空间主体内容数据模板选择器（基于选中的 Section 或 SubTab 纯 MVVM 自动选择对应视图模板）.
 /// </summary>
 internal sealed partial class UserSectionTemplateSelector : DataTemplateSelector
 {
@@ -30,6 +30,11 @@ internal sealed partial class UserSectionTemplateSelector : DataTemplateSelector
     /// </summary>
     public DataTemplate? RelationTemplate { get; set; }
 
+    /// <summary>
+    /// 他人作品待播预约卡片展示模板（模仿上新日历待播卡片风格）.
+    /// </summary>
+    public DataTemplate? ReservationTemplate { get; set; }
+
     /// <inheritdoc/>
     protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
         => SelectTemplateCore(item);
@@ -41,12 +46,27 @@ internal sealed partial class UserSectionTemplateSelector : DataTemplateSelector
         {
             return section.Id switch
             {
-                "Works" => section.SelectedSubTab?.Value is UserWorkSubTab.Review ? ReviewTemplate : VideoTemplate,
                 "Reviews" => ReviewTemplate,
                 "Circle" => CircleTemplate,
                 "Follows" or "Fans" => RelationTemplate,
+                // 个人主页自己的 Reservation、History、Favorite、ViewLater、Likes 均使用 VideoTemplate
                 _ => VideoTemplate,
             };
+        }
+
+        if (item is UserSpaceSubTabItemViewModel subTab)
+        {
+            if (subTab.Value is UserWorkSubTab workTab)
+            {
+                return workTab switch
+                {
+                    UserWorkSubTab.Review => ReviewTemplate,
+                    UserWorkSubTab.Reservation => ReservationTemplate ?? VideoTemplate,
+                    _ => VideoTemplate,
+                };
+            }
+
+            return VideoTemplate;
         }
 
         return VideoTemplate;

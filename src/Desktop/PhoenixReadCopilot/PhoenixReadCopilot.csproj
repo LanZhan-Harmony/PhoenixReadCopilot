@@ -69,18 +69,22 @@
     <PackageReference Include="Microsoft.WindowsAppSDK.AI">
       <ExcludeAssets>all</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>none</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.WindowsAppSDK.ML">
       <ExcludeAssets>all</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>none</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.WindowsAppSDK.DWrite">
       <ExcludeAssets>all</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>none</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.WindowsAppSDK.Widgets">
       <ExcludeAssets>all</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>none</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.AI.MachineLearning">
       <ExcludeAssets>all</ExcludeAssets>

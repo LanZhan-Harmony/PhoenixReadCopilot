@@ -458,4 +458,165 @@ public sealed class CommentService : ICommentService
             throw;
         }
     }
+
+    /// <inheritdoc/>
+    public async Task<CommentPage> GetCirclePostCommentsAsync(
+        string postId,
+        int count = 20,
+        string cursor = "",
+        CancellationToken cancellationToken = default
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(postId);
+
+        try
+        {
+            return await _apiClient.GetCirclePostCommentsAsync(
+                postId,
+                count,
+                cursor,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(ex, $"获取红果圈帖子评论失败: postId={postId}");
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<CommentReplyPage> GetCirclePostCommentRepliesAsync(
+        string commentId,
+        string postId,
+        int count = 20,
+        string cursor = "",
+        CancellationToken cancellationToken = default
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commentId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(postId);
+
+        try
+        {
+            return await _apiClient.GetCirclePostCommentRepliesAsync(
+                commentId,
+                postId,
+                count,
+                cursor,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(
+                ex,
+                $"获取红果圈帖子回复失败: commentId={commentId}, postId={postId}"
+            );
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<PhoenixOperationResult> LikeCirclePostCommentAsync(
+        string commentId,
+        string postId,
+        bool active = true,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commentId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(postId);
+
+        if (!_authService.IsAuthenticated)
+        {
+            return new PhoenixOperationResult { Succeeded = false, Message = "请先登录" };
+        }
+
+        try
+        {
+            return await _apiClient.SetCirclePostCommentLikeAsync(
+                commentId,
+                postId,
+                active,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(
+                ex,
+                $"点赞红果圈帖子评论失败: commentId={commentId}, postId={postId}"
+            );
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<PhoenixOperationResult> LikeCirclePostReplyAsync(
+        string replyId,
+        string postId,
+        bool active = true,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(replyId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(postId);
+
+        if (!_authService.IsAuthenticated)
+        {
+            return new PhoenixOperationResult { Succeeded = false, Message = "请先登录" };
+        }
+
+        try
+        {
+            return await _apiClient.SetCirclePostReplyLikeAsync(
+                replyId,
+                postId,
+                active,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(
+                ex,
+                $"点赞红果圈帖子回复失败: replyId={replyId}, postId={postId}"
+            );
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<PhoenixOperationResult> DeleteCirclePostCommentAsync(
+        string commentId,
+        string postId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commentId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(postId);
+
+        if (!_authService.IsAuthenticated)
+        {
+            return new PhoenixOperationResult { Succeeded = false, Message = "请先登录" };
+        }
+
+        try
+        {
+            return await _apiClient.DeleteCirclePostCommentAsync(
+                commentId,
+                postId,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(
+                ex,
+                $"删除红果圈帖子评论失败: commentId={commentId}, postId={postId}"
+            );
+            throw;
+        }
+    }
 }

@@ -226,4 +226,79 @@ public interface ICommentService
         string replyId,
         CancellationToken cancellationToken = default
     );
+
+    /// <summary>
+    /// 获取指定红果圈图文帖子的评论列表.
+    /// </summary>
+    /// <param name="postId">图文帖子 ID.</param>
+    /// <param name="count">返回数量（默认 20）.</param>
+    /// <param name="cursor">上一页游标，首次请求传空.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>评论分页数据.</returns>
+    Task<CommentPage> GetCirclePostCommentsAsync(
+        string postId,
+        int count = 20,
+        string cursor = "",
+        CancellationToken cancellationToken = default
+    );
+
+    /// <summary>
+    /// 获取指定红果圈图文评论下的回复列表.
+    /// </summary>
+    /// <param name="commentId">评论 ID.</param>
+    /// <param name="postId">图文帖子 ID.</param>
+    /// <param name="count">返回数量（默认 20）.</param>
+    /// <param name="cursor">上一页游标，首次请求传空.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>回复分页数据.</returns>
+    Task<CommentReplyPage> GetCirclePostCommentRepliesAsync(
+        string commentId,
+        string postId,
+        int count = 20,
+        string cursor = "",
+        CancellationToken cancellationToken = default
+    );
+
+    /// <summary>
+    /// 点赞或取消点赞红果圈图文帖子的评论.
+    /// </summary>
+    /// <param name="commentId">评论 ID.</param>
+    /// <param name="postId">图文帖子 ID.</param>
+    /// <param name="active">true 为点赞，false 为取消点赞.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>操作结果.</returns>
+    Task<PhoenixOperationResult> LikeCirclePostCommentAsync(
+        string commentId,
+        string postId,
+        bool active = true,
+        CancellationToken cancellationToken = default
+    );
+
+    /// <summary>
+    /// 点赞或取消点赞红果圈图文评论下的回复.
+    /// </summary>
+    /// <param name="replyId">回复 ID.</param>
+    /// <param name="postId">图文帖子 ID.</param>
+    /// <param name="active">true 为点赞，false 为取消点赞.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>操作结果.</returns>
+    Task<PhoenixOperationResult> LikeCirclePostReplyAsync(
+        string replyId,
+        string postId,
+        bool active = true,
+        CancellationToken cancellationToken = default
+    );
+
+    /// <summary>
+    /// 删除红果圈图文帖子的评论.
+    /// </summary>
+    /// <param name="commentId">评论 ID.</param>
+    /// <param name="postId">图文帖子 ID.</param>
+    /// <param name="cancellationToken">取消令牌.</param>
+    /// <returns>操作结果.</returns>
+    Task<PhoenixOperationResult> DeleteCirclePostCommentAsync(
+        string commentId,
+        string postId,
+        CancellationToken cancellationToken = default
+    );
 }
