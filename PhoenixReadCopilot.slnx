@@ -1,0 +1,41 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Desktop/">
+    <Project Path="src/Desktop/PhoenixReadCopilot/PhoenixReadCopilot.csproj">
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+      <Deploy />
+    </Project>
+    <Project Path="src/Desktop/PhoenixReadCopilot.Core/PhoenixReadCopilot.Core.csproj" />
+  </Folder>
+  <Folder Name="/Libs/">
+    <Project Path="src/Libs/Danmaku.Core/Danmaku.Core.csproj">
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Libs/WinUIKernel.Share/WinUIKernel.Share.csproj">
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x86" Project="x86" />
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/Updater/">
+    <Project Path="src/Updater/PhoenixReadCopilot.Updater/PhoenixReadCopilot.Updater.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".csharpierignore" />
+    <File Path="src/.editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="src/Directory.Packages.props" />
+    <File Path="nuget.config" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+</Solution>

@@ -1,0 +1,49 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.4.2" />
+    <PackageVersion Include="CommunityToolkit.Labs.WinUI.MarqueeText" Version="0.1.230830" />
+    <PackageVersion Include="CommunityToolkit.Labs.WinUI.Shimmer" Version="0.1.230830" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Media" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Triggers" Version="8.2.251219" />
+    <PackageVersion Include="FFmpegInteropX" Version="2.1.0.81200" />
+    <PackageVersion Include="FluentIcons.WinUI" Version="2.2.345" />
+    <PackageVersion Include="Humanizer.Core.zh-Hans" Version="3.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
+    <PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.371" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.8.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.AI" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.DWrite" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.ML" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.Runtime" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.Widgets" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.7.0" />
+    <PackageVersion Include="Microsoft.Windows.AI.MachineLearning" Version="2.4.89" />
+    <PackageVersion Include="PhoenixReadApi" Version="0.5.3" />
+    <PackageVersion Include="ReswPlus" Version="0.6.1" />
+    <PackageVersion Include="Semver" Version="3.0.0" />
+    <PackageVersion Include="Serde" Version="0.18.3" />
+    <PackageVersion Include="System.IO.Hashing" Version="11.0.0" />
+    <PackageVersion Include="System.Numerics.Tensors" Version="11.0.0" />
+    <PackageVersion Include="System.Drawing.Common" Version="11.0.0" />
+    <PackageVersion Include="Vortice.Direct2D1" Version="3.8.3" />
+    <PackageVersion Include="Vortice.Direct3D11" Version="3.8.3" />
+    <PackageVersion Include="WinUIEssential.WinUI3" Version="1.9.5" />
+    <PackageVersion Include="WinUIEx" Version="2.9.3" />
+    <PackageVersion Include="ZLogger" Version="2.6.2" />
+  </ItemGroup>
+</Project>

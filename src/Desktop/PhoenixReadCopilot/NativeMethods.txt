@@ -1,0 +1,6 @@
+IsZoomed
+SetWindowsHookEx
+UnhookWindowsHookEx
+GetModuleHandle
+CallNextHookEx
+GetKeyState

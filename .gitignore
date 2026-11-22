@@ -38,6 +38,9 @@ bld/
 # AI
 .agents/
 
+#NuGet Packages
+nuget-packages/
+
 # Scrupts
 scripts
 
