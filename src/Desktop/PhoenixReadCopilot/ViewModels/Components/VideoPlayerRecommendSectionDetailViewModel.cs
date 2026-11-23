@@ -12,7 +12,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 视频播放器推荐区域详情视图模型.
 /// </summary>
-public sealed partial class VideoPlayerRecommendSectionDetailViewModel
+internal sealed partial class VideoPlayerRecommendSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {

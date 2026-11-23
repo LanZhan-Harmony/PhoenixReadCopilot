@@ -15,7 +15,7 @@ namespace PhoenixReadCopilot.Services;
 /// 跨平台/系统与应用内通知服务实现.
 /// 结合 Windows AppNotification 原生通知（支持进度条、自定义应用Logo、操作按钮）与 WinUI 3 应用内状态提示.
 /// </summary>
-public sealed class NotificationService : INotificationService
+internal sealed class NotificationService : INotificationService
 {
     private const string NotificationGroup = "downloads";
 
@@ -104,8 +104,9 @@ public sealed class NotificationService : INotificationService
             if (!string.IsNullOrWhiteSpace(folderPath) && Directory.Exists(folderPath))
             {
                 builder.AddButton(
-                    new AppNotificationButton("打开文件夹")
-                        .SetInvokeUri(new Uri(Path.GetFullPath(folderPath)))
+                    new AppNotificationButton("打开文件夹").SetInvokeUri(
+                        new Uri(Path.GetFullPath(folderPath))
+                    )
                 );
             }
 

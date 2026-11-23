@@ -42,26 +42,27 @@ public static class ServiceHelper
             )
             .SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
-        services.AddSingleton<ISettingsService, SettingsService>();
-        services.AddSingleton<IDownloadService, DownloadService>();
-        services.AddSingleton<IPlaybackMediaService, PlaybackMediaService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
-        services.AddSingleton<IHistoryService, HistoryService>();
-        services.AddSingleton<IViewLaterService, ViewLaterService>();
-        services.AddSingleton<IPinService, PinService>();
-        services.AddSingleton<IReservationService, ReservationService>();
-        services.AddSingleton<IFavoriteService, FavoriteService>();
-        services.AddSingleton<ILikeService, LikeService>();
-        services.AddSingleton<ISearchService, SearchService>();
-        services.AddSingleton<IDanmakuService, DanmakuService>();
-        services.AddSingleton<IFollowService, FollowService>();
-        services.AddSingleton<ICommentService, CommentService>();
-        services.AddSingleton<IRankService, RankService>();
         services.AddSingleton<ICalendarService, CalendarService>();
-        services.AddSingleton<IFilterService, FilterService>();
+        services.AddSingleton<ICommentService, CommentService>();
+        services.AddSingleton<IDanmakuService, DanmakuService>();
+        services.AddSingleton<IDownloadService, DownloadService>();
         services.AddSingleton<IDramaService, DramaService>();
+        services.AddSingleton<IFavoriteService, FavoriteService>();
+        services.AddSingleton<IFilterService, FilterService>();
+        services.AddSingleton<IFollowService, FollowService>();
+        services.AddSingleton<IHistoryService, HistoryService>();
+        services.AddSingleton<ILikeService, LikeService>();
+        services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IPinService, PinService>();
+        services.AddSingleton<IPlaybackMediaService, PlaybackMediaService>();
+        services.AddSingleton<IRankService, RankService>();
         services.AddSingleton<IRecommendService, RecommendService>();
+        services.AddSingleton<IReservationService, ReservationService>();
+        services.AddSingleton<ISearchService, SearchService>();
+        services.AddSingleton<ISubtitleService, SubtitleService>();
         services.AddSingleton<IUserService, UserService>();
+        services.AddSingleton<IViewLaterService, ViewLaterService>();
 
         services.AddSingleton<PhoenixReadApiClient>(sp =>
         {

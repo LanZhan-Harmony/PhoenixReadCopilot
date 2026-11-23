@@ -13,7 +13,7 @@ namespace PhoenixReadCopilot.Pages.Overlay;
 /// <summary>
 /// 视频播放界面.
 /// </summary>
-public sealed partial class VideoPlayerPage : VideoPlayerPageBase
+internal sealed partial class VideoPlayerPage : VideoPlayerPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPage"/> class.
@@ -131,7 +131,7 @@ public sealed partial class VideoPlayerPage : VideoPlayerPageBase
 /// <summary>
 /// 视频播放界面基类.
 /// </summary>
-public abstract class VideoPlayerPageBase : LayoutPageBase<VideoPlayerPageViewModel>
+internal abstract class VideoPlayerPageBase : LayoutPageBase<VideoPlayerPageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPageBase"/> class.

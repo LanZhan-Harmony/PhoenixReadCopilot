@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 时间轴条目视图模型.
 /// </summary>
-public sealed partial class TimelineItemViewModel : ViewModelBase
+internal sealed partial class TimelineItemViewModel : ViewModelBase
 {
     [ObservableProperty]
     public partial ObservableCollection<VideoItemViewModel> Items { get; set; } = [];

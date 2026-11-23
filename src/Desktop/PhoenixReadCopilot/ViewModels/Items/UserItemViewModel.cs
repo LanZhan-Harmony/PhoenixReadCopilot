@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 用户项视图模型.
 /// </summary>
-public sealed partial class UserItemViewModel : ViewModelBase<UserCard>
+internal sealed partial class UserItemViewModel : ViewModelBase<UserCard>
 {
     private static readonly ILogger<UserItemViewModel> _logger = Ioc.Default.GetRequiredService<
         ILogger<UserItemViewModel>

@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 播放器画质项视图模型.
 /// </summary>
-public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFormatInformation>
+internal sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFormatInformation>
 {
     [ObservableProperty]
     public partial bool IsEnabled { get; set; }
@@ -166,7 +166,10 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
         return HashCode.Combine(Data.Quality, PlaybackMedia?.Url);
     }
 
-    public static bool operator ==(PlayerFormatItemViewModel? left, PlayerFormatItemViewModel? right)
+    public static bool operator ==(
+        PlayerFormatItemViewModel? left,
+        PlayerFormatItemViewModel? right
+    )
     {
         if (ReferenceEquals(left, right))
         {
@@ -181,7 +184,10 @@ public sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerForm
         return left.Equals(right);
     }
 
-    public static bool operator !=(PlayerFormatItemViewModel? left, PlayerFormatItemViewModel? right)
+    public static bool operator !=(
+        PlayerFormatItemViewModel? left,
+        PlayerFormatItemViewModel? right
+    )
     {
         return !(left == right);
     }

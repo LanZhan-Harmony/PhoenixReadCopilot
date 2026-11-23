@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 评论项视图模型.
 /// </summary>
-public sealed partial class CommentLikeButton : CommentLikeButtonBase
+internal sealed partial class CommentLikeButton : CommentLikeButtonBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentLikeButton"/> class.
@@ -20,4 +20,4 @@ public sealed partial class CommentLikeButton : CommentLikeButtonBase
 /// <summary>
 /// 评论点赞按钮基类.
 /// </summary>
-public abstract class CommentLikeButtonBase : LayoutUserControlBase<CommentItemViewModel> { }
+internal abstract class CommentLikeButtonBase : LayoutUserControlBase<CommentItemViewModel> { }

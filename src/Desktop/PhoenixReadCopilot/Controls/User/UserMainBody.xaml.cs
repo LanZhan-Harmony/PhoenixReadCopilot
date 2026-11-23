@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户空间主体内容展示控件（基于 DataTemplateSelector 按需实例化各模式视图）.
 /// </summary>
-public sealed partial class UserMainBody : UserControlBase
+internal sealed partial class UserMainBody : UserControlBase
 {
     private ScrollViewer? _activeScrollViewer;
     private RevealFocusPanel? _activeRevealFocusPanel;

@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 搜索建议项视图模型.
 /// </summary>
-public sealed partial class SearchSuggestItemViewModel : ViewModelBase
+internal sealed partial class SearchSuggestItemViewModel : ViewModelBase
 {
     [ObservableProperty]
     public partial string SearchContent { get; set; }

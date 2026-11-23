@@ -50,6 +50,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Labs.WinUI.MarqueeText" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.Shimmer" />
+    <PackageReference Include="CommunityToolkit.WinUI.Animations" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
@@ -87,7 +88,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="ReswPlus" />
+    <PackageReference Include="System.Drawing.Common" />
     <PackageReference Include="WinUIEssential.WinUI3" />
+    <PackageReference Include="WinUIEx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\Danmaku.Core\Danmaku.Core.csproj" />

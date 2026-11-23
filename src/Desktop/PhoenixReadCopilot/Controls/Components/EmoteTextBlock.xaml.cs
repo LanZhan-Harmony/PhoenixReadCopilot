@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 表情富文本.
 /// </summary>
-public sealed partial class EmoteTextBlock : LayoutUserControlBase
+internal sealed partial class EmoteTextBlock : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="MaxLines"/> 的依赖属性.

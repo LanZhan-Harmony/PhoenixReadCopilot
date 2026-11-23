@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Filter;
 /// <summary>
 /// 筛选卡片数据模板字典.
 /// </summary>
-public sealed partial class FilterVideoItemTemplate : ResourceDictionary
+internal sealed partial class FilterVideoItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterVideoItemTemplate"/> class.

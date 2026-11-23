@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.ViewModels;
 /// <summary>
 /// 布局页面视图模型基类.
 /// </summary>
-public abstract partial class LayoutPageViewModelBase : ViewModelBase
+internal abstract partial class LayoutPageViewModelBase : ViewModelBase
 {
     /// <summary>
     /// 应用设置.

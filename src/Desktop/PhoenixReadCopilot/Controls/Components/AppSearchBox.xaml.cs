@@ -13,7 +13,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 应用搜索框.
 /// </summary>
-public sealed partial class AppSearchBox : AppSearchBoxBase
+internal sealed partial class AppSearchBox : AppSearchBoxBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBox"/> class.
@@ -82,7 +82,7 @@ public sealed partial class AppSearchBox : AppSearchBoxBase
 /// <summary>
 /// 应用搜索框的基类.
 /// </summary>
-public abstract class AppSearchBoxBase : LayoutUserControlBase<SearchBoxViewModel>
+internal abstract class AppSearchBoxBase : LayoutUserControlBase<SearchBoxViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBoxBase"/> class.

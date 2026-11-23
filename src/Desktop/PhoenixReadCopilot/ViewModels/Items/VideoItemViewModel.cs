@@ -23,7 +23,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 视频项视图模型.
 /// </summary>
-public sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
+internal sealed partial class VideoItemViewModel : ViewModelBase<VideoInformation>
 {
     private readonly Action<VideoItemViewModel>? _removeAction;
     private readonly VideoFavoriteFolder? _favFolder;

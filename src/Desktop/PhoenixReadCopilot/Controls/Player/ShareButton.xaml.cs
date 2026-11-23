@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 分享按钮.
 /// </summary>
-public sealed partial class ShareButton : LayoutUserControlBase
+internal sealed partial class ShareButton : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="Command"/> 的依赖属性.

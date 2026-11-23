@@ -12,7 +12,7 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 评论输入框.
 /// </summary>
-public sealed partial class CommentTextBox : LayoutUserControlBase
+internal sealed partial class CommentTextBox : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.

@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 下载按钮 (直接对接 IDownloadService).
 /// </summary>
-public sealed partial class DownloadButton : DownloadButtonBase
+internal sealed partial class DownloadButton : DownloadButtonBase
 {
     private readonly IDownloadService _downloadService =
         Ioc.Default.GetRequiredService<IDownloadService>();
@@ -286,4 +286,4 @@ public sealed partial class DownloadButton : DownloadButtonBase
 /// <summary>
 /// 下载按钮基类.
 /// </summary>
-public abstract class DownloadButtonBase : VideoPlayerPageControlBase { }
+internal abstract class DownloadButtonBase : VideoPlayerPageControlBase { }

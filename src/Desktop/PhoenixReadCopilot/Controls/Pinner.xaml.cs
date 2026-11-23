@@ -15,7 +15,7 @@ namespace PhoenixReadCopilot.Controls;
 /// <summary>
 /// 固定器.
 /// </summary>
-public sealed partial class Pinner : PinnerBase
+internal sealed partial class Pinner : PinnerBase
 {
     private readonly INavigationService _navigationService =
         Ioc.Default.GetRequiredService<INavigationService>();
@@ -82,7 +82,7 @@ public sealed partial class Pinner : PinnerBase
 /// <summary>
 /// 固定器基类.
 /// </summary>
-public abstract class PinnerBase : LayoutUserControlBase<PinnerViewModel>
+internal abstract class PinnerBase : LayoutUserControlBase<PinnerViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PinnerBase"/> class.

@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 播放器通知.
 /// </summary>
-public sealed partial class PlayerNotificationItemViewModel : ViewModelBase<PlayerNotification>
+internal sealed partial class PlayerNotificationItemViewModel : ViewModelBase<PlayerNotification>
 {
     private readonly DispatcherTimer? _timer;
 

@@ -15,7 +15,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 视频/短剧历史记录视图模型.
 /// </summary>
-public sealed partial class VideoHistorySectionDetailViewModel
+internal sealed partial class VideoHistorySectionDetailViewModel
     : ViewModelBase,
         IHistorySectionDetailViewModel
 {

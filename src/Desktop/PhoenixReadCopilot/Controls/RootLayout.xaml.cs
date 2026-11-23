@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.Controls;
 /// <summary>
 /// 根布局，用于包裹整个应用程序的布局.
 /// </summary>
-public sealed partial class RootLayout : RootLayoutBase
+internal sealed partial class RootLayout : RootLayoutBase
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
     private readonly INavigationService _navigationService =
@@ -222,7 +222,7 @@ public sealed partial class RootLayout : RootLayoutBase
 /// <summary>
 /// 根布局基类.
 /// </summary>
-public abstract class RootLayoutBase : LayoutUserControlBase<RootLayoutViewModel>
+internal abstract class RootLayoutBase : LayoutUserControlBase<RootLayoutViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayoutBase"/> class.

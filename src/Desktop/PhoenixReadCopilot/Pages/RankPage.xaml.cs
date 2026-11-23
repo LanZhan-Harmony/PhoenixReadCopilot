@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 榜单页.
 /// </summary>
-public sealed partial class RankPage : RankPageBase
+internal sealed partial class RankPage : RankPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RankPage"/> class.
@@ -24,7 +24,7 @@ public sealed partial class RankPage : RankPageBase
 /// <summary>
 /// 榜单页面基类.
 /// </summary>
-public abstract class RankPageBase : LayoutPageBase<RankPageViewModel>
+internal abstract class RankPageBase : LayoutPageBase<RankPageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RankPageBase"/> class.

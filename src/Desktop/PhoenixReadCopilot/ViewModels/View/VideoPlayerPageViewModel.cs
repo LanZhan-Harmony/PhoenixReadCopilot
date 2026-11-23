@@ -23,7 +23,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 短剧播放器页面视图模型.
 /// </summary>
-public sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
+internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly PinnerViewModel _pinnerViewModel;

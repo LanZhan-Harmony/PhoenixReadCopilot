@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 收藏按钮.
 /// </summary>
-public sealed partial class FavoriteButton : LayoutUserControlBase
+internal sealed partial class FavoriteButton : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="IsFavorited"/> 的依赖属性.

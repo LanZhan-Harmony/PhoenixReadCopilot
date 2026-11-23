@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 影院页面.
 /// </summary>
-public partial class FilterPage : FilterPageBase
+internal sealed partial class FilterPage : FilterPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterPage"/> class.
@@ -24,7 +24,7 @@ public partial class FilterPage : FilterPageBase
 /// <summary>
 /// 影院页面基类.
 /// </summary>
-public abstract class FilterPageBase : LayoutPageBase<FilterPageViewModel>
+internal abstract class FilterPageBase : LayoutPageBase<FilterPageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterPageBase"/> class.

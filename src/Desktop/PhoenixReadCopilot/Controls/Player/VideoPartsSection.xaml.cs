@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 短剧播放器选集部分.
 /// </summary>
-public sealed partial class VideoPartsSection : VideoPartsSectionBase
+internal sealed partial class VideoPartsSection : VideoPartsSectionBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartsSection"/> class.
@@ -98,5 +98,5 @@ public sealed partial class VideoPartsSection : VideoPartsSectionBase
 /// <summary>
 /// 视频播放器分P部分基类.
 /// </summary>
-public abstract class VideoPartsSectionBase
+internal abstract class VideoPartsSectionBase
     : LayoutUserControlBase<VideoPlayerPartSectionDetailViewModel> { }

@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 应用视图模型.
 /// </summary>
-public sealed partial class AppViewModel : ViewModelBase
+internal sealed partial class AppViewModel : ViewModelBase
 {
     private readonly AppSettings _settings;
 

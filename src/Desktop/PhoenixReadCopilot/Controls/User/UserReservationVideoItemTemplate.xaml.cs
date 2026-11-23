@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 他人空间作品预约卡片数据模板字典（模仿上新日历待播卡片风格，保留预约状态交互）.
 /// </summary>
-public sealed partial class UserReservationVideoItemTemplate : ResourceDictionary
+internal sealed partial class UserReservationVideoItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserReservationVideoItemTemplate"/> class.

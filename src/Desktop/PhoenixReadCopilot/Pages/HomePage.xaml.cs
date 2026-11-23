@@ -13,7 +13,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 首页（推荐短剧）页面.
 /// </summary>
-public sealed partial class HomePage : HomePageBase
+internal sealed partial class HomePage : HomePageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="HomePage"/> class.
@@ -124,7 +124,7 @@ public sealed partial class HomePage : HomePageBase
 /// <summary>
 /// 首页基类.
 /// </summary>
-public abstract class HomePageBase : LayoutPageBase<HomePageViewModel>
+internal abstract class HomePageBase : LayoutPageBase<HomePageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="HomePageBase"/> class.

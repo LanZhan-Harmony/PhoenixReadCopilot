@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 顶部导航栏条目.
 /// </summary>
-public sealed partial class TopNavigationItem : LayoutUserControlBase
+internal sealed partial class TopNavigationItem : LayoutUserControlBase
 {
     /// <summary>
     /// 图标.

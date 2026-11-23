@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Danmaku;
 /// <summary>
 /// 弹幕发送选项.
 /// </summary>
-public sealed partial class DanmakuSendOptions : DanmakuControlBase
+internal sealed partial class DanmakuSendOptions : DanmakuControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DanmakuSendOptions"/> class.

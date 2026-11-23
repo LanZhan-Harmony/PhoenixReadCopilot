@@ -1,17 +1,14 @@
 using System.Drawing;
 using System.Drawing.Text;
+using PhoenixReadCopilot.Contracts.Services;
 
-namespace WinUIKernel.Share.Toolkits;
+namespace PhoenixReadCopilot.Services;
 
-/// <summary>
-/// Font toolkit.
-/// </summary>
-public sealed class SharedFontToolkit : IFontToolkit
+internal sealed class FontService : IFontService
 {
     private static readonly List<string> _fonts = [];
 
-    /// <inheritdoc/>
-    public async Task<IReadOnlyList<string>> GetFontsAsync()
+    public async ValueTask<IReadOnlyList<string>> GetFontsAsync()
     {
         if (_fonts.Count == 0)
         {

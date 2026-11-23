@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 榜单页面视图模型.
 /// </summary>
-public sealed partial class RankPageViewModel : LayoutPageViewModelBase
+internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
 {
     private readonly IRankService _rankService;
     private readonly ILogger<RankPageViewModel> _logger;

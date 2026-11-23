@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// 视频封面图片控件.
 /// </summary>
 [TemplatePart(Name = ImagePartName, Type = typeof(Image))]
-public sealed partial class CoverImage : Control
+internal sealed partial class CoverImage : Control
 {
     private const string ImagePartName = "PART_Image";
 

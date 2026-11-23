@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Extensions;
 /// <summary>
 /// 主题转换扩展.
 /// </summary>
-public static class ThemeExtensions
+internal static class ThemeExtensions
 {
     /// <summary>
     /// 将 Core.Enums.AppTheme 转换为 WinUI ElementTheme.

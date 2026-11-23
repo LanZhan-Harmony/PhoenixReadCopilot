@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 账户视图模型.
 /// </summary>
-public sealed partial class AccountViewModel : ViewModelBase
+internal sealed partial class AccountViewModel : ViewModelBase
 {
     private readonly IAuthenticationService _authService;
     private readonly IHistoryService _historyService;

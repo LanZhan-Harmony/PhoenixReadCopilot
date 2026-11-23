@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// 播放器.
 /// </summary>
-public sealed partial class PlayerPresenter : PlayerPresenterBase
+internal sealed partial class PlayerPresenter : PlayerPresenterBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPresenter"/> class.
@@ -27,4 +27,4 @@ public sealed partial class PlayerPresenter : PlayerPresenterBase
 /// <summary>
 /// 播放器基类.
 /// </summary>
-public abstract class PlayerPresenterBase : LayoutUserControlBase<PlayerViewModelBase> { }
+internal abstract class PlayerPresenterBase : LayoutUserControlBase<PlayerViewModelBase> { }

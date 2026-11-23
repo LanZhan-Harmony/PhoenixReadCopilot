@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// 红果播放器.
 /// </summary>
-public sealed partial class PhoenixReadPlayer
+internal sealed partial class PhoenixReadPlayer
 {
     private Func<DanmakuControlBase> _createDanmakuControlFunc;
     private Func<FrameworkElement> _createTransportControlFunc;
@@ -295,7 +295,7 @@ public sealed partial class PhoenixReadPlayer
 /// <summary>
 /// 光标网格.
 /// </summary>
-public partial class CursorGrid : Grid
+internal sealed partial class CursorGrid : Grid
 {
     /// <summary>
     /// 隐藏光标.

@@ -13,7 +13,7 @@ namespace PhoenixReadCopilot.Forms;
 /// <summary>
 /// 初始窗口.
 /// </summary>
-public sealed partial class StartupWindow : WindowEx
+internal sealed partial class StartupWindow : WindowEx
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
     private readonly StartupPageViewModel _startupViewModel =

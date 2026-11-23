@@ -16,7 +16,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// FFmpeg 播放器视图模型.
 /// </summary>
-public sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
+internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 {
     public FFmpegPlayerViewModel(
         ISettingsService settingsService,

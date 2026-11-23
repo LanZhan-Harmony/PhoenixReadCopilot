@@ -6,4 +6,4 @@ namespace PhoenixReadCopilot.Controls.Calendar;
 /// <summary>
 /// 时间轴控件基类.
 /// </summary>
-public abstract class CalendarTimelineControlBase : LayoutUserControlBase<CalendarPageViewModel> { }
+internal abstract class CalendarTimelineControlBase : LayoutUserControlBase<CalendarPageViewModel> { }

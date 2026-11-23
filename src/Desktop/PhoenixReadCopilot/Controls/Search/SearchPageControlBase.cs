@@ -6,4 +6,4 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 搜索页面控件基类.
 /// </summary>
-public abstract class SearchPageControlBase : LayoutUserControlBase<SearchPageViewModel> { }
+internal abstract class SearchPageControlBase : LayoutUserControlBase<SearchPageViewModel> { }

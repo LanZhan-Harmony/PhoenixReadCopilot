@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户空间控件基类.
 /// </summary>
-public abstract class UserControlBase : UserControl
+internal abstract class UserControlBase : UserControl
 {
     public static readonly DependencyProperty ViewModelProperty =
         DependencyProperty.Register(

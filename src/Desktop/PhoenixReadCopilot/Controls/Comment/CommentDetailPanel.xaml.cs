@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 评论详情面板.
 /// </summary>
-public sealed partial class CommentDetailPanel : CommentDetailPanelBase
+internal sealed partial class CommentDetailPanel : CommentDetailPanelBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentDetailPanel"/> class.
@@ -102,4 +102,4 @@ public sealed partial class CommentDetailPanel : CommentDetailPanelBase
 /// <summary>
 /// 评论详情面板基类.
 /// </summary>
-public abstract class CommentDetailPanelBase : LayoutUserControlBase<CommentDetailViewModel> { }
+internal abstract class CommentDetailPanelBase : LayoutUserControlBase<CommentDetailViewModel> { }

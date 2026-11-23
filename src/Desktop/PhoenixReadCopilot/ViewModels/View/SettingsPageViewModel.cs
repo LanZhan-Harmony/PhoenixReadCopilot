@@ -16,7 +16,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 设置页面视图模型.
 /// </summary>
-public sealed partial class SettingsPageViewModel : ViewModelBase
+internal sealed partial class SettingsPageViewModel : ViewModelBase
 {
     private readonly AppViewModel _appViewModel;
     private readonly INavigationService _navigationService;

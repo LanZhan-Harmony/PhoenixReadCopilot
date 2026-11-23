@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 点赞按钮.
 /// </summary>
-public sealed partial class LikeButton : LayoutUserControlBase
+internal sealed partial class LikeButton : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="IsLiked"/> 的依赖属性.

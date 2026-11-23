@@ -16,7 +16,7 @@ namespace PhoenixReadCopilot;
 /// <summary>
 /// Provides application-specific behavior to supplement the default Application class.
 /// </summary>
-public partial class App : Application
+public sealed partial class App : Application
 {
     private const string Id = "PhoenixReadCopilot";
     private readonly DispatcherQueue _dispatcherQueue;
@@ -64,7 +64,7 @@ public partial class App : Application
     /// <summary>
     /// 获取当前应用主窗口.
     /// </summary>
-    public static MainWindow? GetMainWindow() =>
+    internal static MainWindow? GetMainWindow() =>
         Ioc.Default.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow)
         as MainWindow;
 

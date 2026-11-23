@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 视频播放器格式按钮.
 /// </summary>
-public sealed partial class VideoPlayerFormatButton : VideoPlayerPageControlBase
+internal sealed partial class VideoPlayerFormatButton : VideoPlayerPageControlBase
 {
     private bool _isUpdatingSelection;
 

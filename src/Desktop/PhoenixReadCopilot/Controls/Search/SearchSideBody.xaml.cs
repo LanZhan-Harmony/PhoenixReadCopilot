@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 搜索侧边栏.
 /// </summary>
-public sealed partial class SearchSideBody : SearchPageControlBase
+internal sealed partial class SearchSideBody : SearchPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSideBody"/> class.

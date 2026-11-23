@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// <summary>
 /// 短剧排行榜卡片数据模板字典.
 /// </summary>
-public sealed partial class RankVideoItemTemplate : ResourceDictionary
+internal sealed partial class RankVideoItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RankVideoItemTemplate"/> class.

@@ -21,7 +21,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 用户空间与个人主页视图模型（支持个人主页与他人空间共用）.
 /// </summary>
-public sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
+internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 {
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;

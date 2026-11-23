@@ -10,7 +10,6 @@ using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIKernel.Share;
-using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.Helpers;
@@ -30,10 +29,9 @@ internal static class ServiceHelper
             // 1. 通用工具
             .AddSingleton<IPathService, PathService>()
             .AddSingleton<ILocalizationService, LocalizationService>()
-            .AddSingleton<IFontToolkit, SharedFontToolkit>()
+            .AddSingleton<IFontService, FontService>()
             .AddSingleton<IXamlRootProvider, XamlRootProvider>()
             .AddSingleton(DispatcherQueue.GetForCurrentThread())
-            .AddSingleton<ISubtitleService, SubtitleService>()
             .AddSingleton<INotificationService, NotificationService>()
             .AddSingleton<IPageService, PageService>()
             .AddSingleton<NavigationService>()

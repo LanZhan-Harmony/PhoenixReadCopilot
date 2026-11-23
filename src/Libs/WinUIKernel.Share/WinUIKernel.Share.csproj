@@ -17,11 +17,9 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.HighPerformance" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="CommunityToolkit.WinUI.Animations" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" />
-    <PackageReference Include="CommunityToolkit.WinUI.Media" />
-    <PackageReference Include="CommunityToolkit.WinUI.Triggers" />
     <PackageReference Include="FluentIcons.WinUI" />
     <PackageReference Include="Microsoft.WindowsAppSDK">
       <ExcludeAssets>all</ExcludeAssets>
@@ -49,8 +47,5 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
-    <PackageReference Include="Microsoft.Graphics.Win2D" />
-    <PackageReference Include="System.Drawing.Common" />
-    <PackageReference Include="WinUIEx" />
   </ItemGroup>
 </Project>

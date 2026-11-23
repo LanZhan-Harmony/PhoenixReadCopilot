@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 骨架占位图.
 /// </summary>
-public sealed partial class ShimmerLayout : LayoutControlBase
+internal sealed partial class ShimmerLayout : LayoutControlBase
 {
     /// <summary>
     /// <see cref="IsActive"/> 的依赖属性.

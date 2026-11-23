@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Calendar;
 /// <summary>
 /// 上新日历卡片数据模板字典.
 /// </summary>
-public sealed partial class CalendarVideoItemTemplate : ResourceDictionary
+internal sealed partial class CalendarVideoItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarVideoItemTemplate"/> class.

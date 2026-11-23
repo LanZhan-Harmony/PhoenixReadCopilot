@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 评论详情视图模型.
 /// </summary>
-public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemViewModel>
+internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemViewModel>
 {
     private readonly ILogger<CommentDetailViewModel> _logger;
     private readonly Action<CommentDetailViewModel>? _showMoreAction;
@@ -182,9 +182,8 @@ public sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemVi
     private void Refresh()
     {
         Clear();
-        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low,
-            async () =>
-                await LoadItemsAsync()
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+            await LoadItemsAsync()
         );
     }
 

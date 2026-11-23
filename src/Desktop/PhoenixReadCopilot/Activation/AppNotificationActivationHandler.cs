@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Activation;
 /// <summary>
 /// Windows 原生系统通知点击与按钮操作激活处理器.
 /// </summary>
-public sealed class AppNotificationActivationHandler : IActivationHandler
+internal sealed class AppNotificationActivationHandler : IActivationHandler
 {
     private readonly AppViewModel _appViewModel;
     private readonly ILogger<AppNotificationActivationHandler> _logger;

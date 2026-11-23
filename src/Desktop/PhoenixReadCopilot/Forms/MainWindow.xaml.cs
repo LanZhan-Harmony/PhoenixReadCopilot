@@ -24,7 +24,7 @@ namespace PhoenixReadCopilot.Forms;
 /// <summary>
 /// 主窗口.
 /// </summary>
-public sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWindow
+internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWindow
 {
     private readonly ISettingsService _settingsService;
     private readonly AppViewModel _appViewModel;

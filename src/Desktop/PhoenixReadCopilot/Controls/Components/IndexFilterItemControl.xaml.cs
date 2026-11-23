@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 索引过滤器项控件.
 /// </summary>
-public sealed partial class IndexFilterItemControl : IndexFilterItemControlBase
+internal sealed partial class IndexFilterItemControl : IndexFilterItemControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="IndexFilterItemControl"/> class.
@@ -39,4 +39,4 @@ public sealed partial class IndexFilterItemControl : IndexFilterItemControlBase
 /// <summary>
 /// 索引过滤器项控件基类.
 /// </summary>
-public abstract class IndexFilterItemControlBase : LayoutUserControlBase<IndexFilterViewModel> { }
+internal abstract class IndexFilterItemControlBase : LayoutUserControlBase<IndexFilterViewModel> { }

@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 时间轴控件.
 /// </summary>
-public sealed partial class TimelineControl : TimelineControlBase
+internal sealed partial class TimelineControl : TimelineControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TimelineControl"/> class.
@@ -20,4 +20,4 @@ public sealed partial class TimelineControl : TimelineControlBase
 /// <summary>
 /// 时间轴控件基类.
 /// </summary>
-public abstract class TimelineControlBase : LayoutUserControlBase<TimelineItemViewModel> { }
+internal abstract class TimelineControlBase : LayoutUserControlBase<TimelineItemViewModel> { }

@@ -16,7 +16,7 @@ namespace PhoenixReadCopilot.Services;
 /// <summary>
 /// 页面导航服务实现.
 /// </summary>
-public sealed class NavigationService : INavigationService, INavServiceViewModel
+internal sealed class NavigationService : INavigationService, INavServiceViewModel
 {
     private readonly IPageService _pageService;
     private readonly AppViewModel _appViewModel;

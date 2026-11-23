@@ -6,4 +6,4 @@ namespace PhoenixReadCopilot.Controls.Danmaku;
 /// <summary>
 /// 弹幕控件基类.
 /// </summary>
-public abstract class DanmakuControlBase : LayoutUserControlBase<DanmakuViewModel> { }
+internal abstract class DanmakuControlBase : LayoutUserControlBase<DanmakuViewModel> { }

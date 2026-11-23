@@ -13,7 +13,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 制作人员项视图模型.
 /// </summary>
-public sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit>
+internal sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit>
 {
     private readonly AppViewModel _appViewModel;
     private readonly ILogger<DramaCreditItemViewModel> _logger;

@@ -16,7 +16,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 首页视图模型.
 /// </summary>
-public sealed partial class HomePageViewModel : LayoutPageViewModelBase
+internal sealed partial class HomePageViewModel : LayoutPageViewModelBase
 {
     private readonly IRecommendService _recommendService;
     private readonly ILogger<HomePageViewModel> _logger;

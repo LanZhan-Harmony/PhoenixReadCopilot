@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 用户空间短剧剧评条目模型.
 /// </summary>
-public sealed partial class UserReviewItemViewModel : ViewModelBase<UserReview>
+internal sealed partial class UserReviewItemViewModel : ViewModelBase<UserReview>
 {
     /// <summary>
     /// 剧评 ID.

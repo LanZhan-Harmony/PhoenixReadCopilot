@@ -13,7 +13,7 @@ using Windows.Foundation;
 
 namespace PhoenixReadCopilot.Controls.Core;
 
-public sealed partial class PhoenixReadPlayer : PlayerControlBase
+internal sealed partial class PhoenixReadPlayer : PlayerControlBase
 {
     private readonly AppSettings _settings;
 

@@ -4,7 +4,7 @@ using WinUIKernel.Share;
 
 namespace PhoenixReadCopilot.Extensions;
 
-public sealed class XamlRootProvider : IXamlRootProvider
+internal sealed class XamlRootProvider : IXamlRootProvider
 {
     private readonly AppViewModel _appViewModel;
 

@@ -3,7 +3,7 @@ namespace PhoenixReadCopilot.Controls.Settings;
 /// <summary>
 /// 下载设置.
 /// </summary>
-public sealed partial class DownloadSettingControl : SettingsPageControlBase
+internal sealed partial class DownloadSettingControl : SettingsPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DownloadSettingControl"/> class.

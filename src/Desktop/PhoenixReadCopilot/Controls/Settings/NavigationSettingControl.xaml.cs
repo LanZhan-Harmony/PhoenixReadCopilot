@@ -3,7 +3,7 @@ namespace PhoenixReadCopilot.Controls.Settings;
 /// <summary>
 /// 导航设置控件.
 /// </summary>
-public sealed partial class NavigationSettingControl : SettingsPageControlBase
+internal sealed partial class NavigationSettingControl : SettingsPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="NavigationSettingControl"/> class.

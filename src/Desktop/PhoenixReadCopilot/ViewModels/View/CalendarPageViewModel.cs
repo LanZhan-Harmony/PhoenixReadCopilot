@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 上新日历页面视图模型.
 /// </summary>
-public sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
+internal sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
 {
     private readonly ICalendarService _calendarService;
     private readonly ILogger<CalendarPageViewModel> _logger;

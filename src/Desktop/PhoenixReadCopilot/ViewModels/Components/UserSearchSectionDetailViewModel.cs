@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 用户/演职员搜索分区详情视图模型.
 /// </summary>
-public sealed partial class UserSearchSectionDetailViewModel
+internal sealed partial class UserSearchSectionDetailViewModel
     : ViewModelBase,
         ISearchSectionDetailViewModel
 {

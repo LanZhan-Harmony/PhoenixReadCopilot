@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Contracts.Services;
 /// <summary>
 /// 导航视图条目管理服务接口.
 /// </summary>
-public interface INavigationViewService
+internal interface INavigationViewService
 {
     /// <summary>
     /// 主菜单条目列表.

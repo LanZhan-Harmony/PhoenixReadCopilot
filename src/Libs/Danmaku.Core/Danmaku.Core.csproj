@@ -45,7 +45,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
-    <PackageReference Include="Microsoft.Graphics.Win2D" />
     <PackageReference Include="Vortice.Direct2D1" />
     <PackageReference Include="Vortice.Direct3D11" />
     <PackageReference Include="ZLogger" />

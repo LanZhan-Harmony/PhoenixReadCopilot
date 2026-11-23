@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 榜单区块项视图模型.
 /// </summary>
-public sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemViewModel
+internal sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RankSectionItemViewModel"/> class.

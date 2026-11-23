@@ -2,12 +2,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Danmaku.Core.Enums;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
 using Windows.UI;
 using WinUIKernel.Share.Base;
-using WinUIKernel.Share.Toolkits;
 using WinUIKernel.Share.ViewModels;
 using ZLogger;
 using DanmakuCoreItem = Danmaku.Core.Models.DanmakuItem;
@@ -17,12 +17,12 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 弹幕视图模型.
 /// </summary>
-public sealed partial class DanmakuViewModel : ViewModelBase
+internal sealed partial class DanmakuViewModel : ViewModelBase
 {
     private readonly IDanmakuService _danmakuService;
     private readonly AppViewModel _appViewModel;
     private readonly ILogger<DanmakuViewModel> _logger;
-    private readonly IFontToolkit _fontToolkit;
+    private readonly IFontService _fontService;
     private readonly AppSettings _settings;
 
     private string _dramaId = string.Empty;
@@ -155,14 +155,14 @@ public sealed partial class DanmakuViewModel : ViewModelBase
         AppViewModel appViewModel,
         ILogger<DanmakuViewModel> logger,
         ISettingsService settingsService,
-        IFontToolkit fontToolkit
+        IFontService fontService
     )
     {
         _danmakuService = danmakuService;
         _appViewModel = appViewModel;
         _logger = logger;
         _settings = settingsService.Settings;
-        _fontToolkit = fontToolkit;
+        _fontService = fontService;
         Locations = [DanmakuLocation.Scroll, DanmakuLocation.Top, DanmakuLocation.Bottom];
         Colors =
         [
@@ -430,7 +430,7 @@ public sealed partial class DanmakuViewModel : ViewModelBase
     /// </summary>
     public async Task ReloadFontsAsync()
     {
-        IReadOnlyList<string> fonts = await _fontToolkit.GetFontsAsync();
+        IReadOnlyList<string> fonts = await _fontService.GetFontsAsync();
         Fonts = [.. fonts];
         string localFont = _settings.DanmakuFontFamily;
         if (!Fonts.Contains(localFont))

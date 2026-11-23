@@ -15,7 +15,7 @@ namespace PhoenixReadCopilot.Services;
 /// <summary>
 /// 导航视图条目管理服务实现.
 /// </summary>
-public sealed class NavigationViewService : INavigationViewService
+internal sealed class NavigationViewService : INavigationViewService
 {
     private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;

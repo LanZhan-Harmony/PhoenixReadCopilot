@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 红果圈图文详情视图模型（模仿小红书左图右文评交互）.
 /// </summary>
-public sealed partial class ArticlePageViewModel : ViewModelBase
+internal sealed partial class ArticlePageViewModel : ViewModelBase
 {
     private readonly PhoenixReadApiClient _apiClient;
     private readonly IFollowService _followService;

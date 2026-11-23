@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 表情面板.
 /// </summary>
-public sealed partial class EmotePanel : UserControl
+internal sealed partial class EmotePanel : UserControl
 {
     /// <summary>
     /// 表情列表.

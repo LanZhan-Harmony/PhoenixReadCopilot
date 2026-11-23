@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 用户空间主体内容展示条目接口（统一 Section 与 SubTab，支持 DataTemplateSelector 纯 MVVM 自动识别）.
 /// </summary>
-public interface IUserSpaceContentItem
+internal interface IUserSpaceContentItem
 {
     /// <summary>
     /// 所属页面视图模型.
@@ -19,7 +19,7 @@ public interface IUserSpaceContentItem
 /// <summary>
 /// 用户空间功能区 Section 条目模型.
 /// </summary>
-public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase, IUserSpaceContentItem
+internal sealed partial class UserSpaceSectionItemViewModel : ViewModelBase, IUserSpaceContentItem
 {
     /// <summary>
     /// Section 唯一标识（例如 Works, Collections, Reviews, History, Favorite, ViewLater, Likes, Reservation, Circle, Follows, Fans）.
@@ -75,7 +75,13 @@ public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase, IUser
     /// <summary>
     /// 构造函数.
     /// </summary>
-    public UserSpaceSectionItemViewModel(string id, string title, Symbol symbol, long? count = null, View.UserSpacePageViewModel? pageViewModel = null)
+    public UserSpaceSectionItemViewModel(
+        string id,
+        string title,
+        Symbol symbol,
+        long? count = null,
+        View.UserSpacePageViewModel? pageViewModel = null
+    )
     {
         Id = id;
         Title = title;
@@ -90,7 +96,7 @@ public sealed partial class UserSpaceSectionItemViewModel : ViewModelBase, IUser
 /// <summary>
 /// 子分类 Tab 模型.
 /// </summary>
-public sealed partial class UserSpaceSubTabItemViewModel : ViewModelBase, IUserSpaceContentItem
+internal sealed partial class UserSpaceSubTabItemViewModel : ViewModelBase, IUserSpaceContentItem
 {
     /// <summary>
     /// 唯一标识.

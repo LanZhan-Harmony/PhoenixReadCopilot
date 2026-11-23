@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 用户空间/个人主页页面（支持个人与他人共用）.
 /// </summary>
-public sealed partial class UserSpacePage : UserSpacePageBase
+internal sealed partial class UserSpacePage : UserSpacePageBase
 {
     public UserSpacePage()
     {
@@ -33,7 +33,7 @@ public sealed partial class UserSpacePage : UserSpacePageBase
 /// <summary>
 /// 用户空间页面基类.
 /// </summary>
-public abstract class UserSpacePageBase : LayoutPageBase<UserSpacePageViewModel>
+internal abstract class UserSpacePageBase : LayoutPageBase<UserSpacePageViewModel>
 {
     protected UserSpacePageBase()
     {

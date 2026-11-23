@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 视频信息区域.
 /// </summary>
-public sealed partial class VideoInfoSection : VideoPlayerPageControlBase
+internal sealed partial class VideoInfoSection : VideoPlayerPageControlBase
 {
     private readonly SearchBoxViewModel _searchBoxViewModel =
         Ioc.Default.GetRequiredService<SearchBoxViewModel>();

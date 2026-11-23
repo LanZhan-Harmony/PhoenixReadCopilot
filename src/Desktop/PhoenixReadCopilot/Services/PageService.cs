@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.Services;
 /// <summary>
 /// 页面定位服务实现（基于字典静态映射，不使用反射）.
 /// </summary>
-public sealed class PageService : IPageService
+internal sealed class PageService : IPageService
 {
     private readonly Dictionary<string, Type> _pages = [with(StringComparer.OrdinalIgnoreCase)];
 

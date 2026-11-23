@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Controls.Danmaku;
 /// <summary>
 /// 弹幕框.
 /// </summary>
-public sealed partial class DanmakuBox : DanmakuControlBase
+internal sealed partial class DanmakuBox : DanmakuControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DanmakuBox"/> class.

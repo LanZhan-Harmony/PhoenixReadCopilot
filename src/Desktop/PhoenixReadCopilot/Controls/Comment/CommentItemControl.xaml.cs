@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 评论控件.
 /// </summary>
-public sealed partial class CommentItemControl : CommentItemControlBase
+internal sealed partial class CommentItemControl : CommentItemControlBase
 {
     /// <summary>
     /// <see cref="ShowMoreCommand"/> 的依赖属性.
@@ -60,4 +60,4 @@ public sealed partial class CommentItemControl : CommentItemControlBase
 /// <summary>
 /// Comment item control base.
 /// </summary>
-public abstract class CommentItemControlBase : LayoutUserControlBase<CommentItemViewModel>;
+internal abstract class CommentItemControlBase : LayoutUserControlBase<CommentItemViewModel>;

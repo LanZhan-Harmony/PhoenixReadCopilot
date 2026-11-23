@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 视频/短剧搜索分区详情视图模型.
 /// </summary>
-public sealed partial class VideoSearchSectionDetailViewModel
+internal sealed partial class VideoSearchSectionDetailViewModel
     : ViewModelBase,
         ISearchSectionDetailViewModel
 {

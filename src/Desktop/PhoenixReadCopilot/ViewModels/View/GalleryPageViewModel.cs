@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 图片库页面视图模型.
 /// </summary>
-public sealed partial class GalleryPageViewModel : ViewModelBase
+internal sealed partial class GalleryPageViewModel : ViewModelBase
 {
     private readonly AppViewModel _appViewModel;
     private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();

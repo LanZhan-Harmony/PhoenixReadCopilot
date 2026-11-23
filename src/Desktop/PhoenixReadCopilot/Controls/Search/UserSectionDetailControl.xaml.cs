@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 用户搜索分区详情控件.
 /// </summary>
-public sealed partial class UserSectionDetailControl : UserSectionDetailControlBase
+internal sealed partial class UserSectionDetailControl : UserSectionDetailControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSectionDetailControl"/> class.
@@ -113,5 +113,5 @@ public sealed partial class UserSectionDetailControl : UserSectionDetailControlB
 /// <summary>
 /// 用户搜索分区详情控件基类.
 /// </summary>
-public abstract class UserSectionDetailControlBase
+internal abstract class UserSectionDetailControlBase
     : LayoutUserControlBase<UserSearchSectionDetailViewModel> { }

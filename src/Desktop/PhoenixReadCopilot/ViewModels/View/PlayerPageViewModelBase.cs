@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 播放器页面视图模型基类.
 /// </summary>
-public abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
+internal abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 {
     protected readonly AppViewModel _appViewModel;
     protected readonly ISettingsService _settingsService;

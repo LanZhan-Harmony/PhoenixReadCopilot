@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 红果圈卡片数据模板字典.
 /// </summary>
-public sealed partial class CircleFeedItemTemplate : ResourceDictionary
+internal sealed partial class CircleFeedItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CircleFeedItemTemplate"/> class.

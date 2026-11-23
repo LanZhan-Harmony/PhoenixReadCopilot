@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.Forms;
 /// <summary>
 /// 图片浏览窗口.
 /// </summary>
-public sealed partial class GalleryWindow : WindowEx, ITipWindow
+internal sealed partial class GalleryWindow : WindowEx, ITipWindow
 {
     private readonly AppViewModel _appViewModel;
     private readonly AppSettings _settings;

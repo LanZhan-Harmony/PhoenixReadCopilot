@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 推荐短剧卡片数据模板字典.
 /// </summary>
-public sealed partial class PlayerRecommendedVideoItemTemplate : ResourceDictionary
+internal sealed partial class PlayerRecommendedVideoItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerRecommendedVideoItemTemplate"/> class.

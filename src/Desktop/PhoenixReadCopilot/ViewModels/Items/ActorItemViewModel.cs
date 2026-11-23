@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 演员排行榜项视图模型.
 /// </summary>
-public sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboardItem>
+internal sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboardItem>
 {
     private readonly Action<ActorItemViewModel>? _removeAction;
 

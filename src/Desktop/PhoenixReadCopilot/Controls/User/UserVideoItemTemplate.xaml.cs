@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户视频卡片数据模板字典.
 /// </summary>
-public sealed partial class UserVideoItemTemplate : ResourceDictionary
+internal sealed partial class UserVideoItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserVideoItemTemplate"/> class.

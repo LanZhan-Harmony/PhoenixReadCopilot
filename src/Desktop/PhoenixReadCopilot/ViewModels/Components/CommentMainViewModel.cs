@@ -19,7 +19,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 评论主视图模型.
 /// </summary>
-public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSectionDetailViewModel
+internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSectionDetailViewModel
 {
     private readonly ILogger<CommentMainViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -199,7 +199,10 @@ public sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSection
 
         UpdateLoginState();
 
-        if (string.IsNullOrEmpty(_postId) && (string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId)))
+        if (
+            string.IsNullOrEmpty(_postId)
+            && (string.IsNullOrEmpty(_dramaId) || string.IsNullOrEmpty(_videoId))
+        )
         {
             return;
         }

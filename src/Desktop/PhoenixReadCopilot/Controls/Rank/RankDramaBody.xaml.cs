@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// <summary>
 /// 短剧榜单展示主体.
 /// </summary>
-public sealed partial class RankDramaBody : RankPageControlBase
+internal sealed partial class RankDramaBody : RankPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RankDramaBody"/> class.

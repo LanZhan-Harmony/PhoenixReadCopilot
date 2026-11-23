@@ -13,7 +13,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 图片库页面.
 /// </summary>
-public sealed partial class GalleryPage : GalleryPageBase
+internal sealed partial class GalleryPage : GalleryPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPage"/> class.
@@ -87,4 +87,4 @@ public sealed partial class GalleryPage : GalleryPageBase
 /// <summary>
 /// 图片库页面基类.
 /// </summary>
-public abstract class GalleryPageBase : LayoutPageBase<GalleryPageViewModel> { }
+internal abstract class GalleryPageBase : LayoutPageBase<GalleryPageViewModel> { }

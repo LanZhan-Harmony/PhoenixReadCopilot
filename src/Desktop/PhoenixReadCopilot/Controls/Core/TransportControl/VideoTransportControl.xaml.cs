@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// 视频播放器控件.
 /// </summary>
-public sealed partial class VideoTransportControl : PlayerControlBase
+internal sealed partial class VideoTransportControl : PlayerControlBase
 {
     private DispatcherTimer? _seekDebounceTimer;
     private double _pendingSeekPosition = -1;

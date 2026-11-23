@@ -3,7 +3,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 字幕显示器.
 /// </summary>
-public sealed partial class SubtitlePresenter : SubtitleControlBase
+internal sealed partial class SubtitlePresenter : SubtitleControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SubtitlePresenter"/> class.

@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 表情模块视图模型.
 /// </summary>
-public sealed partial class EmoteModuleViewModel : ViewModelBase
+internal sealed partial class EmoteModuleViewModel : ViewModelBase
 {
     [ObservableProperty]
     public partial bool IsLoading { get; set; }

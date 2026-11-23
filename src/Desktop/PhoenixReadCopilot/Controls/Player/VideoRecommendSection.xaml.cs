@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 视频推荐区域.
 /// </summary>
-public sealed partial class VideoRecommendSection : VideoRecommendSectionBase
+internal sealed partial class VideoRecommendSection : VideoRecommendSectionBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoRecommendSection"/> class.
@@ -56,5 +56,5 @@ public sealed partial class VideoRecommendSection : VideoRecommendSectionBase
 /// <summary>
 /// 视频推荐区域基类.
 /// </summary>
-public abstract class VideoRecommendSectionBase
+internal abstract class VideoRecommendSectionBase
     : LayoutUserControlBase<VideoPlayerRecommendSectionDetailViewModel> { }

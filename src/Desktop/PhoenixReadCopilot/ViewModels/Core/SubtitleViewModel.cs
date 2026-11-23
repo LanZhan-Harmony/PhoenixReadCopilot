@@ -12,7 +12,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 视频播放器字幕视图模型.
 /// </summary>
-public sealed partial class SubtitleViewModel : ViewModelBase
+internal sealed partial class SubtitleViewModel : ViewModelBase
 {
     private readonly AppSettings Settings;
 

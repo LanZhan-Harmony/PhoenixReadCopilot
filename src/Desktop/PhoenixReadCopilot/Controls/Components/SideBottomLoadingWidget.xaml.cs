@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 侧边底部加载控件.
 /// </summary>
-public sealed partial class SideBottomLoadingWidget : UserControl
+internal sealed partial class SideBottomLoadingWidget : UserControl
 {
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.

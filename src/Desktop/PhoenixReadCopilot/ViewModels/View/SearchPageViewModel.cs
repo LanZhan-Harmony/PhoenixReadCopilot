@@ -15,7 +15,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 搜索页面视图模型.
 /// </summary>
-public sealed partial class SearchPageViewModel : LayoutPageViewModelBase
+internal sealed partial class SearchPageViewModel : LayoutPageViewModelBase
 {
     private readonly ISearchService _searchService;
     private readonly ILogger<SearchPageViewModel> _logger;

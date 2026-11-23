@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Calendar;
 /// <summary>
 /// 上新日历左侧时间轴.
 /// </summary>
-public sealed partial class CalendarTimelineSideControl : CalendarTimelineControlBase
+internal sealed partial class CalendarTimelineSideControl : CalendarTimelineControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarTimelineSideControl"/> class.

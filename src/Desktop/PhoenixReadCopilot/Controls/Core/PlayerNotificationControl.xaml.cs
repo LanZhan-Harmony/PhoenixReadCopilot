@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// 播放器通知控件.
 /// </summary>
-public sealed partial class PlayerNotificationControl : PlayerNotificationControlBase
+internal sealed partial class PlayerNotificationControl : PlayerNotificationControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerNotificationControl"/> class.
@@ -26,5 +26,5 @@ public sealed partial class PlayerNotificationControl : PlayerNotificationContro
 /// <summary>
 /// 播放器通知控件基类.
 /// </summary>
-public abstract class PlayerNotificationControlBase
+internal abstract class PlayerNotificationControlBase
     : LayoutUserControlBase<PlayerNotificationItemViewModel> { }

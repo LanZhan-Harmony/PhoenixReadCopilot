@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Pages.Overlay;
 /// <summary>
 /// 红果圈图文详情浮层页面（模仿小红书左图右文评）.
 /// </summary>
-public sealed partial class ArticlePage : ArticlePageBase
+internal sealed partial class ArticlePage : ArticlePageBase
 {
     public ArticlePage()
     {
@@ -36,7 +36,7 @@ public sealed partial class ArticlePage : ArticlePageBase
 /// <summary>
 /// 页面基类.
 /// </summary>
-public abstract class ArticlePageBase : LayoutPageBase<ArticlePageViewModel>
+internal abstract class ArticlePageBase : LayoutPageBase<ArticlePageViewModel>
 {
     protected ArticlePageBase()
     {

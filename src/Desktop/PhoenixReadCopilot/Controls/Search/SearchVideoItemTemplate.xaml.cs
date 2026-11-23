@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 搜索卡片数据模板字典.
 /// </summary>
-public sealed partial class SearchVideoItemTemplate : ResourceDictionary
+internal sealed partial class SearchVideoItemTemplate : ResourceDictionary
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchVideoItemTemplate"/> class.

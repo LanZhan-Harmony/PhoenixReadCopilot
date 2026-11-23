@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 上新日历页面.
 /// </summary>
-public partial class CalendarPage : CalendarPageBase
+internal sealed partial class CalendarPage : CalendarPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarPage"/> class.
@@ -24,7 +24,7 @@ public partial class CalendarPage : CalendarPageBase
 /// <summary>
 /// 上新日历页面基类.
 /// </summary>
-public abstract class CalendarPageBase : LayoutPageBase<CalendarPageViewModel>
+internal abstract class CalendarPageBase : LayoutPageBase<CalendarPageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarPageBase"/> class.

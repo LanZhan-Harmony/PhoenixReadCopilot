@@ -16,7 +16,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 多维筛选页面视图模型.
 /// </summary>
-public sealed partial class FilterPageViewModel : LayoutPageViewModelBase
+internal sealed partial class FilterPageViewModel : LayoutPageViewModelBase
 {
     private readonly IFilterService _filterService;
     private readonly ILogger<FilterPageViewModel> _logger;

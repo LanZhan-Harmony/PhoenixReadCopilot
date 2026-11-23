@@ -13,7 +13,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 固定组件视图模型.
 /// </summary>
-public sealed partial class PinnerViewModel : ViewModelBase
+internal sealed partial class PinnerViewModel : ViewModelBase
 {
     private readonly IPinService _pinService;
     private readonly AppViewModel _appViewModel;

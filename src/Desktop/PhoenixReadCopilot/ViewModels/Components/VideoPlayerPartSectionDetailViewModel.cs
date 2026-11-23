@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 短剧分集详情视图模型.
 /// </summary>
-public sealed partial class VideoPlayerPartSectionDetailViewModel
+internal sealed partial class VideoPlayerPartSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {

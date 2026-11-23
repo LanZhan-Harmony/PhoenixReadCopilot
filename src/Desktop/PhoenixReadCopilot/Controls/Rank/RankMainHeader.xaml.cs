@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// <summary>
 /// 榜单页面主标题.
 /// </summary>
-public sealed partial class RankMainHeader : RankPageControlBase
+internal sealed partial class RankMainHeader : RankPageControlBase
 {
     private bool _isUpdatingBoardItems;
 

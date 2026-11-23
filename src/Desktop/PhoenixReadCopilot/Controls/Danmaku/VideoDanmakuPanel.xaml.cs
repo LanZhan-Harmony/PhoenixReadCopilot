@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Danmaku;
 /// <summary>
 /// 视频弹幕面板.
 /// </summary>
-public sealed partial class VideoDanmakuPanel : DanmakuControlBase
+internal sealed partial class VideoDanmakuPanel : DanmakuControlBase
 {
     private readonly ILogger<DanmakuRenderer> _danmakuLogger = Ioc.Default.GetRequiredService<
         ILogger<DanmakuRenderer>

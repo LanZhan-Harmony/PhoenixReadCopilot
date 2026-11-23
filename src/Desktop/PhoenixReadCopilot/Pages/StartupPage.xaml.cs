@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 初始登录页面.
 /// </summary>
-public sealed partial class StartupPage : StartupPageBase
+internal sealed partial class StartupPage : StartupPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPage"/> class.
@@ -31,7 +31,7 @@ public sealed partial class StartupPage : StartupPageBase
 /// <summary>
 /// 初始登录页面基类.
 /// </summary>
-public abstract class StartupPageBase : LayoutPageBase<StartupPageViewModel>
+internal abstract class StartupPageBase : LayoutPageBase<StartupPageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPageBase"/> class.

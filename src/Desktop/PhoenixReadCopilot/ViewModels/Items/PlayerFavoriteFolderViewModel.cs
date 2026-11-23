@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 用户收藏夹视图模型.
 /// </summary>
-public sealed partial class PlayerFavoriteFolderViewModel : ViewModelBase<VideoFavoriteFolder>
+internal sealed partial class PlayerFavoriteFolderViewModel : ViewModelBase<VideoFavoriteFolder>
 {
     [ObservableProperty]
     public partial bool IsSelected { get; set; }

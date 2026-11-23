@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Helpers;
 /// <summary>
 /// 表情条目.
 /// </summary>
-public sealed class EmojiItem
+internal sealed class EmojiItem
 {
     /// <summary>
     /// 表情名称 (如 "微笑").
@@ -39,7 +39,7 @@ public sealed class EmojiItem
 /// <summary>
 /// 表情辅助工具类.
 /// </summary>
-public static partial class EmojiHelper
+internal static partial class EmojiHelper
 {
     private static readonly string[] EmojiNames =
     [

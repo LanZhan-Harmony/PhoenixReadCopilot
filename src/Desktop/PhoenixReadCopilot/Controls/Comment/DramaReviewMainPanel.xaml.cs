@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 剧评主面板.
 /// </summary>
-public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
+internal sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
 {
     public DramaReviewMainPanel()
     {
@@ -155,5 +155,5 @@ public sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
 /// <summary>
 /// 剧评主面板基类.
 /// </summary>
-public abstract class DramaReviewMainPanelBase
+internal abstract class DramaReviewMainPanelBase
     : LayoutUserControlBase<DramaReviewSectionDetailViewModel> { }

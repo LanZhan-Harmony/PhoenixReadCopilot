@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// <summary>
 /// 榜单页面侧边栏主体.
 /// </summary>
-public sealed partial class RankSideBody : RankPageControlBase
+internal sealed partial class RankSideBody : RankPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RankSideBody"/> class.

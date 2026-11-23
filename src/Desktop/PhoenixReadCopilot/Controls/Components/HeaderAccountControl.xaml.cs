@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 位于标题栏的账户控件.
 /// </summary>
-public sealed partial class HeaderAccountControl : HeaderAccountControlBase
+internal sealed partial class HeaderAccountControl : HeaderAccountControlBase
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
 
@@ -56,7 +56,7 @@ public sealed partial class HeaderAccountControl : HeaderAccountControlBase
 /// <summary>
 /// 位于标题栏的账户控件基类.
 /// </summary>
-public abstract class HeaderAccountControlBase : LayoutUserControlBase<AccountViewModel>
+internal abstract class HeaderAccountControlBase : LayoutUserControlBase<AccountViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="HeaderAccountControlBase"/> class.

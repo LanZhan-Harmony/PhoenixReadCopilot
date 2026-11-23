@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// FFmpeg 播放器.
 /// </summary>
-public sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewModel>
+internal sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewModel>
 {
     private MediaPlayerElement _playerElement;
 

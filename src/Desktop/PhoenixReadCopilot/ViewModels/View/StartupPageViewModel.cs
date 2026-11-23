@@ -19,7 +19,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 启动页视图模型.
 /// </summary>
-public sealed partial class StartupPageViewModel : ViewModelBase
+internal sealed partial class StartupPageViewModel : ViewModelBase
 {
     private DispatcherTimer? _countdownTimer;
     private readonly IAuthenticationService _authService;
@@ -61,12 +61,14 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     /// <summary>
     /// 是否可以发送验证码.
     /// </summary>
-    public bool CanSendCode => !IsSmsSending && SendCodeCountdown <= 0 && !string.IsNullOrWhiteSpace(PhoneNumber);
+    public bool CanSendCode =>
+        !IsSmsSending && SendCodeCountdown <= 0 && !string.IsNullOrWhiteSpace(PhoneNumber);
 
     /// <summary>
     /// 发送验证码按钮文字.
     /// </summary>
-    public string SendCodeButtonText => SendCodeCountdown > 0 ? $"{SendCodeCountdown}s" : "获取验证码";
+    public string SendCodeButtonText =>
+        SendCodeCountdown > 0 ? $"{SendCodeCountdown}s" : "获取验证码";
 
     /// <summary>
     /// 二维码图片控件.
@@ -232,10 +234,7 @@ public sealed partial class StartupPageViewModel : ViewModelBase
     {
         _countdownTimer?.Stop();
         SendCodeCountdown = seconds;
-        _countdownTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1)
-        };
+        _countdownTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _countdownTimer.Tick += (s, e) =>
         {
             SendCodeCountdown--;

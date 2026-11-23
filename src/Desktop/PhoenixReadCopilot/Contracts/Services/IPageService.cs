@@ -3,7 +3,7 @@ namespace PhoenixReadCopilot.Contracts.Services;
 /// <summary>
 /// 页面定位服务接口.
 /// </summary>
-public interface IPageService
+internal interface IPageService
 {
     /// <summary>
     /// 根据页面或 ViewModel 键名获取页面类型.

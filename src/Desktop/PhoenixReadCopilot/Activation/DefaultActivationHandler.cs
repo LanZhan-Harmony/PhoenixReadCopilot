@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Activation;
 /// <summary>
 /// 默认常规启动激活处理器 (当无其它特定 Handler 接管时执行).
 /// </summary>
-public sealed class DefaultActivationHandler : ActivationHandler<LaunchActivatedEventArgs>
+internal sealed class DefaultActivationHandler : ActivationHandler<LaunchActivatedEventArgs>
 {
     private readonly AppViewModel _appViewModel;
 

@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 视频播放页侧边栏头部.
 /// </summary>
-public sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
+internal sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerSideHeader"/> class.

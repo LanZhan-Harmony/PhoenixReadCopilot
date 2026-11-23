@@ -25,7 +25,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 播放器视图模型基类.
 /// </summary>
-public abstract partial class PlayerViewModelBase : ViewModelBase
+internal abstract partial class PlayerViewModelBase : ViewModelBase
 {
     protected readonly ILogger<PlayerViewModelBase> _logger;
     protected readonly DispatcherQueue _dispatcherQueue;

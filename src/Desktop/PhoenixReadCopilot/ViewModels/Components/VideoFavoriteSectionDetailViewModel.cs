@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 视频/短剧收藏分区详情视图模型.
 /// </summary>
-public sealed partial class VideoFavoriteSectionDetailViewModel
+internal sealed partial class VideoFavoriteSectionDetailViewModel
     : ViewModelBase<VideoFavoriteFolder>,
         IFavoriteSectionDetailViewModel
 {

@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Services;
 /// 应用程序生命周期启动与激活路由服务实现.
 /// 负责管理启动前的核心服务预热、分发特定激活处理器（通知激活、协议激活、文件激活等），以及常规应用界面的启动引导.
 /// </summary>
-public sealed class ActivationService : IActivationService
+internal sealed class ActivationService : IActivationService
 {
     private readonly IEnumerable<IActivationHandler> _activationHandlers;
     private readonly IActivationHandler _defaultHandler;

@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// 播放器.
 /// </summary>
-public sealed partial class PhoenixReadPlayer
+internal sealed partial class PhoenixReadPlayer
 {
     private void MeasureTransportTriggerRect()
     {

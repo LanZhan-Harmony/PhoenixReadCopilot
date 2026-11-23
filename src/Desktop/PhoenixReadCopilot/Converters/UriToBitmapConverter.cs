@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Converters;
 /// <summary>
 /// 将链接转换为位图.
 /// </summary>
-public sealed partial class UriToBitmapConverter : IValueConverter
+internal sealed partial class UriToBitmapConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object parameter, string language)
     {

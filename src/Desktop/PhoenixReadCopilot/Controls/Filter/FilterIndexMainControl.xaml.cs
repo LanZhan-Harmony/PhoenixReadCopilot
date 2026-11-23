@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.Controls.Filter;
 /// <summary>
 /// 娱乐索引主体.
 /// </summary>
-public sealed partial class FilterIndexMainControl : FilterIndexControlBase
+internal sealed partial class FilterIndexMainControl : FilterIndexControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterIndexMainControl"/> class.

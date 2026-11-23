@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 评论项视图模型.
 /// </summary>
-public sealed partial class CommentItemViewModel : ViewModelBase
+internal sealed partial class CommentItemViewModel : ViewModelBase
 {
     private readonly ICommentService _commentService;
     private readonly IAuthenticationService _authService;

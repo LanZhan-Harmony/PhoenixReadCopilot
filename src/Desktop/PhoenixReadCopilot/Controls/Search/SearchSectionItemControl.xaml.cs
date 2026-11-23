@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 搜索区块控件.
 /// </summary>
-public sealed partial class SearchSectionItemControl : UserControl
+internal sealed partial class SearchSectionItemControl : UserControl
 {
     /// <summary>
     /// <see cref="ViewModel"/> 的依赖属性.

@@ -3,7 +3,7 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 搜索页头部.
 /// </summary>
-public sealed partial class SearchHeader : SearchPageControlBase
+internal sealed partial class SearchHeader : SearchPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchHeader"/> class.

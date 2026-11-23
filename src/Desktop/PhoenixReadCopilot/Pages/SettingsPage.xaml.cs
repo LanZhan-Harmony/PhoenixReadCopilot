@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 设置页面.
 /// </summary>
-public sealed partial class SettingsPage : SettingsPageBase
+internal sealed partial class SettingsPage : SettingsPageBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPage"/> class.
@@ -29,7 +29,7 @@ public sealed partial class SettingsPage : SettingsPageBase
 /// <summary>
 /// 设置页面基类.
 /// </summary>
-public abstract class SettingsPageBase : LayoutPageBase<SettingsPageViewModel>
+internal abstract class SettingsPageBase : LayoutPageBase<SettingsPageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsPageBase"/> class.

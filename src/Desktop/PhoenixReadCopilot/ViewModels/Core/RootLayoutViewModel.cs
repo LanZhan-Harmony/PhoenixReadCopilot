@@ -9,7 +9,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 根布局视图模型.
 /// </summary>
-public sealed partial class RootLayoutViewModel : ViewModelBase
+internal sealed partial class RootLayoutViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly INavigationViewService _navigationViewService;
@@ -32,12 +32,14 @@ public sealed partial class RootLayoutViewModel : ViewModelBase
     /// <summary>
     /// 主菜单条目列表.
     /// </summary>
-    public ObservableCollection<AppNavigationItemViewModel> MenuItems => _navigationViewService.MenuItems;
+    public ObservableCollection<AppNavigationItemViewModel> MenuItems =>
+        _navigationViewService.MenuItems;
 
     /// <summary>
     /// 底部菜单条目列表.
     /// </summary>
-    public ObservableCollection<AppNavigationItemViewModel> FooterItems => _navigationViewService.FooterItems;
+    public ObservableCollection<AppNavigationItemViewModel> FooterItems =>
+        _navigationViewService.FooterItems;
 
     public RootLayoutViewModel(
         INavigationService navigationService,

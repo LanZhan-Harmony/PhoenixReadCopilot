@@ -6,4 +6,4 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// 播放器控件基类.
 /// </summary>
-public abstract class PlayerControlBase : LayoutUserControlBase<PlayerViewModelBase> { }
+internal abstract class PlayerControlBase : LayoutUserControlBase<PlayerViewModelBase> { }

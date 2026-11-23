@@ -6,7 +6,7 @@ namespace PhoenixReadCopilot.Controls.Settings;
 /// <summary>
 /// 主题设置控件.
 /// </summary>
-public sealed partial class ThemeSettingControl : SettingsPageControlBase
+internal sealed partial class ThemeSettingControl : SettingsPageControlBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ThemeSettingControl"/> class.

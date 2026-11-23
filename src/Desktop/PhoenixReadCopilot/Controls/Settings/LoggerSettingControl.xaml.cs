@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Settings;
 /// <summary>
 /// 日志设置控件.
 /// </summary>
-public sealed partial class LoggerSettingControl : SettingsPageControlBase
+internal sealed partial class LoggerSettingControl : SettingsPageControlBase
 {
     private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
     private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();

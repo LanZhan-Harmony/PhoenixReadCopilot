@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Pages.Overlay;
 /// <summary>
 /// 搜索页面.
 /// </summary>
-public sealed partial class SearchPage : SearchPageBase
+internal sealed partial class SearchPage : SearchPageBase
 {
     private string _keyword = string.Empty;
 
@@ -50,7 +50,7 @@ public sealed partial class SearchPage : SearchPageBase
 /// <summary>
 /// 搜索页面基类.
 /// </summary>
-public abstract class SearchPageBase : LayoutPageBase<SearchPageViewModel>
+internal abstract class SearchPageBase : LayoutPageBase<SearchPageViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPageBase"/> class.

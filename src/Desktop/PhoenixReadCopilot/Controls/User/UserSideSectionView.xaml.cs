@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户空间左侧 Section 导航选择控件.
 /// </summary>
-public sealed partial class UserSideSectionView : UserControlBase
+internal sealed partial class UserSideSectionView : UserControlBase
 {
     private bool _isUpdating;
 

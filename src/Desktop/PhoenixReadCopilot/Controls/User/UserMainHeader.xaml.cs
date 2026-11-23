@@ -8,7 +8,7 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户空间主体顶部 Header 控件.
 /// </summary>
-public sealed partial class UserMainHeader : UserControlBase
+internal sealed partial class UserMainHeader : UserControlBase
 {
     private bool _isUpdating;
 

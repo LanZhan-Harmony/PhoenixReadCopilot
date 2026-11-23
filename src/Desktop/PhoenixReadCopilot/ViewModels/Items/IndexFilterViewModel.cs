@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 索引过滤器视图模型.
 /// </summary>
-public sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
+internal sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
 {
     private readonly Action? _reloadAction;
 

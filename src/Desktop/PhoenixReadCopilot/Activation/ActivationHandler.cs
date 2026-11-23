@@ -4,7 +4,7 @@ namespace PhoenixReadCopilot.Activation;
 /// 泛型激活处理器基类.
 /// </summary>
 /// <typeparam name="T">激活参数类型.</typeparam>
-public abstract class ActivationHandler<T> : IActivationHandler
+internal abstract class ActivationHandler<T> : IActivationHandler
     where T : class
 {
     /// <summary>
