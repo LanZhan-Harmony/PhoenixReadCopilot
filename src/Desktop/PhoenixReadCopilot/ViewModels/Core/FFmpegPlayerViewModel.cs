@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 using Windows.Media.Playback;
-using WinUIKernel.Share.Base;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Core;

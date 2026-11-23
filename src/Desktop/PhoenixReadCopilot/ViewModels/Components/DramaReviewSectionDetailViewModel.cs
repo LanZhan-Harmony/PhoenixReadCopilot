@@ -7,13 +7,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.ViewModels;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;

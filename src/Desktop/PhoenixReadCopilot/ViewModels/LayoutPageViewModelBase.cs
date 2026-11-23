@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels;
 

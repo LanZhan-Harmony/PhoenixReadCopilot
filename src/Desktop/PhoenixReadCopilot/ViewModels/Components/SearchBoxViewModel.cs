@@ -8,7 +8,6 @@ using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 using HotSearchItem = PhoenixReadCopilot.Core.Models.Search.HotSearchItem;
 

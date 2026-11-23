@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:api="using:PhoenixReadApi"
-    xmlns:base="using:WinUIKernel.Share.Base"
     xmlns:comment="using:PhoenixReadCopilot.Controls.Comment"
     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -203,7 +202,7 @@
         </Grid>
 
         <!-- 加载动画 -->
-        <base:LoadingWidget
+        <components:LoadingWidget
             Grid.ColumnSpan="3"
             Text="{x:Bind strings:Resources.LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>

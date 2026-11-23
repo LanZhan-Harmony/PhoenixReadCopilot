@@ -7,7 +7,6 @@ using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;

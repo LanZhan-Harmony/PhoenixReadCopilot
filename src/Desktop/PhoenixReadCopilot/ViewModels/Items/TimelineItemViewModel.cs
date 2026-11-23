@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Windows.Globalization;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

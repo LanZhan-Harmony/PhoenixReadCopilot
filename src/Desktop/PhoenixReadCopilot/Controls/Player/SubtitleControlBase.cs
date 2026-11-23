@@ -1,5 +1,4 @@
 using PhoenixReadCopilot.ViewModels.Core;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Player;
 

@@ -2,13 +2,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Danmaku.Core.Enums;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
+using PhoenixReadCopilot.Helpers;
 using Windows.UI;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 using DanmakuCoreItem = Danmaku.Core.Models.DanmakuItem;
 
@@ -22,7 +21,6 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
     private readonly IDanmakuService _danmakuService;
     private readonly AppViewModel _appViewModel;
     private readonly ILogger<DanmakuViewModel> _logger;
-    private readonly IFontService _fontService;
     private readonly AppSettings _settings;
 
     private string _dramaId = string.Empty;
@@ -154,15 +152,13 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
         IDanmakuService danmakuService,
         AppViewModel appViewModel,
         ILogger<DanmakuViewModel> logger,
-        ISettingsService settingsService,
-        IFontService fontService
+        ISettingsService settingsService
     )
     {
         _danmakuService = danmakuService;
         _appViewModel = appViewModel;
         _logger = logger;
         _settings = settingsService.Settings;
-        _fontService = fontService;
         Locations = [DanmakuLocation.Scroll, DanmakuLocation.Top, DanmakuLocation.Bottom];
         Colors =
         [
@@ -430,7 +426,7 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
     /// </summary>
     public async Task ReloadFontsAsync()
     {
-        IReadOnlyList<string> fonts = await _fontService.GetFontsAsync();
+        IReadOnlyList<string> fonts = await FontHelper.GetFontsAsync();
         Fonts = [.. fonts];
         string localFont = _settings.DanmakuFontFamily;
         if (!Fonts.Contains(localFont))

@@ -1,7 +1,6 @@
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Comment;
 

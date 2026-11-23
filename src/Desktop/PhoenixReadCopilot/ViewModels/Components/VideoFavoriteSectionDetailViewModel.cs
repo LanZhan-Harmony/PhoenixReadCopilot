@@ -10,7 +10,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;

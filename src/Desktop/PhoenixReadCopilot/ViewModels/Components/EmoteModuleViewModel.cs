@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadCopilot.Helpers;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

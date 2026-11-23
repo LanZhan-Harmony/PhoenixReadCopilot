@@ -1,6 +1,5 @@
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models.Like;
 
 namespace PhoenixReadCopilot.Core.Contracts.Services;
 

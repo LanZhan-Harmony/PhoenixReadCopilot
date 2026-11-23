@@ -1,12 +1,12 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace WinUIKernel.Share.Converters;
+namespace PhoenixReadCopilot.Converters;
 
 /// <summary>
 /// Object to visibility converter. Returns Collapsed when the object is empty.
 /// </summary>
-public sealed partial class ObjectToVisibilityConverter : IValueConverter
+internal sealed partial class ObjectToVisibilityConverter : IValueConverter
 {
     /// <summary>
     /// Whether to invert the result.

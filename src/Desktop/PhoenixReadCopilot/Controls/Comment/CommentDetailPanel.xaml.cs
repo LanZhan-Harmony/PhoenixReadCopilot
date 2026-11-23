@@ -2,7 +2,6 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Components;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Comment;
 

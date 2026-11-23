@@ -7,10 +7,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Controls.Danmaku;
 using PhoenixReadCopilot.Controls.Player;
 using Windows.System;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Core;
 

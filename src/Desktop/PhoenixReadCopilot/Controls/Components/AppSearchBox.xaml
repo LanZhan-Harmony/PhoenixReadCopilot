@@ -2,7 +2,6 @@
 <local:AppSearchBoxBase x:Class="PhoenixReadCopilot.Controls.Components.AppSearchBox"
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        xmlns:base="using:WinUIKernel.Share.Base"
                         xmlns:converters="using:PhoenixReadCopilot.Converters"
                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:essential="using:WinUI3Package"

@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.ViewModels.Core;
-using WinUIKernel.Share.Base;
 using ZLogger;
 
 namespace PhoenixReadCopilot.Services;

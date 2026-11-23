@@ -1,20 +1,20 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.ViewModels;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls;
 
 /// <summary>
-/// 用于布局的页面基类.
+/// 用于布局的用户控件基类.
 /// </summary>
-public abstract class LayoutPageBase : Page
+internal abstract class LayoutUserControlBase : UserControl
 {
     private bool? _isBindingsInitialized;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LayoutPageBase"/> class.
+    /// Initializes a new instance of the <see cref="LayoutUserControlBase"/> class.
     /// </summary>
-    protected LayoutPageBase()
+    protected LayoutUserControlBase()
     {
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
@@ -28,12 +28,12 @@ public abstract class LayoutPageBase : Page
     /// <summary>
     /// 控件加载完成.
     /// </summary>
-    protected virtual void OnPageLoaded() { }
+    protected virtual void OnControlLoaded() { }
 
     /// <summary>
     /// 控件卸载完成.
     /// </summary>
-    protected virtual void OnPageUnloaded() { }
+    protected virtual void OnControlUnloaded() { }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -43,7 +43,7 @@ public abstract class LayoutPageBase : Page
             _isBindingsInitialized = true;
         }
 
-        OnPageLoaded();
+        OnControlLoaded();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -57,15 +57,15 @@ public abstract class LayoutPageBase : Page
             _isBindingsInitialized = false;
         }
 
-        OnPageUnloaded();
+        OnControlUnloaded();
     }
 }
 
 /// <summary>
-/// 用于布局的页面基类.
+/// 用于布局的用户控件基类.
 /// </summary>
 /// <typeparam name="TViewModel">视图模型类型.</typeparam>
-public abstract class LayoutPageBase<TViewModel> : LayoutPageBase
+internal abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
     where TViewModel : ViewModelBase
 {
     /// <summary>
@@ -74,7 +74,7 @@ public abstract class LayoutPageBase<TViewModel> : LayoutPageBase
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel),
         typeof(TViewModel),
-        typeof(LayoutPageBase),
+        typeof(LayoutUserControlBase),
         new PropertyMetadata(null, new PropertyChangedCallback(OnViewModelChangedInternal))
     );
 
@@ -97,7 +97,32 @@ public abstract class LayoutPageBase<TViewModel> : LayoutPageBase
         DependencyPropertyChangedEventArgs e
     )
     {
-        LayoutPageBase<TViewModel>? instance = d as LayoutPageBase<TViewModel>;
+        LayoutUserControlBase<TViewModel>? instance = d as LayoutUserControlBase<TViewModel>;
         instance?.OnViewModelChanged((TViewModel?)e.OldValue, (TViewModel?)e.NewValue);
     }
+}
+
+/// <summary>
+/// 控件绑定.
+/// </summary>
+internal sealed class ControlBindings
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ControlBindings"/> class.
+    /// </summary>
+    public ControlBindings(Action initialize, Action stopTracking)
+    {
+        Initialize = initialize;
+        StopTracking = stopTracking;
+    }
+
+    /// <summary>
+    /// 初始化.
+    /// </summary>
+    public Action Initialize { get; }
+
+    /// <summary>
+    /// 停止跟踪.
+    /// </summary>
+    public Action StopTracking { get; }
 }

@@ -1,11 +1,11 @@
 using Microsoft.UI.Xaml;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 加载中控件.
 /// </summary>
-public sealed partial class LoadingWidget : LayoutUserControlBase
+internal sealed partial class LoadingWidget : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="Text"/> 的依赖属性.

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -14,8 +15,6 @@ using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using Windows.Globalization;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;

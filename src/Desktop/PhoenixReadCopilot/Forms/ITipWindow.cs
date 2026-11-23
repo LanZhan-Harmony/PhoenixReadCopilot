@@ -1,4 +1,4 @@
-using WinUIKernel.Share.Base;
+using PhoenixReadCopilot.Controls.Components;
 
 namespace PhoenixReadCopilot.Forms;
 

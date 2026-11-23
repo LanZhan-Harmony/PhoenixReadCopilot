@@ -3,6 +3,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.BadgeNotifications;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
@@ -10,8 +11,6 @@ using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Items;
 using WinUIEx;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Core;
 

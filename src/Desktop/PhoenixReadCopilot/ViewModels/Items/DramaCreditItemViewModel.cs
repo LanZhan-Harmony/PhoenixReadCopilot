@@ -2,10 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.ViewModels.Core;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;

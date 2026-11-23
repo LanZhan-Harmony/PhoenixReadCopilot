@@ -1,9 +1,9 @@
-namespace WinUIKernel.Share.ViewModels;
+namespace PhoenixReadCopilot.Contracts.Services;
 
 /// <summary>
 /// 导航服务视图模型.
 /// </summary>
-public interface INavServiceViewModel
+internal interface INavServiceViewModel
 {
     /// <summary>
     /// 导航到指定页面.

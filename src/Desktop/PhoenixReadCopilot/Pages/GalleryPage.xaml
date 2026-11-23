@@ -4,7 +4,6 @@
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                        xmlns:animations="using:CommunityToolkit.WinUI.Animations"
                        xmlns:appearance="using:PhoenixReadCopilot.Core.Models.Appearance"
-                       xmlns:base="using:WinUIKernel.Share.Base"
                        xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:essential="using:WinUI3Package"

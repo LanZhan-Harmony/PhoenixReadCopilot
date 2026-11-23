@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls;
-using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Contracts.Services;
 

@@ -4,12 +4,11 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;

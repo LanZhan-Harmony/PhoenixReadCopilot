@@ -4,13 +4,12 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Core;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 

@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadCopilot.Core.Models.Filter;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

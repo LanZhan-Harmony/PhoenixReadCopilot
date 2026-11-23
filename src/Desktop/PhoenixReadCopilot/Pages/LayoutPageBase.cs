@@ -1,20 +1,22 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.Controls;
+using PhoenixReadCopilot.ViewModels;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Pages;
 
 /// <summary>
-/// 用于布局的控件基类.
+/// 用于布局的页面基类.
 /// </summary>
-public abstract class LayoutControlBase : Control
+internal abstract class LayoutPageBase : Page
 {
+    private bool? _isBindingsInitialized;
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="LayoutControlBase"/> class.
+    /// Initializes a new instance of the <see cref="LayoutPageBase"/> class.
     /// </summary>
-    protected LayoutControlBase()
+    protected LayoutPageBase()
     {
-        IsTabStop = false;
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
     }
@@ -27,29 +29,44 @@ public abstract class LayoutControlBase : Control
     /// <summary>
     /// 控件加载完成.
     /// </summary>
-    protected virtual void OnControlLoaded() { }
+    protected virtual void OnPageLoaded() { }
 
     /// <summary>
     /// 控件卸载完成.
     /// </summary>
-    protected virtual void OnControlUnloaded() { }
+    protected virtual void OnPageUnloaded() { }
 
-    private void OnLoaded(object sender, RoutedEventArgs e) => OnControlLoaded();
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_isBindingsInitialized is not true)
+        {
+            ControlBindings?.Initialize?.Invoke();
+            _isBindingsInitialized = true;
+        }
+
+        OnPageLoaded();
+    }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         Loaded -= OnLoaded;
         Unloaded -= OnUnloaded;
 
-        OnControlUnloaded();
+        if (_isBindingsInitialized is not false)
+        {
+            ControlBindings?.StopTracking?.Invoke();
+            _isBindingsInitialized = false;
+        }
+
+        OnPageUnloaded();
     }
 }
 
 /// <summary>
-/// 用于布局的控件基类.
+/// 用于布局的页面基类.
 /// </summary>
 /// <typeparam name="TViewModel">视图模型类型.</typeparam>
-public abstract class LayoutControlBase<TViewModel> : LayoutControlBase
+internal abstract class LayoutPageBase<TViewModel> : LayoutPageBase
     where TViewModel : ViewModelBase
 {
     /// <summary>
@@ -58,7 +75,7 @@ public abstract class LayoutControlBase<TViewModel> : LayoutControlBase
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel),
         typeof(TViewModel),
-        typeof(LayoutControlBase),
+        typeof(LayoutPageBase),
         new PropertyMetadata(null, new PropertyChangedCallback(OnViewModelChangedInternal))
     );
 
@@ -76,34 +93,12 @@ public abstract class LayoutControlBase<TViewModel> : LayoutControlBase
     /// </summary>
     protected virtual void OnViewModelChanged(TViewModel? oldValue, TViewModel? newValue) { }
 
-    /// <summary>
-    /// 当视图模型发生变化时，分配值（用于 AOT 赋值）.
-    /// </summary>
-    protected virtual void AssignValuesWhenViewModelChanged() { }
-
-    /// <inheritdoc/>
-    protected override void OnApplyTemplate()
-    {
-        base.OnApplyTemplate();
-        AssignValuesWhenViewModelChanged();
-    }
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
-    {
-        if (ViewModel is not null)
-        {
-            AssignValuesWhenViewModelChanged();
-        }
-    }
-
     private static void OnViewModelChangedInternal(
         DependencyObject d,
         DependencyPropertyChangedEventArgs e
     )
     {
-        LayoutControlBase<TViewModel>? instance = d as LayoutControlBase<TViewModel>;
+        LayoutPageBase<TViewModel>? instance = d as LayoutPageBase<TViewModel>;
         instance?.OnViewModelChanged((TViewModel?)e.OldValue, (TViewModel?)e.NewValue);
-        instance?.AssignValuesWhenViewModelChanged();
     }
 }

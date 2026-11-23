@@ -3,13 +3,12 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Strings;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;

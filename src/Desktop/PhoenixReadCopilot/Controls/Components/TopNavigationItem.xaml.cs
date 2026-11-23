@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml;
-using WinUIKernel.Share.Base;
 using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Controls.Components;

@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;
 

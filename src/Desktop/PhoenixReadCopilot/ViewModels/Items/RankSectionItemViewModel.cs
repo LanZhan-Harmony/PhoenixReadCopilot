@@ -2,7 +2,6 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.View;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

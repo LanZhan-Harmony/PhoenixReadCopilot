@@ -3,8 +3,6 @@ using Microsoft.Extensions.Logging;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Core.Models.Subtitle;
-using PhoenixReadCopilot.Services;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Core;

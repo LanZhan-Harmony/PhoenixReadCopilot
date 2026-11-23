@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 
-namespace WinUIKernel.Share.Converters;
+namespace PhoenixReadCopilot.Converters;
 
 /// <summary>
 /// Object to Boolean converter.

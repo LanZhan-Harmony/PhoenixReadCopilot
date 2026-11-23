@@ -3,12 +3,12 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Strings;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Services;
 

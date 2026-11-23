@@ -11,7 +11,6 @@ using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.View;

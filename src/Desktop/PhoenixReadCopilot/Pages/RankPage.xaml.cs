@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using PhoenixReadCopilot.ViewModels.View;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages;
 

@@ -1,11 +1,11 @@
 using Microsoft.UI.Xaml;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 占位符.
 /// </summary>
-public sealed partial class EmptyHolder : LayoutUserControlBase
+internal sealed partial class EmptyHolder : LayoutUserControlBase
 {
     /// <summary>
     /// Dependency property of <see cref="Title"/>.

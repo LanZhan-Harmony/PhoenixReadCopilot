@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using PhoenixReadCopilot.ViewModels.Core;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Core;
 

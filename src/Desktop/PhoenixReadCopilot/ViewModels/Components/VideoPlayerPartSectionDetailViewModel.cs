@@ -4,7 +4,6 @@ using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Strings;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

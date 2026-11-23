@@ -1,21 +1,20 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using WinUIKernel.Share.ViewModels;
+using PhoenixReadCopilot.ViewModels;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls;
 
 /// <summary>
-/// 用于布局的用户控件基类.
+/// 用于布局的控件基类.
 /// </summary>
-public abstract class LayoutUserControlBase : UserControl
+internal abstract class LayoutControlBase : Control
 {
-    private bool? _isBindingsInitialized;
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="LayoutUserControlBase"/> class.
+    /// Initializes a new instance of the <see cref="LayoutControlBase"/> class.
     /// </summary>
-    protected LayoutUserControlBase()
+    protected LayoutControlBase()
     {
+        IsTabStop = false;
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
     }
@@ -35,37 +34,22 @@ public abstract class LayoutUserControlBase : UserControl
     /// </summary>
     protected virtual void OnControlUnloaded() { }
 
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        if (_isBindingsInitialized is not true)
-        {
-            ControlBindings?.Initialize?.Invoke();
-            _isBindingsInitialized = true;
-        }
-
-        OnControlLoaded();
-    }
+    private void OnLoaded(object sender, RoutedEventArgs e) => OnControlLoaded();
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         Loaded -= OnLoaded;
         Unloaded -= OnUnloaded;
 
-        if (_isBindingsInitialized is not false)
-        {
-            ControlBindings?.StopTracking?.Invoke();
-            _isBindingsInitialized = false;
-        }
-
         OnControlUnloaded();
     }
 }
 
 /// <summary>
-/// 用于布局的用户控件基类.
+/// 用于布局的控件基类.
 /// </summary>
 /// <typeparam name="TViewModel">视图模型类型.</typeparam>
-public abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
+internal abstract class LayoutControlBase<TViewModel> : LayoutControlBase
     where TViewModel : ViewModelBase
 {
     /// <summary>
@@ -74,7 +58,7 @@ public abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel),
         typeof(TViewModel),
-        typeof(LayoutUserControlBase),
+        typeof(LayoutControlBase),
         new PropertyMetadata(null, new PropertyChangedCallback(OnViewModelChangedInternal))
     );
 
@@ -92,37 +76,34 @@ public abstract class LayoutUserControlBase<TViewModel> : LayoutUserControlBase
     /// </summary>
     protected virtual void OnViewModelChanged(TViewModel? oldValue, TViewModel? newValue) { }
 
+    /// <summary>
+    /// 当视图模型发生变化时，分配值（用于 AOT 赋值）.
+    /// </summary>
+    protected virtual void AssignValuesWhenViewModelChanged() { }
+
+    /// <inheritdoc/>
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        AssignValuesWhenViewModelChanged();
+    }
+
+    /// <inheritdoc/>
+    protected override void OnControlLoaded()
+    {
+        if (ViewModel is not null)
+        {
+            AssignValuesWhenViewModelChanged();
+        }
+    }
+
     private static void OnViewModelChangedInternal(
         DependencyObject d,
         DependencyPropertyChangedEventArgs e
     )
     {
-        LayoutUserControlBase<TViewModel>? instance = d as LayoutUserControlBase<TViewModel>;
+        LayoutControlBase<TViewModel>? instance = d as LayoutControlBase<TViewModel>;
         instance?.OnViewModelChanged((TViewModel?)e.OldValue, (TViewModel?)e.NewValue);
+        instance?.AssignValuesWhenViewModelChanged();
     }
-}
-
-/// <summary>
-/// 控件绑定.
-/// </summary>
-public sealed class ControlBindings
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ControlBindings"/> class.
-    /// </summary>
-    public ControlBindings(Action initialize, Action stopTracking)
-    {
-        Initialize = initialize;
-        StopTracking = stopTracking;
-    }
-
-    /// <summary>
-    /// 初始化.
-    /// </summary>
-    public Action Initialize { get; }
-
-    /// <summary>
-    /// 停止跟踪.
-    /// </summary>
-    public Action StopTracking { get; }
 }

@@ -3,7 +3,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
                     xmlns:ic="using:FluentIcons.WinUI"
-                    xmlns:local="using:WinUIKernel.Share.Base"
+                    xmlns:local="using:PhoenixReadCopilot.Controls.Components"
                     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
                     xmlns:toolkit="using:CommunityToolkit.WinUI">
 

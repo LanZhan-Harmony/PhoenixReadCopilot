@@ -6,7 +6,6 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.ViewModels.Core;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;

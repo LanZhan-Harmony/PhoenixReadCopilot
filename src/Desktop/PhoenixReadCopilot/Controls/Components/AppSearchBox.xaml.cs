@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.Core.Models.Search;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Components;
 

@@ -1,5 +1,4 @@
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Core;
 

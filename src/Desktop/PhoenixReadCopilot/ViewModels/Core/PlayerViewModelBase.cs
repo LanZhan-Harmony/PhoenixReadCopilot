@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Player;
@@ -15,8 +16,6 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Display;
 using WinUIEx;
-using WinUIKernel.Share.Base;
-using WinUIKernel.Share.ViewModels;
 using ZLogger;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 
@@ -37,7 +36,6 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
     protected string? _audioUrl;
     protected bool _autoPlay;
     protected string? _contentType;
-    protected string? _customReferer;
 
     /// <summary>
     /// 自定义 Referer.

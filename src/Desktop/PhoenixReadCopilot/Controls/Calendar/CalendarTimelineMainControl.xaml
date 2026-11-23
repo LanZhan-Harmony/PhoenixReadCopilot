@@ -2,7 +2,6 @@
 <local:CalendarTimelineControlBase x:Class="PhoenixReadCopilot.Controls.Calendar.CalendarTimelineMainControl"
                                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                   xmlns:base="using:WinUIKernel.Share.Base"
                                    xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                    xmlns:essential="using:WinUI3Package"
@@ -33,10 +32,10 @@
             </ScrollViewer>
         </essential:RevealFocusPanel>
 
-        <base:EmptyHolder Description="{x:Bind strings:Resources.TimelineHasNoVideo}"
-                          Emoji="&#x1F92A;"
-                          Visibility="{x:Bind ViewModel.ShowTimelineEmptyHolder, Mode=OneWay}"/>
+        <components:EmptyHolder Description="{x:Bind strings:Resources.TimelineHasNoVideo}"
+                                Emoji="&#x1F92A;"
+                                Visibility="{x:Bind ViewModel.ShowTimelineEmptyHolder, Mode=OneWay}"/>
 
-        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}"/>
+        <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}"/>
     </Grid>
 </local:CalendarTimelineControlBase>

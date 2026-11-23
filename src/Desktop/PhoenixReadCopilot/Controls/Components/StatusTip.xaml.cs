@@ -1,11 +1,11 @@
 using Microsoft.UI.Xaml;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 状态提示.
 /// </summary>
-public sealed partial class StatusTip : LayoutUserControlBase
+internal sealed partial class StatusTip : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="Text"/>的依赖属性.

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:LayoutUserControlBase x:Class="PhoenixReadCopilot.Controls.Comment.CommentTextBox"
+<ctrl:LayoutUserControlBase x:Class="PhoenixReadCopilot.Controls.Comment.CommentTextBox"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:base="using:WinUIKernel.Share.Base"
                             xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                            xmlns:ctrl="using:PhoenixReadCopilot.Controls"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:essential="using:WinUI3Package"
                             xmlns:ic="using:FluentIcons.WinUI"
@@ -96,4 +96,4 @@
             </Button.Flyout>
         </Button>
     </Grid>
-</base:LayoutUserControlBase>
+</ctrl:LayoutUserControlBase>

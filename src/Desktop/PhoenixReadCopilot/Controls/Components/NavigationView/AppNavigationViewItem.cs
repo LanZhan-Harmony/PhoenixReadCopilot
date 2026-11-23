@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 应用导航视图项.

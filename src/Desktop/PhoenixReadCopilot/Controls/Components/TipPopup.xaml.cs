@@ -1,11 +1,11 @@
 using Microsoft.UI.Xaml;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 消息提醒.
 /// </summary>
-public sealed partial class TipPopup : LayoutUserControlBase
+internal sealed partial class TipPopup : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="Text"/>的依赖属性.

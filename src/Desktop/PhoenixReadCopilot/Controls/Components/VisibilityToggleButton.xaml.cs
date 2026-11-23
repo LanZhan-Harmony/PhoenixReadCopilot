@@ -4,12 +4,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 可见性切换按钮.
 /// </summary>
-public sealed partial class VisibilityToggleButton : LayoutUserControlBase
+internal sealed partial class VisibilityToggleButton : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="Direction"/> 依赖属性.

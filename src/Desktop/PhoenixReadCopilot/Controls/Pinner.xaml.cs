@@ -8,7 +8,6 @@ using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.ViewModels.Core;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls;
 

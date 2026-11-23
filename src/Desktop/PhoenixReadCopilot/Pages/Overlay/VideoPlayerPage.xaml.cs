@@ -6,7 +6,6 @@ using PhoenixReadCopilot.Controls.Core;
 using PhoenixReadCopilot.Controls.Danmaku;
 using PhoenixReadCopilot.Controls.Player;
 using PhoenixReadCopilot.ViewModels.View;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages.Overlay;
 

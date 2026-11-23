@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace WinUIKernel.Share.ViewModels;
+namespace PhoenixReadCopilot.ViewModels;
 
 /// <summary>
 /// 视图模型基类.

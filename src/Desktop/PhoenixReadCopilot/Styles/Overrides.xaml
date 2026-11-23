@@ -2,8 +2,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
-                    xmlns:base="using:WinUIKernel.Share.Base"
-                    xmlns:community="using:CommunityToolkit.WinUI.Controls">
+                    xmlns:community="using:CommunityToolkit.WinUI.Controls"
+                    xmlns:components="using:PhoenixReadCopilot.Controls.Components">
     <Style x:Key="PageScrollViewerStyle" TargetType="ScrollViewer">
         <Setter Property="HorizontalScrollMode" Value="Disabled"/>
         <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
@@ -29,7 +29,7 @@
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
     </Style>
 
-    <Style TargetType="base:LoadingWidget">
+    <Style TargetType="components:LoadingWidget">
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Margin" Value="20"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>

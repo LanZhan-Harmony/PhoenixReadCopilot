@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.Components;
 using WinUI3Package;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Player;
 

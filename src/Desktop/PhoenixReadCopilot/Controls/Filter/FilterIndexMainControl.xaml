@@ -2,7 +2,6 @@
 <local:FilterIndexControlBase x:Class="PhoenixReadCopilot.Controls.Filter.FilterIndexMainControl"
                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                              xmlns:base="using:WinUIKernel.Share.Base"
                               xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                               xmlns:essential="using:WinUI3Package"
@@ -32,6 +31,6 @@
                                Layout="{StaticResource FilterLayout}"/>
             </ScrollViewer>
         </essential:RevealFocusPanel>
-        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsIndexLoading, Mode=OneWay}"/>
+        <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsIndexLoading, Mode=OneWay}"/>
     </Grid>
 </local:FilterIndexControlBase>

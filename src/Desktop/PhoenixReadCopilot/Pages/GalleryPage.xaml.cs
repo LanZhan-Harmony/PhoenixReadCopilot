@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages;
 

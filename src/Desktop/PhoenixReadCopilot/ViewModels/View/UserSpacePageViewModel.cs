@@ -5,6 +5,7 @@ using FluentIcons.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
@@ -14,7 +15,6 @@ using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 

@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.ViewModels.View;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages.Overlay;
 

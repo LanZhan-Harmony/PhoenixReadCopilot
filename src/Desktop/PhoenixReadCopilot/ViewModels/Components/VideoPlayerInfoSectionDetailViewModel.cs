@@ -1,7 +1,6 @@
 using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.View;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

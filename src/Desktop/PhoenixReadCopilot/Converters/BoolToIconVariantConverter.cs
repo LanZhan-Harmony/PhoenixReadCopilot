@@ -1,11 +1,11 @@
 using Microsoft.UI.Xaml.Data;
 
-namespace WinUIKernel.Share.Converters;
+namespace PhoenixReadCopilot.Converters;
 
 /// <summary>
 /// 图标变体转换器.
 /// </summary>
-public sealed partial class BoolToIconVariantConverter : IValueConverter
+internal sealed partial class BoolToIconVariantConverter : IValueConverter
 {
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)

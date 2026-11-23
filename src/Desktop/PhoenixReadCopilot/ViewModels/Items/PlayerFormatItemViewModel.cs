@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Models.Player;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

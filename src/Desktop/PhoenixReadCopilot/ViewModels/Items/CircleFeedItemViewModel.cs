@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Pages.Overlay;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 

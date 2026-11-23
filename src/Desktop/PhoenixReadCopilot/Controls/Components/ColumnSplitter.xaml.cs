@@ -1,12 +1,12 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 栏分割器.
 /// </summary>
-public sealed partial class ColumnSplitter : LayoutUserControlBase
+internal sealed partial class ColumnSplitter : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="IsHide"/> 依赖属性.

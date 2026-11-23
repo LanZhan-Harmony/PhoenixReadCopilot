@@ -2,7 +2,6 @@
 <ResourceDictionary x:Class="PhoenixReadCopilot.Controls.User.CircleFeedItemTemplate"
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:base="using:WinUIKernel.Share.Base"
                     xmlns:community="using:CommunityToolkit.WinUI.Controls"
                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                     xmlns:ic="using:FluentIcons.WinUI"

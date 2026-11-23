@@ -1,12 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PhoenixReadCopilot.Contracts.Services;
 
-namespace WinUIKernel.Share.ViewModels;
+namespace PhoenixReadCopilot.ViewModels.Items;
 
 /// <summary>
 /// 应用导航视图项视图模型.
 /// </summary>
-public sealed partial class AppNavigationItemViewModel : ViewModelBase
+internal sealed partial class AppNavigationItemViewModel : ViewModelBase
 {
     private readonly Action<object?> _navigateAction;
 

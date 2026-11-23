@@ -6,7 +6,6 @@ using PhoenixReadCopilot.Controls.Home;
 using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUI3Package;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Pages;
 

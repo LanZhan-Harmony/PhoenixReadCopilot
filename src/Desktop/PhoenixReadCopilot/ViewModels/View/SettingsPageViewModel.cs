@@ -9,7 +9,6 @@ using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.System;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 

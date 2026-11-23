@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Comment;
 

@@ -1,12 +1,12 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace WinUIKernel.Share.Converters;
+namespace PhoenixReadCopilot.Converters;
 
 /// <summary>
 /// <see cref="bool"/> to <see cref="Visibility"/>.
 /// </summary>
-public sealed partial class BoolToVisibilityConverter : IValueConverter
+internal sealed partial class BoolToVisibilityConverter : IValueConverter
 {
     /// <summary>
     /// Whether to invert the value.

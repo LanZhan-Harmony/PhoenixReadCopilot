@@ -1,14 +1,13 @@
 using System.Drawing;
 using System.Drawing.Text;
-using PhoenixReadCopilot.Contracts.Services;
 
-namespace PhoenixReadCopilot.Services;
+namespace PhoenixReadCopilot.Helpers;
 
-internal sealed class FontService : IFontService
+internal static class FontHelper
 {
     private static readonly List<string> _fonts = [];
 
-    public async ValueTask<IReadOnlyList<string>> GetFontsAsync()
+    internal static async ValueTask<IReadOnlyList<string>> GetFontsAsync()
     {
         if (_fonts.Count == 0)
         {

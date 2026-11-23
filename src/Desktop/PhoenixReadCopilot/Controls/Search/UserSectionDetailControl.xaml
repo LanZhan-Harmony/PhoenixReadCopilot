@@ -2,7 +2,6 @@
 <local:UserSectionDetailControlBase x:Class="PhoenixReadCopilot.Controls.Search.UserSectionDetailControl"
                                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                    xmlns:base="using:WinUIKernel.Share.Base"
                                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                     xmlns:essential="using:WinUI3Package"
@@ -34,10 +33,10 @@
             </ScrollViewer>
         </essential:RevealFocusPanel>
 
-        <base:EmptyHolder Description="{x:Bind strings:Resources.NoUsers}"
+        <components:EmptyHolder Description="{x:Bind strings:Resources.NoUsers}"
                           Emoji="&#x1F937;"
                           Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}"/>
 
-        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
+        <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
     </Grid>
 </local:UserSectionDetailControlBase>

@@ -5,7 +5,6 @@ using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
-using WinUIKernel.Share.ViewModels;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
 

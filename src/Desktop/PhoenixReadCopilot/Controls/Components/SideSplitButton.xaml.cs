@@ -1,11 +1,11 @@
 using Microsoft.UI.Xaml;
 
-namespace WinUIKernel.Share.Base;
+namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 侧边分割按钮.
 /// </summary>
-public sealed partial class SideSplitButton : LayoutUserControlBase
+internal sealed partial class SideSplitButton : LayoutUserControlBase
 {
     /// <summary>
     /// <see cref="IsHide"/> 依赖属性.

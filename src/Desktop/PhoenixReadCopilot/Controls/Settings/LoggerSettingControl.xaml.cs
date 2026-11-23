@@ -1,10 +1,10 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Storage;
 using Windows.System;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Settings;
 

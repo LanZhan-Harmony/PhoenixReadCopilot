@@ -2,7 +2,7 @@
 <local:RankPageControlBase x:Class="PhoenixReadCopilot.Controls.Rank.RankMainBody"
                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:base="using:WinUIKernel.Share.Base"
+                           xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                            xmlns:ext="using:PhoenixReadCopilot.Extensions"
                            xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
@@ -29,7 +29,6 @@
                         Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
                         ContentTemplateSelector="{StaticResource SectionSelector}"
                         Style="{StaticResource AppContentControlStyle}"/>
-        <base:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}"
-                            Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}"/>
+        <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}"/>
     </Grid>
 </local:RankPageControlBase>

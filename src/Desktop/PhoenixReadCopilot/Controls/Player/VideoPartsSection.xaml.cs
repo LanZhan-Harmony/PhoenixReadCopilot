@@ -2,7 +2,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.Components;
-using WinUIKernel.Share.Base;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
