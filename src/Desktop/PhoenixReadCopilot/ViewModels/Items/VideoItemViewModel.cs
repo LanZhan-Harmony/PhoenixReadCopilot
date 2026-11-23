@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Controls.Components;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -615,17 +615,23 @@ internal sealed partial class VideoItemViewModel : ViewModelBase<VideoInformatio
                 string msg = targetActive
                     ? Strings.Resources.ReserveSucceed
                     : Strings.Resources.CancelReserveSucceed;
-                ItemServices.App.ShowTip(msg, InfoType.Success);
+                ItemServices.Notification.ShowInAppNotification(msg, NotificationType.Success);
             }
             else
             {
-                ItemServices.App.ShowTip(Strings.Resources.ReserveFailed, InfoType.Warning);
+                ItemServices.Notification.ShowInAppNotification(
+                    Strings.Resources.ReserveFailed,
+                    NotificationType.Warning
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"操作剧集预约状态失败: {dramaId}");
-            ItemServices.App.ShowTip(Strings.Resources.ReserveFailed, InfoType.Error);
+            ItemServices.Notification.ShowInAppNotification(
+                Strings.Resources.ReserveFailed,
+                NotificationType.Error
+            );
         }
         finally
         {
@@ -652,12 +658,18 @@ internal sealed partial class VideoItemViewModel : ViewModelBase<VideoInformatio
                 };
                 await ItemServices.ViewLater.AddAsync(drama);
             }
-            ItemServices.App.ShowTip(Strings.Resources.AddViewLaterSucceed, InfoType.Success);
+            ItemServices.Notification.ShowInAppNotification(
+                Strings.Resources.AddViewLaterSucceed,
+                NotificationType.Success
+            );
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"添加稍后再看失败");
-            ItemServices.App.ShowTip(Strings.Resources.AddViewLaterFailed, InfoType.Error);
+            ItemServices.Notification.ShowInAppNotification(
+                Strings.Resources.AddViewLaterFailed,
+                NotificationType.Error
+            );
         }
     }
 
@@ -679,9 +691,9 @@ internal sealed partial class VideoItemViewModel : ViewModelBase<VideoInformatio
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"移除稍后再看视频失败");
-            ItemServices.App.ShowTip(
+            ItemServices.Notification.ShowInAppNotification(
                 Strings.Resources.FailedToRemoveVideoFromViewLater,
-                InfoType.Error
+                NotificationType.Error
             );
         }
     }
@@ -707,9 +719,9 @@ internal sealed partial class VideoItemViewModel : ViewModelBase<VideoInformatio
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"移除历史记录视频失败");
-            ItemServices.App.ShowTip(
+            ItemServices.Notification.ShowInAppNotification(
                 Strings.Resources.FailedToRemoveVideoFromHistory,
-                InfoType.Error
+                NotificationType.Error
             );
         }
     }
@@ -731,11 +743,14 @@ internal sealed partial class VideoItemViewModel : ViewModelBase<VideoInformatio
             string msg = targetState
                 ? Strings.Resources.AddFavoriteSucceed
                 : Strings.Resources.CancelFavoriteSucceed;
-            ItemServices.App.ShowTip(msg, InfoType.Success);
+            ItemServices.Notification.ShowInAppNotification(msg, NotificationType.Success);
         }
         else
         {
-            ItemServices.App.ShowTip(Strings.Resources.FavoriteFailed, InfoType.Warning);
+            ItemServices.Notification.ShowInAppNotification(
+                Strings.Resources.FavoriteFailed,
+                NotificationType.Warning
+            );
         }
     }
 
@@ -755,9 +770,9 @@ internal sealed partial class VideoItemViewModel : ViewModelBase<VideoInformatio
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"移除收藏视频失败");
-            ItemServices.App.ShowTip(
+            ItemServices.Notification.ShowInAppNotification(
                 Strings.Resources.FailedToRemoveVideoFromFavorite,
-                InfoType.Error
+                NotificationType.Error
             );
         }
     }

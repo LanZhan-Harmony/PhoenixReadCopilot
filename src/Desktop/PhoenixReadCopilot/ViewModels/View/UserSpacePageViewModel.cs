@@ -5,7 +5,6 @@ using FluentIcons.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
@@ -32,7 +31,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     private readonly IViewLaterService _viewLaterService;
     private readonly IReservationService _reservationService;
     private readonly INavigationService _navigationService;
-    private readonly AppViewModel _appViewModel;
+    private readonly INotificationService _notificationService;
     private readonly PinnerViewModel _pinnerViewModel;
     private readonly ILogger<UserSpacePageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -177,7 +176,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         IReservationService reservationService,
         INavigationService navigationService,
         ISettingsService settingsService,
-        AppViewModel appViewModel,
+        INotificationService notificationService,
         PinnerViewModel pinnerViewModel,
         ILogger<UserSpacePageViewModel> logger,
         DispatcherQueue dispatcherQueue
@@ -193,7 +192,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         _viewLaterService = viewLaterService;
         _reservationService = reservationService;
         _navigationService = navigationService;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
         _pinnerViewModel = pinnerViewModel;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
@@ -1438,20 +1437,26 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             if (res.Succeeded)
             {
                 IsFollowed = next;
-                _appViewModel.ShowTip(
+                _notificationService.ShowInAppNotification(
                     next ? Resources.Followed : Resources.Unfollowed,
-                    InfoType.Success
+                    NotificationType.Success
                 );
             }
             else
             {
-                _appViewModel.ShowTip(res.Message ?? "关注操作失败", InfoType.Error);
+                _notificationService.ShowInAppNotification(
+                    res.Message ?? "关注操作失败",
+                    NotificationType.Error
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "切换关注状态失败");
-            _appViewModel.ShowTip(Resources.FailedToFollowUser, InfoType.Error);
+            _notificationService.ShowInAppNotification(
+                Resources.FailedToFollowUser,
+                NotificationType.Error
+            );
         }
     }
 
@@ -1469,7 +1474,10 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         {
             if (!IsFollowsAccessible && !IsMe)
             {
-                _appViewModel.ShowTip(Resources.PrivacyProtectedTip, InfoType.Warning);
+                _notificationService.ShowInAppNotification(
+                    Resources.PrivacyProtectedTip,
+                    NotificationType.Warning
+                );
             }
             return;
         }
@@ -1484,7 +1492,10 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         {
             if (!IsFansAccessible && !IsMe)
             {
-                _appViewModel.ShowTip(Resources.PrivacyProtectedTip, InfoType.Warning);
+                _notificationService.ShowInAppNotification(
+                    Resources.PrivacyProtectedTip,
+                    NotificationType.Warning
+                );
             }
             return;
         }

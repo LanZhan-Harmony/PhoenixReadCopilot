@@ -2,11 +2,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Windows.Storage.Pickers;
-using PhoenixReadCopilot.Controls.Components;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.ViewModels.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -19,7 +18,8 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 internal sealed partial class GalleryPageViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
+    private readonly IWindowService _windowService;
+    private readonly INotificationService _notificationService;
     private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();
 
     [ObservableProperty]
@@ -37,13 +37,19 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPageViewModel"/> class.
     /// </summary>
-    public GalleryPageViewModel(AppImage image, List<AppImage>? images, AppViewModel appViewModel)
+    public GalleryPageViewModel(
+        AppImage image,
+        List<AppImage>? images,
+        IWindowService windowService,
+        INotificationService notificationService
+    )
     {
         SelectedImage = image;
         Images = images ?? [image];
         IsGroup = Images?.Count > 1;
         IsMenuHide = false;
-        _appViewModel = appViewModel;
+        _windowService = windowService;
+        _notificationService = notificationService;
     }
 
     public void ChangeImage(AppImage image)
@@ -94,7 +100,7 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
         dp.SetWebLink(SelectedImage.Uri);
         dp.SetBitmap(RandomAccessStreamReference.CreateFromUri(SelectedImage.Uri));
         Clipboard.SetContent(dp);
-        _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
+        _notificationService.ShowInAppNotification(Resources.Copied, NotificationType.Success);
     }
 
     [RelayCommand]
@@ -107,7 +113,7 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
 
         string fileName = Path.GetFileName(SelectedImage.Uri.AbsolutePath);
         string extension = Path.GetExtension(fileName);
-        FileSavePicker savePicker = new(_appViewModel.ActivatedWindow.AppWindow.Id)
+        FileSavePicker savePicker = new(_windowService.GetActiveWindowId() ?? default)
         {
             SuggestedStartLocation = PickerLocationId.PicturesLibrary,
             SuggestedFileName = fileName,
@@ -134,7 +140,7 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
             FileOptions.Asynchronous
         );
         await response.Content.CopyToAsync(fileStream);
-        _appViewModel.ShowTip(Resources.Saved, InfoType.Success);
+        _notificationService.ShowInAppNotification(Resources.Saved, NotificationType.Success);
     }
 
     public async Task SetWallPaperOrLockScreenAsync(bool isWallPaper)
@@ -171,11 +177,11 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
             : await profileSettings.TrySetLockScreenImageAsync(file);
         if (result)
         {
-            _appViewModel.ShowTip(Resources.SetSuccess, InfoType.Success);
+            _notificationService.ShowInAppNotification(Resources.SetSuccess, NotificationType.Success);
         }
         else
         {
-            _appViewModel.ShowTip(Resources.SetFailed, InfoType.Error);
+            _notificationService.ShowInAppNotification(Resources.SetFailed, NotificationType.Error);
         }
     }
 }

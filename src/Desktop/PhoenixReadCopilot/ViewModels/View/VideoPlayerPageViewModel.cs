@@ -3,8 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Contracts.ViewModels;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -25,6 +25,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 {
+    private readonly INotificationService _notificationService;
     private readonly INavigationService _navigationService;
     private readonly PinnerViewModel _pinnerViewModel;
     private readonly DispatcherQueue _dispatcherQueue;
@@ -197,7 +198,8 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         SubtitleViewModel subtitle,
         CommentMainViewModel comments,
         ISettingsService settingsService,
-        AppViewModel appViewModel,
+        IWindowService windowService,
+        INotificationService notificationService,
         INavigationService navigationService,
         PinnerViewModel pinnerViewModel,
         DispatcherQueue dispatcherQueue,
@@ -208,8 +210,9 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         IFavoriteService favoriteService,
         ILikeService likeService
     )
-        : base(settingsService, appViewModel)
+        : base(settingsService, windowService)
     {
+        _notificationService = notificationService;
         _navigationService = navigationService;
         _pinnerViewModel = pinnerViewModel;
         _dispatcherQueue = dispatcherQueue;
@@ -587,7 +590,10 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 }
                 else
                 {
-                    _appViewModel.ShowTip(res.Message ?? "点赞操作失败", InfoType.Warning);
+                    _notificationService.ShowInAppNotification(
+                        res.Message ?? "点赞操作失败",
+                        NotificationType.Warning
+                    );
                 }
             }
         }
@@ -621,17 +627,23 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 string tip = targetState
                     ? Resources.AddFavoriteSucceed
                     : Resources.CancelFavoriteSucceed;
-                _appViewModel.ShowTip(tip, InfoType.Success);
+                _notificationService.ShowInAppNotification(tip, NotificationType.Success);
             }
             else
             {
-                _appViewModel.ShowTip(Resources.FavoriteFailed, InfoType.Warning);
+                _notificationService.ShowInAppNotification(
+                    Resources.FavoriteFailed,
+                    NotificationType.Warning
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"尝试收藏/取消收藏剧集时失败.");
-            _appViewModel.ShowTip(Resources.FavoriteFailed, InfoType.Error);
+            _notificationService.ShowInAppNotification(
+                Resources.FavoriteFailed,
+                NotificationType.Error
+            );
         }
     }
 
@@ -648,7 +660,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             package.SetText(url);
             package.SetWebLink(new Uri(url));
             Clipboard.SetContent(package);
-            _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
+            _notificationService.ShowInAppNotification(Resources.Copied, NotificationType.Success);
         }
         catch (Exception ex)
         {
@@ -671,14 +683,20 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 if (success)
                 {
                     IsFavorited = true;
-                    _appViewModel.ShowTip(Resources.AddFavoriteSucceed, InfoType.Success);
+                    _notificationService.ShowInAppNotification(
+                        Resources.AddFavoriteSucceed,
+                        NotificationType.Success
+                    );
                 }
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"加入追剧列表失败");
-            _appViewModel.ShowTip(Resources.FavoriteFailed, InfoType.Error);
+            _notificationService.ShowInAppNotification(
+                Resources.FavoriteFailed,
+                NotificationType.Error
+            );
         }
     }
 
@@ -693,7 +711,10 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         object? nextPart = FindNextVideo();
         if (nextPart is null)
         {
-            _appViewModel.ShowTip("已经是最后一集了", InfoType.Information);
+            _notificationService.ShowInAppNotification(
+                "已经是最后一集了",
+                NotificationType.Information
+            );
             Player.BackToDefaultMode();
             return;
         }
@@ -724,7 +745,10 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         object? prevPart = FindPreviousVideo();
         if (prevPart is null)
         {
-            _appViewModel.ShowTip("已经是第一集了", InfoType.Information);
+            _notificationService.ShowInAppNotification(
+                "已经是第一集了",
+                NotificationType.Information
+            );
             return;
         }
 
@@ -765,7 +789,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         DataPackage dp = new();
         dp.SetText(Title);
         Clipboard.SetContent(dp);
-        _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
+        _notificationService.ShowInAppNotification(Resources.Copied, NotificationType.Success);
     }
 
     private void ChangePart(Episode episode)
@@ -964,7 +988,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             : "红果独播";
 
         Credits = drama
-            .Credits?.Select(c => new DramaCreditItemViewModel(c, _appViewModel))
+            .Credits?.Select(c => new DramaCreditItemViewModel(c, _notificationService))
             .ToList()
             ?? [];
         Tags = drama.Tags?.ToList() ?? [];

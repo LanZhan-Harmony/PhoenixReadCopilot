@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Core;
@@ -11,7 +12,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 internal abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBase
 {
-    protected readonly AppViewModel _appViewModel;
+    protected readonly IWindowService _windowService;
     protected readonly ISettingsService _settingsService;
 
     [ObservableProperty]
@@ -23,11 +24,11 @@ internal abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBas
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerPageViewModelBase"/> class.
     /// </summary>
-    protected PlayerPageViewModelBase(ISettingsService settingsService, AppViewModel appViewModel)
+    protected PlayerPageViewModelBase(ISettingsService settingsService, IWindowService windowService)
         : base(settingsService)
     {
         _settingsService = settingsService;
-        _appViewModel = appViewModel;
+        _windowService = windowService;
         PlayerType playerType = _settings.PlayerType;
 
         Player = playerType switch
@@ -36,6 +37,6 @@ internal abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBas
             _ => Ioc.Default.GetRequiredService<FFmpegPlayerViewModel>(),
         };
 
-        Player.AttachedWindow = appViewModel.ActivatedWindow;
+        Player.AttachedWindow = windowService.ActiveWindow;
     }
 }

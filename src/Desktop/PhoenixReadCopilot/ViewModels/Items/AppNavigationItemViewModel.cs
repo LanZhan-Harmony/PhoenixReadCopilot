@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.Core.Contracts.Services;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -33,7 +33,7 @@ internal sealed partial class AppNavigationItemViewModel : ViewModelBase
     /// Initializes a new instance of the <see cref="AppNavigationItemViewModel"/> class.
     /// </summary>
     public AppNavigationItemViewModel(
-        INavServiceViewModel navService,
+        INavigationService navService,
         Type pageType,
         string title,
         FluentIcons.Common.Symbol? symbol = null,

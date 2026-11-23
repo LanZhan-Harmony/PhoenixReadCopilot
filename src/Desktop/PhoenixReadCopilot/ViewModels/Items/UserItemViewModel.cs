@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Controls.Components;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Core.Models.User;
@@ -140,15 +140,18 @@ internal sealed partial class UserItemViewModel : ViewModelBase<UserCard>
             bool next = !IsFollowed;
             await ItemServices.Follow.SetFollowAsync(Id, next, UserData);
             IsFollowed = next;
-            ItemServices.App.ShowTip(
+            ItemServices.Notification.ShowInAppNotification(
                 IsFollowed ? Resources.Followed : Resources.Unfollowed,
-                InfoType.Success
+                NotificationType.Success
             );
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"修改关注状态失败");
-            ItemServices.App.ShowTip(Resources.FailedToFollowUser, InfoType.Error);
+            ItemServices.Notification.ShowInAppNotification(
+                Resources.FailedToFollowUser,
+                NotificationType.Error
+            );
         }
     }
 }

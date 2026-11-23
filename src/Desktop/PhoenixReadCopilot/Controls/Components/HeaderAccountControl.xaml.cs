@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.ViewModels.Components;
-using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// </summary>
 internal sealed partial class HeaderAccountControl : HeaderAccountControlBase
 {
-    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+    private readonly IWindowService _windowService = Ioc.Default.GetRequiredService<IWindowService>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HeaderAccountControl"/> class.
@@ -34,7 +34,7 @@ internal sealed partial class HeaderAccountControl : HeaderAccountControlBase
 
     private void OnSignInFlyoutItemClick(object sender, RoutedEventArgs e)
     {
-        Window? window = _appViewModel.Windows.FirstOrDefault(p => p is StartupWindow);
+        Window? window = _windowService.GetWindow<StartupWindow>();
         if (window is not null)
         {
             try
@@ -44,7 +44,7 @@ internal sealed partial class HeaderAccountControl : HeaderAccountControlBase
             }
             catch
             {
-                _appViewModel.Windows.Remove(window);
+                _windowService.UnregisterWindow(window);
             }
         }
 

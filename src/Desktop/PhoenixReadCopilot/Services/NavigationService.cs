@@ -8,17 +8,16 @@ using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Pages.Overlay;
-using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.Services;
 
 /// <summary>
 /// 页面导航服务实现.
 /// </summary>
-internal sealed class NavigationService : INavigationService, INavServiceViewModel
+internal sealed class NavigationService : INavigationService
 {
     private readonly IPageService _pageService;
-    private readonly AppViewModel _appViewModel;
+    private readonly IWindowService _windowService;
     private readonly AppSettings _settings;
 
     private Frame? _frame;
@@ -111,12 +110,12 @@ internal sealed class NavigationService : INavigationService, INavServiceViewMod
     public NavigationService(
         IPageService pageService,
         ISettingsService settingsService,
-        AppViewModel appViewModel
+        IWindowService windowService
     )
     {
         _pageService = pageService;
         _settings = settingsService.Settings;
-        _appViewModel = appViewModel;
+        _windowService = windowService;
         _isTopNavBarShown = _settings.IsTopNavBarShown;
     }
 
@@ -180,11 +179,6 @@ internal sealed class NavigationService : INavigationService, INavServiceViewMod
         );
         _frame.BackStack.Clear();
         return navigated;
-    }
-
-    void INavServiceViewModel.NavigateTo(Type pageType, object? parameter)
-    {
-        NavigateTo(pageType, parameter);
     }
 
     /// <inheritdoc/>
@@ -346,5 +340,5 @@ internal sealed class NavigationService : INavigationService, INavServiceViewMod
         SubPageStatusChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private void ActiveMainWindow() => _appViewModel.Windows.Find(p => p is MainWindow)?.Activate();
+    private void ActiveMainWindow() => _windowService.GetWindow<MainWindow>()?.Activate();
 }

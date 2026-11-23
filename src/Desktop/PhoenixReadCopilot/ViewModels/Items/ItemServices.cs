@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.ViewModels.Components;
@@ -16,7 +17,14 @@ internal static class ItemServices
     public static INavigationService Navigation =
         Ioc.Default.GetRequiredService<INavigationService>();
 
-    public static AppViewModel App = Ioc.Default.GetRequiredService<AppViewModel>();
+    public static INotificationService Notification =>
+        Ioc.Default.GetRequiredService<INotificationService>();
+
+    public static IWindowService Window =>
+        Ioc.Default.GetRequiredService<IWindowService>();
+
+    public static IAppLifecycleService Lifecycle =>
+        Ioc.Default.GetRequiredService<IAppLifecycleService>();
 
     public static PinnerViewModel Pinner = Ioc.Default.GetRequiredService<PinnerViewModel>();
 

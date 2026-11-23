@@ -214,7 +214,7 @@ internal sealed class NavigationViewService : INavigationViewService
     {
         bool isVisible = _settings.GetPageVisible(typeof(TPage));
         return new AppNavigationItemViewModel(
-            (INavServiceViewModel)_navigationService,
+            _navigationService,
             typeof(TPage),
             title,
             symbol,

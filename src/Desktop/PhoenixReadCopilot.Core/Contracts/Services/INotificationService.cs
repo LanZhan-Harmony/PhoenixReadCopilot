@@ -39,6 +39,13 @@ public interface INotificationService
     Task ShowInAppNotificationAsync(string message, NotificationType type = NotificationType.Information);
 
     /// <summary>
+    /// 显示应用内轻量提示 (同步触发).
+    /// </summary>
+    /// <param name="message">提示内容.</param>
+    /// <param name="type">通知类型.</param>
+    void ShowInAppNotification(string message, NotificationType type = NotificationType.Information);
+
+    /// <summary>
     /// 发送系统原生通知 (Windows Toast).
     /// </summary>
     /// <param name="title">通知标题.</param>

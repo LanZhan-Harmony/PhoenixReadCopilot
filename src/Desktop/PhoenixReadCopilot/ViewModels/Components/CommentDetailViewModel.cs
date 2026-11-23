@@ -4,10 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -23,7 +21,7 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItem
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ICommentService _commentService;
     private readonly IAuthenticationService _authService;
-    private readonly AppViewModel? _appViewModel;
+    private readonly INotificationService? _notificationService;
     private readonly string? _dramaId;
     private readonly string? _videoId;
 
@@ -63,7 +61,7 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItem
         ILogger<CommentDetailViewModel> logger,
         ICommentService commentService,
         IAuthenticationService authService,
-        AppViewModel? appViewModel,
+        INotificationService? notificationService,
         string? dramaId,
         string? videoId
     )
@@ -74,7 +72,7 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItem
         _logger = logger;
         _commentService = commentService;
         _authService = authService;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
         _dramaId = dramaId;
         _videoId = videoId;
     }
@@ -214,7 +212,10 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItem
 
         if (!_authService.IsAuthenticated)
         {
-            _appViewModel?.ShowTip("请先登录后再发表回复", InfoType.Warning);
+            _notificationService?.ShowInAppNotification(
+                "请先登录后再发表回复",
+                NotificationType.Warning
+            );
             return;
         }
 
@@ -254,19 +255,22 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItem
 
             if (res.Succeeded)
             {
-                _appViewModel?.ShowTip("回复已发送", InfoType.Success);
+                _notificationService?.ShowInAppNotification("回复已发送", NotificationType.Success);
                 ResetReplyTarget();
                 Refresh();
             }
             else
             {
-                _appViewModel?.ShowTip(res.Message ?? "发送失败", InfoType.Error);
+                _notificationService?.ShowInAppNotification(
+                    res.Message ?? "发送失败",
+                    NotificationType.Error
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"发送红果评论回复失败");
-            _appViewModel?.ShowTip("发送回复失败", InfoType.Error);
+            _notificationService?.ShowInAppNotification("发送回复失败", NotificationType.Error);
         }
         finally
         {

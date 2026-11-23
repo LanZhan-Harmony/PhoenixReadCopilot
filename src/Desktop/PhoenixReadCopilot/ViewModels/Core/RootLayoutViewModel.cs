@@ -13,6 +13,10 @@ internal sealed partial class RootLayoutViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly INavigationViewService _navigationViewService;
+    private readonly IAppLifecycleService _lifecycleService;
+
+    [ObservableProperty]
+    public partial bool IsInitialLoading { get; set; }
 
     [ObservableProperty]
     public partial bool IsOverlayOpen { get; set; }
@@ -43,11 +47,16 @@ internal sealed partial class RootLayoutViewModel : ViewModelBase
 
     public RootLayoutViewModel(
         INavigationService navigationService,
-        INavigationViewService navigationViewService
+        INavigationViewService navigationViewService,
+        IAppLifecycleService lifecycleService
     )
     {
         _navigationService = navigationService;
         _navigationViewService = navigationViewService;
+        _lifecycleService = lifecycleService;
+
+        IsInitialLoading = _lifecycleService.IsInitialLoading;
+        _lifecycleService.InitialLoadingChanged += OnInitialLoadingChanged;
 
         IsOverlayOpen = _navigationService.IsOverlayOpen;
         IsTopNavBarShown = _navigationService.IsTopNavBarShown;
@@ -62,6 +71,11 @@ internal sealed partial class RootLayoutViewModel : ViewModelBase
     private void OnOverlayStateChanged(object? sender, bool isOpen)
     {
         IsOverlayOpen = isOpen;
+    }
+
+    private void OnInitialLoadingChanged(object? sender, bool isLoading)
+    {
+        IsInitialLoading = isLoading;
     }
 
     private void OnSubPageStatusChanged(object? sender, EventArgs e)

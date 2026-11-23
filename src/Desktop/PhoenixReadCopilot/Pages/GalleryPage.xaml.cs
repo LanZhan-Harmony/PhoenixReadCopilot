@@ -3,8 +3,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Pages;
@@ -30,7 +31,8 @@ internal sealed partial class GalleryPage : GalleryPageBase
             ViewModel = new GalleryPageViewModel(
                 image,
                 list,
-                Ioc.Default.GetRequiredService<AppViewModel>()
+                Ioc.Default.GetRequiredService<IWindowService>(),
+                Ioc.Default.GetRequiredService<INotificationService>()
             );
         }
     }

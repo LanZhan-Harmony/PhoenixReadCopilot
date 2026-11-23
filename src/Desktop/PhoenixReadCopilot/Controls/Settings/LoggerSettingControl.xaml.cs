@@ -1,8 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
-using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Storage;
 using Windows.System;
 
@@ -13,7 +11,8 @@ namespace PhoenixReadCopilot.Controls.Settings;
 /// </summary>
 internal sealed partial class LoggerSettingControl : SettingsPageControlBase
 {
-    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+    private readonly INotificationService _notificationService =
+        Ioc.Default.GetRequiredService<INotificationService>();
     private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();
 
     /// <summary>
@@ -46,6 +45,9 @@ internal sealed partial class LoggerSettingControl : SettingsPageControlBase
             }
         }
 
-        _appViewModel.ShowTip(Strings.Resources.LogEmptied, InfoType.Success);
+        _notificationService.ShowInAppNotification(
+            Strings.Resources.LogEmptied,
+            NotificationType.Success
+        );
     }
 }

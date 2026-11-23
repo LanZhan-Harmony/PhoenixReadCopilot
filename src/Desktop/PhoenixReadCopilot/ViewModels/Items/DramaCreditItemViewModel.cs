@@ -2,9 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Controls.Components;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.ViewModels.Core;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -14,17 +13,17 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 internal sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit>
 {
-    private readonly AppViewModel _appViewModel;
+    private readonly INotificationService _notificationService;
     private readonly ILogger<DramaCreditItemViewModel> _logger;
 
     public DramaCreditItemViewModel(
         DramaCredit credit,
-        AppViewModel? appViewModel = null,
+        INotificationService? notificationService = null,
         ILogger<DramaCreditItemViewModel>? logger = null
     )
         : base(credit)
     {
-        _appViewModel = appViewModel ?? ItemServices.App;
+        _notificationService = notificationService ?? ItemServices.Notification;
         _logger = logger
             ?? CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<
                 ILogger<DramaCreditItemViewModel>
@@ -108,17 +107,17 @@ internal sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCred
             if (res.Succeeded)
             {
                 IsFollowed = next;
-                _appViewModel.ShowTip(next ? "关注成功" : "已取消关注", InfoType.Success);
+                _notificationService.ShowInAppNotification(next ? "关注成功" : "已取消关注", NotificationType.Success);
             }
             else
             {
-                _appViewModel.ShowTip(res.Message ?? "操作失败", InfoType.Error);
+                _notificationService.ShowInAppNotification(res.Message ?? "操作失败", NotificationType.Error);
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"关注用户操作异常.");
-            _appViewModel.ShowTip("关注操作失败", InfoType.Error);
+            _notificationService.ShowInAppNotification("关注操作失败", NotificationType.Error);
         }
         finally
         {

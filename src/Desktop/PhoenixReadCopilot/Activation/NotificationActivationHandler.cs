@@ -3,7 +3,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
-using PhoenixReadCopilot.ViewModels.Core;
+using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
 namespace PhoenixReadCopilot.Activation;
@@ -11,17 +12,20 @@ namespace PhoenixReadCopilot.Activation;
 /// <summary>
 /// Windows 原生系统通知点击与按钮操作激活处理器.
 /// </summary>
-internal sealed class AppNotificationActivationHandler : IActivationHandler
+internal sealed class NotificationActivationHandler : IActivationHandler
 {
-    private readonly AppViewModel _appViewModel;
-    private readonly ILogger<AppNotificationActivationHandler> _logger;
+    private readonly IWindowService _windowService;
+    private readonly IAppLifecycleService _lifecycleService;
+    private readonly ILogger<NotificationActivationHandler> _logger;
 
-    public AppNotificationActivationHandler(
-        AppViewModel appViewModel,
-        ILogger<AppNotificationActivationHandler> logger
+    public NotificationActivationHandler(
+        IWindowService windowService,
+        IAppLifecycleService lifecycleService,
+        ILogger<NotificationActivationHandler> logger
     )
     {
-        _appViewModel = appViewModel;
+        _windowService = windowService;
+        _lifecycleService = lifecycleService;
         _logger = logger;
     }
 
@@ -93,7 +97,9 @@ internal sealed class AppNotificationActivationHandler : IActivationHandler
         }
         else
         {
-            _appViewModel.Launch();
+            _lifecycleService.Launch();
+            _windowService.ActivateMainWindow();
+            _ = ItemServices.Account.InitializeAsync();
         }
 
         await Task.CompletedTask;

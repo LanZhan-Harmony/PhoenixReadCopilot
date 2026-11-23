@@ -2,9 +2,9 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.View;
 using WinUIEx;
 
@@ -15,7 +15,7 @@ namespace PhoenixReadCopilot.Forms;
 /// </summary>
 internal sealed partial class StartupWindow : WindowEx
 {
-    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+    private readonly IWindowService _windowService = Ioc.Default.GetRequiredService<IWindowService>();
     private readonly StartupPageViewModel _startupViewModel =
         Ioc.Default.GetRequiredService<StartupPageViewModel>();
     private readonly IAuthenticationService _authService =
@@ -41,16 +41,23 @@ internal sealed partial class StartupWindow : WindowEx
         this.CenterOnScreen();
         AppWindow.SetIcon("Assets/Logo/Icon.ico");
         SetTitleBar(TitleBar);
-        _appViewModel.Windows.Add(this);
+        _windowService.RegisterWindow(this);
 
         RootFrame.Navigate(typeof(StartupPage), null, new SuppressNavigationTransitionInfo());
 
         Closed += OnClosed;
+        _startupViewModel.RequestClose += OnRequestClose;
+    }
+
+    private void OnRequestClose(object? sender, EventArgs e)
+    {
+        Close();
     }
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-        _appViewModel.Windows.Remove(this);
+        _startupViewModel.RequestClose -= OnRequestClose;
+        _windowService.UnregisterWindow(this);
         Closed -= OnClosed;
 
         bool isAuthenticated = false;

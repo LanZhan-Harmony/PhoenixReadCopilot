@@ -50,15 +50,8 @@ d:\code\WinUI3\PhoenixReadCopilot\
 │   │   └── PhoenixReadCopilot.Core/       # [轻量模型库] 进程内跨模块共享的基础模型与数据传输对象
 │   │
 │   └── Libs/
-│       ├── Danmaku.Core/                       # [弹幕引擎] 弹幕协议解析与弹幕轨道渲染模型
-│       └── WinUIKernel.Share/                  # ⚠️ [只读共享内核] 跨项目共享基础库（见红线规则）
+│       └── Danmaku.Core/                       # [弹幕引擎] 弹幕协议解析与弹幕轨道渲染模型
 ```
-
-### ⚠️ 红线规则：严禁在 `src\Libs\WinUIKernel.Share` 里面新增代码！
-
-- `WinUIKernel.Share` 是跨多个 WinAppSDK 项目公用的外部基础 submodule/类库。
-- **严禁向 `src\Libs\WinUIKernel.Share` 新增任何业务类、自定义控件、工具方法或样式！**
-- 所有针对红果助理新加的控件、转化器、辅助工具及 UI 样式，**一律放入 `src/Desktop/PhoenixReadCopilot.UI` 对应的目录下**。
 
 ### 2.1 Services、Helpers 与 Toolkits 的职责边界
 

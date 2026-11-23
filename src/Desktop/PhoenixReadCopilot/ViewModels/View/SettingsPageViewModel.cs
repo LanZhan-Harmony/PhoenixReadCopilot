@@ -1,13 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Windows.Storage.Pickers;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.ViewModels.Core;
 using Windows.System;
 
 namespace PhoenixReadCopilot.ViewModels.View;
@@ -17,7 +17,7 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// </summary>
 internal sealed partial class SettingsPageViewModel : ViewModelBase
 {
-    private readonly AppViewModel _appViewModel;
+    private readonly IWindowService _windowService;
     private readonly INavigationService _navigationService;
     public AppSettings Settings;
     private bool _isInitialized;
@@ -69,12 +69,12 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     /// </summary>
     public SettingsPageViewModel(
         ISettingsService settingsService,
-        AppViewModel appViewModel,
+        IWindowService windowService,
         INavigationService navigationService
     )
     {
         Settings = settingsService.Settings;
-        _appViewModel = appViewModel;
+        _windowService = windowService;
         _navigationService = navigationService;
         Settings.PropertyChanged += (s, e) =>
         {
@@ -88,7 +88,7 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
             {
                 case nameof(AppSettings.AppTheme):
                     OnPropertyChanged(nameof(AppThemeText));
-                    _appViewModel.ChangeTheme(Settings.AppTheme.ToElementTheme());
+                    _windowService.ChangeTheme(Settings.AppTheme.ToElementTheme());
                     break;
                 case nameof(AppSettings.IsTopNavBarShown):
                     OnPropertyChanged(nameof(IsTopNavShown));
@@ -124,7 +124,7 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     {
         try
         {
-            FolderPicker picker = new(_appViewModel.ActivatedWindow.AppWindow.Id)
+            FolderPicker picker = new(_windowService.GetActiveWindowId() ?? default)
             {
                 SuggestedStartLocation = PickerLocationId.Desktop,
             };

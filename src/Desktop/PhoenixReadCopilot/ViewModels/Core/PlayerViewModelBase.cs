@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.Controls.Components;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Player;
@@ -28,7 +28,8 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
 {
     protected readonly ILogger<PlayerViewModelBase> _logger;
     protected readonly DispatcherQueue _dispatcherQueue;
-    protected readonly AppViewModel _appViewModel;
+    protected readonly IWindowService _windowService;
+    protected readonly INotificationService _notificationService;
 
     protected readonly AppSettings _settings;
 
@@ -152,13 +153,15 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
     /// </summary>
     protected PlayerViewModelBase(
         ISettingsService settingsService,
-        AppViewModel appViewModel,
+        IWindowService windowService,
+        INotificationService notificationService,
         ILogger<PlayerViewModelBase> logger,
         DispatcherQueue dispatcherQueue
     )
     {
         _settings = settingsService.Settings;
-        _appViewModel = appViewModel;
+        _windowService = windowService;
+        _notificationService = notificationService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
     }
@@ -206,7 +209,7 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
         _isClosed = false;
         if (_smtc is null)
         {
-            nint currentWindow = _appViewModel.ActivatedWindow.GetWindowHandle();
+            nint currentWindow = _windowService.ActiveWindow?.GetWindowHandle() ?? 0;
             _smtc = SystemMediaTransportControlsInterop.GetForWindow(currentWindow);
             _smtc.IsEnabled = true;
             _smtc.IsPlayEnabled = true;
@@ -576,11 +579,11 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
         IsFullScreen = !IsFullScreen;
         if (IsFullScreen)
         {
-            _appViewModel.MakeCurrentWindowEnterFullScreen();
+            _windowService.EnterFullScreen();
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitFullScreen();
+            _windowService.ExitFullScreen();
         }
 
         _windowStateChangeAction?.Invoke();
@@ -592,11 +595,11 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
         IsFullWindow = !IsFullWindow;
         if (IsFullWindow)
         {
-            _appViewModel.MakeCurrentWindowEnterOverlap();
+            _windowService.EnterOverlap();
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitOverlap();
+            _windowService.ExitOverlap();
         }
 
         _windowStateChangeAction?.Invoke();
@@ -608,11 +611,11 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
         IsCompactOverlay = !IsCompactOverlay;
         if (IsCompactOverlay)
         {
-            _appViewModel.MakeCurrentWindowEnterCompactOverlay();
+            _windowService.EnterCompactOverlay();
         }
         else
         {
-            _appViewModel.MakeCurrentWindowExitCompactOverlay();
+            _windowService.ExitCompactOverlay();
         }
 
         _windowStateChangeAction?.Invoke();
@@ -705,7 +708,10 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
                         )
                     );
                     Clipboard.SetContent(dp);
-                    _appViewModel.ShowTip(Resources.Copied, InfoType.Success);
+                    _notificationService.ShowInAppNotification(
+                        Resources.Copied,
+                        NotificationType.Success
+                    );
                 }
 
                 bool shouldOpenFile = _settings.OpenAfterScreenshot;
@@ -762,7 +768,7 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
     {
         _dispatcherQueue.TryEnqueue(async () =>
         {
-            if (_isClosed || _appViewModel.IsClosed)
+            if (_isClosed || _windowService.IsClosed)
             {
                 await OnCloseAsync();
                 return;

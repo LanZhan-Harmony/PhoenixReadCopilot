@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.Controls;
 /// </summary>
 internal sealed partial class RootLayout : RootLayoutBase
 {
-    private readonly AppViewModel _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+    private readonly IWindowService _windowService = Ioc.Default.GetRequiredService<IWindowService>();
     private readonly INavigationService _navigationService =
         Ioc.Default.GetRequiredService<INavigationService>();
     private readonly INavigationViewService _navigationViewService =
@@ -62,8 +62,10 @@ internal sealed partial class RootLayout : RootLayoutBase
             : Visibility.Collapsed;
         SecondaryTitleBar.IsBackButtonVisible = isSecondaryTitleBarVisible;
         SecondaryTitleBar.IsBackButtonEnabled = isSecondaryTitleBarVisible;
-        _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
-            TitleBarHeightOption.Standard;
+        if (_windowService.ActiveWindow?.AppWindow?.TitleBar is { } titleBar)
+        {
+            titleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
+        }
         NavView.IsPaneOpen = false;
         VisualStateManager.GoToState(NavView, "PaneCollapsed", false);
         VisualStateManager.GoToState(this, nameof(PlayerState), false);
@@ -88,8 +90,10 @@ internal sealed partial class RootLayout : RootLayoutBase
         MainTitleBar.Visibility = Visibility.Visible;
         SecondaryTitleBar.Visibility = Visibility.Collapsed;
         SecondaryTitleBar.IsBackButtonVisible = false;
-        _appViewModel.ActivatedWindow.AppWindow.TitleBar.PreferredHeightOption =
-            TitleBarHeightOption.Tall;
+        if (_windowService.ActiveWindow?.AppWindow?.TitleBar is { } titleBar)
+        {
+            titleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+        }
         NavView.IsPaneOpen = true;
         VisualStateManager.GoToState(NavView, "PaneVisible", false);
         VisualStateManager.GoToState(this, nameof(NormalState), false);

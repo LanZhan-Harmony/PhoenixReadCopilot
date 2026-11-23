@@ -1,12 +1,13 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
-using PhoenixReadCopilot.ViewModels.Core;
+using PhoenixReadCopilot.Forms;
 using ZLogger;
 
 namespace PhoenixReadCopilot.Services;
@@ -20,16 +21,19 @@ internal sealed class NotificationService : INotificationService
     private const string NotificationGroup = "downloads";
 
     private readonly IServiceProvider _serviceProvider;
+    private readonly IWindowService _windowService;
     private readonly ILogger<NotificationService> _logger;
     private readonly bool _isAppNotificationSupported;
     private readonly ConcurrentDictionary<string, uint> _progressSequenceMap = new();
 
     public NotificationService(
         IServiceProvider serviceProvider,
+        IWindowService windowService,
         ILogger<NotificationService> logger
     )
     {
         _serviceProvider = serviceProvider;
+        _windowService = windowService;
         _logger = logger;
 
         try
@@ -56,25 +60,52 @@ internal sealed class NotificationService : INotificationService
     {
         try
         {
-            AppViewModel? appViewModel = _serviceProvider.GetService<AppViewModel>();
-            if (appViewModel is not null)
+            ITipWindow? tipWindow = _windowService.GetTipWindow();
+            if (tipWindow is null)
             {
-                InfoType infoType = type switch
-                {
-                    NotificationType.Success => InfoType.Success,
-                    NotificationType.Warning => InfoType.Warning,
-                    NotificationType.Error => InfoType.Error,
-                    _ => InfoType.Information,
-                };
-
-                await appViewModel.ShowTipAsync(message, infoType);
+                return;
             }
+
+            InfoType infoType = type switch
+            {
+                NotificationType.Success => InfoType.Success,
+                NotificationType.Warning => InfoType.Warning,
+                NotificationType.Error => InfoType.Error,
+                _ => InfoType.Information,
+            };
+
+            if (tipWindow is Window window && !window.DispatcherQueue.HasThreadAccess)
+            {
+                TaskCompletionSource tcs = new();
+                window.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    try
+                    {
+                        await tipWindow.ShowTipAsync(message, infoType);
+                        tcs.TrySetResult();
+                    }
+                    catch (Exception ex)
+                    {
+                        tcs.TrySetException(ex);
+                    }
+                });
+                await tcs.Task;
+                return;
+            }
+
+            await tipWindow.ShowTipAsync(message, infoType);
         }
         catch (Exception ex)
         {
             _logger.ZLogWarning(ex, $"显示应用内通知提示失败: {message}");
         }
     }
+
+    /// <inheritdoc/>
+    public void ShowInAppNotification(
+        string message,
+        NotificationType type = NotificationType.Information
+    ) => _ = ShowInAppNotificationAsync(message, type);
 
     /// <inheritdoc/>
     public void ShowSystemNotification(

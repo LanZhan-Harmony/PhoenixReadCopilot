@@ -122,7 +122,7 @@
                         SelectionFollowsFocus="Disabled"
                         Style="{StaticResource MainNavigationViewStyle}">
             <Grid x:Name="MainGrid">
-                <Grid Visibility="{x:Bind _appViewModel.IsInitialLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                <Grid Visibility="{x:Bind ViewModel.IsInitialLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
                     <Frame x:Name="MainFrame" Visibility="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
                     <Grid x:Name="OverlayGrid" Visibility="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}">
                         <Frame x:Name="OverlayFrame"/>
@@ -135,8 +135,8 @@
                 </Grid>
                 <components:ShimmerLayout HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
-                                          IsActive="{x:Bind _appViewModel.IsInitialLoading, Mode=OneWay}"
-                                          Visibility="{x:Bind _appViewModel.IsInitialLoading, Mode=OneWay}">
+                                          IsActive="{x:Bind ViewModel.IsInitialLoading, Mode=OneWay}"
+                                          Visibility="{x:Bind ViewModel.IsInitialLoading, Mode=OneWay}">
                     <animations:Implicit.HideAnimations>
                         <animations:OpacityAnimation From="1"
                                                      To="0"

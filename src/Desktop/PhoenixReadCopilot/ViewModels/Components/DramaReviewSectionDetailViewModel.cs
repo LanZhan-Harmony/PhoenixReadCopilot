@@ -7,11 +7,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.ViewModels;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -24,7 +22,7 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
 {
     private readonly ICommentService _commentService;
     private readonly IAuthenticationService _authService;
-    private readonly AppViewModel _appViewModel;
+    private readonly INotificationService _notificationService;
     private readonly ILogger _logger;
     private readonly string _dramaId;
     private readonly Action<DramaReviewItemViewModel>? _showMoreAction;
@@ -34,7 +32,7 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
         string dramaId,
         ICommentService commentService,
         IAuthenticationService authService,
-        AppViewModel appViewModel,
+        INotificationService notificationService,
         ILogger logger,
         Action<DramaReviewItemViewModel>? showMoreAction = null
     )
@@ -52,7 +50,7 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
             dramaId,
             commentService,
             authService,
-            appViewModel,
+            notificationService,
             logger,
             showMoreAction
         ) { }
@@ -62,7 +60,7 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
         string dramaId,
         ICommentService commentService,
         IAuthenticationService authService,
-        AppViewModel appViewModel,
+        INotificationService notificationService,
         ILogger logger,
         Action<DramaReviewItemViewModel>? showMoreAction = null
     )
@@ -71,7 +69,7 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
         _dramaId = dramaId;
         _commentService = commentService;
         _authService = authService;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
         _logger = logger;
         _showMoreAction = showMoreAction;
 
@@ -138,7 +136,10 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
     {
         if (!_authService.IsAuthenticated)
         {
-            _appViewModel.ShowTip("请先登录后再点赞", InfoType.Warning);
+            _notificationService.ShowInAppNotification(
+                "请先登录后再点赞",
+                NotificationType.Warning
+            );
             return;
         }
 
@@ -157,7 +158,10 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
             }
             else
             {
-                _appViewModel.ShowTip(res.Message ?? "点赞失败", InfoType.Error);
+                _notificationService.ShowInAppNotification(
+                    res.Message ?? "点赞失败",
+                    NotificationType.Error
+                );
             }
         }
         catch (Exception ex)
@@ -179,7 +183,7 @@ internal sealed partial class DramaReviewSectionDetailViewModel
 {
     private readonly ICommentService _commentService;
     private readonly IAuthenticationService _authService;
-    private readonly AppViewModel _appViewModel;
+    private readonly INotificationService _notificationService;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILogger<DramaReviewSectionDetailViewModel> _logger;
 
@@ -189,14 +193,14 @@ internal sealed partial class DramaReviewSectionDetailViewModel
     public DramaReviewSectionDetailViewModel(
         ICommentService commentService,
         IAuthenticationService authService,
-        AppViewModel appViewModel,
+        INotificationService notificationService,
         DispatcherQueue dispatcherQueue,
         ILogger<DramaReviewSectionDetailViewModel> logger
     )
     {
         _commentService = commentService;
         _authService = authService;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
 
@@ -326,7 +330,10 @@ internal sealed partial class DramaReviewSectionDetailViewModel
 
         if (!_authService.IsAuthenticated)
         {
-            _appViewModel.ShowTip("请先登录后再发表剧评", InfoType.Warning);
+            _notificationService.ShowInAppNotification(
+                "请先登录后再发表剧评",
+                NotificationType.Warning
+            );
             return;
         }
 
@@ -343,18 +350,24 @@ internal sealed partial class DramaReviewSectionDetailViewModel
             );
             if (result.Succeeded)
             {
-                _appViewModel.ShowTip("剧评发表成功", InfoType.Success);
+                _notificationService.ShowInAppNotification(
+                    "剧评发表成功",
+                    NotificationType.Success
+                );
                 await RefreshAsync();
             }
             else
             {
-                _appViewModel.ShowTip(result.Message ?? "发表失败", InfoType.Error);
+                _notificationService.ShowInAppNotification(
+                    result.Message ?? "发表失败",
+                    NotificationType.Error
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"发送剧评失败.");
-            _appViewModel.ShowTip("发送剧评失败", InfoType.Error);
+            _notificationService.ShowInAppNotification("发送剧评失败", NotificationType.Error);
         }
         finally
         {
@@ -384,7 +397,7 @@ internal sealed partial class DramaReviewSectionDetailViewModel
             Ioc.Default.GetRequiredService<ILogger<CommentDetailViewModel>>(),
             _commentService,
             _authService,
-            _appViewModel,
+            _notificationService,
             DramaId,
             videoId: null
         );
@@ -422,7 +435,7 @@ internal sealed partial class DramaReviewSectionDetailViewModel
                             DramaId,
                             _commentService,
                             _authService,
-                            _appViewModel,
+                            _notificationService,
                             _logger,
                             ShowReviewDetail
                         )

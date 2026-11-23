@@ -4,12 +4,10 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
-using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -22,7 +20,7 @@ internal sealed partial class ArticlePageViewModel : ViewModelBase
     private readonly IFollowService _followService;
     private readonly INavigationService _navigationService;
     private readonly ILogger<ArticlePageViewModel> _logger;
-    private readonly AppViewModel _appViewModel;
+    private readonly INotificationService _notificationService;
     private readonly DispatcherQueue _dispatcherQueue;
 
     private string _postId = string.Empty;
@@ -92,7 +90,7 @@ internal sealed partial class ArticlePageViewModel : ViewModelBase
         IFollowService followService,
         INavigationService navigationService,
         ILogger<ArticlePageViewModel> logger,
-        AppViewModel appViewModel,
+        INotificationService notificationService,
         DispatcherQueue dispatcherQueue,
         CommentMainViewModel commentMainViewModel
     )
@@ -101,7 +99,7 @@ internal sealed partial class ArticlePageViewModel : ViewModelBase
         _followService = followService;
         _navigationService = navigationService;
         _logger = logger;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
         _dispatcherQueue = dispatcherQueue;
         CommentMainViewModel = commentMainViewModel;
 
@@ -233,20 +231,26 @@ internal sealed partial class ArticlePageViewModel : ViewModelBase
             if (res.Succeeded)
             {
                 IsFollowed = next;
-                _appViewModel.ShowTip(
+                _notificationService.ShowInAppNotification(
                     next ? Resources.Followed : Resources.Unfollowed,
-                    InfoType.Success
+                    NotificationType.Success
                 );
             }
             else
             {
-                _appViewModel.ShowTip(res.Message ?? "关注操作失败", InfoType.Error);
+                _notificationService.ShowInAppNotification(
+                    res.Message ?? "关注操作失败",
+                    NotificationType.Error
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "关注操作异常");
-            _appViewModel.ShowTip(Resources.FailedToFollowUser, InfoType.Error);
+            _notificationService.ShowInAppNotification(
+                Resources.FailedToFollowUser,
+                NotificationType.Error
+            );
         }
     }
 

@@ -1,13 +1,13 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -20,7 +20,7 @@ namespace PhoenixReadCopilot.Forms;
 /// </summary>
 internal sealed partial class GalleryWindow : WindowEx, ITipWindow
 {
-    private readonly AppViewModel _appViewModel;
+    private readonly IWindowService _windowService;
     private readonly AppSettings _settings;
 
     private bool _isActivated;
@@ -31,7 +31,7 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
     public GalleryWindow(AppImage image, List<AppImage>? list = null)
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
-        _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+        _windowService = Ioc.Default.GetRequiredService<IWindowService>();
         InitializeComponent();
         ExtendsContentIntoTitleBar = true;
         MainFrame.Tag = this;
@@ -43,7 +43,7 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
         SetTitleBar(TitleBar);
 
         MainFrame.Navigate(typeof(GalleryPage), (image, list ?? [image]));
-        _appViewModel.Windows.Add(this);
+        _windowService.RegisterWindow(this);
 
         MoveAndResize();
     }
@@ -70,7 +70,7 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
     {
         if (args.WindowActivationState != WindowActivationState.Deactivated)
         {
-            _appViewModel.ActivatedWindow = this;
+            _windowService.ActiveWindow = this;
         }
 
         if (!_isActivated)
@@ -82,7 +82,7 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
             }
 
             ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
-            _appViewModel.ChangeTheme(localTheme);
+            _windowService.ChangeTheme(localTheme);
         }
 
         _isActivated = true;
@@ -90,7 +90,7 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-        _appViewModel.Windows.Remove(this);
+        _windowService.UnregisterWindow(this);
         SaveCurrentWindowStats();
     }
 

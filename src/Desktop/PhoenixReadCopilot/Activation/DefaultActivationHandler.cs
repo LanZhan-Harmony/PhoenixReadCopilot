@@ -1,25 +1,38 @@
-using Microsoft.UI.Xaml;
-using PhoenixReadCopilot.ViewModels.Core;
+using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Activation;
 
 /// <summary>
-/// 默认常规启动激活处理器 (当无其它特定 Handler 接管时执行).
+/// 默认常规启动激活处理器 (作为责任链末尾的默认兜底处理器，直接调度生命周期与主窗口激活).
 /// </summary>
-internal sealed class DefaultActivationHandler : ActivationHandler<LaunchActivatedEventArgs>
+internal sealed class DefaultActivationHandler : IActivationHandler
 {
-    private readonly AppViewModel _appViewModel;
+    private readonly IWindowService _windowService;
+    private readonly IAppLifecycleService _lifecycleService;
 
-    public DefaultActivationHandler(AppViewModel appViewModel)
+    public DefaultActivationHandler(
+        IWindowService windowService,
+        IAppLifecycleService lifecycleService
+    )
     {
-        _appViewModel = appViewModel;
+        _windowService = windowService;
+        _lifecycleService = lifecycleService;
     }
 
-    protected override bool CanHandleInternal(LaunchActivatedEventArgs args) => true;
+    public bool CanHandle(object args) => true;
 
-    protected override async Task HandleInternalAsync(LaunchActivatedEventArgs args)
+    public async Task HandleAsync(object args)
     {
-        _appViewModel.Launch();
+        // 1. 基础生命周期广播与准备：清除徽标角标，广播全局初始加载中状态
+        _lifecycleService.Launch();
+
+        // 2. 调度主窗口激活与呈现
+        _windowService.ActivateMainWindow();
+
+        // 3. 触发账号数据与会话全局初始化
+        _ = ItemServices.Account.InitializeAsync();
+
         await Task.CompletedTask;
     }
 }

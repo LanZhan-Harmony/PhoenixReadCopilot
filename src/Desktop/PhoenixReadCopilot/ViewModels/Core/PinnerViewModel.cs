@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Pin;
 using PhoenixReadCopilot.Strings;
@@ -15,7 +14,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 internal sealed partial class PinnerViewModel : ViewModelBase
 {
     private readonly IPinService _pinService;
-    private readonly AppViewModel _appViewModel;
+    private readonly INotificationService _notificationService;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly ILogger<PinnerViewModel> _logger;
 
@@ -35,13 +34,13 @@ internal sealed partial class PinnerViewModel : ViewModelBase
     /// </summary>
     public PinnerViewModel(
         IPinService pinService,
-        AppViewModel appViewModel,
+        INotificationService notificationService,
         DispatcherQueue dispatcherQueue,
         ILogger<PinnerViewModel> logger
     )
     {
         _pinService = pinService;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
 
@@ -87,11 +86,14 @@ internal sealed partial class PinnerViewModel : ViewModelBase
         bool success = await _pinService.PinAsync(item);
         if (success)
         {
-            _appViewModel.ShowTip(Resources.Fixed, InfoType.Success);
+            _notificationService.ShowInAppNotification(Resources.Fixed, NotificationType.Success);
         }
         else
         {
-            _appViewModel.ShowTip(Resources.AlreadyPinned, InfoType.Warning);
+            _notificationService.ShowInAppNotification(
+                Resources.AlreadyPinned,
+                NotificationType.Warning
+            );
         }
     }
 

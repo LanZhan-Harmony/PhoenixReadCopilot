@@ -6,10 +6,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -24,7 +24,7 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
     private readonly IAuthenticationService _authService;
     private readonly ILogger<StartupPageViewModel> _logger;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly AppViewModel _appViewModel;
+    private readonly IAppLifecycleService _lifecycleService;
 
     private CancellationTokenSource? _cancellationTokenSource;
 
@@ -84,15 +84,15 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
     /// </summary>
     public StartupPageViewModel(
         IAuthenticationService authService,
+        IAppLifecycleService lifecycleService,
         ILogger<StartupPageViewModel> logger,
-        DispatcherQueue dispatcherQueue,
-        AppViewModel appViewModel
+        DispatcherQueue dispatcherQueue
     )
     {
         _authService = authService;
+        _lifecycleService = lifecycleService;
         _logger = logger;
         _dispatcherQueue = dispatcherQueue;
-        _appViewModel = appViewModel;
     }
 
     /// <summary>
@@ -155,14 +155,7 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
                                 _dispatcherQueue.TryEnqueue(() =>
                                 {
                                     RequestClose?.Invoke(this, EventArgs.Empty);
-                                    if (_appViewModel.Windows.Any(p => p is StartupWindow))
-                                    {
-                                        _appViewModel.EnterMainWindow();
-                                    }
-                                    else
-                                    {
-                                        _ = ItemServices.Account.InitializeAsync();
-                                    }
+                                    _ = ItemServices.Account.InitializeAsync();
                                 });
                                 break;
                             }
@@ -271,14 +264,7 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
             _dispatcherQueue.TryEnqueue(() =>
             {
                 RequestClose?.Invoke(this, EventArgs.Empty);
-                if (_appViewModel.Windows.Any(p => p is StartupWindow))
-                {
-                    _appViewModel.EnterMainWindow();
-                }
-                else
-                {
-                    _ = ItemServices.Account.InitializeAsync();
-                }
+                _ = ItemServices.Account.InitializeAsync();
             });
         }
         catch (Exception ex)
@@ -304,10 +290,6 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
 
         _countdownTimer?.Stop();
         RequestClose?.Invoke(this, EventArgs.Empty);
-        if (_appViewModel.Windows.Any(p => p is StartupWindow))
-        {
-            _appViewModel.EnterMainWindow();
-        }
     }
 
     public void Exit(bool shouldRestart) => _ = ExitAsync(shouldRestart);
@@ -325,7 +307,7 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
 
         if (shouldRestart)
         {
-            AppViewModel.Restart();
+            _lifecycleService.Restart();
         }
     }
 

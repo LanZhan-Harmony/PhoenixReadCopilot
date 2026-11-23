@@ -5,11 +5,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.ViewModels;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
-using PhoenixReadCopilot.ViewModels.Core;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
 
@@ -25,7 +23,7 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
     private readonly ILoggerFactory _loggerFactory;
     private readonly ICommentService _commentService;
     private readonly IAuthenticationService _authService;
-    private readonly AppViewModel? _appViewModel;
+    private readonly INotificationService? _notificationService;
 
     private bool _preventLoadMore;
     private string _cursor = string.Empty;
@@ -94,7 +92,7 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
         ILoggerFactory loggerFactory,
         ICommentService commentService,
         IAuthenticationService authService,
-        AppViewModel? appViewModel = null
+        INotificationService? notificationService = null
     )
     {
         _logger = logger;
@@ -102,7 +100,7 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
         _loggerFactory = loggerFactory;
         _commentService = commentService;
         _authService = authService;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
 
         Sorts = [CommentSortOrder.Hot, CommentSortOrder.Latest];
         SortType = CommentSortOrder.Hot;
@@ -260,7 +258,7 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
                         _loggerFactory.CreateLogger<CommentDetailViewModel>(),
                         _commentService,
                         _authService,
-                        _appViewModel,
+                        _notificationService,
                         isCircle ? string.Empty : _dramaId,
                         isCircle ? _postId : _videoId
                     )
@@ -307,7 +305,10 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
 
         if (!_authService.IsAuthenticated)
         {
-            _appViewModel?.ShowTip("请先登录后再发表评论", InfoType.Warning);
+            _notificationService?.ShowInAppNotification(
+                "请先登录后再发表评论",
+                NotificationType.Warning
+            );
             return;
         }
 
@@ -332,19 +333,22 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
 
             if (result.Succeeded)
             {
-                _appViewModel?.ShowTip("评论已发表", InfoType.Success);
+                _notificationService?.ShowInAppNotification("评论已发表", NotificationType.Success);
                 ResetReplyTarget();
                 await RefreshAsync();
             }
             else
             {
-                _appViewModel?.ShowTip(result.Message ?? "发表失败", InfoType.Error);
+                _notificationService?.ShowInAppNotification(
+                    result.Message ?? "发表失败",
+                    NotificationType.Error
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"发送红果评论失败");
-            _appViewModel?.ShowTip("发送评论失败", InfoType.Error);
+            _notificationService?.ShowInAppNotification("发送评论失败", NotificationType.Error);
         }
         finally
         {

@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Danmaku.Core.Enums;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
-using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
@@ -19,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 internal sealed partial class DanmakuViewModel : ViewModelBase
 {
     private readonly IDanmakuService _danmakuService;
-    private readonly AppViewModel _appViewModel;
+    private readonly INotificationService _notificationService;
     private readonly ILogger<DanmakuViewModel> _logger;
     private readonly AppSettings _settings;
 
@@ -150,13 +149,13 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
     /// </summary>
     public DanmakuViewModel(
         IDanmakuService danmakuService,
-        AppViewModel appViewModel,
+        INotificationService notificationService,
         ILogger<DanmakuViewModel> logger,
         ISettingsService settingsService
     )
     {
         _danmakuService = danmakuService;
-        _appViewModel = appViewModel;
+        _notificationService = notificationService;
         _logger = logger;
         _settings = settingsService.Settings;
         Locations = [DanmakuLocation.Scroll, DanmakuLocation.Top, DanmakuLocation.Bottom];
@@ -387,17 +386,23 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
             if (result.Succeeded)
             {
                 RequestAddSingleDanmaku?.Invoke(this, text.Trim());
-                _appViewModel.ShowTip("弹幕发送成功", InfoType.Success);
+                _notificationService.ShowInAppNotification(
+                    "弹幕发送成功",
+                    NotificationType.Success
+                );
             }
             else
             {
-                _appViewModel.ShowTip(result.Message ?? "弹幕发送失败", InfoType.Warning);
+                _notificationService.ShowInAppNotification(
+                    result.Message ?? "弹幕发送失败",
+                    NotificationType.Warning
+                );
             }
         }
         catch (Exception ex)
         {
             _logger.ZLogError(ex, $"弹幕发送失败.");
-            _appViewModel.ShowTip("弹幕发送出现异常", InfoType.Error);
+            _notificationService.ShowInAppNotification("弹幕发送出现异常", NotificationType.Error);
         }
     }
 

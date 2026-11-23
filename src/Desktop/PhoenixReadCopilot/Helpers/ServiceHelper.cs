@@ -20,9 +20,11 @@ internal static class ServiceHelper
     {
         IServiceCollection services = new ServiceCollection()
             // 0. 生命周期与激活服务
-            .AddTransient<IActivationHandler, AppNotificationActivationHandler>()
-            .AddTransient<DefaultActivationHandler>()
+            .AddTransient<IActivationHandler, NotificationActivationHandler>()
+            .AddTransient<IActivationHandler, DefaultActivationHandler>()
             .AddSingleton<IActivationService, ActivationService>()
+            .AddSingleton<IAppLifecycleService, AppLifecycleService>()
+            .AddSingleton<IWindowService, WindowService>()
             // 1. 通用工具
             .AddSingleton<IPathService, PathService>()
             .AddSingleton<ILocalizationService, LocalizationService>()
@@ -31,12 +33,10 @@ internal static class ServiceHelper
             .AddSingleton<IPageService, PageService>()
             .AddSingleton<NavigationService>()
             .AddSingleton<INavigationService>(sp => sp.GetRequiredService<NavigationService>())
-            .AddSingleton<INavServiceViewModel>(sp => sp.GetRequiredService<NavigationService>())
             .AddSingleton<INavigationViewService, NavigationViewService>()
             .AddSingleton<AppUpdateService>()
             // 2. ViewModels
             // Core
-            .AddSingleton<AppViewModel>()
             .AddTransient<DanmakuViewModel>()
             .AddTransient<DramaReviewSectionDetailViewModel>()
             .AddTransient<FFmpegPlayerViewModel>()

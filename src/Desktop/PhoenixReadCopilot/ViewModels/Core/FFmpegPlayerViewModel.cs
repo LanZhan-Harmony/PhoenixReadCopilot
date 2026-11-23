@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Graphics.Canvas;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
-using PhoenixReadCopilot.Controls.Components;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
@@ -20,11 +20,12 @@ internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
 {
     public FFmpegPlayerViewModel(
         ISettingsService settingsService,
-        AppViewModel appViewModel,
+        IWindowService windowService,
+        INotificationService notificationService,
         ILogger<PlayerViewModelBase> logger,
         DispatcherQueue dispatcherQueue
     )
-        : base(settingsService, appViewModel, logger, dispatcherQueue) { }
+        : base(settingsService, windowService, notificationService, logger, dispatcherQueue) { }
 
     private MediaPlayerElement? _element;
     private FFmpegMediaSource? _ffmpegSource;
@@ -565,7 +566,10 @@ internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
         {
             if (Player.PlaybackSession?.CanSeek == false && !Player.CanSeek)
             {
-                _appViewModel.ShowTip(Resources.CanNotSeek, InfoType.Warning);
+                _notificationService.ShowInAppNotification(
+                    Resources.CanNotSeek,
+                    NotificationType.Warning
+                );
                 return Task.CompletedTask;
             }
 

@@ -2,10 +2,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.User;
 using PhoenixReadCopilot.Pages;
-using PhoenixReadCopilot.ViewModels.Core;
 using ZLogger;
 
 namespace PhoenixReadCopilot.ViewModels.Components;
@@ -21,7 +21,7 @@ internal sealed partial class AccountViewModel : ViewModelBase
     private readonly IFollowService _followService;
     private readonly INavigationService _navService;
     private readonly ILogger<AccountViewModel> _logger;
-    private readonly AppViewModel _appViewModel;
+    private readonly IAppLifecycleService _lifecycleService;
 
     [ObservableProperty]
     public partial UserDetailProfile? MyProfile { get; set; }
@@ -47,7 +47,7 @@ internal sealed partial class AccountViewModel : ViewModelBase
         IFavoriteService favoriteService,
         IFollowService followService,
         INavigationService navService,
-        AppViewModel appViewModel,
+        IAppLifecycleService lifecycleService,
         ILogger<AccountViewModel> logger
     )
     {
@@ -56,7 +56,7 @@ internal sealed partial class AccountViewModel : ViewModelBase
         _favoriteService = favoriteService;
         _followService = followService;
         _navService = navService;
-        _appViewModel = appViewModel;
+        _lifecycleService = lifecycleService;
         _logger = logger;
 
         _authService.StateChanged += OnAuthStateChanged;
@@ -123,7 +123,7 @@ internal sealed partial class AccountViewModel : ViewModelBase
         }
         finally
         {
-            _appViewModel.IsInitialLoading = false;
+            _lifecycleService.IsInitialLoading = false;
             IsInitializing = false;
         }
     }

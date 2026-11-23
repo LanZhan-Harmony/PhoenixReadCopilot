@@ -6,12 +6,12 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Extensions;
-using PhoenixReadCopilot.ViewModels.Core;
 using Windows.Graphics;
 using Windows.System;
 using Windows.Win32;
@@ -27,7 +27,7 @@ namespace PhoenixReadCopilot.Forms;
 internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWindow
 {
     private readonly ISettingsService _settingsService;
-    private readonly AppViewModel _appViewModel;
+    private readonly IWindowService _windowService;
     private AppSettings _settings => _settingsService.Settings;
 
     private const int WindowMinWidth = 640;
@@ -42,7 +42,7 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
     public MainWindow()
     {
         _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
-        _appViewModel = Ioc.Default.GetRequiredService<AppViewModel>();
+        _windowService = Ioc.Default.GetRequiredService<IWindowService>();
         InitializeComponent();
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(RootLayout.GetMainTitleBar());
@@ -51,7 +51,7 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         MinWidth = WindowMinWidth;
         MinHeight = WindowMinHeight;
-        _appViewModel.Windows.Add(this);
+        _windowService.RegisterWindow(this);
         _inputActivationListener = InputActivationListener.GetForWindowId(AppWindow.Id);
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
         Activated += OnActivated;
@@ -140,7 +140,7 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
     {
         if (args.WindowActivationState != WindowActivationState.Deactivated)
         {
-            _appViewModel.ActivatedWindow = this;
+            _windowService.ActiveWindow = this;
         }
 
         if (!_isFirstActivated)
@@ -156,7 +156,7 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
         }
 
         ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
-        _appViewModel.ChangeTheme(localTheme);
+        _windowService.ChangeTheme(localTheme);
         _isFirstActivated = false;
     }
 
@@ -180,9 +180,9 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
             SaveCurrentWindowStats();
             await _settingsService.FlushAsync();
 
-            _appViewModel.IsClosed = true;
+            _windowService.IsClosed = true;
             RootLayout.ViewModel.Back();
-            foreach (Window? item in _appViewModel.Windows.ToList())
+            foreach (Window? item in _windowService.Windows.ToList())
             {
                 if (item is not MainWindow)
                 {
@@ -193,7 +193,7 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
             Activated -= OnActivated;
             Closed -= OnClosed;
 
-            _appViewModel.Windows.Remove(this);
+            _windowService.UnregisterWindow(this);
             GlobalHook.Stop();
             App.Current?.Exit();
         }

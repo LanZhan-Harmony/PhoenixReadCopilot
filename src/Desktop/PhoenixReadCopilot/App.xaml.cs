@@ -7,7 +7,6 @@ using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
-using PhoenixReadCopilot.ViewModels.Core;
 using WinUI3Package;
 using ZLogger;
 
@@ -65,8 +64,7 @@ public sealed partial class App : Application
     /// 获取当前应用主窗口.
     /// </summary>
     internal static MainWindow? GetMainWindow() =>
-        Ioc.Default.GetRequiredService<AppViewModel>().Windows.Find(p => p is MainWindow)
-        as MainWindow;
+        Ioc.Default.GetRequiredService<IWindowService>().GetWindow<MainWindow>();
 
     private void OnMainWindowClosed(object sender, WindowEventArgs args)
     {
@@ -100,7 +98,7 @@ public sealed partial class App : Application
         {
             Ioc.Default.GetRequiredService<ISettingsService>().Settings.LastSelectedFeaturePage =
                 string.Empty;
-            AppViewModel.Restart();
+            Ioc.Default.GetRequiredService<IAppLifecycleService>().Restart();
         }
     }
 }
