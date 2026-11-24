@@ -9,9 +9,30 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// <summary>
 /// FFmpeg 播放器.
 /// </summary>
-internal sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewModel>
+internal sealed partial class FFmpegPlayer : Control
 {
-    private MediaPlayerElement _playerElement;
+    private MediaPlayerElement? _playerElement;
+
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public FFmpegPlayerViewModel? ViewModel
+    {
+        get => (FFmpegPlayerViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(FFmpegPlayerViewModel),
+        typeof(FFmpegPlayer),
+        new PropertyMetadata(null, (d, e) =>
+            ((FFmpegPlayer)d).OnViewModelChanged(
+                (FFmpegPlayerViewModel?)e.OldValue,
+                (FFmpegPlayerViewModel?)e.NewValue
+            )
+        )
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FFmpegPlayer"/> class.
@@ -19,22 +40,18 @@ internal sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewM
     public FFmpegPlayer()
     {
         DefaultStyleKey = typeof(FFmpegPlayer);
+        Loaded += OnLoaded;
     }
 
-    /// <inheritdoc/>
-    protected override async void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is null)
-        {
-            return;
-        }
-
-        await ViewModel.InitializeAsync(_playerElement);
+        CheckAndInitializePlayer();
     }
 
     /// <inheritdoc/>
     protected override void OnApplyTemplate()
     {
+        base.OnApplyTemplate();
         Grid? rootGrid = GetTemplateChild("RootGrid") as Grid;
         _playerElement = new MediaPlayerElement
         {
@@ -48,19 +65,23 @@ internal sealed partial class FFmpegPlayer : LayoutControlBase<FFmpegPlayerViewM
             rootGrid.Background = new SolidColorBrush(Colors.Black);
             rootGrid.Children.Add(_playerElement);
         }
+
+        CheckAndInitializePlayer();
     }
 
-    /// <inheritdoc/>
-    protected override async void OnViewModelChanged(
+    private void OnViewModelChanged(
         FFmpegPlayerViewModel? oldValue,
         FFmpegPlayerViewModel? newValue
     )
     {
-        if (_playerElement is null)
-        {
-            return;
-        }
+        CheckAndInitializePlayer();
+    }
 
-        await newValue?.InitializeAsync(_playerElement);
+    private void CheckAndInitializePlayer()
+    {
+        if (IsLoaded && ViewModel is not null && _playerElement is not null)
+        {
+            _ = ViewModel.InitializeAsync(_playerElement);
+        }
     }
 }

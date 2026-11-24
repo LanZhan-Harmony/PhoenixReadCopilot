@@ -12,8 +12,13 @@ namespace PhoenixReadCopilot.Pages.Overlay;
 /// <summary>
 /// 视频播放界面.
 /// </summary>
-internal sealed partial class VideoPlayerPage : VideoPlayerPageBase
+internal sealed partial class VideoPlayerPage : Page
 {
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public VideoPlayerPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<VideoPlayerPageViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerPage"/> class.
     /// </summary>
@@ -84,7 +89,7 @@ internal sealed partial class VideoPlayerPage : VideoPlayerPageBase
     protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
         ViewModel.Clean();
 
-    private DanmakuControlBase CreateDanmakuPanel() =>
+    private FrameworkElement CreateDanmakuPanel() =>
         new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };
 
     private FrameworkElement CreateTransportControl()
@@ -124,19 +129,5 @@ internal sealed partial class VideoPlayerPage : VideoPlayerPageBase
             Margin = new Thickness(0, 0, 0, 16),
             ViewModel = ViewModel.Subtitle,
         };
-    }
-}
-
-/// <summary>
-/// 视频播放界面基类.
-/// </summary>
-internal abstract class VideoPlayerPageBase : LayoutPageBase<VideoPlayerPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerPageBase"/> class.
-    /// </summary>
-    protected VideoPlayerPageBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<VideoPlayerPageViewModel>();
     }
 }

@@ -9,8 +9,14 @@ namespace PhoenixReadCopilot.Controls.Components;
 internal sealed partial class SideBottomLoadingWidget : UserControl
 {
     /// <summary>
-    /// <see cref="Text"/> 的依赖属性.
+    /// 文本.
     /// </summary>
+    public string Text
+    {
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
         nameof(Text),
         typeof(string),
@@ -24,14 +30,5 @@ internal sealed partial class SideBottomLoadingWidget : UserControl
     public SideBottomLoadingWidget()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// 文本.
-    /// </summary>
-    public string Text
-    {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
     }
 }

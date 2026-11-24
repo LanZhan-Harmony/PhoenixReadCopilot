@@ -10,23 +10,38 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// <summary>
 /// 演员榜单展示主体.
 /// </summary>
-internal sealed partial class RankActorBody : RankPageControlBase
+internal sealed partial class RankActorBody : UserControl
 {
+    public RankPageViewModel? ViewModel
+    {
+        get => (RankPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(RankPageViewModel),
+        typeof(RankActorBody),
+        new PropertyMetadata(null, (d, e) =>
+            ((RankActorBody)d).OnViewModelChanged(
+                (RankPageViewModel?)e.OldValue,
+                (RankPageViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RankActorBody"/> class.
     /// </summary>
     public RankActorBody()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
-        RankPageViewModel? oldValue,
-        RankPageViewModel? newValue
-    )
+    private void OnViewModelChanged(RankPageViewModel? oldValue, RankPageViewModel? newValue)
     {
-        base.OnViewModelChanged(oldValue, newValue);
         if (oldValue is not null)
         {
             oldValue.VideoListUpdated -= OnActorListUpdatedAsync;
@@ -41,8 +56,7 @@ internal sealed partial class RankActorBody : RankPageControlBase
         }
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         if (ViewModel is not null)
         {
@@ -56,8 +70,7 @@ internal sealed partial class RankActorBody : RankPageControlBase
         CheckActorCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         ActorRepeater.ItemsSource = null;
         if (ViewModel is not null)

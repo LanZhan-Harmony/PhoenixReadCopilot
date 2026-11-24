@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:CommentLikeButtonBase
+<UserControl
     x:Class="PhoenixReadCopilot.Controls.Components.CommentLikeButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -27,4 +27,4 @@
                 Text="{x:Bind ViewModel.LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
         </StackPanel>
     </ToggleButton>
-</local:CommentLikeButtonBase>
+</UserControl>

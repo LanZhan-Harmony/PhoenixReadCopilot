@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:DanmakuControlBase x:Class="PhoenixReadCopilot.Controls.Danmaku.DanmakuSendOptions"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Danmaku.DanmakuSendOptions"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:converters="using:PhoenixReadCopilot.Converters"
@@ -90,4 +90,4 @@
             </ItemsRepeater>
         </StackPanel>
     </StackPanel>
-</local:DanmakuControlBase>
+</UserControl>

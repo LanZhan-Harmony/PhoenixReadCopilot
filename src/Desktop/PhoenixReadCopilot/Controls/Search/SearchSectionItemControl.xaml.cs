@@ -10,8 +10,14 @@ namespace PhoenixReadCopilot.Controls.Search;
 internal sealed partial class SearchSectionItemControl : UserControl
 {
     /// <summary>
-    /// <see cref="ViewModel"/> 的依赖属性.
+    /// 视图模型.
     /// </summary>
+    public ISearchSectionDetailViewModel ViewModel
+    {
+        get => (ISearchSectionDetailViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel),
         typeof(ISearchSectionDetailViewModel),
@@ -25,15 +31,6 @@ internal sealed partial class SearchSectionItemControl : UserControl
     public SearchSectionItemControl()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// 视图模型.
-    /// </summary>
-    public ISearchSectionDetailViewModel ViewModel
-    {
-        get => (ISearchSectionDetailViewModel)GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
     }
 
     internal static int ToCount(int? count) => count ?? 0;

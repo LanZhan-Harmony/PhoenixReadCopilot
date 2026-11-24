@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ctrl:LayoutUserControlBase x:Class="PhoenixReadCopilot.Controls.Components.EmptyHolder"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Components.EmptyHolder"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:ctrl="using:PhoenixReadCopilot.Controls"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:local="using:PhoenixReadCopilot.Controls.Components"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -39,4 +38,4 @@
                           Content="{x:Bind ActionElement, Mode=OneWay}"
                           Visibility="{x:Bind ActionElement, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
     </StackPanel>
-</ctrl:LayoutUserControlBase>
+</UserControl>

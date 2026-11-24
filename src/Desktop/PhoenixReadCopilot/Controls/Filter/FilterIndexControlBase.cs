@@ -1,8 +1,0 @@
-using PhoenixReadCopilot.ViewModels.View;
-
-namespace PhoenixReadCopilot.Controls.Filter;
-
-/// <summary>
-/// 筛选索引控件基类.
-/// </summary>
-internal abstract class FilterIndexControlBase : LayoutUserControlBase<FilterPageViewModel> { }

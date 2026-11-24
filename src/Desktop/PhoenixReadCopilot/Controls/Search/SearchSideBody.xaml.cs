@@ -1,34 +1,57 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Contracts.ViewModels;
+using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Search;
 
 /// <summary>
 /// 搜索侧边栏.
 /// </summary>
-internal sealed partial class SearchSideBody : SearchPageControlBase
+internal sealed partial class SearchSideBody : UserControl
 {
+    public SearchPageViewModel? ViewModel
+    {
+        get => (SearchPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(SearchPageViewModel),
+        typeof(SearchSideBody),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSideBody"/> class.
     /// </summary>
     public SearchSideBody()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
-        ViewModel.SectionInitialized += OnSectionInitialized;
+        if (ViewModel is not null)
+        {
+            ViewModel.SectionInitialized += OnSectionInitialized;
+        }
+
         SectionView.SelectionChanged += OnSectionSelectionChanged;
         CheckSectionSelection();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         SectionView.ItemsSource = null;
-        ViewModel.SectionInitialized -= OnSectionInitialized;
+        if (ViewModel is not null)
+        {
+            ViewModel.SectionInitialized -= OnSectionInitialized;
+        }
+
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
 
@@ -40,12 +63,15 @@ internal sealed partial class SearchSideBody : SearchPageControlBase
     )
     {
         ISearchSectionDetailViewModel? item = sender.SelectedItem as ISearchSectionDetailViewModel;
-        ViewModel.SelectSection(item);
+        if (item is not null && ViewModel is not null)
+        {
+            ViewModel.SelectSection(item);
+        }
     }
 
     private void CheckSectionSelection()
     {
-        if (ViewModel.SelectedSection is not null)
+        if (ViewModel?.SelectedSection is not null)
         {
             SectionView.Select(ViewModel.Sections.ToList().IndexOf(ViewModel.SelectedSection));
         }

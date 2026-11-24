@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:FilterIndexControlBase x:Class="PhoenixReadCopilot.Controls.Filter.FilterIndexMainControl"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Filter.FilterIndexMainControl"
                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                               xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -11,13 +11,13 @@
                               xmlns:strings="using:PhoenixReadCopilot.Strings"
                               mc:Ignorable="d">
 
-    <local:FilterIndexControlBase.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <local:FilterVideoItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </local:FilterIndexControlBase.Resources>
+    </UserControl.Resources>
 
     <Grid>
         <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
@@ -33,4 +33,4 @@
         </essential:RevealFocusPanel>
         <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsIndexLoading, Mode=OneWay}"/>
     </Grid>
-</local:FilterIndexControlBase>
+</UserControl>

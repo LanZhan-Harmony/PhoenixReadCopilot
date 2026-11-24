@@ -8,12 +8,17 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 播放器通知.
 /// </summary>
-internal sealed partial class PlayerNotificationItemViewModel : ViewModelBase<PlayerNotification>
+internal sealed partial class PlayerNotificationItemViewModel : ViewModelBase
 {
     private readonly DispatcherTimer? _timer;
 
     private DateTimeOffset _startTime;
     private bool _isCancelled;
+
+    /// <summary>
+    /// 通知数据实体.
+    /// </summary>
+    public PlayerNotification Data { get; }
 
     [ObservableProperty]
     public partial int DurationInMilliseconds { get; set; }
@@ -31,8 +36,8 @@ internal sealed partial class PlayerNotificationItemViewModel : ViewModelBase<Pl
     /// Initializes a new instance of the <see cref="PlayerNotificationItemViewModel"/> class.
     /// </summary>
     public PlayerNotificationItemViewModel(PlayerNotification notification)
-        : base(notification)
     {
+        Data = notification;
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
         _timer.Tick += OnTimerTick;
     }

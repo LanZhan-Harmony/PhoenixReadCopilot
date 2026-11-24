@@ -5,18 +5,32 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Player;
 using PhoenixReadCopilot.ViewModels.Items;
+using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
 /// <summary>
 /// 下载按钮 (直接对接 IDownloadService).
 /// </summary>
-internal sealed partial class DownloadButton : DownloadButtonBase
+internal sealed partial class DownloadButton : UserControl
 {
     private readonly IDownloadService _downloadService =
         Ioc.Default.GetRequiredService<IDownloadService>();
     private readonly INotificationService _notificationService =
         Ioc.Default.GetRequiredService<INotificationService>();
+
+    public VideoPlayerPageViewModel? ViewModel
+    {
+        get => (VideoPlayerPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(VideoPlayerPageViewModel),
+        typeof(DownloadButton),
+        new PropertyMetadata(null)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DownloadButton"/> class.
@@ -282,8 +296,3 @@ internal sealed partial class DownloadButton : DownloadButtonBase
         InitializeDownloadFlyout();
     }
 }
-
-/// <summary>
-/// 下载按钮基类.
-/// </summary>
-internal abstract class DownloadButtonBase : VideoPlayerPageControlBase { }

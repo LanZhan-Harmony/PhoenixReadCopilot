@@ -85,7 +85,7 @@ internal sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
         {
             foreach (TimelineItemViewModel timeline in Timelines)
             {
-                foreach (VideoItemViewModel item in timeline.Items)
+                foreach (DailyReleaseItemViewModel item in timeline.Items)
                 {
                     if (item.Drama is not null && !string.IsNullOrEmpty(item.Drama.Id))
                     {
@@ -173,9 +173,9 @@ internal sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
                 cancellationToken: ct
             );
 
-            List<VideoItemViewModel> initialItems =
+            List<DailyReleaseItemViewModel> initialItems =
             [
-                .. page.Items.Select(item => new VideoItemViewModel(item)),
+                .. page.Items.Select(item => new DailyReleaseItemViewModel(item)),
             ];
 
             IReadOnlyList<DateOnly> dates = page.AvailableDates is { Count: > 0 }
@@ -264,7 +264,7 @@ internal sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
                 vm.Items.Clear();
                 foreach (DailyReleaseItem item in page.Items)
                 {
-                    vm.Items.Add(new VideoItemViewModel(item));
+                    vm.Items.Add(new DailyReleaseItemViewModel(item));
                 }
 
                 vm.NextOffset = page.NextOffset;
@@ -332,7 +332,7 @@ internal sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
                         continue;
                     }
 
-                    current.Items.Add(new VideoItemViewModel(item));
+                    current.Items.Add(new DailyReleaseItemViewModel(item));
                     added++;
                 }
 

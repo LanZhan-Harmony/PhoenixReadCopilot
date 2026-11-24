@@ -11,11 +11,17 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 评论输入框.
 /// </summary>
-internal sealed partial class CommentTextBox : LayoutUserControlBase
+internal sealed partial class CommentTextBox : UserControl
 {
     /// <summary>
-    /// <see cref="Text"/> 的依赖属性.
+    /// 回复文本.
     /// </summary>
+    public string Text
+    {
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
         nameof(Text),
         typeof(string),
@@ -24,8 +30,14 @@ internal sealed partial class CommentTextBox : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="SendCommand"/> 的依赖属性.
+    /// 发送评论命令.
     /// </summary>
+    public IAsyncRelayCommand SendCommand
+    {
+        get => (IAsyncRelayCommand)GetValue(SendCommandProperty);
+        set => SetValue(SendCommandProperty, value);
+    }
+
     public static readonly DependencyProperty SendCommandProperty = DependencyProperty.Register(
         nameof(SendCommand),
         typeof(IAsyncRelayCommand),
@@ -34,8 +46,14 @@ internal sealed partial class CommentTextBox : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="ReplyTip"/> 的依赖属性.
+    /// 评论提示.
     /// </summary>
+    public string ReplyTip
+    {
+        get => (string)GetValue(ReplyTipProperty);
+        set => SetValue(ReplyTipProperty, value);
+    }
+
     public static readonly DependencyProperty ReplyTipProperty = DependencyProperty.Register(
         nameof(ReplyTip),
         typeof(string),
@@ -44,8 +62,14 @@ internal sealed partial class CommentTextBox : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="ResetSelectedCommand"/> 的依赖属性.
+    /// 重置已选择评论的命令.
     /// </summary>
+    public ICommand ResetSelectedCommand
+    {
+        get => (ICommand)GetValue(ResetSelectedCommandProperty);
+        set => SetValue(ResetSelectedCommandProperty, value);
+    }
+
     public static readonly DependencyProperty ResetSelectedCommandProperty =
         DependencyProperty.Register(
             nameof(ResetSelectedCommand),
@@ -62,10 +86,8 @@ internal sealed partial class CommentTextBox : LayoutUserControlBase
         InitializeComponent();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        base.OnControlLoaded();
         UpdateLoginState();
     }
 
@@ -80,42 +102,6 @@ internal sealed partial class CommentTextBox : LayoutUserControlBase
         ReplyBox.PlaceholderText = isAuthenticated
             ? Strings.Resources.ReplyPlaceholderText
             : "请先登录后发表评论";
-    }
-
-    /// <summary>
-    /// 回复文本.
-    /// </summary>
-    public string Text
-    {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
-
-    /// <summary>
-    /// 发送评论命令.
-    /// </summary>
-    public IAsyncRelayCommand SendCommand
-    {
-        get => (IAsyncRelayCommand)GetValue(SendCommandProperty);
-        set => SetValue(SendCommandProperty, value);
-    }
-
-    /// <summary>
-    /// 评论提示.
-    /// </summary>
-    public string ReplyTip
-    {
-        get => (string)GetValue(ReplyTipProperty);
-        set => SetValue(ReplyTipProperty, value);
-    }
-
-    /// <summary>
-    /// 重置已选择评论的命令.
-    /// </summary>
-    public ICommand ResetSelectedCommand
-    {
-        get => (ICommand)GetValue(ResetSelectedCommandProperty);
-        set => SetValue(ResetSelectedCommandProperty, value);
     }
 
     private async void OnReplySubmittedAsync(

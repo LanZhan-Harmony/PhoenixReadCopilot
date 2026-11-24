@@ -8,7 +8,7 @@
     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
     xmlns:strings="using:PhoenixReadCopilot.Strings">
 
-    <DataTemplate x:Key="UserReservationVideoItemTemplate" x:DataType="items:VideoItemViewModel">
+    <DataTemplate x:Key="UserReservationVideoItemTemplate" x:DataType="items:DailyReleaseItemViewModel">
         <Button
             Command="{x:Bind PlayCommand}"
             DataContext="{x:Bind}"
@@ -112,9 +112,9 @@
                         Grid.Row="1"
                         IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
                         Symbol="Tag"
-                        Text="{x:Bind Author}"
+                        Text="{x:Bind Category}"
                         TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
-                        Visibility="{x:Bind Author, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                        Visibility="{x:Bind Category, Converter={StaticResource ObjectToVisibilityConverter}}"/>
 
                     <!-- 操作按钮区：保留未预约/预约交互 -->
                     <Grid Grid.Row="2" VerticalAlignment="Bottom">

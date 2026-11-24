@@ -16,7 +16,7 @@ namespace PhoenixReadCopilot.Controls;
 /// <summary>
 /// 根布局，用于包裹整个应用程序的布局.
 /// </summary>
-internal sealed partial class RootLayout : RootLayoutBase
+internal sealed partial class RootLayout : UserControl
 {
     private readonly IWindowService _windowService = Ioc.Default.GetRequiredService<IWindowService>();
     private readonly INavigationService _navigationService =
@@ -24,12 +24,16 @@ internal sealed partial class RootLayout : RootLayoutBase
     private readonly INavigationViewService _navigationViewService =
         Ioc.Default.GetRequiredService<INavigationViewService>();
 
+    public RootLayoutViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<RootLayoutViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RootLayout"/> class.
     /// </summary>
     public RootLayout()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
     /// <summary>
@@ -182,8 +186,7 @@ internal sealed partial class RootLayout : RootLayoutBase
         return false;
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         if (_navigationService is NavigationService navService)
         {
@@ -201,8 +204,7 @@ internal sealed partial class RootLayout : RootLayoutBase
         }
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         _navigationViewService.UnregisterEvents();
     }
@@ -220,18 +222,4 @@ internal sealed partial class RootLayout : RootLayoutBase
 
     private void OnVideoBackRequested(TitleBar sender, object args) =>
         TryBackToDefaultIfPlayerHostMode();
-}
-
-/// <summary>
-/// 根布局基类.
-/// </summary>
-internal abstract class RootLayoutBase : LayoutUserControlBase<RootLayoutViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RootLayoutBase"/> class.
-    /// </summary>
-    protected RootLayoutBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<RootLayoutViewModel>();
-    }
 }

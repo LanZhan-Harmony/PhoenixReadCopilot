@@ -13,11 +13,17 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 表情富文本.
 /// </summary>
-internal sealed partial class EmoteTextBlock : LayoutUserControlBase
+internal sealed partial class EmoteTextBlock : UserControl
 {
     /// <summary>
-    /// <see cref="MaxLines"/> 的依赖属性.
+    /// 最大行数.
     /// </summary>
+    public int MaxLines
+    {
+        get => (int)GetValue(MaxLinesProperty);
+        set => SetValue(MaxLinesProperty, value);
+    }
+
     public static readonly DependencyProperty MaxLinesProperty = DependencyProperty.Register(
         nameof(MaxLines),
         typeof(int),
@@ -26,8 +32,14 @@ internal sealed partial class EmoteTextBlock : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="Text"/> 的依赖属性.
+    /// 输入的文本.
     /// </summary>
+    public EmoteText Text
+    {
+        get => (EmoteText)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
         nameof(Text),
         typeof(EmoteText),
@@ -43,39 +55,12 @@ internal sealed partial class EmoteTextBlock : LayoutUserControlBase
         InitializeComponent();
     }
 
-    /// <summary>
-    /// 最大行数.
-    /// </summary>
-    public int MaxLines
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        get => (int)GetValue(MaxLinesProperty);
-        set => SetValue(MaxLinesProperty, value);
-    }
-
-    /// <summary>
-    /// 输入的文本.
-    /// </summary>
-    public EmoteText Text
-    {
-        get => (EmoteText)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
-    {
-        base.OnControlLoaded();
         if (Text is not null && (RichBlock?.Blocks.Count == 0))
         {
             InitializeContent();
         }
-    }
-
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
-    {
-        base.OnControlUnloaded();
-        Gallery?.ItemsSource = null;
     }
 
     private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -142,7 +127,7 @@ internal sealed partial class EmoteTextBlock : LayoutUserControlBase
         Dictionary<string, AppImage>? emotes = Text.Emotes;
         Paragraph para = new();
 
-        Regex emojiRegex = new(@"(\[.*?\])");
+        Regex emojiRegex = EmojiRegex();
         string[] splitContents = [.. emojiRegex.Split(text).Where(p => p.Length > 0)];
         foreach (string content in splitContents)
         {
@@ -228,4 +213,12 @@ internal sealed partial class EmoteTextBlock : LayoutUserControlBase
             FlyoutRichBlock.Blocks.Add(para);
         }
     }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        Gallery?.ItemsSource = null;
+    }
+
+    [GeneratedRegex(@"(\[.*?\])")]
+    private static partial Regex EmojiRegex();
 }

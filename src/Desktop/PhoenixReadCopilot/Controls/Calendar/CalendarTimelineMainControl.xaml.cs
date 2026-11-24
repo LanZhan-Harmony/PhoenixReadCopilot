@@ -10,18 +10,37 @@ namespace PhoenixReadCopilot.Controls.Calendar;
 /// <summary>
 /// 上新日历右侧剧集列表.
 /// </summary>
-internal sealed partial class CalendarTimelineMainControl : CalendarTimelineControlBase
+internal sealed partial class CalendarTimelineMainControl : UserControl
 {
+    public CalendarPageViewModel? ViewModel
+    {
+        get => (CalendarPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(CalendarPageViewModel),
+        typeof(CalendarTimelineMainControl),
+        new PropertyMetadata(null, (d, e) =>
+            ((CalendarTimelineMainControl)d).OnViewModelChanged(
+                (CalendarPageViewModel?)e.OldValue,
+                (CalendarPageViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarTimelineMainControl"/> class.
     /// </summary>
     public CalendarTimelineMainControl()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         TimelineScrollView.ViewChanged += OnViewChanged;
         TimelineScrollView.SizeChanged += OnScrollViewSizeChanged;
@@ -37,8 +56,7 @@ internal sealed partial class CalendarTimelineMainControl : CalendarTimelineCont
         CheckTimelineCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         if (ViewModel is not null)
         {
@@ -51,8 +69,7 @@ internal sealed partial class CalendarTimelineMainControl : CalendarTimelineCont
         TimelineScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         CalendarPageViewModel? oldValue,
         CalendarPageViewModel? newValue
     )

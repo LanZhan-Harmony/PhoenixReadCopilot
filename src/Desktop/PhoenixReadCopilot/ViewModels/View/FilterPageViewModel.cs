@@ -45,7 +45,7 @@ internal sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// 短剧剧集列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Items { get; } = [];
+    public ObservableCollection<DramaItemViewModel> Items { get; } = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterPageViewModel"/> class.
@@ -195,7 +195,7 @@ internal sealed partial class FilterPageViewModel : LayoutPageViewModelBase
             {
                 foreach (Drama drama in page.Items)
                 {
-                    Items.Add(new VideoItemViewModel(drama, VideoCardStyle.Filter));
+                    Items.Add(new DramaItemViewModel(drama, VideoCardStyle.Filter));
                 }
 
                 ItemsUpdated?.Invoke(this, EventArgs.Empty);

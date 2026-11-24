@@ -12,17 +12,20 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 应用搜索框.
 /// </summary>
-internal sealed partial class AppSearchBox : AppSearchBoxBase
+internal sealed partial class AppSearchBox : UserControl
 {
+    public SearchBoxViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AppSearchBox"/> class.
     /// </summary>
     public AppSearchBox()
     {
         InitializeComponent();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    protected override void OnControlUnloaded() => HotSearchView.ItemsSource = null;
+    private void OnControlUnloaded() => HotSearchView.ItemsSource = null;
 
     private void OnKeywordChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
@@ -75,19 +78,5 @@ internal sealed partial class AppSearchBox : AppSearchBoxBase
 
         ViewModel.TryCancelSuggest();
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, ViewModel.Suggestion.Clear);
-    }
-}
-
-/// <summary>
-/// 应用搜索框的基类.
-/// </summary>
-internal abstract class AppSearchBoxBase : LayoutUserControlBase<SearchBoxViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppSearchBoxBase"/> class.
-    /// </summary>
-    protected AppSearchBoxBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
     }
 }

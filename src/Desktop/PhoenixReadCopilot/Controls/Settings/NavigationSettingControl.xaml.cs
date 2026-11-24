@@ -1,10 +1,16 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml.Controls;
+using PhoenixReadCopilot.ViewModels.View;
+
 namespace PhoenixReadCopilot.Controls.Settings;
 
 /// <summary>
-/// 导航设置控件.
+/// 导航栏设置控件.
 /// </summary>
-internal sealed partial class NavigationSettingControl : SettingsPageControlBase
+internal sealed partial class NavigationSettingControl : UserControl
 {
+    public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="NavigationSettingControl"/> class.
     /// </summary>

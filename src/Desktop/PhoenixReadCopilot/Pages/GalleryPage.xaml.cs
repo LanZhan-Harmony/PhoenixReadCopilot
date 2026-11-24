@@ -13,14 +13,21 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 图片库页面.
 /// </summary>
-internal sealed partial class GalleryPage : GalleryPageBase
+internal sealed partial class GalleryPage : Page
 {
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public GalleryPageViewModel? ViewModel { get; private set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryPage"/> class.
     /// </summary>
     public GalleryPage()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
     /// <inheritdoc/>
@@ -37,9 +44,13 @@ internal sealed partial class GalleryPage : GalleryPageBase
         }
     }
 
-    /// <inheritdoc/>
-    protected override void OnPageLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
         FactoryBlock.Text = 1.ToString("p00");
         ImageScrollView.ZoomTo(0.8f, null);
         ImageView.ScrollView.VerticalScrollMode = ScrollingScrollMode.Disabled;
@@ -49,7 +60,7 @@ internal sealed partial class GalleryPage : GalleryPageBase
         ImageView.Select(index);
     }
 
-    protected override void OnPageUnloaded() => ImageView.ItemsSource = null;
+    private void OnUnloaded(object sender, RoutedEventArgs e) => ImageView.ItemsSource = null;
 
     private void OnScrollViewTapped(object sender, TappedRoutedEventArgs e) =>
         ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
@@ -84,8 +95,3 @@ internal sealed partial class GalleryPage : GalleryPageBase
         ViewModel.ChangeImage(image);
     }
 }
-
-/// <summary>
-/// 图片库页面基类.
-/// </summary>
-internal abstract class GalleryPageBase : LayoutPageBase<GalleryPageViewModel> { }

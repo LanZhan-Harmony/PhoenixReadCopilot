@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:SettingsPageControlBase x:Class="PhoenixReadCopilot.Controls.Settings.SearchRecommendSettingSection"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Settings.SearchRecommendSettingSection"
                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                xmlns:community="using:CommunityToolkit.WinUI.Controls"
@@ -16,4 +16,4 @@
         </community:SettingsCard.HeaderIcon>
         <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.ShowSearchRecommend, Mode=TwoWay}"/>
     </community:SettingsCard>
-</local:SettingsPageControlBase>
+</UserControl>

@@ -11,18 +11,23 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 制作人员项视图模型.
 /// </summary>
-internal sealed partial class DramaCreditItemViewModel : ViewModelBase<DramaCredit>
+internal sealed partial class DramaCreditItemViewModel : ViewModelBase
 {
     private readonly INotificationService _notificationService;
     private readonly ILogger<DramaCreditItemViewModel> _logger;
+
+    /// <summary>
+    /// 制作人员数据实体.
+    /// </summary>
+    public DramaCredit Data { get; }
 
     public DramaCreditItemViewModel(
         DramaCredit credit,
         INotificationService? notificationService = null,
         ILogger<DramaCreditItemViewModel>? logger = null
     )
-        : base(credit)
     {
+        Data = credit;
         _notificationService = notificationService ?? ItemServices.Notification;
         _logger = logger
             ?? CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<

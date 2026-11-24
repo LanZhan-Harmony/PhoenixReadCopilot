@@ -6,9 +6,14 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 索引过滤器视图模型.
 /// </summary>
-internal sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
+internal sealed partial class IndexFilterViewModel : ViewModelBase
 {
     private readonly Action? _reloadAction;
+
+    /// <summary>
+    /// 筛选数据实体.
+    /// </summary>
+    public Filter Data { get; }
 
     [ObservableProperty]
     public partial List<Condition>? Conditions { get; set; }
@@ -30,8 +35,8 @@ internal sealed partial class IndexFilterViewModel : ViewModelBase<Filter>
     /// Initializes a new instance of the <see cref="IndexFilterViewModel"/> class.
     /// </summary>
     public IndexFilterViewModel(Filter filter, Action? reloadAction)
-        : base(filter)
     {
+        Data = filter;
         Conditions = [.. filter.Conditions];
         CurrentCondition = Conditions.FirstOrDefault();
         _reloadAction = reloadAction;

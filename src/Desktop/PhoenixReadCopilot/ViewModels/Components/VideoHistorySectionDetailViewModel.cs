@@ -41,7 +41,7 @@ internal sealed partial class VideoHistorySectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Items { get; } = [];
+    public ObservableCollection<ReadHistoryItemViewModel> Items { get; } = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoHistorySectionDetailViewModel"/> class.
@@ -106,15 +106,15 @@ internal sealed partial class VideoHistorySectionDetailViewModel
                 {
                     if (
                         Items.Any(p =>
-                            p.HistoryItem?.DramaId == item.DramaId
-                            && p.HistoryItem?.VideoId == item.VideoId
+                            p.DramaId == item.DramaId
+                            && p.VideoId == item.VideoId
                         )
                     )
                     {
                         continue;
                     }
 
-                    Items.Add(new VideoItemViewModel(item, removeAction: RemoveHistory));
+                    Items.Add(new ReadHistoryItemViewModel(item, removeAction: RemoveHistory));
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -132,13 +132,10 @@ internal sealed partial class VideoHistorySectionDetailViewModel
         }
     }
 
-    private void RemoveHistory(VideoItemViewModel vm)
+    private void RemoveHistory(ReadHistoryItemViewModel vm)
     {
         Items.Remove(vm);
         IsEmpty = Items.Count == 0;
-        if (vm.HistoryItem is not null)
-        {
-            _ = _historyService.DeleteHistoryAsync(vm.HistoryItem.DramaId, vm.HistoryItem.VideoId);
-        }
+        _ = _historyService.DeleteHistoryAsync(vm.DramaId, vm.VideoId);
     }
 }

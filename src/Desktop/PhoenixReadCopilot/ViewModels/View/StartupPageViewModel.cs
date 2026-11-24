@@ -8,7 +8,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
-using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;

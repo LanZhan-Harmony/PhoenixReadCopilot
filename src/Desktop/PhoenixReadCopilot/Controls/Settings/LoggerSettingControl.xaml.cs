@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.ViewModels.View;
 using Windows.Storage;
 using Windows.System;
 
@@ -9,8 +11,10 @@ namespace PhoenixReadCopilot.Controls.Settings;
 /// <summary>
 /// 日志设置控件.
 /// </summary>
-internal sealed partial class LoggerSettingControl : SettingsPageControlBase
+internal sealed partial class LoggerSettingControl : UserControl
 {
+    public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
+
     private readonly INotificationService _notificationService =
         Ioc.Default.GetRequiredService<INotificationService>();
     private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();

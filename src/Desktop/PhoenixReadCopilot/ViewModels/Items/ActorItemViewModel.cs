@@ -10,9 +10,14 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 演员排行榜项视图模型.
 /// </summary>
-internal sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboardItem>
+internal sealed partial class ActorItemViewModel : ViewModelBase
 {
     private readonly Action<ActorItemViewModel>? _removeAction;
+
+    /// <summary>
+    /// 演员榜单数据实体.
+    /// </summary>
+    public ActorLeaderboardItem Data { get; }
 
     /// <summary>
     /// 演员/用户标识 ID.
@@ -136,8 +141,8 @@ internal sealed partial class ActorItemViewModel : ViewModelBase<ActorLeaderboar
         ActorLeaderboardItem data,
         Action<ActorItemViewModel>? removeAction = null
     )
-        : base(data)
     {
+        Data = data;
         _removeAction = removeAction;
         ActorId = !string.IsNullOrEmpty(data.UserId) ? data.UserId : data.ActorId;
         Name = data.Name;

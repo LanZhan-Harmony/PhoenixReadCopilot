@@ -7,8 +7,13 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 播放器画质项视图模型.
 /// </summary>
-internal sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFormatInformation>
+internal sealed partial class PlayerFormatItemViewModel : ViewModelBase
 {
+    /// <summary>
+    /// 格式数据实体.
+    /// </summary>
+    public PlayerFormatInformation Data { get; }
+
     [ObservableProperty]
     public partial bool IsEnabled { get; set; }
 
@@ -21,8 +26,8 @@ internal sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFo
     /// Initializes a new instance of the <see cref="PlayerFormatItemViewModel"/> class.
     /// </summary>
     public PlayerFormatItemViewModel(PlayerFormatInformation data)
-        : base(data)
     {
+        Data = data;
         bool userIsVip = ItemServices.Account.MyProfile?.IsVip ?? false;
         IsEnabled = !data.NeedVip || (data.NeedVip && userIsVip);
     }
@@ -31,15 +36,13 @@ internal sealed partial class PlayerFormatItemViewModel : ViewModelBase<PlayerFo
     /// 使用红果 PlaybackMedia 初始化画质项.
     /// </summary>
     public PlayerFormatItemViewModel(PlaybackMedia media)
-        : base(
-            new PlayerFormatInformation(
-                GetQualityScore(media),
-                FormatDescription(media),
-                NeedVip: false,
-                NeedLogin: false
-            )
-        )
     {
+        Data = new PlayerFormatInformation(
+            GetQualityScore(media),
+            FormatDescription(media),
+            NeedVip: false,
+            NeedLogin: false
+        );
         PlaybackMedia = media;
         IsEnabled = true;
     }

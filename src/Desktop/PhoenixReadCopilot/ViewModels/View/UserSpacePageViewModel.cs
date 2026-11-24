@@ -154,7 +154,10 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     public partial IUserSpaceContentItem? CurrentContent { get; set; }
 
     [ObservableProperty]
-    public partial ObservableCollection<VideoItemViewModel> Videos { get; set; }
+    public partial ObservableCollection<DramaItemViewModel> Videos { get; set; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<DailyReleaseItemViewModel> Reservations { get; set; }
 
     [ObservableProperty]
     public partial ObservableCollection<UserReviewItemViewModel> Reviews { get; set; }
@@ -207,6 +210,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         Sections = [];
         Videos = [];
+        Reservations = [];
         Reviews = [];
         CircleFeeds = [];
         Relations = [];
@@ -411,6 +415,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     private void SetupCollectionWatchers()
     {
         Videos.CollectionChanged += (_, _) => OnAnyCollectionChanged();
+        Reservations.CollectionChanged += (_, _) => OnAnyCollectionChanged();
         Reviews.CollectionChanged += (_, _) => OnAnyCollectionChanged();
         CircleFeeds.CollectionChanged += (_, _) => OnAnyCollectionChanged();
         Relations.CollectionChanged += (_, _) => OnAnyCollectionChanged();
@@ -423,6 +428,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             bool hasContent = SelectedSection.Id switch
             {
                 "Works" => Videos.Count > 0 || Reviews.Count > 0,
+                "Reservations" => Reservations.Count > 0,
                 "Circle" => CircleFeeds.Count > 0,
                 "Reviews" => Reviews.Count > 0,
                 "Follows" or "Fans" => Relations.Count > 0,
@@ -899,6 +905,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             ct = _loadingCts.Token;
 
             Videos.Clear();
+            Reservations.Clear();
             Reviews.Clear();
             CircleFeeds.Clear();
             Relations.Clear();
@@ -1006,7 +1013,14 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         foreach (ReadHistoryItem item in historyPage.Items)
         {
-            Videos.Add(new VideoItemViewModel(item));
+            Drama drama = new()
+            {
+                Id = item.DramaId,
+                Title = item.Title,
+                CoverUrl = item.CoverUrl,
+                Remark = item.EpisodeNumber > 0 ? $"第 {item.EpisodeNumber} 集" : string.Empty,
+            };
+            Videos.Add(new DramaItemViewModel(drama));
         }
 
         _offset = historyPage.NextOffset;
@@ -1034,7 +1048,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
             foreach (Drama item in page.Items)
             {
-                Videos.Add(new VideoItemViewModel(item));
+                Videos.Add(new DramaItemViewModel(item));
             }
 
             _offset = page.NextOffset;
@@ -1060,7 +1074,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
             foreach (Drama item in page.Items)
             {
-                Videos.Add(new VideoItemViewModel(item));
+                Videos.Add(new DramaItemViewModel(item));
             }
 
             _offset = page.NextOffset;
@@ -1083,7 +1097,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         foreach (Drama item in items)
         {
-            Videos.Add(new VideoItemViewModel(item));
+            Videos.Add(new DramaItemViewModel(item));
         }
 
         HasMore = false;
@@ -1120,13 +1134,20 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
                     continue;
                 }
 
-                Drama drama = new()
+                DailyReleaseItem releaseItem = new()
                 {
-                    Id = item.DramaId,
-                    Title = item.Title,
-                    CoverUrl = item.CoverUrl,
+                    Drama = new Drama
+                    {
+                        Id = item.DramaId,
+                        Title = item.Title,
+                        CoverUrl = item.CoverUrl,
+                    },
+                    IsOnline = item.IsAvailable,
+                    PublishTime = item.ReleaseAtUnixSeconds > 0
+                        ? DateTimeOffset.FromUnixTimeSeconds(item.ReleaseAtUnixSeconds)
+                        : null,
                 };
-                Videos.Add(new VideoItemViewModel(drama));
+                Reservations.Add(new DailyReleaseItemViewModel(releaseItem));
             }
 
             _offset += items.Count;
@@ -1167,14 +1188,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         {
             if (item is Drama drama)
             {
-                bool isReservationTab = workSubTab == UserWorkSubTab.Reservation;
-                Videos.Add(
-                    new VideoItemViewModel(drama)
-                    {
-                        IsOnline = !isReservationTab,
-                        ReleaseNote = isReservationTab ? Resources.Upcoming : null,
-                    }
-                );
+                Videos.Add(new DramaItemViewModel(drama));
             }
             else if (item is UserReview review)
             {
@@ -1263,7 +1277,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         foreach (Drama item in dramaList)
         {
-            Videos.Add(new VideoItemViewModel(item));
+            Videos.Add(new DramaItemViewModel(item));
         }
 
         _offset = nextOffset;

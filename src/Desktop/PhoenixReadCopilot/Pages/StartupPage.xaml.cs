@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Pages;
@@ -7,36 +8,27 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 初始登录页面.
 /// </summary>
-internal sealed partial class StartupPage : StartupPageBase
+internal sealed partial class StartupPage : Page
 {
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public StartupPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<StartupPageViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="StartupPage"/> class.
     /// </summary>
     public StartupPage()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
     }
 
-    /// <inheritdoc/>
-    protected override void OnPageLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _ = ViewModel.InitializeAsync(QRCodeImage);
     }
 
     private void OnRefreshQRButtonClick(object sender, RoutedEventArgs e) =>
         _ = ViewModel.ReloadQRCodeAsync();
-}
-
-/// <summary>
-/// 初始登录页面基类.
-/// </summary>
-internal abstract class StartupPageBase : LayoutPageBase<StartupPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StartupPageBase"/> class.
-    /// </summary>
-    public StartupPageBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<StartupPageViewModel>();
-    }
 }

@@ -199,7 +199,7 @@ internal sealed partial class PhoenixReadPlayer
         {
             if (!_isCursorDisposed)
             {
-                _overlayContainer.HideCursor();
+                _overlayContainer?.HideCursor();
                 _isCursorDisposed = true;
             }
 
@@ -212,7 +212,7 @@ internal sealed partial class PhoenixReadPlayer
         _cursorStayTime = 0;
         if (_isCursorDisposed)
         {
-            _overlayContainer.ShowCursor();
+            _overlayContainer?.ShowCursor();
             _isCursorDisposed = false;
         }
     }

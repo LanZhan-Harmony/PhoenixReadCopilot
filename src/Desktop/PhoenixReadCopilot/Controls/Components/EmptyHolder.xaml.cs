@@ -1,15 +1,22 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 占位符.
 /// </summary>
-internal sealed partial class EmptyHolder : LayoutUserControlBase
+internal sealed partial class EmptyHolder : UserControl
 {
     /// <summary>
-    /// Dependency property of <see cref="Title"/>.
+    /// Title.
     /// </summary>
+    public string Title
+    {
+        get => (string)GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
+    }
+
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
         nameof(Title),
         typeof(string),
@@ -18,8 +25,14 @@ internal sealed partial class EmptyHolder : LayoutUserControlBase
     );
 
     /// <summary>
-    /// Dependency property of <see cref="Description"/>.
+    /// Description.
     /// </summary>
+    public string Description
+    {
+        get => (string)GetValue(DescriptionProperty);
+        set => SetValue(DescriptionProperty, value);
+    }
+
     public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
         nameof(Description),
         typeof(string),
@@ -28,8 +41,14 @@ internal sealed partial class EmptyHolder : LayoutUserControlBase
     );
 
     /// <summary>
-    /// Dependency property of <see cref="Emoji"/>.
+    /// Emoji.
     /// </summary>
+    public string Emoji
+    {
+        get => (string)GetValue(EmojiProperty);
+        set => SetValue(EmojiProperty, value);
+    }
+
     public static readonly DependencyProperty EmojiProperty = DependencyProperty.Register(
         nameof(Emoji),
         typeof(string),
@@ -38,8 +57,14 @@ internal sealed partial class EmptyHolder : LayoutUserControlBase
     );
 
     /// <summary>
-    /// Dependency property of <see cref="ActionElement"/>.
+    /// The element that performs the action.
     /// </summary>
+    public object ActionElement
+    {
+        get => GetValue(ActionElementProperty);
+        set => SetValue(ActionElementProperty, value);
+    }
+
     public static readonly DependencyProperty ActionElementProperty = DependencyProperty.Register(
         nameof(ActionElement),
         typeof(object),
@@ -53,41 +78,5 @@ internal sealed partial class EmptyHolder : LayoutUserControlBase
     public EmptyHolder()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// Title.
-    /// </summary>
-    public string Title
-    {
-        get => (string)GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
-    }
-
-    /// <summary>
-    /// Description.
-    /// </summary>
-    public string Description
-    {
-        get => (string)GetValue(DescriptionProperty);
-        set => SetValue(DescriptionProperty, value);
-    }
-
-    /// <summary>
-    /// Emoji.
-    /// </summary>
-    public string Emoji
-    {
-        get => (string)GetValue(EmojiProperty);
-        set => SetValue(EmojiProperty, value);
-    }
-
-    /// <summary>
-    /// The element that performs the action.
-    /// </summary>
-    public object ActionElement
-    {
-        get => GetValue(ActionElementProperty);
-        set => SetValue(ActionElementProperty, value);
     }
 }

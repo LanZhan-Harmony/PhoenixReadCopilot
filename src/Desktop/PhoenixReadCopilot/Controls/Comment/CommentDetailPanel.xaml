@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:CommentDetailPanelBase x:Class="PhoenixReadCopilot.Controls.Comment.CommentDetailPanel"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Comment.CommentDetailPanel"
                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                               xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -44,4 +44,4 @@
                               ResetSelectedCommand="{x:Bind ViewModel.ResetReplyTargetCommand, Mode=OneWay}"
                               SendCommand="{x:Bind ViewModel.SendReplyCommand, Mode=OneWay}"/>
     </Grid>
-</local:CommentDetailPanelBase>
+</UserControl>

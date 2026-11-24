@@ -12,18 +12,24 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 首页（推荐短剧）页面.
 /// </summary>
-internal sealed partial class HomePage : HomePageBase
+internal sealed partial class HomePage : Page
 {
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public HomePageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<HomePageViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="HomePage"/> class.
     /// </summary>
     public HomePage()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
-    /// <inheritdoc/>
-    protected override void OnPageLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _ = ViewModel.InitializeAsync();
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
@@ -32,8 +38,7 @@ internal sealed partial class HomePage : HomePageBase
         CheckVideoCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnPageUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         VideoRepeater.ItemsSource = null;
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
@@ -117,19 +122,5 @@ internal sealed partial class HomePage : HomePageBase
             CompositionFactory.DisableStandardReposition(element);
             RecommendedVideoItemTemplate.ClearImage(element);
         }
-    }
-}
-
-/// <summary>
-/// 首页基类.
-/// </summary>
-internal abstract class HomePageBase : LayoutPageBase<HomePageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HomePageBase"/> class.
-    /// </summary>
-    protected HomePageBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<HomePageViewModel>();
     }
 }

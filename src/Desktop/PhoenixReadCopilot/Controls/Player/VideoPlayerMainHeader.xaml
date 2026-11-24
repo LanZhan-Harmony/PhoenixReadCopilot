@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:VideoPlayerPageControlBase x:Class="PhoenixReadCopilot.Controls.Player.VideoPlayerMainHeader"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Player.VideoPlayerMainHeader"
                                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                   xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -50,4 +50,4 @@
             <components:SideSplitButton IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=TwoWay}" IsInvertDirection="True"/>
         </StackPanel>
     </Grid>
-</local:VideoPlayerPageControlBase>
+</UserControl>

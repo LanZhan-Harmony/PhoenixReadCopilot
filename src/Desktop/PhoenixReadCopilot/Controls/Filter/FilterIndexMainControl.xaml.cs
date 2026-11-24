@@ -10,18 +10,37 @@ namespace PhoenixReadCopilot.Controls.Filter;
 /// <summary>
 /// 娱乐索引主体.
 /// </summary>
-internal sealed partial class FilterIndexMainControl : FilterIndexControlBase
+internal sealed partial class FilterIndexMainControl : UserControl
 {
+    public FilterPageViewModel? ViewModel
+    {
+        get => (FilterPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(FilterPageViewModel),
+        typeof(FilterIndexMainControl),
+        new PropertyMetadata(null, (d, e) =>
+            ((FilterIndexMainControl)d).OnViewModelChanged(
+                (FilterPageViewModel?)e.OldValue,
+                (FilterPageViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterIndexMainControl"/> class.
     /// </summary>
     public FilterIndexMainControl()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         IndexScrollView.ViewChanged += OnViewChanged;
         IndexScrollView.SizeChanged += OnScrollViewSizeChanged;
@@ -34,8 +53,7 @@ internal sealed partial class FilterIndexMainControl : FilterIndexControlBase
         CheckIndexCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         ViewModel?.ItemsUpdated -= OnItemsUpdatedAsync;
 
@@ -44,11 +62,7 @@ internal sealed partial class FilterIndexMainControl : FilterIndexControlBase
         IndexScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
-        FilterPageViewModel? oldValue,
-        FilterPageViewModel? newValue
-    )
+    private void OnViewModelChanged(FilterPageViewModel? oldValue, FilterPageViewModel? newValue)
     {
         oldValue?.ItemsUpdated -= OnItemsUpdatedAsync;
 

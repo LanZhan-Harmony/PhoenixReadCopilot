@@ -1,5 +1,7 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using PhoenixReadCopilot.ViewModels.Core;
 using Windows.UI;
 
 namespace PhoenixReadCopilot.Controls.Danmaku;
@@ -7,17 +9,31 @@ namespace PhoenixReadCopilot.Controls.Danmaku;
 /// <summary>
 /// 弹幕发送选项.
 /// </summary>
-internal sealed partial class DanmakuSendOptions : DanmakuControlBase
+internal sealed partial class DanmakuSendOptions : UserControl
 {
+    public DanmakuViewModel? ViewModel
+    {
+        get => (DanmakuViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(DanmakuViewModel),
+        typeof(DanmakuSendOptions),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DanmakuSendOptions"/> class.
     /// </summary>
     public DanmakuSendOptions()
     {
         InitializeComponent();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    protected override void OnControlUnloaded() => ColorRepeater.ItemsSource = null;
+    private void OnControlUnloaded() => ColorRepeater.ItemsSource = null;
 
     private void OnSizeItemClick(object sender, RoutedEventArgs e) =>
         ViewModel.IsStandardSize = (sender as FrameworkElement).Tag.ToString() == "Standard";

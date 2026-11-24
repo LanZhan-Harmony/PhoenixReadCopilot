@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
 
 namespace PhoenixReadCopilot.Controls.Comment;
@@ -7,11 +8,30 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 评论控件.
 /// </summary>
-internal sealed partial class CommentItemControl : CommentItemControlBase
+internal sealed partial class CommentItemControl : UserControl
 {
+    public CommentItemViewModel? ViewModel
+    {
+        get => (CommentItemViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(CommentItemViewModel),
+        typeof(CommentItemControl),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
-    /// <see cref="ShowMoreCommand"/> 的依赖属性.
+    /// 显示更多命令.
     /// </summary>
+    public ICommand ShowMoreCommand
+    {
+        get => (ICommand)GetValue(ShowMoreCommandProperty);
+        set => SetValue(ShowMoreCommandProperty, value);
+    }
+
     public static readonly DependencyProperty ShowMoreCommandProperty = DependencyProperty.Register(
         nameof(ShowMoreCommand),
         typeof(ICommand),
@@ -20,8 +40,14 @@ internal sealed partial class CommentItemControl : CommentItemControlBase
     );
 
     /// <summary>
-    /// <see cref="IsMoreEnabled"/> 的依赖属性.
+    /// 是否启用更多.
     /// </summary>
+    public bool IsMoreEnabled
+    {
+        get => (bool)GetValue(IsMoreEnabledProperty);
+        set => SetValue(IsMoreEnabledProperty, value);
+    }
+
     public static readonly DependencyProperty IsMoreEnabledProperty = DependencyProperty.Register(
         nameof(IsMoreEnabled),
         typeof(bool),
@@ -36,27 +62,4 @@ internal sealed partial class CommentItemControl : CommentItemControlBase
     {
         InitializeComponent();
     }
-
-    /// <summary>
-    /// 显示更多命令.
-    /// </summary>
-    public ICommand ShowMoreCommand
-    {
-        get => (ICommand)GetValue(ShowMoreCommandProperty);
-        set => SetValue(ShowMoreCommandProperty, value);
-    }
-
-    /// <summary>
-    /// 是否启用更多.
-    /// </summary>
-    public bool IsMoreEnabled
-    {
-        get => (bool)GetValue(IsMoreEnabledProperty);
-        set => SetValue(IsMoreEnabledProperty, value);
-    }
 }
-
-/// <summary>
-/// Comment item control base.
-/// </summary>
-internal abstract class CommentItemControlBase : LayoutUserControlBase<CommentItemViewModel>;

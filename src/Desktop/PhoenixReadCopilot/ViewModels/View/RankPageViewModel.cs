@@ -23,7 +23,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
     private readonly ILogger<RankPageViewModel> _logger;
     private readonly INavigationService _navigationService;
     private readonly DispatcherQueue _dispatcherQueue;
-    private readonly Dictionary<string, List<VideoItemViewModel>> _videoCache = [];
+    private readonly Dictionary<string, List<RankDramaItemViewModel>> _videoCache = [];
     private readonly Dictionary<string, List<ActorItemViewModel>> _actorCache = [];
 
     private int _leaderboardOffset;
@@ -80,7 +80,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// 短剧视频榜单列表 (供短剧榜单 Repeater 使用).
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Videos { get; } = [];
+    public ObservableCollection<RankDramaItemViewModel> Videos { get; } = [];
 
     /// <summary>
     /// 演员榜单列表 (供演员榜单 Repeater 使用).
@@ -233,11 +233,11 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
         else
         {
             if (
-                _videoCache.TryGetValue(cacheKey, out List<VideoItemViewModel>? cacheVideos)
+                _videoCache.TryGetValue(cacheKey, out List<RankDramaItemViewModel>? cacheVideos)
                 && cacheVideos.Count > 0
             )
             {
-                foreach (VideoItemViewModel video in cacheVideos)
+                foreach (RankDramaItemViewModel video in cacheVideos)
                 {
                     Videos.Add(video);
                 }
@@ -283,11 +283,11 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
         {
             string cacheKey = GetCacheKey(SelectedSection, CurrentChannel);
             if (
-                _videoCache.TryGetValue(cacheKey, out List<VideoItemViewModel>? cacheVideos)
+                _videoCache.TryGetValue(cacheKey, out List<RankDramaItemViewModel>? cacheVideos)
                 && cacheVideos.Count > 0
             )
             {
-                foreach (VideoItemViewModel video in cacheVideos)
+                foreach (RankDramaItemViewModel video in cacheVideos)
                 {
                     Videos.Add(video);
                 }
@@ -419,7 +419,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void PlayCuratedList()
     {
-        VideoItemViewModel? first = Videos.FirstOrDefault();
+        RankDramaItemViewModel? first = Videos.FirstOrDefault();
         if (first?.Drama is not null)
         {
             _navigationService.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
@@ -478,10 +478,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
                             continue;
                         }
 
-                        VideoItemViewModel vm = new(item, VideoCardStyle.Rank)
-                        {
-                            Rank = Videos.Count + 1,
-                        };
+                        RankDramaItemViewModel vm = new(item, Videos.Count + 1);
                         Videos.Add(vm);
                         addedCount++;
                     }

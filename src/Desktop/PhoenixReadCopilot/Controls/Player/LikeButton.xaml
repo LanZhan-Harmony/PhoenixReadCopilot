@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ctrl:LayoutUserControlBase x:Class="PhoenixReadCopilot.Controls.Player.LikeButton"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Player.LikeButton"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:ctrl="using:PhoenixReadCopilot.Controls"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:ic="using:FluentIcons.WinUI"
                             xmlns:local="using:PhoenixReadCopilot.Controls.Player"
@@ -30,4 +29,4 @@
                    Style="{StaticResource CaptionTextBlockStyle}"
                    Text="{x:Bind Tip, Mode=OneWay}"/>
     </StackPanel>
-</ctrl:LayoutUserControlBase>
+</UserControl>

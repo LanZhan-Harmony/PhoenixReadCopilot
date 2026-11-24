@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:VideoPlayerPageBase x:Class="PhoenixReadCopilot.Pages.Overlay.VideoPlayerPage"
+<Page x:Class="PhoenixReadCopilot.Pages.Overlay.VideoPlayerPage"
                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:animations="using:CommunityToolkit.WinUI.Animations"
@@ -117,4 +117,4 @@
                           Visibility="{x:Bind ViewModel.IsPageLoadFailed, Mode=OneWay}"/>
     </Grid>
 
-</local:VideoPlayerPageBase>
+</Page>

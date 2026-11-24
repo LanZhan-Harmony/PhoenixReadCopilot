@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:FilterIndexControlBase x:Class="PhoenixReadCopilot.Controls.Filter.FilterIndexSideControl"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Filter.FilterIndexSideControl"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -25,4 +25,4 @@
             </ItemsRepeater>
         </ScrollView>
     </Grid>
-</local:FilterIndexControlBase>
+</UserControl>

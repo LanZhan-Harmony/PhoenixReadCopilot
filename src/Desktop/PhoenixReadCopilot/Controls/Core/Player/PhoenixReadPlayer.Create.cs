@@ -1,14 +1,12 @@
 using System.ComponentModel;
 using System.Windows.Input;
 using Microsoft.UI;
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PhoenixReadCopilot.Controls.Components;
-using PhoenixReadCopilot.Controls.Danmaku;
 using PhoenixReadCopilot.Controls.Player;
 using Windows.System;
 
@@ -19,13 +17,13 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// </summary>
 internal sealed partial class PhoenixReadPlayer
 {
-    private Func<DanmakuControlBase> _createDanmakuControlFunc;
+    private Func<FrameworkElement> _createDanmakuControlFunc;
     private Func<FrameworkElement> _createTransportControlFunc;
     private Func<SubtitlePresenter> _createSubtitleControlFunc;
 
     private CursorGrid _overlayContainer;
     private Panel _operationContainer;
-    private DanmakuControlBase _danmakuControl;
+    private FrameworkElement _danmakuControl;
     private FrameworkElement _transportControl;
     private SubtitlePresenter _subtitlePresenter;
     private ProgressBar _progressBar;
@@ -38,7 +36,7 @@ internal sealed partial class PhoenixReadPlayer
     /// <summary>
     /// 注入弹幕控件创建函数.
     /// </summary>
-    public void InjectDanmakuControlFunc(Func<DanmakuControlBase> createDanmakuControlFunc) =>
+    public void InjectDanmakuControlFunc(Func<FrameworkElement> createDanmakuControlFunc) =>
         _createDanmakuControlFunc = createDanmakuControlFunc;
 
     /// <summary>
@@ -290,21 +288,4 @@ internal sealed partial class PhoenixReadPlayer
 
         return grid;
     }
-}
-
-/// <summary>
-/// 光标网格.
-/// </summary>
-internal sealed partial class CursorGrid : Grid
-{
-    /// <summary>
-    /// 隐藏光标.
-    /// </summary>
-    public void HideCursor() => ProtectedCursor?.Dispose();
-
-    /// <summary>
-    /// 显示光标.
-    /// </summary>
-    public void ShowCursor() =>
-        ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Arrow);
 }

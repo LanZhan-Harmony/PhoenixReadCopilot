@@ -1,15 +1,22 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 加载中控件.
 /// </summary>
-internal sealed partial class LoadingWidget : LayoutUserControlBase
+internal sealed partial class LoadingWidget : UserControl
 {
     /// <summary>
-    /// <see cref="Text"/> 的依赖属性.
+    /// 文本.
     /// </summary>
+    public string Text
+    {
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
         nameof(Text),
         typeof(string),
@@ -23,14 +30,5 @@ internal sealed partial class LoadingWidget : LayoutUserControlBase
     public LoadingWidget()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// 文本.
-    /// </summary>
-    public string Text
-    {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
     }
 }

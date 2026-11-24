@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
@@ -7,9 +8,22 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// <summary>
 /// 榜单页面主标题.
 /// </summary>
-internal sealed partial class RankMainHeader : RankPageControlBase
+internal sealed partial class RankMainHeader : UserControl
 {
     private bool _isUpdatingBoardItems;
+
+    public RankPageViewModel? ViewModel
+    {
+        get => (RankPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(RankPageViewModel),
+        typeof(RankMainHeader),
+        new PropertyMetadata(null)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RankMainHeader"/> class.
@@ -17,22 +31,28 @@ internal sealed partial class RankMainHeader : RankPageControlBase
     public RankMainHeader()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         BoardSelector.SelectionChanged += OnBoardSelectionChanged;
-        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        if (ViewModel is not null)
+        {
+            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        }
 
         UpdateBoardItems();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         BoardSelector.SelectionChanged -= OnBoardSelectionChanged;
-        ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        if (ViewModel is not null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
     }
 
     private void OnViewModelPropertyChanged(

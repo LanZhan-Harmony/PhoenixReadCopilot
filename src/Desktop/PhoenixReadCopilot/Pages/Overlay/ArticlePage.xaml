@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:ArticlePageBase
+<Page
     x:Class="PhoenixReadCopilot.Pages.Overlay.ArticlePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -207,4 +207,4 @@
             Text="{x:Bind strings:Resources.LoadingAndWait}"
             Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
     </Grid>
-</local:ArticlePageBase>
+</Page>

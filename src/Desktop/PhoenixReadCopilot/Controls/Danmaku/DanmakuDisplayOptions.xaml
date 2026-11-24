@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:DanmakuControlBase x:Class="PhoenixReadCopilot.Controls.Danmaku.DanmakuDisplayOptions"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Danmaku.DanmakuDisplayOptions"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -48,4 +48,4 @@
                   SelectedItem="{x:Bind ViewModel.DanmakuFontFamily, Mode=TwoWay}"/>
         <ToggleSwitch Header="{x:Bind strings:Resources.DanmakuBold}" IsOn="{x:Bind ViewModel.IsDanmakuBold, Mode=TwoWay}"/>
     </StackPanel>
-</local:DanmakuControlBase>
+</UserControl>

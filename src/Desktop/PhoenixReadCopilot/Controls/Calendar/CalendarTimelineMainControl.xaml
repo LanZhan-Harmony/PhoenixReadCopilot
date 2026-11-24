@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:CalendarTimelineControlBase x:Class="PhoenixReadCopilot.Controls.Calendar.CalendarTimelineMainControl"
-                                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                   xmlns:components="using:PhoenixReadCopilot.Controls.Components"
-                                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                   xmlns:essential="using:WinUI3Package"
-                                   xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
-                                   xmlns:local="using:PhoenixReadCopilot.Controls.Calendar"
-                                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                                   xmlns:strings="using:PhoenixReadCopilot.Strings"
-                                   mc:Ignorable="d">
+<UserControl x:Class="PhoenixReadCopilot.Controls.Calendar.CalendarTimelineMainControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:essential="using:WinUI3Package"
+             xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+             xmlns:local="using:PhoenixReadCopilot.Controls.Calendar"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:strings="using:PhoenixReadCopilot.Strings"
+             mc:Ignorable="d">
 
-    <local:CalendarTimelineControlBase.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <local:CalendarVideoItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </local:CalendarTimelineControlBase.Resources>
+    </UserControl.Resources>
 
     <Grid>
         <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
@@ -38,4 +38,4 @@
 
         <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsTimelineLoading, Mode=OneWay}"/>
     </Grid>
-</local:CalendarTimelineControlBase>
+</UserControl>

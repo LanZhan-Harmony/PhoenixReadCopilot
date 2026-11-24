@@ -1,16 +1,22 @@
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 栏分割器.
 /// </summary>
-internal sealed partial class ColumnSplitter : LayoutUserControlBase
+internal sealed partial class ColumnSplitter : UserControl
 {
     /// <summary>
-    /// <see cref="IsHide"/> 依赖属性.
+    /// 是否进入隐藏状态.
     /// </summary>
+    public bool IsHide
+    {
+        get => (bool)GetValue(IsHideProperty);
+        set => SetValue(IsHideProperty, value);
+    }
+
     public static readonly DependencyProperty IsHideProperty = DependencyProperty.Register(
         nameof(IsHide),
         typeof(bool),
@@ -19,8 +25,14 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="ColumnWidth"/> 依赖属性.
+    /// 列宽度.
     /// </summary>
+    public double ColumnWidth
+    {
+        get => (double)GetValue(ColumnWidthProperty);
+        set => SetValue(ColumnWidthProperty, value);
+    }
+
     public static readonly DependencyProperty ColumnWidthProperty = DependencyProperty.Register(
         nameof(ColumnWidth),
         typeof(double),
@@ -29,8 +41,14 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="MinColumnWidth"/> 依赖属性.
+    /// 最小列宽度.
     /// </summary>
+    public double MinColumnWidth
+    {
+        get => (double)GetValue(MinColumnWidthProperty);
+        set => SetValue(MinColumnWidthProperty, value);
+    }
+
     public static readonly DependencyProperty MinColumnWidthProperty = DependencyProperty.Register(
         nameof(MinColumnWidth),
         typeof(double),
@@ -39,8 +57,14 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="MaxColumnWidth"/> 依赖属性.
+    /// 最大列宽度.
     /// </summary>
+    public double MaxColumnWidth
+    {
+        get => (double)GetValue(MaxColumnWidthProperty);
+        set => SetValue(MaxColumnWidthProperty, value);
+    }
+
     public static readonly DependencyProperty MaxColumnWidthProperty = DependencyProperty.Register(
         nameof(MaxColumnWidth),
         typeof(double),
@@ -49,8 +73,14 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="IsHideButtonEnabled"/> 依赖属性.
+    /// 是否显示隐藏按钮.
     /// </summary>
+    public bool IsHideButtonEnabled
+    {
+        get => (bool)GetValue(IsHideButtonEnabledProperty);
+        set => SetValue(IsHideButtonEnabledProperty, value);
+    }
+
     public static readonly DependencyProperty IsHideButtonEnabledProperty =
         DependencyProperty.Register(
             nameof(IsHideButtonEnabled),
@@ -60,8 +90,14 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
         );
 
     /// <summary>
-    /// <see cref="IsInvertDirection"/> 依赖属性.
+    /// 是否反转方向. 默认是左向右.
     /// </summary>
+    public bool IsInvertDirection
+    {
+        get => (bool)GetValue(IsInvertDirectionProperty);
+        set => SetValue(IsInvertDirectionProperty, value);
+    }
+
     public static readonly DependencyProperty IsInvertDirectionProperty =
         DependencyProperty.Register(
             nameof(IsInvertDirection),
@@ -71,18 +107,14 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
         );
 
     /// <summary>
-    /// <see cref="HideTip"/> 的依赖属性.
+    /// 处于显示状态时的提示.
     /// </summary>
-    public static readonly DependencyProperty HideTipProperty = DependencyProperty.Register(
-        nameof(HideTip),
-        typeof(string),
-        typeof(ColumnSplitter),
-        new PropertyMetadata("Show")
-    );
+    public string ShowTip
+    {
+        get => (string)GetValue(ShowTipProperty);
+        set => SetValue(ShowTipProperty, value);
+    }
 
-    /// <summary>
-    /// <see cref="ShowTip"/> 的依赖属性.
-    /// </summary>
     public static readonly DependencyProperty ShowTipProperty = DependencyProperty.Register(
         nameof(ShowTip),
         typeof(string),
@@ -91,8 +123,30 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="AlwaysShowButtonWhenCollapsed"/> 依赖属性.
+    /// 处于隐藏状态时的提示.
     /// </summary>
+    public string HideTip
+    {
+        get => (string)GetValue(HideTipProperty);
+        set => SetValue(HideTipProperty, value);
+    }
+
+    public static readonly DependencyProperty HideTipProperty = DependencyProperty.Register(
+        nameof(HideTip),
+        typeof(string),
+        typeof(ColumnSplitter),
+        new PropertyMetadata("Show")
+    );
+
+    /// <summary>
+    /// 在折叠时不隐藏按钮.
+    /// </summary>
+    public bool AlwaysShowButtonWhenCollapsed
+    {
+        get => (bool)GetValue(AlwaysShowButtonWhenCollapsedProperty);
+        set => SetValue(AlwaysShowButtonWhenCollapsedProperty, value);
+    }
+
     public static readonly DependencyProperty AlwaysShowButtonWhenCollapsedProperty =
         DependencyProperty.Register(
             nameof(AlwaysShowButtonWhenCollapsed),
@@ -109,100 +163,15 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
         InitializeComponent();
     }
 
-    /// <summary>
-    /// 是否进入隐藏状态.
-    /// </summary>
-    public bool IsHide
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        get => (bool)GetValue(IsHideProperty);
-        set => SetValue(IsHideProperty, value);
-    }
-
-    /// <summary>
-    /// 列宽度.
-    /// </summary>
-    public double ColumnWidth
-    {
-        get => (double)GetValue(ColumnWidthProperty);
-        set => SetValue(ColumnWidthProperty, value);
-    }
-
-    /// <summary>
-    /// 最小列宽度.
-    /// </summary>
-    public double MinColumnWidth
-    {
-        get => (double)GetValue(MinColumnWidthProperty);
-        set => SetValue(MinColumnWidthProperty, value);
-    }
-
-    /// <summary>
-    /// 最大列宽度.
-    /// </summary>
-    public double MaxColumnWidth
-    {
-        get => (double)GetValue(MaxColumnWidthProperty);
-        set => SetValue(MaxColumnWidthProperty, value);
-    }
-
-    /// <summary>
-    /// 是否显示隐藏按钮.
-    /// </summary>
-    public bool IsHideButtonEnabled
-    {
-        get => (bool)GetValue(IsHideButtonEnabledProperty);
-        set => SetValue(IsHideButtonEnabledProperty, value);
-    }
-
-    /// <summary>
-    /// 是否反转方向. 默认是左向右.
-    /// </summary>
-    public bool IsInvertDirection
-    {
-        get => (bool)GetValue(IsInvertDirectionProperty);
-        set => SetValue(IsInvertDirectionProperty, value);
-    }
-
-    /// <summary>
-    /// 处于显示状态时的提示.
-    /// </summary>
-    public string ShowTip
-    {
-        get => (string)GetValue(ShowTipProperty);
-        set => SetValue(ShowTipProperty, value);
-    }
-
-    /// <summary>
-    /// 处于隐藏状态时的提示.
-    /// </summary>
-    public string HideTip
-    {
-        get => (string)GetValue(HideTipProperty);
-        set => SetValue(HideTipProperty, value);
-    }
-
-    /// <summary>
-    /// 在折叠时不隐藏按钮.
-    /// </summary>
-    public bool AlwaysShowButtonWhenCollapsed
-    {
-        get => (bool)GetValue(AlwaysShowButtonWhenCollapsedProperty);
-        set => SetValue(AlwaysShowButtonWhenCollapsedProperty, value);
-    }
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
-    {
-        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        if (IsInvertDirection)
         {
-            if (IsInvertDirection)
-            {
-                Sizer.IsDragInverted = true;
-                ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;
-                ToggleBtn.Margin = new Thickness(-32, 0, 0, 0);
-                ToggleBtn.CornerRadius = new CornerRadius(6, 0, 0, 6);
-            }
-        });
+            Sizer.IsDragInverted = true;
+            ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;
+            ToggleBtn.Margin = new Thickness(-32, 0, 0, 0);
+            ToggleBtn.CornerRadius = new CornerRadius(6, 0, 0, 6);
+        }
     }
 
     private static void OnInvertDirectionChanged(
@@ -211,6 +180,13 @@ internal sealed partial class ColumnSplitter : LayoutUserControlBase
     )
     {
         ColumnSplitter? instance = d as ColumnSplitter;
-        instance.OnControlLoaded();
+
+        if (instance != null && instance.IsInvertDirection)
+        {
+            instance.Sizer.IsDragInverted = true;
+            instance.ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;
+            instance.ToggleBtn.Margin = new Thickness(-32, 0, 0, 0);
+            instance.ToggleBtn.CornerRadius = new CornerRadius(6, 0, 0, 6);
+        }
     }
 }

@@ -7,8 +7,13 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 用户空间短剧剧评条目模型.
 /// </summary>
-internal sealed partial class UserReviewItemViewModel : ViewModelBase<UserReview>
+internal sealed partial class UserReviewItemViewModel : ViewModelBase
 {
+    /// <summary>
+    /// 原始数据实体.
+    /// </summary>
+    public UserReview Data { get; }
+
     /// <summary>
     /// 剧评 ID.
     /// </summary>
@@ -84,7 +89,9 @@ internal sealed partial class UserReviewItemViewModel : ViewModelBase<UserReview
     }
 
     public UserReviewItemViewModel(UserReview review)
-        : base(review) { }
+    {
+        Data = review;
+    }
 
     [RelayCommand]
     private void PlayDrama()

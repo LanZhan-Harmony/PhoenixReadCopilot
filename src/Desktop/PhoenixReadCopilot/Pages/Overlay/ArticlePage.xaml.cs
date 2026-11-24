@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.ViewModels.View;
 
@@ -7,8 +8,13 @@ namespace PhoenixReadCopilot.Pages.Overlay;
 /// <summary>
 /// 红果圈图文详情浮层页面（模仿小红书左图右文评）.
 /// </summary>
-internal sealed partial class ArticlePage : ArticlePageBase
+internal sealed partial class ArticlePage : Page
 {
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public ArticlePageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<ArticlePageViewModel>();
+
     public ArticlePage()
     {
         InitializeComponent();
@@ -29,16 +35,5 @@ internal sealed partial class ArticlePage : ArticlePageBase
         {
             ViewModel.PlayDramaCommand.Execute(dramaId);
         }
-    }
-}
-
-/// <summary>
-/// 页面基类.
-/// </summary>
-internal abstract class ArticlePageBase : LayoutPageBase<ArticlePageViewModel>
-{
-    protected ArticlePageBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<ArticlePageViewModel>();
     }
 }

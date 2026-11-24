@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 
@@ -16,22 +15,14 @@ internal sealed partial class VideoPlayerRecommendSectionDetailViewModel
         IPlayerSectionDetailViewModel
 {
     [ObservableProperty]
-    public partial List<VideoItemViewModel> Items { get; set; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerRecommendSectionDetailViewModel"/> class.
-    /// </summary>
-    public VideoPlayerRecommendSectionDetailViewModel(IList<VideoInformation> items)
-    {
-        Items = [.. items.Select(p => new VideoItemViewModel(p, VideoCardStyle.PlayerRecommend))];
-    }
+    public partial List<DramaItemViewModel> Items { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerRecommendSectionDetailViewModel"/> class from dramas.
     /// </summary>
     public VideoPlayerRecommendSectionDetailViewModel(IEnumerable<Drama> dramas)
     {
-        Items = [.. dramas.Select(d => new VideoItemViewModel(d, VideoCardStyle.PlayerRecommend))];
+        Items = [.. dramas.Select(d => new DramaItemViewModel(d, VideoCardStyle.PlayerRecommend))];
     }
 
     /// <inheritdoc/>

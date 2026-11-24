@@ -4,6 +4,8 @@ using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.Controls.Danmaku;
@@ -11,8 +13,26 @@ namespace PhoenixReadCopilot.Controls.Danmaku;
 /// <summary>
 /// 视频弹幕面板.
 /// </summary>
-internal sealed partial class VideoDanmakuPanel : DanmakuControlBase
+internal sealed partial class VideoDanmakuPanel : UserControl
 {
+    public DanmakuViewModel? ViewModel
+    {
+        get => (DanmakuViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(DanmakuViewModel),
+        typeof(VideoDanmakuPanel),
+        new PropertyMetadata(null, (d, e) =>
+            ((VideoDanmakuPanel)d).OnViewModelChanged(
+                (DanmakuViewModel?)e.OldValue,
+                (DanmakuViewModel?)e.NewValue
+            )
+        )
+    );
+
     private readonly ILogger<DanmakuRenderer> _danmakuLogger = Ioc.Default.GetRequiredService<
         ILogger<DanmakuRenderer>
     >();
@@ -26,10 +46,11 @@ internal sealed partial class VideoDanmakuPanel : DanmakuControlBase
     public VideoDanmakuPanel()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         if (ViewModel is null)
         {
@@ -57,8 +78,7 @@ internal sealed partial class VideoDanmakuPanel : DanmakuControlBase
         }
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         if (ViewModel is not null)
         {
@@ -78,11 +98,7 @@ internal sealed partial class VideoDanmakuPanel : DanmakuControlBase
         _danmakuRenderer = null;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
-        DanmakuViewModel? oldValue,
-        DanmakuViewModel? newValue
-    )
+    private void OnViewModelChanged(DanmakuViewModel? oldValue, DanmakuViewModel? newValue)
     {
         if (oldValue is not null)
         {
@@ -125,16 +141,13 @@ internal sealed partial class VideoDanmakuPanel : DanmakuControlBase
             _danmakuRenderer?.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
         }
 
-        DispatcherQueue.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (IsLoaded && ViewModel == newValue)
             {
-                if (IsLoaded && ViewModel == newValue)
-                {
-                    ResetDanmakuStyle();
-                }
+                ResetDanmakuStyle();
             }
-        );
+        });
     }
 
     private void OnDanmakuListAddedAsync(object? sender, IReadOnlyList<DanmakuItem> e)
@@ -269,27 +282,24 @@ internal sealed partial class VideoDanmakuPanel : DanmakuControlBase
             return;
         }
 
-        DispatcherQueue?.TryEnqueue(
-            DispatcherQueuePriority.Low,
-            () =>
+        DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        {
+            if (_danmakuRenderer is null)
             {
-                if (_danmakuRenderer is null)
-                {
-                    EnsureRendererCreated();
-                }
-                else
-                {
-                    _danmakuRenderer.Clear();
-                }
-
-                if (_cachedDanmakus.Count != 0)
-                {
-                    _danmakuRenderer?.AddDanmakuList(_cachedDanmakus);
-                }
-
-                _danmakuRenderer?.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
-                ResetDanmakuStyle();
+                EnsureRendererCreated();
             }
-        );
+            else
+            {
+                _danmakuRenderer.Clear();
+            }
+
+            if (_cachedDanmakus.Count != 0)
+            {
+                _danmakuRenderer?.AddDanmakuList(_cachedDanmakus);
+            }
+
+            _danmakuRenderer?.UpdateTime(Convert.ToUInt32(_lastProgress * 1000));
+            ResetDanmakuStyle();
+        });
     }
 }

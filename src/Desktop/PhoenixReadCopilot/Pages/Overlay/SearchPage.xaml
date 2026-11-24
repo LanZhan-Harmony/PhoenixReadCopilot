@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:SearchPageBase x:Class="PhoenixReadCopilot.Pages.Overlay.SearchPage"
+<Page x:Class="PhoenixReadCopilot.Pages.Overlay.SearchPage"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -67,4 +67,4 @@
                              IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=TwoWay}"
                              ShowTip="{x:Bind strings:Resources.Hide}"/>
     </Grid>
-</local:SearchPageBase>
+</Page>

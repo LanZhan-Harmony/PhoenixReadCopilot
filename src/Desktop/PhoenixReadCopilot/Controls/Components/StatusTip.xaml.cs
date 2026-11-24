@@ -1,15 +1,22 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 状态提示.
 /// </summary>
-internal sealed partial class StatusTip : LayoutUserControlBase
+internal sealed partial class StatusTip : UserControl
 {
     /// <summary>
-    /// <see cref="Text"/>的依赖属性.
+    /// 显示文本.
     /// </summary>
+    public string Text
+    {
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
         nameof(Text),
         typeof(string),
@@ -18,8 +25,14 @@ internal sealed partial class StatusTip : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="Status"/> 的依赖属性.
+    /// 当前状态.
     /// </summary>
+    public InfoType Status
+    {
+        get => (InfoType)GetValue(StatusProperty);
+        set => SetValue(StatusProperty, value);
+    }
+
     public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
         nameof(Status),
         typeof(InfoType),
@@ -35,26 +48,10 @@ internal sealed partial class StatusTip : LayoutUserControlBase
         InitializeComponent();
     }
 
-    /// <summary>
-    /// 当前状态.
-    /// </summary>
-    public InfoType Status
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        get => (InfoType)GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
+        ChangeStatus();
     }
-
-    /// <summary>
-    /// 显示文本.
-    /// </summary>
-    public string Text
-    {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded() => ChangeStatus();
 
     private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {

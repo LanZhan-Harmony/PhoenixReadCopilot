@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Controls.Components;
@@ -6,7 +7,7 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 顶部导航栏条目.
 /// </summary>
-internal sealed partial class TopNavigationItem : LayoutUserControlBase
+internal sealed partial class TopNavigationItem : UserControl
 {
     /// <summary>
     /// 图标.

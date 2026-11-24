@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:UserSectionDetailControlBase x:Class="PhoenixReadCopilot.Controls.Search.UserSectionDetailControl"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Search.UserSectionDetailControl"
                                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -12,13 +12,13 @@
                                     xmlns:user="using:PhoenixReadCopilot.Controls.User"
                                     mc:Ignorable="d">
 
-    <local:UserSectionDetailControlBase.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <user:UserItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </local:UserSectionDetailControlBase.Resources>
+    </UserControl.Resources>
 
     <Grid>
         <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
@@ -39,4 +39,4 @@
 
         <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
     </Grid>
-</local:UserSectionDetailControlBase>
+</UserControl>

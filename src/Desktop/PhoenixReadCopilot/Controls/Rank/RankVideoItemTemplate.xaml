@@ -7,7 +7,7 @@
                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
 
-    <DataTemplate x:Key="RankVideoItemTemplate" x:DataType="items:VideoItemViewModel">
+    <DataTemplate x:Key="RankVideoItemTemplate" x:DataType="items:RankDramaItemViewModel">
         <Button Command="{x:Bind PlayCommand}"
                 DataContext="{x:Bind}"
                 Style="{StaticResource GridRepeaterItemStyle}">

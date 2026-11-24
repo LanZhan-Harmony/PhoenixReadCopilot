@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:SettingsPageControlBase x:Class="PhoenixReadCopilot.Controls.Settings.AboutSettingControl"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Settings.AboutSettingControl"
                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                xmlns:community="using:CommunityToolkit.WinUI.Controls"
@@ -28,4 +28,4 @@
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>
-</local:SettingsPageControlBase>
+</UserControl>

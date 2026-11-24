@@ -7,8 +7,12 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 红果圈动态条目模型（图文或短视频）.
 /// </summary>
-internal sealed partial class CircleFeedItemViewModel : ViewModelBase<CircleItem>
+internal sealed partial class CircleFeedItemViewModel : ViewModelBase
 {
+    /// <summary>
+    /// 动态条目数据实体.
+    /// </summary>
+    public CircleItem Data { get; }
     public string Id => Data.Id;
 
     public CircleItemType Type => Data.Type;
@@ -58,7 +62,9 @@ internal sealed partial class CircleFeedItemViewModel : ViewModelBase<CircleItem
     }
 
     public CircleFeedItemViewModel(CircleItem item)
-        : base(item) { }
+    {
+        Data = item;
+    }
 
     [RelayCommand]
     private void Open()

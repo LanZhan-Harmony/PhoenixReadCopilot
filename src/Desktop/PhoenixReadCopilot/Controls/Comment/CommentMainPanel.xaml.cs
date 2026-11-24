@@ -9,18 +9,37 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 评论详情面板.
 /// </summary>
-internal sealed partial class CommentMainPanel : CommentMainPanelBase
+internal sealed partial class CommentMainPanel : UserControl
 {
+    public CommentMainViewModel? ViewModel
+    {
+        get => (CommentMainViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(CommentMainViewModel),
+        typeof(CommentMainPanel),
+        new PropertyMetadata(null, (d, e) =>
+            ((CommentMainPanel)d).OnViewModelChanged(
+                (CommentMainViewModel?)e.OldValue,
+                (CommentMainViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentMainPanel"/> class.
     /// </summary>
     public CommentMainPanel()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         CommentScrollView.ViewChanged += OnViewChanged;
         CommentScrollView.SizeChanged += OnScrollViewSizeChanged;
@@ -33,8 +52,7 @@ internal sealed partial class CommentMainPanel : CommentMainPanelBase
         CheckCommentCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         if (ViewModel is not null)
         {
@@ -46,11 +64,7 @@ internal sealed partial class CommentMainPanel : CommentMainPanelBase
         CommentScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
-        CommentMainViewModel? oldValue,
-        CommentMainViewModel? newValue
-    )
+    private void OnViewModelChanged(CommentMainViewModel? oldValue, CommentMainViewModel? newValue)
     {
         if (oldValue is not null)
         {
@@ -144,8 +158,3 @@ internal sealed partial class CommentMainPanel : CommentMainPanelBase
         }
     }
 }
-
-/// <summary>
-/// 评论主面板基类.
-/// </summary>
-internal abstract class CommentMainPanelBase : LayoutUserControlBase<CommentMainViewModel> { }

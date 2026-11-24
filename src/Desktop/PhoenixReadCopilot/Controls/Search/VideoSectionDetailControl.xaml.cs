@@ -10,31 +10,52 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 视频搜索分区详情.
 /// </summary>
-internal sealed partial class VideoSectionDetailControl : VideoSectionDetailControlBase
+internal sealed partial class VideoSectionDetailControl : UserControl
 {
+    public VideoSearchSectionDetailViewModel? ViewModel
+    {
+        get => (VideoSearchSectionDetailViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(VideoSearchSectionDetailViewModel),
+        typeof(VideoSectionDetailControl),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoSectionDetailControl"/> class.
     /// </summary>
     public VideoSectionDetailControl()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
-        ViewModel.ListUpdated += OnListUpdatedAsync;
+        if (ViewModel is not null)
+        {
+            ViewModel.ListUpdated += OnListUpdatedAsync;
+        }
+
         VideoScrollView.ViewChanged += OnViewChanged;
         VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
 
         CheckVideoCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         VideoRepeater.ItemsSource = null;
-        ViewModel.ListUpdated -= OnListUpdatedAsync;
+        if (ViewModel is not null)
+        {
+            ViewModel.ListUpdated -= OnListUpdatedAsync;
+        }
+
         VideoScrollView.ViewChanged -= OnViewChanged;
         VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
@@ -109,9 +130,3 @@ internal sealed partial class VideoSectionDetailControl : VideoSectionDetailCont
         }
     }
 }
-
-/// <summary>
-/// 视频搜索分区详情基类.
-/// </summary>
-internal abstract class VideoSectionDetailControlBase
-    : LayoutUserControlBase<VideoSearchSectionDetailViewModel> { }

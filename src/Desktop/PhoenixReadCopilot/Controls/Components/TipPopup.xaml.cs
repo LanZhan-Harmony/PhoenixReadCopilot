@@ -1,15 +1,22 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 消息提醒.
 /// </summary>
-internal sealed partial class TipPopup : LayoutUserControlBase
+internal sealed partial class TipPopup : UserControl
 {
     /// <summary>
-    /// <see cref="Text"/>的依赖属性.
+    /// 显示文本.
     /// </summary>
+    public string Text
+    {
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
         nameof(Text),
         typeof(string),
@@ -23,15 +30,6 @@ internal sealed partial class TipPopup : LayoutUserControlBase
     public TipPopup()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// 显示文本.
-    /// </summary>
-    public string Text
-    {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
     }
 
     /// <summary>

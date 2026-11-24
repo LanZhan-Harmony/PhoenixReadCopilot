@@ -9,8 +9,17 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// <summary>
 /// 可见性切换按钮.
 /// </summary>
-internal sealed partial class VisibilityToggleButton : LayoutUserControlBase
+internal sealed partial class VisibilityToggleButton : UserControl
 {
+    /// <summary>
+    /// 获取或设置方向.
+    /// </summary>
+    public VisibilityToggleButtonDirection Direction
+    {
+        get => (VisibilityToggleButtonDirection)GetValue(DirectionProperty);
+        set => SetValue(DirectionProperty, value);
+    }
+
     /// <summary>
     /// <see cref="Direction"/> 依赖属性.
     /// </summary>
@@ -25,6 +34,15 @@ internal sealed partial class VisibilityToggleButton : LayoutUserControlBase
     );
 
     /// <summary>
+    /// 是否已经隐藏指定目标.
+    /// </summary>
+    public bool IsHide
+    {
+        get => (bool)GetValue(IsHideProperty);
+        set => SetValue(IsHideProperty, value);
+    }
+
+    /// <summary>
     /// <see cref="IsHide"/> 依赖属性.
     /// </summary>
     public static readonly DependencyProperty IsHideProperty = DependencyProperty.Register(
@@ -33,6 +51,15 @@ internal sealed partial class VisibilityToggleButton : LayoutUserControlBase
         typeof(VisibilityToggleButton),
         new PropertyMetadata(null, new PropertyChangedCallback(OnIsHideChanged))
     );
+
+    /// <summary>
+    /// 在折叠时不隐藏按钮.
+    /// </summary>
+    public bool AlwaysShowWhenCollapsed
+    {
+        get => (bool)GetValue(AlwaysShowWhenCollapsedProperty);
+        set => SetValue(AlwaysShowWhenCollapsedProperty, value);
+    }
 
     /// <summary>
     /// <see cref="AlwaysShowWhenCollapsed"/> 依赖属性.
@@ -46,46 +73,6 @@ internal sealed partial class VisibilityToggleButton : LayoutUserControlBase
         );
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="VisibilityToggleButton"/> class.
-    /// </summary>
-    public VisibilityToggleButton()
-    {
-        InitializeComponent();
-    }
-
-    /// <summary>
-    /// 点击事件.
-    /// </summary>
-    public event EventHandler Click;
-
-    /// <summary>
-    /// 获取或设置方向.
-    /// </summary>
-    public VisibilityToggleButtonDirection Direction
-    {
-        get => (VisibilityToggleButtonDirection)GetValue(DirectionProperty);
-        set => SetValue(DirectionProperty, value);
-    }
-
-    /// <summary>
-    /// 是否已经隐藏指定目标.
-    /// </summary>
-    public bool IsHide
-    {
-        get => (bool)GetValue(IsHideProperty);
-        set => SetValue(IsHideProperty, value);
-    }
-
-    /// <summary>
-    /// 在折叠时不隐藏按钮.
-    /// </summary>
-    public bool AlwaysShowWhenCollapsed
-    {
-        get => (bool)GetValue(AlwaysShowWhenCollapsedProperty);
-        set => SetValue(AlwaysShowWhenCollapsedProperty, value);
-    }
-
-    /// <summary>
     /// 处于显示状态时的提示.
     /// </summary>
     public string ShowTip { get; set; }
@@ -94,6 +81,24 @@ internal sealed partial class VisibilityToggleButton : LayoutUserControlBase
     /// 处于隐藏状态时的提示.
     /// </summary>
     public string HideTip { get; set; }
+
+    /// <summary>
+    /// 点击事件.
+    /// </summary>
+    public event EventHandler Click;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VisibilityToggleButton"/> class.
+    /// </summary>
+    public VisibilityToggleButton()
+    {
+        InitializeComponent();
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        CheckButtonStates();
+    }
 
     /// <inheritdoc/>
     protected override void OnPointerEntered(PointerRoutedEventArgs e) => ShowButton();
@@ -106,9 +111,6 @@ internal sealed partial class VisibilityToggleButton : LayoutUserControlBase
 
     /// <inheritdoc/>
     protected override void OnPointerCanceled(PointerRoutedEventArgs e) => HideButton();
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded() => CheckButtonStates();
 
     private static void OnIsHideChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {

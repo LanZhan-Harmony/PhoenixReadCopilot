@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 剧评列表项视图模型.
 /// </summary>
-internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
+internal sealed partial class DramaReviewItemViewModel : ViewModelBase
 {
     private readonly ICommentService _commentService;
     private readonly IAuthenticationService _authService;
@@ -26,6 +26,11 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
     private readonly ILogger _logger;
     private readonly string _dramaId;
     private readonly Action<DramaReviewItemViewModel>? _showMoreAction;
+
+    /// <summary>
+    /// 评论数据实体.
+    /// </summary>
+    public Comment Data { get; }
 
     public DramaReviewItemViewModel(
         DramaReview review,
@@ -64,8 +69,8 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase<Comment>
         ILogger logger,
         Action<DramaReviewItemViewModel>? showMoreAction = null
     )
-        : base(comment)
     {
+        Data = comment;
         _dramaId = dramaId;
         _commentService = commentService;
         _authService = authService;

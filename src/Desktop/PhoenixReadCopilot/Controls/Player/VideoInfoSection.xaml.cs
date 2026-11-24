@@ -4,16 +4,30 @@ using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
+using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
 /// <summary>
 /// 视频信息区域.
 /// </summary>
-internal sealed partial class VideoInfoSection : VideoPlayerPageControlBase
+internal sealed partial class VideoInfoSection : UserControl
 {
     private readonly SearchBoxViewModel _searchBoxViewModel =
         Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+
+    public VideoPlayerPageViewModel? ViewModel
+    {
+        get => (VideoPlayerPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(VideoPlayerPageViewModel),
+        typeof(VideoInfoSection),
+        new PropertyMetadata(null)
+    );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoInfoSection"/> class.

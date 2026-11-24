@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.ViewModels.View;
 
@@ -7,8 +8,13 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 用户空间/个人主页页面（支持个人与他人共用）.
 /// </summary>
-internal sealed partial class UserSpacePage : UserSpacePageBase
+internal sealed partial class UserSpacePage : Page
 {
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public UserSpacePageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<UserSpacePageViewModel>();
+
     public UserSpacePage()
     {
         InitializeComponent();
@@ -26,16 +32,5 @@ internal sealed partial class UserSpacePage : UserSpacePageBase
     {
         base.OnNavigatedFrom(e);
         ViewModel.Uninitialize();
-    }
-}
-
-/// <summary>
-/// 用户空间页面基类.
-/// </summary>
-internal abstract class UserSpacePageBase : LayoutPageBase<UserSpacePageViewModel>
-{
-    protected UserSpacePageBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<UserSpacePageViewModel>();
     }
 }

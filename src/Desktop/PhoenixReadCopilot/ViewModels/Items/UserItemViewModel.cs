@@ -16,11 +16,16 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 用户项视图模型.
 /// </summary>
-internal sealed partial class UserItemViewModel : ViewModelBase<UserCard>
+internal sealed partial class UserItemViewModel : ViewModelBase
 {
     private static readonly ILogger<UserItemViewModel> _logger = Ioc.Default.GetRequiredService<
         ILogger<UserItemViewModel>
     >();
+
+    /// <summary>
+    /// 用户数据实体.
+    /// </summary>
+    public UserCard Data { get; }
 
     [ObservableProperty]
     public partial bool IsFollowed { get; set; }
@@ -54,8 +59,8 @@ internal sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     /// Initializes a new instance of the <see cref="UserItemViewModel"/> class.
     /// </summary>
     public UserItemViewModel(UserCard data)
-        : base(data)
     {
+        Data = data;
         Id = data.Profile.User.Id;
         Name = data.Profile.User.Name;
         Avatar = data.Profile.User.Avatar?.Uri;
@@ -69,8 +74,8 @@ internal sealed partial class UserItemViewModel : ViewModelBase<UserCard>
     /// Initializes a new instance of the <see cref="UserItemViewModel"/> class from <see cref="PhoenixReadApi.User"/>.
     /// </summary>
     public UserItemViewModel(PhoenixReadApi.User user)
-        : base(CreateUserCard(user))
     {
+        Data = CreateUserCard(user);
         UserData = user;
         Id = user.Id;
         Name = user.Name;

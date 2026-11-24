@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ctrl:LayoutUserControlBase x:Class="PhoenixReadCopilot.Controls.Components.ColumnSplitter"
-                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:community="using:CommunityToolkit.WinUI.Controls"
-                            xmlns:ctrl="using:PhoenixReadCopilot.Controls"
-                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                            xmlns:local="using:PhoenixReadCopilot.Controls.Components"
-                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            mc:Ignorable="d">
+<UserControl x:Class="PhoenixReadCopilot.Controls.Components.ColumnSplitter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:community="using:CommunityToolkit.WinUI.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="using:PhoenixReadCopilot.Controls.Components"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Loaded="OnLoaded"
+             mc:Ignorable="d">
 
     <Grid>
         <Rectangle Width="6"
@@ -37,4 +37,4 @@
                                       ShowTip="{x:Bind ShowTip, Mode=OneWay}"
                                       Visibility="{x:Bind IsEnabled, Mode=OneWay}"/>
     </Grid>
-</ctrl:LayoutUserControlBase>
+</UserControl>

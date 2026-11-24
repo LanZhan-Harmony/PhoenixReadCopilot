@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:PlayerControlBase x:Class="PhoenixReadCopilot.Controls.Core.VideoTransportControl"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Core.VideoTransportControl"
                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:animations="using:CommunityToolkit.WinUI.Animations"
@@ -183,4 +183,4 @@
             </Grid>
         </Grid>
     </Grid>
-</local:PlayerControlBase>
+</UserControl>

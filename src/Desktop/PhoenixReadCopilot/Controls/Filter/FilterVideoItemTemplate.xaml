@@ -7,7 +7,7 @@
                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
 
-    <DataTemplate x:Key="FilterVideoItemTemplate" x:DataType="items:VideoItemViewModel">
+    <DataTemplate x:Key="FilterVideoItemTemplate" x:DataType="items:DramaItemViewModel">
         <Button Command="{x:Bind PlayCommand}"
                 DataContext="{x:Bind}"
                 Style="{StaticResource GridRepeaterItemStyle}">
@@ -107,9 +107,9 @@
                         <components:IconTextBlock Grid.Column="0"
                                                   IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   Symbol="Tag"
-                                                  Text="{x:Bind Author}"
+                                                  Text="{x:Bind Category}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
-                                                  Visibility="{x:Bind Author, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                                  Visibility="{x:Bind Category, Converter={StaticResource ObjectToVisibilityConverter}}"/>
 
                         <!--  热度或播放量  -->
                         <components:IconTextBlock Grid.Column="1"

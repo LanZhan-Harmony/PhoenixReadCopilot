@@ -53,7 +53,7 @@ internal sealed partial class VideoSearchSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Items { get; } = [];
+    public ObservableCollection<DramaItemViewModel> Items { get; } = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoSearchSectionDetailViewModel"/> class.
@@ -107,7 +107,7 @@ internal sealed partial class VideoSearchSectionDetailViewModel
                         continue;
                     }
 
-                    Items.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
+                    Items.Add(new DramaItemViewModel(item, VideoCardStyle.Search));
                 }
 
                 ListUpdated?.Invoke(this, EventArgs.Empty);
@@ -149,7 +149,7 @@ internal sealed partial class VideoSearchSectionDetailViewModel
                     continue;
                 }
 
-                Items.Add(new VideoItemViewModel(item, VideoCardStyle.Search));
+                Items.Add(new DramaItemViewModel(item, VideoCardStyle.Search));
             }
 
             ListUpdated?.Invoke(this, EventArgs.Empty);

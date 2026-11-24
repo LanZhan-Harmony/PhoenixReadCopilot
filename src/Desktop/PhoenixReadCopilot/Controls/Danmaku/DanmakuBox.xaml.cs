@@ -2,20 +2,35 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.Controls.Danmaku;
 
 /// <summary>
 /// 弹幕框.
 /// </summary>
-internal sealed partial class DanmakuBox : DanmakuControlBase
+internal sealed partial class DanmakuBox : UserControl
 {
+    public DanmakuViewModel? ViewModel
+    {
+        get => (DanmakuViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(DanmakuViewModel),
+        typeof(DanmakuBox),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DanmakuBox"/> class.
     /// </summary>
     public DanmakuBox()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
     }
 
     /// <summary>
@@ -28,16 +43,15 @@ internal sealed partial class DanmakuBox : DanmakuControlBase
     /// </summary>
     public event EventHandler InputGotFocus;
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
-        base.OnControlLoaded();
         UpdateLoginState();
     }
 
     public void UpdateLoginState()
     {
-        IAuthenticationService authService = Ioc.Default.GetRequiredService<IAuthenticationService>();
+        IAuthenticationService authService =
+            Ioc.Default.GetRequiredService<IAuthenticationService>();
         bool isAuthenticated = authService.IsAuthenticated;
 
         DanmakuInputBox.IsEnabled = isAuthenticated;
@@ -56,7 +70,8 @@ internal sealed partial class DanmakuBox : DanmakuControlBase
             return;
         }
 
-        IAuthenticationService authService = Ioc.Default.GetRequiredService<IAuthenticationService>();
+        IAuthenticationService authService =
+            Ioc.Default.GetRequiredService<IAuthenticationService>();
         if (!authService.IsAuthenticated)
         {
             return;

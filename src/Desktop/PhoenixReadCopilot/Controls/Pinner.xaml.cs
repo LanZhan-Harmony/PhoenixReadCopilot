@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -14,10 +15,12 @@ namespace PhoenixReadCopilot.Controls;
 /// <summary>
 /// 固定器.
 /// </summary>
-internal sealed partial class Pinner : PinnerBase
+internal sealed partial class Pinner : UserControl
 {
     private readonly INavigationService _navigationService =
         Ioc.Default.GetRequiredService<INavigationService>();
+
+    public PinnerViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<PinnerViewModel>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Pinner"/> class.
@@ -25,12 +28,9 @@ internal sealed partial class Pinner : PinnerBase
     public Pinner()
     {
         InitializeComponent();
+        Loaded += (_, _) => _ = ViewModel.InitializeAsync();
+        Unloaded += (_, _) => Repeater.ItemsSource = null;
     }
-
-    /// <inheritdoc/>
-    protected override void OnControlLoaded() => _ = ViewModel.InitializeAsync();
-
-    protected override void OnControlUnloaded() => Repeater.ItemsSource = null;
 
     private void OnItemClick(object sender, RoutedEventArgs e)
     {
@@ -75,19 +75,5 @@ internal sealed partial class Pinner : PinnerBase
         {
             ItemsFlyout.Hide();
         }
-    }
-}
-
-/// <summary>
-/// 固定器基类.
-/// </summary>
-internal abstract class PinnerBase : LayoutUserControlBase<PinnerViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PinnerBase"/> class.
-    /// </summary>
-    protected PinnerBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<PinnerViewModel>();
     }
 }

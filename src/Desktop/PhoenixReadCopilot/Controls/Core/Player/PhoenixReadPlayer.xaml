@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:PlayerControlBase x:Class="PhoenixReadCopilot.Controls.Core.PhoenixReadPlayer"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Core.PhoenixReadPlayer"
                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -74,4 +74,4 @@
             </Button>
         </Grid>
     </Grid>
-</local:PlayerControlBase>
+</UserControl>

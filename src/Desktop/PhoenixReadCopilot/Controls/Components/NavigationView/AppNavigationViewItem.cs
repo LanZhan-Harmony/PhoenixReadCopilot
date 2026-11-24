@@ -10,8 +10,14 @@ namespace PhoenixReadCopilot.Controls.Components;
 public sealed partial class AppNavigationViewItem : NavigationViewItem
 {
     /// <summary>
-    /// <see cref="Symbol"/> 的依赖属性.
+    /// 图标.
     /// </summary>
+    public FluentIcons.Common.Symbol Symbol
+    {
+        get => (FluentIcons.Common.Symbol)GetValue(SymbolProperty);
+        set => SetValue(SymbolProperty, value);
+    }
+
     public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
         nameof(Symbol),
         typeof(FluentIcons.Common.Symbol),
@@ -20,8 +26,14 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
     );
 
     /// <summary>
-    /// <see cref="ShowUnread"/> 的依赖属性.
+    /// 是否显示未读消息.
     /// </summary>
+    public bool ShowUnread
+    {
+        get => (bool)GetValue(ShowUnreadProperty);
+        set => SetValue(ShowUnreadProperty, value);
+    }
+
     public static readonly DependencyProperty ShowUnreadProperty = DependencyProperty.Register(
         nameof(ShowUnread),
         typeof(bool),
@@ -36,7 +48,13 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
     {
         DefaultStyleKey = typeof(AppNavigationViewItem);
     }
+}
 
+/// <summary>
+/// 应用导航视图项显示器.
+/// </summary>
+public sealed partial class AppNavigationViewItemPresenter : NavigationViewItemPresenter
+{
     /// <summary>
     /// 图标.
     /// </summary>
@@ -46,24 +64,6 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
         set => SetValue(SymbolProperty, value);
     }
 
-    /// <summary>
-    /// 是否显示未读消息.
-    /// </summary>
-    public bool ShowUnread
-    {
-        get => (bool)GetValue(ShowUnreadProperty);
-        set => SetValue(ShowUnreadProperty, value);
-    }
-}
-
-/// <summary>
-/// 应用导航视图项显示器.
-/// </summary>
-public sealed partial class AppNavigationViewItemPresenter : NavigationViewItemPresenter
-{
-    /// <summary>
-    /// <see cref="Symbol"/> 的依赖属性.
-    /// </summary>
     public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
         nameof(Symbol),
         typeof(FluentIcons.Common.Symbol),
@@ -77,14 +77,5 @@ public sealed partial class AppNavigationViewItemPresenter : NavigationViewItemP
     public AppNavigationViewItemPresenter()
     {
         DefaultStyleKey = typeof(AppNavigationViewItemPresenter);
-    }
-
-    /// <summary>
-    /// 图标.
-    /// </summary>
-    public FluentIcons.Common.Symbol Symbol
-    {
-        get => (FluentIcons.Common.Symbol)GetValue(SymbolProperty);
-        set => SetValue(SymbolProperty, value);
     }
 }

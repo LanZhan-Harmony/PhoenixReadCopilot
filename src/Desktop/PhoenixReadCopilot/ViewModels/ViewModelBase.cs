@@ -3,33 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace PhoenixReadCopilot.ViewModels;
 
 /// <summary>
-/// 视图模型基类.
+/// 视图模型基类 (统一继承自 <see cref="ObservableObject"/>，支持分部属性与通知调度).
 /// </summary>
 public abstract class ViewModelBase : ObservableObject { }
 
-/// <summary>
-/// 数据视图模型基类.
-/// </summary>
-/// <typeparam name="TData">数据类型.</typeparam>
-public abstract partial class ViewModelBase<TData> : ViewModelBase
-    where TData : class
-{
-    [ObservableProperty]
-    public partial TData Data { get; set; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ViewModelBase{TData}"/> class.
-    /// </summary>
-    protected ViewModelBase(TData data)
-    {
-        Data = data;
-    }
-
-    /// <inheritdoc/>
-    public override bool Equals(object? obj) =>
-        obj is ViewModelBase<TData> @base
-        && EqualityComparer<TData>.Default.Equals(Data, @base.Data);
-
-    /// <inheritdoc/>
-    public override int GetHashCode() => HashCode.Combine(Data);
-}

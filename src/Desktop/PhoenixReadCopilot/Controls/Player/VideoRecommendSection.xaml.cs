@@ -10,17 +10,31 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 视频推荐区域.
 /// </summary>
-internal sealed partial class VideoRecommendSection : VideoRecommendSectionBase
+internal sealed partial class VideoRecommendSection : UserControl
 {
+    public VideoPlayerRecommendSectionDetailViewModel? ViewModel
+    {
+        get => (VideoPlayerRecommendSectionDetailViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(VideoPlayerRecommendSectionDetailViewModel),
+        typeof(VideoRecommendSection),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoRecommendSection"/> class.
     /// </summary>
     public VideoRecommendSection()
     {
         InitializeComponent();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    protected override void OnControlUnloaded() => VideoRepeater.ItemsSource = null;
+    private void OnControlUnloaded() => VideoRepeater.ItemsSource = null;
 
     private void VideoRepeater_ElementPrepared(
         ItemsRepeater sender,
@@ -51,9 +65,3 @@ internal sealed partial class VideoRecommendSection : VideoRecommendSectionBase
         }
     }
 }
-
-/// <summary>
-/// 视频推荐区域基类.
-/// </summary>
-internal abstract class VideoRecommendSectionBase
-    : LayoutUserControlBase<VideoPlayerRecommendSectionDetailViewModel> { }

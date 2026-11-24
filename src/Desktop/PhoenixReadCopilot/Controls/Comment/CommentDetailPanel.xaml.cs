@@ -8,18 +8,37 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 评论详情面板.
 /// </summary>
-internal sealed partial class CommentDetailPanel : CommentDetailPanelBase
+internal sealed partial class CommentDetailPanel : UserControl
 {
+    public CommentDetailViewModel? ViewModel
+    {
+        get => (CommentDetailViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(CommentDetailViewModel),
+        typeof(CommentDetailPanel),
+        new PropertyMetadata(null, (d, e) =>
+            ((CommentDetailPanel)d).OnViewModelChanged(
+                (CommentDetailViewModel?)e.OldValue,
+                (CommentDetailViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CommentDetailPanel"/> class.
     /// </summary>
     public CommentDetailPanel()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         CommentScrollView.ViewChanged += OnViewChanged;
         CommentScrollView.SizeChanged += OnScrollViewSizeChanged;
@@ -31,22 +50,26 @@ internal sealed partial class CommentDetailPanel : CommentDetailPanelBase
         CheckCommentCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
-        ViewModel?.ListUpdated -= OnCommentListUpdatedAsync;
+        if (ViewModel is not null)
+        {
+            ViewModel.ListUpdated -= OnCommentListUpdatedAsync;
+        }
 
         CommentScrollView.ViewChanged -= OnViewChanged;
         CommentScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         CommentDetailViewModel? oldValue,
         CommentDetailViewModel? newValue
     )
     {
-        oldValue?.ListUpdated -= OnCommentListUpdatedAsync;
+        if (oldValue is not null)
+        {
+            oldValue.ListUpdated -= OnCommentListUpdatedAsync;
+        }
 
         if (newValue is null)
         {
@@ -97,8 +120,3 @@ internal sealed partial class CommentDetailPanel : CommentDetailPanelBase
         });
     }
 }
-
-/// <summary>
-/// 评论详情面板基类.
-/// </summary>
-internal abstract class CommentDetailPanelBase : LayoutUserControlBase<CommentDetailViewModel> { }

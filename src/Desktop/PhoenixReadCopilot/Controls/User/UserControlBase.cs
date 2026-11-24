@@ -9,13 +9,12 @@ namespace PhoenixReadCopilot.Controls.User;
 /// </summary>
 internal abstract class UserControlBase : UserControl
 {
-    public static readonly DependencyProperty ViewModelProperty =
-        DependencyProperty.Register(
-            nameof(ViewModel),
-            typeof(UserSpacePageViewModel),
-            typeof(UserControlBase),
-            new PropertyMetadata(null, OnViewModelPropertyChanged)
-        );
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(UserSpacePageViewModel),
+        typeof(UserControlBase),
+        new PropertyMetadata(null, OnViewModelPropertyChanged)
+    );
 
     protected UserControlBase()
     {
@@ -23,34 +22,37 @@ internal abstract class UserControlBase : UserControl
         Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private static void OnViewModelPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnViewModelPropertyChanged(
+        DependencyObject d,
+        DependencyPropertyChangedEventArgs e
+    )
     {
         if (d is UserControlBase control)
         {
-            control.OnViewModelChanged(e.OldValue as UserSpacePageViewModel, e.NewValue as UserSpacePageViewModel);
+            control.OnViewModelChanged(
+                e.OldValue as UserSpacePageViewModel,
+                e.NewValue as UserSpacePageViewModel
+            );
         }
     }
 
     /// <summary>
     /// 当控件加载完成时调用.
     /// </summary>
-    protected virtual void OnControlLoaded()
-    {
-    }
+    protected virtual void OnControlLoaded() { }
 
     /// <summary>
     /// 当控件卸载时调用.
     /// </summary>
-    protected virtual void OnControlUnloaded()
-    {
-    }
+    protected virtual void OnControlUnloaded() { }
 
     /// <summary>
     /// 当 ViewModel 实例发生变化时调用.
     /// </summary>
-    protected virtual void OnViewModelChanged(UserSpacePageViewModel? oldViewModel, UserSpacePageViewModel? newViewModel)
-    {
-    }
+    protected virtual void OnViewModelChanged(
+        UserSpacePageViewModel? oldViewModel,
+        UserSpacePageViewModel? newViewModel
+    ) { }
 
     /// <summary>
     /// 视图模型.

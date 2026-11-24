@@ -1,16 +1,23 @@
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
 /// <summary>
 /// 点赞按钮.
 /// </summary>
-internal sealed partial class LikeButton : LayoutUserControlBase
+internal sealed partial class LikeButton : UserControl
 {
     /// <summary>
-    /// <see cref="IsLiked"/> 的依赖属性.
+    /// 是否已点赞.
     /// </summary>
+    public bool IsLiked
+    {
+        get => (bool)GetValue(IsLikedProperty);
+        set => SetValue(IsLikedProperty, value);
+    }
+
     public static readonly DependencyProperty IsLikedProperty = DependencyProperty.Register(
         nameof(IsLiked),
         typeof(bool),
@@ -19,8 +26,14 @@ internal sealed partial class LikeButton : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="Tip"/> 的依赖属性.
+    /// 提示文本.
     /// </summary>
+    public string Tip
+    {
+        get => (string)GetValue(TipProperty);
+        set => SetValue(TipProperty, value);
+    }
+
     public static readonly DependencyProperty TipProperty = DependencyProperty.Register(
         nameof(LikeButton),
         typeof(string),
@@ -29,8 +42,14 @@ internal sealed partial class LikeButton : LayoutUserControlBase
     );
 
     /// <summary>
-    /// <see cref="Command"/> 的依赖属性.
+    /// 命令.
     /// </summary>
+    public ICommand Command
+    {
+        get => (ICommand)GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
+
     public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
         nameof(Command),
         typeof(ICommand),
@@ -44,32 +63,5 @@ internal sealed partial class LikeButton : LayoutUserControlBase
     public LikeButton()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// 是否已点赞.
-    /// </summary>
-    public bool IsLiked
-    {
-        get => (bool)GetValue(IsLikedProperty);
-        set => SetValue(IsLikedProperty, value);
-    }
-
-    /// <summary>
-    /// 提示文本.
-    /// </summary>
-    public string Tip
-    {
-        get => (string)GetValue(TipProperty);
-        set => SetValue(TipProperty, value);
-    }
-
-    /// <summary>
-    /// 命令.
-    /// </summary>
-    public ICommand Command
-    {
-        get => (ICommand)GetValue(CommandProperty);
-        set => SetValue(CommandProperty, value);
     }
 }

@@ -11,7 +11,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 internal sealed partial class TimelineItemViewModel : ViewModelBase
 {
     [ObservableProperty]
-    public partial ObservableCollection<VideoItemViewModel> Items { get; set; } = [];
+    public partial ObservableCollection<DailyReleaseItemViewModel> Items { get; set; } = [];
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
@@ -70,7 +70,7 @@ internal sealed partial class TimelineItemViewModel : ViewModelBase
     public TimelineItemViewModel(
         DateOnly targetDate,
         bool isToday = false,
-        IEnumerable<VideoItemViewModel>? items = null
+        IEnumerable<DailyReleaseItemViewModel>? items = null
     )
     {
         TargetDate = targetDate;

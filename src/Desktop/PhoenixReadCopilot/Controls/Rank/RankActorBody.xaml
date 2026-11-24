@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:RankPageControlBase x:Class="PhoenixReadCopilot.Controls.Rank.RankActorBody"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Rank.RankActorBody"
                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,13 +9,13 @@
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                            mc:Ignorable="d">
 
-    <local:RankPageControlBase.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <local:RankActorItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </local:RankPageControlBase.Resources>
+    </UserControl.Resources>
 
     <essential:RevealFocusPanel x:Name="ListViewRevealFocusPanel">
         <ScrollViewer x:Name="ActorScrollView" Style="{StaticResource PageScrollViewerStyle}">
@@ -30,4 +30,4 @@
             </ItemsRepeater>
         </ScrollViewer>
     </essential:RevealFocusPanel>
-</local:RankPageControlBase>
+</UserControl>

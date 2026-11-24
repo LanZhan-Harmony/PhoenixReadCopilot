@@ -45,7 +45,7 @@ internal sealed partial class HomePageViewModel : LayoutPageViewModelBase
     /// <summary>
     /// 推荐短剧列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Videos { get; } = [];
+    public ObservableCollection<DramaItemViewModel> Videos { get; } = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
@@ -98,7 +98,7 @@ internal sealed partial class HomePageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private void PlayCuratedList()
     {
-        VideoItemViewModel? first = Videos.FirstOrDefault();
+        DramaItemViewModel? first = Videos.FirstOrDefault();
         if (first?.Drama is not null)
         {
             _navigationService.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
@@ -180,7 +180,7 @@ internal sealed partial class HomePageViewModel : LayoutPageViewModelBase
                         // 严格自动去重：不仅在当前推荐会话中去重，还要确保当前展示列表中绝不包含重复剧集
                         if (_seenDramaIds.Add(item.Id) && !Videos.Any(v => v.Drama?.Id == item.Id))
                         {
-                            Videos.Add(new VideoItemViewModel(item, VideoCardStyle.Recommend));
+                            Videos.Add(new DramaItemViewModel(item, VideoCardStyle.Recommend));
                             addedCount++;
                         }
                     }

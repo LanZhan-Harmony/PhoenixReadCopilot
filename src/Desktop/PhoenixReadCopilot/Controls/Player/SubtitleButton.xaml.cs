@@ -1,22 +1,38 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Models.Subtitle;
+using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
 /// <summary>
 /// 字幕按钮.
 /// </summary>
-internal sealed partial class SubtitleButton : SubtitleControlBase
+internal sealed partial class SubtitleButton : UserControl
 {
+    public SubtitleViewModel? ViewModel
+    {
+        get => (SubtitleViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(SubtitleViewModel),
+        typeof(SubtitleButton),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SubtitleButton"/> class.
     /// </summary>
     public SubtitleButton()
     {
         InitializeComponent();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    protected override void OnControlUnloaded() => SubtitleView.ItemsSource = null;
+    private void OnControlUnloaded() => SubtitleView.ItemsSource = null;
 
     private void OnMetaChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {

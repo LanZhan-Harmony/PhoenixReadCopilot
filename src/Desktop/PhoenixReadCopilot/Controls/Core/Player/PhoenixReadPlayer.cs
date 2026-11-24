@@ -13,9 +13,27 @@ using Windows.Foundation;
 
 namespace PhoenixReadCopilot.Controls.Core;
 
-internal sealed partial class PhoenixReadPlayer : PlayerControlBase
+internal sealed partial class PhoenixReadPlayer : UserControl
 {
     private readonly AppSettings _settings;
+
+    public PlayerViewModelBase? ViewModel
+    {
+        get => (PlayerViewModelBase?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(PlayerViewModelBase),
+        typeof(PhoenixReadPlayer),
+        new PropertyMetadata(null, (d, e) =>
+            ((PhoenixReadPlayer)d).OnViewModelChanged(
+                (PlayerViewModelBase?)e.OldValue,
+                (PlayerViewModelBase?)e.NewValue
+            )
+        )
+    );
 
     private Rect _transportControlTriggerRect;
     private DispatcherTimer? _cursorTimer;
@@ -49,6 +67,8 @@ internal sealed partial class PhoenixReadPlayer : PlayerControlBase
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
     /// <summary>
@@ -92,8 +112,7 @@ internal sealed partial class PhoenixReadPlayer : PlayerControlBase
         _lastRightArrowPressedTime = null;
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         if (_cursorTimer is null)
         {
@@ -119,8 +138,7 @@ internal sealed partial class PhoenixReadPlayer : PlayerControlBase
         _cursorTimer?.Start();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         UnHookEventsWithoutViewModel();
         if (ViewModel is not null)
@@ -135,11 +153,7 @@ internal sealed partial class PhoenixReadPlayer : PlayerControlBase
         PlayerPresenter.ViewModel = null;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
-        PlayerViewModelBase? oldValue,
-        PlayerViewModelBase? newValue
-    )
+    private void OnViewModelChanged(PlayerViewModelBase? oldValue, PlayerViewModelBase? newValue)
     {
         if (newValue is null)
         {

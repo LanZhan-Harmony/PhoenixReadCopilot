@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:PinnerBase x:Class="PhoenixReadCopilot.Controls.Pinner"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Pinner"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -89,4 +89,4 @@
             </Flyout>
         </Button.Flyout>
     </Button>
-</local:PinnerBase>
+</UserControl>

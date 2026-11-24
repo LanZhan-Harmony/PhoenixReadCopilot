@@ -1,16 +1,23 @@
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Player;
 
 /// <summary>
 /// 分享按钮.
 /// </summary>
-internal sealed partial class ShareButton : LayoutUserControlBase
+internal sealed partial class ShareButton : UserControl
 {
     /// <summary>
-    /// <see cref="Command"/> 的依赖属性.
+    /// 点击命令.
     /// </summary>
+    public ICommand Command
+    {
+        get => (ICommand)GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
+
     public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
         nameof(Command),
         typeof(ICommand),
@@ -24,14 +31,5 @@ internal sealed partial class ShareButton : LayoutUserControlBase
     public ShareButton()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// 点击命令.
-    /// </summary>
-    public ICommand Command
-    {
-        get => (ICommand)GetValue(CommandProperty);
-        set => SetValue(CommandProperty, value);
     }
 }

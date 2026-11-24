@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:VideoPlayerPageControlBase x:Class="PhoenixReadCopilot.Controls.Player.VideoPlayerSideBody"
+<UserControl x:Class="PhoenixReadCopilot.Controls.Player.VideoPlayerSideBody"
                                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                   xmlns:comment="using:PhoenixReadCopilot.Controls.Comment"
@@ -39,4 +39,4 @@
                         ContentTemplateSelector="{StaticResource Selector}"
                         Style="{StaticResource AppContentControlStyle}"/>
     </Grid>
-</local:VideoPlayerPageControlBase>
+</UserControl>

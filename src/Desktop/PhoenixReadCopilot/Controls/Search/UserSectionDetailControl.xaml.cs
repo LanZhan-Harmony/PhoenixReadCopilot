@@ -10,31 +10,52 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// <summary>
 /// 用户搜索分区详情控件.
 /// </summary>
-internal sealed partial class UserSectionDetailControl : UserSectionDetailControlBase
+internal sealed partial class UserSectionDetailControl : UserControl
 {
+    public UserSearchSectionDetailViewModel? ViewModel
+    {
+        get => (UserSearchSectionDetailViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(UserSearchSectionDetailViewModel),
+        typeof(UserSectionDetailControl),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UserSectionDetailControl"/> class.
     /// </summary>
     public UserSectionDetailControl()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
-        ViewModel.ListUpdated += OnListUpdatedAsync;
+        if (ViewModel is not null)
+        {
+            ViewModel.ListUpdated += OnListUpdatedAsync;
+        }
+
         UserScrollView.ViewChanged += OnViewChanged;
         UserScrollView.SizeChanged += OnScrollViewSizeChanged;
 
         CheckUserCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         UserRepeater.ItemsSource = null;
-        ViewModel.ListUpdated -= OnListUpdatedAsync;
+        if (ViewModel is not null)
+        {
+            ViewModel.ListUpdated -= OnListUpdatedAsync;
+        }
+
         UserScrollView.ViewChanged -= OnViewChanged;
         UserScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
@@ -108,9 +129,3 @@ internal sealed partial class UserSectionDetailControl : UserSectionDetailContro
         }
     }
 }
-
-/// <summary>
-/// 用户搜索分区详情控件基类.
-/// </summary>
-internal abstract class UserSectionDetailControlBase
-    : LayoutUserControlBase<UserSearchSectionDetailViewModel> { }

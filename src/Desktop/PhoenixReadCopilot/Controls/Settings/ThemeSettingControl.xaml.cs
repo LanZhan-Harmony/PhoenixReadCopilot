@@ -1,23 +1,27 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Settings;
 
 /// <summary>
 /// 主题设置控件.
 /// </summary>
-internal sealed partial class ThemeSettingControl : SettingsPageControlBase
+internal sealed partial class ThemeSettingControl : UserControl
 {
+    public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ThemeSettingControl"/> class.
     /// </summary>
     public ThemeSettingControl()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         ThemePicker.SelectedIndex = ViewModel.AppTheme switch
         {

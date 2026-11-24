@@ -8,18 +8,37 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 短剧播放器选集部分.
 /// </summary>
-internal sealed partial class VideoPartsSection : VideoPartsSectionBase
+internal sealed partial class VideoPartsSection : UserControl
 {
+    public VideoPlayerPartSectionDetailViewModel? ViewModel
+    {
+        get => (VideoPlayerPartSectionDetailViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(VideoPlayerPartSectionDetailViewModel),
+        typeof(VideoPartsSection),
+        new PropertyMetadata(null, (d, e) =>
+            ((VideoPartsSection)d).OnViewModelChanged(
+                (VideoPlayerPartSectionDetailViewModel?)e.OldValue,
+                (VideoPlayerPartSectionDetailViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPartsSection"/> class.
     /// </summary>
     public VideoPartsSection()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         if (ViewModel is null)
         {
@@ -30,20 +49,24 @@ internal sealed partial class VideoPartsSection : VideoPartsSectionBase
         ScrollToCurrentAsync();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         View.ItemsSource = null;
-        ViewModel?.PartChanged -= OnPartChanged;
+        if (ViewModel is not null)
+        {
+            ViewModel.PartChanged -= OnPartChanged;
+        }
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         VideoPlayerPartSectionDetailViewModel? oldValue,
         VideoPlayerPartSectionDetailViewModel? newValue
     )
     {
-        oldValue?.PartChanged -= OnPartChanged;
+        if (oldValue is not null)
+        {
+            oldValue.PartChanged -= OnPartChanged;
+        }
 
         if (newValue is null)
         {
@@ -93,9 +116,3 @@ internal sealed partial class VideoPartsSection : VideoPartsSectionBase
         }
     }
 }
-
-/// <summary>
-/// 视频播放器分P部分基类.
-/// </summary>
-internal abstract class VideoPartsSectionBase
-    : LayoutUserControlBase<VideoPlayerPartSectionDetailViewModel> { }

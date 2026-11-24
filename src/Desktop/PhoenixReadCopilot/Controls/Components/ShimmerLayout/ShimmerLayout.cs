@@ -1,15 +1,22 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
 /// <summary>
 /// 骨架占位图.
 /// </summary>
-internal sealed partial class ShimmerLayout : LayoutControlBase
+internal sealed partial class ShimmerLayout : Control
 {
     /// <summary>
-    /// <see cref="IsActive"/> 的依赖属性.
+    /// 是否激活.
     /// </summary>
+    public bool IsActive
+    {
+        get => (bool)GetValue(IsActiveProperty);
+        set => SetValue(IsActiveProperty, value);
+    }
+
     public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register(
         nameof(IsActive),
         typeof(bool),
@@ -23,14 +30,5 @@ internal sealed partial class ShimmerLayout : LayoutControlBase
     public ShimmerLayout()
     {
         DefaultStyleKey = typeof(ShimmerLayout);
-    }
-
-    /// <summary>
-    /// 是否激活.
-    /// </summary>
-    public bool IsActive
-    {
-        get => (bool)GetValue(IsActiveProperty);
-        set => SetValue(IsActiveProperty, value);
     }
 }

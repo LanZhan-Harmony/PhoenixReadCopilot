@@ -99,7 +99,7 @@
                                        ElementClearing="ReservationItemsRepeater_ElementClearing"
                                        ElementPrepared="ReservationItemsRepeater_ElementPrepared"
                                        ItemTemplate="{StaticResource UserReservationVideoItemTemplate}"
-                                       ItemsSource="{x:Bind PageViewModel.Videos, Mode=OneWay}"
+                                       ItemsSource="{x:Bind PageViewModel.Reservations, Mode=OneWay}"
                                        Layout="{StaticResource VideoLayout}"/>
                     </ScrollViewer>
                 </essential:RevealFocusPanel>

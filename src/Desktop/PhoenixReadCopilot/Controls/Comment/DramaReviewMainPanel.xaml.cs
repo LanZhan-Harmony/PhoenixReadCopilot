@@ -9,15 +9,34 @@ namespace PhoenixReadCopilot.Controls.Comment;
 /// <summary>
 /// 剧评主面板.
 /// </summary>
-internal sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
+internal sealed partial class DramaReviewMainPanel : UserControl
 {
+    public DramaReviewSectionDetailViewModel? ViewModel
+    {
+        get => (DramaReviewSectionDetailViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(DramaReviewSectionDetailViewModel),
+        typeof(DramaReviewMainPanel),
+        new PropertyMetadata(null, (d, e) =>
+            ((DramaReviewMainPanel)d).OnViewModelChanged(
+                (DramaReviewSectionDetailViewModel?)e.OldValue,
+                (DramaReviewSectionDetailViewModel?)e.NewValue
+            )
+        )
+    );
+
     public DramaReviewMainPanel()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         ReviewScrollView.ViewChanged += OnViewChanged;
         ReviewScrollView.SizeChanged += OnScrollViewSizeChanged;
@@ -31,8 +50,7 @@ internal sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
         CheckReviewCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         if (ViewModel is not null)
         {
@@ -44,8 +62,7 @@ internal sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
         ReviewScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         DramaReviewSectionDetailViewModel? oldValue,
         DramaReviewSectionDetailViewModel? newValue
     )
@@ -150,9 +167,3 @@ internal sealed partial class DramaReviewMainPanel : DramaReviewMainPanelBase
         }
     }
 }
-
-/// <summary>
-/// 剧评主面板基类.
-/// </summary>
-internal abstract class DramaReviewMainPanelBase
-    : LayoutUserControlBase<DramaReviewSectionDetailViewModel> { }

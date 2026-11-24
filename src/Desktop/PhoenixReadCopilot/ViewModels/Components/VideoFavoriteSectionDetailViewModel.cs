@@ -18,7 +18,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// 视频/短剧收藏分区详情视图模型.
 /// </summary>
 internal sealed partial class VideoFavoriteSectionDetailViewModel
-    : ViewModelBase<VideoFavoriteFolder>,
+    : ViewModelBase,
         IFavoriteSectionDetailViewModel
 {
     private readonly IFavoriteService _favoriteService;
@@ -26,6 +26,11 @@ internal sealed partial class VideoFavoriteSectionDetailViewModel
     private readonly INavigationService _navigationService;
     private readonly AppSettings _settings;
     private readonly DispatcherQueue _dispatcherQueue;
+
+    /// <summary>
+    /// 收藏夹数据实体.
+    /// </summary>
+    public VideoFavoriteFolder Data { get; }
 
     private int _offset;
     private bool _preventLoadMore;
@@ -47,7 +52,7 @@ internal sealed partial class VideoFavoriteSectionDetailViewModel
     /// <summary>
     /// 条目列表.
     /// </summary>
-    public ObservableCollection<VideoItemViewModel> Items { get; } = [];
+    public ObservableCollection<DramaItemViewModel> Items { get; } = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoFavoriteSectionDetailViewModel"/> class.
@@ -60,8 +65,8 @@ internal sealed partial class VideoFavoriteSectionDetailViewModel
         DispatcherQueue dispatcherQueue,
         ILogger<VideoFavoriteSectionDetailViewModel> logger
     )
-        : base(data)
     {
+        Data = data;
         _favoriteService = favoriteService;
         _navigationService = navigationService;
         _settings = settingsService.Settings;
@@ -127,11 +132,9 @@ internal sealed partial class VideoFavoriteSectionDetailViewModel
                     }
 
                     Items.Add(
-                        new VideoItemViewModel(
+                        new DramaItemViewModel(
                             drama,
-                            VideoCardStyle.Favorite,
-                            removeAction: RemoveVideo,
-                            favFolder: Data
+                            VideoCardStyle.Favorite
                         )
                     );
                 }
@@ -159,11 +162,11 @@ internal sealed partial class VideoFavoriteSectionDetailViewModel
             return;
         }
 
-        VideoItemViewModel first = Items.First();
+        DramaItemViewModel first = Items.First();
         first.Play();
     }
 
-    private void RemoveVideo(VideoItemViewModel item)
+    private void RemoveVideo(DramaItemViewModel item)
     {
         Items.Remove(item);
         TotalCount = Math.Max(0, TotalCount - 1);

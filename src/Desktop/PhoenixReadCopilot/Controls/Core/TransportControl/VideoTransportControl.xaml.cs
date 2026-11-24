@@ -1,20 +1,41 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using PhoenixReadCopilot.ViewModels.Core;
 
 namespace PhoenixReadCopilot.Controls.Core;
 
 /// <summary>
 /// 视频播放器控件.
 /// </summary>
-internal sealed partial class VideoTransportControl : PlayerControlBase
+internal sealed partial class VideoTransportControl : UserControl
 {
     private DispatcherTimer? _seekDebounceTimer;
     private double _pendingSeekPosition = -1;
 
+    public PlayerViewModelBase? ViewModel
+    {
+        get => (PlayerViewModelBase?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(PlayerViewModelBase),
+        typeof(VideoTransportControl),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
-    /// <see cref="LeftContent"/> 的依赖属性.
+    /// 左侧内容.
     /// </summary>
+    public object LeftContent
+    {
+        get => (object)GetValue(LeftContentProperty);
+        set => SetValue(LeftContentProperty, value);
+    }
+
     public static readonly DependencyProperty LeftContentProperty = DependencyProperty.Register(
         nameof(LeftContent),
         typeof(object),
@@ -23,8 +44,14 @@ internal sealed partial class VideoTransportControl : PlayerControlBase
     );
 
     /// <summary>
-    /// <see cref="MiddleContent"/> 的依赖属性.
+    /// 中部内容.
     /// </summary>
+    public object MiddleContent
+    {
+        get => (object)GetValue(MiddleContentProperty);
+        set => SetValue(MiddleContentProperty, value);
+    }
+
     public static readonly DependencyProperty MiddleContentProperty = DependencyProperty.Register(
         nameof(MiddleContent),
         typeof(object),
@@ -33,8 +60,14 @@ internal sealed partial class VideoTransportControl : PlayerControlBase
     );
 
     /// <summary>
-    /// <see cref="RightContent"/> 的依赖属性.
+    /// 右侧内容.
     /// </summary>
+    public object RightContent
+    {
+        get => (object)GetValue(RightContentProperty);
+        set => SetValue(RightContentProperty, value);
+    }
+
     public static readonly DependencyProperty RightContentProperty = DependencyProperty.Register(
         nameof(RightContent),
         typeof(object),
@@ -48,33 +81,6 @@ internal sealed partial class VideoTransportControl : PlayerControlBase
     public VideoTransportControl()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// 左侧内容.
-    /// </summary>
-    public object LeftContent
-    {
-        get => (object)GetValue(LeftContentProperty);
-        set => SetValue(LeftContentProperty, value);
-    }
-
-    /// <summary>
-    /// 中部内容.
-    /// </summary>
-    public object MiddleContent
-    {
-        get => (object)GetValue(MiddleContentProperty);
-        set => SetValue(MiddleContentProperty, value);
-    }
-
-    /// <summary>
-    /// 右侧内容.
-    /// </summary>
-    public object RightContent
-    {
-        get => (object)GetValue(RightContentProperty);
-        set => SetValue(RightContentProperty, value);
     }
 
     private void OnVolumeSliderValueChanged(object sender, RangeBaseValueChangedEventArgs e) =>

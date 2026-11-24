@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Controls.Components;
+using PhoenixReadCopilot.Core.Contracts.Media;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -53,6 +54,15 @@ internal sealed partial class PlayerWindow : WindowEx, IPlayerHostWindow, ITipWi
         _inputActivationListener.InputActivationChanged += OnInputActivationChanged;
         Activated += OnActivated;
         Closed += OnClosed;
+    }
+
+    /// <summary>
+    /// 打开可播放媒体内容.
+    /// </summary>
+    public void OpenPlayable(IPlayableMedia media)
+    {
+        Activate();
+        MainFrame.Navigate(typeof(VideoPlayerPage), media);
     }
 
     /// <summary>

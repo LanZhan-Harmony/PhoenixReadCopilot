@@ -1,34 +1,57 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
+using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Controls.Rank;
 
 /// <summary>
 /// 榜单页面侧边栏主体.
 /// </summary>
-internal sealed partial class RankSideBody : RankPageControlBase
+internal sealed partial class RankSideBody : UserControl
 {
+    public RankPageViewModel? ViewModel
+    {
+        get => (RankPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(RankPageViewModel),
+        typeof(RankSideBody),
+        new PropertyMetadata(null)
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RankSideBody"/> class.
     /// </summary>
     public RankSideBody()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
-        ViewModel.SectionInitialized += OnSectionInitialized;
+        if (ViewModel is not null)
+        {
+            ViewModel.SectionInitialized += OnSectionInitialized;
+        }
+
         SectionView.SelectionChanged += OnSectionSelectionChanged;
         CheckSectionSelection();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         SectionView.ItemsSource = null;
-        ViewModel.SectionInitialized -= OnSectionInitialized;
+        if (ViewModel is not null)
+        {
+            ViewModel.SectionInitialized -= OnSectionInitialized;
+        }
+
         SectionView.SelectionChanged -= OnSectionSelectionChanged;
     }
 
@@ -40,7 +63,7 @@ internal sealed partial class RankSideBody : RankPageControlBase
     )
     {
         RankSectionItemViewModel? item = sender.SelectedItem as RankSectionItemViewModel;
-        if (item is not null)
+        if (item is not null && ViewModel is not null)
         {
             _ = ViewModel.SelectSectionAsync(item);
         }
@@ -48,9 +71,15 @@ internal sealed partial class RankSideBody : RankPageControlBase
 
     private void CheckSectionSelection()
     {
-        if (ViewModel.SelectedSection is not null)
+        if (ViewModel?.SelectedSection is null)
         {
-            SectionView.Select(ViewModel.Sections.IndexOf(ViewModel.SelectedSection));
+            return;
+        }
+
+        int index = ViewModel.Sections.IndexOf(ViewModel.SelectedSection);
+        if (index >= 0 && SectionView.SelectedItem != ViewModel.SelectedSection)
+        {
+            SectionView.Select(index);
         }
     }
 }

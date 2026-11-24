@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
@@ -7,18 +8,37 @@ namespace PhoenixReadCopilot.Controls.Calendar;
 /// <summary>
 /// 上新日历左侧时间轴.
 /// </summary>
-internal sealed partial class CalendarTimelineSideControl : CalendarTimelineControlBase
+internal sealed partial class CalendarTimelineSideControl : UserControl
 {
+    public CalendarPageViewModel? ViewModel
+    {
+        get => (CalendarPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(CalendarPageViewModel),
+        typeof(CalendarTimelineSideControl),
+        new PropertyMetadata(null, (d, e) =>
+            ((CalendarTimelineSideControl)d).OnViewModelChanged(
+                (CalendarPageViewModel?)e.OldValue,
+                (CalendarPageViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarTimelineSideControl"/> class.
     /// </summary>
     public CalendarTimelineSideControl()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         ViewModel?.TimelineInitialized += OnTimelineInitialized;
 
@@ -26,16 +46,14 @@ internal sealed partial class CalendarTimelineSideControl : CalendarTimelineCont
         CheckTimelineSelection();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         TimelineView.ItemsSource = null;
         TimelineView.SelectionChanged -= OnTimelineSelectionChanged;
         ViewModel?.TimelineInitialized -= OnTimelineInitialized;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         CalendarPageViewModel? oldValue,
         CalendarPageViewModel? newValue
     )

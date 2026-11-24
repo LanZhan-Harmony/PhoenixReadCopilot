@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Pages;
@@ -6,30 +7,19 @@ namespace PhoenixReadCopilot.Pages;
 /// <summary>
 /// 上新日历页面.
 /// </summary>
-internal sealed partial class CalendarPage : CalendarPageBase
+internal sealed partial class CalendarPage : Page
 {
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public CalendarPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<CalendarPageViewModel>();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CalendarPage"/> class.
     /// </summary>
     public CalendarPage()
     {
         InitializeComponent();
-    }
-
-    /// <inheritdoc/>
-    protected override void OnPageLoaded() => _ = ViewModel.InitializeAsync();
-}
-
-/// <summary>
-/// 上新日历页面基类.
-/// </summary>
-internal abstract class CalendarPageBase : LayoutPageBase<CalendarPageViewModel>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarPageBase"/> class.
-    /// </summary>
-    protected CalendarPageBase()
-    {
-        ViewModel = Ioc.Default.GetRequiredService<CalendarPageViewModel>();
+        Loaded += (_, _) => _ = ViewModel.InitializeAsync();
     }
 }

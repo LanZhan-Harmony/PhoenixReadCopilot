@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:VideoRecommendSectionBase x:Class="PhoenixReadCopilot.Controls.Player.VideoRecommendSection"
-                                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                                 xmlns:components="using:PhoenixReadCopilot.Controls.Components"
-                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                 xmlns:essential="using:WinUI3Package"
-                                 xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
-                                 xmlns:local="using:PhoenixReadCopilot.Controls.Player"
-                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                                 mc:Ignorable="d">
+<UserControl x:Class="PhoenixReadCopilot.Controls.Player.VideoRecommendSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:essential="using:WinUI3Package"
+             xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+             xmlns:local="using:PhoenixReadCopilot.Controls.Player"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
 
-    <local:VideoRecommendSectionBase.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <local:PlayerRecommendedVideoItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </local:VideoRecommendSectionBase.Resources>
+    </UserControl.Resources>
 
     <Grid>
         <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
@@ -31,4 +31,4 @@
             </ScrollView>
         </essential:RevealFocusPanel>
     </Grid>
-</local:VideoRecommendSectionBase>
+</UserControl>

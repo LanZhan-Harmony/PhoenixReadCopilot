@@ -5,6 +5,7 @@ using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Contracts.ViewModels;
+using PhoenixReadCopilot.Core.Contracts.Media;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
@@ -277,8 +278,14 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         IsPageLoading = true;
         string dramaId = string.Empty;
+        string? initialEpisodeId = null;
 
-        if (parameter is VideoSnapshot snapshot)
+        if (parameter is IPlayableMedia playable)
+        {
+            dramaId = playable.MediaId;
+            initialEpisodeId = playable.InitialEpisodeId;
+        }
+        else if (parameter is VideoSnapshot snapshot)
         {
             dramaId = snapshot.Video.Identifier.Id;
         }
@@ -289,10 +296,6 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         else if (parameter is string id)
         {
             dramaId = id;
-        }
-        else if (parameter is VideoItemViewModel videoVm)
-        {
-            dramaId = videoVm.Drama?.Id ?? videoVm.Data.Identifier.Id;
         }
 
         try
@@ -319,7 +322,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _episodes = details.Episodes;
 
             InitializeDramaView(details);
-            Episode initialPart = FindInitialPart(null)
+            Episode initialPart = FindInitialPart(initialEpisodeId)
                 ?? throw new Exception("无法找到短剧的分集信息.");
             _currentEpisode = initialPart;
 
@@ -1176,8 +1179,8 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 is VideoPlayerRecommendSectionDetailViewModel recommendSection
         )
         {
-            VideoItemViewModel? firstItem = recommendSection.Items.FirstOrDefault();
-            return firstItem?.Drama ?? (object?)firstItem?.Data;
+            DramaItemViewModel? firstItem = recommendSection.Items.FirstOrDefault();
+            return firstItem?.Drama;
         }
 
         return null;

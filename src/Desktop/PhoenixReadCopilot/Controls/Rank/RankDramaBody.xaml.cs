@@ -10,23 +10,38 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// <summary>
 /// 短剧榜单展示主体.
 /// </summary>
-internal sealed partial class RankDramaBody : RankPageControlBase
+internal sealed partial class RankDramaBody : UserControl
 {
+    public RankPageViewModel? ViewModel
+    {
+        get => (RankPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(RankPageViewModel),
+        typeof(RankDramaBody),
+        new PropertyMetadata(null, (d, e) =>
+            ((RankDramaBody)d).OnViewModelChanged(
+                (RankPageViewModel?)e.OldValue,
+                (RankPageViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RankDramaBody"/> class.
     /// </summary>
     public RankDramaBody()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
-        RankPageViewModel? oldValue,
-        RankPageViewModel? newValue
-    )
+    private void OnViewModelChanged(RankPageViewModel? oldValue, RankPageViewModel? newValue)
     {
-        base.OnViewModelChanged(oldValue, newValue);
         if (oldValue is not null)
         {
             oldValue.VideoListUpdated -= OnVideoListUpdatedAsync;
@@ -41,8 +56,7 @@ internal sealed partial class RankDramaBody : RankPageControlBase
         }
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         if (ViewModel is not null)
         {
@@ -56,8 +70,7 @@ internal sealed partial class RankDramaBody : RankPageControlBase
         CheckVideoCount();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
         DramaRepeater.ItemsSource = null;
         if (ViewModel is not null)

@@ -14,7 +14,7 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 评论详情视图模型.
 /// </summary>
-internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItemViewModel>
+internal sealed partial class CommentDetailViewModel : ViewModelBase
 {
     private readonly ILogger<CommentDetailViewModel> _logger;
     private readonly Action<CommentDetailViewModel>? _showMoreAction;
@@ -24,6 +24,11 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItem
     private readonly INotificationService? _notificationService;
     private readonly string? _dramaId;
     private readonly string? _videoId;
+
+    /// <summary>
+    /// 顶级主评论视图模型.
+    /// </summary>
+    public CommentItemViewModel Data { get; }
 
     private bool _preventLoadMore;
     private string _cursor = string.Empty;
@@ -65,8 +70,8 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase<CommentItem
         string? dramaId,
         string? videoId
     )
-        : base(data)
     {
+        Data = data;
         _showMoreAction = showMoreAction;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;

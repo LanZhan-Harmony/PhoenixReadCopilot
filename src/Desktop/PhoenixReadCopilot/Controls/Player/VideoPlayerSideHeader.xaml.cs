@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.ViewModels.View;
@@ -7,18 +8,37 @@ namespace PhoenixReadCopilot.Controls.Player;
 /// <summary>
 /// 视频播放页侧边栏头部.
 /// </summary>
-internal sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
+internal sealed partial class VideoPlayerSideHeader : UserControl
 {
+    public VideoPlayerPageViewModel? ViewModel
+    {
+        get => (VideoPlayerPageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(VideoPlayerPageViewModel),
+        typeof(VideoPlayerSideHeader),
+        new PropertyMetadata(null, (d, e) =>
+            ((VideoPlayerSideHeader)d).OnViewModelChanged(
+                (VideoPlayerPageViewModel?)e.OldValue,
+                (VideoPlayerPageViewModel?)e.NewValue
+            )
+        )
+    );
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VideoPlayerSideHeader"/> class.
     /// </summary>
     public VideoPlayerSideHeader()
     {
         InitializeComponent();
+        Loaded += (_, _) => OnControlLoaded();
+        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnControlLoaded()
     {
         Selector.SelectionChanged += OnSelectorChanged;
         if (ViewModel is null)
@@ -29,21 +49,25 @@ internal sealed partial class VideoPlayerSideHeader : VideoPlayerPageControlBase
         InitializeChildPartitions();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnControlUnloaded()
     {
-        ViewModel?.SectionInitialized -= OnViewModelSectionInitialized;
+        if (ViewModel is not null)
+        {
+            ViewModel.SectionInitialized -= OnViewModelSectionInitialized;
+        }
 
         Selector.SelectionChanged -= OnSelectorChanged;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         VideoPlayerPageViewModel? oldValue,
         VideoPlayerPageViewModel? newValue
     )
     {
-        oldValue?.SectionInitialized -= OnViewModelSectionInitialized;
+        if (oldValue is not null)
+        {
+            oldValue.SectionInitialized -= OnViewModelSectionInitialized;
+        }
 
         if (newValue is null)
         {
