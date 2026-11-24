@@ -22,9 +22,6 @@ internal sealed partial class DanmakuDisplayOptions : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DanmakuDisplayOptions"/> class.
-    /// </summary>
     public DanmakuDisplayOptions()
     {
         InitializeComponent();

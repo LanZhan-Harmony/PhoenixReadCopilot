@@ -55,9 +55,6 @@ internal sealed partial class UserItemViewModel : ViewModelBase
     /// </summary>
     public PhoenixReadApi.User? UserData { get; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UserItemViewModel"/> class.
-    /// </summary>
     public UserItemViewModel(UserCard data)
     {
         Data = data;

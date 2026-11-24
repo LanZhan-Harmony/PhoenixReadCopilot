@@ -13,9 +13,6 @@ public sealed class CalendarService : ICalendarService
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<CalendarService> _logger;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarService"/> class.
-    /// </summary>
     public CalendarService(PhoenixReadApiClient apiClient, ILogger<CalendarService> logger)
     {
         _apiClient = apiClient;

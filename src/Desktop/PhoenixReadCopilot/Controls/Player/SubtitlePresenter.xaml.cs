@@ -22,9 +22,6 @@ internal sealed partial class SubtitlePresenter : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SubtitlePresenter"/> class.
-    /// </summary>
     public SubtitlePresenter()
     {
         InitializeComponent();

@@ -16,9 +16,6 @@ internal sealed partial class HeaderAccountControl : UserControl
 
     public AccountViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<AccountViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HeaderAccountControl"/> class.
-    /// </summary>
     public HeaderAccountControl()
     {
         InitializeComponent();

@@ -22,9 +22,6 @@ internal sealed partial class CalendarSideHeader : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarSideHeader"/> class.
-    /// </summary>
     public CalendarSideHeader()
     {
         InitializeComponent();

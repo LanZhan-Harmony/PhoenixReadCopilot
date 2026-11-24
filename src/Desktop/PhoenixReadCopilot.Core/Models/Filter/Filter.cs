@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Filter;
 /// </summary>
 public sealed class Filter
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Filter"/> class.
-    /// </summary>
     public Filter(string key, string name, IReadOnlyList<Condition> conditions)
     {
         Key = key;

@@ -47,9 +47,6 @@ internal sealed partial class EmoteTextBlock : UserControl
         new PropertyMetadata(null, new PropertyChangedCallback(OnTextChanged))
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmoteTextBlock"/> class.
-    /// </summary>
     public EmoteTextBlock()
     {
         InitializeComponent();

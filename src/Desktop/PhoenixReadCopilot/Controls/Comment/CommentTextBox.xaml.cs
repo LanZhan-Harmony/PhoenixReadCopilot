@@ -78,9 +78,6 @@ internal sealed partial class CommentTextBox : UserControl
             new PropertyMetadata(null)
         );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommentTextBox"/> class.
-    /// </summary>
     public CommentTextBox()
     {
         InitializeComponent();

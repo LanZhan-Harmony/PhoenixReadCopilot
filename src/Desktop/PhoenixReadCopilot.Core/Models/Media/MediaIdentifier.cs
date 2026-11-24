@@ -7,9 +7,6 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// </summary>
 public sealed class MediaIdentifier
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MediaIdentifier"/> class.
-    /// </summary>
     public MediaIdentifier(string id, string title, AppImage? cover = null, string? url = null)
     {
         Id = id;

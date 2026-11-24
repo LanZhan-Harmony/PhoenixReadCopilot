@@ -29,9 +29,6 @@ public sealed class LikeService : ILikeService
     /// <inheritdoc/>
     public event EventHandler? LikeChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LikeService"/> class.
-    /// </summary>
     public LikeService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

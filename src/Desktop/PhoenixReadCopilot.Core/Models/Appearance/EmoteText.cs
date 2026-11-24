@@ -20,9 +20,6 @@ public sealed class EmoteText
     /// </summary>
     public IList<AppImage>? Pictures { get; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmoteText"/> class.
-    /// </summary>
     public EmoteText(
         string text,
         Dictionary<string, AppImage>? emotes,

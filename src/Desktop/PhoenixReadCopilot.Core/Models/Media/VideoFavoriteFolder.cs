@@ -7,9 +7,6 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// </summary>
 public sealed class VideoFavoriteFolder
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoFavoriteFolder"/> class.
-    /// </summary>
     public VideoFavoriteFolder(
         string id,
         string title,

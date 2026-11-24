@@ -19,9 +19,6 @@ internal sealed partial class VideoPlayerPage : Page
     /// </summary>
     public VideoPlayerPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<VideoPlayerPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerPage"/> class.
-    /// </summary>
     public VideoPlayerPage()
     {
         InitializeComponent();

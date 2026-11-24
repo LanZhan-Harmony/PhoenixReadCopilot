@@ -23,9 +23,6 @@ internal sealed partial class SearchSideBody : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchSideBody"/> class.
-    /// </summary>
     public SearchSideBody()
     {
         InitializeComponent();

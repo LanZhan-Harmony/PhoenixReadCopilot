@@ -11,9 +11,6 @@ internal sealed partial class LayoutSettingSection : UserControl
 {
     public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LayoutSettingSection"/> class.
-    /// </summary>
     public LayoutSettingSection()
     {
         InitializeComponent();

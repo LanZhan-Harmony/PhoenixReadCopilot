@@ -23,9 +23,6 @@ internal sealed partial class RankSideBody : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankSideBody"/> class.
-    /// </summary>
     public RankSideBody()
     {
         InitializeComponent();

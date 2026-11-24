@@ -22,9 +22,6 @@ internal sealed partial class Pinner : UserControl
 
     public PinnerViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<PinnerViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Pinner"/> class.
-    /// </summary>
     public Pinner()
     {
         InitializeComponent();

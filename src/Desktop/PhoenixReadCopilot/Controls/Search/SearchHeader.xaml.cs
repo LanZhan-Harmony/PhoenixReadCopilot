@@ -22,9 +22,6 @@ internal sealed partial class SearchHeader : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchHeader"/> class.
-    /// </summary>
     public SearchHeader()
     {
         InitializeComponent();

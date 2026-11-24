@@ -90,9 +90,6 @@ internal sealed partial class ReadHistoryItemViewModel : ViewModelBase, IPlayabl
 
     #endregion
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReadHistoryItemViewModel"/> class.
-    /// </summary>
     public ReadHistoryItemViewModel(
         ReadHistoryItem history,
         Action<ReadHistoryItemViewModel>? removeAction = null

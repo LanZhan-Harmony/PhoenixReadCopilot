@@ -47,9 +47,6 @@ internal sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public ObservableCollection<DramaItemViewModel> Items { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterPageViewModel"/> class.
-    /// </summary>
     public FilterPageViewModel(
         IFilterService filterService,
         ILogger<FilterPageViewModel> logger,

@@ -24,9 +24,6 @@ internal sealed partial class ShimmerLayout : Control
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ShimmerLayout"/> class.
-    /// </summary>
     public ShimmerLayout()
     {
         DefaultStyleKey = typeof(ShimmerLayout);

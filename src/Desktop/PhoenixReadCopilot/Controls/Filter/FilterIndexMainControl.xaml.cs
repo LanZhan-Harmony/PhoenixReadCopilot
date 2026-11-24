@@ -30,9 +30,6 @@ internal sealed partial class FilterIndexMainControl : UserControl
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterIndexMainControl"/> class.
-    /// </summary>
     public FilterIndexMainControl()
     {
         InitializeComponent();

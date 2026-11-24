@@ -22,9 +22,6 @@ internal sealed partial class PlayerFormatItemViewModel : ViewModelBase
     /// </summary>
     public PlaybackMedia? PlaybackMedia { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerFormatItemViewModel"/> class.
-    /// </summary>
     public PlayerFormatItemViewModel(PlayerFormatInformation data)
     {
         Data = data;

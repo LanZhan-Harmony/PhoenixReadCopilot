@@ -15,9 +15,6 @@ internal sealed partial class SettingsPage : Page
     /// </summary>
     public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SettingsPage"/> class.
-    /// </summary>
     public SettingsPage()
     {
         InitializeComponent();

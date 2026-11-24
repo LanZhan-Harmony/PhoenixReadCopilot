@@ -10,9 +10,6 @@ internal sealed class RenderLayer
 {
     private readonly uint _layerId;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RenderLayer"/> class.
-    /// </summary>
     /// <param name="layerId">图层 ID (0 为最低层，数值越大层级越高).</param>
     /// <param name="requireStrictRenderOrder">是否要求严格的渲染顺序.</param>
     internal RenderLayer(uint layerId, bool requireStrictRenderOrder)

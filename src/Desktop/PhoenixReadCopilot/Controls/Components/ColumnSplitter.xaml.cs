@@ -155,9 +155,6 @@ internal sealed partial class ColumnSplitter : UserControl
             new PropertyMetadata(null)
         );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ColumnSplitter"/> class.
-    /// </summary>
     public ColumnSplitter()
     {
         InitializeComponent();

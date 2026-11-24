@@ -148,9 +148,6 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
     /// </summary>
     public Window AttachedWindow { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerViewModelBase"/> class.
-    /// </summary>
     protected PlayerViewModelBase(
         ISettingsService settingsService,
         IWindowService windowService,

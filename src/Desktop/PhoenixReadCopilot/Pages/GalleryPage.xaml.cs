@@ -20,9 +20,6 @@ internal sealed partial class GalleryPage : Page
     /// </summary>
     public GalleryPageViewModel? ViewModel { get; private set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GalleryPage"/> class.
-    /// </summary>
     public GalleryPage()
     {
         InitializeComponent();

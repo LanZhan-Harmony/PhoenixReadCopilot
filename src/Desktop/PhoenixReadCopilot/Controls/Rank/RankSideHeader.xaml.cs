@@ -22,9 +22,6 @@ internal sealed partial class RankSideHeader : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankSideHeader"/> class.
-    /// </summary>
     public RankSideHeader()
     {
         InitializeComponent();

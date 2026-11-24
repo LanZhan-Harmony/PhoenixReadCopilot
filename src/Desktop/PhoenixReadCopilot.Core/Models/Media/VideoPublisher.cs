@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// </summary>
 public sealed class VideoPublisher
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPublisher"/> class.
-    /// </summary>
     public VideoPublisher(User.User user)
     {
         User = user;

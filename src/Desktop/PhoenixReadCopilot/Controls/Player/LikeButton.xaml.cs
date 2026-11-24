@@ -57,9 +57,6 @@ internal sealed partial class LikeButton : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LikeButton"/> class.
-    /// </summary>
     public LikeButton()
     {
         InitializeComponent();

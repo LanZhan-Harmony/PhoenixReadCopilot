@@ -190,9 +190,6 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     /// </summary>
     public Episode? CurrentEpisode => _currentEpisode;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerPageViewModel"/> class.
-    /// </summary>
     public VideoPlayerPageViewModel(
         ILogger<VideoPlayerPageViewModel> logger,
         DanmakuViewModel danmaku,

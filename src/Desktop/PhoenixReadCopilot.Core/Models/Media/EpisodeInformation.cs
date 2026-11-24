@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// </summary>
 public sealed class EpisodeInformation
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EpisodeInformation"/> class.
-    /// </summary>
     public EpisodeInformation(
         MediaIdentifier identifier,
         double? duration = null,

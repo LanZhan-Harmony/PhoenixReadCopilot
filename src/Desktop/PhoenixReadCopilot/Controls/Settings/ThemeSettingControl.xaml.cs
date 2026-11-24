@@ -12,9 +12,6 @@ internal sealed partial class ThemeSettingControl : UserControl
 {
     public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ThemeSettingControl"/> class.
-    /// </summary>
     public ThemeSettingControl()
     {
         InitializeComponent();

@@ -10,9 +10,6 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 internal sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemViewModel
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankSectionItemViewModel"/> class.
-    /// </summary>
     public RankSectionItemViewModel(
         FluentIcons.Common.Symbol symbol,
         string title,

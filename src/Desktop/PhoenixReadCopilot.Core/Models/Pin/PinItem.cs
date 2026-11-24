@@ -7,14 +7,8 @@ namespace PhoenixReadCopilot.Core.Models.Pin;
 /// </summary>
 public sealed class PinItem
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PinItem"/> class.
-    /// </summary>
     public PinItem() { }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PinItem"/> class.
-    /// </summary>
     public PinItem(string id, string title, string cover, PinType type)
     {
         Cover = cover;

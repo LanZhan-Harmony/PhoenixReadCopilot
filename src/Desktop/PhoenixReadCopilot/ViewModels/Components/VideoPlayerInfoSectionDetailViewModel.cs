@@ -11,9 +11,6 @@ internal sealed partial class VideoPlayerInfoSectionDetailViewModel
     : ViewModelBase,
         IPlayerSectionDetailViewModel
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerInfoSectionDetailViewModel"/> class.
-    /// </summary>
     public VideoPlayerInfoSectionDetailViewModel(VideoPlayerPageViewModel pageVM)
     {
         Page = pageVM;

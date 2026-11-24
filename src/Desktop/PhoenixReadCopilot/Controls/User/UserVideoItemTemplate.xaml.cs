@@ -8,9 +8,6 @@ namespace PhoenixReadCopilot.Controls.User;
 /// </summary>
 internal sealed partial class UserVideoItemTemplate : ResourceDictionary
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UserVideoItemTemplate"/> class.
-    /// </summary>
     public UserVideoItemTemplate()
     {
         InitializeComponent();

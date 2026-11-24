@@ -34,9 +34,6 @@ internal sealed partial class FFmpegPlayer : Control
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FFmpegPlayer"/> class.
-    /// </summary>
     public FFmpegPlayer()
     {
         DefaultStyleKey = typeof(FFmpegPlayer);

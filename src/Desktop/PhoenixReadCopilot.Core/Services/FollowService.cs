@@ -25,9 +25,6 @@ public sealed class FollowService : IFollowService
     /// <inheritdoc/>
     public event EventHandler? FollowChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FollowService"/> class.
-    /// </summary>
     public FollowService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

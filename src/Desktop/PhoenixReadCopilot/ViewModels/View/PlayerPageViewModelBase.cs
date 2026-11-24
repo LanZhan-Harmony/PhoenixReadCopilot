@@ -21,9 +21,6 @@ internal abstract partial class PlayerPageViewModelBase : LayoutPageViewModelBas
     [ObservableProperty]
     public partial bool IsSeparatorWindowPlayer { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerPageViewModelBase"/> class.
-    /// </summary>
     protected PlayerPageViewModelBase(ISettingsService settingsService, IWindowService windowService)
         : base(settingsService)
     {

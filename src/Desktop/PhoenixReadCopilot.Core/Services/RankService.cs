@@ -13,9 +13,6 @@ public sealed class RankService : IRankService
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<RankService> _logger;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankService"/> class.
-    /// </summary>
     public RankService(PhoenixReadApiClient apiClient, ILogger<RankService> logger)
     {
         _apiClient = apiClient;

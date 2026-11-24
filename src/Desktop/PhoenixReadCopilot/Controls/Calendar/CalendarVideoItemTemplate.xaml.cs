@@ -8,9 +8,6 @@ namespace PhoenixReadCopilot.Controls.Calendar;
 /// </summary>
 internal sealed partial class CalendarVideoItemTemplate : ResourceDictionary
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarVideoItemTemplate"/> class.
-    /// </summary>
     public CalendarVideoItemTemplate()
     {
         InitializeComponent();

@@ -24,9 +24,6 @@ internal sealed partial class SideBottomLoadingWidget : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SideBottomLoadingWidget"/> class.
-    /// </summary>
     public SideBottomLoadingWidget()
     {
         InitializeComponent();

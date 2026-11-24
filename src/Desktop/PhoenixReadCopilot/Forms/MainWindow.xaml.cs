@@ -36,9 +36,6 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
     private bool _isFirstActivated = true;
     private bool _shouldExit;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MainWindow"/> class.
-    /// </summary>
     public MainWindow()
     {
         _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();

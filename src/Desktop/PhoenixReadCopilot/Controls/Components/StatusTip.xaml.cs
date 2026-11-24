@@ -40,9 +40,6 @@ internal sealed partial class StatusTip : UserControl
         new PropertyMetadata(null, new PropertyChangedCallback(OnStatusChanged))
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StatusTip"/> class.
-    /// </summary>
     public StatusTip()
     {
         InitializeComponent();

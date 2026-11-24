@@ -28,9 +28,6 @@ internal sealed partial class CalendarTimelineSideControl : UserControl
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarTimelineSideControl"/> class.
-    /// </summary>
     public CalendarTimelineSideControl()
     {
         InitializeComponent();

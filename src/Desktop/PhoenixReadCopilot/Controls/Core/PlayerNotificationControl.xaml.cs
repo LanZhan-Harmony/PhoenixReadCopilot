@@ -22,9 +22,6 @@ internal sealed partial class PlayerNotificationControl : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerNotificationControl"/> class.
-    /// </summary>
     public PlayerNotificationControl()
     {
         InitializeComponent();

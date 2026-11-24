@@ -25,9 +25,6 @@ internal sealed partial class SearchSectionItemControl : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchSectionItemControl"/> class.
-    /// </summary>
     public SearchSectionItemControl()
     {
         InitializeComponent();

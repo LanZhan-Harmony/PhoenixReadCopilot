@@ -23,9 +23,6 @@ internal sealed partial class SubtitleButton : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SubtitleButton"/> class.
-    /// </summary>
     public SubtitleButton()
     {
         InitializeComponent();

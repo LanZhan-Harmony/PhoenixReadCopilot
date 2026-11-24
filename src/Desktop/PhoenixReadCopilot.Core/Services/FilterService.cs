@@ -15,9 +15,6 @@ public sealed class FilterService : IFilterService
     private readonly SemaphoreSlim _lock = new(1, 1);
     private readonly Dictionary<ShortDramaGenre, IReadOnlyList<ShortDramaFilterGroup>> _panelCache = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterService"/> class.
-    /// </summary>
     public FilterService(PhoenixReadApiClient apiClient, ILogger<FilterService> logger)
     {
         _apiClient = apiClient;

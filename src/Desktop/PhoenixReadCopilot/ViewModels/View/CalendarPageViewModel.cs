@@ -57,9 +57,6 @@ internal sealed partial class CalendarPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public event EventHandler? TimelineItemsUpdated;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarPageViewModel"/> class.
-    /// </summary>
     public CalendarPageViewModel(
         ICalendarService calendarService,
         ILogger<CalendarPageViewModel> logger,

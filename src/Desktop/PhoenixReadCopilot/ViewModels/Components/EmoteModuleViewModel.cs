@@ -16,9 +16,6 @@ internal sealed partial class EmoteModuleViewModel : ViewModelBase
     /// </summary>
     public IReadOnlyList<EmojiItem> Emojis => EmojiHelper.AllEmojis;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmoteModuleViewModel"/> class.
-    /// </summary>
     public EmoteModuleViewModel() { }
 
     public async Task InitializeAsync()

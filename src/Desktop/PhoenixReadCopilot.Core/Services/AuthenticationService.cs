@@ -22,9 +22,6 @@ public sealed class AuthenticationService : IAuthenticationService
     /// <inheritdoc/>
     public event EventHandler<bool>? StateChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AuthenticationService"/> class.
-    /// </summary>
     public AuthenticationService(
         PhoenixReadApiClient apiClient,
         ILogger<AuthenticationService> logger

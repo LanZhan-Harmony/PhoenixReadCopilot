@@ -6,7 +6,6 @@ namespace PhoenixReadCopilot.Converters;
 
 internal sealed partial class PlayerTypeConverter : IValueConverter
 {
-    /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         string result = string.Empty;
@@ -23,7 +22,6 @@ internal sealed partial class PlayerTypeConverter : IValueConverter
         return result;
     }
 
-    /// <inheritdoc/>
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>
         throw new NotImplementedException();
 }

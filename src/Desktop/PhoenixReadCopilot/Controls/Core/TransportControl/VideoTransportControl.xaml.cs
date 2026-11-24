@@ -75,9 +75,6 @@ internal sealed partial class VideoTransportControl : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoTransportControl"/> class.
-    /// </summary>
     public VideoTransportControl()
     {
         InitializeComponent();

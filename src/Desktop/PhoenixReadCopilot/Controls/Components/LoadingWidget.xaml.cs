@@ -24,9 +24,6 @@ internal sealed partial class LoadingWidget : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LoadingWidget"/> class.
-    /// </summary>
     public LoadingWidget()
     {
         InitializeComponent();

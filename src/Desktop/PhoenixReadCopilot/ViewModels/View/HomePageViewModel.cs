@@ -47,9 +47,6 @@ internal sealed partial class HomePageViewModel : LayoutPageViewModelBase
     /// </summary>
     public ObservableCollection<DramaItemViewModel> Videos { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
-    /// </summary>
     public HomePageViewModel(
         IRecommendService recommendService,
         ILogger<HomePageViewModel> logger,

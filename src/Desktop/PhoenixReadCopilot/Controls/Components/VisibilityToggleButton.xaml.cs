@@ -87,9 +87,6 @@ internal sealed partial class VisibilityToggleButton : UserControl
     /// </summary>
     public event EventHandler Click;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VisibilityToggleButton"/> class.
-    /// </summary>
     public VisibilityToggleButton()
     {
         InitializeComponent();

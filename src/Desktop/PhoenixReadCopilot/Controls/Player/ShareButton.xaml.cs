@@ -25,9 +25,6 @@ internal sealed partial class ShareButton : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ShareButton"/> class.
-    /// </summary>
     public ShareButton()
     {
         InitializeComponent();

@@ -26,9 +26,6 @@ internal sealed partial class EmotePanel : UserControl
     /// </summary>
     public event EventHandler<string>? ItemClick;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmotePanel"/> class.
-    /// </summary>
     public EmotePanel()
     {
         ViewModel = Ioc.Default.GetRequiredService<EmoteModuleViewModel>();

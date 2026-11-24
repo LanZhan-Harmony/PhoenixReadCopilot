@@ -32,9 +32,6 @@ internal sealed partial class DownloadButton : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DownloadButton"/> class.
-    /// </summary>
     public DownloadButton()
     {
         InitializeComponent();

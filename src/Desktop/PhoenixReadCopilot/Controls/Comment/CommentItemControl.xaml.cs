@@ -55,9 +55,6 @@ internal sealed partial class CommentItemControl : UserControl
         new PropertyMetadata(true)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommentItemControl"/> class.
-    /// </summary>
     public CommentItemControl()
     {
         InitializeComponent();

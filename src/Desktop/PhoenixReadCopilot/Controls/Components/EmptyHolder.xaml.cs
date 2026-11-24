@@ -72,9 +72,6 @@ internal sealed partial class EmptyHolder : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EmptyHolder"/> class.
-    /// </summary>
     public EmptyHolder()
     {
         InitializeComponent();

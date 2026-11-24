@@ -41,9 +41,6 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppNavigationViewItem"/> class.
-    /// </summary>
     public AppNavigationViewItem()
     {
         DefaultStyleKey = typeof(AppNavigationViewItem);
@@ -71,9 +68,6 @@ public sealed partial class AppNavigationViewItemPresenter : NavigationViewItemP
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppNavigationViewItemPresenter"/> class.
-    /// </summary>
     public AppNavigationViewItemPresenter()
     {
         DefaultStyleKey = typeof(AppNavigationViewItemPresenter);

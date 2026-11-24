@@ -14,9 +14,6 @@ public sealed class CommentService : ICommentService
     private readonly IAuthenticationService _authService;
     private readonly ILogger<CommentService> _logger;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommentService"/> class.
-    /// </summary>
     public CommentService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

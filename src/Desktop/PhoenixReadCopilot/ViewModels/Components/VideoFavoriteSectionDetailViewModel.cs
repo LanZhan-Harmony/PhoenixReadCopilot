@@ -54,9 +54,6 @@ internal sealed partial class VideoFavoriteSectionDetailViewModel
     /// </summary>
     public ObservableCollection<DramaItemViewModel> Items { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoFavoriteSectionDetailViewModel"/> class.
-    /// </summary>
     public VideoFavoriteSectionDetailViewModel(
         VideoFavoriteFolder data,
         IFavoriteService favoriteService,

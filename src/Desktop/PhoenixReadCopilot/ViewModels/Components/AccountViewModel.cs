@@ -38,9 +38,6 @@ internal sealed partial class AccountViewModel : ViewModelBase
     [ObservableProperty]
     public partial string Introduce { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AccountViewModel"/> class.
-    /// </summary>
     public AccountViewModel(
         IAuthenticationService authService,
         IHistoryService historyService,

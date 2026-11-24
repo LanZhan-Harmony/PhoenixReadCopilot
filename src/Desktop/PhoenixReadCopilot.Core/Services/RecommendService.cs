@@ -13,9 +13,6 @@ public sealed class RecommendService : IRecommendService
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<RecommendService> _logger;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RecommendService"/> class.
-    /// </summary>
     public RecommendService(PhoenixReadApiClient apiClient, ILogger<RecommendService> logger)
     {
         _apiClient = apiClient;

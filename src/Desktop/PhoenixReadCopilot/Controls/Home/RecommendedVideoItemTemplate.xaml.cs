@@ -8,9 +8,6 @@ namespace PhoenixReadCopilot.Controls.Home;
 /// </summary>
 internal sealed partial class RecommendedVideoItemTemplate : ResourceDictionary
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RecommendedVideoItemTemplate"/> class.
-    /// </summary>
     public RecommendedVideoItemTemplate()
     {
         InitializeComponent();

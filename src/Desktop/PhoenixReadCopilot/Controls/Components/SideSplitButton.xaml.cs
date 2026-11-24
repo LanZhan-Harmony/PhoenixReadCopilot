@@ -47,9 +47,6 @@ internal sealed partial class SideSplitButton : UserControl
             new PropertyMetadata(null)
         );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SideSplitButton"/> class.
-    /// </summary>
     public SideSplitButton()
     {
         InitializeComponent();

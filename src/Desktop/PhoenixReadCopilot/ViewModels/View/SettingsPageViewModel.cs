@@ -64,9 +64,6 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     [ObservableProperty]
     public partial List<MTCBehavior> MTCBehaviorCollection { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SettingsPageViewModel"/> class.
-    /// </summary>
     public SettingsPageViewModel(
         ISettingsService settingsService,
         IWindowService windowService,

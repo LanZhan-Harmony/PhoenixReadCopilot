@@ -42,9 +42,6 @@ internal sealed partial class SearchBoxViewModel : ViewModelBase
     /// </summary>
     public ObservableCollection<HotSearchItem> HotSearchItems { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchBoxViewModel"/> class.
-    /// </summary>
     public SearchBoxViewModel(
         ISearchService searchService,
         INavigationService navigationService,

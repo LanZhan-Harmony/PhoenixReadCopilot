@@ -24,9 +24,6 @@ internal sealed partial class DanmakuSendOptions : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DanmakuSendOptions"/> class.
-    /// </summary>
     public DanmakuSendOptions()
     {
         InitializeComponent();

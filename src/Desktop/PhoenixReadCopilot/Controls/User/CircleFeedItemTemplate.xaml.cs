@@ -8,9 +8,6 @@ namespace PhoenixReadCopilot.Controls.User;
 /// </summary>
 internal sealed partial class CircleFeedItemTemplate : ResourceDictionary
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CircleFeedItemTemplate"/> class.
-    /// </summary>
     public CircleFeedItemTemplate()
     {
         InitializeComponent();

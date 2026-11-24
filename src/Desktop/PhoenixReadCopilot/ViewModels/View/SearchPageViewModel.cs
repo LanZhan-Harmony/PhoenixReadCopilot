@@ -43,9 +43,6 @@ internal sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public event EventHandler? SectionInitialized;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchPageViewModel"/> class.
-    /// </summary>
     public SearchPageViewModel(
         ISearchService searchService,
         ILogger<SearchPageViewModel> logger,

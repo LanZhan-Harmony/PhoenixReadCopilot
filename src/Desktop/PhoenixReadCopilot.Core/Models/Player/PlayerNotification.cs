@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Player;
 /// </summary>
 public sealed class PlayerNotification
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerNotification"/> class.
-    /// </summary>
     public PlayerNotification(Action action, string message, int duration)
     {
         Action = action;

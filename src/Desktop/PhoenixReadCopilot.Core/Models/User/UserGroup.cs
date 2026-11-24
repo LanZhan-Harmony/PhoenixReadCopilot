@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.User;
 /// </summary>
 public sealed class UserGroup
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UserGroup"/> class.
-    /// </summary>
     public UserGroup(string id, string name, int totalCount = 0)
     {
         Id = id;

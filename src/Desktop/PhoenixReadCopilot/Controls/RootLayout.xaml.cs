@@ -26,9 +26,6 @@ internal sealed partial class RootLayout : UserControl
 
     public RootLayoutViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<RootLayoutViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RootLayout"/> class.
-    /// </summary>
     public RootLayout()
     {
         InitializeComponent();

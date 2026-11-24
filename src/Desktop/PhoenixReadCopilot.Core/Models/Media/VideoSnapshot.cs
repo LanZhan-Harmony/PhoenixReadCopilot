@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// </summary>
 public sealed class VideoSnapshot
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoSnapshot"/> class.
-    /// </summary>
     public VideoSnapshot(VideoInformation video, bool isPrivate = false)
     {
         Video = video;

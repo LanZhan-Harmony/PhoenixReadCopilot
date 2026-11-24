@@ -25,9 +25,6 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
 
     private bool _isActivated;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GalleryWindow"/> class.
-    /// </summary>
     public GalleryWindow(AppImage image, List<AppImage>? list = null)
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;

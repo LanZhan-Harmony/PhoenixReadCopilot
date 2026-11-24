@@ -22,9 +22,6 @@ public sealed class DramaService : IDramaService
 
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DramaService"/> class.
-    /// </summary>
     public DramaService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

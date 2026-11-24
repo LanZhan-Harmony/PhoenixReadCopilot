@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Subtitle;
 /// </summary>
 public sealed class SubtitleMeta
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SubtitleMeta"/> class.
-    /// </summary>
     public SubtitleMeta(
         string id,
         string language,

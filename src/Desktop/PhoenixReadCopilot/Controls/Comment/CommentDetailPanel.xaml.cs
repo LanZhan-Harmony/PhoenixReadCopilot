@@ -28,9 +28,6 @@ internal sealed partial class CommentDetailPanel : UserControl
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommentDetailPanel"/> class.
-    /// </summary>
     public CommentDetailPanel()
     {
         InitializeComponent();

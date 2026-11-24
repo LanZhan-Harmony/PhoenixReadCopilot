@@ -29,9 +29,6 @@ internal sealed partial class PinnerViewModel : ViewModelBase
     /// </summary>
     public ObservableCollection<PinItem> Items { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PinnerViewModel"/> class.
-    /// </summary>
     public PinnerViewModel(
         IPinService pinService,
         INotificationService notificationService,

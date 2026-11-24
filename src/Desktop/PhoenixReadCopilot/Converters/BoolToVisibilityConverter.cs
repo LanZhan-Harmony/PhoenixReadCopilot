@@ -13,7 +13,6 @@ internal sealed partial class BoolToVisibilityConverter : IValueConverter
     /// </summary>
     public bool IsReverse { get; set; }
 
-    /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         Visibility vis = Visibility.Collapsed;
@@ -31,7 +30,6 @@ internal sealed partial class BoolToVisibilityConverter : IValueConverter
         return vis;
     }
 
-    /// <inheritdoc/>
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>
         throw new NotImplementedException();
 }

@@ -30,9 +30,6 @@ internal sealed partial class RankDramaBody : UserControl
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankDramaBody"/> class.
-    /// </summary>
     public RankDramaBody()
     {
         InitializeComponent();

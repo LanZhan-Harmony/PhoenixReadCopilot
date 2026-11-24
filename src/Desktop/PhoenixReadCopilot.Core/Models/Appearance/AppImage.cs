@@ -22,9 +22,6 @@ public sealed class AppImage
     /// </summary>
     public double Height { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppImage"/> class.
-    /// </summary>
     public AppImage(Uri uri, double width = 0, double height = 0)
     {
         Uri = uri;
@@ -32,9 +29,6 @@ public sealed class AppImage
         Height = height;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppImage"/> class.
-    /// </summary>
     public AppImage(string url, double width = 0, double height = 0)
         : this(new Uri(url), width, height) { }
 

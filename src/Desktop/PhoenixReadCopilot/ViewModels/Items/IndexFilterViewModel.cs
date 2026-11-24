@@ -31,9 +31,6 @@ internal sealed partial class IndexFilterViewModel : ViewModelBase
     /// </summary>
     public string Name => Data.Name;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="IndexFilterViewModel"/> class.
-    /// </summary>
     public IndexFilterViewModel(Filter filter, Action? reloadAction)
     {
         Data = filter;

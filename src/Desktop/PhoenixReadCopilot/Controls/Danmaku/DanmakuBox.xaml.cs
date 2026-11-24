@@ -24,9 +24,6 @@ internal sealed partial class DanmakuBox : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DanmakuBox"/> class.
-    /// </summary>
     public DanmakuBox()
     {
         InitializeComponent();

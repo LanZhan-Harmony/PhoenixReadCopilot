@@ -14,9 +14,6 @@ internal sealed partial class FilterPage : Page
     /// </summary>
     public FilterPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<FilterPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterPage"/> class.
-    /// </summary>
     public FilterPage()
     {
         InitializeComponent();

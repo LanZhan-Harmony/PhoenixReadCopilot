@@ -9,9 +9,6 @@ namespace Danmaku.Core.Models;
 [DebuggerDisplay("{Item.Text} at {FirstRenderTime.TotalMilliseconds}")]
 internal sealed class DanmakuDirectXRenderItem : IDisposable
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DanmakuDirectXRenderItem"/> class.
-    /// </summary>
     /// <param name="item">弹幕数据项.</param>
     internal DanmakuDirectXRenderItem(DanmakuItem item)
     {

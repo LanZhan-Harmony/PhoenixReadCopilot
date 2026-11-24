@@ -7,9 +7,6 @@ namespace PhoenixReadCopilot.Controls.Rank;
 /// </summary>
 internal sealed partial class RankActorItemTemplate : ResourceDictionary
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankActorItemTemplate"/> class.
-    /// </summary>
     public RankActorItemTemplate()
     {
         InitializeComponent();

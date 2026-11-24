@@ -25,9 +25,6 @@ internal sealed partial class VideoPlayerFormatButton : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerFormatButton"/> class.
-    /// </summary>
     public VideoPlayerFormatButton()
     {
         InitializeComponent();

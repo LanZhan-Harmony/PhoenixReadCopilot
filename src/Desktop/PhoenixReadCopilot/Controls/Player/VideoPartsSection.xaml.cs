@@ -28,9 +28,6 @@ internal sealed partial class VideoPartsSection : UserControl
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPartsSection"/> class.
-    /// </summary>
     public VideoPartsSection()
     {
         InitializeComponent();

@@ -24,9 +24,6 @@ public sealed class HistoryService : IHistoryService
     /// <inheritdoc/>
     public event EventHandler? HistoryChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HistoryService"/> class.
-    /// </summary>
     public HistoryService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

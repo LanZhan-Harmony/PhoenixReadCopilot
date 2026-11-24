@@ -25,9 +25,6 @@ public sealed class FavoriteService : IFavoriteService
     /// <inheritdoc/>
     public event EventHandler? FavoriteChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FavoriteService"/> class.
-    /// </summary>
     public FavoriteService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

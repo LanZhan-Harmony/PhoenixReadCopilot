@@ -19,9 +19,6 @@ internal sealed partial class HomePage : Page
     /// </summary>
     public HomePageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<HomePageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HomePage"/> class.
-    /// </summary>
     public HomePage()
     {
         InitializeComponent();

@@ -34,9 +34,6 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
     [ObservableProperty]
     public partial AppImage SelectedImage { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GalleryPageViewModel"/> class.
-    /// </summary>
     public GalleryPageViewModel(
         AppImage image,
         List<AppImage>? images,

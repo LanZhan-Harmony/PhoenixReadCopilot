@@ -78,9 +78,6 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
     /// </summary>
     public event EventHandler? RequestClose;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StartupPageViewModel"/> class.
-    /// </summary>
     public StartupPageViewModel(
         IAuthenticationService authService,
         IAppLifecycleService lifecycleService,

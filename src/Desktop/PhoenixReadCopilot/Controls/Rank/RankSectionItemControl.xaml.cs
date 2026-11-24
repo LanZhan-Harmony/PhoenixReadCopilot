@@ -22,9 +22,6 @@ internal sealed partial class RankSectionItemControl : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankSectionItemControl"/> class.
-    /// </summary>
     public RankSectionItemControl()
     {
         InitializeComponent();

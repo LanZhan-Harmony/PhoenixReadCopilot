@@ -24,9 +24,6 @@ public sealed class PinService : IPinService
     /// <inheritdoc/>
     public event EventHandler? PinChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PinService"/> class.
-    /// </summary>
     public PinService(
         IPathService pathService,
         IAuthenticationService authService,

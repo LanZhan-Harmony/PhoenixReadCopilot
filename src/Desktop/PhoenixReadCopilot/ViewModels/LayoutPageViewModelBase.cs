@@ -20,9 +20,6 @@ internal abstract partial class LayoutPageViewModelBase : ViewModelBase
     [ObservableProperty]
     public partial bool IsNavColumnManualHide { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LayoutPageViewModelBase"/> class.
-    /// </summary>
     protected LayoutPageViewModelBase(ISettingsService settingsService)
     {
         _settings = settingsService.Settings;

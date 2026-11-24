@@ -14,9 +14,6 @@ internal sealed partial class RankPage : Page
     /// </summary>
     public RankPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<RankPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankPage"/> class.
-    /// </summary>
     public RankPage()
     {
         InitializeComponent();

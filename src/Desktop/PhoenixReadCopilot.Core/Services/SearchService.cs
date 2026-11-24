@@ -27,9 +27,6 @@ public sealed class SearchService : ISearchService
     /// <inheritdoc/>
     public event EventHandler? SearchHistoryChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchService"/> class.
-    /// </summary>
     public SearchService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

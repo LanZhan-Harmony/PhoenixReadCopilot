@@ -14,27 +14,18 @@ internal sealed partial class SearchSuggestItemViewModel : ViewModelBase
     [ObservableProperty]
     public partial string? RegionName { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchSuggestItemViewModel"/> class.
-    /// </summary>
     public SearchSuggestItemViewModel(SearchSuggestItem item)
     {
         Keyword = item.Keyword;
         SearchContent = item.Text;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchSuggestItemViewModel"/> class.
-    /// </summary>
     public SearchSuggestItemViewModel(string keyword)
     {
         Keyword = keyword;
         SearchContent = keyword;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchSuggestItemViewModel"/> class.
-    /// </summary>
     public SearchSuggestItemViewModel(string regionId, string regionName)
     {
         RegionId = regionId;

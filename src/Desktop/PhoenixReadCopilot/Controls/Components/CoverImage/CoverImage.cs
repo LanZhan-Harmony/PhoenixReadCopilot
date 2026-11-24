@@ -117,9 +117,6 @@ internal sealed partial class CoverImage : Control
         new PropertyMetadata(Stretch.UniformToFill)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CoverImage"/> class.
-    /// </summary>
     public CoverImage()
     {
         DefaultStyleKey = typeof(CoverImage);

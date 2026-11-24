@@ -11,9 +11,6 @@ internal sealed partial class NavigationSettingControl : UserControl
 {
     public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NavigationSettingControl"/> class.
-    /// </summary>
     public NavigationSettingControl()
     {
         InitializeComponent();

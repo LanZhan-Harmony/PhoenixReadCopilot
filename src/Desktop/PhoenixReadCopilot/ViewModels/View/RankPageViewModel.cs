@@ -87,9 +87,6 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
     /// </summary>
     public ObservableCollection<ActorItemViewModel> Actors { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankPageViewModel"/> class.
-    /// </summary>
     public RankPageViewModel(
         IRankService rankService,
         ILogger<RankPageViewModel> logger,

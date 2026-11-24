@@ -13,9 +13,6 @@ public sealed class DanmakuService : IDanmakuService
     private readonly PhoenixReadApiClient _apiClient;
     private readonly ILogger<DanmakuService> _logger;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DanmakuService"/> class.
-    /// </summary>
     public DanmakuService(PhoenixReadApiClient apiClient, ILogger<DanmakuService> logger)
     {
         _apiClient = apiClient;

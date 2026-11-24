@@ -144,9 +144,6 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
     /// </summary>
     public event EventHandler<(byte[] Pixels, int Width, int Height)>? RequestShowFrozenFrame;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DanmakuViewModel"/> class.
-    /// </summary>
     public DanmakuViewModel(
         IDanmakuService danmakuService,
         INotificationService notificationService,

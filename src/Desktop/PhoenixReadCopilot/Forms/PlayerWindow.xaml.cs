@@ -34,9 +34,6 @@ internal sealed partial class PlayerWindow : WindowEx, IPlayerHostWindow, ITipWi
     private readonly InputActivationListener _inputActivationListener;
     private bool _isFirstActivated = true;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlayerWindow"/> class.
-    /// </summary>
     public PlayerWindow()
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;

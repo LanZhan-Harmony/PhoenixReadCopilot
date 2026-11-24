@@ -26,9 +26,6 @@ internal sealed partial class VideoPlayerPartSectionDetailViewModel
     [ObservableProperty]
     public partial bool OnlyIndex { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerPartSectionDetailViewModel"/> class.
-    /// </summary>
     public VideoPlayerPartSectionDetailViewModel(
         IReadOnlyList<Episode> parts,
         string currentVideoId,

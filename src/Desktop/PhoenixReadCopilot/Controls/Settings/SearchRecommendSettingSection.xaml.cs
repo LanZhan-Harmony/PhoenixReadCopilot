@@ -11,9 +11,6 @@ internal sealed partial class SearchRecommendSettingSection : UserControl
 {
     public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchRecommendSettingSection"/> class.
-    /// </summary>
     public SearchRecommendSettingSection()
     {
         InitializeComponent();

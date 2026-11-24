@@ -55,9 +55,6 @@ internal sealed partial class VideoSearchSectionDetailViewModel
     /// </summary>
     public ObservableCollection<DramaItemViewModel> Items { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoSearchSectionDetailViewModel"/> class.
-    /// </summary>
     public VideoSearchSectionDetailViewModel(
         ISearchService searchService,
         DispatcherQueue dispatcherQueue,

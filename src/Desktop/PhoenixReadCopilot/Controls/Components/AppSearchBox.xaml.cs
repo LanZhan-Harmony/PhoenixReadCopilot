@@ -16,9 +16,6 @@ internal sealed partial class AppSearchBox : UserControl
 {
     public SearchBoxViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppSearchBox"/> class.
-    /// </summary>
     public AppSearchBox()
     {
         InitializeComponent();

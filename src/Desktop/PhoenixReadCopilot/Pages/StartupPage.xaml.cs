@@ -15,9 +15,6 @@ internal sealed partial class StartupPage : Page
     /// </summary>
     public StartupPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<StartupPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StartupPage"/> class.
-    /// </summary>
     public StartupPage()
     {
         InitializeComponent();

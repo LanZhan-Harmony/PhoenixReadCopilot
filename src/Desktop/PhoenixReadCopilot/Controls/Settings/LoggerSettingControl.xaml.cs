@@ -19,9 +19,6 @@ internal sealed partial class LoggerSettingControl : UserControl
         Ioc.Default.GetRequiredService<INotificationService>();
     private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LoggerSettingControl"/> class.
-    /// </summary>
     public LoggerSettingControl()
     {
         InitializeComponent();

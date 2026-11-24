@@ -14,9 +14,6 @@ internal sealed partial class CalendarPage : Page
     /// </summary>
     public CalendarPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<CalendarPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarPage"/> class.
-    /// </summary>
     public CalendarPage()
     {
         InitializeComponent();

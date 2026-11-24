@@ -22,9 +22,6 @@ internal sealed partial class FilterSideHeader : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterSideHeader"/> class.
-    /// </summary>
     public FilterSideHeader()
     {
         InitializeComponent();

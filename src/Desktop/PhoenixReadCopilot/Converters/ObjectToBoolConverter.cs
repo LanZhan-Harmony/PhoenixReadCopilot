@@ -18,7 +18,6 @@ public sealed partial class ObjectToBoolConverter : IValueConverter
     /// </remarks>
     public bool IsReverse { get; set; }
 
-    /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         bool result = false;
@@ -50,7 +49,6 @@ public sealed partial class ObjectToBoolConverter : IValueConverter
         return result;
     }
 
-    /// <inheritdoc/>
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>
         throw new NotImplementedException();
 }

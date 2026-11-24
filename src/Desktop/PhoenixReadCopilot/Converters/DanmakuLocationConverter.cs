@@ -9,7 +9,6 @@ namespace PhoenixReadCopilot.Converters;
 /// </summary>
 internal sealed partial class DanmakuLocationConverter : IValueConverter
 {
-    /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         string result = string.Empty;
@@ -29,7 +28,6 @@ internal sealed partial class DanmakuLocationConverter : IValueConverter
         return result;
     }
 
-    /// <inheritdoc/>
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>
         throw new NotImplementedException();
 }

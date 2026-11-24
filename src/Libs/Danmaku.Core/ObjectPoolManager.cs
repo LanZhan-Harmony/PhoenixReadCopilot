@@ -23,9 +23,6 @@ internal sealed class ObjectPoolManager : IDisposable
     private readonly ConcurrentDictionary<TextureCacheKey, TexturePoolEntry> _textureCache;
     private readonly ConcurrentDictionary<TextureCacheKey, IDWriteTextLayout> _textLayoutCache;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObjectPoolManager"/> class.
-    /// </summary>
     internal ObjectPoolManager()
     {
         // 创建 DanmakuItem 对象池（使用默认策略）

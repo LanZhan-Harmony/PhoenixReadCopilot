@@ -22,9 +22,6 @@ internal sealed partial class VideoPlayerSideBody : UserControl
         set => SetValue(ViewModelProperty, value);
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerSideBody"/> class.
-    /// </summary>
     public VideoPlayerSideBody()
     {
         InitializeComponent();

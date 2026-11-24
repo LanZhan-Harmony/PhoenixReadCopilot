@@ -132,9 +132,6 @@ internal sealed partial class ActorItemViewModel : ViewModelBase
     /// </summary>
     public bool IsTopRank => Rank is >= 1 and <= 3;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ActorItemViewModel"/> class.
-    /// </summary>
     /// <param name="data">演员排行榜条目原始数据.</param>
     /// <param name="removeAction">移除回调（可选）.</param>
     public ActorItemViewModel(

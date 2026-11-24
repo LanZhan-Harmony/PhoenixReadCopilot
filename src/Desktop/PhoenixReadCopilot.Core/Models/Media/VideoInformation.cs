@@ -7,9 +7,6 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// </summary>
 public sealed class VideoInformation
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoInformation"/> class.
-    /// </summary>
     public VideoInformation(
         MediaIdentifier identifier,
         double? duration = null,

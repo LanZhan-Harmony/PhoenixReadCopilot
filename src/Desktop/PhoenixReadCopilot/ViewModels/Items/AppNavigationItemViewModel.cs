@@ -29,9 +29,6 @@ internal sealed partial class AppNavigationItemViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool IsVisible { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppNavigationItemViewModel"/> class.
-    /// </summary>
     public AppNavigationItemViewModel(
         INavigationService navService,
         Type pageType,

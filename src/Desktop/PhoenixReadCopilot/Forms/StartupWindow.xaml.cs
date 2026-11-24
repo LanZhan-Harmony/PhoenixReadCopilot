@@ -21,9 +21,6 @@ internal sealed partial class StartupWindow : WindowEx
     private readonly IAuthenticationService _authService =
         Ioc.Default.GetRequiredService<IAuthenticationService>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StartupWindow"/> class.
-    /// </summary>
     public StartupWindow()
     {
         InitializeComponent();

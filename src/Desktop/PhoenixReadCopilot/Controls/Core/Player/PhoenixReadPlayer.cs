@@ -60,9 +60,6 @@ internal sealed partial class PhoenixReadPlayer : UserControl
     private int _wheelDeltaAccumulator;
     private DateTimeOffset _lastWheelTriggerTime = DateTimeOffset.MinValue;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PhoenixReadPlayer"/> class.
-    /// </summary>
     public PhoenixReadPlayer()
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;

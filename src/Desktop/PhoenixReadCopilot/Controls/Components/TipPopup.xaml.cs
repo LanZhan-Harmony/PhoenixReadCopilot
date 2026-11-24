@@ -24,9 +24,6 @@ internal sealed partial class TipPopup : UserControl
         new PropertyMetadata(string.Empty)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TipPopup"/> class.
-    /// </summary>
     public TipPopup()
     {
         InitializeComponent();

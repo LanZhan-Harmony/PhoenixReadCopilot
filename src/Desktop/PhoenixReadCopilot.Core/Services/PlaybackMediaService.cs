@@ -20,9 +20,6 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
     private readonly ConcurrentDictionary<string, DramaPlaybackMediaCache> _memoryCache = new();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlaybackMediaService"/> class.
-    /// </summary>
     public PlaybackMediaService(
         PhoenixReadApiClient apiClient,
         IPathService pathService,

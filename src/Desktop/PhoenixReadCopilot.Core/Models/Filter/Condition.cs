@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Filter;
 /// </summary>
 public sealed class Condition
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Condition"/> class.
-    /// </summary>
     public Condition(string name, string value)
     {
         Name = name;

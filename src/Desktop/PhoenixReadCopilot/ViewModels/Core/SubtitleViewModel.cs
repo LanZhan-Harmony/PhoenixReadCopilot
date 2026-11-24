@@ -38,9 +38,6 @@ internal sealed partial class SubtitleViewModel : ViewModelBase
     [ObservableProperty]
     public partial string? CurrentSubtitle { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SubtitleViewModel"/> class.
-    /// </summary>
     public SubtitleViewModel(
         ISubtitleService service,
         ISettingsService settingsService,

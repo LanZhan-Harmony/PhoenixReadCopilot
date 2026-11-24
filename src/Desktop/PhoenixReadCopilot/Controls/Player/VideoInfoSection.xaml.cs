@@ -29,9 +29,6 @@ internal sealed partial class VideoInfoSection : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoInfoSection"/> class.
-    /// </summary>
     public VideoInfoSection()
     {
         InitializeComponent();

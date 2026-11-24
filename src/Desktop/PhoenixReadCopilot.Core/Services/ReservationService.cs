@@ -24,9 +24,6 @@ public sealed class ReservationService : IReservationService
     /// <inheritdoc/>
     public event EventHandler? ReservationChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReservationService"/> class.
-    /// </summary>
     public ReservationService(
         PhoenixReadApiClient apiClient,
         IAuthenticationService authService,

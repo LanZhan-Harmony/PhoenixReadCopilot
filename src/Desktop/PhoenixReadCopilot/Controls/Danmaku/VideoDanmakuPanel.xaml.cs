@@ -40,9 +40,6 @@ internal sealed partial class VideoDanmakuPanel : UserControl
     private int _lastProgress;
     private DanmakuRenderer? _danmakuRenderer;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoDanmakuPanel"/> class.
-    /// </summary>
     public VideoDanmakuPanel()
     {
         InitializeComponent();

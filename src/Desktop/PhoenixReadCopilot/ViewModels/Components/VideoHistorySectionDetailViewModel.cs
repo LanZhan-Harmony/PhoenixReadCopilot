@@ -43,9 +43,6 @@ internal sealed partial class VideoHistorySectionDetailViewModel
     /// </summary>
     public ObservableCollection<ReadHistoryItemViewModel> Items { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoHistorySectionDetailViewModel"/> class.
-    /// </summary>
     public VideoHistorySectionDetailViewModel(
         IHistoryService historyService,
         ILogger<VideoHistorySectionDetailViewModel> logger

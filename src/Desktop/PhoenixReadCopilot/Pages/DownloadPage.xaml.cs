@@ -7,9 +7,6 @@ namespace PhoenixReadCopilot.Pages;
 /// </summary>
 internal sealed partial class DownloadPage : Page
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DownloadPage"/> class.
-    /// </summary>
     public DownloadPage()
     {
         InitializeComponent();

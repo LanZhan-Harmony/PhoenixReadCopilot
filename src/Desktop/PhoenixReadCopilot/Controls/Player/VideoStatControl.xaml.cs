@@ -22,9 +22,6 @@ internal sealed partial class VideoStatControl : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoStatControl"/> class.
-    /// </summary>
     public VideoStatControl()
     {
         InitializeComponent();

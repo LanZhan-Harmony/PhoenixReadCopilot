@@ -30,9 +30,6 @@ internal sealed partial class CalendarTimelineMainControl : UserControl
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarTimelineMainControl"/> class.
-    /// </summary>
     public CalendarTimelineMainControl()
     {
         InitializeComponent();

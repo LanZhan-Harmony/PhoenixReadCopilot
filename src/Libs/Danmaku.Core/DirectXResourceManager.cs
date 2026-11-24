@@ -32,9 +32,6 @@ internal sealed class DirectXResourceManager : IDisposable
     /// </summary>
     internal Lock RenderLock { get; } = new();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DirectXResourceManager"/> class.
-    /// </summary>
     /// <param name="swapChainPanel">SwapChainPanel 控件.</param>
     /// <param name="scale">缩放比例.</param>
     internal DirectXResourceManager(SwapChainPanel swapChainPanel, float scale)

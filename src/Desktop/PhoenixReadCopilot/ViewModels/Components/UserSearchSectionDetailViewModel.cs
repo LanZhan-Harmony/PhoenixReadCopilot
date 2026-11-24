@@ -48,9 +48,6 @@ internal sealed partial class UserSearchSectionDetailViewModel
     /// </summary>
     public ObservableCollection<UserItemViewModel> Items { get; } = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UserSearchSectionDetailViewModel"/> class.
-    /// </summary>
     public UserSearchSectionDetailViewModel(
         ISearchService searchService,
         DispatcherQueue dispatcherQueue,

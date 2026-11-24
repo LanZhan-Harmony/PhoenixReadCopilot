@@ -83,9 +83,6 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
     /// <inheritdoc/>
     public string Title { get; } = Resources.Comments;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CommentMainViewModel"/> class.
-    /// </summary>
     public CommentMainViewModel(
         ILogger<CommentMainViewModel> logger,
         DispatcherQueue dispatcherQueue,

@@ -33,9 +33,6 @@ internal sealed partial class RankDramaItemViewModel : DramaItemViewModel
     /// </summary>
     public bool IsTopRank => Rank is >= 1 and <= 3;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankDramaItemViewModel"/> class.
-    /// </summary>
     public RankDramaItemViewModel(
         Drama drama,
         int rank,

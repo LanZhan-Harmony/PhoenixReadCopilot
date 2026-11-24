@@ -176,9 +176,6 @@ internal sealed partial class DailyReleaseItemViewModel : ViewModelBase, IPlayab
 
     #endregion
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DailyReleaseItemViewModel"/> class.
-    /// </summary>
     public DailyReleaseItemViewModel(
         DailyReleaseItem item,
         Action<DailyReleaseItemViewModel>? removeAction = null

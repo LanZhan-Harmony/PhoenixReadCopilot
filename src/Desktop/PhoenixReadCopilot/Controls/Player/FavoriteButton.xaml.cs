@@ -57,9 +57,6 @@ internal sealed partial class FavoriteButton : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FavoriteButton"/> class.
-    /// </summary>
     public FavoriteButton()
     {
         InitializeComponent();

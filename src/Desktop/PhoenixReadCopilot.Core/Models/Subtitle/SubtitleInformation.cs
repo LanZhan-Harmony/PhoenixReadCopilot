@@ -5,9 +5,6 @@ namespace PhoenixReadCopilot.Core.Models.Subtitle;
 /// </summary>
 public sealed class SubtitleInformation
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SubtitleInformation"/> class.
-    /// </summary>
     public SubtitleInformation(
         string id,
         string language,

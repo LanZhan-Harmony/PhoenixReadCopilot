@@ -18,9 +18,6 @@ internal sealed partial class SearchPage : Page
     /// </summary>
     public SearchPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SearchPageViewModel>();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchPage"/> class.
-    /// </summary>
     public SearchPage()
     {
         InitializeComponent();

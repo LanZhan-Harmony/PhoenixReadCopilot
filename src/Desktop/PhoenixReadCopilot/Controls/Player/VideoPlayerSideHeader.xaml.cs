@@ -28,9 +28,6 @@ internal sealed partial class VideoPlayerSideHeader : UserControl
         )
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VideoPlayerSideHeader"/> class.
-    /// </summary>
     public VideoPlayerSideHeader()
     {
         InitializeComponent();

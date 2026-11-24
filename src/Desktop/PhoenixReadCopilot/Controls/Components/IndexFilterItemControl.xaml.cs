@@ -23,9 +23,6 @@ internal sealed partial class IndexFilterItemControl : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="IndexFilterItemControl"/> class.
-    /// </summary>
     public IndexFilterItemControl()
     {
         InitializeComponent();

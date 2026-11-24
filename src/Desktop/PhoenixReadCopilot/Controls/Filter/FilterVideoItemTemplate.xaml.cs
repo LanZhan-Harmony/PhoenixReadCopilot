@@ -8,9 +8,6 @@ namespace PhoenixReadCopilot.Controls.Filter;
 /// </summary>
 internal sealed partial class FilterVideoItemTemplate : ResourceDictionary
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterVideoItemTemplate"/> class.
-    /// </summary>
     public FilterVideoItemTemplate()
     {
         InitializeComponent();

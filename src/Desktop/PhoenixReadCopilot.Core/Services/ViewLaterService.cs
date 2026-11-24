@@ -24,9 +24,6 @@ public sealed class ViewLaterService : IViewLaterService
     /// <inheritdoc/>
     public event EventHandler? ViewLaterChanged;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ViewLaterService"/> class.
-    /// </summary>
     public ViewLaterService(
         ILogger<ViewLaterService> logger,
         IPathService pathService,

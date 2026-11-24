@@ -8,9 +8,6 @@ namespace PhoenixReadCopilot.Controls.Search;
 /// </summary>
 internal sealed partial class SearchVideoItemTemplate : ResourceDictionary
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SearchVideoItemTemplate"/> class.
-    /// </summary>
     public SearchVideoItemTemplate()
     {
         InitializeComponent();

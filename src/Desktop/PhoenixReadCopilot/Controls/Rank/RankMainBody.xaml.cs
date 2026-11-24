@@ -22,9 +22,6 @@ internal sealed partial class RankMainBody : UserControl
         new PropertyMetadata(null)
     );
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RankMainBody"/> class.
-    /// </summary>
     public RankMainBody()
     {
         InitializeComponent();

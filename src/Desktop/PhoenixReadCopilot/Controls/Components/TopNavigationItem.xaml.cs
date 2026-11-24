@@ -33,9 +33,6 @@ internal sealed partial class TopNavigationItem : UserControl
     /// </summary>
     public event EventHandler Click;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TopNavigationItem"/> class.
-    /// </summary>
     public TopNavigationItem()
     {
         InitializeComponent();

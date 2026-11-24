@@ -156,9 +156,6 @@ internal partial class DramaItemViewModel : ViewModelBase, IPlayableMedia
 
     #endregion
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DramaItemViewModel"/> class.
-    /// </summary>
     public DramaItemViewModel(Drama drama, VideoCardStyle style = VideoCardStyle.Recommend)
     {
         Drama = drama;

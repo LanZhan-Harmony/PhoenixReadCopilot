@@ -7,7 +7,6 @@ namespace PhoenixReadCopilot.Converters;
 /// </summary>
 internal sealed partial class BoolToIconVariantConverter : IValueConverter
 {
-    /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         if (value is null)
@@ -21,7 +20,6 @@ internal sealed partial class BoolToIconVariantConverter : IValueConverter
             : FluentIcons.Common.IconVariant.Regular;
     }
 
-    /// <inheritdoc/>
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>
         throw new NotImplementedException();
 }
