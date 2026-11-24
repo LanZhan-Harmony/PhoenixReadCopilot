@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
@@ -8,45 +9,65 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户空间左侧 Section 导航选择控件.
 /// </summary>
-internal sealed partial class UserSideSectionView : UserControlBase
+internal sealed partial class UserSideSectionView : UserControl
 {
     private bool _isUpdating;
+
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public UserSpacePageViewModel? ViewModel
+    {
+        get => (UserSpacePageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(UserSpacePageViewModel),
+        typeof(UserSideSectionView),
+        new PropertyMetadata(null, (d, e) => ((UserSideSectionView)d).OnViewModelChanged(e.OldValue as UserSpacePageViewModel, e.NewValue as UserSpacePageViewModel))
+    );
 
     public UserSideSectionView()
     {
         InitializeComponent();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        ViewModel?.SectionInitialized += OnSectionInitialized;
-        SectionView.SelectionChanged += OnSectionSelectionChanged;
+        if (ViewModel is not null)
+        {
+            ViewModel.SectionInitialized += OnSectionInitialized;
+        }
         CheckSectionSelection();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        ViewModel?.SectionInitialized -= OnSectionInitialized;
-        SectionView.SelectionChanged -= OnSectionSelectionChanged;
+        if (ViewModel is not null)
+        {
+            ViewModel.SectionInitialized -= OnSectionInitialized;
+        }
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         UserSpacePageViewModel? oldViewModel,
         UserSpacePageViewModel? newViewModel
     )
     {
-        if (oldViewModel != null)
+        if (oldViewModel is not null)
         {
             oldViewModel.SectionInitialized -= OnSectionInitialized;
             oldViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
-        if (newViewModel != null)
+        if (newViewModel is not null)
         {
-            newViewModel.SectionInitialized += OnSectionInitialized;
+            if (IsLoaded)
+            {
+                newViewModel.SectionInitialized += OnSectionInitialized;
+            }
             newViewModel.PropertyChanged += OnViewModelPropertyChanged;
             CheckSectionSelection();
         }
@@ -64,7 +85,7 @@ internal sealed partial class UserSideSectionView : UserControlBase
 
     private void CheckSectionSelection()
     {
-        if (_isUpdating || ViewModel == null)
+        if (_isUpdating || ViewModel is null)
         {
             return;
         }
@@ -72,7 +93,7 @@ internal sealed partial class UserSideSectionView : UserControlBase
         try
         {
             _isUpdating = true;
-            if (ViewModel.SelectedSection != null)
+            if (ViewModel.SelectedSection is not null)
             {
                 int index = ViewModel.Sections.IndexOf(ViewModel.SelectedSection);
                 if (index >= 0)

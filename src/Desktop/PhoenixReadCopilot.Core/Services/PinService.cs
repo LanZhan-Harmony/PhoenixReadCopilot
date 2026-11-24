@@ -128,7 +128,7 @@ public sealed class PinService : IPinService
             {
                 string json = File.ReadAllText(filePath);
                 List<PinItem>? items = JsonAotSerializer.Deserialize<List<PinItem>>(json);
-                if (items != null)
+                if (items is not null)
                 {
                     foreach (PinItem item in items)
                     {

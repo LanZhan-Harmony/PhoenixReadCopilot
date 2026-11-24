@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Shapes;
 using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Controls.Player;
 using Windows.System;
+using Symbol = FluentIcons.Common.Symbol;
+using SymbolIcon = FluentIcons.WinUI.SymbolIcon;
 
 namespace PhoenixReadCopilot.Controls.Core;
 
@@ -88,10 +90,7 @@ internal sealed partial class PhoenixReadPlayer
                 Text = Strings.Resources.Screenshot,
                 Command = ViewModel?.TakeScreenshotCommand,
                 MinWidth = 160,
-                Icon = new FluentIcons.WinUI.SymbolIcon
-                {
-                    Symbol = FluentIcons.Common.Symbol.Screenshot,
-                },
+                Icon = new SymbolIcon { Symbol = Symbol.Screenshot },
             }
         );
         contextFlyout.Items.Add(
@@ -100,10 +99,7 @@ internal sealed partial class PhoenixReadPlayer
                 Text = Strings.Resources.Reload,
                 Command = ViewModel?.ReloadCommand,
                 MinWidth = 160,
-                Icon = new FluentIcons.WinUI.SymbolIcon
-                {
-                    Symbol = FluentIcons.Common.Symbol.ArrowClockwise,
-                },
+                Icon = new SymbolIcon { Symbol = Symbol.ArrowClockwise },
             }
         );
 

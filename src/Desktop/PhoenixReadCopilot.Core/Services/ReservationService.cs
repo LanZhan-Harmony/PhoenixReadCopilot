@@ -96,7 +96,7 @@ public sealed class ReservationService : IReservationService
             return false;
         }
 
-        if (_cache != null)
+        if (_cache is not null)
         {
             return _reservedDramaIds.Contains(dramaId);
         }
@@ -113,7 +113,7 @@ public sealed class ReservationService : IReservationService
             List<ReservationItem>? items = JsonAotSerializer.Deserialize<List<ReservationItem>>(
                 json
             );
-            if (items != null)
+            if (items is not null)
             {
                 foreach (ReservationItem item in items)
                 {
@@ -329,7 +329,7 @@ public sealed class ReservationService : IReservationService
     private async Task EnsureLoadedLockedAsync()
     {
         string currentFile = GetStorageFilePath();
-        if (_cache != null && _cachedFilePath == currentFile)
+        if (_cache is not null && _cachedFilePath == currentFile)
         {
             return;
         }
@@ -349,7 +349,7 @@ public sealed class ReservationService : IReservationService
             List<ReservationItem>? loaded = JsonAotSerializer.Deserialize<List<ReservationItem>>(
                 json
             );
-            if (loaded != null)
+            if (loaded is not null)
             {
                 _cache = loaded;
                 foreach (ReservationItem item in _cache)

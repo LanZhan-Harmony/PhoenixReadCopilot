@@ -392,7 +392,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
             SectionInitialized?.Invoke(this, EventArgs.Empty);
             Initialized?.Invoke(this, EventArgs.Empty);
 
-            if (initialSection != null)
+            if (initialSection is not null)
             {
                 await SelectSectionAsync(initialSection, force: true);
             }
@@ -423,7 +423,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
     private void OnAnyCollectionChanged()
     {
-        if (SelectedSection != null)
+        if (SelectedSection is not null)
         {
             bool hasContent = SelectedSection.Id switch
             {
@@ -622,7 +622,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         else
         {
             // 他人/创作者/演职人员主页模式
-            if (profile != null)
+            if (profile is not null)
             {
                 foreach (UserProfileTab tab in profile.AvailableTabs)
                 {
@@ -815,7 +815,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
     public async Task SelectSectionAsync(UserSpaceSectionItemViewModel? section, bool force = false)
     {
-        if (section == null)
+        if (section is null)
         {
             return;
         }
@@ -828,7 +828,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
         SelectedSection = section;
         section.PageViewModel = this;
 
-        if (section.SelectedSubTab != null)
+        if (section.SelectedSubTab is not null)
         {
             section.SelectedSubTab.PageViewModel = this;
             CurrentContent = section.SelectedSubTab;
@@ -848,7 +848,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
     public async Task SelectSubTabAsync(UserSpaceSubTabItemViewModel? subTab)
     {
-        if (SelectedSection == null || subTab == null || SelectedSection.SelectedSubTab == subTab)
+        if (SelectedSection is null || subTab is null || SelectedSection.SelectedSubTab == subTab)
         {
             return;
         }
@@ -862,7 +862,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        if (SelectedSection != null)
+        if (SelectedSection is not null)
         {
             await LoadSectionDataAsync(
                 SelectedSection,
@@ -875,7 +875,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
     [RelayCommand]
     public async Task LoadMoreAsync()
     {
-        if (IsLoading || !HasMore || SelectedSection == null)
+        if (IsLoading || !HasMore || SelectedSection is null)
         {
             return;
         }
@@ -1129,7 +1129,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
             foreach (ReservationItem item in items)
             {
-                if (subTab != null && item.IsAvailable != filterOnline)
+                if (subTab is not null && item.IsAvailable != filterOnline)
                 {
                     continue;
                 }
@@ -1350,7 +1350,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         foreach (UserRelationItem relation in page.Items)
         {
-            if (relation.User != null)
+            if (relation.User is not null)
             {
                 Relations.Add(new UserItemViewModel(relation));
             }
@@ -1394,7 +1394,7 @@ internal sealed partial class UserSpacePageViewModel : LayoutPageViewModelBase
 
         foreach (UserRelationItem relation in page.Items)
         {
-            if (relation.User != null)
+            if (relation.User is not null)
             {
                 Relations.Add(new UserItemViewModel(relation));
             }

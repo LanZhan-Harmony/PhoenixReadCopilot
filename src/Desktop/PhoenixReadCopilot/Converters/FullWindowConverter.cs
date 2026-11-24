@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Strings;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -9,11 +10,11 @@ internal sealed partial class FullWindowConverter : IValueConverter
     {
         bool isFullWindow = (bool)value;
 
-        if (targetType == typeof(FluentIcons.Common.Symbol))
+        if (targetType == typeof(Symbol))
         {
             return isFullWindow
-                ? FluentIcons.Common.Symbol.WindowAd
-                : FluentIcons.Common.Symbol.Window;
+                ? Symbol.WindowAd
+                : Symbol.Window;
         }
         else
         {

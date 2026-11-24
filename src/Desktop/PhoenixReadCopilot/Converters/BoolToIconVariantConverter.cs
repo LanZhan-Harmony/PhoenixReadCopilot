@@ -1,3 +1,4 @@
+using FluentIcons.Common;
 using Microsoft.UI.Xaml.Data;
 
 namespace PhoenixReadCopilot.Converters;
@@ -11,13 +12,11 @@ internal sealed partial class BoolToIconVariantConverter : IValueConverter
     {
         if (value is null)
         {
-            return FluentIcons.Common.IconVariant.Regular;
+            return IconVariant.Regular;
         }
 
         bool isFilled = (bool)value;
-        return isFilled
-            ? FluentIcons.Common.IconVariant.Filled
-            : FluentIcons.Common.IconVariant.Regular;
+        return isFilled ? IconVariant.Filled : IconVariant.Regular;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language) =>

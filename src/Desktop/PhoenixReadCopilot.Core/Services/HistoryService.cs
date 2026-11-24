@@ -104,7 +104,7 @@ public sealed class HistoryService : IHistoryService
 
         if (type == HistoryType.Drama)
         {
-            if (_dramaCache != null && _cachedUserKey == userFolder)
+            if (_dramaCache is not null && _cachedUserKey == userFolder)
             {
                 return;
             }

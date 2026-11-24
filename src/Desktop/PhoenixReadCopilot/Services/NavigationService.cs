@@ -66,7 +66,7 @@ internal sealed class NavigationService : INavigationService
     }
 
     /// <inheritdoc/>
-    public bool CanGoBack => IsOverlayOpen || (_frame != null && _frame.CanGoBack);
+    public bool CanGoBack => IsOverlayOpen || (_frame is not null && _frame.CanGoBack);
 
     /// <inheritdoc/>
     public bool IsOverlayOpen
@@ -287,7 +287,7 @@ internal sealed class NavigationService : INavigationService
 
     private void RegisterFrameEvents()
     {
-        if (_frame != null)
+        if (_frame is not null)
         {
             _frame.CacheSize = 0;
             _frame.Navigated += OnFrameNavigated;

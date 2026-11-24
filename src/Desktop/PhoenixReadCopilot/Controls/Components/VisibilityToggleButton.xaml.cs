@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
@@ -125,11 +126,11 @@ internal sealed partial class VisibilityToggleButton : UserControl
     {
         Icon.Symbol = IsHide
             ? Direction == VisibilityToggleButtonDirection.LeftToRightVisible
-                ? FluentIcons.Common.Symbol.ChevronRight
-                : FluentIcons.Common.Symbol.ChevronLeft
+                ? Symbol.ChevronRight
+                : Symbol.ChevronLeft
             : Direction == VisibilityToggleButtonDirection.LeftToRightVisible
-                ? FluentIcons.Common.Symbol.ChevronLeft
-                : FluentIcons.Common.Symbol.ChevronRight;
+                ? Symbol.ChevronLeft
+                : Symbol.ChevronRight;
         string tip = IsHide ? HideTip : ShowTip;
         ToolTipService.SetToolTip(Btn, tip);
         AutomationProperties.SetName(Btn, tip);

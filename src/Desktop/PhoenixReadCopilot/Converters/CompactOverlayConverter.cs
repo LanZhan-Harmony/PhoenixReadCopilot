@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Strings;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -12,11 +13,9 @@ internal sealed partial class CompactOverlayConverter : IValueConverter
     {
         bool isCompact = (bool)value;
 
-        if (targetType == typeof(FluentIcons.Common.Symbol))
+        if (targetType == typeof(Symbol))
         {
-            return isCompact
-                ? FluentIcons.Common.Symbol.ContractDownLeft
-                : FluentIcons.Common.Symbol.ContractUpRight;
+            return isCompact ? Symbol.ContractDownLeft : Symbol.ContractUpRight;
         }
         else
         {

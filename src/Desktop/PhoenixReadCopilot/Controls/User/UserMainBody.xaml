@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<local:UserControlBase x:Class="PhoenixReadCopilot.Controls.User.UserMainBody"
-                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                       xmlns:components="using:PhoenixReadCopilot.Controls.Components"
-                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                       xmlns:essential="using:WinUI3Package"
-                       xmlns:ext="using:PhoenixReadCopilot.Extensions"
-                       xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
-                       xmlns:local="using:PhoenixReadCopilot.Controls.User"
-                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                       xmlns:strings="using:PhoenixReadCopilot.Strings"
-                       mc:Ignorable="d">
+<UserControl x:Class="PhoenixReadCopilot.Controls.User.UserMainBody"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:essential="using:WinUI3Package"
+             xmlns:ext="using:PhoenixReadCopilot.Extensions"
+             xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+             xmlns:local="using:PhoenixReadCopilot.Controls.User"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:strings="using:PhoenixReadCopilot.Strings"
+             Loaded="OnLoaded"
+             Unloaded="OnUnloaded"
+             mc:Ignorable="d">
 
-    <local:UserControlBase.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <local:UserVideoItemTemplate/>
@@ -113,7 +115,7 @@
                                              ReviewTemplate="{StaticResource ReviewSectionTemplate}"
                                              VideoTemplate="{StaticResource VideoSectionTemplate}"/>
         </ResourceDictionary>
-    </local:UserControlBase.Resources>
+    </UserControl.Resources>
 
     <Grid>
         <!--  主内容切换容器（纯 MVVM 绑定 CurrentContent，由 TemplateSelector 自动响应切换）  -->
@@ -132,4 +134,4 @@
         <!--  加载动画  -->
         <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
     </Grid>
-</local:UserControlBase>
+</UserControl>

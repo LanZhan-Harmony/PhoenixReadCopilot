@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
@@ -12,15 +13,15 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
     /// <summary>
     /// 图标.
     /// </summary>
-    public FluentIcons.Common.Symbol Symbol
+    public Symbol Symbol
     {
-        get => (FluentIcons.Common.Symbol)GetValue(SymbolProperty);
+        get => (Symbol)GetValue(SymbolProperty);
         set => SetValue(SymbolProperty, value);
     }
 
     public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
         nameof(Symbol),
-        typeof(FluentIcons.Common.Symbol),
+        typeof(Symbol),
         typeof(AppNavigationViewItem),
         new PropertyMetadata(null)
     );
@@ -55,15 +56,15 @@ public sealed partial class AppNavigationViewItemPresenter : NavigationViewItemP
     /// <summary>
     /// 图标.
     /// </summary>
-    public FluentIcons.Common.Symbol Symbol
+    public Symbol Symbol
     {
-        get => (FluentIcons.Common.Symbol)GetValue(SymbolProperty);
+        get => (Symbol)GetValue(SymbolProperty);
         set => SetValue(SymbolProperty, value);
     }
 
     public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(
         nameof(Symbol),
-        typeof(FluentIcons.Common.Symbol),
+        typeof(Symbol),
         typeof(AppNavigationViewItemPresenter),
         new PropertyMetadata(null)
     );

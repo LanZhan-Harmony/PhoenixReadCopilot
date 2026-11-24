@@ -102,7 +102,7 @@ public sealed class ViewLaterService : IViewLaterService
             return false;
         }
 
-        if (_dramaCache != null)
+        if (_dramaCache is not null)
         {
             return _viewLaterIds.Contains(id);
         }
@@ -117,7 +117,7 @@ public sealed class ViewLaterService : IViewLaterService
         {
             string json = File.ReadAllText(filePath);
             List<Drama>? items = JsonAotSerializer.Deserialize<List<Drama>>(json);
-            if (items != null)
+            if (items is not null)
             {
                 foreach (Drama item in items)
                 {
@@ -168,7 +168,7 @@ public sealed class ViewLaterService : IViewLaterService
 
         if (type == ViewLaterType.Drama)
         {
-            if (_dramaCache != null && _cachedUserKey == userFolder)
+            if (_dramaCache is not null && _cachedUserKey == userFolder)
             {
                 return;
             }

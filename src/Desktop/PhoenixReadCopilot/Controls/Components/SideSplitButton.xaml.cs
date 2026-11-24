@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Controls.Components;
 
@@ -63,15 +64,15 @@ internal sealed partial class SideSplitButton : UserControl
         instance?.SymbolControl.Symbol = instance.GetSymbol();
     }
 
-    private FluentIcons.Common.Symbol GetSymbol()
+    private Symbol GetSymbol()
     {
         return IsHide
             ? IsInvertDirection
-                ? FluentIcons.Common.Symbol.PanelRightExpand
-                : FluentIcons.Common.Symbol.PanelLeftExpand
+                ? Symbol.PanelRightExpand
+                : Symbol.PanelLeftExpand
             : IsInvertDirection
-                ? FluentIcons.Common.Symbol.PanelRightContract
-                : FluentIcons.Common.Symbol.PanelLeftContract;
+                ? Symbol.PanelRightContract
+                : Symbol.PanelLeftContract;
     }
 
     private void OnBtnClick(object sender, RoutedEventArgs e) => IsHide = !IsHide;

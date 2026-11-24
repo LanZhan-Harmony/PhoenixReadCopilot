@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -15,7 +16,7 @@ internal sealed partial class AppNavigationItemViewModel : ViewModelBase
     public partial bool ShowUnread { get; set; }
 
     [ObservableProperty]
-    public partial FluentIcons.Common.Symbol Symbol { get; set; }
+    public partial Symbol Symbol { get; set; }
 
     [ObservableProperty]
     public partial bool IsSelected { get; set; }
@@ -33,7 +34,7 @@ internal sealed partial class AppNavigationItemViewModel : ViewModelBase
         INavigationService navService,
         Type pageType,
         string title,
-        FluentIcons.Common.Symbol? symbol = null,
+        Symbol? symbol = null,
         bool isSelected = false,
         string accessKey = "",
         bool isVisible = true
@@ -41,7 +42,7 @@ internal sealed partial class AppNavigationItemViewModel : ViewModelBase
     {
         PageKey = pageType.FullName;
         Title = title;
-        Symbol = symbol ?? FluentIcons.Common.Symbol.Circle;
+        Symbol = symbol ?? Symbol.Circle;
         IsSelected = isSelected;
         AccessKey = accessKey;
         _navigateAction = parameter => navService.NavigateTo(pageType, parameter);

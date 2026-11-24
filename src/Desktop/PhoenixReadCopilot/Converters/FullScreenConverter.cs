@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Strings;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -12,11 +13,9 @@ internal sealed partial class FullScreenConverter : IValueConverter
     {
         bool isFullScreen = (bool)value;
 
-        if (targetType == typeof(FluentIcons.Common.Symbol))
+        if (targetType == typeof(Symbol))
         {
-            return isFullScreen
-                ? FluentIcons.Common.Symbol.FullScreenMinimize
-                : FluentIcons.Common.Symbol.FullScreenMaximize;
+            return isFullScreen ? Symbol.FullScreenMinimize : Symbol.FullScreenMaximize;
         }
         else
         {

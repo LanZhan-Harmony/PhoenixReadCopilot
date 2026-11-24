@@ -178,7 +178,7 @@ internal sealed partial class ColumnSplitter : UserControl
     {
         ColumnSplitter? instance = d as ColumnSplitter;
 
-        if (instance != null && instance.IsInvertDirection)
+        if (instance is not null && instance.IsInvertDirection)
         {
             instance.Sizer.IsDragInverted = true;
             instance.ToggleBtn.Direction = VisibilityToggleButtonDirection.RightToLeftVisible;

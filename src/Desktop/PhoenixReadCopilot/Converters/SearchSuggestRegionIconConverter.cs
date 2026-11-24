@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Data;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -9,9 +10,9 @@ internal sealed partial class SearchSuggestRegionIconConverter : IValueConverter
         string? id = value as string;
         return id switch
         {
-            "space" => FluentIcons.Common.Symbol.Person,
-            "history" => FluentIcons.Common.Symbol.History,
-            _ => FluentIcons.Common.Symbol.Search,
+            "space" => Symbol.Person,
+            "history" => Symbol.History,
+            _ => Symbol.Search,
         };
     }
 

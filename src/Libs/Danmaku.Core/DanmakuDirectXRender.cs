@@ -664,7 +664,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
     /// </summary>
     internal void SetFrozenFrame(byte[] pixels, int width, int height)
     {
-        if (pixels == null || width <= 0 || height <= 0)
+        if (pixels is null || width <= 0 || height <= 0)
         {
             return;
         }

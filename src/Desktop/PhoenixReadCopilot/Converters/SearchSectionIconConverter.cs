@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Core.Enums;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
@@ -10,8 +11,8 @@ internal sealed partial class SearchSectionIconConverter : IValueConverter
         SearchSectionType sectionType = (SearchSectionType)value;
         return sectionType switch
         {
-            SearchSectionType.Drama => FluentIcons.Common.Symbol.VideoClip,
-            SearchSectionType.User => FluentIcons.Common.Symbol.People,
+            SearchSectionType.Drama => Symbol.VideoClip,
+            SearchSectionType.User => Symbol.People,
             _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null),
         };
     }

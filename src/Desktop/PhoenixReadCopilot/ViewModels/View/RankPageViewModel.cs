@@ -11,6 +11,7 @@ using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
 using ZLogger;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -115,7 +116,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
         // 1. 推荐榜
         Sections.Add(
             new RankSectionItemViewModel(
-                FluentIcons.Common.Symbol.RibbonStar,
+                Symbol.RibbonStar,
                 Resources.BoardRecommend,
                 RankSectionType.LeaderboardRecommend,
                 leaderboardType: ShortDramaLeaderboardType.Recommend,
@@ -126,7 +127,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
         // 2. 热播榜
         Sections.Add(
             new RankSectionItemViewModel(
-                FluentIcons.Common.Symbol.Fire,
+                Symbol.Fire,
                 Resources.BoardHotPlay,
                 RankSectionType.LeaderboardHotPlay,
                 leaderboardType: ShortDramaLeaderboardType.HotPlay,
@@ -137,7 +138,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
         // 3. 新剧榜
         Sections.Add(
             new RankSectionItemViewModel(
-                FluentIcons.Common.Symbol.Sparkle,
+                Symbol.Sparkle,
                 Resources.BoardNewRelease,
                 RankSectionType.LeaderboardNewRelease,
                 leaderboardType: ShortDramaLeaderboardType.NewRelease,
@@ -148,7 +149,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
         // 4. 热搜榜
         Sections.Add(
             new RankSectionItemViewModel(
-                FluentIcons.Common.Symbol.Search,
+                Symbol.Search,
                 Resources.BoardHotSearch,
                 RankSectionType.LeaderboardHotSearch,
                 leaderboardType: ShortDramaLeaderboardType.HotSearch,
@@ -159,7 +160,7 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
         // 5. 演员排行榜
         Sections.Add(
             new RankSectionItemViewModel(
-                FluentIcons.Common.Symbol.PeopleStar,
+                Symbol.PeopleStar,
                 Resources.LeaderboardActor,
                 RankSectionType.LeaderboardActor,
                 isActorLeaderboard: true,

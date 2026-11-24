@@ -10,42 +10,66 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户空间主体内容展示控件（基于 DataTemplateSelector 按需实例化各模式视图）.
 /// </summary>
-internal sealed partial class UserMainBody : UserControlBase
+internal sealed partial class UserMainBody : UserControl
 {
     private ScrollViewer? _activeScrollViewer;
     private RevealFocusPanel? _activeRevealFocusPanel;
+
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public UserSpacePageViewModel? ViewModel
+    {
+        get => (UserSpacePageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(UserSpacePageViewModel),
+        typeof(UserMainBody),
+        new PropertyMetadata(null, (d, e) =>
+            ((UserMainBody)d).OnViewModelChanged(
+                e.OldValue as UserSpacePageViewModel,
+                e.NewValue as UserSpacePageViewModel
+            )
+        )
+    );
 
     public UserMainBody()
     {
         InitializeComponent();
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        ViewModel?.DataUpdated += OnDataUpdated;
+        if (ViewModel is not null)
+        {
+            ViewModel.DataUpdated += OnDataUpdated;
+        }
     }
 
-    /// <inheritdoc/>
-    protected override void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        ViewModel?.DataUpdated -= OnDataUpdated;
+        if (ViewModel is not null)
+        {
+            ViewModel.DataUpdated -= OnDataUpdated;
+        }
         _activeScrollViewer?.ViewChanged -= OnScrollViewerViewChanged;
         _activeScrollViewer = null;
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnViewModelChanged(
         UserSpacePageViewModel? oldViewModel,
         UserSpacePageViewModel? newViewModel
     )
     {
-        if (oldViewModel != null)
+        if (oldViewModel is not null)
         {
             oldViewModel.DataUpdated -= OnDataUpdated;
         }
 
-        if (newViewModel != null)
+        if (newViewModel is not null)
         {
             newViewModel.DataUpdated += OnDataUpdated;
         }
@@ -112,7 +136,7 @@ internal sealed partial class UserMainBody : UserControlBase
                 return;
             }
 
-            if (_activeScrollViewer != null && _activeScrollViewer.ScrollableHeight <= 240)
+            if (_activeScrollViewer is not null && _activeScrollViewer.ScrollableHeight <= 240)
             {
                 _ = ViewModel.LoadMoreAsync();
             }
@@ -126,7 +150,7 @@ internal sealed partial class UserMainBody : UserControlBase
     {
         if (args.Element is FrameworkElement element)
         {
-            if (_activeRevealFocusPanel != null)
+            if (_activeRevealFocusPanel is not null)
             {
                 RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
             }
@@ -158,7 +182,7 @@ internal sealed partial class UserMainBody : UserControlBase
     {
         if (args.Element is FrameworkElement element)
         {
-            if (_activeRevealFocusPanel != null)
+            if (_activeRevealFocusPanel is not null)
             {
                 RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
             }
@@ -188,7 +212,7 @@ internal sealed partial class UserMainBody : UserControlBase
         ItemsRepeaterElementPreparedEventArgs args
     )
     {
-        if (args.Element is FrameworkElement element && _activeRevealFocusPanel != null)
+        if (args.Element is FrameworkElement element && _activeRevealFocusPanel is not null)
         {
             RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
         }
@@ -212,7 +236,7 @@ internal sealed partial class UserMainBody : UserControlBase
     {
         if (args.Element is FrameworkElement element)
         {
-            if (_activeRevealFocusPanel != null)
+            if (_activeRevealFocusPanel is not null)
             {
                 RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
             }
@@ -244,7 +268,7 @@ internal sealed partial class UserMainBody : UserControlBase
     {
         if (args.Element is FrameworkElement element)
         {
-            if (_activeRevealFocusPanel != null)
+            if (_activeRevealFocusPanel is not null)
             {
                 RevealFocusPanel.SetAttachToPanel(element, _activeRevealFocusPanel);
             }

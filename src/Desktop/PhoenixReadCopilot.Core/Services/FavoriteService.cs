@@ -105,7 +105,7 @@ public sealed class FavoriteService : IFavoriteService
             return false;
         }
 
-        if (_dramaCache != null)
+        if (_dramaCache is not null)
         {
             return _favoritedDramaIds.Contains(dramaId);
         }
@@ -120,7 +120,7 @@ public sealed class FavoriteService : IFavoriteService
         {
             string json = File.ReadAllText(filePath);
             List<Drama>? items = JsonAotSerializer.Deserialize<List<Drama>>(json);
-            if (items != null)
+            if (items is not null)
             {
                 foreach (Drama item in items)
                 {
@@ -169,7 +169,7 @@ public sealed class FavoriteService : IFavoriteService
                 ? _authService.CurrentUser.Id
                 : "anonymous";
 
-        if (_dramaCache != null && _cachedUserKey == userFolder)
+        if (_dramaCache is not null && _cachedUserKey == userFolder)
         {
             return;
         }
@@ -388,7 +388,7 @@ public sealed class FavoriteService : IFavoriteService
                 int idx = _dramaCache!.FindIndex(d => d.Id == dramaId);
                 if (idx >= 0)
                 {
-                    if (drama != null)
+                    if (drama is not null)
                     {
                         _dramaCache[idx] = drama;
                     }

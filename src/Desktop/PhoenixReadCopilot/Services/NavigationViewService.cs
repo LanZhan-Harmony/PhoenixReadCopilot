@@ -9,6 +9,7 @@ using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Pages;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Items;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Services;
 
@@ -61,7 +62,7 @@ internal sealed class NavigationViewService : INavigationViewService
     /// <inheritdoc/>
     public void UnregisterEvents()
     {
-        if (_navigationView != null)
+        if (_navigationView is not null)
         {
             _navigationView.BackRequested -= OnBackRequested;
             _navigationView.ItemInvoked -= OnItemInvoked;
@@ -88,7 +89,7 @@ internal sealed class NavigationViewService : INavigationViewService
     public void SetNavItemVisibility(string pageKey, bool isVisible)
     {
         AppNavigationItemViewModel? item = MenuItems.FirstOrDefault(p => p.PageKey == pageKey);
-        if (item != null)
+        if (item is not null)
         {
             item.IsVisible = isVisible;
 
@@ -122,7 +123,7 @@ internal sealed class NavigationViewService : INavigationViewService
             _ => null,
         };
 
-        if (action != null)
+        if (action is not null)
         {
             if (_navigationView?.DispatcherQueue is { } dq && !dq.HasThreadAccess)
             {
@@ -152,7 +153,7 @@ internal sealed class NavigationViewService : INavigationViewService
     private void OnNavigated(object? sender, Type pageType)
     {
         AppNavigationItemViewModel? item = GetSelectedItem(pageType);
-        if (item != null)
+        if (item is not null)
         {
             foreach (AppNavigationItemViewModel m in MenuItems)
             {
@@ -176,10 +177,10 @@ internal sealed class NavigationViewService : INavigationViewService
 
         List<AppNavigationItemViewModel> list =
         [
-            GetItem<HomePage>(Resources.Home, FluentIcons.Common.Symbol.Home),
-            GetItem<RankPage>(Resources.Rank, FluentIcons.Common.Symbol.Rocket),
-            GetItem<CalendarPage>(Resources.Calendar, FluentIcons.Common.Symbol.Calendar),
-            GetItem<FilterPage>(Resources.Filter, FluentIcons.Common.Symbol.SlideSearch),
+            GetItem<HomePage>(Resources.Home, Symbol.Home),
+            GetItem<RankPage>(Resources.Rank, Symbol.Rocket),
+            GetItem<CalendarPage>(Resources.Calendar, Symbol.Calendar),
+            GetItem<FilterPage>(Resources.Filter, Symbol.SlideSearch),
         ];
 
         foreach (AppNavigationItemViewModel item in list)
@@ -199,15 +200,15 @@ internal sealed class NavigationViewService : INavigationViewService
     {
         List<AppNavigationItemViewModel> list =
         [
-            GetItem<UserSpacePage>(Resources.PersonalSpace, FluentIcons.Common.Symbol.Person),
-            GetItem<SettingsPage>(Resources.Settings, FluentIcons.Common.Symbol.Settings),
+            GetItem<UserSpacePage>(Resources.PersonalSpace, Symbol.Person),
+            GetItem<SettingsPage>(Resources.Settings, Symbol.Settings),
         ];
         return list;
     }
 
     private AppNavigationItemViewModel GetItem<TPage>(
         string title,
-        FluentIcons.Common.Symbol symbol,
+        Symbol symbol,
         bool isSelected = false
     )
         where TPage : Page

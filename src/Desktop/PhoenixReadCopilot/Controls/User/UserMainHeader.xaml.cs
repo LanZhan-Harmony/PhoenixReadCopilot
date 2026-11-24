@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
@@ -8,26 +9,61 @@ namespace PhoenixReadCopilot.Controls.User;
 /// <summary>
 /// 用户空间主体顶部 Header 控件.
 /// </summary>
-internal sealed partial class UserMainHeader : UserControlBase
+internal sealed partial class UserMainHeader : UserControl
 {
     private bool _isUpdating;
+
+    /// <summary>
+    /// 视图模型.
+    /// </summary>
+    public UserSpacePageViewModel? ViewModel
+    {
+        get => (UserSpacePageViewModel?)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+        nameof(ViewModel),
+        typeof(UserSpacePageViewModel),
+        typeof(UserMainHeader),
+        new PropertyMetadata(null, (d, e) => ((UserMainHeader)d).OnViewModelChanged(e.OldValue as UserSpacePageViewModel, e.NewValue as UserSpacePageViewModel))
+    );
 
     public UserMainHeader()
     {
         InitializeComponent();
     }
 
-    /// <inheritdoc/>
-    protected override void OnViewModelChanged(
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel is not null)
+        {
+            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            UpdateSubTabs();
+        }
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel is not null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+
+    private void OnViewModelChanged(
         UserSpacePageViewModel? oldViewModel,
         UserSpacePageViewModel? newViewModel
     )
     {
         oldViewModel?.PropertyChanged -= OnViewModelPropertyChanged;
 
-        if (newViewModel != null)
+        if (newViewModel is not null)
         {
-            newViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            if (IsLoaded)
+            {
+                newViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            }
             UpdateSubTabs();
         }
     }

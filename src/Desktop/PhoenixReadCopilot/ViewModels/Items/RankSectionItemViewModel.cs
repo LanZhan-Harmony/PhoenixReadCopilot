@@ -2,6 +2,7 @@ using PhoenixReadApi;
 using PhoenixReadCopilot.Contracts.ViewModels;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.View;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
 
@@ -11,7 +12,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 internal sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItemViewModel
 {
     public RankSectionItemViewModel(
-        FluentIcons.Common.Symbol symbol,
+        Symbol symbol,
         string title,
         RankSectionType type,
         ShortDramaLeaderboardType? leaderboardType = null,
@@ -30,7 +31,7 @@ internal sealed class RankSectionItemViewModel : ViewModelBase, IRankSectionItem
     /// <summary>
     /// 图标.
     /// </summary>
-    public FluentIcons.Common.Symbol Icon { get; init; }
+    public Symbol Icon { get; init; }
 
     /// <summary>
     /// 标题.
