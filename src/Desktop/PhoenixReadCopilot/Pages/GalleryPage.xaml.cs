@@ -23,8 +23,6 @@ internal sealed partial class GalleryPage : Page
     public GalleryPage()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
-        Unloaded += OnUnloaded;
     }
 
     /// <inheritdoc/>
@@ -56,8 +54,6 @@ internal sealed partial class GalleryPage : Page
         int index = ViewModel.Images.ToList().IndexOf(ViewModel.SelectedImage);
         ImageView.Select(index);
     }
-
-    private void OnUnloaded(object sender, RoutedEventArgs e) => ImageView.ItemsSource = null;
 
     private void OnScrollViewTapped(object sender, TappedRoutedEventArgs e) =>
         ViewModel.IsMenuHide = !ViewModel.IsMenuHide;

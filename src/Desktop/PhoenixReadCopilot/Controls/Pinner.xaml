@@ -12,6 +12,7 @@
                   xmlns:pin="using:PhoenixReadCopilot.Core.Models.Pin"
                   xmlns:strings="using:PhoenixReadCopilot.Strings"
                   Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"
+                  Loaded="OnLoaded"
                   mc:Ignorable="d">
 
     <UserControl.Resources>

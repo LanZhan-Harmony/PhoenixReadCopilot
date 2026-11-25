@@ -9,6 +9,8 @@
     xmlns:local="using:PhoenixReadCopilot.Controls.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Visibility="{x:Bind ViewModel.IsNotificationVisible, Mode=OneWay}"
+    Loaded="OnLoaded"
+    Unloaded="OnUnloaded"
     mc:Ignorable="d">
 
     <StackPanel MaxWidth="320"

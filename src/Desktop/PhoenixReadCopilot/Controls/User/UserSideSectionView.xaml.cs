@@ -26,7 +26,12 @@ internal sealed partial class UserSideSectionView : UserControl
         nameof(ViewModel),
         typeof(UserSpacePageViewModel),
         typeof(UserSideSectionView),
-        new PropertyMetadata(null, (d, e) => ((UserSideSectionView)d).OnViewModelChanged(e.OldValue as UserSpacePageViewModel, e.NewValue as UserSpacePageViewModel))
+        new PropertyMetadata(null, (d, e) =>
+            ((UserSideSectionView)d).OnViewModelChanged(
+                e.OldValue as UserSpacePageViewModel,
+                e.NewValue as UserSpacePageViewModel
+            )
+        )
     );
 
     public UserSideSectionView()
@@ -36,19 +41,13 @@ internal sealed partial class UserSideSectionView : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.SectionInitialized += OnSectionInitialized;
-        }
+        ViewModel?.SectionInitialized += OnSectionInitialized;
         CheckSectionSelection();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.SectionInitialized -= OnSectionInitialized;
-        }
+        ViewModel?.SectionInitialized -= OnSectionInitialized;
     }
 
     private void OnViewModelChanged(

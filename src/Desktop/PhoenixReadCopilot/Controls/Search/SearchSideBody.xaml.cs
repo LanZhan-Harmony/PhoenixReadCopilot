@@ -26,30 +26,17 @@ internal sealed partial class SearchSideBody : UserControl
     public SearchSideBody()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.SectionInitialized += OnSectionInitialized;
-        }
-
-        SectionView.SelectionChanged += OnSectionSelectionChanged;
+        ViewModel?.SectionInitialized += OnSectionInitialized;
         CheckSectionSelection();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        SectionView.ItemsSource = null;
-        if (ViewModel is not null)
-        {
-            ViewModel.SectionInitialized -= OnSectionInitialized;
-        }
-
-        SectionView.SelectionChanged -= OnSectionSelectionChanged;
+        ViewModel?.SectionInitialized -= OnSectionInitialized;
     }
 
     private void OnSectionInitialized(object? sender, EventArgs e) => CheckSectionSelection();

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.View;
 
@@ -17,6 +18,7 @@ internal sealed partial class RankPage : Page
     public RankPage()
     {
         InitializeComponent();
-        Loaded += (_, _) => _ = ViewModel.InitializeAsync();
     }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) => _ = ViewModel.InitializeAsync();
 }

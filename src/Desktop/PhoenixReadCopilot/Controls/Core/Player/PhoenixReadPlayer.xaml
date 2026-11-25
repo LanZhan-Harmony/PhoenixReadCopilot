@@ -8,6 +8,8 @@
                          xmlns:local="using:PhoenixReadCopilot.Controls.Core"
                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                          xmlns:strings="using:PhoenixReadCopilot.Strings"
+                         Loaded="OnLoaded"
+                         Unloaded="OnUnloaded"
                          mc:Ignorable="d">
 
     <Grid x:Name="RootGrid" Background="Black">

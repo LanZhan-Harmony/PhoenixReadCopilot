@@ -33,15 +33,10 @@ internal sealed partial class FilterIndexMainControl : UserControl
     public FilterIndexMainControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        IndexScrollView.ViewChanged += OnViewChanged;
-        IndexScrollView.SizeChanged += OnScrollViewSizeChanged;
-
         if (ViewModel is null)
         {
             return;
@@ -50,13 +45,9 @@ internal sealed partial class FilterIndexMainControl : UserControl
         CheckIndexCount();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         ViewModel?.ItemsUpdated -= OnItemsUpdatedAsync;
-
-        IndexRepeater.ItemsSource = null;
-        IndexScrollView.ViewChanged -= OnViewChanged;
-        IndexScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
     private void OnViewModelChanged(FilterPageViewModel? oldValue, FilterPageViewModel? newValue)

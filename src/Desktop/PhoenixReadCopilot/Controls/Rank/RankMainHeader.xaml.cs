@@ -28,28 +28,18 @@ internal sealed partial class RankMainHeader : UserControl
     public RankMainHeader()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        BoardSelector.SelectionChanged += OnBoardSelectionChanged;
-        if (ViewModel is not null)
-        {
-            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-        }
+        ViewModel?.PropertyChanged += OnViewModelPropertyChanged;
 
         UpdateBoardItems();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        BoardSelector.SelectionChanged -= OnBoardSelectionChanged;
-        if (ViewModel is not null)
-        {
-            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        ViewModel?.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
     private void OnViewModelPropertyChanged(

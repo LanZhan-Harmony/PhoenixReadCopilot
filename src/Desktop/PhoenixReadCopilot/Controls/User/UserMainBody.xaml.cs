@@ -43,18 +43,12 @@ internal sealed partial class UserMainBody : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.DataUpdated += OnDataUpdated;
-        }
+        ViewModel?.DataUpdated += OnDataUpdated;
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.DataUpdated -= OnDataUpdated;
-        }
+        ViewModel?.DataUpdated -= OnDataUpdated;
         _activeScrollViewer?.ViewChanged -= OnScrollViewerViewChanged;
         _activeScrollViewer = null;
     }
@@ -64,15 +58,9 @@ internal sealed partial class UserMainBody : UserControl
         UserSpacePageViewModel? newViewModel
     )
     {
-        if (oldViewModel is not null)
-        {
-            oldViewModel.DataUpdated -= OnDataUpdated;
-        }
+        oldViewModel?.DataUpdated -= OnDataUpdated;
 
-        if (newViewModel is not null)
-        {
-            newViewModel.DataUpdated += OnDataUpdated;
-        }
+        newViewModel?.DataUpdated += OnDataUpdated;
     }
 
     private void OnRevealFocusPanelLoaded(object sender, RoutedEventArgs e)

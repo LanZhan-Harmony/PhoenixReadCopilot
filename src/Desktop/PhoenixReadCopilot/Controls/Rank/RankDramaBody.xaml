@@ -6,6 +6,8 @@
                            xmlns:essential="using:WinUI3Package"
                            xmlns:local="using:PhoenixReadCopilot.Controls.Rank"
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           Loaded="OnLoaded"
+                           Unloaded="OnUnloaded"
                            mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -17,7 +19,10 @@
     </UserControl.Resources>
 
     <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
-        <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
+        <ScrollViewer x:Name="VideoScrollView"
+                      SizeChanged="OnScrollViewSizeChanged"
+                      Style="{StaticResource PageScrollViewerStyle}"
+                      ViewChanged="OnViewChanged">
             <ItemsRepeater x:Name="DramaRepeater"
                            Margin="16,12"
                            ElementClearing="DramaRepeater_ElementClearing"

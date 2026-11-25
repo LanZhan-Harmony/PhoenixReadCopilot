@@ -6,6 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:PhoenixReadCopilot.Controls.Player"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="OnLoaded"
+    Unloaded="OnUnloaded"
     mc:Ignorable="d">
 
     <Grid>
@@ -18,7 +20,8 @@
             VerticalScrollBarVisibility="Hidden"
             VerticalScrollMode="Disabled">
             <SelectorBar x:Name="Selector"
-                    HorizontalAlignment="Left"/>
+                         HorizontalAlignment="Left"
+                         SelectionChanged="OnSelectorChanged"/>
         </ScrollViewer>
     </Grid>
 </UserControl>

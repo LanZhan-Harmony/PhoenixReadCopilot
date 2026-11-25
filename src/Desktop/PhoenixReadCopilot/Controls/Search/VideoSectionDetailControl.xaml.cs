@@ -28,33 +28,18 @@ internal sealed partial class VideoSectionDetailControl : UserControl
     public VideoSectionDetailControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated += OnListUpdatedAsync;
-        }
-
-        VideoScrollView.ViewChanged += OnViewChanged;
-        VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
+        ViewModel?.ListUpdated += OnListUpdatedAsync;
 
         CheckVideoCount();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        VideoRepeater.ItemsSource = null;
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnListUpdatedAsync;
-        }
-
-        VideoScrollView.ViewChanged -= OnViewChanged;
-        VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
+        ViewModel?.ListUpdated -= OnListUpdatedAsync;
     }
 
     private async void OnListUpdatedAsync(object? sender, EventArgs e)

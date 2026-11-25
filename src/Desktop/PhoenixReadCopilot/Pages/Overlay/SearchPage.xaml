@@ -10,6 +10,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:search="using:PhoenixReadCopilot.Controls.Search"
                       xmlns:strings="using:PhoenixReadCopilot.Strings"
+                      Loaded="OnLoaded"
                       mc:Ignorable="d">
 
     <Page.Resources>

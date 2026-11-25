@@ -33,8 +33,6 @@ internal sealed partial class RankDramaBody : UserControl
     public RankDramaBody()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
     private void OnViewModelChanged(RankPageViewModel? oldValue, RankPageViewModel? newValue)
@@ -53,7 +51,7 @@ internal sealed partial class RankDramaBody : UserControl
         }
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (ViewModel is not null)
         {
@@ -61,23 +59,16 @@ internal sealed partial class RankDramaBody : UserControl
             ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         }
 
-        VideoScrollView.ViewChanged += OnViewChanged;
-        VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
-
         CheckVideoCount();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        DramaRepeater.ItemsSource = null;
         if (ViewModel is not null)
         {
             ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
-
-        VideoScrollView.ViewChanged -= OnViewChanged;
-        VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
     private void OnViewModelPropertyChanged(

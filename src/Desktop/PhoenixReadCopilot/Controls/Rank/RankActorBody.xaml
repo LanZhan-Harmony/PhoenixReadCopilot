@@ -7,6 +7,8 @@
                            xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                            xmlns:local="using:PhoenixReadCopilot.Controls.Rank"
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           Loaded="OnLoaded"
+                           Unloaded="OnUnloaded"
                            mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -18,7 +20,10 @@
     </UserControl.Resources>
 
     <essential:RevealFocusPanel x:Name="ListViewRevealFocusPanel">
-        <ScrollViewer x:Name="ActorScrollView" Style="{StaticResource PageScrollViewerStyle}">
+        <ScrollViewer x:Name="ActorScrollView"
+                      SizeChanged="OnScrollViewSizeChanged"
+                      Style="{StaticResource PageScrollViewerStyle}"
+                      ViewChanged="OnViewChanged">
             <ItemsRepeater x:Name="ActorRepeater"
                            Margin="16,12"
                            ElementPrepared="ActorRepeater_ElementPrepared"

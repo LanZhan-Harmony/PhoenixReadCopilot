@@ -11,6 +11,7 @@
                        xmlns:local="using:PhoenixReadCopilot.Pages"
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:strings="using:PhoenixReadCopilot.Strings"
+                       Loaded="OnLoaded"
                        mc:Ignorable="d">
 
     <Page.Resources>

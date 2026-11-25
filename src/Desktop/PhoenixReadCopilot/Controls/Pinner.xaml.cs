@@ -25,9 +25,9 @@ internal sealed partial class Pinner : UserControl
     public Pinner()
     {
         InitializeComponent();
-        Loaded += (_, _) => _ = ViewModel.InitializeAsync();
-        Unloaded += (_, _) => Repeater.ItemsSource = null;
     }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) => _ = ViewModel.InitializeAsync();
 
     private void OnItemClick(object sender, RoutedEventArgs e)
     {

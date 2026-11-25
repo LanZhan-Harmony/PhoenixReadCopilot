@@ -14,15 +14,13 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// </summary>
 internal sealed partial class AppSearchBox : UserControl
 {
-    public SearchBoxViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SearchBoxViewModel>();
+    public SearchBoxViewModel ViewModel { get; } =
+        Ioc.Default.GetRequiredService<SearchBoxViewModel>();
 
     public AppSearchBox()
     {
         InitializeComponent();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
-
-    private void OnControlUnloaded() => HotSearchView.ItemsSource = null;
 
     private void OnKeywordChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {

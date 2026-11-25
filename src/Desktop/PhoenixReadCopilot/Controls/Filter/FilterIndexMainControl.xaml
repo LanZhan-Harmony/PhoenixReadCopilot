@@ -9,6 +9,8 @@
                               xmlns:local="using:PhoenixReadCopilot.Controls.Filter"
                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                               xmlns:strings="using:PhoenixReadCopilot.Strings"
+                              Loaded="OnLoaded"
+                              Unloaded="OnUnloaded"
                               mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -21,7 +23,10 @@
 
     <Grid>
         <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
-            <ScrollViewer x:Name="IndexScrollView" Style="{StaticResource PageScrollViewerStyle}">
+            <ScrollViewer x:Name="IndexScrollView"
+                          SizeChanged="OnScrollViewSizeChanged"
+                          Style="{StaticResource PageScrollViewerStyle}"
+                          ViewChanged="OnViewChanged">
                 <ItemsRepeater x:Name="IndexRepeater"
                                Margin="16,12"
                                ElementClearing="ItemRepeater_ElementClearing"

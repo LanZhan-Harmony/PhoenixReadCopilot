@@ -28,33 +28,18 @@ internal sealed partial class UserSectionDetailControl : UserControl
     public UserSectionDetailControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated += OnListUpdatedAsync;
-        }
-
-        UserScrollView.ViewChanged += OnViewChanged;
-        UserScrollView.SizeChanged += OnScrollViewSizeChanged;
+        ViewModel?.ListUpdated += OnListUpdatedAsync;
 
         CheckUserCount();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        UserRepeater.ItemsSource = null;
-        if (ViewModel is not null)
-        {
-            ViewModel.ListUpdated -= OnListUpdatedAsync;
-        }
-
-        UserScrollView.ViewChanged -= OnViewChanged;
-        UserScrollView.SizeChanged -= OnScrollViewSizeChanged;
+        ViewModel?.ListUpdated -= OnListUpdatedAsync;
     }
 
     private async void OnListUpdatedAsync(object? sender, EventArgs e)

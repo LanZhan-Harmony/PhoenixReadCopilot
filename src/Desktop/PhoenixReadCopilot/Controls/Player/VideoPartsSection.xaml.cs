@@ -31,11 +31,9 @@ internal sealed partial class VideoPartsSection : UserControl
     public VideoPartsSection()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (ViewModel is null)
         {
@@ -46,13 +44,9 @@ internal sealed partial class VideoPartsSection : UserControl
         ScrollToCurrentAsync();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        View.ItemsSource = null;
-        if (ViewModel is not null)
-        {
-            ViewModel.PartChanged -= OnPartChanged;
-        }
+        ViewModel?.PartChanged -= OnPartChanged;
     }
 
     private void OnViewModelChanged(
@@ -60,10 +54,7 @@ internal sealed partial class VideoPartsSection : UserControl
         VideoPlayerPartSectionDetailViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.PartChanged -= OnPartChanged;
-        }
+        oldValue?.PartChanged -= OnPartChanged;
 
         if (newValue is null)
         {

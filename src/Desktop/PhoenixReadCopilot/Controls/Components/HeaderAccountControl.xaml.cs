@@ -12,15 +12,17 @@ namespace PhoenixReadCopilot.Controls.Components;
 /// </summary>
 internal sealed partial class HeaderAccountControl : UserControl
 {
-    private readonly IWindowService _windowService = Ioc.Default.GetRequiredService<IWindowService>();
+    private readonly IWindowService _windowService =
+        Ioc.Default.GetRequiredService<IWindowService>();
 
     public AccountViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<AccountViewModel>();
 
     public HeaderAccountControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => _ = ViewModel.InitializeAsync();
     }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) => _ = ViewModel.InitializeAsync();
 
     private void OnFlyoutOpened(object sender, object e) =>
         _ = ViewModel.UpdateCommunityInformationAsync();

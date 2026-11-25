@@ -26,8 +26,6 @@ internal sealed partial class IndexFilterItemControl : UserControl
     public IndexFilterItemControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => ConditionComboBox.SelectionChanged += OnSelectionChanged;
-        Unloaded += (_, _) => ConditionComboBox.SelectionChanged -= OnSelectionChanged;
     }
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)

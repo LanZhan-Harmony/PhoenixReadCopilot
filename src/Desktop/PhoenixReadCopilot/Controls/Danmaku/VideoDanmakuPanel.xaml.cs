@@ -43,11 +43,9 @@ internal sealed partial class VideoDanmakuPanel : UserControl
     public VideoDanmakuPanel()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (ViewModel is null)
         {
@@ -75,7 +73,7 @@ internal sealed partial class VideoDanmakuPanel : UserControl
         }
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         if (ViewModel is not null)
         {

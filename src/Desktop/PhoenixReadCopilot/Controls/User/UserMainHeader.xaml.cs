@@ -26,7 +26,12 @@ internal sealed partial class UserMainHeader : UserControl
         nameof(ViewModel),
         typeof(UserSpacePageViewModel),
         typeof(UserMainHeader),
-        new PropertyMetadata(null, (d, e) => ((UserMainHeader)d).OnViewModelChanged(e.OldValue as UserSpacePageViewModel, e.NewValue as UserSpacePageViewModel))
+        new PropertyMetadata(null, (d, e) =>
+            ((UserMainHeader)d).OnViewModelChanged(
+                e.OldValue as UserSpacePageViewModel,
+                e.NewValue as UserSpacePageViewModel
+            )
+        )
     );
 
     public UserMainHeader()
@@ -45,10 +50,7 @@ internal sealed partial class UserMainHeader : UserControl
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-        }
+        ViewModel?.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
     private void OnViewModelChanged(

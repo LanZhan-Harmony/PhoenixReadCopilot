@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.ViewModels.Components;
@@ -30,15 +29,6 @@ internal sealed partial class EmotePanel : UserControl
     {
         ViewModel = Ioc.Default.GetRequiredService<EmoteModuleViewModel>();
         InitializeComponent();
-        Loaded += OnLoaded;
-    }
-
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        if (EmoteView.ItemsSource is null)
-        {
-            EmoteView.ItemsSource = Emojis;
-        }
     }
 
     private void OnEmoteViewItemInvoked(ItemsView sender, ItemsViewItemInvokedEventArgs args)

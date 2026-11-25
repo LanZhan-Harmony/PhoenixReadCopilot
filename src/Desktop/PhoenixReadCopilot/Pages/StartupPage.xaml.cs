@@ -18,7 +18,6 @@ internal sealed partial class StartupPage : Page
     public StartupPage()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)

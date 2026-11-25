@@ -8,6 +8,7 @@
                                xmlns:local="using:PhoenixReadCopilot.Controls.Settings"
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                xmlns:strings="using:PhoenixReadCopilot.Strings"
+                               Loaded="OnLoaded"
                                mc:Ignorable="d">
 
     <community:SettingsExpander Description="{x:Bind strings:Resources.AppThemeDescription}" Header="{x:Bind strings:Resources.AppTheme}">

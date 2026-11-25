@@ -211,11 +211,6 @@ internal sealed partial class EmoteTextBlock : UserControl
         }
     }
 
-    private void OnUnloaded(object sender, RoutedEventArgs e)
-    {
-        Gallery?.ItemsSource = null;
-    }
-
     [GeneratedRegex(@"(\[.*?\])")]
     private static partial Regex EmojiRegex();
 }

@@ -9,6 +9,8 @@
       xmlns:local="using:PhoenixReadCopilot.Pages"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:strings="using:PhoenixReadCopilot.Strings"
+      Loaded="OnLoaded"
+      Unloaded="OnUnloaded"
       mc:Ignorable="d">
 
     <Page.Resources>
@@ -24,7 +26,10 @@
         <!--  推荐短剧流  -->
         <Grid>
             <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
-                <ScrollViewer x:Name="VideoScrollView" Style="{StaticResource PageScrollViewerStyle}">
+                <ScrollViewer x:Name="VideoScrollView"
+                              SizeChanged="OnScrollViewSizeChanged"
+                              Style="{StaticResource PageScrollViewerStyle}"
+                              ViewChanged="OnViewChanged">
                     <ItemsRepeater x:Name="VideoRepeater"
                                    Margin="16,12"
                                    ElementClearing="VideoRepeater_ElementClearing"

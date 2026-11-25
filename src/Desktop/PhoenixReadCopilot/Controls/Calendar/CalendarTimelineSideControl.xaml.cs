@@ -31,22 +31,16 @@ internal sealed partial class CalendarTimelineSideControl : UserControl
     public CalendarTimelineSideControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         ViewModel?.TimelineInitialized += OnTimelineInitialized;
-
-        TimelineView.SelectionChanged += OnTimelineSelectionChanged;
         CheckTimelineSelection();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        TimelineView.ItemsSource = null;
-        TimelineView.SelectionChanged -= OnTimelineSelectionChanged;
         ViewModel?.TimelineInitialized -= OnTimelineInitialized;
     }
 

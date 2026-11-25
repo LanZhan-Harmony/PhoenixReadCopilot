@@ -7,6 +7,8 @@
                            xmlns:local="using:PhoenixReadCopilot.Controls.Rank"
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                            xmlns:strings="using:PhoenixReadCopilot.Strings"
+                           Loaded="OnLoaded"
+                           Unloaded="OnUnloaded"
                            mc:Ignorable="d">
 
     <Grid Padding="16,0">
@@ -23,6 +25,7 @@
                      Margin="16,0"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
+                     SelectionChanged="OnBoardSelectionChanged"
                      Visibility="{x:Bind ViewModel.IsLeaderboardSection, Mode=OneWay}"/>
         <Button Grid.Column="2"
                 VerticalAlignment="Center"

@@ -31,13 +31,10 @@ internal sealed partial class VideoPlayerSideHeader : UserControl
     public VideoPlayerSideHeader()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        Selector.SelectionChanged += OnSelectorChanged;
         if (ViewModel is null)
         {
             return;
@@ -46,14 +43,9 @@ internal sealed partial class VideoPlayerSideHeader : UserControl
         InitializeChildPartitions();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.SectionInitialized -= OnViewModelSectionInitialized;
-        }
-
-        Selector.SelectionChanged -= OnSelectorChanged;
+        ViewModel?.SectionInitialized -= OnViewModelSectionInitialized;
     }
 
     private void OnViewModelChanged(
@@ -61,10 +53,7 @@ internal sealed partial class VideoPlayerSideHeader : UserControl
         VideoPlayerPageViewModel? newValue
     )
     {
-        if (oldValue is not null)
-        {
-            oldValue.SectionInitialized -= OnViewModelSectionInitialized;
-        }
+        oldValue?.SectionInitialized -= OnViewModelSectionInitialized;
 
         if (newValue is null)
         {

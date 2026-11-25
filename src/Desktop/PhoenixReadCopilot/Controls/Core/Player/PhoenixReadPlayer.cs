@@ -64,8 +64,6 @@ internal sealed partial class PhoenixReadPlayer : UserControl
     {
         _settings = Ioc.Default.GetRequiredService<ISettingsService>().Settings;
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
     /// <summary>
@@ -109,7 +107,7 @@ internal sealed partial class PhoenixReadPlayer : UserControl
         _lastRightArrowPressedTime = null;
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_cursorTimer is null)
         {
@@ -135,7 +133,7 @@ internal sealed partial class PhoenixReadPlayer : UserControl
         _cursorTimer?.Start();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         UnHookEventsWithoutViewModel();
         if (ViewModel is not null)

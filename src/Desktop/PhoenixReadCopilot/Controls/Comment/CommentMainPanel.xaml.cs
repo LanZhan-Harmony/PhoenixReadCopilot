@@ -32,14 +32,10 @@ internal sealed partial class CommentMainPanel : UserControl
     public CommentMainPanel()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        CommentScrollView.ViewChanged += OnViewChanged;
-        CommentScrollView.SizeChanged += OnScrollViewSizeChanged;
         if (ViewModel is null)
         {
             return;
@@ -49,16 +45,13 @@ internal sealed partial class CommentMainPanel : UserControl
         CheckCommentCount();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         if (ViewModel is not null)
         {
             ViewModel.ListUpdated -= OnCommentListUpdatedAsync;
             ViewModel.Initialized -= OnInitialized;
         }
-
-        CommentScrollView.ViewChanged -= OnViewChanged;
-        CommentScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
     private void OnViewModelChanged(CommentMainViewModel? oldValue, CommentMainViewModel? newValue)

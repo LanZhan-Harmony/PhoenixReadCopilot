@@ -27,10 +27,7 @@ internal sealed partial class DanmakuSendOptions : UserControl
     public DanmakuSendOptions()
     {
         InitializeComponent();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
-
-    private void OnControlUnloaded() => ColorRepeater.ItemsSource = null;
 
     private void OnSizeItemClick(object sender, RoutedEventArgs e) =>
         ViewModel.IsStandardSize = (sender as FrameworkElement).Tag.ToString() == "Standard";

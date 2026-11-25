@@ -29,8 +29,6 @@ internal sealed partial class RootLayout : UserControl
     public RootLayout()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
     /// <summary>
@@ -183,7 +181,7 @@ internal sealed partial class RootLayout : UserControl
         return false;
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_navigationService is NavigationService navService)
         {
@@ -201,7 +199,7 @@ internal sealed partial class RootLayout : UserControl
         }
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         _navigationViewService.UnregisterEvents();
     }

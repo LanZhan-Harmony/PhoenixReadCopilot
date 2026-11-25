@@ -28,10 +28,7 @@ internal sealed partial class VideoRecommendSection : UserControl
     public VideoRecommendSection()
     {
         InitializeComponent();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
-
-    private void OnControlUnloaded() => VideoRepeater.ItemsSource = null;
 
     private void VideoRepeater_ElementPrepared(
         ItemsRepeater sender,

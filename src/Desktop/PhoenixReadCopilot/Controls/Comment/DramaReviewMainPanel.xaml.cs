@@ -32,14 +32,10 @@ internal sealed partial class DramaReviewMainPanel : UserControl
     public DramaReviewMainPanel()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        ReviewScrollView.ViewChanged += OnViewChanged;
-        ReviewScrollView.SizeChanged += OnScrollViewSizeChanged;
         ReviewCommentBox?.UpdateLoginState();
         if (ViewModel is null)
         {
@@ -50,16 +46,13 @@ internal sealed partial class DramaReviewMainPanel : UserControl
         CheckReviewCount();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         if (ViewModel is not null)
         {
             ViewModel.ListUpdated -= OnReviewListUpdatedAsync;
             ViewModel.Initialized -= OnInitialized;
         }
-
-        ReviewScrollView.ViewChanged -= OnViewChanged;
-        ReviewScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
     private void OnViewModelChanged(

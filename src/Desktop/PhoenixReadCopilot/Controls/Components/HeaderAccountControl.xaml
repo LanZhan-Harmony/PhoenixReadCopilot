@@ -7,6 +7,7 @@
              xmlns:local="using:PhoenixReadCopilot.Controls.Components"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:strings="using:PhoenixReadCopilot.Strings"
+             Loaded="OnLoaded"
              mc:Ignorable="d">
 
     <UserControl.Resources>

@@ -28,10 +28,7 @@ internal sealed partial class VideoPlayerFormatButton : UserControl
     public VideoPlayerFormatButton()
     {
         InitializeComponent();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
-
-    private void OnControlUnloaded() => FormatView.ItemsSource = null;
 
     private void OnFlyoutOpened(object sender, object e)
     {

@@ -33,15 +33,10 @@ internal sealed partial class CalendarTimelineMainControl : UserControl
     public CalendarTimelineMainControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        TimelineScrollView.ViewChanged += OnViewChanged;
-        TimelineScrollView.SizeChanged += OnScrollViewSizeChanged;
-
         if (ViewModel is null)
         {
             return;
@@ -53,17 +48,13 @@ internal sealed partial class CalendarTimelineMainControl : UserControl
         CheckTimelineCount();
     }
 
-    private void OnControlUnloaded()
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         if (ViewModel is not null)
         {
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
             ViewModel.TimelineItemsUpdated -= OnTimelineItemsUpdatedAsync;
         }
-
-        TimelineRepeater.ItemsSource = null;
-        TimelineScrollView.ViewChanged -= OnViewChanged;
-        TimelineScrollView.SizeChanged -= OnScrollViewSizeChanged;
     }
 
     private void OnViewModelChanged(

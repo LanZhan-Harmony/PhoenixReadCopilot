@@ -26,10 +26,7 @@ internal sealed partial class SubtitleButton : UserControl
     public SubtitleButton()
     {
         InitializeComponent();
-        Unloaded += (_, _) => OnControlUnloaded();
     }
-
-    private void OnControlUnloaded() => SubtitleView.ItemsSource = null;
 
     private void OnMetaChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {

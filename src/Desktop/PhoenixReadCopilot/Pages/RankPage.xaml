@@ -10,6 +10,7 @@
     xmlns:local="using:PhoenixReadCopilot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:rank="using:PhoenixReadCopilot.Controls.Rank"
+    Loaded="OnLoaded"
     mc:Ignorable="d">
 
     <Grid>

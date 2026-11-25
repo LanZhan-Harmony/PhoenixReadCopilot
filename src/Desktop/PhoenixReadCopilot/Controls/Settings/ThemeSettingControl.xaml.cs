@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.ViewModels.View;
@@ -15,10 +16,9 @@ internal sealed partial class ThemeSettingControl : UserControl
     public ThemeSettingControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
     }
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         ThemePicker.SelectedIndex = ViewModel.AppTheme switch
         {

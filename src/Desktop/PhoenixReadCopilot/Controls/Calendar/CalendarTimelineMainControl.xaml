@@ -9,6 +9,8 @@
              xmlns:local="using:PhoenixReadCopilot.Controls.Calendar"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:strings="using:PhoenixReadCopilot.Strings"
+             Loaded="OnLoaded"
+             Unloaded="OnUnloaded"
              mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -21,7 +23,10 @@
 
     <Grid>
         <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
-            <ScrollViewer x:Name="TimelineScrollView" Style="{StaticResource PageScrollViewerStyle}">
+            <ScrollViewer x:Name="TimelineScrollView"
+                          SizeChanged="OnScrollViewSizeChanged"
+                          Style="{StaticResource PageScrollViewerStyle}"
+                          ViewChanged="OnViewChanged">
                 <ItemsRepeater x:Name="TimelineRepeater"
                                Margin="16,12"
                                ElementClearing="TimelineRepeater_ElementClearing"

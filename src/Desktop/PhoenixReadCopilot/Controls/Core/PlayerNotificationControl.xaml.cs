@@ -25,7 +25,9 @@ internal sealed partial class PlayerNotificationControl : UserControl
     public PlayerNotificationControl()
     {
         InitializeComponent();
-        Loaded += (_, _) => ViewModel?.Start();
-        Unloaded += (_, _) => ViewModel?.Cancel();
     }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) => ViewModel?.Start();
+
+    private void OnUnloaded(object sender, RoutedEventArgs e) => ViewModel?.Cancel();
 }

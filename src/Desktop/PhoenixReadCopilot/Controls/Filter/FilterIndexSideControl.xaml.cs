@@ -25,6 +25,5 @@ internal sealed partial class FilterIndexSideControl : UserControl
     public FilterIndexSideControl()
     {
         InitializeComponent();
-        Unloaded += (_, _) => FilterRepeater.ItemsSource = null;
     }
 }

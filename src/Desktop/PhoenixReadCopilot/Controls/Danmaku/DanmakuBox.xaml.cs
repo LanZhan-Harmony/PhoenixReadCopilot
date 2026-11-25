@@ -27,7 +27,6 @@ internal sealed partial class DanmakuBox : UserControl
     public DanmakuBox()
     {
         InitializeComponent();
-        Loaded += (_, _) => OnControlLoaded();
     }
 
     /// <summary>
@@ -40,7 +39,7 @@ internal sealed partial class DanmakuBox : UserControl
     /// </summary>
     public event EventHandler InputGotFocus;
 
-    private void OnControlLoaded()
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         UpdateLoginState();
     }

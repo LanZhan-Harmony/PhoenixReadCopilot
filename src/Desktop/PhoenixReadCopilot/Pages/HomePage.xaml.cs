@@ -22,26 +22,18 @@ internal sealed partial class HomePage : Page
     public HomePage()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
-        Unloaded += OnUnloaded;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _ = ViewModel.InitializeAsync();
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
-        VideoScrollView.ViewChanged += OnViewChanged;
-        VideoScrollView.SizeChanged += OnScrollViewSizeChanged;
         CheckVideoCount();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        VideoRepeater.ItemsSource = null;
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
-        VideoScrollView.ViewChanged -= OnViewChanged;
-        VideoScrollView.SizeChanged -= OnScrollViewSizeChanged;
-        ViewModel.Videos.Clear();
     }
 
     private async void OnVideoListUpdatedAsync(object? sender, EventArgs e)

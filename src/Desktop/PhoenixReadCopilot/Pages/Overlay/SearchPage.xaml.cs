@@ -21,7 +21,6 @@ internal sealed partial class SearchPage : Page
     public SearchPage()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
     }
 
     /// <inheritdoc/>
