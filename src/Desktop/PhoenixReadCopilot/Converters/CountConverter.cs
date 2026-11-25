@@ -1,16 +1,16 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Helpers;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class CountConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
-    {
-        long count = System.Convert.ToInt64(value);
-        return FormatHelper.FormatCount(count);
-    }
+    /// <summary>
+    /// 整数计数格式化为可读文本.
+    /// </summary>
+    public static string CountToText(long? count) => FormatHelper.FormatCount(count ?? 0);
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 浮点计数格式化为可读文本.
+    /// </summary>
+    public static string DoubleCountToText(double count) => FormatHelper.FormatCount((long)count);
 }

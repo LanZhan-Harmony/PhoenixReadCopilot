@@ -1,24 +1,17 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 
-/// <summary>
-/// 循环类型转换器.
-/// </summary>
-internal sealed partial class LoopTypeConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 视频循环类型转换为可读文本.
+    /// </summary>
+    public static string LoopTypeToText(VideoLoopType loopType) => loopType switch
     {
-        return (VideoLoopType)value switch
-        {
-            VideoLoopType.Single => Resources.SingleLoop,
-            VideoLoopType.List => Resources.ListLoop,
-            _ => Resources.NoLoop,
-        };
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+        VideoLoopType.Single => Resources.SingleLoop,
+        VideoLoopType.List => Resources.ListLoop,
+        _ => Resources.NoLoop,
+    };
 }

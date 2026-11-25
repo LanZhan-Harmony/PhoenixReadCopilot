@@ -5,6 +5,7 @@
       xmlns:animations="using:CommunityToolkit.WinUI.Animations"
       xmlns:components="using:PhoenixReadCopilot.Controls.Components"
       xmlns:core="using:PhoenixReadCopilot.Controls.Core"
+      xmlns:cvt="using:PhoenixReadCopilot.Converters"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:danmaku="using:PhoenixReadCopilot.Controls.Danmaku"
       xmlns:local="using:PhoenixReadCopilot.Pages.Overlay"
@@ -39,8 +40,8 @@
                                              Duration="0:0:0.26"/>
             </animations:Implicit.HideAnimations>
         </components:ShimmerLayout>
-        <Grid Visibility="{x:Bind ViewModel.IsPageLoadFailed, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-            <Grid Visibility="{x:Bind ViewModel.IsPageLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+        <Grid Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsPageLoadFailed), Mode=OneWay}">
+            <Grid Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsPageLoading), Mode=OneWay}">
                 <Grid.RowDefinitions>
                     <RowDefinition x:Name="HeaderRow" Height="56"/>
                     <RowDefinition Height="Auto"/>
@@ -49,7 +50,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="{x:Bind ViewModel.NavColumnWidth, Mode=OneWay, Converter={StaticResource GridLengthConverter}}"/>
+                    <ColumnDefinition Width="{x:Bind cvt:Converter.DoubleToGridLength(ViewModel.NavColumnWidth), Mode=OneWay}"/>
                 </Grid.ColumnDefinitions>
                 <Grid.ChildrenTransitions>
                     <RepositionThemeTransition IsStaggeringEnabled="False"/>
@@ -88,14 +89,14 @@
                 <Grid x:Name="SideHeader"
                       Grid.Column="2"
                       Margin="-6,0,0,0">
-                    <player:VideoPlayerSideHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
+                    <player:VideoPlayerSideHeader ViewModel="{x:Bind ViewModel, Mode=OneWay}" Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsNavColumnManualHide), Mode=OneWay}"/>
                 </Grid>
 
                 <Grid x:Name="SideBody"
                       Grid.Row="2"
                       Grid.Column="2"
                       Margin="-6,0,0,0">
-                    <player:VideoPlayerSideBody ViewModel="{x:Bind ViewModel, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
+                    <player:VideoPlayerSideBody ViewModel="{x:Bind ViewModel, Mode=OneWay}" Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsNavColumnManualHide), Mode=OneWay}"/>
                 </Grid>
 
                 <!--  右侧分栏大小控制器  -->

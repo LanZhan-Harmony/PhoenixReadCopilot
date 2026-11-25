@@ -1,39 +1,20 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class DisplayModeConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 播放器显示模式转换为可读文本.
+    /// </summary>
+    public static string DisplayModeToText(PlayerDisplayMode mode) => mode switch
     {
-        string result = string.Empty;
-        if (value is PlayerDisplayMode mode)
-        {
-            switch (mode)
-            {
-                case PlayerDisplayMode.Default:
-                    result = Resources.Default;
-                    break;
-                case PlayerDisplayMode.FullScreen:
-                    result = Resources.FullScreenMode;
-                    break;
-                case PlayerDisplayMode.FullWindow:
-                    result = Resources.FullWindowMode;
-                    break;
-                case PlayerDisplayMode.CompactOverlay:
-                    result = Resources.CompactOverlayMode;
-                    break;
-                case PlayerDisplayMode.NewWindow:
-                    result = Resources.NewWindow;
-                    break;
-            }
-        }
-
-        return result;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+        PlayerDisplayMode.Default => Resources.Default,
+        PlayerDisplayMode.FullScreen => Resources.FullScreenMode,
+        PlayerDisplayMode.FullWindow => Resources.FullWindowMode,
+        PlayerDisplayMode.CompactOverlay => Resources.CompactOverlayMode,
+        PlayerDisplayMode.NewWindow => Resources.NewWindow,
+        _ => string.Empty,
+    };
 }

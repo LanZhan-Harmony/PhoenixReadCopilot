@@ -39,12 +39,36 @@ public sealed partial class AppNavigationViewItem : NavigationViewItem
         nameof(ShowUnread),
         typeof(bool),
         typeof(AppNavigationViewItem),
-        new PropertyMetadata(null)
+        new PropertyMetadata(false, OnShowUnreadChanged)
+    );
+
+    /// <summary>
+    /// 未读标识可见性.
+    /// </summary>
+    public Visibility UnreadVisibility
+    {
+        get => (Visibility)GetValue(UnreadVisibilityProperty);
+        private set => SetValue(UnreadVisibilityProperty, value);
+    }
+
+    public static readonly DependencyProperty UnreadVisibilityProperty = DependencyProperty.Register(
+        nameof(UnreadVisibility),
+        typeof(Visibility),
+        typeof(AppNavigationViewItem),
+        new PropertyMetadata(Visibility.Collapsed)
     );
 
     public AppNavigationViewItem()
     {
         DefaultStyleKey = typeof(AppNavigationViewItem);
+    }
+
+    private static void OnShowUnreadChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is AppNavigationViewItem item)
+        {
+            item.UnreadVisibility = e.NewValue is true ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 }
 

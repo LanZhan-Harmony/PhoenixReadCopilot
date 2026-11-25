@@ -1,27 +1,18 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 
-/// <summary>
-/// 偏好画质的可读文本转换器.
-/// </summary>
-internal sealed partial class PreferQualityTypeConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 偏好画质转换为可读文本.
+    /// </summary>
+    public static string PreferQualityToText(PreferQualityType quality) => quality switch
     {
-        return value is PreferQualityType quality
-            ? quality switch
-            {
-                PreferQualityType.HD => Resources.HDFirst,
-                PreferQualityType.High => Resources.PreferHighQuality,
-                PreferQualityType.UHD => Resources.UHDFirst,
-                _ => Resources.Automatic,
-            }
-            : string.Empty;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+        PreferQualityType.HD => Resources.HDFirst,
+        PreferQualityType.High => Resources.PreferHighQuality,
+        PreferQualityType.UHD => Resources.UHDFirst,
+        _ => Resources.Automatic,
+    };
 }

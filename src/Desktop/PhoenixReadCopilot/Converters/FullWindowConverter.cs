@@ -1,27 +1,19 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Strings;
 using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class FullWindowConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
-    {
-        bool isFullWindow = (bool)value;
+    /// <summary>
+    /// 全窗口模式转换为提示文本.
+    /// </summary>
+    public static string FullWindowTooltip(bool isFullWindow) =>
+        isFullWindow ? Resources.ExitFullWindow : Resources.EnterFullWindow;
 
-        if (targetType == typeof(Symbol))
-        {
-            return isFullWindow
-                ? Symbol.WindowAd
-                : Symbol.Window;
-        }
-        else
-        {
-            return isFullWindow ? Resources.ExitFullWindow : Resources.EnterFullWindow;
-        }
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 全窗口模式转换为图标.
+    /// </summary>
+    public static Symbol FullWindowSymbol(bool isFullWindow) =>
+        isFullWindow ? Symbol.WindowAd : Symbol.Window;
 }

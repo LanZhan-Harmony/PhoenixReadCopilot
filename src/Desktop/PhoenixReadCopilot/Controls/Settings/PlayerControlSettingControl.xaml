@@ -4,7 +4,7 @@
                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                xmlns:community="using:CommunityToolkit.WinUI.Controls"
                                xmlns:constants="using:PhoenixReadCopilot.Core.Enums"
-                               xmlns:converters="using:PhoenixReadCopilot.Converters"
+                               xmlns:cvt="using:PhoenixReadCopilot.Converters"
                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                xmlns:essential="using:WinUI3Package"
                                xmlns:ic="using:FluentIcons.WinUI"
@@ -12,11 +12,6 @@
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                xmlns:strings="using:PhoenixReadCopilot.Strings"
                                mc:Ignorable="d">
-
-    <UserControl.Resources>
-        <converters:PreferCodecTypeConverter x:Key="PreferCodecConverter"/>
-        <converters:MTCBehaviorConverter x:Key="MTCConverter"/>
-    </UserControl.Resources>
 
     <community:SettingsExpander Description="{x:Bind strings:Resources.PlayerControlDescription}" Header="{x:Bind strings:Resources.PlayerControl}">
         <community:SettingsExpander.HeaderIcon>
@@ -30,7 +25,7 @@
                           SelectedItem="{x:Bind ViewModel.Settings.MTCBehavior, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:MTCBehavior">
-                            <TextBlock Text="{x:Bind Converter={StaticResource MTCConverter}}"/>
+                            <TextBlock Text="{x:Bind cvt:Converter.MTCBehaviorToText((constants:MTCBehavior))}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -42,7 +37,7 @@
                           SelectedItem="{x:Bind ViewModel.Settings.PreferCodec, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PreferCodecType">
-                            <TextBlock Text="{x:Bind Converter={StaticResource PreferCodecConverter}}"/>
+                            <TextBlock Text="{x:Bind cvt:Converter.PreferCodecToText((constants:PreferCodecType))}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

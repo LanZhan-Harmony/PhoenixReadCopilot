@@ -1,27 +1,16 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class PlayerTypeConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 播放器类型转换为可读文本.
+    /// </summary>
+    public static string PlayerTypeToText(PlayerType type) => type switch
     {
-        string result = string.Empty;
-        if (value is PlayerType type)
-        {
-            result = type switch
-            {
-                PlayerType.FFmpeg => Resources.FFmpegPlayer,
-                // PlayerType.Web => Resources.Web,
-                _ => Resources.FFmpegPlayer,
-            };
-        }
-
-        return result;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+        PlayerType.FFmpeg => Resources.FFmpegPlayer,
+        _ => Resources.FFmpegPlayer,
+    };
 }

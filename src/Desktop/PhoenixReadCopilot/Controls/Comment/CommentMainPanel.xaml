@@ -5,7 +5,7 @@
              xmlns:api="using:PhoenixReadApi"
              xmlns:components="using:PhoenixReadCopilot.Controls.Components"
              xmlns:components1="using:PhoenixReadCopilot.ViewModels.Components"
-             xmlns:converters="using:PhoenixReadCopilot.Converters"
+             xmlns:cvt="using:PhoenixReadCopilot.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:essential="using:WinUI3Package"
              xmlns:local="using:PhoenixReadCopilot.Controls.Comment"
@@ -21,7 +21,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Padding="12,0" Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
+        <Grid Padding="12,0" Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
@@ -37,13 +37,13 @@
                       MinWidth="100"
                       VerticalAlignment="Center"
                       essential:ComboBoxHelper.AcrylicWorkaround="True"
-                      IsEnabled="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                      IsEnabled="{x:Bind cvt:Converter.InvertBool(ViewModel.IsLoading), Mode=OneWay}"
                       ItemsSource="{x:Bind ViewModel.Sorts, Mode=OneWay}"
                       SelectedItem="{x:Bind ViewModel.SortType, Mode=OneWay}"
                       SelectionChanged="OnSortChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="api:CommentSortOrder">
-                        <TextBlock Text="{x:Bind Converter={StaticResource SortTypeTextConverter}}"/>
+                        <TextBlock Text="{x:Bind cvt:Converter.CommentSortOrderToText((api:CommentSortOrder))}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
@@ -52,8 +52,8 @@
                          HorizontalAlignment="Left"
                          Command="{x:Bind ViewModel.BackToMainCommand, Mode=OneWay}"
                          Content="{x:Bind strings:Resources.BackToPrevious}"
-                         Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
-        <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
+                         Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}"/>
+        <Grid Grid.Row="1" Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}">
             <ScrollViewer x:Name="CommentScrollView"
                           Padding="0"
                           SizeChanged="OnScrollViewSizeChanged"
@@ -63,7 +63,7 @@
                     <local:CommentItemControl Margin="0,0,0,4"
                                               ShowMoreCommand="{x:Bind ViewModel.TopItem.ShowMoreCommand, Mode=OneWay}"
                                               ViewModel="{x:Bind ViewModel.TopItem.Data, Mode=OneWay}"
-                                              Visibility="{x:Bind ViewModel.TopItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                              Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.TopItem), Mode=OneWay}"/>
                     <ItemsControl ItemsSource="{x:Bind ViewModel.Comments, Mode=OneWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="components1:CommentDetailViewModel">
@@ -87,13 +87,13 @@
         <local:CommentDetailPanel Grid.Row="1"
                                   Grid.RowSpan="2"
                                   ViewModel="{x:Bind ViewModel.SelectedItem, Mode=OneWay}"
-                                  Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                  Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}"/>
         <local:CommentTextBox Grid.Row="2"
                               Margin="12,0"
-                              IsEnabled="{x:Bind ViewModel.IsReplying, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                              IsEnabled="{x:Bind cvt:Converter.InvertBool(ViewModel.IsReplying), Mode=OneWay}"
                               ReplyTip="{x:Bind ViewModel.ReplyTarget, Mode=OneWay}"
                               ResetSelectedCommand="{x:Bind ViewModel.ResetReplyTargetCommand, Mode=OneWay}"
                               SendCommand="{x:Bind ViewModel.SendReplyCommand, Mode=OneWay}"
-                              Visibility="{x:Bind ViewModel.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}"/>
+                              Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}"/>
     </Grid>
 </UserControl>

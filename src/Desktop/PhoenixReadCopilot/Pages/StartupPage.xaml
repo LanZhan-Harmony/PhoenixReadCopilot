@@ -3,6 +3,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:animations="using:CommunityToolkit.WinUI.Animations"
+      xmlns:cvt="using:PhoenixReadCopilot.Converters"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ic="using:FluentIcons.WinUI"
       xmlns:lab="using:CommunityToolkit.Labs.WinUI"
@@ -51,7 +52,7 @@
                                HorizontalAlignment="Stretch"
                                VerticalAlignment="Stretch"
                                Stretch="Uniform"
-                               Visibility="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                               Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsQRCodeLoading), Mode=OneWay}">
                             <animations:Implicit.ShowAnimations>
                                 <animations:OpacityAnimation From="0.0"
                                                              To="1.0"
@@ -78,7 +79,7 @@
                                      HorizontalAlignment="Center"
                                      Click="OnRefreshQRButtonClick"
                                      Content="{x:Bind strings:Resources.Refresh}"
-                                     IsEnabled="{x:Bind ViewModel.IsQRCodeLoading, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"/>
+                                     IsEnabled="{x:Bind cvt:Converter.InvertBool(ViewModel.IsQRCodeLoading), Mode=OneWay}"/>
                 </Grid>
             </StackPanel>
 
@@ -127,7 +128,7 @@
                         HorizontalAlignment="Stretch"
                         Command="{x:Bind ViewModel.LoginWithSmsCommand}"
                         Content="登 录"
-                        IsEnabled="{x:Bind ViewModel.IsLoggingIn, Mode=OneWay, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                        IsEnabled="{x:Bind cvt:Converter.InvertBool(ViewModel.IsLoggingIn), Mode=OneWay}"
                         Style="{StaticResource AccentButtonStyle}"/>
 
                 <TextBlock HorizontalAlignment="Center"
@@ -135,7 +136,7 @@
                            Style="{StaticResource CaptionTextBlockStyle}"
                            Text="{x:Bind ViewModel.ErrorTip, Mode=OneWay}"
                            TextWrapping="Wrap"
-                           Visibility="{x:Bind ViewModel.ErrorTip, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                           Visibility="{x:Bind cvt:Converter.StringToVisibility(ViewModel.ErrorTip), Mode=OneWay}"/>
             </StackPanel>
         </Grid>
 

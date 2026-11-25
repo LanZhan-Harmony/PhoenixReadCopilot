@@ -507,7 +507,7 @@
                                    VerticalAlignment="Top"
                                    toolkit:VisualExtensions.NormalizedCenterPoint="0.5,0.5"
                                    Style="{StaticResource AttentionDotInfoBadgeStyle}"
-                                   Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ShowUnread, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                   Visibility="{TemplateBinding UnreadVisibility}"/>
 
                         <ItemsRepeater x:Name="NavigationViewItemMenuItemsHost"
                                        Grid.Row="1"

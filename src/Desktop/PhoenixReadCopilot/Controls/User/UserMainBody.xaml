@@ -136,9 +136,9 @@
         <!--  空状态占位 (仅当非加载中且真正无数据时呈现)  -->
         <components:EmptyHolder Description="{x:Bind ViewModel.EmptyDescription, Mode=OneWay}"
                                 Emoji="&#x1F4DA;"
-                                Visibility="{x:Bind ViewModel.ShowEmptyHolder, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                Visibility="{x:Bind ViewModel.ShowEmptyHolder, Mode=OneWay}"/>
 
         <!--  加载动画  -->
-        <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
     </Grid>
 </UserControl>

@@ -31,7 +31,7 @@ d:\code\WinUI\PhoenixReadCopilot\
 │   │   ├── PhoenixReadCopilot/                 # [核心应用工程] WinUI 3 界面交互与业务逻辑
 │   │   │   ├── Activation/                     # 应用生命周期与激活调度（协议、命令行等激活器）
 │   │   │   ├── Controls/                       # 自定义控件与复合组件（按业务模块聚合，直接继承原生控件）
-│   │   │   ├── Converters/                     # XAML 专用 IValueConverter 转换器
+│   │   │   ├── Converters/                     # XAML x:Bind 专用静态分部类 Converter（各文件定义 partial 方法）
 │   │   │   ├── Extensions/                     # 扩展方法、TemplateSelector、MarkupExtension
 │   │   │   ├── Forms/                          # 独立弹出框、ContentDialog、确认弹窗
 │   │   │   ├── Helpers/                        # UI 层通用无状态辅助类（动画、颜色、字体、服务定位等）
@@ -108,6 +108,13 @@ d:\code\WinUI\PhoenixReadCopilot\
 ### 3.3 WinRT / CsWinRT 投影约束
 - **动态加入视觉树的 WinRT 派生类必须为 `public`**：从 WinRT 类型（如 `Grid`）派生并加入 XAML 视觉树的类（如 `CursorGrid : Grid`），**必须声明为 `public partial class`**。若声明为 `internal`，CsWinRT 将无法生成激活工厂与元数据，导致运行时抛出 `0x800F1000`（`RO_E_METADATA_NAME_NOT_FOUND`）异常。
 
+### 3.4 `x:Bind` 绑定函数与 Converter 规范
+- **统一使用 `x:Bind` 静态绑定函数替代 `IValueConverter`**：禁止新建 `IValueConverter` 实现及在 `App.xaml` / 控件资源中注册转换器实例。所有无状态值转换函数统一定义在 `Converters/` 目录下各 `*Converter.cs` 文件中的 `internal static partial class Converter` 分部类中，并在 XAML 中通过 `xmlns:cvt="using:PhoenixReadCopilot.Converters"` 与 `{x:Bind cvt:Converter.Method(...), Mode=OneWay}` 调用（动态入参务必显式声明 `Mode=OneWay`）。
+- **正向 `bool -> Visibility` 直接绑定**：WinUI 3 的 `x:Bind` 原生支持 `bool` 到 `Visibility` 的隐式转换，直接写 `Visibility="{x:Bind IsLoading, Mode=OneWay}"`，仅反转显隐时调用 `cvt:Converter.InvertVisibility(...)`。
+- **禁止同参个数同名重载**：WinUI 3 XAML 编译器对 `x:Bind` 函数的重载解析**仅按参数个数匹配，不按参数类型区分**。不同输入类型必须使用不同方法名（如 `StringToBitmap` 与 `UriToBitmap`、`CountToText` 与 `DoubleCountToText`）。
+- **`DataTemplate` 根对象传参**：在 `DataTemplate` 中将当前 `x:DataType` 根对象本身传入静态函数时，使用无路径强转语法（如 `{x:Bind cvt:Converter.LoopTypeToText((constants:VideoLoopType))}`）。
+- **`ControlTemplate` 绑定**：在无 `x:Class` 的纯 `ResourceDictionary` / `ControlTemplate` 中优先使用 `{TemplateBinding}` 绑定强类型依赖属性（如 `AppNavigationViewItem.UnreadVisibility`），避免引入 `IValueConverter`。
+
 ---
 
 ## 4. ViewModel 规范
@@ -167,7 +174,7 @@ private void SelectEpisode(EpisodeItemViewModel episode)
   - 自定义控件：`*Control` / `*Section` / `*Button`（如 `UserMainHeader`、`CommentLikeButton`）
   - 业务服务接口 / 实现：`I*Service` / `*Service`（如 `ISettingsService` / `SettingsService`）
   - 静态辅助类：`*Helper`（如 `ColorHelper`、`ServiceHelper`）
-  - 转换器：`*Converter`（如 `BoolToVisibilityConverter`）
+  - 转换器文件：`*Converter.cs`（统一在 `Converters/` 中声明为 `internal static partial class Converter` 的分部文件）
 
 ### 5.2 现代 C# 特性与格式
 

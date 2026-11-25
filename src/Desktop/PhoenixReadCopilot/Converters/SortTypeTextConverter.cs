@@ -1,41 +1,30 @@
-using Microsoft.UI.Xaml.Data;
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 
-/// <summary>
-/// 视频排序方式可读文本转换器.
-/// </summary>
-internal sealed partial class SortTypeTextConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 综合搜索排序方式转换为可读文本.
+    /// </summary>
+    public static string SearchSortTypeToText(ComprehensiveSearchSortType sortType) => sortType switch
     {
-        string result = string.Empty;
-        if (value is ComprehensiveSearchSortType chst)
-        {
-            result = chst switch
-            {
-                ComprehensiveSearchSortType.Default => Resources.SortByDefault,
-                ComprehensiveSearchSortType.Danmaku => Resources.SortByDanmaku,
-                ComprehensiveSearchSortType.Play => Resources.SortByPlay,
-                ComprehensiveSearchSortType.Newest => Resources.SortByNewest,
-                _ => string.Empty,
-            };
-        }
-        else if (value is PhoenixReadApi.CommentSortOrder cso)
-        {
-            result = cso switch
-            {
-                PhoenixReadApi.CommentSortOrder.Hot => Resources.HotReply,
-                PhoenixReadApi.CommentSortOrder.Latest => Resources.LatestReply,
-                _ => string.Empty,
-            };
-        }
+        ComprehensiveSearchSortType.Default => Resources.SortByDefault,
+        ComprehensiveSearchSortType.Danmaku => Resources.SortByDanmaku,
+        ComprehensiveSearchSortType.Play => Resources.SortByPlay,
+        ComprehensiveSearchSortType.Newest => Resources.SortByNewest,
+        _ => string.Empty,
+    };
 
-        return result;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 评论排序方式转换为可读文本.
+    /// </summary>
+    public static string CommentSortOrderToText(CommentSortOrder sortOrder) => sortOrder switch
+    {
+        CommentSortOrder.Hot => Resources.HotReply,
+        CommentSortOrder.Latest => Resources.LatestReply,
+        _ => string.Empty,
+    };
 }

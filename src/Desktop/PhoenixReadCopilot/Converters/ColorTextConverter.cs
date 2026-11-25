@@ -1,13 +1,11 @@
-using Microsoft.UI.Xaml.Data;
 using Windows.UI;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class ColorTextConverter : IValueConverter
+internal static partial class Converter
 {
-    public object? Convert(object? value, Type targetType, object parameter, string language) =>
-        value is Color color ? color.ToString() : null;
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 将颜色转换为文本.
+    /// </summary>
+    public static string ColorToText(Color color) => color.ToString();
 }

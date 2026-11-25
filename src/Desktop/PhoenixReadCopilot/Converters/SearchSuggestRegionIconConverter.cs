@@ -1,21 +1,16 @@
-using Microsoft.UI.Xaml.Data;
 using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class SearchSuggestRegionIconConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 搜索建议区域标识转换为图标.
+    /// </summary>
+    public static Symbol SearchSuggestRegionToSymbol(string? id) => id switch
     {
-        string? id = value as string;
-        return id switch
-        {
-            "space" => Symbol.Person,
-            "history" => Symbol.History,
-            _ => Symbol.Search,
-        };
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+        "space" => Symbol.Person,
+        "history" => Symbol.History,
+        _ => Symbol.Search,
+    };
 }

@@ -4,6 +4,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:community="using:CommunityToolkit.WinUI.Controls"
                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                    xmlns:cvt="using:PhoenixReadCopilot.Converters"
                     xmlns:ic="using:FluentIcons.WinUI"
                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
@@ -39,7 +40,7 @@
                     <community:Case Value="True">
                         <components:IconTextBlock IconBrush="White"
                                                   Symbol="Video"
-                                                  Text="{x:Bind ViewCount, Converter={StaticResource CountConverter}}"
+                                                  Text="{x:Bind cvt:Converter.CountToText(ViewCount)}"
                                                   TextBrush="White"/>
                     </community:Case>
                     <!--  右下角：图文标识 (若是图文)  -->
@@ -99,7 +100,7 @@
                         <components:IconTextBlock Grid.Column="1"
                                                   IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                                   Symbol="Heart"
-                                                  Text="{x:Bind LikeCount, Converter={StaticResource CountConverter}}"
+                                                  Text="{x:Bind cvt:Converter.CountToText(LikeCount)}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   ToolTipService.ToolTip="{x:Bind strings:Resources.LikeCount}"/>
                     </Grid>

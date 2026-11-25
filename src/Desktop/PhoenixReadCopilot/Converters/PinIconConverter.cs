@@ -1,26 +1,20 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Core.Enums;
 using Symbol = FluentIcons.Common.Symbol;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class PinIconConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 固定项类型转换为图标.
+    /// </summary>
+    public static Symbol PinTypeToSymbol(PinType type) => type switch
     {
-        return value is PinType type
-            ? type switch
-            {
-                PinType.User => Symbol.Person,
-                PinType.Drama => Symbol.VideoClip,
-                PinType.Video => Symbol.Video,
-                PinType.Post => Symbol.Document,
-                PinType.Novel => Symbol.Book,
-                _ => Symbol.DocumentBulletList,
-            }
-            : Symbol.Question;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+        PinType.User => Symbol.Person,
+        PinType.Drama => Symbol.VideoClip,
+        PinType.Video => Symbol.Video,
+        PinType.Post => Symbol.Document,
+        PinType.Novel => Symbol.Book,
+        _ => Symbol.DocumentBulletList,
+    };
 }

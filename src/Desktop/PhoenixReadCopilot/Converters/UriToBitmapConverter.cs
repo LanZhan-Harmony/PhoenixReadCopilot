@@ -1,27 +1,20 @@
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace PhoenixReadCopilot.Converters;
 
-/// <summary>
-/// 将链接转换为位图.
-/// </summary>
-internal sealed partial class UriToBitmapConverter : IValueConverter
+internal static partial class Converter
 {
-    public object? Convert(object? value, Type targetType, object parameter, string language)
-    {
-        if (value is string url && !string.IsNullOrWhiteSpace(url) && Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
-        {
-            return new BitmapImage(uri);
-        }
-        else if (value is Uri validUri)
-        {
-            return new BitmapImage(validUri);
-        }
+    /// <summary>
+    /// 将链接字符串转换为位图.
+    /// </summary>
+    public static BitmapImage? StringToBitmap(string? url) =>
+        !string.IsNullOrWhiteSpace(url) && Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)
+            ? new BitmapImage(uri)
+            : null;
 
-        return null;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 将 Uri 转换为位图.
+    /// </summary>
+    public static BitmapImage? UriToBitmap(Uri? uri) =>
+        uri is not null ? new BitmapImage(uri) : null;
 }

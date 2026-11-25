@@ -4,7 +4,7 @@
                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                xmlns:community="using:CommunityToolkit.WinUI.Controls"
                                xmlns:constants="using:PhoenixReadCopilot.Core.Enums"
-                               xmlns:converters="using:PhoenixReadCopilot.Converters"
+                               xmlns:cvt="using:PhoenixReadCopilot.Converters"
                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                xmlns:essential="using:WinUI3Package"
                                xmlns:ic="using:FluentIcons.WinUI"
@@ -12,11 +12,6 @@
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                xmlns:strings="using:PhoenixReadCopilot.Strings"
                                mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:PreferQualityTypeConverter x:Key="PreferQualityConverter"/>
-        <converters:PlayerTypeConverter x:Key="PlayerTypeConverter"/>
-        <converters:DisplayModeConverter x:Key="DisplayModeConverter"/>
-    </UserControl.Resources>
 
     <community:SettingsExpander Description="{x:Bind strings:Resources.PlayerBehaviorDescription}" Header="{x:Bind strings:Resources.PlayerBehavior}">
         <community:SettingsExpander.HeaderIcon>
@@ -30,7 +25,7 @@
                           SelectedItem="{x:Bind ViewModel.Settings.PlayerType, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PlayerType">
-                            <TextBlock Text="{x:Bind Converter={StaticResource PlayerTypeConverter}}"/>
+                            <TextBlock Text="{x:Bind cvt:Converter.PlayerTypeToText((constants:PlayerType))}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -42,7 +37,7 @@
                           SelectedItem="{x:Bind ViewModel.Settings.PreferQuality, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PreferQualityType">
-                            <TextBlock Text="{x:Bind Converter={StaticResource PreferQualityConverter}}"/>
+                            <TextBlock Text="{x:Bind cvt:Converter.PreferQualityToText((constants:PreferQualityType))}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -54,7 +49,7 @@
                           SelectedItem="{x:Bind ViewModel.Settings.DefaultPlayerDisplayMode, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="constants:PlayerDisplayMode">
-                            <TextBlock Text="{x:Bind Converter={StaticResource DisplayModeConverter}}"/>
+                            <TextBlock Text="{x:Bind cvt:Converter.DisplayModeToText((constants:PlayerDisplayMode))}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

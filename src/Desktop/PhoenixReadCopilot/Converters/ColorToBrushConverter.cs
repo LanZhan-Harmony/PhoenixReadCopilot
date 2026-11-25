@@ -1,17 +1,25 @@
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class ColorToBrushConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
-    {
-        Color color = (Color)value;
-        return new SolidColorBrush(color);
-    }
+    [ThreadStatic]
+    private static Dictionary<Color, SolidColorBrush>? _brushCache;
 
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 将颜色转换为画刷（按 UI 线程缓存复用）.
+    /// </summary>
+    public static SolidColorBrush ColorToBrush(Color color)
+    {
+        _brushCache ??= [];
+        if (!_brushCache.TryGetValue(color, out SolidColorBrush? brush))
+        {
+            brush = new SolidColorBrush(color);
+            _brushCache[color] = brush;
+        }
+
+        return brush;
+    }
 }

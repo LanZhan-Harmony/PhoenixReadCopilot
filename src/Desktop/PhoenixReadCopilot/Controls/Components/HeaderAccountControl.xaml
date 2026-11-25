@@ -2,6 +2,7 @@
 <UserControl x:Class="PhoenixReadCopilot.Controls.Components.HeaderAccountControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cvt="using:PhoenixReadCopilot.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ic="using:FluentIcons.WinUI"
              xmlns:local="using:PhoenixReadCopilot.Controls.Components"
@@ -18,33 +19,33 @@
             <!--  登录项：仅在未登录时显示  -->
             <MenuFlyoutItem Click="OnSignInFlyoutItemClick"
                             Text="{x:Bind strings:Resources.SignIn}"
-                            Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}">
+                            Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}">
                 <MenuFlyoutItem.Icon>
                     <ic:SymbolIcon Symbol="Person"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutSeparator Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}"/>
+            <MenuFlyoutSeparator Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
 
             <!--  用户卡片：仅在已登录时显示  -->
-            <MenuFlyoutItem Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+            <MenuFlyoutItem Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}">
                 <MenuFlyoutItem.Template>
                     <ControlTemplate>
                         <local:AccountCard Width="300"/>
                     </ControlTemplate>
                 </MenuFlyoutItem.Template>
             </MenuFlyoutItem>
-            <MenuFlyoutSeparator Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+            <MenuFlyoutSeparator Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
 
             <!--  我的关注：仅在已登录时显示  -->
             <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFollowsCommand}"
-                            KeyboardAcceleratorTextOverride="{x:Bind ViewModel.FollowCount, Mode=OneWay, Converter={StaticResource CountConverter}}"
+                            KeyboardAcceleratorTextOverride="{x:Bind cvt:Converter.CountToText(ViewModel.FollowCount), Mode=OneWay}"
                             Text="{x:Bind strings:Resources.MyFollow}"
-                            Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+                            Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}">
                 <MenuFlyoutItem.Icon>
                     <ic:SymbolIcon Symbol="PeopleEye"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutSeparator Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+            <MenuFlyoutSeparator Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
 
             <!--  其它项：始终显示  -->
             <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFavoriteCommand}" Text="{x:Bind strings:Resources.Favorite}">
@@ -79,13 +80,13 @@
                 <PersonPicture Width="28"
                                Height="28"
                                DisplayName="{x:Bind ViewModel.MyProfile.User.Name, Mode=OneWay}"
-                               ProfilePicture="{x:Bind ViewModel.MyProfile.User.Avatar.Uri, Mode=OneWay, Converter={StaticResource BitmapConverter}}"
-                               Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                               ProfilePicture="{x:Bind cvt:Converter.UriToBitmap(ViewModel.MyProfile.User.Avatar.Uri), Mode=OneWay}"
+                               Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
                 <ic:SymbolIcon HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="18"
                                Symbol="Person"
-                               Visibility="{x:Bind ViewModel.MyProfile, Mode=OneWay, Converter={StaticResource ObjectToVisibilityReverseConverter}}"/>
+                               Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
             </Grid>
         </Button>
     </Grid>

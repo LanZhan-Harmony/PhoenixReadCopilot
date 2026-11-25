@@ -3,6 +3,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:appearance="using:PhoenixReadCopilot.Core.Models.Appearance"
+             xmlns:cvt="using:PhoenixReadCopilot.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:essential="using:WinUI3Package"
              xmlns:ic="using:FluentIcons.WinUI"
@@ -41,7 +42,7 @@
                         <Image HorizontalAlignment="Stretch"
                                VerticalAlignment="Stretch"
                                DataContext="{x:Bind}"
-                               Source="{x:Bind Uri, Converter={StaticResource BitmapConverter}}"
+                               Source="{x:Bind cvt:Converter.UriToBitmap(Uri)}"
                                Stretch="UniformToFill"
                                Tapped="OnImageTapped"/>
                     </Grid>

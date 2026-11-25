@@ -4,6 +4,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:community="using:CommunityToolkit.WinUI.Controls"
                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                    xmlns:cvt="using:PhoenixReadCopilot.Converters"
                     xmlns:ic="using:FluentIcons.WinUI"
                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
@@ -86,13 +87,13 @@
                         <components:IconTextBlock IconSize="12"
                                                   IconTextSpacing="6"
                                                   Symbol="ThumbLike"
-                                                  Text="{x:Bind LikeCount, Converter={StaticResource CountConverter}}"
+                                                  Text="{x:Bind cvt:Converter.CountToText(LikeCount)}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   TextSize="14"/>
                         <components:IconTextBlock IconSize="12"
                                                   IconTextSpacing="6"
                                                   Symbol="Comment"
-                                                  Text="{x:Bind ReplyCount, Converter={StaticResource CountConverter}}"
+                                                  Text="{x:Bind cvt:Converter.CountToText(ReplyCount)}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   TextSize="14"/>
                     </StackPanel>

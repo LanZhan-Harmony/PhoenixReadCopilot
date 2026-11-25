@@ -1,33 +1,18 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 
-/// <summary>
-/// 弹幕位置文本转换.
-/// </summary>
-internal sealed partial class DanmakuLocationConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    /// <summary>
+    /// 弹幕位置转换为可读文本.
+    /// </summary>
+    public static string DanmakuLocationToText(DanmakuLocation location) => location switch
     {
-        string result = string.Empty;
-        switch ((DanmakuLocation)value)
-        {
-            case DanmakuLocation.Scroll:
-                result = Resources.ScrollDanmaku;
-                break;
-            case DanmakuLocation.Top:
-                result = Resources.TopDanmaku;
-                break;
-            case DanmakuLocation.Bottom:
-                result = Resources.BottomDanmaku;
-                break;
-        }
-
-        return result;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+        DanmakuLocation.Scroll => Resources.ScrollDanmaku,
+        DanmakuLocation.Top => Resources.TopDanmaku,
+        DanmakuLocation.Bottom => Resources.BottomDanmaku,
+        _ => string.Empty,
+    };
 }

@@ -5,6 +5,7 @@
                        xmlns:animations="using:CommunityToolkit.WinUI.Animations"
                        xmlns:appearance="using:PhoenixReadCopilot.Core.Models.Appearance"
                        xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                       xmlns:cvt="using:PhoenixReadCopilot.Converters"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:essential="using:WinUI3Package"
                        xmlns:ic="using:FluentIcons.WinUI"
@@ -49,7 +50,7 @@
                     VerticalScrollMode="Enabled"
                     ViewChanged="OnScrollViewChanged"
                     ZoomMode="Enabled">
-            <Image x:Name="Image" Source="{x:Bind ViewModel.SelectedImage.Uri, Mode=OneWay, Converter={StaticResource BitmapConverter}}"/>
+            <Image x:Name="Image" Source="{x:Bind cvt:Converter.UriToBitmap(ViewModel.SelectedImage.Uri), Mode=OneWay}"/>
         </ScrollView>
 
         <!--  用于进行图片操作  -->
@@ -61,7 +62,7 @@
               BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
               BorderThickness="1"
               CornerRadius="{StaticResource OverlayCornerRadius}"
-              Visibility="{x:Bind ViewModel.IsMenuHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+              Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsMenuHide), Mode=OneWay}">
             <CommandBar x:Name="TopBar"
                         VerticalAlignment="Center"
                         essential:CommandBarHelper.AcrylicWorkaround="True"
@@ -175,7 +176,7 @@
               VerticalAlignment="Bottom"
               Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
               CornerRadius="{StaticResource OverlayCornerRadius}"
-              Visibility="{x:Bind ViewModel.IsMenuHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+              Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsMenuHide), Mode=OneWay}">
             <ItemsView x:Name="ImageView"
                        ItemsSource="{x:Bind ViewModel.Images, Mode=OneWay}"
                        SelectionChanged="OnImageSelectionChanged">

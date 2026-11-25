@@ -4,6 +4,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:components="using:PhoenixReadCopilot.Controls.Components"
                       xmlns:components1="using:PhoenixReadCopilot.ViewModels.Components"
+                      xmlns:cvt="using:PhoenixReadCopilot.Converters"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:ext="using:PhoenixReadCopilot.Extensions"
                       xmlns:local="using:PhoenixReadCopilot.Pages.Overlay"
@@ -34,7 +35,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{x:Bind ViewModel.NavColumnWidth, Mode=OneWay, Converter={StaticResource GridLengthConverter}}"/>
+            <ColumnDefinition Width="{x:Bind cvt:Converter.DoubleToGridLength(ViewModel.NavColumnWidth), Mode=OneWay}"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -50,7 +51,7 @@
         <search:SearchSideBody Grid.Row="2"
                                Margin="0,0,-6,0"
                                ViewModel="{x:Bind ViewModel, Mode=OneWay}"
-                               Visibility="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
+                               Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsNavColumnManualHide), Mode=OneWay}"/>
 
         <ContentControl Grid.Row="2"
                         Grid.Column="2"

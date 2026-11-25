@@ -1,46 +1,30 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
 
 namespace PhoenixReadCopilot.Converters;
 
-/// <summary>
-/// Object to visibility converter. Returns Collapsed when the object is empty.
-/// </summary>
-internal sealed partial class ObjectToVisibilityConverter : IValueConverter
+internal static partial class Converter
 {
     /// <summary>
-    /// Whether to invert the result.
+    /// 非空字符串转换为可见性.
     /// </summary>
-    public bool IsReverse { get; set; }
+    public static Visibility StringToVisibility(string? value) =>
+        string.IsNullOrEmpty(value) ? Visibility.Collapsed : Visibility.Visible;
 
-    public object Convert(object value, Type targetType, object parameter, string language)
-    {
-        bool isShow = true;
-        if (value is null)
-        {
-            isShow = false;
-        }
-        else if (value is string str)
-        {
-            isShow = !string.IsNullOrEmpty(str);
-        }
-        else if (value is int numInt)
-        {
-            isShow = numInt > 0;
-        }
-        else if (value is double numDouble)
-        {
-            isShow = numDouble > 0;
-        }
+    /// <summary>
+    /// 数量大于 0 时转换为可见性.
+    /// </summary>
+    public static Visibility CountToVisibility(int count) =>
+        count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        if (IsReverse)
-        {
-            isShow = !isShow;
-        }
+    /// <summary>
+    /// 非空对象转换为可见性.
+    /// </summary>
+    public static Visibility ObjectToVisibility(object? value) =>
+        value is not null ? Visibility.Visible : Visibility.Collapsed;
 
-        return isShow ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 对象为空时转换为可见性.
+    /// </summary>
+    public static Visibility InvertObjectToVisibility(object? value) =>
+        value is null ? Visibility.Visible : Visibility.Collapsed;
 }

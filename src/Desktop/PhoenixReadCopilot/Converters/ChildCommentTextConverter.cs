@@ -1,16 +1,12 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Strings;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class ChildCommentTextConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
-    {
-        int count = (int)value;
-        return string.Format(Resources.MoreReplyDisplay, count);
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 子评论数转换为展开提示文本.
+    /// </summary>
+    public static string ChildCommentText(int count) =>
+        string.Format(Resources.MoreReplyDisplay, count);
 }

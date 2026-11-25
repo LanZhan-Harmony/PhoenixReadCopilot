@@ -4,17 +4,13 @@
                                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                   xmlns:community="using:CommunityToolkit.WinUI.Controls"
                                   xmlns:constants="using:PhoenixReadCopilot.Core.Enums"
-                                  xmlns:converters="using:PhoenixReadCopilot.Converters"
+                                  xmlns:cvt="using:PhoenixReadCopilot.Converters"
                                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                   xmlns:essential="using:WinUI3Package"
                                   xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                                   xmlns:local="using:PhoenixReadCopilot.Controls.Player"
                                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                   mc:Ignorable="d">
-
-    <UserControl.Resources>
-        <converters:LoopTypeConverter x:Key="LoopTypeConverter"/>
-    </UserControl.Resources>
 
     <ScrollView Style="{StaticResource PageScrollViewStyle}">
         <StackPanel Margin="16,12" Spacing="12">
@@ -49,10 +45,10 @@
             <StackPanel Orientation="Horizontal" Spacing="16">
                 <local:LikeButton Command="{x:Bind ViewModel.ToggleLikeCommand}"
                                   IsLiked="{x:Bind ViewModel.IsLiked, Mode=OneWay}"
-                                  Tip="{x:Bind ViewModel.LikeCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
+                                  Tip="{x:Bind cvt:Converter.DoubleCountToText(ViewModel.LikeCount), Mode=OneWay}"/>
                 <local:FavoriteButton Command="{x:Bind ViewModel.ToggleFavoriteCommand}"
                                       IsFavorited="{x:Bind ViewModel.IsFavorited, Mode=OneWay}"
-                                      Tip="{x:Bind ViewModel.FavoriteCount, Mode=OneWay, Converter={StaticResource CountConverter}}"/>
+                                      Tip="{x:Bind cvt:Converter.DoubleCountToText(ViewModel.FavoriteCount), Mode=OneWay}"/>
                 <local:ShareButton Command="{x:Bind ViewModel.ShareCommand}"/>
             </StackPanel>
 
@@ -65,7 +61,7 @@
                       SelectionChanged="OnLoopSelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="constants:VideoLoopType">
-                        <TextBlock Text="{x:Bind Converter={StaticResource LoopTypeConverter}}"/>
+                        <TextBlock Text="{x:Bind cvt:Converter.LoopTypeToText((constants:VideoLoopType))}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
@@ -79,7 +75,7 @@
                        FontWeight="SemiBold"
                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                        Text="演职人员"
-                       Visibility="{x:Bind ViewModel.Credits, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                       Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.Credits), Mode=OneWay}"/>
             <ListView IsItemClickEnabled="True"
                       ItemClick="OnCreditItemClick"
                       ItemsSource="{x:Bind ViewModel.Credits, Mode=OneWay}"
@@ -95,7 +91,7 @@
                             <PersonPicture Width="40"
                                            Height="40"
                                            DisplayName="{x:Bind Name, Mode=OneWay}"
-                                           ProfilePicture="{x:Bind Avatar, Mode=OneWay, Converter={StaticResource BitmapConverter}}"/>
+                                           ProfilePicture="{x:Bind cvt:Converter.UriToBitmap(Avatar), Mode=OneWay}"/>
                             <StackPanel Grid.Column="1"
                                         VerticalAlignment="Center"
                                         Spacing="2">

@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:animations="using:CommunityToolkit.WinUI.Animations"
              xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+             xmlns:cvt="using:PhoenixReadCopilot.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:essential="using:WinUI3Package"
              xmlns:ic="using:FluentIcons.WinUI"
@@ -124,8 +125,8 @@
                         SelectionFollowsFocus="Disabled"
                         Style="{StaticResource MainNavigationViewStyle}">
             <Grid x:Name="MainGrid">
-                <Grid Visibility="{x:Bind ViewModel.IsInitialLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}">
-                    <Frame x:Name="MainFrame" Visibility="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay, Converter={StaticResource BoolToVisibilityReverseConverter}}"/>
+                <Grid Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsInitialLoading), Mode=OneWay}">
+                    <Frame x:Name="MainFrame" Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsOverlayOpen), Mode=OneWay}"/>
                     <Grid x:Name="OverlayGrid" Visibility="{x:Bind ViewModel.IsOverlayOpen, Mode=OneWay}">
                         <Frame x:Name="OverlayFrame"/>
                     </Grid>

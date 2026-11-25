@@ -3,6 +3,7 @@
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+                    xmlns:cvt="using:PhoenixReadCopilot.Converters"
                     xmlns:ic="using:FluentIcons.WinUI"
                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
@@ -66,7 +67,7 @@
                         VerticalAlignment="Top"
                         Background="#B0000000"
                         CornerRadius="{StaticResource ControlCornerRadius}"
-                        Visibility="{x:Bind IsOnline, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                        Visibility="{x:Bind cvt:Converter.InvertVisibility(IsOnline)}">
                     <TextBlock FontSize="11"
                                FontWeight="SemiBold"
                                Foreground="White"
@@ -119,7 +120,7 @@
                                               Symbol="Tag"
                                               Text="{x:Bind Category}"
                                               TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
-                                              Visibility="{x:Bind Category, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                                              Visibility="{x:Bind cvt:Converter.StringToVisibility(Category)}"/>
 
                     <!--  操作按钮区  -->
                     <Grid Grid.Row="2" VerticalAlignment="Bottom">
@@ -137,13 +138,13 @@
                         </Button>
 
                         <!--  未上线：预约控制区  -->
-                        <Grid Visibility="{x:Bind IsOnline, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                        <Grid Visibility="{x:Bind cvt:Converter.InvertVisibility(IsOnline)}">
                             <!--  未预约状态：显示“预约”  -->
                             <Button HorizontalAlignment="Stretch"
                                     Command="{x:Bind ToggleReservationCommand}"
-                                    IsEnabled="{x:Bind IsReserving, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                                    IsEnabled="{x:Bind cvt:Converter.InvertBool(IsReserving)}"
                                     Style="{StaticResource AccentButtonStyle}"
-                                    Visibility="{x:Bind IsReserved, Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                                    Visibility="{x:Bind cvt:Converter.InvertVisibility(IsReserved)}">
                                 <StackPanel Orientation="Horizontal" Spacing="6">
                                     <ic:SymbolIcon FontSize="13" Symbol="CalendarClock"/>
                                     <TextBlock FontSize="12" Text="{x:Bind strings:Resources.Reserve}"/>
@@ -154,7 +155,7 @@
                             <Button Padding="0,3"
                                     HorizontalAlignment="Stretch"
                                     Command="{x:Bind ToggleReservationCommand}"
-                                    IsEnabled="{x:Bind IsReserving, Converter={StaticResource ObjectToBoolReverseConverter}}"
+                                    IsEnabled="{x:Bind cvt:Converter.InvertBool(IsReserving)}"
                                     Visibility="{x:Bind IsReserved}">
                                 <StackPanel Orientation="Horizontal" Spacing="6">
                                     <ic:SymbolIcon FontSize="13"

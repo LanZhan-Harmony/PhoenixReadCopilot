@@ -1,16 +1,12 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class GridLengthConverter : IValueConverter
+internal static partial class Converter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
-    {
-        double v = (double)value;
-        return v <= 0 ? GridLength.Auto : new GridLength(v);
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 数值转换为 GridLength（小于等于 0 时返回 Auto）.
+    /// </summary>
+    public static GridLength DoubleToGridLength(double value) =>
+        value <= 0 ? GridLength.Auto : new GridLength(value);
 }

@@ -1,20 +1,12 @@
-using Microsoft.UI.Xaml.Data;
 using PhoenixReadCopilot.Helpers;
 
 namespace PhoenixReadCopilot.Converters;
 
-internal sealed partial class DurationConverter : IValueConverter
+internal static partial class Converter
 {
-    public object? Convert(object? value, Type targetType, object parameter, string language)
-    {
-        if (value is int d)
-        {
-            return FormatHelper.FormatDuration(TimeSpan.FromSeconds(d));
-        }
-
-        return null;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// 秒数格式化为时长文本.
+    /// </summary>
+    public static string DurationToText(int seconds) =>
+        FormatHelper.FormatDuration(TimeSpan.FromSeconds(seconds));
 }

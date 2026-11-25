@@ -6,6 +6,7 @@
     xmlns:api="using:PhoenixReadApi"
     xmlns:comment="using:PhoenixReadCopilot.Controls.Comment"
     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+    xmlns:cvt="using:PhoenixReadCopilot.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ic="using:FluentIcons.WinUI"
     xmlns:local="using:PhoenixReadCopilot.Pages.Overlay"
@@ -37,7 +38,7 @@
                             <Image
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Source="{x:Bind Url, Converter={StaticResource BitmapConverter}}"
+                                Source="{x:Bind cvt:Converter.StringToBitmap(Url)}"
                                 Stretch="Uniform"/>
                         </Grid>
                     </DataTemplate>
@@ -51,7 +52,7 @@
                 VerticalAlignment="Bottom"
                 NumberOfPages="{x:Bind ViewModel.Images.Count, Mode=OneWay}"
                 SelectedPageIndex="{x:Bind ViewModel.SelectedImageIndex, Mode=TwoWay}"
-                Visibility="{x:Bind ViewModel.Images.Count, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                Visibility="{x:Bind cvt:Converter.CountToVisibility(ViewModel.Images.Count), Mode=OneWay}"/>
         </Grid>
 
         <!-- 分割竖线 -->
@@ -83,7 +84,7 @@
                     Width="40"
                     Height="40"
                     DisplayName="{x:Bind ViewModel.AuthorName, Mode=OneWay}"
-                    ProfilePicture="{x:Bind ViewModel.AuthorAvatarUrl, Mode=OneWay, Converter={StaticResource BitmapConverter}}"/>
+                    ProfilePicture="{x:Bind cvt:Converter.StringToBitmap(ViewModel.AuthorAvatarUrl), Mode=OneWay}"/>
 
                 <StackPanel
                     Grid.Column="1"
@@ -112,7 +113,7 @@
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <ic:SymbolIcon
                             FontSize="12"
-                            IconVariant="{x:Bind ViewModel.IsFollowed, Mode=OneWay, Converter={StaticResource BoolToIconVariantConverter}}"
+                            IconVariant="{x:Bind cvt:Converter.BoolToIconVariant(ViewModel.IsFollowed), Mode=OneWay}"
                             Symbol="Heart"/>
                         <TextBlock FontSize="12" Text="{x:Bind ViewModel.FollowText, Mode=OneWay}"/>
                     </StackPanel>
@@ -133,7 +134,7 @@
                         Style="{StaticResource SubtitleTextBlockStyle}"
                         Text="{x:Bind ViewModel.Title, Mode=OneWay}"
                         TextWrapping="Wrap"
-                        Visibility="{x:Bind ViewModel.Title, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                        Visibility="{x:Bind cvt:Converter.StringToVisibility(ViewModel.Title), Mode=OneWay}"/>
 
                     <!-- 正文纯文本 -->
                     <TextBlock
@@ -146,7 +147,7 @@
                     <!-- 关联短剧胶囊卡片 -->
                     <ItemsControl
                         ItemsSource="{x:Bind ViewModel.RelatedDramas, Mode=OneWay}"
-                        Visibility="{x:Bind ViewModel.RelatedDramas.Count, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}">
+                        Visibility="{x:Bind cvt:Converter.CountToVisibility(ViewModel.RelatedDramas.Count), Mode=OneWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="api:Drama">
                                 <Border
@@ -166,7 +167,7 @@
                                             Width="36"
                                             Height="48"
                                             CornerRadius="4">
-                                            <Image Source="{x:Bind CoverUrl, Converter={StaticResource BitmapConverter}}" Stretch="UniformToFill"/>
+                                            <Image Source="{x:Bind cvt:Converter.StringToBitmap(CoverUrl)}" Stretch="UniformToFill"/>
                                         </Border>
                                         <StackPanel
                                             Grid.Column="1"
