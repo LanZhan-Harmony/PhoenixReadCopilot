@@ -32,8 +32,15 @@
                                ElementClearing="TimelineRepeater_ElementClearing"
                                ElementPrepared="TimelineRepeater_ElementPrepared"
                                ItemTemplate="{StaticResource CalendarVideoItemTemplate}"
-                               ItemsSource="{x:Bind ViewModel.SelectedTimeline.Items, Mode=OneWay}"
-                               Layout="{StaticResource CalendarLayout}"/>
+                               ItemsSource="{x:Bind ViewModel.SelectedTimeline.Items, Mode=OneWay}">
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout ItemsStretch="Fill"
+                                           MinColumnSpacing="4"
+                                           MinItemHeight="375"
+                                           MinItemWidth="200"
+                                           MinRowSpacing="10"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
             </ScrollViewer>
         </essential:RevealFocusPanel>
 

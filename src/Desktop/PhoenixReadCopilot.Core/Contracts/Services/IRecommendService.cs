@@ -8,6 +8,19 @@ namespace PhoenixReadCopilot.Core.Contracts.Services;
 public interface IRecommendService
 {
     /// <summary>
+    /// 获取首页指定频道的发现页内容列表及流式翻页游标.
+    /// </summary>
+    /// <param name="channel">发现频道枚举（默认为 <see cref="DiscoverChannel.Recommend"/>）.</param>
+    /// <param name="cursor">分页游标，首次请求可传 null，后续传上一页返回的 Cursor.</param>
+    /// <param name="cancellationToken">取消请求的令牌.</param>
+    /// <returns>发现页分页结果.</returns>
+    Task<DiscoverPage> GetDiscoverPageAsync(
+        DiscoverChannel channel = DiscoverChannel.Recommend,
+        string? cursor = null,
+        CancellationToken cancellationToken = default
+    );
+
+    /// <summary>
     /// 获取个性化信息流推荐短剧的一页数据.
     /// </summary>
     /// <param name="genre">推荐题材分类枚举（默认为短剧 <see cref="RecommendationGenre.ShortDrama"/>）.</param>

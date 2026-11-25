@@ -23,7 +23,9 @@ public sealed class LikeService : ILikeService
 
     private List<DramaLikeItem>? _dramaCache;
     private readonly Dictionary<string, HashSet<string>> _likedVideoIdsByDrama =
-        new(StringComparer.OrdinalIgnoreCase);
+    [
+        with(StringComparer.OrdinalIgnoreCase),
+    ];
     private string? _cachedUserKey;
 
     /// <inheritdoc/>
@@ -138,7 +140,9 @@ public sealed class LikeService : ILikeService
             try
             {
                 string json = await File.ReadAllTextAsync(filePath);
-                List<DramaLikeItem>? items = JsonAotSerializer.Deserialize<List<DramaLikeItem>>(json);
+                List<DramaLikeItem>? items = JsonAotSerializer.Deserialize<List<DramaLikeItem>>(
+                    json
+                );
                 _dramaCache = items ?? [];
                 foreach (DramaLikeItem item in _dramaCache)
                 {
@@ -383,7 +387,7 @@ public sealed class LikeService : ILikeService
 
             if (!_likedVideoIdsByDrama.TryGetValue(dramaId, out HashSet<string>? set))
             {
-                set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                set = [with(StringComparer.OrdinalIgnoreCase)];
                 _likedVideoIdsByDrama[dramaId] = set;
             }
 
@@ -552,7 +556,11 @@ public sealed class LikeService : ILikeService
                             }
 
                             DramaLikeItem? local = cache.FirstOrDefault(d =>
-                                string.Equals(d.DramaId, onlineDrama.Id, StringComparison.OrdinalIgnoreCase)
+                                string.Equals(
+                                    d.DramaId,
+                                    onlineDrama.Id,
+                                    StringComparison.OrdinalIgnoreCase
+                                )
                             );
 
                             if (local is null)
@@ -563,7 +571,8 @@ public sealed class LikeService : ILikeService
                                         DramaId = onlineDrama.Id,
                                         Drama = onlineDrama,
                                         LikedVideoIds = [],
-                                        UpdatedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                                        UpdatedAtUnixSeconds =
+                                            DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                                     }
                                 );
                             }
@@ -598,7 +607,13 @@ public sealed class LikeService : ILikeService
 
             List<DramaLikeItem> cache = _dramaCache ??= [];
             List<Drama> slice = cache
-                .Where(d => d.Drama is not null && (d.LikedVideoIds.Count > 0 || (_authService.IsAuthenticated && !string.IsNullOrEmpty(d.DramaId))))
+                .Where(d =>
+                    d.Drama is not null
+                    && (
+                        d.LikedVideoIds.Count > 0
+                        || (_authService.IsAuthenticated && !string.IsNullOrEmpty(d.DramaId))
+                    )
+                )
                 .Select(d => d.Drama!)
                 .Skip(safeOffset)
                 .Take(safeCount)

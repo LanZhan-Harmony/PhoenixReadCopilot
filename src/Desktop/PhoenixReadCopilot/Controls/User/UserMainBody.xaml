@@ -85,8 +85,15 @@
                                        ElementClearing="RelationItemsRepeater_ElementClearing"
                                        ElementPrepared="RelationItemsRepeater_ElementPrepared"
                                        ItemTemplate="{StaticResource UserItemTemplate}"
-                                       ItemsSource="{x:Bind PageViewModel.Relations, Mode=OneWay}"
-                                       Layout="{StaticResource UserLayout}"/>
+                                       ItemsSource="{x:Bind PageViewModel.Relations, Mode=OneWay}">
+                            <ItemsRepeater.Layout>
+                                <UniformGridLayout ItemsStretch="Fill"
+                                                   MinColumnSpacing="4"
+                                                   MinItemHeight="84"
+                                                   MinItemWidth="220"
+                                                   MinRowSpacing="4"/>
+                            </ItemsRepeater.Layout>
+                        </ItemsRepeater>
                     </ScrollViewer>
                 </essential:RevealFocusPanel>
             </DataTemplate>

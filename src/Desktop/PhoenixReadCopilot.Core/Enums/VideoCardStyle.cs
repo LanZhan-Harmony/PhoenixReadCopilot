@@ -11,6 +11,11 @@ public enum VideoCardStyle
     Recommend,
 
     /// <summary>
+    /// 上新.
+    /// </summary>
+    NewArrival,
+
+    /// <summary>
     /// 热门.
     /// </summary>
     Hot,

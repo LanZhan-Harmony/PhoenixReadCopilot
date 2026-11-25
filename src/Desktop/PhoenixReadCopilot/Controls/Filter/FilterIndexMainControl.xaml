@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <UserControl x:Class="PhoenixReadCopilot.Controls.Filter.FilterIndexMainControl"
-                              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                              xmlns:components="using:PhoenixReadCopilot.Controls.Components"
-                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                              xmlns:essential="using:WinUI3Package"
-                              xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
-                              xmlns:local="using:PhoenixReadCopilot.Controls.Filter"
-                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                              xmlns:strings="using:PhoenixReadCopilot.Strings"
-                              Loaded="OnLoaded"
-                              Unloaded="OnUnloaded"
-                              mc:Ignorable="d">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:essential="using:WinUI3Package"
+             xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
+             xmlns:local="using:PhoenixReadCopilot.Controls.Filter"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:strings="using:PhoenixReadCopilot.Strings"
+             Loaded="OnLoaded"
+             Unloaded="OnUnloaded"
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -32,8 +32,15 @@
                                ElementClearing="ItemRepeater_ElementClearing"
                                ElementPrepared="ItemRepeater_ElementPrepared"
                                ItemTemplate="{StaticResource FilterVideoItemTemplate}"
-                               ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                               Layout="{StaticResource FilterLayout}"/>
+                               ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout ItemsStretch="Fill"
+                                           MinColumnSpacing="4"
+                                           MinItemHeight="370"
+                                           MinItemWidth="200"
+                                           MinRowSpacing="10"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
             </ScrollViewer>
         </essential:RevealFocusPanel>
         <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsIndexLoading, Mode=OneWay}"/>

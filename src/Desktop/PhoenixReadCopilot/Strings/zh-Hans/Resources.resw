@@ -577,7 +577,7 @@
     <value>清晰度</value>
   </data>
   <data name="Recommend" xml:space="preserve">
-    <value>推荐视频</value>
+    <value>推荐</value>
   </data>
   <data name="Refresh" xml:space="preserve">
     <value>刷新</value>
@@ -979,5 +979,11 @@
   </data>
   <data name="ArticleDetail" xml:space="preserve">
     <value>图文动态</value>
+  </data>
+  <data name="NewArrival" xml:space="preserve">
+    <value>上新</value>
+  </data>
+  <data name="NewDramaRecommend" xml:space="preserve">
+    <value>新剧推荐</value>
   </data>
 </root>

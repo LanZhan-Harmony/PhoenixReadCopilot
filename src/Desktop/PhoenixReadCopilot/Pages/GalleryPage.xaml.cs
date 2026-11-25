@@ -60,10 +60,7 @@ internal sealed partial class GalleryPage : Page
 
     private void OnScrollViewTapped(object sender, TappedRoutedEventArgs e)
     {
-        if (ViewModel is not null)
-        {
-            ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
-        }
+        ViewModel?.IsMenuHide = !ViewModel.IsMenuHide;
     }
 
     private void CheckButtonStatus()

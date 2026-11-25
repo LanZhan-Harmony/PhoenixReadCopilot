@@ -5,7 +5,10 @@
       xmlns:components="using:PhoenixReadCopilot.Controls.Components"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:essential="using:WinUI3Package"
+      xmlns:ext="using:PhoenixReadCopilot.Extensions"
       xmlns:home="using:PhoenixReadCopilot.Controls.Home"
+      xmlns:ic="using:FluentIcons.WinUI"
+      xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
       xmlns:local="using:PhoenixReadCopilot.Pages"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:strings="using:PhoenixReadCopilot.Strings"
@@ -18,28 +21,70 @@
             <ResourceDictionary.MergedDictionaries>
                 <home:RecommendedVideoItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="RecommendSectionTemplate" x:DataType="items:HomeSectionItemViewModel">
+                <ItemsRepeater Margin="16,12"
+                               ElementClearing="VideoRepeater_ElementClearing"
+                               ElementPrepared="VideoRepeater_ElementPrepared"
+                               ItemTemplate="{StaticResource RecommendedVideoItemTemplate}"
+                               ItemsSource="{x:Bind RecommendVideos, Mode=OneWay}"
+                               Layout="{StaticResource VideoLayout}"/>
+            </DataTemplate>
+
+            <DataTemplate x:Key="NewArrivalSectionTemplate" x:DataType="items:HomeSectionItemViewModel">
+                <ItemsRepeater Margin="16,12"
+                               ElementClearing="VideoRepeater_ElementClearing"
+                               ElementPrepared="VideoRepeater_ElementPrepared"
+                               ItemTemplate="{StaticResource RecommendedVideoItemTemplate}"
+                               ItemsSource="{x:Bind NewArrivalVideos, Mode=OneWay}"
+                               Layout="{StaticResource VideoLayout}"/>
+            </DataTemplate>
+
+            <ext:HomeSectionTemplateSelector x:Key="HomeSectionSelector"
+                                             NewArrivalTemplate="{StaticResource NewArrivalSectionTemplate}"
+                                             RecommendTemplate="{StaticResource RecommendSectionTemplate}"/>
         </ResourceDictionary>
     </Page.Resources>
 
     <Grid>
+        <ScrollViewer x:Name="VideoScrollView"
+                      SizeChanged="OnScrollViewSizeChanged"
+                      Style="{StaticResource PageScrollViewerStyle}"
+                      ViewChanged="OnViewChanged">
+            <StackPanel Spacing="10">
+                <home:HeaderCarousel ItemsSource="{x:Bind ViewModel.CarouselDramas, Mode=OneWay}"/>
 
-        <!--  推荐短剧流  -->
-        <Grid>
-            <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
-                <ScrollViewer x:Name="VideoScrollView"
-                              SizeChanged="OnScrollViewSizeChanged"
-                              Style="{StaticResource PageScrollViewerStyle}"
-                              ViewChanged="OnViewChanged">
-                    <ItemsRepeater x:Name="VideoRepeater"
-                                   Margin="16,12"
-                                   ElementClearing="VideoRepeater_ElementClearing"
-                                   ElementPrepared="VideoRepeater_ElementPrepared"
-                                   ItemTemplate="{StaticResource RecommendedVideoItemTemplate}"
-                                   ItemsSource="{x:Bind ViewModel.Videos, Mode=OneWay}"
-                                   Layout="{StaticResource VideoLayout}"/>
-                </ScrollViewer>
-            </essential:RevealFocusPanel>
-            <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}"/>
-        </Grid>
+                <SelectorBar x:Name="CategorySelector"
+                             HorizontalAlignment="Center"
+                             Style="{StaticResource TokenViewSelectorBarStyle}">
+                    <SelectorBarItem x:Name="RecommendSelectorItem"
+                                     Style="{StaticResource TokenViewSelectorBarItemStyle}"
+                                     Tag="Recommend"
+                                     Text="{x:Bind strings:Resources.Recommend}">
+                        <SelectorBarItem.Icon>
+                            <ic:SymbolIcon IconVariant="Filled" Symbol="RibbonStar"/>
+                        </SelectorBarItem.Icon>
+                    </SelectorBarItem>
+                    <SelectorBarItem x:Name="NewArrivalSelectorItem"
+                                     Style="{StaticResource TokenViewSelectorBarItemStyle}"
+                                     Tag="NewArrival"
+                                     Text="{x:Bind strings:Resources.NewArrival}">
+                        <SelectorBarItem.Icon>
+                            <ic:SymbolIcon IconVariant="Filled" Symbol="CalendarStar"/>
+                        </SelectorBarItem.Icon>
+                    </SelectorBarItem>
+                </SelectorBar>
+
+                <!--  推荐 / 上新短剧流  -->
+                <essential:RevealFocusPanel x:Name="GridViewRevealFocusPanel">
+                    <ContentControl x:Name="MainContentControl"
+                                    Content="{x:Bind ViewModel.SelectedSection, Mode=OneWay}"
+                                    ContentTemplateSelector="{StaticResource HomeSectionSelector}"
+                                    Style="{StaticResource AppContentControlStyle}"/>
+                </essential:RevealFocusPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <components:LoadingWidget Text="{x:Bind strings:Resources.LoadingAndWait}" Visibility="{x:Bind ViewModel.IsVideoLoading, Mode=OneWay}"/>
     </Grid>
 </Page>

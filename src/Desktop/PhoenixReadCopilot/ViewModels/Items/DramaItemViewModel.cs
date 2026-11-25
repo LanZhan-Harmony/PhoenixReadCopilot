@@ -149,6 +149,17 @@ internal partial class DramaItemViewModel : ViewModelBase, IPlayableMedia
     public VideoCardStyle Style { get; }
 
     /// <summary>
+    /// 上线日期文本.
+    /// </summary>
+    public string OnlineDate => Drama.OnlineDate;
+
+    /// <summary>
+    /// 是否显示上线日期徽章（仅上新分区且存在上线日期时显示）.
+    /// </summary>
+    public bool ShowOnlineDate =>
+        Style == VideoCardStyle.NewArrival && !string.IsNullOrWhiteSpace(OnlineDate);
+
+    /// <summary>
     /// 是否已追剧/收藏.
     /// </summary>
     [ObservableProperty]

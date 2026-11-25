@@ -4,14 +4,15 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.Labs.WinUI.Controls.OpacityMaskView" Version="0.1.261027-build.2704" />
     <PackageVersion Include="CommunityToolkit.Labs.WinUI.MarqueeText" Version="0.1.230830" />
     <PackageVersion Include="CommunityToolkit.Labs.WinUI.Shimmer" Version="0.1.230830" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Animations" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Media" Version="8.2.251219" />
     <PackageVersion Include="FFmpegInteropX" Version="2.1.0.81200" />
     <PackageVersion Include="FluentIcons.WinUI" Version="2.2.345" />
     <PackageVersion Include="Humanizer.Core.zh-Hans" Version="3.0.10" />

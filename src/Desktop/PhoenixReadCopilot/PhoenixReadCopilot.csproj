@@ -48,12 +48,14 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.OpacityMaskView" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.MarqueeText" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.Shimmer" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" />
+    <PackageReference Include="CommunityToolkit.WinUI.Media" />
     <PackageReference Include="FFmpegInteropX" />
     <PackageReference Include="FluentIcons.WinUI" />
     <PackageReference Include="Microsoft.Windows.CsWin32">

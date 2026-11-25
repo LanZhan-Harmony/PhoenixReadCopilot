@@ -26,8 +26,15 @@
                                ElementClearing="VideoRepeater_ElementClearing"
                                ElementPrepared="VideoRepeater_ElementPrepared"
                                ItemTemplate="{StaticResource PlayerRecommendedVideoItemTemplate}"
-                               ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                               Layout="{StaticResource VideoLayout}"/>
+                               ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout ItemsStretch="Fill"
+                                           MinColumnSpacing="4"
+                                           MinItemHeight="260"
+                                           MinItemWidth="130"
+                                           MinRowSpacing="4"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
             </ScrollView>
         </essential:RevealFocusPanel>
     </Grid>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Page x:Class="PhoenixReadCopilot.Pages.Overlay.VideoPlayerPage"
-                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:animations="using:CommunityToolkit.WinUI.Animations"
-                           xmlns:components="using:PhoenixReadCopilot.Controls.Components"
-                           xmlns:core="using:PhoenixReadCopilot.Controls.Core"
-                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                           xmlns:danmaku="using:PhoenixReadCopilot.Controls.Danmaku"
-                           xmlns:local="using:PhoenixReadCopilot.Pages.Overlay"
-                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                           xmlns:player="using:PhoenixReadCopilot.Controls.Player"
-                           xmlns:strings="using:PhoenixReadCopilot.Strings"
-                           mc:Ignorable="d">
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:animations="using:CommunityToolkit.WinUI.Animations"
+      xmlns:components="using:PhoenixReadCopilot.Controls.Components"
+      xmlns:core="using:PhoenixReadCopilot.Controls.Core"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:danmaku="using:PhoenixReadCopilot.Controls.Danmaku"
+      xmlns:local="using:PhoenixReadCopilot.Pages.Overlay"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:player="using:PhoenixReadCopilot.Controls.Player"
+      xmlns:strings="using:PhoenixReadCopilot.Strings"
+      mc:Ignorable="d">
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -100,21 +100,21 @@
 
                 <!--  右侧分栏大小控制器  -->
                 <components:ColumnSplitter x:Name="SideSplitter"
-                                     Grid.RowSpan="3"
-                                     Grid.Column="1"
-                                     ColumnWidth="{x:Bind ViewModel.NavColumnWidth, Mode=TwoWay}"
-                                     HideTip="{x:Bind strings:Resources.Show}"
-                                     IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay}"
-                                     IsHideButtonEnabled="False"
-                                     IsInvertDirection="True"
-                                     MaxColumnWidth="500"
-                                     MinColumnWidth="300"
-                                     ShowTip="{x:Bind strings:Resources.Hide}"/>
+                                           Grid.RowSpan="3"
+                                           Grid.Column="1"
+                                           ColumnWidth="{x:Bind ViewModel.NavColumnWidth, Mode=TwoWay}"
+                                           HideTip="{x:Bind strings:Resources.Show}"
+                                           IsHide="{x:Bind ViewModel.IsNavColumnManualHide, Mode=OneWay}"
+                                           IsHideButtonEnabled="False"
+                                           IsInvertDirection="True"
+                                           MaxColumnWidth="500"
+                                           MinColumnWidth="300"
+                                           ShowTip="{x:Bind strings:Resources.Hide}"/>
             </Grid>
         </Grid>
         <components:EmptyHolder Description="{x:Bind strings:Resources.RequestVideoFailed}"
-                          Emoji="&#x1F635;"
-                          Visibility="{x:Bind ViewModel.IsPageLoadFailed, Mode=OneWay}"/>
+                                Emoji="&#x1F635;"
+                                Visibility="{x:Bind ViewModel.IsPageLoadFailed, Mode=OneWay}"/>
     </Grid>
 
 </Page>

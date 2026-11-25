@@ -17,6 +17,32 @@ public sealed class RecommendService(
     private readonly ILogger<RecommendService> _logger = logger;
 
     /// <inheritdoc/>
+    public async Task<DiscoverPage> GetDiscoverPageAsync(
+        DiscoverChannel channel = DiscoverChannel.Recommend,
+        string? cursor = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            return await _apiClient.GetDiscoverPageAsync(
+                channel: channel,
+                cursor: cursor,
+                cancellationToken: cancellationToken
+            );
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.ZLogError(ex, $"获取发现页推荐失败: channel={channel}, cursor={cursor}");
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
     public async Task<RecommendationPage> GetRecommendationsAsync(
         RecommendationGenre genre = RecommendationGenre.ShortDrama,
         int offset = 0,

@@ -11,7 +11,9 @@
                 <ResourceDictionary Source="ms-appx:///Styles/Overrides.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/ItemsRepeaterItemStyle.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/TitleBar.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/SelectorBar.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Core/Player/PlayerResources.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Controls/Home/HeaderTile.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/ShimmerLayout/ShimmerLayout.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/CoverImage/CoverImage.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Controls/Components/IconTextBlock/IconTextBlock.xaml"/>
@@ -42,27 +44,6 @@
                                MinItemHeight="370"
                                MinItemWidth="200"
                                MinRowSpacing="10"/>
-
-            <UniformGridLayout x:Key="CalendarLayout"
-                               ItemsStretch="Fill"
-                               MinColumnSpacing="4"
-                               MinItemHeight="375"
-                               MinItemWidth="200"
-                               MinRowSpacing="10"/>
-
-            <UniformGridLayout x:Key="FilterLayout"
-                               ItemsStretch="Fill"
-                               MinColumnSpacing="4"
-                               MinItemHeight="370"
-                               MinItemWidth="200"
-                               MinRowSpacing="10"/>
-
-            <UniformGridLayout x:Key="UserLayout"
-                               ItemsStretch="Fill"
-                               MinColumnSpacing="4"
-                               MinItemHeight="84"
-                               MinItemWidth="220"
-                               MinRowSpacing="4"/>
 
         </ResourceDictionary>
     </Application.Resources>

@@ -204,9 +204,7 @@ internal sealed partial class FFmpegPlayerViewModel(
             }
 
             UpdateState(PlayerState.Failed);
-            _logger.ZLogError(
-                $"播放失败: {args.Error} | {args.ErrorMessage} | {args.ExtendedErrorCode}"
-            );
+            _logger.ZLogError($"播放失败: {args.Error} | {args.ErrorMessage}");
         });
     }
 
@@ -827,10 +825,7 @@ internal sealed partial class FFmpegPlayerViewModel(
             }
 
             MediaPlaybackItem playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
-            if (Player is not null)
-            {
-                Player.Source = playbackItem;
-            }
+            Player?.Source = playbackItem;
         }
     }
 
