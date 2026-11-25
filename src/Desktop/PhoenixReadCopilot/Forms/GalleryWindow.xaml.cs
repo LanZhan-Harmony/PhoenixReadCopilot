@@ -6,7 +6,6 @@ using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Pages;
 using Windows.Graphics;
 using Windows.Win32;
@@ -77,9 +76,6 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
             {
                 (AppWindow.Presenter as OverlappedPresenter)?.Maximize();
             }
-
-            ElementTheme localTheme = ThemeHelper.ToElementTheme(_settings.AppTheme);
-            _windowService.ChangeTheme(localTheme);
         }
 
         _isActivated = true;

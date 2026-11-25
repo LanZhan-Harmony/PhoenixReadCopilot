@@ -52,7 +52,7 @@
                                     Visibility="{x:Bind HasCount, Mode=OneWay}">
                                 <TextBlock FontSize="10"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                           Text="{x:Bind cvt:Converter.CountToText(Count), Mode=OneWay}"/>
+                                           Text="{x:Bind cvt:Converter.LongCountToText(Count), Mode=OneWay}"/>
                             </Border>
                         </Grid>
                     </ItemContainer>

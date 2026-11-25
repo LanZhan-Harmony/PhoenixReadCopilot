@@ -13,6 +13,25 @@ public sealed partial class AppSettings : ObservableObject
     public partial AppTheme AppTheme { get; set; } = AppTheme.Default;
 
     [ObservableProperty]
+    public partial BackdropMaterialType BackdropMaterial { get; set; } =
+        BackdropMaterialType.DesktopAcrylic;
+
+    [ObservableProperty]
+    public partial bool IsBackdropFallbackEnabled { get; set; } = true;
+
+    [ObservableProperty]
+    public partial byte BackdropLuminosityOpacity { get; set; } = 85;
+
+    /// <summary>
+    /// 窗口背景着色颜色 ARGB 值 (0xAARRGGBB).
+    /// </summary>
+    [ObservableProperty]
+    public partial uint BackdropTintColor { get; set; } = 0xFF2C2C2C;
+
+    [ObservableProperty]
+    public partial bool UseCustomBackdropAppearance { get; set; } = false;
+
+    [ObservableProperty]
     public partial bool IsTopNavBarShown { get; set; } = true;
 
     // ================= 播放与行为 =================

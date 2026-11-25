@@ -40,7 +40,7 @@
                     <community:Case Value="True">
                         <components:IconTextBlock IconBrush="White"
                                                   Symbol="Video"
-                                                  Text="{x:Bind cvt:Converter.CountToText(ViewCount)}"
+                                                  Text="{x:Bind cvt:Converter.LongCountToText(ViewCount)}"
                                                   TextBrush="White"/>
                     </community:Case>
                     <!--  右下角：图文标识 (若是图文)  -->
@@ -100,7 +100,7 @@
                         <components:IconTextBlock Grid.Column="1"
                                                   IconBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                                   Symbol="Heart"
-                                                  Text="{x:Bind cvt:Converter.CountToText(LikeCount)}"
+                                                  Text="{x:Bind cvt:Converter.LongCountToText(LikeCount)}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   ToolTipService.ToolTip="{x:Bind strings:Resources.LikeCount}"/>
                     </Grid>

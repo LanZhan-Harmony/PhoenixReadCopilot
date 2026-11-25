@@ -30,10 +30,10 @@ internal sealed partial class AccountViewModel : ViewModelBase
     public partial bool IsInitializing { get; set; }
 
     [ObservableProperty]
-    public partial int FollowCount { get; set; }
+    public partial long FollowCount { get; set; }
 
     [ObservableProperty]
-    public partial int FansCount { get; set; }
+    public partial long FansCount { get; set; }
 
     [ObservableProperty]
     public partial string Introduce { get; set; } = string.Empty;

@@ -25,6 +25,8 @@ internal static class ServiceHelper
             .AddSingleton<IActivationService, ActivationService>()
             .AddSingleton<IAppLifecycleService, AppLifecycleService>()
             .AddSingleton<IWindowService, WindowService>()
+            .AddSingleton<IThemeSelectorService, ThemeSelectorService>()
+            .AddSingleton<IMaterialSelectorService, MaterialSelectorService>()
             // 1. 通用工具
             .AddSingleton<IPathService, PathService>()
             .AddSingleton<ILocalizationService, LocalizationService>()

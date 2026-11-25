@@ -17,14 +17,15 @@ internal sealed partial class VideoPlayerPage : Page
     /// <summary>
     /// 视图模型.
     /// </summary>
-    public VideoPlayerPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<VideoPlayerPageViewModel>();
+    public VideoPlayerPageViewModel ViewModel { get; } =
+        Ioc.Default.GetRequiredService<VideoPlayerPageViewModel>();
 
     public VideoPlayerPage()
     {
         InitializeComponent();
         PhoenixReadPlayer.InjectDanmakuControlFunc(CreateDanmakuPanel);
         PhoenixReadPlayer.InjectTransportControlFunc(CreateTransportControl);
-        PhoenixReadPlayer.InjectSubtitleControlFunc(CreateSubtitleControl);
+        // PhoenixReadPlayer.InjectSubtitleControlFunc(CreateSubtitleControl);
     }
 
     /// <summary>
@@ -83,8 +84,7 @@ internal sealed partial class VideoPlayerPage : Page
     }
 
     /// <inheritdoc/>
-    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) =>
-        ViewModel.Clean();
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e) => ViewModel.Clean();
 
     private FrameworkElement CreateDanmakuPanel() =>
         new VideoDanmakuPanel() { ViewModel = ViewModel.Danmaku };

@@ -25,7 +25,7 @@
             <TextBlock
                 VerticalAlignment="Center"
                 FontSize="12"
-                Text="{x:Bind cvt:Converter.CountToText(ViewModel.LikeCount), Mode=OneWay}"/>
+                Text="{x:Bind cvt:Converter.LongCountToText(ViewModel.LikeCount), Mode=OneWay}"/>
         </StackPanel>
     </ToggleButton>
 </UserControl>

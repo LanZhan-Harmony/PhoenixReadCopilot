@@ -47,4 +47,26 @@ internal static class ColorHelper
 
         return color;
     }
+
+    /// <summary>
+    /// 将 0xAARRGGBB 格式的无符号整数转换为 <see cref="Color"/>.
+    /// </summary>
+    /// <param name="argb">ARGB 颜色值.</param>
+    /// <returns><see cref="Color"/>.</returns>
+    public static Color FromArgbUInt(uint argb)
+    {
+        byte a = (byte)((argb >> 24) & 0xFF);
+        byte r = (byte)((argb >> 16) & 0xFF);
+        byte g = (byte)((argb >> 8) & 0xFF);
+        byte b = (byte)(argb & 0xFF);
+        return Color.FromArgb(a, r, g, b);
+    }
+
+    /// <summary>
+    /// 将 <see cref="Color"/> 转换为 0xAARRGGBB 格式的无符号整数.
+    /// </summary>
+    /// <param name="color">颜色值.</param>
+    /// <returns>ARGB 颜色值.</returns>
+    public static uint ToArgbUInt(Color color) =>
+        ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | color.B;
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl x:Class="PhoenixReadCopilot.Controls.Settings.MaterialSettingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:community="using:CommunityToolkit.WinUI.Controls"
+             xmlns:constants="using:PhoenixReadCopilot.Core.Enums"
+             xmlns:cvt="using:PhoenixReadCopilot.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:essential="using:WinUI3Package"
+             xmlns:ic="using:FluentIcons.WinUI"
+             xmlns:local="using:PhoenixReadCopilot.Controls.Settings"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:strings="using:PhoenixReadCopilot.Strings"
+             mc:Ignorable="d">
+
+    <community:SettingsExpander Description="{x:Bind strings:Resources.WindowMaterialDescription}" Header="{x:Bind strings:Resources.WindowMaterial}">
+        <community:SettingsExpander.HeaderIcon>
+            <ic:SymbolIcon Symbol="PaintBrush"/>
+        </community:SettingsExpander.HeaderIcon>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Command="{x:Bind ViewModel.ResetMaterialCommand}" Content="{x:Bind strings:Resources.Reset}"/>
+            <ComboBox essential:ComboBoxHelper.AcrylicWorkaround="True"
+                      ItemsSource="{x:Bind ViewModel.BackdropMaterialCollection, Mode=OneWay}"
+                      SelectedItem="{x:Bind ViewModel.SelectedBackdropMaterial, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="constants:BackdropMaterialType">
+                        <TextBlock Text="{x:Bind cvt:Converter.BackdropMaterialToText((constants:BackdropMaterialType))}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <community:SettingsExpander.Items>
+            <community:SettingsCard Description="{x:Bind strings:Resources.BackdropFallbackDescription}"
+                                    Header="{x:Bind strings:Resources.BackdropFallback}"
+                                    IsEnabled="{x:Bind ViewModel.SupportsBackdropFallback, Mode=OneWay}">
+                <ToggleSwitch IsOn="{x:Bind ViewModel.IsBackdropFallbackEnabled, Mode=TwoWay}"/>
+            </community:SettingsCard>
+            <community:SettingsCard Description="{x:Bind strings:Resources.BackdropLuminosityOpacityDescription}"
+                                    Header="{x:Bind strings:Resources.BackdropLuminosityOpacity}"
+                                    IsEnabled="{x:Bind ViewModel.SupportsBackdropLuminosityOpacity, Mode=OneWay}">
+                <Slider Width="280"
+                        Maximum="100"
+                        Minimum="0"
+                        SnapsTo="StepValues"
+                        StepFrequency="1"
+                        Value="{x:Bind ViewModel.BackdropLuminosityOpacity, Mode=TwoWay}"/>
+            </community:SettingsCard>
+            <community:SettingsCard Description="{x:Bind strings:Resources.BackdropTintColorDescription}"
+                                    Header="{x:Bind strings:Resources.BackdropTintColor}"
+                                    IsEnabled="{x:Bind ViewModel.SupportsBackdropTintColor, Mode=OneWay}">
+                <ColorPicker ColorSpectrumShape="Ring"
+                             IsAlphaEnabled="True"
+                             IsAlphaSliderVisible="True"
+                             IsAlphaTextInputVisible="True"
+                             IsColorChannelTextInputVisible="True"
+                             IsColorSliderVisible="True"
+                             IsHexInputVisible="True"
+                             IsMoreButtonVisible="True"
+                             Color="{x:Bind ViewModel.BackdropTintColor, Mode=TwoWay}"/>
+            </community:SettingsCard>
+        </community:SettingsExpander.Items>
+    </community:SettingsExpander>
+</UserControl>

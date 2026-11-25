@@ -13,7 +13,13 @@ internal static partial class Converter
     /// <summary>
     /// 数量大于 0 时转换为可见性.
     /// </summary>
-    public static Visibility CountToVisibility(int count) =>
+    public static Visibility IntCountToVisibility(int count) =>
+        count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+    /// <summary>
+    /// 数量大于 0 时转换为可见性.
+    /// </summary>
+    public static Visibility LongCountToVisibility(long count) =>
         count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>

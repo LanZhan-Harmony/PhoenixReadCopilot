@@ -114,11 +114,8 @@ internal sealed partial class HeaderCarousel : UserControl
 
     private void DetachCollectionChanged()
     {
-        if (_subscribedCollection is not null)
-        {
-            _subscribedCollection.CollectionChanged -= OnItemsCollectionChanged;
-            _subscribedCollection = null;
-        }
+        _subscribedCollection?.CollectionChanged -= OnItemsCollectionChanged;
+        _subscribedCollection = null;
     }
 
     private void RebuildTiles()

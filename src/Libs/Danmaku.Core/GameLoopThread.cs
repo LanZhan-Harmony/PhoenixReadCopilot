@@ -34,7 +34,8 @@ internal sealed class GameLoopThread : IDisposable
 
     internal GameLoopThread(Action renderFrameAction)
     {
-        _renderFrameAction = renderFrameAction ?? throw new ArgumentNullException(nameof(renderFrameAction));
+        _renderFrameAction = renderFrameAction
+            ?? throw new ArgumentNullException(nameof(renderFrameAction));
 
         _thread = new Thread(ThreadMain)
         {
@@ -74,7 +75,6 @@ internal sealed class GameLoopThread : IDisposable
     {
         try
         {
-            Logger.Log("Independent GameLoopThread started");
             _startedEvent.Set();
 
             while (!_shutdownRequested)
@@ -87,8 +87,6 @@ internal sealed class GameLoopThread : IDisposable
 
                 _renderFrameAction();
             }
-
-            Logger.Log("Independent GameLoopThread stopped");
         }
         catch (Exception ex)
         {

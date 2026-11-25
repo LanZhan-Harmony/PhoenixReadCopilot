@@ -28,7 +28,7 @@ internal sealed partial class CommentItemViewModel : ViewModelBase
     public partial bool IsLiked { get; set; }
 
     [ObservableProperty]
-    public partial int LikeCount { get; set; }
+    public partial long LikeCount { get; set; }
 
     /// <summary>
     /// 评论唯一标识.
@@ -43,7 +43,7 @@ internal sealed partial class CommentItemViewModel : ViewModelBase
     /// <summary>
     /// 子评论/回复条数.
     /// </summary>
-    public int ChildCount { get; init; }
+    public long ChildCount { get; init; }
 
     /// <summary>
     /// 发布的相对时间.
@@ -137,8 +137,8 @@ internal sealed partial class CommentItemViewModel : ViewModelBase
 
         IsTop = false;
         IsLiked = false;
-        LikeCount = Convert.ToInt32(comment.LikeCount);
-        ChildCount = Convert.ToInt32(comment.ReplyCount);
+        LikeCount = comment.LikeCount;
+        ChildCount = comment.ReplyCount;
 
         UserName = comment.Author?.Name ?? "匿名观众";
         UserId = comment.Author?.Id ?? string.Empty;

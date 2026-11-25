@@ -89,8 +89,8 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase
             Avatar = avatarUri;
         }
 
-        LikeCount = (int)comment.LikeCount;
-        ReplyCount = (int)comment.ReplyCount;
+        LikeCount = comment.LikeCount;
+        ReplyCount = comment.ReplyCount;
 
         if (comment.CreatedAtUnixSeconds > 0)
         {
@@ -128,13 +128,13 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase
     public Uri? Avatar { get; }
     public string RelativeTime { get; }
     public string ActualTime { get; }
-    public int ReplyCount { get; }
+    public long ReplyCount { get; }
 
     [ObservableProperty]
     public partial bool IsLiked { get; set; }
 
     [ObservableProperty]
-    public partial int LikeCount { get; set; }
+    public partial long LikeCount { get; set; }
 
     [RelayCommand]
     private async Task ToggleLikeAsync()

@@ -8,6 +8,7 @@ using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
 using Windows.System;
+using Windows.UI;
 
 namespace PhoenixReadCopilot.ViewModels.View;
 
@@ -18,6 +19,8 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
 {
     private readonly IWindowService _windowService;
     private readonly INavigationService _navigationService;
+    private readonly IThemeSelectorService _themeSelectorService;
+    private readonly IMaterialSelectorService _materialSelectorService;
     public AppSettings Settings;
     private bool _isInitialized;
 
@@ -41,6 +44,89 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     /// 是否显示顶部导航栏.
     /// </summary>
     public bool IsTopNavShown => Settings.IsTopNavBarShown;
+
+    /// <summary>
+    /// 可选窗口材质列表.
+    /// </summary>
+    public List<BackdropMaterialType> BackdropMaterialCollection { get; } =
+        [.. Enum.GetValues<BackdropMaterialType>()];
+
+    /// <summary>
+    /// 当前选中的窗口材质.
+    /// </summary>
+    public BackdropMaterialType SelectedBackdropMaterial
+    {
+        get => Settings.BackdropMaterial;
+        set
+        {
+            if (Settings.BackdropMaterial != value)
+            {
+                _materialSelectorService.SetMaterial(value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 窗口失焦后是否停止背景更新.
+    /// </summary>
+    public bool IsBackdropFallbackEnabled
+    {
+        get => Settings.IsBackdropFallbackEnabled;
+        set
+        {
+            if (Settings.IsBackdropFallbackEnabled != value)
+            {
+                _materialSelectorService.SetFallbackEnabled(value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 窗口背景不透明度 (0-100).
+    /// </summary>
+    public double BackdropLuminosityOpacity
+    {
+        get => Settings.BackdropLuminosityOpacity;
+        set
+        {
+            byte clamped = (byte)Math.Clamp(Math.Round(value), 0, 100);
+            if (Settings.BackdropLuminosityOpacity != clamped)
+            {
+                _materialSelectorService.SetLuminosityOpacity(clamped);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 窗口背景着色颜色.
+    /// </summary>
+    public Color BackdropTintColor
+    {
+        get => _materialSelectorService.TintColor;
+        set
+        {
+            if (_materialSelectorService.TintColor != value)
+            {
+                _materialSelectorService.SetTintColor(value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 当前材质是否支持失焦回退配置.
+    /// </summary>
+    public bool SupportsBackdropFallback => _materialSelectorService.SupportsFallback;
+
+    /// <summary>
+    /// 当前材质是否支持不透明度调节.
+    /// </summary>
+    public bool SupportsBackdropLuminosityOpacity =>
+        _materialSelectorService.SupportsLuminosityOpacity;
+
+    /// <summary>
+    /// 当前材质是否支持自定义背景颜色.
+    /// </summary>
+    public bool SupportsBackdropTintColor => _materialSelectorService.SupportsTintColor;
 
     [ObservableProperty]
     public partial string PackageVersion { get; set; }
@@ -66,12 +152,17 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     public SettingsPageViewModel(
         ISettingsService settingsService,
         IWindowService windowService,
-        INavigationService navigationService
+        INavigationService navigationService,
+        IThemeSelectorService themeSelectorService,
+        IMaterialSelectorService materialSelectorService
     )
     {
         Settings = settingsService.Settings;
         _windowService = windowService;
         _navigationService = navigationService;
+        _themeSelectorService = themeSelectorService;
+        _materialSelectorService = materialSelectorService;
+        _materialSelectorService.AppearanceChanged += OnMaterialAppearanceChanged;
         Settings.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName is null)
@@ -84,7 +175,7 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
             {
                 case nameof(AppSettings.AppTheme):
                     OnPropertyChanged(nameof(AppThemeText));
-                    _windowService.ChangeTheme(ThemeHelper.ToElementTheme(Settings.AppTheme));
+                    _themeSelectorService.SetTheme(Settings.AppTheme);
                     break;
                 case nameof(AppSettings.IsTopNavBarShown):
                     OnPropertyChanged(nameof(IsTopNavShown));
@@ -92,6 +183,23 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
                     break;
             }
         };
+    }
+
+    private void OnMaterialAppearanceChanged(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(SelectedBackdropMaterial));
+        OnPropertyChanged(nameof(IsBackdropFallbackEnabled));
+        OnPropertyChanged(nameof(BackdropLuminosityOpacity));
+        OnPropertyChanged(nameof(BackdropTintColor));
+        OnPropertyChanged(nameof(SupportsBackdropFallback));
+        OnPropertyChanged(nameof(SupportsBackdropLuminosityOpacity));
+        OnPropertyChanged(nameof(SupportsBackdropTintColor));
+    }
+
+    [RelayCommand]
+    private void ResetMaterial()
+    {
+        _materialSelectorService.ResetMaterial();
     }
 
     [RelayCommand]

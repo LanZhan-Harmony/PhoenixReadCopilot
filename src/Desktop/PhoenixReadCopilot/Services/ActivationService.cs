@@ -13,12 +13,16 @@ namespace PhoenixReadCopilot.Services;
 internal sealed class ActivationService(
     IEnumerable<IActivationHandler> activationHandlers,
     ISettingsService settingsService,
+    IThemeSelectorService themeSelectorService,
+    IMaterialSelectorService materialSelectorService,
     AppUpdateService appUpdateService,
     ILogger<ActivationService> logger
 ) : IActivationService
 {
     private readonly IEnumerable<IActivationHandler> _activationHandlers = activationHandlers;
     private readonly ISettingsService _settingsService = settingsService;
+    private readonly IThemeSelectorService _themeSelectorService = themeSelectorService;
+    private readonly IMaterialSelectorService _materialSelectorService = materialSelectorService;
     private readonly AppUpdateService _appUpdateService = appUpdateService;
     private readonly ILogger<ActivationService> _logger = logger;
 
@@ -46,6 +50,8 @@ internal sealed class ActivationService(
     private async Task InitializeAsync()
     {
         _ = _settingsService.Settings;
+        _themeSelectorService.Initialize();
+        _materialSelectorService.Initialize();
         await Task.CompletedTask;
     }
 

@@ -74,7 +74,7 @@
             <ItemsRepeater Grid.Row="2"
                            Margin="16,0,16,6"
                            ItemsSource="{x:Bind ViewModel.Badges, Mode=OneWay}"
-                           Visibility="{x:Bind cvt:Converter.CountToVisibility(ViewModel.Badges.Count), Mode=OneWay}">
+                           Visibility="{x:Bind cvt:Converter.IntCountToVisibility(ViewModel.Badges.Count), Mode=OneWay}">
                 <ItemsRepeater.Layout>
                     <community:WrapLayout HorizontalSpacing="4" VerticalSpacing="4"/>
                 </ItemsRepeater.Layout>

@@ -188,8 +188,6 @@ internal sealed class DirectXResourceManager : IDisposable
             }
         }
         catch { }
-
-        Logger.Log("DirectX resources initialized with color font support");
     }
 
     /// <summary>
@@ -250,16 +248,10 @@ internal sealed class DirectXResourceManager : IDisposable
             AlphaMode = AlphaMode.Premultiplied,
         };
 
-        Logger.Log($"Creating SwapChain: Physical={bufferWidth}x{bufferHeight}, Scale={_scale}");
-
         SwapChain = dxgiFactory.CreateSwapChainForComposition(D3DDevice, swapChainDesc);
 
         // Associate swap chain with SwapChainPanel
         SetSwapChainOnPanel();
-
-        Logger.Log(
-            $"SwapChain set successfully, physical size: {swapChainDesc.Width}x{swapChainDesc.Height}"
-        );
     }
 
     /// <summary>
@@ -301,7 +293,6 @@ internal sealed class DirectXResourceManager : IDisposable
 
             using IDXGISwapChain2 swapChain2 = SwapChain.QueryInterface<IDXGISwapChain2>();
             swapChain2.MatrixTransform = matrix;
-            Logger.Log($"SetTransformMatrix: scale={_scale}, matrix=({matrix.M11},{matrix.M22})");
         }
     }
 
@@ -357,10 +348,6 @@ internal sealed class DirectXResourceManager : IDisposable
 
         D2DContext.AntialiasMode = AntialiasMode.PerPrimitive;
         D2DContext.TextAntialiasMode = Vortice.Direct2D1.TextAntialiasMode.Cleartype;
-
-        Logger.Log(
-            $"D2D Render Target created: Bitmap DPI=96 (physical pixels), Display DPI={_dpi}, Scale={_scale}"
-        );
     }
 
     /// <summary>
@@ -412,8 +399,6 @@ internal sealed class DirectXResourceManager : IDisposable
 
         // 更新交换链的变换矩阵
         SetTransformMatrix();
-
-        Logger.Log($"Scale updated: {_scale}, DPI={_dpi}");
     }
 
     /// <summary>
@@ -470,10 +455,6 @@ internal sealed class DirectXResourceManager : IDisposable
                 }
             }
             catch { }
-
-            Logger.Log(
-                $"SwapChain resized: Logical={width}x{height}, Physical={physicalWidth}x{physicalHeight}, Scale={_scale}"
-            );
         }
     }
 
@@ -500,10 +481,6 @@ internal sealed class DirectXResourceManager : IDisposable
         // 更新交换链的变换矩阵
         SetTransformMatrix();
 
-        Logger.Log(
-            $"CompositionScale changed: {_scale}, DPI={_dpi}, Canvas={_canvasWidth}x{_canvasHeight}"
-        );
-
         // 触发缩放变化事件
         ScaleChanged?.Invoke(this, _scale);
     }
@@ -528,10 +505,6 @@ internal sealed class DirectXResourceManager : IDisposable
         _swapChainPanel.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
         {
             ResizeSwapChain((float)_logicalWidth, (float)_logicalHeight);
-
-            Logger.Log(
-                $"Size changed: Logical={_logicalWidth}x{_logicalHeight}, Canvas={_canvasWidth}x{_canvasHeight}"
-            );
 
             // 触发尺寸变化事件
             SizeChanged?.Invoke(this, (_logicalWidth, _logicalHeight));
@@ -581,16 +554,10 @@ internal sealed class DirectXResourceManager : IDisposable
                                         && Math.Abs(rasterizationScale.Value - _scale) > 0.001f
                                     )
                                     {
-                                        Logger.Log(
-                                            $"RasterizationScale mismatch detected: Current={_scale}, XamlRoot={rasterizationScale.Value}"
-                                        );
                                         UpdateScale((float)rasterizationScale.Value);
                                     }
 
                                     ResizeSwapChain((float)width, (float)height);
-                                    Logger.Log(
-                                        $"Delayed resize executed: Logical={width}x{height}, Scale={_scale}"
-                                    );
                                 }
                             }
                         );
@@ -598,7 +565,6 @@ internal sealed class DirectXResourceManager : IDisposable
                     catch (OperationCanceledException)
                     {
                         // 任务被取消，这是正常情况
-                        Logger.Log("Delayed resize cancelled (new size change detected)");
                     }
                     catch (Exception ex)
                     {
@@ -683,7 +649,5 @@ internal sealed class DirectXResourceManager : IDisposable
         SwapChain?.Dispose();
         D3DContext?.Dispose();
         D3DDevice?.Dispose();
-
-        Logger.Log("DirectX resources disposed");
     }
 }

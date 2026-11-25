@@ -157,14 +157,14 @@
                                                                    Symbol="ThumbLike"/>
                                                     <TextBlock VerticalAlignment="Center"
                                                                FontSize="12"
-                                                               Text="{x:Bind cvt:Converter.CountToText(LikeCount), Mode=OneWay}"/>
+                                                               Text="{x:Bind cvt:Converter.LongCountToText(LikeCount), Mode=OneWay}"/>
                                                 </StackPanel>
                                             </ToggleButton>
 
                                             <!--  回复条数链接  -->
                                             <StackPanel Grid.Column="1"
                                                         HorizontalAlignment="Left"
-                                                        Visibility="{x:Bind cvt:Converter.CountToVisibility(ReplyCount), Mode=OneWay}">
+                                                        Visibility="{x:Bind cvt:Converter.LongCountToVisibility(ReplyCount), Mode=OneWay}">
                                                 <HyperlinkButton Command="{x:Bind ShowMoreCommand, Mode=OneWay}">
                                                     <TextBlock FontSize="12" Text="{x:Bind cvt:Converter.ChildCommentText(ReplyCount), Mode=OneWay}"/>
                                                 </HyperlinkButton>

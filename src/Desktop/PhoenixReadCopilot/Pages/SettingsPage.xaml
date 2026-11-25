@@ -44,6 +44,7 @@
                            HorizontalAlignment="Left"
                            Text="{x:Bind strings:Resources.Generic}"/>
                 <settings:ThemeSettingControl/>
+                <settings:MaterialSettingControl/>
                 <settings:LayoutSettingSection/>
                 <settings:NavigationSettingControl/>
                 <settings:SearchRecommendSettingSection/>

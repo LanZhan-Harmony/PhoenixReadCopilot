@@ -30,10 +30,6 @@ internal static class Logger
         message =
             $"[Danmaku] {filePath ?? string.Empty}({lineNumber})->{memberName ?? string.Empty}(): {message ?? string.Empty}";
 
-#if DEBUG
-        System.Diagnostics.Debug.WriteLine(message);
-#endif
-
         if (_logger is { } logger)
         {
             if (level == LoggingLevel.Error)

@@ -31,6 +31,7 @@ namespace PhoenixReadCopilot.Core.Helpers;
 [JsonSerializable(typeof(string))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(AppTheme))]
+[JsonSerializable(typeof(BackdropMaterialType))]
 [JsonSerializable(typeof(PlayerDisplayMode))]
 [JsonSerializable(typeof(PreferCodecType))]
 [JsonSerializable(typeof(PreferQualityType))]

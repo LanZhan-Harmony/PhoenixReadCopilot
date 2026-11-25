@@ -10,10 +10,6 @@
                   xmlns:winuiex="using:WinUIEx"
                   mc:Ignorable="d">
 
-    <Window.SystemBackdrop>
-        <MicaBackdrop/>
-    </Window.SystemBackdrop>
-
     <Grid PointerPressed="OnPointerPressed">
         <Grid.Resources>
             <essential:ModernStandardWindowContextMenu x:Name="Menu" Window="{x:Bind}"/>

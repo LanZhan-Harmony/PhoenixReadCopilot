@@ -38,7 +38,7 @@
 
             <!--  我的关注：仅在已登录时显示  -->
             <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFollowsCommand}"
-                            KeyboardAcceleratorTextOverride="{x:Bind cvt:Converter.CountToText(ViewModel.FollowCount), Mode=OneWay}"
+                            KeyboardAcceleratorTextOverride="{x:Bind cvt:Converter.LongCountToText(ViewModel.FollowCount), Mode=OneWay}"
                             Text="{x:Bind strings:Resources.MyFollow}"
                             Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}">
                 <MenuFlyoutItem.Icon>

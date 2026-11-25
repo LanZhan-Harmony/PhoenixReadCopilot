@@ -72,8 +72,6 @@ public sealed class DanmakuRenderer : IDisposable
         _scheduler.PauseRequested += OnPauseRequested;
         _scheduler.ResumeRequested += OnResumeRequested;
         _scheduler.StopRequested += OnStopRequested;
-
-        Logger.Log("DanmakuRenderer is created");
     }
 
     #region 配置管理
@@ -254,8 +252,6 @@ public sealed class DanmakuRenderer : IDisposable
             _scheduler.ResumeRequested -= OnResumeRequested;
             _scheduler.StopRequested -= OnStopRequested;
         }
-
-        Logger.Log("DanmakuRenderer is disposed");
     }
 
     #endregion

@@ -11,7 +11,6 @@ using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Helpers;
 using Windows.Graphics;
 using Windows.System;
 using Windows.Win32;
@@ -152,8 +151,6 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
             (AppWindow.Presenter as OverlappedPresenter)?.Maximize();
         }
 
-        ElementTheme localTheme = ThemeHelper.ToElementTheme(_settings.AppTheme);
-        _windowService.ChangeTheme(localTheme);
         _isFirstActivated = false;
     }
 

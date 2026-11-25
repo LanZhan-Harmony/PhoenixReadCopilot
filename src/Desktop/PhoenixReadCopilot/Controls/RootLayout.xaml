@@ -124,6 +124,9 @@
                         MenuItemsSource="{x:Bind ViewModel.MenuItems, Mode=OneWay}"
                         SelectionFollowsFocus="Disabled"
                         Style="{StaticResource MainNavigationViewStyle}">
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent"/>
+            </NavigationView.Resources>
             <Grid x:Name="MainGrid">
                 <Grid Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsInitialLoading), Mode=OneWay}">
                     <Frame x:Name="MainFrame" Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsOverlayOpen), Mode=OneWay}"/>

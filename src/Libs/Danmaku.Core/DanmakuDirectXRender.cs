@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
 using Microsoft.UI.Xaml.Controls;
@@ -33,10 +32,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         {
             _configState.RollingSpeed = (float)(config.RollingSpeedBase.Value * 0.02f * _scale);
         }
-
-        Logger.Log(
-            $"Initialize: LogicalSize={CanvasWidth}x{CanvasHeight}, Scale={_scale}, DPI={_dpi}"
-        );
 
         // 🚀 优化 #5：纹理缓存 + 自动清理
         // 策略：弹幕在屏幕上时使用缓存，消失后立即释放
@@ -86,8 +81,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
         // 创建独立渲染循环线程
         _gameLoopThread = new GameLoopThread(RenderFrame);
-
-        Logger.Log("DanmakuDirectXRender is created (Independent Game Loop Mode)");
     }
 
     /// <summary>
@@ -118,8 +111,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 }
             }
         });
-
-        Logger.Log($"Configuration updated");
     }
 
     private void OnResourceManagerScaleChanged(object? sender, float scale)
@@ -128,8 +119,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _dpi = 96.0f * _scale;
         CanvasWidth = _resourceManager.CanvasWidth;
         CanvasHeight = _resourceManager.CanvasHeight;
-
-        Logger.Log($"Scale changed: {_scale}, DPI={_dpi}, Canvas={CanvasWidth}x{CanvasHeight}");
     }
 
     private void OnResourceManagerSizeChanged(object? sender, (double Width, double Height) size)
@@ -162,8 +151,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _smoothedElapsedMs = 0f;
         _hasClearedScreen = false;
         _gameLoopThread?.Wake();
-
-        Logger.Log($"Size changed: Canvas={CanvasWidth}x{CanvasHeight}");
     }
 
     internal void RenderDanmakuItem(uint layerId, DanmakuItem danmakuItem)
@@ -194,9 +181,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
             if (renderItem.Item.Mode == DanmakuMode.Unknown)
             {
-                Logger.Log(
-                    $"Ignore unknown danmaku type ({renderItem.Item.Mode}): {renderItem.Item.Text}"
-                );
                 return;
             }
 
@@ -655,8 +639,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             ForceClearAndPresent(opaqueBlack: false);
         }
         _hasClearedScreen = true;
-
-        Debug.WriteLine("DanmakuDirectXRender is cleared");
     }
 
     /// <summary>
@@ -830,8 +812,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             _gameLoopThread.IsPaused = false;
             _gameLoopThread.Wake();
         }
-
-        Logger.Log("DanmakuDirectXRender is started (Independent Game Loop Mode)");
     }
 
     internal void Pause()
@@ -839,7 +819,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _isPaused = true;
         _gameLoopThread?.IsPaused = true;
         _frameStopwatch.Stop();
-        Logger.Log("DanmakuDirectXRender is paused");
     }
 
     internal void Stop()
@@ -850,7 +829,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
         _gameLoopThread?.IsPaused = true;
 
         Clear();
-        Logger.Log("DanmakuDirectXRender is stopped");
     }
 
     public void Dispose()
@@ -898,8 +876,6 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
 
         // 10. 最后释放资源管理器（包含 DirectX 资源）
         _resourceManager?.Dispose();
-
-        Logger.Log("DanmakuDirectXRender is disposed");
     }
 
     private void RenderDebugInfo(int totalCount)

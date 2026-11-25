@@ -19,6 +19,10 @@ internal sealed class WindowService : IWindowService
 
     public bool IsClosed { get; set; }
 
+    public event EventHandler<Window>? WindowRegistered;
+
+    public event EventHandler<Window>? WindowUnregistered;
+
     public WindowService() { }
 
     public void RegisterWindow(Window window)
@@ -26,12 +30,17 @@ internal sealed class WindowService : IWindowService
         if (!Windows.Contains(window))
         {
             Windows.Add(window);
+            WindowRegistered?.Invoke(this, window);
         }
     }
 
     public void UnregisterWindow(Window window)
     {
-        Windows.Remove(window);
+        if (Windows.Remove(window))
+        {
+            WindowUnregistered?.Invoke(this, window);
+        }
+
         if (ActiveWindow == window)
         {
             ActiveWindow = Windows.LastOrDefault();

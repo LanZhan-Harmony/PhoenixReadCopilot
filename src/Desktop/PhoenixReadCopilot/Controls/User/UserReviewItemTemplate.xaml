@@ -87,13 +87,13 @@
                         <components:IconTextBlock IconSize="12"
                                                   IconTextSpacing="6"
                                                   Symbol="ThumbLike"
-                                                  Text="{x:Bind cvt:Converter.CountToText(LikeCount)}"
+                                                  Text="{x:Bind cvt:Converter.LongCountToText(LikeCount)}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   TextSize="14"/>
                         <components:IconTextBlock IconSize="12"
                                                   IconTextSpacing="6"
                                                   Symbol="Comment"
-                                                  Text="{x:Bind cvt:Converter.CountToText(ReplyCount)}"
+                                                  Text="{x:Bind cvt:Converter.LongCountToText(ReplyCount)}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   TextSize="14"/>
                     </StackPanel>

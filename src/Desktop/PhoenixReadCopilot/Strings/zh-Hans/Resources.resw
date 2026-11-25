@@ -986,4 +986,58 @@
   <data name="NewDramaRecommend" xml:space="preserve">
     <value>新剧推荐</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="WindowMaterial" xml:space="preserve">
+    <value>窗口材质</value>
+  </data>
+  <data name="WindowMaterialDescription" xml:space="preserve">
+    <value>自定义应用窗口的背景渲染材质与外观效果</value>
+  </data>
+  <data name="MaterialPure" xml:space="preserve">
+    <value>纯色</value>
+  </data>
+  <data name="MaterialMica" xml:space="preserve">
+    <value>云母</value>
+  </data>
+  <data name="MaterialMicaAlt" xml:space="preserve">
+    <value>云母 Alt</value>
+  </data>
+  <data name="MaterialDesktopAcrylic" xml:space="preserve">
+    <value>桌面亚克力</value>
+  </data>
+  <data name="MaterialAcrylicBase" xml:space="preserve">
+    <value>基础亚克力</value>
+  </data>
+  <data name="MaterialAcrylicThin" xml:space="preserve">
+    <value>薄亚克力</value>
+  </data>
+  <data name="MaterialBlur" xml:space="preserve">
+    <value>模糊</value>
+  </data>
+  <data name="MaterialTransparent" xml:space="preserve">
+    <value>透明</value>
+  </data>
+  <data name="MaterialAnimated" xml:space="preserve">
+    <value>跑马灯</value>
+  </data>
+  <data name="BackdropFallback" xml:space="preserve">
+    <value>窗口失焦后停止背景更新</value>
+  </data>
+  <data name="BackdropFallbackDescription" xml:space="preserve">
+    <value>关闭后，窗口失去焦点时仍保持云母或亚克力材质渲染</value>
+  </data>
+  <data name="BackdropLuminosityOpacity" xml:space="preserve">
+    <value>不透明度</value>
+  </data>
+  <data name="BackdropLuminosityOpacityDescription" xml:space="preserve">
+    <value>调整窗口背景材质的亮度不透明度</value>
+  </data>
+  <data name="BackdropTintColor" xml:space="preserve">
+    <value>窗口背景颜色</value>
+  </data>
+  <data name="BackdropTintColorDescription" xml:space="preserve">
+    <value>自定义窗口背景材质的着色颜色</value>
+  </data>
 </root>

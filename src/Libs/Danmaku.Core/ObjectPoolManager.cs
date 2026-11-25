@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using Danmaku.Core.Enums;
 using Danmaku.Core.Models;
 using Microsoft.Extensions.ObjectPool;
@@ -275,16 +274,12 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     internal void MarkTextureUnused(TextureCacheKey key)
     {
-        // � 优化：弹幕已去重，不需要缓存共享
+        // 优化：弹幕已去重，不需要缓存共享
         // 弹幕消失后立即释放 Bitmap，避免进入 Gen2
         if (_textureCache.TryRemove(key, out TexturePoolEntry? entry))
         {
             entry.Bitmap?.Dispose();
             entry.Bitmap = null;
-
-#if DEBUG
-            Debug.WriteLine($"✅ 释放纹理: Hash={key.Text} (缓存剩余: {_textureCache.Count})");
-#endif
         }
     }
 

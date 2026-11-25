@@ -52,7 +52,7 @@
                 VerticalAlignment="Bottom"
                 NumberOfPages="{x:Bind ViewModel.Images.Count, Mode=OneWay}"
                 SelectedPageIndex="{x:Bind ViewModel.SelectedImageIndex, Mode=TwoWay}"
-                Visibility="{x:Bind cvt:Converter.CountToVisibility(ViewModel.Images.Count), Mode=OneWay}"/>
+                Visibility="{x:Bind cvt:Converter.IntCountToVisibility(ViewModel.Images.Count), Mode=OneWay}"/>
         </Grid>
 
         <!-- 分割竖线 -->
@@ -147,7 +147,7 @@
                     <!-- 关联短剧胶囊卡片 -->
                     <ItemsControl
                         ItemsSource="{x:Bind ViewModel.RelatedDramas, Mode=OneWay}"
-                        Visibility="{x:Bind cvt:Converter.CountToVisibility(ViewModel.RelatedDramas.Count), Mode=OneWay}">
+                        Visibility="{x:Bind cvt:Converter.IntCountToVisibility(ViewModel.RelatedDramas.Count), Mode=OneWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="api:Drama">
                                 <Border

@@ -25,6 +25,16 @@ internal interface IWindowService
     bool IsClosed { get; set; }
 
     /// <summary>
+    /// 新窗口注册完成时触发.
+    /// </summary>
+    event EventHandler<Window>? WindowRegistered;
+
+    /// <summary>
+    /// 窗口注销完成时触发.
+    /// </summary>
+    event EventHandler<Window>? WindowUnregistered;
+
+    /// <summary>
     /// 注册窗口.
     /// </summary>
     void RegisterWindow(Window window);
