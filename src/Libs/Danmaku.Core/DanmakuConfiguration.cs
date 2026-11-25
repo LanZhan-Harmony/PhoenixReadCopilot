@@ -74,7 +74,7 @@ public sealed class DanmakuConfiguration
     /// <summary>
     /// 字体名称.
     /// </summary>
-    public string FontFamilyName { get; set; }
+    public string? FontFamilyName { get; set; }
 
     #endregion
 

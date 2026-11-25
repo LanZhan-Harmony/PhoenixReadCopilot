@@ -69,7 +69,7 @@ internal sealed class ObjectPoolManager : IDisposable
                 return false;
             }
 
-            obj.Id = null;
+            obj.Id = string.Empty;
             obj.StartMs = 0;
             obj.HasBorder = false;
             obj.HasOutline = true;
@@ -78,7 +78,7 @@ internal sealed class ObjectPoolManager : IDisposable
             obj.BaseFontSize = 0;
             obj.OutlineSize = 2f;
             obj.FontFamilyName = null;
-            obj.Text = null;
+            obj.Text = string.Empty;
             obj.IsBold = null;
             obj.Mode = DanmakuMode.Rolling;
             obj.TextColor = Microsoft.UI.Colors.White;
@@ -117,10 +117,12 @@ internal sealed class ObjectPoolManager : IDisposable
     /// </summary>
     private sealed class RenderItemPoolPolicy : IPooledObjectPolicy<DanmakuDirectXRenderItem>
     {
+        private static readonly DanmakuItem EmptyDanmakuItem = new();
+
         public DanmakuDirectXRenderItem Create()
         {
             // 创建一个空的 RenderItem（需要后续 Initialize）
-            return new DanmakuDirectXRenderItem(new DanmakuItem());
+            return new DanmakuDirectXRenderItem(EmptyDanmakuItem);
         }
 
         public bool Return(DanmakuDirectXRenderItem obj)
@@ -136,7 +138,7 @@ internal sealed class ObjectPoolManager : IDisposable
             obj.TextLayout?.Dispose();
             obj.TextLayout = null;
             obj.TextFormat = null;
-            obj.Item = null;
+            obj.Item = EmptyDanmakuItem;
             if (obj.Segments is not null)
             {
                 foreach (DanmakuSegment segment in obj.Segments)

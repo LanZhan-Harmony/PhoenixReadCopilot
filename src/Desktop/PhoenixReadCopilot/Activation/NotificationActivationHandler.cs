@@ -12,22 +12,15 @@ namespace PhoenixReadCopilot.Activation;
 /// <summary>
 /// Windows 原生系统通知点击与按钮操作激活处理器.
 /// </summary>
-internal sealed class NotificationActivationHandler : IActivationHandler
+internal sealed class NotificationActivationHandler(
+    IWindowService windowService,
+    IAppLifecycleService lifecycleService,
+    ILogger<NotificationActivationHandler> logger
+) : IActivationHandler
 {
-    private readonly IWindowService _windowService;
-    private readonly IAppLifecycleService _lifecycleService;
-    private readonly ILogger<NotificationActivationHandler> _logger;
-
-    public NotificationActivationHandler(
-        IWindowService windowService,
-        IAppLifecycleService lifecycleService,
-        ILogger<NotificationActivationHandler> logger
-    )
-    {
-        _windowService = windowService;
-        _lifecycleService = lifecycleService;
-        _logger = logger;
-    }
+    private readonly IWindowService _windowService = windowService;
+    private readonly IAppLifecycleService _lifecycleService = lifecycleService;
+    private readonly ILogger<NotificationActivationHandler> _logger = logger;
 
     public bool CanHandle(object args)
     {

@@ -51,12 +51,20 @@ internal sealed partial class GalleryPage : Page
         ImageView.ScrollView.VerticalScrollMode = ScrollingScrollMode.Disabled;
         ImageView.ScrollView.HorizontalScrollMode = ScrollingScrollMode.Auto;
         ImageView.ScrollView.HorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Auto;
-        int index = ViewModel.Images.ToList().IndexOf(ViewModel.SelectedImage);
-        ImageView.Select(index);
+        if (ViewModel.Images is not null && ViewModel.SelectedImage is not null)
+        {
+            int index = ViewModel.Images.ToList().IndexOf(ViewModel.SelectedImage);
+            ImageView.Select(index);
+        }
     }
 
-    private void OnScrollViewTapped(object sender, TappedRoutedEventArgs e) =>
-        ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
+    private void OnScrollViewTapped(object sender, TappedRoutedEventArgs e)
+    {
+        if (ViewModel is not null)
+        {
+            ViewModel.IsMenuHide = !ViewModel.IsMenuHide;
+        }
+    }
 
     private void CheckButtonStatus()
     {
@@ -77,14 +85,16 @@ internal sealed partial class GalleryPage : Page
         ImageScrollView.ZoomTo(ImageScrollView.ZoomFactor - 0.1f, null);
 
     private void OnSettingToBackgroundClickAsync(object sender, RoutedEventArgs e) =>
-        _ = ViewModel.SetWallPaperOrLockScreenAsync(true);
+        _ = ViewModel?.SetWallPaperOrLockScreenAsync(true);
 
     private void OnSettingToLockScreenClickAsync(object sender, RoutedEventArgs e) =>
-        _ = ViewModel.SetWallPaperOrLockScreenAsync(false);
+        _ = ViewModel?.SetWallPaperOrLockScreenAsync(false);
 
     private void OnImageSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        AppImage? image = sender.SelectedItem as AppImage;
-        ViewModel.ChangeImage(image);
+        if (ViewModel is not null && sender.SelectedItem is AppImage image)
+        {
+            ViewModel.ChangeImage(image);
+        }
     }
 }

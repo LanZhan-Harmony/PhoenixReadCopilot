@@ -7,19 +7,17 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 用户空间业务服务实现.
 /// </summary>
-public sealed class UserService : IUserService
+public sealed class UserService(PhoenixReadApiClient apiClient, ILogger<UserService> logger)
+    : IUserService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<UserService> _logger;
-
-    public UserService(PhoenixReadApiClient apiClient, ILogger<UserService> logger)
-    {
-        _apiClient = apiClient;
-        _logger = logger;
-    }
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly ILogger<UserService> _logger = logger;
 
     /// <inheritdoc/>
-    public async Task<UserProfile> GetUserProfileAsync(string userId, CancellationToken cancellationToken = default)
+    public async Task<UserProfile> GetUserProfileAsync(
+        string userId,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -33,7 +31,10 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<UserProfile> GetUserProfileAsync(DramaCredit credit, CancellationToken cancellationToken = default)
+    public async Task<UserProfile> GetUserProfileAsync(
+        DramaCredit credit,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -47,7 +48,11 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<UserWorkPage> GetUserWorksAsync(string userId, UserWorksQuery query, CancellationToken cancellationToken = default)
+    public async Task<UserWorkPage> GetUserWorksAsync(
+        string userId,
+        UserWorksQuery query,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -55,13 +60,23 @@ public sealed class UserService : IUserService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取用户作品列表失败: {UserId}, SubTab={SubTab}", userId, query.SubTab);
+            _logger.LogError(
+                ex,
+                "获取用户作品列表失败: {UserId}, SubTab={SubTab}",
+                userId,
+                query.SubTab
+            );
             throw;
         }
     }
 
     /// <inheritdoc/>
-    public async Task<DramaPage> GetUserFavoritesAsync(string userId, int count = 18, int offset = 0, CancellationToken cancellationToken = default)
+    public async Task<DramaPage> GetUserFavoritesAsync(
+        string userId,
+        int count = 18,
+        int offset = 0,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -75,7 +90,12 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<UserDramaPage> GetUserLikesAsync(string userId, int count = 18, int offset = 0, CancellationToken cancellationToken = default)
+    public async Task<UserDramaPage> GetUserLikesAsync(
+        string userId,
+        int count = 18,
+        int offset = 0,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -89,7 +109,12 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<CirclePage> GetUserCircleAsync(string userId, int count = 18, string cursor = "", CancellationToken cancellationToken = default)
+    public async Task<CirclePage> GetUserCircleAsync(
+        string userId,
+        int count = 18,
+        string cursor = "",
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -103,11 +128,21 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<UserRelationPage> GetUserFollowingsAsync(string userId, string cursor = "", int count = 20, CancellationToken cancellationToken = default)
+    public async Task<UserRelationPage> GetUserFollowingsAsync(
+        string userId,
+        string cursor = "",
+        int count = 20,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
-            return await _apiClient.GetUserFollowingsAsync(userId, cursor, count, cancellationToken);
+            return await _apiClient.GetUserFollowingsAsync(
+                userId,
+                cursor,
+                count,
+                cancellationToken
+            );
         }
         catch (Exception ex)
         {
@@ -117,7 +152,12 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<UserRelationPage> GetUserFollowersAsync(string userId, string cursor = "", int count = 20, CancellationToken cancellationToken = default)
+    public async Task<UserRelationPage> GetUserFollowersAsync(
+        string userId,
+        string cursor = "",
+        int count = 20,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {

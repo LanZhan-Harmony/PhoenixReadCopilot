@@ -8,22 +8,15 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 评论与剧评服务实现，统一管理分集评论、整剧剧评与楼中楼回复.
 /// </summary>
-public sealed class CommentService : ICommentService
+public sealed class CommentService(
+    PhoenixReadApiClient apiClient,
+    IAuthenticationService authService,
+    ILogger<CommentService> logger
+) : ICommentService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly IAuthenticationService _authService;
-    private readonly ILogger<CommentService> _logger;
-
-    public CommentService(
-        PhoenixReadApiClient apiClient,
-        IAuthenticationService authService,
-        ILogger<CommentService> logger
-    )
-    {
-        _apiClient = apiClient;
-        _authService = authService;
-        _logger = logger;
-    }
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly IAuthenticationService _authService = authService;
+    private readonly ILogger<CommentService> _logger = logger;
 
     /// <inheritdoc/>
     public async Task<CommentPage> GetEpisodeCommentsAsync(
@@ -576,10 +569,7 @@ public sealed class CommentService : ICommentService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(
-                ex,
-                $"点赞红果圈帖子回复失败: replyId={replyId}, postId={postId}"
-            );
+            _logger.ZLogError(ex, $"点赞红果圈帖子回复失败: replyId={replyId}, postId={postId}");
             throw;
         }
     }

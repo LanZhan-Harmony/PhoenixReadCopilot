@@ -76,17 +76,17 @@ internal sealed partial class VisibilityToggleButton : UserControl
     /// <summary>
     /// 处于显示状态时的提示.
     /// </summary>
-    public string ShowTip { get; set; }
+    public string ShowTip { get; set; } = string.Empty;
 
     /// <summary>
     /// 处于隐藏状态时的提示.
     /// </summary>
-    public string HideTip { get; set; }
+    public string HideTip { get; set; } = string.Empty;
 
     /// <summary>
     /// 点击事件.
     /// </summary>
-    public event EventHandler Click;
+    public event EventHandler? Click;
 
     public VisibilityToggleButton()
     {

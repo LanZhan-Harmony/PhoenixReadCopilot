@@ -14,34 +14,23 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 短剧与媒体下载服务实现.
 /// </summary>
-public sealed class DownloadService : IDownloadService
+public sealed class DownloadService(
+    ILogger<DownloadService> logger,
+    ISettingsService settingsService,
+    INotificationService notificationService,
+    PhoenixReadApiClient apiClient,
+    IPlaybackMediaService playbackMediaService,
+    IDanmakuService danmakuService,
+    IHttpClientFactory httpClientFactory
+) : IDownloadService
 {
-    private readonly ILogger<DownloadService> _logger;
-    private readonly ISettingsService _settingsService;
-    private readonly INotificationService _notificationService;
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly IPlaybackMediaService _playbackMediaService;
-    private readonly IDanmakuService _danmakuService;
-    private readonly HttpClient _httpClient;
-
-    public DownloadService(
-        ILogger<DownloadService> logger,
-        ISettingsService settingsService,
-        INotificationService notificationService,
-        PhoenixReadApiClient apiClient,
-        IPlaybackMediaService playbackMediaService,
-        IDanmakuService danmakuService,
-        IHttpClientFactory httpClientFactory
-    )
-    {
-        _logger = logger;
-        _settingsService = settingsService;
-        _notificationService = notificationService;
-        _apiClient = apiClient;
-        _playbackMediaService = playbackMediaService;
-        _danmakuService = danmakuService;
-        _httpClient = httpClientFactory.CreateClient("PhoenixReadClient");
-    }
+    private readonly ILogger<DownloadService> _logger = logger;
+    private readonly ISettingsService _settingsService = settingsService;
+    private readonly INotificationService _notificationService = notificationService;
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly IPlaybackMediaService _playbackMediaService = playbackMediaService;
+    private readonly IDanmakuService _danmakuService = danmakuService;
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("PhoenixReadClient");
 
     /// <inheritdoc/>
     public string DownloadFolderPath

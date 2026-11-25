@@ -6,39 +6,28 @@ namespace PhoenixReadCopilot.Extensions;
 
 internal sealed partial class PlayerSectionTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate CommentTemplate { get; set; }
+    public DataTemplate? CommentTemplate { get; set; }
 
-    public DataTemplate DramaReviewTemplate { get; set; }
+    public DataTemplate? DramaReviewTemplate { get; set; }
 
-    public DataTemplate RecommendTemplate { get; set; }
+    public DataTemplate? RecommendTemplate { get; set; }
 
-    public DataTemplate PartTemplate { get; set; }
+    public DataTemplate? PartTemplate { get; set; }
 
-    public DataTemplate InfoTemplate { get; set; }
+    public DataTemplate? InfoTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
-        if (item is DramaReviewSectionDetailViewModel)
+        DataTemplate? template = item switch
         {
-            return DramaReviewTemplate;
-        }
-        else if (item is CommentMainViewModel)
-        {
-            return CommentTemplate;
-        }
-        else if (item is VideoPlayerRecommendSectionDetailViewModel)
-        {
-            return RecommendTemplate;
-        }
-        else if (item is VideoPlayerPartSectionDetailViewModel)
-        {
-            return PartTemplate;
-        }
-        else if (item is VideoPlayerInfoSectionDetailViewModel)
-        {
-            return InfoTemplate;
-        }
+            DramaReviewSectionDetailViewModel => DramaReviewTemplate,
+            CommentMainViewModel => CommentTemplate,
+            VideoPlayerRecommendSectionDetailViewModel => RecommendTemplate,
+            VideoPlayerPartSectionDetailViewModel => PartTemplate,
+            VideoPlayerInfoSectionDetailViewModel => InfoTemplate,
+            _ => null,
+        };
 
-        return null;
+        return template ?? base.SelectTemplateCore(item, container);
     }
 }

@@ -16,12 +16,18 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 首页视图模型.
 /// </summary>
-internal sealed partial class HomePageViewModel : LayoutPageViewModelBase
+internal sealed partial class HomePageViewModel(
+    IRecommendService recommendService,
+    ILogger<HomePageViewModel> logger,
+    INavigationService navigationService,
+    DispatcherQueue dispatcherQueue,
+    ISettingsService settingsService
+) : LayoutPageViewModelBase(settingsService)
 {
-    private readonly IRecommendService _recommendService;
-    private readonly ILogger<HomePageViewModel> _logger;
-    private readonly INavigationService _navigationService;
-    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly IRecommendService _recommendService = recommendService;
+    private readonly ILogger<HomePageViewModel> _logger = logger;
+    private readonly INavigationService _navigationService = navigationService;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
 
     private int _recommendOffset;
     private string? _recommendSessionId;
@@ -46,21 +52,6 @@ internal sealed partial class HomePageViewModel : LayoutPageViewModelBase
     /// 推荐短剧列表.
     /// </summary>
     public ObservableCollection<DramaItemViewModel> Videos { get; } = [];
-
-    public HomePageViewModel(
-        IRecommendService recommendService,
-        ILogger<HomePageViewModel> logger,
-        INavigationService navigationService,
-        DispatcherQueue dispatcherQueue,
-        ISettingsService settingsService
-    )
-        : base(settingsService)
-    {
-        _recommendService = recommendService;
-        _logger = logger;
-        _navigationService = navigationService;
-        _dispatcherQueue = dispatcherQueue;
-    }
 
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(HomePage);

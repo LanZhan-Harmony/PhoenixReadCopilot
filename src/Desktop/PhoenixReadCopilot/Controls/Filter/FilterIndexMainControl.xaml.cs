@@ -74,7 +74,8 @@ internal sealed partial class FilterIndexMainControl : UserControl
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (
-                IndexScrollView.ExtentHeight
+                ViewModel is not null
+                && IndexScrollView.ExtentHeight
                     - IndexScrollView.ViewportHeight
                     - IndexScrollView.VerticalOffset
                 <= 240

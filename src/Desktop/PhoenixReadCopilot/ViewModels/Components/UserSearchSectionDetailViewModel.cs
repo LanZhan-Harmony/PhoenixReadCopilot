@@ -16,13 +16,15 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 用户/演职员搜索分区详情视图模型.
 /// </summary>
-internal sealed partial class UserSearchSectionDetailViewModel
-    : ViewModelBase,
-        ISearchSectionDetailViewModel
+internal sealed partial class UserSearchSectionDetailViewModel(
+    ISearchService searchService,
+    DispatcherQueue dispatcherQueue,
+    ILogger<UserSearchSectionDetailViewModel> logger
+) : ViewModelBase, ISearchSectionDetailViewModel
 {
-    private readonly ISearchService _searchService;
-    private readonly ILogger<UserSearchSectionDetailViewModel> _logger;
-    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ISearchService _searchService = searchService;
+    private readonly ILogger<UserSearchSectionDetailViewModel> _logger = logger;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
 
     private bool _canRequest;
     private int _offset;
@@ -47,17 +49,6 @@ internal sealed partial class UserSearchSectionDetailViewModel
     /// 条目列表.
     /// </summary>
     public ObservableCollection<UserItemViewModel> Items { get; } = [];
-
-    public UserSearchSectionDetailViewModel(
-        ISearchService searchService,
-        DispatcherQueue dispatcherQueue,
-        ILogger<UserSearchSectionDetailViewModel> logger
-    )
-    {
-        _searchService = searchService;
-        _dispatcherQueue = dispatcherQueue;
-        _logger = logger;
-    }
 
     /// <inheritdoc/>
     public void Initialize(string keyword, SearchPartition partition)

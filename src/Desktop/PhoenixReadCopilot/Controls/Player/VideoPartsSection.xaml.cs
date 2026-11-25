@@ -68,7 +68,12 @@ internal sealed partial class VideoPartsSection : UserControl
 
     private void OnPartSelectionChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        if (IsLoaded && sender.SelectedItem is Episode episode && episode != ViewModel.SelectedPart)
+        if (
+            IsLoaded
+            && ViewModel is not null
+            && sender.SelectedItem is Episode episode
+            && episode != ViewModel.SelectedPart
+        )
         {
             ViewModel.SelectPart(episode);
         }

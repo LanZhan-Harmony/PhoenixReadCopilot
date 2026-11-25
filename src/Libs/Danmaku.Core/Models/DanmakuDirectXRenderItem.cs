@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Vortice.DirectWrite;
 
 namespace Danmaku.Core.Models;
@@ -18,14 +19,15 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
     /// <summary>
     /// 初始化或重置 RenderItem（对象池复用）.
     /// </summary>
+    [MemberNotNull(nameof(Item))]
     internal void Initialize(DanmakuItem item)
     {
+        Item = item; // 不再克隆，直接使用（由对象池管理生命周期）
         if (string.IsNullOrEmpty(item.Text))
         {
             return;
         }
 
-        Item = item; // 不再克隆，直接使用（由对象池管理生命周期）
         Id = (uint)Item.Text.GetHashCode(StringComparison.Ordinal);
         FontSize = Item.BaseFontSize > 0 ? Item.BaseFontSize : DanmakuItem.DefaultBaseFontSize;
 
@@ -93,7 +95,7 @@ internal sealed class DanmakuDirectXRenderItem : IDisposable
     /// <summary>
     /// DirectWrite 文本格式.
     /// </summary>
-    internal IDWriteTextFormat TextFormat;
+    internal IDWriteTextFormat? TextFormat;
 
     /// <summary>
     /// 宽度.

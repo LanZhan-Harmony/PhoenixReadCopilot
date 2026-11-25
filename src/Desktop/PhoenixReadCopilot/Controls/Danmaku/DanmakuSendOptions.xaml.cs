@@ -29,9 +29,19 @@ internal sealed partial class DanmakuSendOptions : UserControl
         InitializeComponent();
     }
 
-    private void OnSizeItemClick(object sender, RoutedEventArgs e) =>
-        ViewModel.IsStandardSize = (sender as FrameworkElement).Tag.ToString() == "Standard";
+    private void OnSizeItemClick(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel is not null && sender is FrameworkElement element)
+        {
+            ViewModel.IsStandardSize = element.Tag?.ToString() == "Standard";
+        }
+    }
 
-    private void OnColorItemTapped(object sender, TappedRoutedEventArgs e) =>
-        ViewModel.Color = (Color)(sender as FrameworkElement).DataContext;
+    private void OnColorItemTapped(object sender, TappedRoutedEventArgs e)
+    {
+        if (ViewModel is not null && sender is FrameworkElement { DataContext: Color color })
+        {
+            ViewModel.Color = color;
+        }
+    }
 }

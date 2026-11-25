@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using FFmpegInteropX;
 using Microsoft.Extensions.Logging;
@@ -16,17 +17,21 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// FFmpeg 播放器视图模型.
 /// </summary>
-internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
-{
-    public FFmpegPlayerViewModel(
-        ISettingsService settingsService,
-        IWindowService windowService,
-        INotificationService notificationService,
-        ILogger<PlayerViewModelBase> logger,
-        DispatcherQueue dispatcherQueue
+internal sealed partial class FFmpegPlayerViewModel(
+    ISettingsService settingsService,
+    IWindowService windowService,
+    INotificationService notificationService,
+    ILogger<PlayerViewModelBase> logger,
+    DispatcherQueue dispatcherQueue
+)
+    : PlayerViewModelBase(
+        settingsService,
+        windowService,
+        notificationService,
+        logger,
+        dispatcherQueue
     )
-        : base(settingsService, windowService, notificationService, logger, dispatcherQueue) { }
-
+{
     private MediaPlayerElement? _element;
     private FFmpegMediaSource? _ffmpegSource;
     private FFmpegMediaSource? _preloadedSource;
@@ -75,7 +80,10 @@ internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
     /// <summary>
     /// 检查并消费已预载的媒体源.
     /// </summary>
-    public bool TryConsumePreloadedSource(string videoUrl, out FFmpegMediaSource? source)
+    public bool TryConsumePreloadedSource(
+        string videoUrl,
+        [NotNullWhen(true)] out FFmpegMediaSource? source
+    )
     {
         _preloadLock.Wait();
         try
@@ -700,7 +708,7 @@ internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 Player.Source = playbackItem;
                 if (_autoPlay)
                 {
-                    Player.Play();
+                    Player?.Play();
                 }
 
                 _logger.ZLogInformation($"命中下一集后台预载源，实现 0 秒无缝瞬播！");
@@ -757,7 +765,7 @@ internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
                 await LoadMediaSourceAsync();
                 if (_autoPlay)
                 {
-                    Player.Play();
+                    Player?.Play();
                 }
             }
             catch (Exception ex)
@@ -819,7 +827,10 @@ internal sealed partial class FFmpegPlayerViewModel : PlayerViewModelBase
             }
 
             MediaPlaybackItem playbackItem = _ffmpegSource.CreateMediaPlaybackItem();
-            Player.Source = playbackItem;
+            if (Player is not null)
+            {
+                Player.Source = playbackItem;
+            }
         }
     }
 

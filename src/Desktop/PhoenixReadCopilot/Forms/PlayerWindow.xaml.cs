@@ -11,7 +11,7 @@ using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Extensions;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Pages.Overlay;
 using Windows.Graphics;
 using Windows.System;
@@ -151,10 +151,10 @@ internal sealed partial class PlayerWindow : WindowEx, IPlayerHostWindow, ITipWi
         bool isMaximized = _settings.IsPlayerWindowMaximized;
         if (isMaximized)
         {
-            (AppWindow.Presenter as OverlappedPresenter).Maximize();
+            (AppWindow.Presenter as OverlappedPresenter)?.Maximize();
         }
 
-        ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
+        ElementTheme localTheme = ThemeHelper.ToElementTheme(_settings.AppTheme);
         _windowService.ChangeTheme(localTheme);
         _isFirstActivated = false;
     }

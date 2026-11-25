@@ -8,16 +8,11 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 弹幕服务实现，负责分集弹幕在线拉取、发送与互动操作（不缓存到本地，每次均重新获取最新弹幕）.
 /// </summary>
-public sealed class DanmakuService : IDanmakuService
+public sealed class DanmakuService(PhoenixReadApiClient apiClient, ILogger<DanmakuService> logger)
+    : IDanmakuService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<DanmakuService> _logger;
-
-    public DanmakuService(PhoenixReadApiClient apiClient, ILogger<DanmakuService> logger)
-    {
-        _apiClient = apiClient;
-        _logger = logger;
-    }
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly ILogger<DanmakuService> _logger = logger;
 
     /// <inheritdoc/>
     public async Task<DanmakuPage> GetDanmakuAsync(

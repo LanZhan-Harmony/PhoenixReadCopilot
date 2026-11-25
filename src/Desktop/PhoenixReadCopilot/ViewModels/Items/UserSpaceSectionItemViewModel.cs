@@ -95,42 +95,34 @@ internal sealed partial class UserSpaceSectionItemViewModel : ViewModelBase, IUs
 /// <summary>
 /// 子分类 Tab 模型.
 /// </summary>
-internal sealed partial class UserSpaceSubTabItemViewModel : ViewModelBase, IUserSpaceContentItem
+internal sealed partial class UserSpaceSubTabItemViewModel(
+    string id,
+    string title,
+    object? value = null,
+    View.UserSpacePageViewModel? pageViewModel = null
+) : ViewModelBase, IUserSpaceContentItem
 {
     /// <summary>
     /// 唯一标识.
     /// </summary>
-    public string Id { get; init; }
+    public string Id { get; init; } = id;
 
     /// <summary>
     /// 标题.
     /// </summary>
     [ObservableProperty]
-    public partial string Title { get; set; }
+    public partial string Title { get; set; } = title;
 
     /// <summary>
     /// 附带的值或枚举对象.
     /// </summary>
-    public object? Value { get; init; }
+    public object? Value { get; init; } = value;
 
     /// <summary>
     /// 所属用户空间页面视图模型.
     /// </summary>
     [ObservableProperty]
-    public partial View.UserSpacePageViewModel? PageViewModel { get; set; }
-
-    public UserSpaceSubTabItemViewModel(
-        string id,
-        string title,
-        object? value = null,
-        View.UserSpacePageViewModel? pageViewModel = null
-    )
-    {
-        Id = id;
-        Title = title;
-        Value = value;
-        PageViewModel = pageViewModel;
-    }
+    public partial View.UserSpacePageViewModel? PageViewModel { get; set; } = pageViewModel;
 
     public override string ToString() => Title;
 }

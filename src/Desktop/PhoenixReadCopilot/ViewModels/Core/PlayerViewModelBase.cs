@@ -24,14 +24,20 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 播放器视图模型基类.
 /// </summary>
-internal abstract partial class PlayerViewModelBase : ViewModelBase
+internal abstract partial class PlayerViewModelBase(
+    ISettingsService settingsService,
+    IWindowService windowService,
+    INotificationService notificationService,
+    ILogger<PlayerViewModelBase> logger,
+    DispatcherQueue dispatcherQueue
+) : ViewModelBase
 {
-    protected readonly ILogger<PlayerViewModelBase> _logger;
-    protected readonly DispatcherQueue _dispatcherQueue;
-    protected readonly IWindowService _windowService;
-    protected readonly INotificationService _notificationService;
+    protected readonly ILogger<PlayerViewModelBase> _logger = logger;
+    protected readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
+    protected readonly IWindowService _windowService = windowService;
+    protected readonly INotificationService _notificationService = notificationService;
 
-    protected readonly AppSettings _settings;
+    protected readonly AppSettings _settings = settingsService.Settings;
 
     protected string? _videoUrl;
     protected string? _audioUrl;
@@ -48,16 +54,16 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
     /// </summary>
     public virtual string? DecryptionKey { get; set; }
     protected string? _extraOptions;
-    protected Action<int, int> _progressAction;
-    protected Action<PlayerState> _stateAction;
-    protected Action<double> _speedAction;
-    protected Action _endAction;
-    protected Action _reloadAction;
+    protected Action<int, int>? _progressAction;
+    protected Action<PlayerState>? _stateAction;
+    protected Action<double>? _speedAction;
+    protected Action? _endAction;
+    protected Action? _reloadAction;
     protected Action? _playNextAction;
     protected Action? _playPreviousAction;
-    protected Action _windowStateChangeAction;
-    protected DisplayRequest _displayRequest;
-    protected Func<bool> _isTextBoxFocusedFunc;
+    protected Action? _windowStateChangeAction;
+    protected DisplayRequest? _displayRequest;
+    protected Func<bool>? _isTextBoxFocusedFunc;
 
     protected SystemMediaTransportControls? _smtc;
 
@@ -121,47 +127,32 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
     /// <summary>
     /// 播放数据加载完成.
     /// </summary>
-    public event EventHandler PlayerDataLoaded;
+    public event EventHandler? PlayerDataLoaded;
 
     /// <summary>
     /// 请求显示通知.
     /// </summary>
-    public event EventHandler<PlayerNotificationItemViewModel> RequestShowNotification;
+    public event EventHandler<PlayerNotificationItemViewModel>? RequestShowNotification;
 
     /// <summary>
     /// 请求取消通知.
     /// </summary>
-    public event EventHandler RequestCancelNotification;
+    public event EventHandler? RequestCancelNotification;
 
     /// <summary>
     /// 初始化已完成.
     /// </summary>
-    public event EventHandler Initialized;
+    public event EventHandler? Initialized;
 
     /// <summary>
     /// 视频标题.
     /// </summary>
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// 播放器关联的窗口.
     /// </summary>
-    public Window AttachedWindow { get; set; }
-
-    protected PlayerViewModelBase(
-        ISettingsService settingsService,
-        IWindowService windowService,
-        INotificationService notificationService,
-        ILogger<PlayerViewModelBase> logger,
-        DispatcherQueue dispatcherQueue
-    )
-    {
-        _settings = settingsService.Settings;
-        _windowService = windowService;
-        _notificationService = notificationService;
-        _logger = logger;
-        _dispatcherQueue = dispatcherQueue;
-    }
+    public Window? AttachedWindow { get; set; }
 
     /// <summary>
     /// 初始化系统播放控制器.
@@ -866,8 +857,9 @@ internal abstract partial class PlayerViewModelBase : ViewModelBase
 
         _dispatcherQueue.TryEnqueue(() =>
         {
-            _displayRequest = new DisplayRequest();
-            _displayRequest.RequestActive();
+            DisplayRequest request = new();
+            _displayRequest = request;
+            request.RequestActive();
         });
     }
 

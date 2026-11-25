@@ -382,13 +382,14 @@ public sealed class HistoryService : IHistoryService
 
             int safeCount = Math.Max(1, count);
             int safeOffset = Math.Max(0, offset);
-            List<ReadHistoryItem> slice = _dramaCache!.Skip(safeOffset).Take(safeCount).ToList();
+            List<ReadHistoryItem> cache = _dramaCache ??= [];
+            List<ReadHistoryItem> slice = [.. cache.Skip(safeOffset).Take(safeCount)];
             return new ReadHistoryPage
             {
                 Items = slice,
-                Total = _dramaCache.Count,
+                Total = cache.Count,
                 NextOffset = safeOffset + slice.Count,
-                HasMore = safeOffset + slice.Count < _dramaCache.Count,
+                HasMore = safeOffset + slice.Count < cache.Count,
             };
         }
         finally

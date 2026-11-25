@@ -3,27 +3,20 @@ namespace PhoenixReadCopilot.Core.Models.User;
 /// <summary>
 /// 用户分组信息.
 /// </summary>
-public sealed class UserGroup
+public sealed class UserGroup(string id, string name, int totalCount = 0)
 {
-    public UserGroup(string id, string name, int totalCount = 0)
-    {
-        Id = id;
-        Name = name;
-        TotalCount = totalCount;
-    }
-
     /// <summary>
     /// 分组标识.
     /// </summary>
-    public string Id { get; init; }
+    public string Id { get; init; } = id;
 
     /// <summary>
     /// 分组名称.
     /// </summary>
-    public string Name { get; init; }
+    public string Name { get; init; } = name;
 
     /// <summary>
     /// 该组用户总数.
     /// </summary>
-    public int TotalCount { get; init; }
+    public int TotalCount { get; init; } = totalCount;
 }

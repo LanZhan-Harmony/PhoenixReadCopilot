@@ -69,24 +69,28 @@ internal sealed partial class VideoPlayerSideHeader : UserControl
 
     private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
-        if (sender.SelectedItem is null)
+        if (
+            ViewModel is not null
+            && sender.SelectedItem?.Tag is IPlayerSectionDetailViewModel item
+        )
         {
-            return;
+            ViewModel.SelectSection(item);
         }
-
-        IPlayerSectionDetailViewModel? item =
-            sender.SelectedItem.Tag as IPlayerSectionDetailViewModel;
-        ViewModel.SelectSection(item);
     }
 
     private void InitializeChildPartitions()
     {
         Selector.Items.Clear();
+        if (ViewModel is null)
+        {
+            return;
+        }
+
         if (ViewModel.Sections is not null)
         {
             foreach (IPlayerSectionDetailViewModel item in ViewModel.Sections)
             {
-                Selector.Items.Add(new SelectorBarItem() { Text = item.Title ?? null, Tag = item });
+                Selector.Items.Add(new SelectorBarItem() { Text = item.Title ?? string.Empty, Tag = item });
             }
         }
 

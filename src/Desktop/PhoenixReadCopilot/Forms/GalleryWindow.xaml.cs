@@ -6,7 +6,7 @@ using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Appearance;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Extensions;
+using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Pages;
 using Windows.Graphics;
 using Windows.Win32;
@@ -75,10 +75,10 @@ internal sealed partial class GalleryWindow : WindowEx, ITipWindow
             bool isMaximized = _settings.IsGalleryWindowMaximized;
             if (isMaximized)
             {
-                (AppWindow.Presenter as OverlappedPresenter).Maximize();
+                (AppWindow.Presenter as OverlappedPresenter)?.Maximize();
             }
 
-            ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
+            ElementTheme localTheme = ThemeHelper.ToElementTheme(_settings.AppTheme);
             _windowService.ChangeTheme(localTheme);
         }
 

@@ -30,8 +30,12 @@ internal sealed partial class SubtitleButton : UserControl
 
     private void OnMetaChanged(ItemsView sender, ItemsViewSelectionChangedEventArgs args)
     {
-        SubtitleMeta? meta = sender.SelectedItem as SubtitleMeta;
-        if (meta is not null)
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        if (sender.SelectedItem is SubtitleMeta meta)
         {
             if (ViewModel.SelectedMeta != meta)
             {

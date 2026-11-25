@@ -8,16 +8,11 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 上新日历服务实现，提供按日排期查询与短剧发现.
 /// </summary>
-public sealed class CalendarService : ICalendarService
+public sealed class CalendarService(PhoenixReadApiClient apiClient, ILogger<CalendarService> logger)
+    : ICalendarService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<CalendarService> _logger;
-
-    public CalendarService(PhoenixReadApiClient apiClient, ILogger<CalendarService> logger)
-    {
-        _apiClient = apiClient;
-        _logger = logger;
-    }
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly ILogger<CalendarService> _logger = logger;
 
     /// <inheritdoc/>
     public async Task<DailyReleasePage> GetDailyReleasesAsync(

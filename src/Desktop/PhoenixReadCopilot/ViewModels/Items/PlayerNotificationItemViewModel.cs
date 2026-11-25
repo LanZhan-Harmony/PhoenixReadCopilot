@@ -10,7 +10,7 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// </summary>
 internal sealed partial class PlayerNotificationItemViewModel : ViewModelBase
 {
-    private readonly DispatcherTimer? _timer;
+    private readonly DispatcherTimer _timer;
 
     private DateTimeOffset _startTime;
     private bool _isCancelled;

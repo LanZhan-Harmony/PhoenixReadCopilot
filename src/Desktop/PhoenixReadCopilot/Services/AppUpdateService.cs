@@ -12,19 +12,15 @@ namespace PhoenixReadCopilot.Services;
 /// 应用更新服务，负责检查 GitHub Release 更新并在发现新版本时弹窗提示用户.
 /// 仅在非 MSIX 打包环境下工作；MSIX 环境下由 Microsoft Store 自动更新.
 /// </summary>
-internal sealed class AppUpdateService
+internal sealed class AppUpdateService(
+    ILogger<AppUpdateService> logger,
+    DispatcherQueue dispatcherQueue
+)
 {
-    private readonly ILogger<AppUpdateService> _logger;
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly GitHubUpdater _updater;
+    private readonly ILogger<AppUpdateService> _logger = logger;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
+    private readonly GitHubUpdater _updater = new GitHubUpdater();
     private AppRelease? _pendingRelease;
-
-    public AppUpdateService(ILogger<AppUpdateService> logger, DispatcherQueue dispatcherQueue)
-    {
-        _logger = logger;
-        _dispatcherQueue = dispatcherQueue;
-        _updater = new GitHubUpdater();
-    }
 
     /// <summary>
     /// 在应用启动时调用，异步检查更新并在发现新版本时弹出提示.

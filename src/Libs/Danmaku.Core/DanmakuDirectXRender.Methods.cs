@@ -23,7 +23,7 @@ internal partial class DanmakuDirectXRender
     /// <param name="fontSize">字体大小.</param>
     /// <param name="isBold">是否粗体.</param>
     /// <returns>DirectWrite 文本格式.</returns>
-    private IDWriteTextFormat? GetOrCreateTextFormat(string fontFamily, float fontSize, bool isBold)
+    private IDWriteTextFormat GetOrCreateTextFormat(string fontFamily, float fontSize, bool isBold)
     {
         var key = $"{fontFamily}_{fontSize:F1}_{isBold}";
 

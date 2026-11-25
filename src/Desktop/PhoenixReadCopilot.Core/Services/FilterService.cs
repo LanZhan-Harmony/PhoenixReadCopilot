@@ -8,18 +8,16 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 分类筛选服务实现，提供多维筛选维度面板与短剧检索.
 /// </summary>
-public sealed class FilterService : IFilterService
+public sealed class FilterService(PhoenixReadApiClient apiClient, ILogger<FilterService> logger)
+    : IFilterService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<FilterService> _logger;
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly ILogger<FilterService> _logger = logger;
     private readonly SemaphoreSlim _lock = new(1, 1);
-    private readonly Dictionary<ShortDramaGenre, IReadOnlyList<ShortDramaFilterGroup>> _panelCache = [];
-
-    public FilterService(PhoenixReadApiClient apiClient, ILogger<FilterService> logger)
-    {
-        _apiClient = apiClient;
-        _logger = logger;
-    }
+    private readonly Dictionary<
+        ShortDramaGenre,
+        IReadOnlyList<ShortDramaFilterGroup>
+    > _panelCache = [];
 
     /// <inheritdoc/>
     public async Task<IReadOnlyList<ShortDramaFilterGroup>> GetFilterPanelAsync(
@@ -73,10 +71,7 @@ public sealed class FilterService : IFilterService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(
-                ex,
-                $"筛选短剧失败: genre={query.Genre}, offset={query.Offset}"
-            );
+            _logger.ZLogError(ex, $"筛选短剧失败: genre={query.Genre}, offset={query.Offset}");
             throw;
         }
     }

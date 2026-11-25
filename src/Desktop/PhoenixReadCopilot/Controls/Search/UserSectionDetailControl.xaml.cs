@@ -53,7 +53,8 @@ internal sealed partial class UserSectionDetailControl : UserControl
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (
-                UserScrollView.ExtentHeight
+                ViewModel is not null
+                && UserScrollView.ExtentHeight
                     - UserScrollView.ViewportHeight
                     - UserScrollView.VerticalOffset
                 <= 240

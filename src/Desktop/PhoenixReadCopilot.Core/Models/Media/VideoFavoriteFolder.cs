@@ -5,54 +5,44 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// <summary>
 /// 视频/短剧收藏夹模型.
 /// </summary>
-public sealed class VideoFavoriteFolder
+public sealed class VideoFavoriteFolder(
+    string id,
+    string title,
+    AppImage? cover = null,
+    User.User? user = null,
+    string? description = null,
+    int count = 0
+)
 {
-    public VideoFavoriteFolder(
-        string id,
-        string title,
-        AppImage? cover = null,
-        User.User? user = null,
-        string? description = null,
-        int count = 0
-    )
-    {
-        Id = id;
-        Title = title;
-        Cover = cover;
-        User = user;
-        Description = description;
-        Count = count;
-    }
-
     /// <summary>
     /// 唯一标识.
     /// </summary>
-    public string Id { get; init; }
+    public string Id { get; init; } = id;
 
     /// <summary>
     /// 标题.
     /// </summary>
-    public string Title { get; init; }
+    public string Title { get; init; } = title;
 
     /// <summary>
     /// 封面.
     /// </summary>
-    public AppImage? Cover { get; init; }
+    public AppImage? Cover { get; init; } = cover;
 
     /// <summary>
     /// 创建者.
     /// </summary>
-    public User.User? User { get; init; }
+    public User.User? User { get; init; } = user;
 
     /// <summary>
     /// 说明.
     /// </summary>
-    public string? Description { get; init; }
+    public string? Description { get; init; } = description;
 
     /// <summary>
     /// 条目总数.
     /// </summary>
-    public int Count { get; init; }
+    public int Count { get; init; } = count;
 
     /// <summary>
     /// 条目总数 (兼容别名).

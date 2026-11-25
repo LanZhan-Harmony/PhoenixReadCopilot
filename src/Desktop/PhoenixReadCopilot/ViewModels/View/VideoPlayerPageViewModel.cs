@@ -266,7 +266,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     /// <inheritdoc/>
     protected override double GetDefaultNavColumnWidth() => 360d;
 
-    public async Task InitializePageAsync(object parameter)
+    public async Task InitializePageAsync(object? parameter)
     {
         if (IsPageLoading)
         {
@@ -508,7 +508,10 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         ClearView();
         Subtitle?.ClearAll();
         Danmaku.ClearAll();
-        await Player?.CloseAsync();
+        if (Player is not null)
+        {
+            await Player.CloseAsync();
+        }
     }
 
     /// <summary>
@@ -829,7 +832,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         // 加载分集媒体
         _ = InitializeDashMediaAsync(episode);
-        _ = Subtitle.InitializeAsync();
+        _ = Subtitle?.InitializeAsync();
 
         // 切换分集评论
         _comments.Initialize(_dramaId, episode.VideoId, CommentSortOrder.Hot);
@@ -1029,7 +1032,10 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             }
         }
 
-        _ = ChangeFormatAsync(selectedFormat);
+        if (selectedFormat is not null)
+        {
+            _ = ChangeFormatAsync(selectedFormat);
+        }
     }
 
     private async Task InitializeSectionsAsync()

@@ -15,12 +15,17 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 弹幕视图模型.
 /// </summary>
-internal sealed partial class DanmakuViewModel : ViewModelBase
+internal sealed partial class DanmakuViewModel(
+    IDanmakuService danmakuService,
+    INotificationService notificationService,
+    ILogger<DanmakuViewModel> logger,
+    ISettingsService settingsService
+) : ViewModelBase
 {
-    private readonly IDanmakuService _danmakuService;
-    private readonly INotificationService _notificationService;
-    private readonly ILogger<DanmakuViewModel> _logger;
-    private readonly AppSettings _settings;
+    private readonly IDanmakuService _danmakuService = danmakuService;
+    private readonly INotificationService _notificationService = notificationService;
+    private readonly ILogger<DanmakuViewModel> _logger = logger;
+    private readonly AppSettings _settings = settingsService.Settings;
 
     private string _dramaId = string.Empty;
     private string _videoId = string.Empty;
@@ -83,10 +88,23 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    public partial List<DanmakuLocation> Locations { get; set; }
+    public partial List<DanmakuLocation> Locations { get; set; } =
+    [DanmakuLocation.Scroll, DanmakuLocation.Top, DanmakuLocation.Bottom];
 
     [ObservableProperty]
-    public partial List<Color> Colors { get; set; }
+    public partial List<Color> Colors { get; set; } =
+    [
+        Microsoft.UI.Colors.White,
+        Microsoft.UI.Colors.Red,
+        Microsoft.UI.Colors.Orange,
+        Microsoft.UI.Colors.Khaki,
+        Microsoft.UI.Colors.Yellow,
+        Microsoft.UI.Colors.GreenYellow,
+        Microsoft.UI.Colors.Green,
+        Microsoft.UI.Colors.Blue,
+        Microsoft.UI.Colors.Purple,
+        Microsoft.UI.Colors.LightBlue,
+    ];
 
     [ObservableProperty]
     public partial List<string> Fonts { get; set; }
@@ -143,33 +161,6 @@ internal sealed partial class DanmakuViewModel : ViewModelBase
     /// 请求展示冻结帧以防切集闪黑.
     /// </summary>
     public event EventHandler<(byte[] Pixels, int Width, int Height)>? RequestShowFrozenFrame;
-
-    public DanmakuViewModel(
-        IDanmakuService danmakuService,
-        INotificationService notificationService,
-        ILogger<DanmakuViewModel> logger,
-        ISettingsService settingsService
-    )
-    {
-        _danmakuService = danmakuService;
-        _notificationService = notificationService;
-        _logger = logger;
-        _settings = settingsService.Settings;
-        Locations = [DanmakuLocation.Scroll, DanmakuLocation.Top, DanmakuLocation.Bottom];
-        Colors =
-        [
-            Microsoft.UI.Colors.White,
-            Microsoft.UI.Colors.Red,
-            Microsoft.UI.Colors.Orange,
-            Microsoft.UI.Colors.Khaki,
-            Microsoft.UI.Colors.Yellow,
-            Microsoft.UI.Colors.GreenYellow,
-            Microsoft.UI.Colors.Green,
-            Microsoft.UI.Colors.Blue,
-            Microsoft.UI.Colors.Purple,
-            Microsoft.UI.Colors.LightBlue,
-        ];
-    }
 
     /// <summary>
     /// 重置数据.

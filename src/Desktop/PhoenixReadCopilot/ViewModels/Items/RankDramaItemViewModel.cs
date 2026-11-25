@@ -6,12 +6,16 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 排行榜短剧条目视图模型.
 /// </summary>
-internal sealed partial class RankDramaItemViewModel : DramaItemViewModel
+internal sealed partial class RankDramaItemViewModel(
+    Drama drama,
+    int rank,
+    VideoCardStyle style = VideoCardStyle.Rank
+) : DramaItemViewModel(drama, style)
 {
     /// <summary>
     /// 排行榜名次.
     /// </summary>
-    public int Rank { get; }
+    public int Rank { get; } = rank;
 
     /// <summary>
     /// 是否有排名.
@@ -32,14 +36,4 @@ internal sealed partial class RankDramaItemViewModel : DramaItemViewModel
     /// 是否为前三名.
     /// </summary>
     public bool IsTopRank => Rank is >= 1 and <= 3;
-
-    public RankDramaItemViewModel(
-        Drama drama,
-        int rank,
-        VideoCardStyle style = VideoCardStyle.Rank
-    )
-        : base(drama, style)
-    {
-        Rank = rank;
-    }
 }

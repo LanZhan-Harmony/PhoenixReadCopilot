@@ -309,13 +309,14 @@ public sealed class FavoriteService : IFavoriteService
             await EnsureLoadedLockedAsync();
             int safeCount = Math.Max(1, count);
             int safeOffset = Math.Max(0, offset);
-            List<Drama> slice = [.. _dramaCache!.Skip(safeOffset).Take(safeCount)];
+            List<Drama> cache = _dramaCache ??= [];
+            List<Drama> slice = [.. cache.Skip(safeOffset).Take(safeCount)];
             return new DramaPage
             {
                 Items = slice,
-                Total = _dramaCache.Count,
+                Total = cache.Count,
                 NextOffset = safeOffset + slice.Count,
-                HasMore = safeOffset + slice.Count < _dramaCache.Count,
+                HasMore = safeOffset + slice.Count < cache.Count,
             };
         }
         finally

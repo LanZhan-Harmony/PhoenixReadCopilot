@@ -20,7 +20,7 @@ internal sealed class DanmakuConfigurationState
     private double _textOpacity;
     private double _outlineSize;
     private Color _borderColor;
-    private string _fontFamilyName;
+    private string _fontFamilyName = DanmakuConfiguration.DefaultFontFamilyName;
 
     #endregion
 

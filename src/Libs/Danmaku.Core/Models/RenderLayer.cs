@@ -77,7 +77,7 @@ internal sealed class RenderLayer
     /// 清空渲染列表（线程安全）.
     /// </summary>
     /// <param name="objectPool">对象池管理器（可选，用于归还对象）.</param>
-    internal void Clear(ObjectPoolManager objectPool = null)
+    internal void Clear(ObjectPoolManager? objectPool = null)
     {
         lock (RenderList)
         {

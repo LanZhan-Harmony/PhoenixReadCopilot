@@ -33,8 +33,8 @@ public sealed class DanmakuRenderer : IDisposable
     /// <param name="initialConfig">初始配置（可选）.</param>
     public DanmakuRenderer(
         Grid rootGrid,
-        ILogger<DanmakuRenderer> logger = null,
-        DanmakuConfiguration initialConfig = null
+        ILogger<DanmakuRenderer>? logger = null,
+        DanmakuConfiguration? initialConfig = null
     )
     {
         ArgumentNullException.ThrowIfNull(rootGrid);

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
@@ -24,7 +25,7 @@ internal sealed class DirectXResourceManager : IDisposable
     private double _logicalHeight;
 
     private bool _isDisposed;
-    private CancellationTokenSource _delayedResizeCts;
+    private CancellationTokenSource? _delayedResizeCts;
     private readonly Lock _resizeLock = new();
 
     /// <summary>
@@ -72,7 +73,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// D3D11 渲染目标视图.
     /// </summary>
-    internal ID3D11RenderTargetView RenderTargetView { get; private set; }
+    internal ID3D11RenderTargetView? RenderTargetView { get; private set; }
 
     /// <summary>
     /// D2D1 工厂.
@@ -92,7 +93,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// D2D1 目标位图.
     /// </summary>
-    internal ID2D1Bitmap1 D2DTargetBitmap { get; private set; }
+    internal ID2D1Bitmap1? D2DTargetBitmap { get; private set; }
 
     /// <summary>
     /// DirectWrite 工厂.
@@ -158,6 +159,15 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 初始化 DirectX 资源.
     /// </summary>
+    [MemberNotNull(
+        nameof(D3DDevice),
+        nameof(D3DContext),
+        nameof(SwapChain),
+        nameof(D2DFactory),
+        nameof(D2DDevice),
+        nameof(D2DContext),
+        nameof(DWriteFactory)
+    )]
     private void InitializeDirectX()
     {
         CreateD3DDevice();
@@ -185,6 +195,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 创建 D3D11 设备.
     /// </summary>
+    [MemberNotNull(nameof(D3DDevice), nameof(D3DContext))]
     private void CreateD3DDevice()
     {
         DeviceCreationFlags creationFlags = DeviceCreationFlags.BgraSupport;
@@ -215,6 +226,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 创建交换链.
     /// </summary>
+    [MemberNotNull(nameof(SwapChain))]
     private void CreateSwapChain()
     {
         using IDXGIDevice dxgiDevice = D3DDevice.QueryInterface<IDXGIDevice>();
@@ -305,6 +317,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 创建 D2D 资源.
     /// </summary>
+    [MemberNotNull(nameof(D2DFactory), nameof(D2DDevice), nameof(D2DContext))]
     private void CreateD2DResources()
     {
         D2DFactory = D2D1.D2D1CreateFactory<ID2D1Factory1>();
@@ -353,6 +366,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 创建 DirectWrite 工厂.
     /// </summary>
+    [MemberNotNull(nameof(DWriteFactory))]
     private void CreateDWriteFactory()
     {
         DWriteFactory = DWrite.DWriteCreateFactory<IDWriteFactory>();
@@ -361,6 +375,7 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 创建缓存字典.
     /// </summary>
+    [MemberNotNull(nameof(TextFormatCache), nameof(BrushCache), nameof(ObjectPool))]
     private void CreateCaches()
     {
         TextFormatCache = [];
@@ -598,12 +613,12 @@ internal sealed class DirectXResourceManager : IDisposable
     /// <summary>
     /// 缩放变化事件.
     /// </summary>
-    internal event EventHandler<float> ScaleChanged;
+    internal event EventHandler<float>? ScaleChanged;
 
     /// <summary>
     /// 尺寸变化事件.
     /// </summary>
-    internal event EventHandler<(double Width, double Height)> SizeChanged;
+    internal event EventHandler<(double Width, double Height)>? SizeChanged;
 
     /// <summary>
     /// 清空所有缓存.

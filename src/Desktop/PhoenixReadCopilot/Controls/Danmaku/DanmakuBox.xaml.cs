@@ -32,12 +32,12 @@ internal sealed partial class DanmakuBox : UserControl
     /// <summary>
     /// 输入框失去焦点.
     /// </summary>
-    public event EventHandler InputLostFocus;
+    public event EventHandler? InputLostFocus;
 
     /// <summary>
     /// 输入框获得焦点.
     /// </summary>
-    public event EventHandler InputGotFocus;
+    public event EventHandler? InputGotFocus;
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -68,7 +68,7 @@ internal sealed partial class DanmakuBox : UserControl
 
         IAuthenticationService authService =
             Ioc.Default.GetRequiredService<IAuthenticationService>();
-        if (!authService.IsAuthenticated)
+        if (!authService.IsAuthenticated || ViewModel is null)
         {
             return;
         }
@@ -82,7 +82,7 @@ internal sealed partial class DanmakuBox : UserControl
         });
     }
 
-    private void OnDisplayFlyoutClosed(object sender, object e) => ViewModel.ResetStyle();
+    private void OnDisplayFlyoutClosed(object sender, object e) => ViewModel?.ResetStyle();
 
     private void OnInputLostFocus(object sender, RoutedEventArgs e) =>
         InputLostFocus?.Invoke(this, EventArgs.Empty);

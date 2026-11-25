@@ -166,6 +166,11 @@ internal sealed partial class VideoDanmakuPanel : UserControl
 
     private void OnRequestAddSingleDanmaku(object? sender, string e)
     {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
         DanmakuItem model = new()
         {
             StartMs = Convert.ToUInt32(_lastProgress * 1000),
@@ -238,6 +243,11 @@ internal sealed partial class VideoDanmakuPanel : UserControl
 
     private void ResetSpeed()
     {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
         double finalSpeed = ViewModel.DanmakuSpeed * 5 * ViewModel.ExtraSpeed;
         _danmakuRenderer?.UpdateConfiguration(
             new DanmakuConfiguration { RollingSpeedBase = (float)finalSpeed }

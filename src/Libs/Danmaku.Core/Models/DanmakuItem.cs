@@ -17,7 +17,7 @@ public class DanmakuItem
     /// <summary>
     /// 弹幕唯一标识符，用于排序具有相同 StartMs 的弹幕.
     /// </summary>
-    public string Id;
+    public string Id = string.Empty;
 
     /// <summary>
     /// 弹幕开始显示的时间（毫秒）.
@@ -57,12 +57,12 @@ public class DanmakuItem
     /// <summary>
     /// 字体家族名称.
     /// </summary>
-    public string FontFamilyName;
+    public string? FontFamilyName;
 
     /// <summary>
     /// 弹幕文本内容.
     /// </summary>
-    public string Text;
+    public string Text = string.Empty;
 
     /// <summary>
     /// 是否加粗.

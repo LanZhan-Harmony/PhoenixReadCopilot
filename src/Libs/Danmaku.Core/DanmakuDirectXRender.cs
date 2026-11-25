@@ -217,7 +217,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
             string fontFamily = string.IsNullOrWhiteSpace(renderItem.Item.FontFamilyName)
                 ? _configState.FontFamilyName
                 : renderItem.Item.FontFamilyName;
-            IDWriteTextFormat? textFormat = GetOrCreateTextFormat(fontFamily, fontSize, isBold);
+            IDWriteTextFormat textFormat = GetOrCreateTextFormat(fontFamily, fontSize, isBold);
 
             // 🎨 红果表情解析：如果包含 [表情名]，拆分为混合图文分段
             if (DanmakuEmojiManager.HasEmojiPattern(renderItem.Item.Text))
@@ -283,7 +283,7 @@ internal sealed partial class DanmakuDirectXRender : IDisposable
                 return;
             }
 
-            renderItem.TextFormat = textFormat!;
+            renderItem.TextFormat = textFormat;
 
             // 计算初始位置
             switch (renderItem.Item.Mode)

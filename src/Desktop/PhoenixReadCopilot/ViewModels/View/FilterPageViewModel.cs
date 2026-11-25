@@ -16,12 +16,18 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 多维筛选页面视图模型.
 /// </summary>
-internal sealed partial class FilterPageViewModel : LayoutPageViewModelBase
+internal sealed partial class FilterPageViewModel(
+    IFilterService filterService,
+    ILogger<FilterPageViewModel> logger,
+    INavigationService navigationService,
+    DispatcherQueue dispatcherQueue,
+    ISettingsService settingsService
+) : LayoutPageViewModelBase(settingsService)
 {
-    private readonly IFilterService _filterService;
-    private readonly ILogger<FilterPageViewModel> _logger;
-    private readonly INavigationService _navigationService;
-    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly IFilterService _filterService = filterService;
+    private readonly ILogger<FilterPageViewModel> _logger = logger;
+    private readonly INavigationService _navigationService = navigationService;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
     private int _offset;
     private bool _hasMore;
     private string? _sessionId;
@@ -46,21 +52,6 @@ internal sealed partial class FilterPageViewModel : LayoutPageViewModelBase
     /// 短剧剧集列表.
     /// </summary>
     public ObservableCollection<DramaItemViewModel> Items { get; } = [];
-
-    public FilterPageViewModel(
-        IFilterService filterService,
-        ILogger<FilterPageViewModel> logger,
-        INavigationService navigationService,
-        DispatcherQueue dispatcherQueue,
-        ISettingsService settingsService
-    )
-        : base(settingsService)
-    {
-        _filterService = filterService;
-        _logger = logger;
-        _navigationService = navigationService;
-        _dispatcherQueue = dispatcherQueue;
-    }
 
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(FilterPage);

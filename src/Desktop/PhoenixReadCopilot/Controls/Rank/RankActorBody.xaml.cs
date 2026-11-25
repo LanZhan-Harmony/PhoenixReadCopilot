@@ -116,8 +116,7 @@ internal sealed partial class RankActorBody : UserControl
         {
             if (
                 ActorScrollView.ScrollableHeight <= 240
-                && ViewModel is { IsVideoLoading: false }
-                && (ViewModel?.Actors.Count ?? 0) > 0
+                && ViewModel is { IsVideoLoading: false, Actors.Count: > 0 }
             )
             {
                 _ = ViewModel.LoadVideosAsync();

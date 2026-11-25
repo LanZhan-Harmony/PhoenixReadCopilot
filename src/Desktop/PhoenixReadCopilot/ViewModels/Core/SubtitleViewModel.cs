@@ -10,17 +10,21 @@ namespace PhoenixReadCopilot.ViewModels.Core;
 /// <summary>
 /// 视频播放器字幕视图模型.
 /// </summary>
-internal sealed partial class SubtitleViewModel : ViewModelBase
+internal sealed partial class SubtitleViewModel(
+    ISubtitleService service,
+    ISettingsService settingsService,
+    ILogger<SubtitleViewModel> logger
+) : ViewModelBase
 {
-    private readonly AppSettings Settings;
+    private readonly AppSettings Settings = settingsService.Settings;
 
-    private readonly ISubtitleService _service;
-    private readonly ILogger<SubtitleViewModel> _logger;
+    private readonly ISubtitleService _service = service;
+    private readonly ILogger<SubtitleViewModel> _logger = logger;
 
-    private string _aid;
-    private string _cid;
+    private string _aid = string.Empty;
+    private string _cid = string.Empty;
     private int _position;
-    private List<SubtitleInformation> _subtitles;
+    private List<SubtitleInformation>? _subtitles;
     private Action? _initializedAction;
 
     [ObservableProperty]
@@ -37,17 +41,6 @@ internal sealed partial class SubtitleViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial string? CurrentSubtitle { get; set; }
-
-    public SubtitleViewModel(
-        ISubtitleService service,
-        ISettingsService settingsService,
-        ILogger<SubtitleViewModel> logger
-    )
-    {
-        _service = service;
-        Settings = settingsService.Settings;
-        _logger = logger;
-    }
 
     /// <summary>
     /// 重置字幕目标数据.
@@ -92,8 +85,8 @@ internal sealed partial class SubtitleViewModel : ViewModelBase
     /// </summary>
     public void ClearAll()
     {
-        _aid = null;
-        _cid = null;
+        _aid = string.Empty;
+        _cid = string.Empty;
         _subtitles = null;
         SelectedMeta = null;
         _position = 0;

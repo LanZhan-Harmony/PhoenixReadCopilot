@@ -53,7 +53,8 @@ internal sealed partial class VideoSectionDetailControl : UserControl
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (
-                VideoScrollView.ExtentHeight
+                ViewModel is not null
+                && VideoScrollView.ExtentHeight
                     - VideoScrollView.ViewportHeight
                     - VideoScrollView.VerticalOffset
                 <= 240

@@ -23,7 +23,7 @@ public sealed class MirrorNode
 /// <summary>
 /// GitHub 镜像加速服务，从 github.akams.cn 获取镜像节点列表，并通过测速选择最快的节点下载.
 /// </summary>
-public sealed class GitHubMirrorService
+public sealed class GitHubMirrorService(HttpClient http, TextWriter? log = null)
 {
     private const string MirrorApiUrl = "https://api.akams.cn/github";
     private const string OfficialGitHub = "https://github.com";
@@ -39,14 +39,8 @@ public sealed class GitHubMirrorService
         "https://github.chenc.dev",
     ];
 
-    private readonly HttpClient _http;
-    private readonly TextWriter _log;
-
-    public GitHubMirrorService(HttpClient http, TextWriter? log = null)
-    {
-        _http = http;
-        _log = log ?? Console.Out;
-    }
+    private readonly HttpClient _http = http;
+    private readonly TextWriter _log = log ?? Console.Out;
 
     /// <summary>
     /// 获取所有可用的镜像节点（包括官方 GitHub 源）.

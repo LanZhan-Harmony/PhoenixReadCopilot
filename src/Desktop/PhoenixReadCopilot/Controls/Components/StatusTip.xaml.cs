@@ -52,8 +52,10 @@ internal sealed partial class StatusTip : UserControl
 
     private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        StatusTip? instance = d as StatusTip;
-        instance.ChangeStatus();
+        if (d is StatusTip instance)
+        {
+            instance.ChangeStatus();
+        }
     }
 
     private void ChangeStatus()

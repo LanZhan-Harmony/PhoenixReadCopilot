@@ -18,12 +18,18 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 榜单页面视图模型.
 /// </summary>
-internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
+internal sealed partial class RankPageViewModel(
+    IRankService rankService,
+    ILogger<RankPageViewModel> logger,
+    INavigationService navigationService,
+    DispatcherQueue dispatcherQueue,
+    ISettingsService settingsService
+) : LayoutPageViewModelBase(settingsService)
 {
-    private readonly IRankService _rankService;
-    private readonly ILogger<RankPageViewModel> _logger;
-    private readonly INavigationService _navigationService;
-    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly IRankService _rankService = rankService;
+    private readonly ILogger<RankPageViewModel> _logger = logger;
+    private readonly INavigationService _navigationService = navigationService;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
     private readonly Dictionary<string, List<RankDramaItemViewModel>> _videoCache = [];
     private readonly Dictionary<string, List<ActorItemViewModel>> _actorCache = [];
 
@@ -87,21 +93,6 @@ internal sealed partial class RankPageViewModel : LayoutPageViewModelBase
     /// 演员榜单列表 (供演员榜单 Repeater 使用).
     /// </summary>
     public ObservableCollection<ActorItemViewModel> Actors { get; } = [];
-
-    public RankPageViewModel(
-        IRankService rankService,
-        ILogger<RankPageViewModel> logger,
-        INavigationService navigationService,
-        DispatcherQueue dispatcherQueue,
-        ISettingsService settingsService
-    )
-        : base(settingsService)
-    {
-        _rankService = rankService;
-        _logger = logger;
-        _navigationService = navigationService;
-        _dispatcherQueue = dispatcherQueue;
-    }
 
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(RankPage);

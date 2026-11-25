@@ -6,12 +6,12 @@ namespace PhoenixReadCopilot.Helpers;
 /// <summary>
 /// 表情条目.
 /// </summary>
-internal sealed class EmojiItem
+internal sealed class EmojiItem(string name, Uri uri)
 {
     /// <summary>
     /// 表情名称 (如 "微笑").
     /// </summary>
-    public string Name { get; }
+    public string Name { get; } = name;
 
     /// <summary>
     /// 表情代码 (如 "[微笑]").
@@ -21,19 +21,12 @@ internal sealed class EmojiItem
     /// <summary>
     /// 表情图片资源 URI.
     /// </summary>
-    public Uri Uri { get; }
+    public Uri Uri { get; } = uri;
 
     /// <summary>
     /// 对应的应用内图片模型.
     /// </summary>
-    public AppImage Image { get; }
-
-    public EmojiItem(string name, Uri uri)
-    {
-        Name = name;
-        Uri = uri;
-        Image = new AppImage(uri, 32, 32);
-    }
+    public AppImage Image { get; } = new AppImage(uri, 32, 32);
 }
 
 /// <summary>

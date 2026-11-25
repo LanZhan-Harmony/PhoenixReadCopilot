@@ -31,7 +31,7 @@ internal sealed partial class TopNavigationItem : UserControl
     /// <summary>
     /// 条目点击时发生.
     /// </summary>
-    public event EventHandler Click;
+    public event EventHandler? Click;
 
     public TopNavigationItem()
     {

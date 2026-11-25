@@ -7,7 +7,8 @@ namespace Danmaku.Core;
 /// <summary>
 /// 简化的调试信息渲染器
 /// </summary>
-public sealed class DebugRenderer : IDisposable
+public sealed class DebugRenderer(ID2D1DeviceContext d2dContext, IDWriteFactory dWriteFactory)
+    : IDisposable
 {
     private const float PanelPadding = 10f;
     private const float LineSpacing = 20f;
@@ -15,20 +16,16 @@ public sealed class DebugRenderer : IDisposable
     private const float CornerRadius = 5f;
     private const byte BackgroundOpacity = 180;
 
-    private readonly ID2D1DeviceContext _d2dContext;
-    private readonly IDWriteFactory _dwriteFactory;
+    private readonly ID2D1DeviceContext _d2dContext = d2dContext
+        ?? throw new ArgumentNullException(nameof(d2dContext));
+    private readonly IDWriteFactory _dwriteFactory = dWriteFactory
+        ?? throw new ArgumentNullException(nameof(dWriteFactory));
 
     // 缓存资源，避免每帧重新创建
     private IDWriteTextFormat? _cachedTextFormat;
     private ID2D1SolidColorBrush? _cachedBackgroundBrush;
     private ID2D1SolidColorBrush? _cachedTextBrush;
     private float _lastScale = -1f;
-
-    public DebugRenderer(ID2D1DeviceContext d2dContext, IDWriteFactory dWriteFactory)
-    {
-        _d2dContext = d2dContext ?? throw new ArgumentNullException(nameof(d2dContext));
-        _dwriteFactory = dWriteFactory ?? throw new ArgumentNullException(nameof(dWriteFactory));
-    }
 
     /// <summary>
     /// 渲染调试信息

@@ -14,21 +14,34 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 评论详情视图模型.
 /// </summary>
-internal sealed partial class CommentDetailViewModel : ViewModelBase
+/// <remarks>
+/// 红果短剧评论详情构造函数.
+/// </remarks>
+internal sealed partial class CommentDetailViewModel(
+    CommentItemViewModel data,
+    Action<CommentDetailViewModel>? showMoreAction,
+    DispatcherQueue dispatcherQueue,
+    ILogger<CommentDetailViewModel> logger,
+    ICommentService commentService,
+    IAuthenticationService authService,
+    INotificationService? notificationService,
+    string? dramaId,
+    string? videoId
+) : ViewModelBase
 {
-    private readonly ILogger<CommentDetailViewModel> _logger;
-    private readonly Action<CommentDetailViewModel>? _showMoreAction;
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ICommentService _commentService;
-    private readonly IAuthenticationService _authService;
-    private readonly INotificationService? _notificationService;
-    private readonly string? _dramaId;
-    private readonly string? _videoId;
+    private readonly ILogger<CommentDetailViewModel> _logger = logger;
+    private readonly Action<CommentDetailViewModel>? _showMoreAction = showMoreAction;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
+    private readonly ICommentService _commentService = commentService;
+    private readonly IAuthenticationService _authService = authService;
+    private readonly INotificationService? _notificationService = notificationService;
+    private readonly string? _dramaId = dramaId;
+    private readonly string? _videoId = videoId;
 
     /// <summary>
     /// 顶级主评论视图模型.
     /// </summary>
-    public CommentItemViewModel Data { get; }
+    public CommentItemViewModel Data { get; } = data;
 
     private bool _preventLoadMore;
     private string _cursor = string.Empty;
@@ -55,32 +68,6 @@ internal sealed partial class CommentDetailViewModel : ViewModelBase
     /// 评论回复列表.
     /// </summary>
     public ObservableCollection<CommentItemViewModel> Comments { get; } = [];
-
-    /// <summary>
-    /// 红果短剧评论详情构造函数.
-    /// </summary>
-    public CommentDetailViewModel(
-        CommentItemViewModel data,
-        Action<CommentDetailViewModel>? showMoreAction,
-        DispatcherQueue dispatcherQueue,
-        ILogger<CommentDetailViewModel> logger,
-        ICommentService commentService,
-        IAuthenticationService authService,
-        INotificationService? notificationService,
-        string? dramaId,
-        string? videoId
-    )
-    {
-        Data = data;
-        _showMoreAction = showMoreAction;
-        _dispatcherQueue = dispatcherQueue;
-        _logger = logger;
-        _commentService = commentService;
-        _authService = authService;
-        _notificationService = notificationService;
-        _dramaId = dramaId;
-        _videoId = videoId;
-    }
 
     [RelayCommand]
     public void Initialize()

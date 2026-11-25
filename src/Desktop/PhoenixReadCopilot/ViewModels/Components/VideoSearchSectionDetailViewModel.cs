@@ -16,17 +16,19 @@ namespace PhoenixReadCopilot.ViewModels.Components;
 /// <summary>
 /// 视频/短剧搜索分区详情视图模型.
 /// </summary>
-internal sealed partial class VideoSearchSectionDetailViewModel
-    : ViewModelBase,
-        ISearchSectionDetailViewModel
+internal sealed partial class VideoSearchSectionDetailViewModel(
+    ISearchService searchService,
+    DispatcherQueue dispatcherQueue,
+    ILogger<VideoSearchSectionDetailViewModel> logger
+) : ViewModelBase, ISearchSectionDetailViewModel
 {
-    private readonly ISearchService _searchService;
-    private readonly ILogger<VideoSearchSectionDetailViewModel> _logger;
-    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly ISearchService _searchService = searchService;
+    private readonly ILogger<VideoSearchSectionDetailViewModel> _logger = logger;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
 
     private bool _canRequest;
     private int? _currentPage;
-    private string _keyword;
+    private string _keyword = string.Empty;
     private bool _isPreventLoadMore;
     private SearchPartition? _partition;
 
@@ -40,12 +42,13 @@ internal sealed partial class VideoSearchSectionDetailViewModel
     public partial ComprehensiveSearchSortType Sort { get; set; }
 
     [ObservableProperty]
-    public partial List<ComprehensiveSearchSortType> Sorts { get; set; }
+    public partial List<ComprehensiveSearchSortType> Sorts { get; set; } =
+    [.. Enum.GetValues<ComprehensiveSearchSortType>()];
 
     /// <summary>
     /// 列表已完成更新.
     /// </summary>
-    public event EventHandler ListUpdated;
+    public event EventHandler? ListUpdated;
 
     /// <inheritdoc/>
     public SearchSectionType SectionType => SearchSectionType.Drama;
@@ -54,18 +57,6 @@ internal sealed partial class VideoSearchSectionDetailViewModel
     /// 条目列表.
     /// </summary>
     public ObservableCollection<DramaItemViewModel> Items { get; } = [];
-
-    public VideoSearchSectionDetailViewModel(
-        ISearchService searchService,
-        DispatcherQueue dispatcherQueue,
-        ILogger<VideoSearchSectionDetailViewModel> logger
-    )
-    {
-        _searchService = searchService;
-        _dispatcherQueue = dispatcherQueue;
-        _logger = logger;
-        Sorts = [.. Enum.GetValues<ComprehensiveSearchSortType>()];
-    }
 
     /// <inheritdoc/>
     public void Initialize(string keyword, SearchPartition partition)

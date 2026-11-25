@@ -17,13 +17,18 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 启动页视图模型.
 /// </summary>
-internal sealed partial class StartupPageViewModel : ViewModelBase
+internal sealed partial class StartupPageViewModel(
+    IAuthenticationService authService,
+    IAppLifecycleService lifecycleService,
+    ILogger<StartupPageViewModel> logger,
+    DispatcherQueue dispatcherQueue
+) : ViewModelBase
 {
     private DispatcherTimer? _countdownTimer;
-    private readonly IAuthenticationService _authService;
-    private readonly ILogger<StartupPageViewModel> _logger;
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly IAppLifecycleService _lifecycleService;
+    private readonly IAuthenticationService _authService = authService;
+    private readonly ILogger<StartupPageViewModel> _logger = logger;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
+    private readonly IAppLifecycleService _lifecycleService = lifecycleService;
 
     private CancellationTokenSource? _cancellationTokenSource;
 
@@ -77,19 +82,6 @@ internal sealed partial class StartupPageViewModel : ViewModelBase
     /// 请求关闭视图或弹窗.
     /// </summary>
     public event EventHandler? RequestClose;
-
-    public StartupPageViewModel(
-        IAuthenticationService authService,
-        IAppLifecycleService lifecycleService,
-        ILogger<StartupPageViewModel> logger,
-        DispatcherQueue dispatcherQueue
-    )
-    {
-        _authService = authService;
-        _lifecycleService = lifecycleService;
-        _logger = logger;
-        _dispatcherQueue = dispatcherQueue;
-    }
 
     /// <summary>
     /// 初始化视图模型.

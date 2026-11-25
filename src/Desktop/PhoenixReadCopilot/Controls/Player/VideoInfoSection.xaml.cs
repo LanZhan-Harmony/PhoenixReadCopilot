@@ -36,8 +36,10 @@ internal sealed partial class VideoInfoSection : UserControl
 
     private void OnTagButtonClick(object sender, RoutedEventArgs e)
     {
-        string? data = (sender as FrameworkElement).DataContext as string;
-        _searchBoxViewModel.Search(data);
+        if ((sender as FrameworkElement)?.DataContext is string data)
+        {
+            _searchBoxViewModel.Search(data);
+        }
     }
 
     private void OnLoopSelectionChanged(object sender, SelectionChangedEventArgs e)

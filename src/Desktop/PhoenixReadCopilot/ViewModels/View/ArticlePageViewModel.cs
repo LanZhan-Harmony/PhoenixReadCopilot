@@ -14,19 +14,27 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 红果圈图文详情视图模型（模仿小红书左图右文评交互）.
 /// </summary>
-internal sealed partial class ArticlePageViewModel : ViewModelBase
+internal sealed partial class ArticlePageViewModel(
+    PhoenixReadApiClient apiClient,
+    IFollowService followService,
+    INavigationService navigationService,
+    ILogger<ArticlePageViewModel> logger,
+    INotificationService notificationService,
+    DispatcherQueue dispatcherQueue,
+    CommentMainViewModel commentMainViewModel
+) : ViewModelBase
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly IFollowService _followService;
-    private readonly INavigationService _navigationService;
-    private readonly ILogger<ArticlePageViewModel> _logger;
-    private readonly INotificationService _notificationService;
-    private readonly DispatcherQueue _dispatcherQueue;
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly IFollowService _followService = followService;
+    private readonly INavigationService _navigationService = navigationService;
+    private readonly ILogger<ArticlePageViewModel> _logger = logger;
+    private readonly INotificationService _notificationService = notificationService;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
 
     private string _postId = string.Empty;
 
     [ObservableProperty]
-    public partial CommentMainViewModel CommentMainViewModel { get; set; }
+    public partial CommentMainViewModel CommentMainViewModel { get; set; } = commentMainViewModel;
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -35,25 +43,25 @@ internal sealed partial class ArticlePageViewModel : ViewModelBase
     public partial CirclePost? Post { get; set; }
 
     [ObservableProperty]
-    public partial ObservableCollection<CircleImage> Images { get; set; }
+    public partial ObservableCollection<CircleImage> Images { get; set; } = [];
 
     [ObservableProperty]
     public partial int SelectedImageIndex { get; set; }
 
     [ObservableProperty]
-    public partial string Title { get; set; }
+    public partial string Title { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string Content { get; set; }
+    public partial string Content { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string AuthorName { get; set; }
+    public partial string AuthorName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string AuthorAvatarUrl { get; set; }
+    public partial string AuthorAvatarUrl { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string AuthorId { get; set; }
+    public partial string AuthorId { get; set; } = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FollowText))]
@@ -71,49 +79,19 @@ internal sealed partial class ArticlePageViewModel : ViewModelBase
     public partial long CommentCount { get; set; }
 
     [ObservableProperty]
-    public partial string PublishTime { get; set; }
+    public partial string PublishTime { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial ObservableCollection<Comment> Comments { get; set; }
+    public partial ObservableCollection<Comment> Comments { get; set; } = [];
 
     [ObservableProperty]
-    public partial string CommentInputText { get; set; }
+    public partial string CommentInputText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsEmptyComments { get; set; }
 
     [ObservableProperty]
-    public partial ObservableCollection<Drama> RelatedDramas { get; set; }
-
-    public ArticlePageViewModel(
-        PhoenixReadApiClient apiClient,
-        IFollowService followService,
-        INavigationService navigationService,
-        ILogger<ArticlePageViewModel> logger,
-        INotificationService notificationService,
-        DispatcherQueue dispatcherQueue,
-        CommentMainViewModel commentMainViewModel
-    )
-    {
-        _apiClient = apiClient;
-        _followService = followService;
-        _navigationService = navigationService;
-        _logger = logger;
-        _notificationService = notificationService;
-        _dispatcherQueue = dispatcherQueue;
-        CommentMainViewModel = commentMainViewModel;
-
-        Images = [];
-        Comments = [];
-        RelatedDramas = [];
-        Title = string.Empty;
-        Content = string.Empty;
-        AuthorName = string.Empty;
-        AuthorAvatarUrl = string.Empty;
-        AuthorId = string.Empty;
-        PublishTime = string.Empty;
-        CommentInputText = string.Empty;
-    }
+    public partial ObservableCollection<Drama> RelatedDramas { get; set; } = [];
 
     public async Task InitializeAsync(object parameter)
     {

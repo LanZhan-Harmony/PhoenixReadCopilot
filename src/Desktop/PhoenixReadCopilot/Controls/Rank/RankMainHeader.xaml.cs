@@ -98,7 +98,7 @@ internal sealed partial class RankMainHeader : UserControl
 
     private void SyncSelectedChannel()
     {
-        if (_isUpdatingBoardItems)
+        if (_isUpdatingBoardItems || ViewModel is null)
         {
             return;
         }

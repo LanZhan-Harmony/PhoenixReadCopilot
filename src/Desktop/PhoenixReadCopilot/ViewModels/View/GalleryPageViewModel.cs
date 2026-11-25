@@ -23,7 +23,7 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
     private readonly IPathService _pathService = Ioc.Default.GetRequiredService<IPathService>();
 
     [ObservableProperty]
-    public partial List<AppImage>? Images { get; set; }
+    public partial List<AppImage> Images { get; set; }
 
     [ObservableProperty]
     public partial bool IsGroup { get; set; }

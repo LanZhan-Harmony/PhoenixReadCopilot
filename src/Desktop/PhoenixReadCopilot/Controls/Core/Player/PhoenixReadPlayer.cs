@@ -4,6 +4,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Shapes;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
@@ -101,7 +102,7 @@ internal sealed partial class PhoenixReadPlayer : UserControl
             || DateTimeOffset.Now - _lastPressedTime < TimeSpan.FromSeconds(1)
         )
         {
-            ViewModel.ForwardSkip();
+            ViewModel?.ForwardSkip();
         }
 
         _lastRightArrowPressedTime = null;
@@ -176,18 +177,23 @@ internal sealed partial class PhoenixReadPlayer : UserControl
         });
     }
 
-    private void HookRootPointerEvents()
+    private void HookRootPointerEvents(CursorGrid overlayContainer)
     {
-        _overlayContainer.PointerMoved += OnRootPointerMoved;
-        _overlayContainer.PointerEntered += OnRootPointerEntered;
-        _overlayContainer.PointerExited += OnRootPointerExited;
-        _overlayContainer.PointerPressed += OnRootPointerPressed;
-        _overlayContainer.PointerCanceled += OnRootPointerCanceled;
-        _overlayContainer.PointerReleased += OnRootPointerReleased;
+        overlayContainer.PointerMoved += OnRootPointerMoved;
+        overlayContainer.PointerEntered += OnRootPointerEntered;
+        overlayContainer.PointerExited += OnRootPointerExited;
+        overlayContainer.PointerPressed += OnRootPointerPressed;
+        overlayContainer.PointerCanceled += OnRootPointerCanceled;
+        overlayContainer.PointerReleased += OnRootPointerReleased;
     }
 
     private void ToggleTripleSpeed(bool isQuick)
     {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
         _isHolding = isQuick;
         if (isQuick)
         {
@@ -216,15 +222,15 @@ internal sealed partial class PhoenixReadPlayer : UserControl
         }
     }
 
-    private void HookInteractionControlEvents()
+    private void HookInteractionControlEvents(Rectangle interactionControl)
     {
-        _interactionControl.DoubleTapped += OnCoreDoubleTapped;
-        _interactionControl.ManipulationMode =
+        interactionControl.DoubleTapped += OnCoreDoubleTapped;
+        interactionControl.ManipulationMode =
             ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-        _interactionControl.ManipulationStarted += OnInteractionControlManipulationStarted;
-        _interactionControl.ManipulationDelta += OnInteractionControlManipulationDelta;
-        _interactionControl.ManipulationCompleted += OnInteractionControlManipulationCompleted;
-        _interactionControl.PointerWheelChanged += OnInteractionControlPointerWheelChanged;
+        interactionControl.ManipulationStarted += OnInteractionControlManipulationStarted;
+        interactionControl.ManipulationDelta += OnInteractionControlManipulationDelta;
+        interactionControl.ManipulationCompleted += OnInteractionControlManipulationCompleted;
+        interactionControl.PointerWheelChanged += OnInteractionControlPointerWheelChanged;
     }
 
     private void UnhookInteractionControlEvents()
@@ -278,6 +284,11 @@ internal sealed partial class PhoenixReadPlayer : UserControl
 
     private void OnRequestShowNotification(object? sender, PlayerNotificationItemViewModel e)
     {
+        if (_notificationContainer is null)
+        {
+            return;
+        }
+
         _notificationContainer.Visibility = Visibility.Visible;
         _notificationContainer.Children.Clear();
         PlayerNotificationControl control = new() { ViewModel = e };
@@ -292,7 +303,7 @@ internal sealed partial class PhoenixReadPlayer : UserControl
             && _notificationContainer.Children.FirstOrDefault() is PlayerNotificationControl control
         )
         {
-            control.ViewModel.Cancel();
+            control.ViewModel?.Cancel();
             _notificationContainer.Children.Clear();
         }
     }
@@ -304,9 +315,8 @@ internal sealed partial class PhoenixReadPlayer : UserControl
             return;
         }
 
-        CreateOverlayContainer();
-
-        RootGrid.Children.Add(_overlayContainer);
+        CursorGrid overlayContainer = CreateOverlayContainer();
+        RootGrid.Children.Add(overlayContainer);
     }
 
     private void OnCoreDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)

@@ -19,21 +19,21 @@ namespace PhoenixReadCopilot.Controls.Core;
 /// </summary>
 internal sealed partial class PhoenixReadPlayer
 {
-    private Func<FrameworkElement> _createDanmakuControlFunc;
-    private Func<FrameworkElement> _createTransportControlFunc;
-    private Func<SubtitlePresenter> _createSubtitleControlFunc;
+    private Func<FrameworkElement>? _createDanmakuControlFunc;
+    private Func<FrameworkElement>? _createTransportControlFunc;
+    private Func<SubtitlePresenter>? _createSubtitleControlFunc;
 
-    private CursorGrid _overlayContainer;
-    private Panel _operationContainer;
-    private FrameworkElement _danmakuControl;
-    private FrameworkElement _transportControl;
-    private SubtitlePresenter _subtitlePresenter;
-    private ProgressBar _progressBar;
-    private Rectangle _interactionControl;
-    private StackPanel _notificationContainer;
-    private LoadingWidget _loadingWidget;
-    private EmptyHolder _failedHolder;
-    private MenuFlyout _contextFlyout;
+    private CursorGrid? _overlayContainer;
+    private Panel? _operationContainer;
+    private FrameworkElement? _danmakuControl;
+    private FrameworkElement? _transportControl;
+    private SubtitlePresenter? _subtitlePresenter;
+    private ProgressBar? _progressBar;
+    private Rectangle? _interactionControl;
+    private StackPanel? _notificationContainer;
+    private LoadingWidget? _loadingWidget;
+    private EmptyHolder? _failedHolder;
+    private MenuFlyout? _contextFlyout;
 
     /// <summary>
     /// 注入弹幕控件创建函数.
@@ -53,11 +53,11 @@ internal sealed partial class PhoenixReadPlayer
     public void InjectSubtitleControlFunc(Func<SubtitlePresenter> createSubtitleControlFunc) =>
         _createSubtitleControlFunc = createSubtitleControlFunc;
 
-    private void CreateOverlayContainer()
+    private CursorGrid CreateOverlayContainer()
     {
         CursorGrid rootGrid = new();
 
-        _danmakuControl = _createDanmakuControlFunc?.Invoke() ?? null;
+        _danmakuControl = _createDanmakuControlFunc?.Invoke();
 
         if (_danmakuControl is not null)
         {
@@ -111,7 +111,7 @@ internal sealed partial class PhoenixReadPlayer
             Fill = new SolidColorBrush(Colors.Transparent),
             Visibility = Visibility.Visible,
         };
-        HookInteractionControlEvents();
+        HookInteractionControlEvents(_interactionControl);
         rootGrid.Children.Add(_interactionControl);
 
         _notificationContainer = new StackPanel
@@ -128,14 +128,14 @@ internal sealed partial class PhoenixReadPlayer
             VerticalAlignment = VerticalAlignment.Bottom,
         };
 
-        _subtitlePresenter = _createSubtitleControlFunc?.Invoke() ?? null;
+        _subtitlePresenter = _createSubtitleControlFunc?.Invoke();
         if (_subtitlePresenter is not null)
         {
             _subtitlePresenter.HorizontalAlignment = HorizontalAlignment.Stretch;
             _operationContainer.Children.Add(_subtitlePresenter);
         }
 
-        _transportControl = _createTransportControlFunc?.Invoke() ?? null;
+        _transportControl = _createTransportControlFunc?.Invoke();
         if (_transportControl is not null)
         {
             _transportControl.MinHeight = 16;
@@ -173,59 +173,65 @@ internal sealed partial class PhoenixReadPlayer
         };
         rootGrid.Children.Add(_failedHolder);
         _overlayContainer = rootGrid;
-        HookRootPointerEvents();
+        HookRootPointerEvents(rootGrid);
+        return rootGrid;
     }
 
     private void HandleViewModelPropertyChanged(PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ViewModel.IsPaused))
+        if (ViewModel is not { } vm)
         {
-            _progressBar?.ShowPaused = ViewModel.IsPaused;
+            return;
         }
-        else if (e.PropertyName == nameof(ViewModel.IsBuffering))
+
+        if (e.PropertyName == nameof(vm.IsPaused))
         {
-            _progressBar?.IsIndeterminate = ViewModel.IsBuffering;
+            _progressBar?.ShowPaused = vm.IsPaused;
         }
-        else if (e.PropertyName == nameof(ViewModel.Duration))
+        else if (e.PropertyName == nameof(vm.IsBuffering))
         {
-            _progressBar?.Maximum = ViewModel.Duration;
+            _progressBar?.IsIndeterminate = vm.IsBuffering;
         }
-        else if (e.PropertyName == nameof(ViewModel.Position))
+        else if (e.PropertyName == nameof(vm.Duration))
         {
-            _progressBar?.Value = ViewModel.Position;
+            _progressBar?.Maximum = vm.Duration;
         }
-        else if (e.PropertyName == nameof(ViewModel.IsBottomProgressVisible))
+        else if (e.PropertyName == nameof(vm.Position))
         {
-            _progressBar?.Visibility = ViewModel.IsBottomProgressVisible
+            _progressBar?.Value = vm.Position;
+        }
+        else if (e.PropertyName == nameof(vm.IsBottomProgressVisible))
+        {
+            _progressBar?.Visibility = vm.IsBottomProgressVisible
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
-        else if (e.PropertyName == nameof(ViewModel.IsFailed))
+        else if (e.PropertyName == nameof(vm.IsFailed))
         {
-            _notificationContainer?.Visibility = ViewModel.IsFailed
+            _notificationContainer?.Visibility = vm.IsFailed
                 ? Visibility.Collapsed
                 : Visibility.Visible;
 
-            _operationContainer?.Visibility = ViewModel.IsFailed
+            _operationContainer?.Visibility = vm.IsFailed
                 ? Visibility.Collapsed
                 : Visibility.Visible;
 
-            _failedHolder?.Visibility = ViewModel.IsFailed
+            _failedHolder?.Visibility = vm.IsFailed
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
-        else if (e.PropertyName == nameof(ViewModel.IsPlayerDataLoading))
+        else if (e.PropertyName == nameof(vm.IsPlayerDataLoading))
         {
-            _loadingWidget?.Visibility = ViewModel.IsPlayerDataLoading
+            _loadingWidget?.Visibility = vm.IsPlayerDataLoading
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            if (!ViewModel.IsPlayerDataLoading)
+            if (!vm.IsPlayerDataLoading)
             {
                 DispatcherQueue.TryEnqueue(ArrangeSubtitleSize);
             }
         }
-        else if (e.PropertyName == nameof(ViewModel.IsDanmakuInputFocused))
+        else if (e.PropertyName == nameof(vm.IsDanmakuInputFocused))
         {
             DispatcherQueue.TryEnqueue(() => CheckTransportControlVisibility());
         }
@@ -234,16 +240,16 @@ internal sealed partial class PhoenixReadPlayer
     private Grid CreateHiddenControlsContainer()
     {
         Grid grid = new();
-        Button playPreviousBtn = CreateHiddenButton(VirtualKey.Up, ViewModel.PlayPreviousCommand);
-        Button playNextBtn = CreateHiddenButton(VirtualKey.Down, ViewModel.PlayNextCommand);
-        Button backwardBtn = CreateHiddenButton(VirtualKey.Left, ViewModel.BackwardSkipCommand);
-        Button miniBtn = CreateHiddenButton(VirtualKey.F9, ViewModel.ToggleCompactOverlayCommand);
-        Button fullBtn = CreateHiddenButton(VirtualKey.F11, ViewModel.ToggleFullScreenCommand);
+        Button playPreviousBtn = CreateHiddenButton(VirtualKey.Up, ViewModel?.PlayPreviousCommand);
+        Button playNextBtn = CreateHiddenButton(VirtualKey.Down, ViewModel?.PlayNextCommand);
+        Button backwardBtn = CreateHiddenButton(VirtualKey.Left, ViewModel?.BackwardSkipCommand);
+        Button miniBtn = CreateHiddenButton(VirtualKey.F9, ViewModel?.ToggleCompactOverlayCommand);
+        Button fullBtn = CreateHiddenButton(VirtualKey.F11, ViewModel?.ToggleFullScreenCommand);
         Button fullWindowBtn = CreateHiddenButton(
             VirtualKey.F10,
-            ViewModel.ToggleFullWindowCommand
+            ViewModel?.ToggleFullWindowCommand
         );
-        Button backBtn = CreateHiddenButton(VirtualKey.Escape, ViewModel.BackToDefaultModeCommand);
+        Button backBtn = CreateHiddenButton(VirtualKey.Escape, ViewModel?.BackToDefaultModeCommand);
         grid.Children.Add(playPreviousBtn);
         grid.Children.Add(playNextBtn);
         grid.Children.Add(backwardBtn);
@@ -254,7 +260,7 @@ internal sealed partial class PhoenixReadPlayer
 
         Button CreateHiddenButton(
             VirtualKey key,
-            ICommand command,
+            ICommand? command,
             VirtualKeyModifiers modifiers = VirtualKeyModifiers.None
         )
         {

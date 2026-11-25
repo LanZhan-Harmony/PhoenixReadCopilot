@@ -23,22 +23,22 @@ internal sealed class DanmakuScheduler : IDisposable
     /// <summary>
     /// 当需要渲染弹幕时触发.
     /// </summary>
-    internal event Action<uint, DanmakuItem> DanmakuRendered;
+    internal event Action<uint, DanmakuItem>? DanmakuRendered;
 
     /// <summary>
     /// 当需要暂停时触发.
     /// </summary>
-    internal event Action PauseRequested;
+    internal event Action? PauseRequested;
 
     /// <summary>
     /// 当需要恢复时触发.
     /// </summary>
-    internal event Action ResumeRequested;
+    internal event Action? ResumeRequested;
 
     /// <summary>
     /// 当需要停止时触发.
     /// </summary>
-    internal event Action StopRequested;
+    internal event Action? StopRequested;
 
     internal DanmakuScheduler()
     {

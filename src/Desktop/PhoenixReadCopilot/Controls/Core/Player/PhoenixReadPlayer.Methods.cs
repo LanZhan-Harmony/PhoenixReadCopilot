@@ -80,6 +80,7 @@ internal sealed partial class PhoenixReadPlayer
         if (
             isManual
             || _transportControl is null
+            || ViewModel is null
             || ViewModel.IsPlayerDataLoading
             || ViewModel.IsPlayerInitializing
         )
@@ -99,7 +100,7 @@ internal sealed partial class PhoenixReadPlayer
                 _lastPointerPoint = args.GetCurrentPoint(_overlayContainer).Position;
             }
 
-            if (ViewModel.IsDanmakuInputFocused)
+            if (ViewModel is null || _transportControl is null || ViewModel.IsDanmakuInputFocused)
             {
                 return;
             }
@@ -246,7 +247,7 @@ internal sealed partial class PhoenixReadPlayer
         _manipulationDeltaY = 0;
         _manipulationType = PlayerManipulationType.None;
 
-        if (_manipulationBeforeIsPlay && ViewModel.IsPaused && !ViewModel.IsBuffering)
+        if (_manipulationBeforeIsPlay && ViewModel is { IsPaused: true, IsBuffering: false })
         {
             ViewModel.TogglePlayPause();
         }
@@ -293,7 +294,7 @@ internal sealed partial class PhoenixReadPlayer
         ManipulationDeltaRoutedEventArgs e
     )
     {
-        if (ViewModel.IsBuffering)
+        if (ViewModel is null || ViewModel.IsBuffering)
         {
             return;
         }
@@ -334,7 +335,12 @@ internal sealed partial class PhoenixReadPlayer
         ManipulationStartedRoutedEventArgs e
     )
     {
-        if (ViewModel.IsPlayerDataLoading || ViewModel.IsBuffering || ViewModel.IsFailed)
+        if (
+            ViewModel is null
+            || ViewModel.IsPlayerDataLoading
+            || ViewModel.IsBuffering
+            || ViewModel.IsFailed
+        )
         {
             return;
         }
@@ -361,7 +367,7 @@ internal sealed partial class PhoenixReadPlayer
             ToggleTripleSpeed(false);
         }
 
-        HandlePointerEvent(e, !ViewModel.IsDanmakuInputFocused);
+        HandlePointerEvent(e, !(ViewModel?.IsDanmakuInputFocused ?? false));
     }
 
     private void OnRootPointerPressed(object sender, PointerRoutedEventArgs e)
@@ -369,8 +375,11 @@ internal sealed partial class PhoenixReadPlayer
         PointerPoint point = e.GetCurrentPoint((UIElement)sender);
         if (point.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
         {
-            FlyoutShowOptions options = new() { Position = point.Position };
-            _contextFlyout.ShowAt(_interactionControl, options);
+            if (_contextFlyout is not null && _interactionControl is not null)
+            {
+                FlyoutShowOptions options = new() { Position = point.Position };
+                _contextFlyout.ShowAt(_interactionControl, options);
+            }
             return;
         }
 
@@ -393,7 +402,7 @@ internal sealed partial class PhoenixReadPlayer
             ToggleTripleSpeed(false);
         }
 
-        HandlePointerEvent(e, !ViewModel.IsDanmakuInputFocused);
+        HandlePointerEvent(e, !(ViewModel?.IsDanmakuInputFocused ?? false));
     }
 
     private void OnRootPointerEntered(object sender, PointerRoutedEventArgs e) =>

@@ -5,61 +5,50 @@ namespace PhoenixReadCopilot.Core.Models.Media;
 /// <summary>
 /// 视频/短剧信息模型.
 /// </summary>
-public sealed class VideoInformation
+public sealed class VideoInformation(
+    MediaIdentifier identifier,
+    double? duration = null,
+    DateTime? publishTime = null,
+    double? danmakuCount = null,
+    double? playCount = null,
+    VideoPublisher? publisher = null,
+    VideoCommunityInformation? communityInformation = null
+)
 {
-    public VideoInformation(
-        MediaIdentifier identifier,
-        double? duration = null,
-        DateTime? publishTime = null,
-        double? danmakuCount = null,
-        double? playCount = null,
-        VideoPublisher? publisher = null,
-        VideoCommunityInformation? communityInformation = null
-    )
-    {
-        Identifier = identifier;
-        Duration = duration;
-        PublishTime = publishTime;
-        DanmakuCount = danmakuCount;
-        PlayCount = playCount;
-        Publisher = publisher;
-        CommunityInformation = communityInformation;
-    }
-
     /// <summary>
     /// 基础媒体标识.
     /// </summary>
-    public MediaIdentifier Identifier { get; init; }
+    public MediaIdentifier Identifier { get; init; } = identifier;
 
     /// <summary>
     /// 时长（秒）.
     /// </summary>
-    public double? Duration { get; init; }
+    public double? Duration { get; init; } = duration;
 
     /// <summary>
     /// 发布时间.
     /// </summary>
-    public DateTime? PublishTime { get; init; }
+    public DateTime? PublishTime { get; init; } = publishTime;
 
     /// <summary>
     /// 弹幕数.
     /// </summary>
-    public double? DanmakuCount { get; init; }
+    public double? DanmakuCount { get; init; } = danmakuCount;
 
     /// <summary>
     /// 播放量.
     /// </summary>
-    public double? PlayCount { get; init; }
+    public double? PlayCount { get; init; } = playCount;
 
     /// <summary>
     /// 发布者信息.
     /// </summary>
-    public VideoPublisher? Publisher { get; init; }
+    public VideoPublisher? Publisher { get; init; } = publisher;
 
     /// <summary>
     /// 社区互动数据.
     /// </summary>
-    public VideoCommunityInformation? CommunityInformation { get; init; }
+    public VideoCommunityInformation? CommunityInformation { get; init; } = communityInformation;
 
     /// <summary>
     /// 扩展数据字典.

@@ -6,19 +6,13 @@ namespace PhoenixReadCopilot.Activation;
 /// <summary>
 /// 默认常规启动激活处理器 (作为责任链末尾的默认兜底处理器，直接调度生命周期与主窗口激活).
 /// </summary>
-internal sealed class DefaultActivationHandler : IActivationHandler
+internal sealed class DefaultActivationHandler(
+    IWindowService windowService,
+    IAppLifecycleService lifecycleService
+) : IActivationHandler
 {
-    private readonly IWindowService _windowService;
-    private readonly IAppLifecycleService _lifecycleService;
-
-    public DefaultActivationHandler(
-        IWindowService windowService,
-        IAppLifecycleService lifecycleService
-    )
-    {
-        _windowService = windowService;
-        _lifecycleService = lifecycleService;
-    }
+    private readonly IWindowService _windowService = windowService;
+    private readonly IAppLifecycleService _lifecycleService = lifecycleService;
 
     public bool CanHandle(object args) => true;
 

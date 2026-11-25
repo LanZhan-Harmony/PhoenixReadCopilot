@@ -5,7 +5,7 @@ namespace PhoenixReadCopilot.Converters;
 
 internal sealed partial class DurationConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
+    public object? Convert(object? value, Type targetType, object parameter, string language)
     {
         if (value is int d)
         {

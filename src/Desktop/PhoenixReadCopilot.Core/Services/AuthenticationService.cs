@@ -8,10 +8,13 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 认证与账号服务实现.
 /// </summary>
-public sealed class AuthenticationService : IAuthenticationService
+public sealed class AuthenticationService(
+    PhoenixReadApiClient apiClient,
+    ILogger<AuthenticationService> logger
+) : IAuthenticationService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<AuthenticationService> _logger;
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly ILogger<AuthenticationService> _logger = logger;
 
     /// <inheritdoc/>
     public bool IsAuthenticated { get; private set; }
@@ -21,15 +24,6 @@ public sealed class AuthenticationService : IAuthenticationService
 
     /// <inheritdoc/>
     public event EventHandler<bool>? StateChanged;
-
-    public AuthenticationService(
-        PhoenixReadApiClient apiClient,
-        ILogger<AuthenticationService> logger
-    )
-    {
-        _apiClient = apiClient;
-        _logger = logger;
-    }
 
     /// <inheritdoc/>
     public async Task<bool> InitializeAsync(CancellationToken cancellationToken = default)

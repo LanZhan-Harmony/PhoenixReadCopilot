@@ -82,7 +82,8 @@ internal sealed partial class CommentMainPanel : UserControl
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
         {
             if (
-                CommentScrollView.ExtentHeight
+                ViewModel is not null
+                && CommentScrollView.ExtentHeight
                     - CommentScrollView.ViewportHeight
                     - CommentScrollView.VerticalOffset
                 <= 240

@@ -7,12 +7,12 @@ namespace PhoenixReadCopilot.ViewModels.Items;
 /// <summary>
 /// 用户空间短剧剧评条目模型.
 /// </summary>
-internal sealed partial class UserReviewItemViewModel : ViewModelBase
+internal sealed partial class UserReviewItemViewModel(UserReview review) : ViewModelBase
 {
     /// <summary>
     /// 原始数据实体.
     /// </summary>
-    public UserReview Data { get; }
+    public UserReview Data { get; } = review;
 
     /// <summary>
     /// 剧评 ID.
@@ -86,11 +86,6 @@ internal sealed partial class UserReviewItemViewModel : ViewModelBase
                 .ToLocalTime();
             return time.ToString("yyyy-MM-dd HH:mm");
         }
-    }
-
-    public UserReviewItemViewModel(UserReview review)
-    {
-        Data = review;
     }
 
     [RelayCommand]

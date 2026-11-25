@@ -379,7 +379,7 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
             }
         }
 
-        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Comments.Clear);
+        _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => Comments?.Clear());
         _cursor = string.Empty;
         _preventLoadMore = false;
         Id = string.Empty;

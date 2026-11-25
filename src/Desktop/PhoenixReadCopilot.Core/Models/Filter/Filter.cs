@@ -3,27 +3,20 @@ namespace PhoenixReadCopilot.Core.Models.Filter;
 /// <summary>
 /// 筛选维度行.
 /// </summary>
-public sealed class Filter
+public sealed class Filter(string key, string name, IReadOnlyList<Condition> conditions)
 {
-    public Filter(string key, string name, IReadOnlyList<Condition> conditions)
-    {
-        Key = key;
-        Name = name;
-        Conditions = conditions;
-    }
-
     /// <summary>
     /// 维度标识键.
     /// </summary>
-    public string Key { get; init; }
+    public string Key { get; init; } = key;
 
     /// <summary>
     /// 维度显示名称.
     /// </summary>
-    public string Name { get; init; }
+    public string Name { get; init; } = name;
 
     /// <summary>
     /// 可选条件列表.
     /// </summary>
-    public IReadOnlyList<Condition> Conditions { get; init; }
+    public IReadOnlyList<Condition> Conditions { get; init; } = conditions;
 }

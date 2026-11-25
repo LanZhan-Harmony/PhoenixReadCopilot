@@ -62,7 +62,7 @@ internal sealed partial class DramaCreditItemViewModel : ViewModelBase
             && ItemServices.Follow.IsFollowing(User.Id);
     }
 
-    public User User { get; }
+    public User? User { get; }
 
     public string Name { get; }
 

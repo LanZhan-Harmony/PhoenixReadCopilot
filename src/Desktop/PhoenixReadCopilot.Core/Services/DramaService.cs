@@ -8,12 +8,17 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 短剧业务服务实现，负责短剧详情、分集列表、合集聚合、分集点赞与分享短链生成.
 /// </summary>
-public sealed class DramaService : IDramaService
+public sealed class DramaService(
+    PhoenixReadApiClient apiClient,
+    IAuthenticationService authService,
+    ILikeService likeService,
+    ILogger<DramaService> logger
+) : IDramaService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly IAuthenticationService _authService;
-    private readonly ILikeService _likeService;
-    private readonly ILogger<DramaService> _logger;
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly IAuthenticationService _authService = authService;
+    private readonly ILikeService _likeService = likeService;
+    private readonly ILogger<DramaService> _logger = logger;
     private readonly SemaphoreSlim _lock = new(1, 1);
     private readonly Dictionary<string, (DramaDetails Details, DateTime ExpireAt)> _detailsCache =
     [
@@ -21,19 +26,6 @@ public sealed class DramaService : IDramaService
     ];
 
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
-
-    public DramaService(
-        PhoenixReadApiClient apiClient,
-        IAuthenticationService authService,
-        ILikeService likeService,
-        ILogger<DramaService> logger
-    )
-    {
-        _apiClient = apiClient;
-        _authService = authService;
-        _likeService = likeService;
-        _logger = logger;
-    }
 
     /// <inheritdoc/>
     public async Task<DramaDetails> GetDramaDetailsAsync(
@@ -244,7 +236,11 @@ public sealed class DramaService : IDramaService
 
         try
         {
-            return await _apiClient.CreateShareLinkAsync(dramaId, videoId, cancellationToken);
+            return await _apiClient.CreateShareLinkAsync(
+                dramaId,
+                videoId ?? string.Empty,
+                cancellationToken
+            );
         }
         catch (OperationCanceledException)
         {

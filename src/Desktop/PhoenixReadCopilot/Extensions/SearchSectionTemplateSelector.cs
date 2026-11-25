@@ -7,15 +7,15 @@ namespace PhoenixReadCopilot.Extensions;
 
 internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate VideoTemplate { get; set; }
+    public DataTemplate? VideoTemplate { get; set; }
 
-    public DataTemplate UserTemplate { get; set; }
+    public DataTemplate? UserTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
         if (item is ISearchSectionDetailViewModel searchSectionDetailViewModel)
         {
-            return searchSectionDetailViewModel.SectionType switch
+            DataTemplate? template = searchSectionDetailViewModel.SectionType switch
             {
                 SearchSectionType.Drama => VideoTemplate,
                 SearchSectionType.User => UserTemplate,
@@ -25,8 +25,12 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
                     null
                 ),
             };
+            if (template is not null)
+            {
+                return template;
+            }
         }
 
-        return null;
+        return base.SelectTemplateCore(item, container);
     }
 }

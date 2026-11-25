@@ -20,17 +20,17 @@ public sealed class PinItem
     /// <summary>
     /// 封面.
     /// </summary>
-    public string Cover { get; set; }
+    public string Cover { get; set; } = string.Empty;
 
     /// <summary>
     /// 标题.
     /// </summary>
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// 标识符.
     /// </summary>
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// 类型.

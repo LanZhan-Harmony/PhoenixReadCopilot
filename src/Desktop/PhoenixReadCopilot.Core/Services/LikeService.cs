@@ -396,7 +396,8 @@ public sealed class LikeService : ILikeService
                 set.Remove(videoId);
             }
 
-            DramaLikeItem? item = _dramaCache!.FirstOrDefault(d =>
+            List<DramaLikeItem> cache = _dramaCache ??= [];
+            DramaLikeItem? item = cache.FirstOrDefault(d =>
                 string.Equals(d.DramaId, dramaId, StringComparison.OrdinalIgnoreCase)
             );
 
@@ -411,7 +412,7 @@ public sealed class LikeService : ILikeService
                         LikedVideoIds = [.. set],
                         UpdatedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     };
-                    _dramaCache.Insert(0, item);
+                    cache.Insert(0, item);
                 }
                 else
                 {
@@ -421,8 +422,8 @@ public sealed class LikeService : ILikeService
                     }
                     item.LikedVideoIds = [.. set];
                     item.UpdatedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    _dramaCache.Remove(item);
-                    _dramaCache.Insert(0, item);
+                    cache.Remove(item);
+                    cache.Insert(0, item);
                 }
             }
             else
@@ -433,7 +434,7 @@ public sealed class LikeService : ILikeService
                     item.UpdatedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     if (set.Count == 0)
                     {
-                        _dramaCache.Remove(item);
+                        cache.Remove(item);
                         _likedVideoIdsByDrama.Remove(dramaId);
                     }
                 }
@@ -542,6 +543,7 @@ public sealed class LikeService : ILikeService
                     try
                     {
                         await EnsureLoadedLockedAsync();
+                        List<DramaLikeItem> cache = _dramaCache ??= [];
                         foreach (Drama onlineDrama in onlinePage.Items)
                         {
                             if (string.IsNullOrEmpty(onlineDrama.Id))
@@ -549,13 +551,13 @@ public sealed class LikeService : ILikeService
                                 continue;
                             }
 
-                            DramaLikeItem? local = _dramaCache!.FirstOrDefault(d =>
+                            DramaLikeItem? local = cache.FirstOrDefault(d =>
                                 string.Equals(d.DramaId, onlineDrama.Id, StringComparison.OrdinalIgnoreCase)
                             );
 
                             if (local is null)
                             {
-                                _dramaCache.Add(
+                                cache.Add(
                                     new DramaLikeItem
                                     {
                                         DramaId = onlineDrama.Id,
@@ -594,7 +596,8 @@ public sealed class LikeService : ILikeService
             int safeCount = Math.Max(1, count);
             int safeOffset = Math.Max(0, offset);
 
-            List<Drama> slice = _dramaCache!
+            List<DramaLikeItem> cache = _dramaCache ??= [];
+            List<Drama> slice = cache
                 .Where(d => d.Drama is not null && (d.LikedVideoIds.Count > 0 || (_authService.IsAuthenticated && !string.IsNullOrEmpty(d.DramaId))))
                 .Select(d => d.Drama!)
                 .Skip(safeOffset)
@@ -604,9 +607,9 @@ public sealed class LikeService : ILikeService
             return new DramaPage
             {
                 Items = slice,
-                Total = _dramaCache.Count,
+                Total = cache.Count,
                 NextOffset = safeOffset + slice.Count,
-                HasMore = safeOffset + slice.Count < _dramaCache.Count,
+                HasMore = safeOffset + slice.Count < cache.Count,
             };
         }
         finally

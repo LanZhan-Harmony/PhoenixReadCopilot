@@ -5,7 +5,6 @@ using PhoenixReadCopilot.Contracts.Services;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Extensions;
 using PhoenixReadCopilot.Helpers;
 using PhoenixReadCopilot.Strings;
 using Windows.System;
@@ -85,7 +84,7 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
             {
                 case nameof(AppSettings.AppTheme):
                     OnPropertyChanged(nameof(AppThemeText));
-                    _windowService.ChangeTheme(Settings.AppTheme.ToElementTheme());
+                    _windowService.ChangeTheme(ThemeHelper.ToElementTheme(Settings.AppTheme));
                     break;
                 case nameof(AppSettings.IsTopNavBarShown):
                     OnPropertyChanged(nameof(IsTopNavShown));

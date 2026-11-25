@@ -6,15 +6,15 @@ namespace PhoenixReadCopilot.Extensions;
 
 internal sealed partial class FavoriteSectionTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate VideoTempalte { get; set; }
+    public DataTemplate? VideoTemplate { get; set; }
 
-    protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+    protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
     {
         if (item is VideoFavoriteSectionDetailViewModel)
         {
-            return VideoTempalte;
+            return VideoTemplate;
         }
 
-        return null;
+        return base.SelectTemplateCore(item, container);
     }
 }

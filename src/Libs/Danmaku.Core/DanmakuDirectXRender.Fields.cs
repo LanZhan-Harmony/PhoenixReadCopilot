@@ -36,7 +36,7 @@ internal partial class DanmakuDirectXRender
     /// <summary>
     /// SwapChainPanel 控件引用.
     /// </summary>
-    private SwapChainPanel _swapChainPanel;
+    private SwapChainPanel? _swapChainPanel;
 
     /// <summary>
     /// DirectX 资源管理器，负责管理所有 DirectX 资源.
@@ -46,7 +46,7 @@ internal partial class DanmakuDirectXRender
     /// <summary>
     /// 调试信息渲染器.
     /// </summary>
-    private DebugRenderer _debugRenderer;
+    private DebugRenderer? _debugRenderer;
 
     /// <summary>
     /// 红果表情管理器.
@@ -160,7 +160,7 @@ internal partial class DanmakuDirectXRender
     /// <summary>
     /// 缓存的描边画刷.
     /// </summary>
-    private ID2D1SolidColorBrush _cachedOutlineBrush;
+    private ID2D1SolidColorBrush? _cachedOutlineBrush;
 
     #endregion
 

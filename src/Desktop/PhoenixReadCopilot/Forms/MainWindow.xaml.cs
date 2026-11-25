@@ -11,7 +11,7 @@ using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Core.Models.Settings;
-using PhoenixReadCopilot.Extensions;
+using PhoenixReadCopilot.Helpers;
 using Windows.Graphics;
 using Windows.System;
 using Windows.Win32;
@@ -149,10 +149,10 @@ internal sealed partial class MainWindow : WindowEx, IPlayerHostWindow, ITipWind
         bool isMaximized = _settings.IsMainWindowMaximized;
         if (isMaximized)
         {
-            (AppWindow.Presenter as OverlappedPresenter).Maximize();
+            (AppWindow.Presenter as OverlappedPresenter)?.Maximize();
         }
 
-        ElementTheme localTheme = _settings.AppTheme.ToElementTheme();
+        ElementTheme localTheme = ThemeHelper.ToElementTheme(_settings.AppTheme);
         _windowService.ChangeTheme(localTheme);
         _isFirstActivated = false;
     }
@@ -315,8 +315,8 @@ internal static class GlobalHook
 
     private static readonly HOOKPROC _procKeyboard = HookKeyboardCallback;
     private static UnhookWindowsHookExSafeHandle _keyboardHookID = new();
-    public static event EventHandler<PlayerKeyboardEventArgs> KeyDown;
-    public static event EventHandler<PlayerKeyboardEventArgs> KeyUp;
+    public static event EventHandler<PlayerKeyboardEventArgs>? KeyDown;
+    public static event EventHandler<PlayerKeyboardEventArgs>? KeyUp;
 
     public static void Start()
     {
@@ -335,7 +335,7 @@ internal static class GlobalHook
         return PInvoke.SetWindowsHookEx(
             hookId,
             proc,
-            PInvoke.GetModuleHandle(curModule.ModuleName),
+            PInvoke.GetModuleHandle(curModule?.ModuleName),
             0
         );
     }
@@ -369,17 +369,11 @@ internal static class GlobalHook
     }
 }
 
-internal sealed class PlayerKeyboardEventArgs
+internal sealed class PlayerKeyboardEventArgs(int keyCode, bool isControlPressed)
 {
-    public PlayerKeyboardEventArgs(int keyCode, bool isControlPressed)
-    {
-        Key = (VirtualKey)keyCode;
-        IsControlPressed = isControlPressed;
-    }
+    internal VirtualKey Key { get; } = (VirtualKey)keyCode;
 
-    internal VirtualKey Key { get; }
-
-    internal bool IsControlPressed { get; }
+    internal bool IsControlPressed { get; } = isControlPressed;
 
     internal bool Handled { get; set; }
 }

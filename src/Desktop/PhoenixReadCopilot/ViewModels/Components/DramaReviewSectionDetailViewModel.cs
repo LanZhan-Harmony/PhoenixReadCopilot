@@ -182,38 +182,22 @@ internal sealed partial class DramaReviewItemViewModel : ViewModelBase
 /// <summary>
 /// 剧评区块视图模型 (整部剧只有一份).
 /// </summary>
-internal sealed partial class DramaReviewSectionDetailViewModel
-    : ViewModelBase,
-        IPlayerSectionDetailViewModel
+internal sealed partial class DramaReviewSectionDetailViewModel(
+    ICommentService commentService,
+    IAuthenticationService authService,
+    INotificationService notificationService,
+    DispatcherQueue dispatcherQueue,
+    ILogger<DramaReviewSectionDetailViewModel> logger
+) : ViewModelBase, IPlayerSectionDetailViewModel
 {
-    private readonly ICommentService _commentService;
-    private readonly IAuthenticationService _authService;
-    private readonly INotificationService _notificationService;
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILogger<DramaReviewSectionDetailViewModel> _logger;
+    private readonly ICommentService _commentService = commentService;
+    private readonly IAuthenticationService _authService = authService;
+    private readonly INotificationService _notificationService = notificationService;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
+    private readonly ILogger<DramaReviewSectionDetailViewModel> _logger = logger;
 
     private string _cursor = string.Empty;
     private bool _hasMore = true;
-
-    public DramaReviewSectionDetailViewModel(
-        ICommentService commentService,
-        IAuthenticationService authService,
-        INotificationService notificationService,
-        DispatcherQueue dispatcherQueue,
-        ILogger<DramaReviewSectionDetailViewModel> logger
-    )
-    {
-        _commentService = commentService;
-        _authService = authService;
-        _notificationService = notificationService;
-        _dispatcherQueue = dispatcherQueue;
-        _logger = logger;
-
-        Reviews = [];
-        Sorts = [CommentSortOrder.Hot, CommentSortOrder.Latest];
-        SortType = CommentSortOrder.Hot;
-        Rating = 5.0; // 默认 5 星满分
-    }
 
     /// <inheritdoc/>
     public string Title => "剧评";
@@ -225,7 +209,7 @@ internal sealed partial class DramaReviewSectionDetailViewModel
     public partial string DramaScore { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial double Rating { get; set; }
+    public partial double Rating { get; set; } = 5.0; // 默认 5 星满分
 
     [ObservableProperty]
     public partial bool IsLoggedIn { get; set; }
@@ -243,10 +227,11 @@ internal sealed partial class DramaReviewSectionDetailViewModel
     public partial long TotalCount { get; set; }
 
     [ObservableProperty]
-    public partial List<CommentSortOrder> Sorts { get; set; }
+    public partial List<CommentSortOrder> Sorts { get; set; } =
+    [CommentSortOrder.Hot, CommentSortOrder.Latest];
 
     [ObservableProperty]
-    public partial CommentSortOrder SortType { get; set; }
+    public partial CommentSortOrder SortType { get; set; } = CommentSortOrder.Hot;
 
     [ObservableProperty]
     public partial CommentDetailViewModel? SelectedItem { get; set; }
@@ -266,7 +251,7 @@ internal sealed partial class DramaReviewSectionDetailViewModel
     /// </summary>
     public event EventHandler? Initialized;
 
-    public ObservableCollection<DramaReviewItemViewModel> Reviews { get; }
+    public ObservableCollection<DramaReviewItemViewModel> Reviews { get; } = [];
 
     public bool CanSendReview => IsLoggedIn && !IsSending;
 

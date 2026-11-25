@@ -8,16 +8,13 @@ namespace PhoenixReadCopilot.Core.Services;
 /// <summary>
 /// 推荐服务实现，提供首页推荐流、新剧推荐与短剧关联推荐.
 /// </summary>
-public sealed class RecommendService : IRecommendService
+public sealed class RecommendService(
+    PhoenixReadApiClient apiClient,
+    ILogger<RecommendService> logger
+) : IRecommendService
 {
-    private readonly PhoenixReadApiClient _apiClient;
-    private readonly ILogger<RecommendService> _logger;
-
-    public RecommendService(PhoenixReadApiClient apiClient, ILogger<RecommendService> logger)
-    {
-        _apiClient = apiClient;
-        _logger = logger;
-    }
+    private readonly PhoenixReadApiClient _apiClient = apiClient;
+    private readonly ILogger<RecommendService> _logger = logger;
 
     /// <inheritdoc/>
     public async Task<RecommendationPage> GetRecommendationsAsync(
@@ -44,10 +41,7 @@ public sealed class RecommendService : IRecommendService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(
-                ex,
-                $"获取短剧推荐流失败: genre={genre}, offset={offset}"
-            );
+            _logger.ZLogError(ex, $"获取短剧推荐流失败: genre={genre}, offset={offset}");
             throw;
         }
     }

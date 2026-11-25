@@ -9,13 +9,16 @@ namespace PhoenixReadCopilot.Extensions;
 /// </summary>
 internal sealed partial class SearchSuggestTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate BasicTemplate { get; set; }
+    public DataTemplate? BasicTemplate { get; set; }
 
-    public DataTemplate RegionTemplate { get; set; }
+    public DataTemplate? RegionTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
-        SearchSuggestItemViewModel? data = item as SearchSuggestItemViewModel;
-        return string.IsNullOrEmpty(data.RegionId) ? BasicTemplate : RegionTemplate;
+        DataTemplate? template =
+            item is SearchSuggestItemViewModel data && !string.IsNullOrEmpty(data.RegionId)
+                ? RegionTemplate
+                : BasicTemplate;
+        return template ?? base.SelectTemplateCore(item, container);
     }
 }

@@ -10,25 +10,17 @@ namespace PhoenixReadCopilot.Services;
 /// 应用程序生命周期启动与激活路由服务实现.
 /// 负责管理启动前的核心服务预热、分发特定激活处理器（通知激活、协议激活、文件激活等），以及常规应用界面的启动引导.
 /// </summary>
-internal sealed class ActivationService : IActivationService
+internal sealed class ActivationService(
+    IEnumerable<IActivationHandler> activationHandlers,
+    ISettingsService settingsService,
+    AppUpdateService appUpdateService,
+    ILogger<ActivationService> logger
+) : IActivationService
 {
-    private readonly IEnumerable<IActivationHandler> _activationHandlers;
-    private readonly ISettingsService _settingsService;
-    private readonly AppUpdateService _appUpdateService;
-    private readonly ILogger<ActivationService> _logger;
-
-    public ActivationService(
-        IEnumerable<IActivationHandler> activationHandlers,
-        ISettingsService settingsService,
-        AppUpdateService appUpdateService,
-        ILogger<ActivationService> logger
-    )
-    {
-        _activationHandlers = activationHandlers;
-        _settingsService = settingsService;
-        _appUpdateService = appUpdateService;
-        _logger = logger;
-    }
+    private readonly IEnumerable<IActivationHandler> _activationHandlers = activationHandlers;
+    private readonly ISettingsService _settingsService = settingsService;
+    private readonly AppUpdateService _appUpdateService = appUpdateService;
+    private readonly ILogger<ActivationService> _logger = logger;
 
     /// <inheritdoc/>
     public async Task ActivateAsync(object activationArgs)

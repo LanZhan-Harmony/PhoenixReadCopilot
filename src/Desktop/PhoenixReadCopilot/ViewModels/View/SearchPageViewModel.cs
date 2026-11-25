@@ -15,13 +15,20 @@ namespace PhoenixReadCopilot.ViewModels.View;
 /// <summary>
 /// 搜索页面视图模型.
 /// </summary>
-internal sealed partial class SearchPageViewModel : LayoutPageViewModelBase
+internal sealed partial class SearchPageViewModel(
+    ISearchService searchService,
+    ILogger<SearchPageViewModel> logger,
+    INavigationService navigationService,
+    ISettingsService settingsService,
+    DispatcherQueue dispatcherQueue,
+    ILoggerFactory loggerFactory
+) : LayoutPageViewModelBase(settingsService)
 {
-    private readonly ISearchService _searchService;
-    private readonly ILogger<SearchPageViewModel> _logger;
-    private readonly INavigationService _navigationService;
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly ILoggerFactory _loggerFactory;
+    private readonly ISearchService _searchService = searchService;
+    private readonly ILogger<SearchPageViewModel> _logger = logger;
+    private readonly INavigationService _navigationService = navigationService;
+    private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
+    private readonly ILoggerFactory _loggerFactory = loggerFactory;
 
     [ObservableProperty]
     public partial string Keyword { get; set; } = string.Empty;
@@ -42,23 +49,6 @@ internal sealed partial class SearchPageViewModel : LayoutPageViewModelBase
     /// 分区初始化完成.
     /// </summary>
     public event EventHandler? SectionInitialized;
-
-    public SearchPageViewModel(
-        ISearchService searchService,
-        ILogger<SearchPageViewModel> logger,
-        INavigationService navigationService,
-        ISettingsService settingsService,
-        DispatcherQueue dispatcherQueue,
-        ILoggerFactory loggerFactory
-    )
-        : base(settingsService)
-    {
-        _searchService = searchService;
-        _logger = logger;
-        _navigationService = navigationService;
-        _dispatcherQueue = dispatcherQueue;
-        _loggerFactory = loggerFactory;
-    }
 
     /// <inheritdoc/>
     protected override string GetPageKey() => nameof(SearchPage);

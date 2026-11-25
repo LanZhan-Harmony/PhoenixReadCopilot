@@ -55,9 +55,9 @@ internal sealed partial class SearchSideBody : UserControl
 
     private void CheckSectionSelection()
     {
-        if (ViewModel?.SelectedSection is not null)
+        if (ViewModel is { SelectedSection: { } selected, Sections: { } sections })
         {
-            SectionView.Select(ViewModel.Sections.ToList().IndexOf(ViewModel.SelectedSection));
+            SectionView.Select(sections.ToList().IndexOf(selected));
         }
     }
 }
