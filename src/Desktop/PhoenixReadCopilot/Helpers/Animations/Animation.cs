@@ -38,7 +38,7 @@ public static class Animation
             bool overwriteOtherTransforms = true
         )
         {
-            var ct = element.RenderTransform as CompositeTransform;
+            CompositeTransform? ct = element.RenderTransform as CompositeTransform;
             if (ct is not null)
             {
                 return ct;
@@ -159,7 +159,7 @@ public static class Animation
         /// <returns></returns>
         public Task BeginAsync()
         {
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new();
             if (storyboard is null)
             {
                 tcs.SetException(new ArgumentNullException(nameof(storyboard)));
@@ -514,7 +514,7 @@ public static class Animation
     )
         where T : Timeline, new()
     {
-        var timeline = new T();
+        T timeline = new();
         parent.AddTimeline(timeline, target, targetProperty);
         return timeline;
     }
@@ -524,7 +524,7 @@ public static class Animation
         public T CreateTimeline<T>(DependencyObject target, string targetProperty)
             where T : Timeline, new()
         {
-            var timeline = new T();
+            T timeline = new();
             parent.AddTimeline(timeline, target, targetProperty);
             return timeline;
         }
@@ -574,7 +574,7 @@ public static class Animation
 
     public static KeySpline CreateKeySpline(double x1, double y1, double x2, double y2)
     {
-        var keyspline = new KeySpline();
+        KeySpline keyspline = new();
         keyspline.SetPoints(x1, y1, x2, y2);
         return keyspline;
     }

@@ -19,7 +19,7 @@ internal sealed class AppUpdateService(
 {
     private readonly ILogger<AppUpdateService> _logger = logger;
     private readonly DispatcherQueue _dispatcherQueue = dispatcherQueue;
-    private readonly GitHubUpdater _updater = new GitHubUpdater();
+    private readonly GitHubUpdater _updater = new();
     private AppRelease? _pendingRelease;
 
     /// <summary>

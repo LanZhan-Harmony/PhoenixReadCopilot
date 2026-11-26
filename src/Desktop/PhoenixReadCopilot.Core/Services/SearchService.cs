@@ -188,14 +188,14 @@ public sealed class SearchService : ISearchService
             string userKey = GetCurrentUserKey();
             if (_historyCache is not null && _cachedUserKey == userKey)
             {
-                return _historyCache.ToList();
+                return [.. _historyCache];
             }
 
             string filePath = GetStorageFilePath();
             List<string> list = await ReadFileLockedAsync(filePath, cancellationToken);
             _historyCache = list;
             _cachedUserKey = userKey;
-            return list.ToList();
+            return [.. list];
         }
         finally
         {
@@ -350,7 +350,7 @@ public sealed class SearchService : ISearchService
         }
     }
 
-    private async Task WriteFileLockedAsync(
+    private static async Task WriteFileLockedAsync(
         string filePath,
         List<string> items,
         CancellationToken cancellationToken

@@ -671,8 +671,7 @@ internal partial class DanmakuDirectXRender
                     cacheKey,
                     newBitmap,
                     renderItem.Width,
-                    renderItem.Height,
-                    renderItem.TextLayout
+                    renderItem.Height
                 );
 
                 // 绘制

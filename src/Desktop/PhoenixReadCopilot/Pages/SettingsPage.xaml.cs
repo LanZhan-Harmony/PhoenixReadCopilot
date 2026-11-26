@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.ViewModels.View;
 
@@ -13,16 +12,11 @@ internal sealed partial class SettingsPage : Page
     /// <summary>
     /// 视图模型.
     /// </summary>
-    public SettingsPageViewModel ViewModel { get; } = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
+    public SettingsPageViewModel ViewModel { get; } =
+        Ioc.Default.GetRequiredService<SettingsPageViewModel>();
 
     public SettingsPage()
     {
         InitializeComponent();
-    }
-
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        ViewModel.Initialize();
-        GenericContainer.Visibility = Visibility.Visible;
     }
 }

@@ -17,12 +17,12 @@ public interface IHistorySectionDetailViewModel : INotifyPropertyChanged
     /// <summary>
     /// 是否为空.
     /// </summary>
-    public bool IsEmpty { get; }
+    bool IsEmpty { get; }
 
     /// <summary>
     /// 是否正在加载.
     /// </summary>
-    public bool IsLoading { get; }
+    bool IsLoading { get; }
 
     /// <summary>
     /// 尝试首次加载.

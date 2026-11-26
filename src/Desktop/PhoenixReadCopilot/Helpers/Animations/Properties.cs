@@ -163,12 +163,8 @@ public sealed class Properties : DependencyObject
                     }
                     else
                     {
-                        var sb = new Storyboard();
-                        var ease = new BackEase
-                        {
-                            Amplitude = 0.5,
-                            EasingMode = EasingMode.EaseOut,
-                        };
+                        Storyboard sb = new();
+                        BackEase ease = new() { Amplitude = 0.5, EasingMode = EasingMode.EaseOut };
                         // Create translate animation
                         DoubleAnimationUsingKeyFrames t =
                             sb.CreateTimeline<DoubleAnimationUsingKeyFrames>(
@@ -200,12 +196,8 @@ public sealed class Properties : DependencyObject
                     else
                     {
                         // Create translate animation
-                        var sb = new Storyboard();
-                        var ease = new BackEase
-                        {
-                            Amplitude = 0.5,
-                            EasingMode = EasingMode.EaseOut,
-                        };
+                        Storyboard sb = new();
+                        BackEase ease = new() { Amplitude = 0.5, EasingMode = EasingMode.EaseOut };
                         sb.CreateTimeline<DoubleAnimationUsingKeyFrames>(
                                 target,
                                 TargetProperty.CompositeTransform.TranslateY
@@ -308,8 +300,8 @@ public sealed class Properties : DependencyObject
                 }
                 else
                 {
-                    var sb = new Storyboard();
-                    var ease = new ElasticEase
+                    Storyboard sb = new();
+                    ElasticEase ease = new()
                     {
                         Oscillations = 2,
                         Springiness = 5,

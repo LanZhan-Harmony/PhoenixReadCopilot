@@ -155,7 +155,9 @@ public sealed class FollowService : IFollowService
                         string json = File.ReadAllText(filePath);
                         if (!string.IsNullOrWhiteSpace(json))
                         {
-                            List<UserRelationItem>? items = JsonAotSerializer.Deserialize<List<UserRelationItem>>(json);
+                            List<UserRelationItem>? items = JsonAotSerializer.Deserialize<
+                                List<UserRelationItem>
+                            >(json);
                             if (items is not null)
                             {
                                 _followingsCache = items;
@@ -193,7 +195,9 @@ public sealed class FollowService : IFollowService
     }
 
     /// <inheritdoc/>
-    public async Task<int> GetLocalFollowingsCountAsync(CancellationToken cancellationToken = default)
+    public async Task<int> GetLocalFollowingsCountAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         await _lock.WaitAsync(cancellationToken);
         try
@@ -369,7 +373,7 @@ public sealed class FollowService : IFollowService
                             }
                         }
 
-                        _followingsCache = remotePage.Items.ToList();
+                        _followingsCache = [.. remotePage.Items];
                         _cachedUserKey = GetCurrentUserKey();
 
                         string filePath = GetStorageFilePath("followings.json");
@@ -402,7 +406,7 @@ public sealed class FollowService : IFollowService
                 offset = parsedOffset;
             }
 
-            List<UserRelationItem> pageItems = items.Skip(offset).Take(count).ToList();
+            List<UserRelationItem> pageItems = [.. items.Skip(offset).Take(count)];
             int nextOffset = offset + pageItems.Count;
             bool hasMore = nextOffset < items.Count;
 
@@ -464,7 +468,7 @@ public sealed class FollowService : IFollowService
             if (string.IsNullOrEmpty(cursor) || cursor == "0")
             {
                 string filePath = GetStorageFilePath("followers.json");
-                await WriteFileLockedAsync(filePath, remotePage.Items.ToList(), cancellationToken);
+                await WriteFileLockedAsync(filePath, [.. remotePage.Items], cancellationToken);
             }
 
             return remotePage;
@@ -516,7 +520,7 @@ public sealed class FollowService : IFollowService
         }
     }
 
-    private async Task WriteFileLockedAsync(
+    private static async Task WriteFileLockedAsync(
         string filePath,
         List<UserRelationItem> items,
         CancellationToken cancellationToken

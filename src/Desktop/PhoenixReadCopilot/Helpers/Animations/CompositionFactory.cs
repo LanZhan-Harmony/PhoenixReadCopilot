@@ -263,7 +263,7 @@ public sealed class CompositionFactory : DependencyObject
 
         return c.GetCached(key, () =>
         {
-            var delay = TimeSpan.FromMilliseconds(delayMs);
+            TimeSpan delay = TimeSpan.FromMilliseconds(delayMs);
             CubicBezierEasingFunction e = c.GetCachedFluentEntranceEase();
             Vector3KeyFrameAnimation t = c.CreateVector3KeyFrameAnimation()
                 .SetTarget(TRANSLATION)
@@ -548,7 +548,7 @@ public sealed class CompositionFactory : DependencyObject
         List<UIElement> contentElements
     )
     {
-        var duration1 = TimeSpan.FromSeconds(0.7);
+        TimeSpan duration1 = TimeSpan.FromSeconds(0.7);
 
         Compositor c = barElements[0].GetElementVisual()!.Compositor;
         CubicBezierEasingFunction backOut = c.CreateEase(0.2f, 0.885f, 0.25f, 1.125f);

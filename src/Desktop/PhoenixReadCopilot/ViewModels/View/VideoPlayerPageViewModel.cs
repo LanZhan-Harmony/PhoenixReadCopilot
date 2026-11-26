@@ -873,7 +873,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             return;
         }
 
-        object? prevPart = FindPreviousVideo();
+        Episode? prevPart = FindPreviousVideo();
         if (prevPart is null)
         {
             _notificationService.ShowInAppNotification(
@@ -884,11 +884,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         _initialProgress = 0;
-
-        if (prevPart is Episode episode)
-        {
-            ChangePart(episode);
-        }
+        ChangePart(prevPart);
     }
 
     [RelayCommand]
@@ -1386,7 +1382,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         return null;
     }
 
-    private object? FindPreviousVideo()
+    private Episode? FindPreviousVideo()
     {
         bool isListLoop = CurrentLoop == VideoLoopType.List;
 

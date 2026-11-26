@@ -9,7 +9,6 @@ using PhoenixReadCopilot.Controls.Components;
 using PhoenixReadCopilot.Core.Contracts.Media;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
-using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Pages.Overlay;
 using Windows.Graphics;

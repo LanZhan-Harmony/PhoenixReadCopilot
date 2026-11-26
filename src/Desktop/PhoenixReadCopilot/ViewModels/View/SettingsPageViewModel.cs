@@ -22,7 +22,6 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     private readonly IThemeSelectorService _themeSelectorService;
     private readonly IMaterialSelectorService _materialSelectorService;
     public AppSettings Settings;
-    private bool _isInitialized;
 
     /// <summary>
     /// 当前应用主题.
@@ -49,7 +48,7 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     /// 可选窗口材质列表.
     /// </summary>
     public List<BackdropMaterialType> BackdropMaterialCollection { get; } =
-        [.. Enum.GetValues<BackdropMaterialType>()];
+    [.. Enum.GetValues<BackdropMaterialType>()];
 
     /// <summary>
     /// 当前选中的窗口材质.
@@ -128,11 +127,7 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     /// </summary>
     public bool SupportsBackdropTintColor => _materialSelectorService.SupportsTintColor;
 
-    [ObservableProperty]
-    public partial string PackageVersion { get; set; }
-
-    [ObservableProperty]
-    public partial string Copyright { get; set; }
+    public string PackageVersion { get; set; } = RuntimeHelper.AppVersion;
 
     [ObservableProperty]
     public partial List<PlayerDisplayMode> PlayerDisplayModeCollection { get; set; }
@@ -158,6 +153,12 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     )
     {
         Settings = settingsService.Settings;
+        PlayerDisplayModeCollection = [.. Enum.GetValues<PlayerDisplayMode>()];
+        PreferCodecCollection = [.. Enum.GetValues<PreferCodecType>()];
+        PreferQualityCollection = [.. Enum.GetValues<PreferQualityType>()];
+        PlayerTypeCollection = [.. Enum.GetValues<PlayerType>()];
+        MTCBehaviorCollection = [.. Enum.GetValues<MTCBehavior>()];
+
         _windowService = windowService;
         _navigationService = navigationService;
         _themeSelectorService = themeSelectorService;
@@ -200,27 +201,6 @@ internal sealed partial class SettingsPageViewModel : ViewModelBase
     private void ResetMaterial()
     {
         _materialSelectorService.ResetMaterial();
-    }
-
-    [RelayCommand]
-    public void Initialize()
-    {
-        if (_isInitialized)
-        {
-            return;
-        }
-
-        PlayerDisplayModeCollection = [.. Enum.GetValues<PlayerDisplayMode>()];
-        PreferCodecCollection = [.. Enum.GetValues<PreferCodecType>()];
-        PreferQualityCollection = [.. Enum.GetValues<PreferQualityType>()];
-        PlayerTypeCollection = [.. Enum.GetValues<PlayerType>()];
-        MTCBehaviorCollection = [.. Enum.GetValues<MTCBehavior>()];
-
-        string copyrightTemplate = Resources.Copyright;
-        Copyright = string.Format(copyrightTemplate, 2026);
-        PackageVersion = RuntimeHelper.AppVersion;
-
-        _isInitialized = true;
     }
 
     [RelayCommand]

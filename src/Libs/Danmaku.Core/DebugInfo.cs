@@ -3,7 +3,7 @@ namespace Danmaku.Core;
 /// <summary>
 /// 调试信息数据结构
 /// </summary>
-public struct DebugInfo
+public readonly struct DebugInfo
 {
     /// <summary>
     /// 缓冲区宽度

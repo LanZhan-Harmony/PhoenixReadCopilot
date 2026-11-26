@@ -333,7 +333,7 @@ public sealed class PinService : IPinService
         {
             await EnsureLoadedLockedAsync();
 
-            PinType[] typesToSearch = type.HasValue ? [type.Value] : _caches.Keys.ToArray();
+            PinType[] typesToSearch = type.HasValue ? [type.Value] : [.. _caches.Keys];
             foreach (PinType t in typesToSearch)
             {
                 if (_caches.TryGetValue(t, out List<PinItem>? list))

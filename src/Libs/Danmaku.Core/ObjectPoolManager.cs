@@ -210,8 +210,7 @@ internal sealed class ObjectPoolManager : IDisposable
         TextureCacheKey key,
         ID2D1Bitmap1 bitmap,
         float width,
-        float height,
-        IDWriteTextLayout? textLayout = null
+        float height
     )
     {
         // 🔧 简化：弹幕已去重，不需要引用计数

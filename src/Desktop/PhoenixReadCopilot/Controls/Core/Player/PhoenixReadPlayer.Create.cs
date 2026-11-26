@@ -216,9 +216,7 @@ internal sealed partial class PhoenixReadPlayer
                 ? Visibility.Collapsed
                 : Visibility.Visible;
 
-            _failedHolder?.Visibility = vm.IsFailed
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            _failedHolder?.Visibility = vm.IsFailed ? Visibility.Visible : Visibility.Collapsed;
         }
         else if (e.PropertyName == nameof(vm.IsPlayerDataLoading))
         {
@@ -258,7 +256,7 @@ internal sealed partial class PhoenixReadPlayer
         grid.Children.Add(fullWindowBtn);
         grid.Children.Add(backBtn);
 
-        Button CreateHiddenButton(
+        static Button CreateHiddenButton(
             VirtualKey key,
             ICommand? command,
             VirtualKeyModifiers modifiers = VirtualKeyModifiers.None

@@ -185,7 +185,7 @@ internal abstract partial class PlayerViewModelBase(
     /// 设置播放数据.
     /// </summary>
     /// <returns><see cref="Task"/>.</returns>
-    public virtual async Task SetPlayDataAsync(
+    public async virtual Task SetPlayDataAsync(
         string? videoUrl,
         string? audioUrl,
         bool isAutoPlay,

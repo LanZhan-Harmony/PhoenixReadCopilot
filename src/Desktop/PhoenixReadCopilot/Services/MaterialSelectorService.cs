@@ -11,6 +11,7 @@ using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Helpers;
 using Windows.UI;
 using WinRT;
+using WinUI3Package;
 using WinUIEx;
 using ZLogger;
 using XamlSystemBackdrop = Microsoft.UI.Xaml.Media.SystemBackdrop;
@@ -59,13 +60,14 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
 
     public Color TintColor => ColorHelper.FromArgbUInt(Settings.BackdropTintColor);
 
-    public bool SupportsFallback => IsControllerMaterial(Material);
+    public bool SupportsFallback => IsControllerMaterial(Material) || ShouldUseTenMica(Material);
 
     public bool SupportsLuminosityOpacity =>
-        IsControllerMaterial(Material) || Material == BackdropMaterialType.Transparent;
+        (IsControllerMaterial(Material) && !ShouldUseTenMica(Material))
+        || Material == BackdropMaterialType.Transparent;
 
     public bool SupportsTintColor =>
-        IsControllerMaterial(Material)
+        (IsControllerMaterial(Material) && !ShouldUseTenMica(Material))
         || Material == BackdropMaterialType.Pure
         || Material == BackdropMaterialType.Transparent;
 
@@ -84,9 +86,8 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
         _themeSelectorService = themeSelectorService;
         _dispatcherQueue = dispatcherQueue;
         _logger = logger;
-        _appearanceDebouncer = new Debouncer(
-            AppearanceDebounceDelay,
-            ex => _logger.ZLogError(ex, $"[MaterialSelectorService] Appearance debounce failed.")
+        _appearanceDebouncer = new Debouncer(AppearanceDebounceDelay, ex =>
+            _logger.ZLogError(ex, $"[MaterialSelectorService] Appearance debounce failed.")
         );
     }
 
@@ -270,7 +271,9 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
         try
         {
             BackdropMaterialType effectiveMaterial = ResolveSupportedMaterial(Material);
-            ISystemBackdropControllerWithTargets? controller = CreateController(effectiveMaterial);
+            ISystemBackdropControllerWithTargets? controller = ShouldUseTenMica(effectiveMaterial)
+                ? null
+                : CreateController(effectiveMaterial);
             if (controller is not null)
             {
                 session.Controller = controller;
@@ -281,13 +284,19 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
                 return;
             }
 
-            XamlSystemBackdrop customBackdrop = CreateCustomBackdrop(effectiveMaterial);
+            XamlSystemBackdrop customBackdrop = CreateCustomBackdrop(
+                effectiveMaterial,
+                session.Window
+            );
             session.CustomBackdrop = customBackdrop;
             session.Window.SystemBackdrop = customBackdrop;
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"[MaterialSelectorService] Failed to apply material {Material}.");
+            _logger.ZLogError(
+                ex,
+                $"[MaterialSelectorService] Failed to apply material {Material}."
+            );
             ApplyPureFallback(session);
         }
     }
@@ -303,7 +312,10 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex, $"[MaterialSelectorService] Failed to apply pure fallback backdrop.");
+            _logger.ZLogError(
+                ex,
+                $"[MaterialSelectorService] Failed to apply pure fallback backdrop."
+            );
         }
     }
 
@@ -318,7 +330,10 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
             }
             catch (Exception ex)
             {
-                _logger.ZLogWarning(ex, $"[MaterialSelectorService] Failed to dispose backdrop controller.");
+                _logger.ZLogWarning(
+                    ex,
+                    $"[MaterialSelectorService] Failed to dispose backdrop controller."
+                );
             }
             finally
             {
@@ -359,6 +374,16 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
         {
             transparentBackdrop.TintColor = GetTransparentTintColor(tintColor, LuminosityOpacity);
         }
+        else if (session.CustomBackdrop is TenMicaBackdrop tenMicaBackdrop)
+        {
+            tenMicaBackdrop.LuminosityOpacity = luminosityOpacity;
+            tenMicaBackdrop.TintColor = tintColor;
+            tenMicaBackdrop.TintOpacity = GetTenMicaTintOpacity(
+                Material,
+                _themeSelectorService.IsDarkTheme
+            );
+            tenMicaBackdrop.FallbackColor = fallbackColor;
+        }
     }
 
     private void UpdateSessionConfiguration(WindowBackdropSession session)
@@ -366,17 +391,40 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
         session.Configuration.Theme = GetSessionSystemBackdropTheme(session.Window);
         session.Configuration.IsInputActive = !IsFallbackEnabled || session.IsActivated;
         session.Controller?.SetSystemBackdropConfiguration(session.Configuration);
+
+        if (session.CustomBackdrop is TenMicaBackdrop tenMicaBackdrop)
+        {
+            tenMicaBackdrop.EnableWhenInactive = !IsFallbackEnabled;
+        }
     }
 
     private BackdropMaterialType ResolveSupportedMaterial(BackdropMaterialType material)
     {
-        if (
-            material is BackdropMaterialType.Mica or BackdropMaterialType.MicaAlt
-            && !MicaController.IsSupported()
-        )
+        if (material == BackdropMaterialType.Mica)
         {
-            _logger.ZLogWarning($"[MaterialSelectorService] Mica is not supported on this system, falling back to Pure.");
-            return BackdropMaterialType.Pure;
+            if (IsWindows10)
+            {
+                return material;
+            }
+
+            if (!MicaController.IsSupported())
+            {
+                _logger.ZLogWarning(
+                    $"[MaterialSelectorService] Mica is not supported on this system, falling back to Pure."
+                );
+                return BackdropMaterialType.Pure;
+            }
+        }
+        else if (material == BackdropMaterialType.MicaAlt)
+        {
+            // Win10 下支持使用原生 MicaController，非 Win10 系统依然校验系统支持性
+            if (!IsWindows10 && !MicaController.IsSupported())
+            {
+                _logger.ZLogWarning(
+                    $"[MaterialSelectorService] MicaAlt is not supported on this system, falling back to Pure."
+                );
+                return BackdropMaterialType.Pure;
+            }
         }
 
         if (
@@ -387,12 +435,22 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
             && !DesktopAcrylicController.IsSupported()
         )
         {
-            _logger.ZLogWarning($"[MaterialSelectorService] DesktopAcrylic is not supported on this system, falling back to Pure.");
+            _logger.ZLogWarning(
+                $"[MaterialSelectorService] DesktopAcrylic is not supported on this system, falling back to Pure."
+            );
             return BackdropMaterialType.Pure;
         }
 
         return material;
     }
+
+    private static bool IsWindows10 => !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000);
+
+    private static bool ShouldUseTenMica(BackdropMaterialType material) =>
+        IsWindows10 && material == BackdropMaterialType.Mica;
+
+    private static float GetTenMicaTintOpacity(BackdropMaterialType material, bool isDarkTheme) =>
+        isDarkTheme ? 0.8f : 0.5f;
 
     private static ISystemBackdropControllerWithTargets? CreateController(
         BackdropMaterialType material
@@ -416,8 +474,27 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
             _ => null,
         };
 
-    private XamlSystemBackdrop CreateCustomBackdrop(BackdropMaterialType material) =>
-        material switch
+    private XamlSystemBackdrop CreateCustomBackdrop(BackdropMaterialType material, Window window)
+    {
+        if (ShouldUseTenMica(material))
+        {
+            TenMicaBackdrop tenMica = new()
+            {
+                EnableWhenInactive = !IsFallbackEnabled,
+                LuminosityOpacity = LuminosityOpacity / 100f,
+                TintColor = TintColor,
+                TintOpacity = GetTenMicaTintOpacity(material, _themeSelectorService.IsDarkTheme),
+                FallbackColor = GetOpaqueTintColor(),
+            };
+            if (window.Content is FrameworkElement root)
+            {
+                tenMica.BindThemeTo = root;
+            }
+
+            return tenMica;
+        }
+
+        return material switch
         {
             BackdropMaterialType.Blur => new BlurredBackdrop(),
             BackdropMaterialType.Transparent => new TransparentTintBackdrop
@@ -427,6 +504,7 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
             BackdropMaterialType.Animated => new ColorAnimatedBackdrop(),
             _ => new SolidColorBackdrop(GetOpaqueTintColor()),
         };
+    }
 
     private Color GetOpaqueTintColor()
     {
@@ -518,7 +596,10 @@ internal sealed class MaterialSelectorService : IMaterialSelectorService
 
     private void OnWindowActivated(object sender, WindowActivatedEventArgs args)
     {
-        if (sender is not Window window || !_sessions.TryGetValue(window, out WindowBackdropSession? session))
+        if (
+            sender is not Window window
+            || !_sessions.TryGetValue(window, out WindowBackdropSession? session)
+        )
         {
             return;
         }

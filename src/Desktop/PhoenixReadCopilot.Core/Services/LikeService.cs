@@ -606,18 +606,20 @@ public sealed class LikeService : ILikeService
             int safeOffset = Math.Max(0, offset);
 
             List<DramaLikeItem> cache = _dramaCache ??= [];
-            List<Drama> slice = cache
-                .Where(d =>
-                    d.Drama is not null
-                    && (
-                        d.LikedVideoIds.Count > 0
-                        || (_authService.IsAuthenticated && !string.IsNullOrEmpty(d.DramaId))
+            List<Drama> slice =
+            [
+                .. cache
+                    .Where(d =>
+                        d.Drama is not null
+                        && (
+                            d.LikedVideoIds.Count > 0
+                            || (_authService.IsAuthenticated && !string.IsNullOrEmpty(d.DramaId))
+                        )
                     )
-                )
-                .Select(d => d.Drama!)
-                .Skip(safeOffset)
-                .Take(safeCount)
-                .ToList();
+                    .Select(d => d.Drama!)
+                    .Skip(safeOffset)
+                    .Take(safeCount),
+            ];
 
             return new DramaPage
             {

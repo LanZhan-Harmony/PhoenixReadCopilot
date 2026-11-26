@@ -13,12 +13,12 @@ public interface ISearchSectionDetailViewModel : INotifyPropertyChanged
     /// <summary>
     /// 分区类型.
     /// </summary>
-    public SearchSectionType SectionType { get; }
+    SearchSectionType SectionType { get; }
 
     /// <summary>
     /// 是否为空.
     /// </summary>
-    public bool IsEmpty { get; }
+    bool IsEmpty { get; }
 
     /// <summary>
     /// 尝试首次加载.

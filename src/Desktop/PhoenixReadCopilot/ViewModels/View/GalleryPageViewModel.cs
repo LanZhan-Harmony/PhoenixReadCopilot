@@ -36,14 +36,14 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
 
     public GalleryPageViewModel(
         AppImage image,
-        List<AppImage>? images,
+        List<AppImage> images,
         IWindowService windowService,
         INotificationService notificationService
     )
     {
         SelectedImage = image;
-        Images = images ?? [image];
-        IsGroup = Images?.Count > 1;
+        Images = images;
+        IsGroup = Images.Count > 1;
         IsMenuHide = false;
         _windowService = windowService;
         _notificationService = notificationService;
@@ -174,7 +174,10 @@ internal sealed partial class GalleryPageViewModel : ViewModelBase
             : await profileSettings.TrySetLockScreenImageAsync(file);
         if (result)
         {
-            _notificationService.ShowInAppNotification(Resources.SetSuccess, NotificationType.Success);
+            _notificationService.ShowInAppNotification(
+                Resources.SetSuccess,
+                NotificationType.Success
+            );
         }
         else
         {

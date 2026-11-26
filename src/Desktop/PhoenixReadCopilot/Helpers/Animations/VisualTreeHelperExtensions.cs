@@ -110,7 +110,7 @@ public static class VisualTreeHelperExtensions
     {
         public IEnumerable<T> GetFirstLevelDescendantsOfType(Predicate<T>? predicate = null)
         {
-            var queue = new Queue<FrameworkElement>();
+            Queue<FrameworkElement> queue = new();
             var count = VisualTreeHelper.GetChildrenCount(start);
 
             for (var i = 0; i < count; i++)

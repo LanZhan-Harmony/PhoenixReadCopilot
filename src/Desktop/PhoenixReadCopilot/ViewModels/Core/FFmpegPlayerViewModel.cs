@@ -614,7 +614,7 @@ internal sealed partial class FFmpegPlayerViewModel(
     }
 
     /// <inheritdoc/>
-    protected override async Task OnTakeScreenshotAsync(string path)
+    protected async override Task OnTakeScreenshotAsync(string path)
     {
         if (Player?.PlaybackSession is null)
         {
@@ -674,7 +674,7 @@ internal sealed partial class FFmpegPlayerViewModel(
     }
 
     /// <inheritdoc/>
-    protected override async Task OnLoadPlayDataAsync()
+    protected async override Task OnLoadPlayDataAsync()
     {
         // 1. 无缝秒切：若命中预载源且已有 Player，直接替换 Player.Source，不销毁 Player、不解绑 Element，0 延迟无缝瞬播
         if (
