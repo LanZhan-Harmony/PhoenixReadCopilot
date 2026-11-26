@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Pages.Overlay;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -68,7 +69,12 @@ internal sealed partial class CircleFeedItemViewModel(CircleItem item) : ViewMod
         {
             if (!string.IsNullOrEmpty(DramaId))
             {
-                ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), DramaId);
+                PlayableMedia playable = new(
+                    DramaId,
+                    !string.IsNullOrEmpty(DramaTitle) ? DramaTitle : Title,
+                    CoverUrl
+                );
+                ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), playable);
             }
         }
         else

@@ -104,11 +104,12 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
                 return [];
             }
 
-            // 3. 校验规格：只有完整多清晰度规格（通常 5 种画质或老剧 4 种）才写入磁盘持久化
+            // 3. 校验规格：内存始终缓存有效媒体以实现同会话 0ms 复用；仅完整多清晰度规格写入磁盘持久化
+            dramaCache.Episodes[videoId] = [.. freshMedias];
+            dramaCache.LastUpdatedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
             if (ShouldCacheMedias(freshMedias))
             {
-                dramaCache.Episodes[videoId] = [.. freshMedias];
-                dramaCache.LastUpdatedAtUnixSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 await SaveDramaCacheToFileAsync(dramaCache);
                 _logger.ZLogInformation(
                     $"已将完整分集媒体缓存写入磁盘: DramaId={dramaId}, VideoId={videoId}, 规格数={freshMedias.Count}"
@@ -117,7 +118,7 @@ public sealed class PlaybackMediaService : IPlaybackMediaService
             else
             {
                 _logger.ZLogWarning(
-                    $"获取到的媒体列表仅有 {freshMedias.Count} 条地址，不符合完整多画质缓存条件，仅供本次播放使用，不写入持久化: DramaId={dramaId}, VideoId={videoId}"
+                    $"获取到的媒体列表仅有 {freshMedias.Count} 条地址，不符合完整多画质缓存条件，仅写入内存缓存，不写入磁盘持久化: DramaId={dramaId}, VideoId={videoId}"
                 );
             }
 

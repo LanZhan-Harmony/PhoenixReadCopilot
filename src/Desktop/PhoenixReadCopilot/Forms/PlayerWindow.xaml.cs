@@ -61,33 +61,6 @@ internal sealed partial class PlayerWindow : WindowEx, IPlayerHostWindow, ITipWi
         MainFrame.Navigate(typeof(VideoPlayerPage), media);
     }
 
-    /// <summary>
-    /// 打开视频.
-    /// </summary>
-    public void OpenVideo(VideoSnapshot snapshot)
-    {
-        Activate();
-        MainFrame.Navigate(typeof(VideoPlayerPage), snapshot);
-    }
-
-    /// <summary>
-    /// 打开短剧内容.
-    /// </summary>
-    public void OpenDrama(string dramaId)
-    {
-        Activate();
-        MainFrame.Navigate(typeof(VideoPlayerPage), dramaId);
-    }
-
-    /// <summary>
-    /// 打开视频.
-    /// </summary>
-    public void OpenVideo((List<VideoInformation> videos, VideoSnapshot snapshot) data)
-    {
-        Activate();
-        MainFrame.Navigate(typeof(VideoPlayerPage), data);
-    }
-
     /// <inheritdoc/>
     public void EnterPlayerHostMode(PlayerDisplayMode mode)
     {

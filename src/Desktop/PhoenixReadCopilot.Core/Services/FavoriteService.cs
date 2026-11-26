@@ -40,6 +40,24 @@ public sealed class FavoriteService : IFavoriteService
         EnsureDirectory();
 
         _authService.StateChanged += OnAuthStateChanged;
+
+        // 启动后台预热加载追剧收藏数据，避免首屏或卡片构建时同步读盘
+        _ = Task.Run(async () =>
+        {
+            await _lock.WaitAsync();
+            try
+            {
+                await EnsureLoadedLockedAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.ZLogWarning(ex, $"后台预热加载追剧收藏数据失败");
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        });
     }
 
     private void EnsureDirectory()
@@ -113,6 +131,7 @@ public sealed class FavoriteService : IFavoriteService
         string filePath = GetStorageFilePath(FavoriteType.Drama);
         if (!File.Exists(filePath))
         {
+            _dramaCache = [];
             return false;
         }
 
@@ -120,14 +139,13 @@ public sealed class FavoriteService : IFavoriteService
         {
             string json = File.ReadAllText(filePath);
             List<Drama>? items = JsonAotSerializer.Deserialize<List<Drama>>(json);
-            if (items is not null)
+            _dramaCache = items ?? [];
+            _favoritedDramaIds.Clear();
+            foreach (Drama item in _dramaCache)
             {
-                foreach (Drama item in items)
+                if (!string.IsNullOrEmpty(item.Id))
                 {
-                    if (!string.IsNullOrEmpty(item.Id))
-                    {
-                        _favoritedDramaIds.Add(item.Id);
-                    }
+                    _favoritedDramaIds.Add(item.Id);
                 }
             }
             return _favoritedDramaIds.Contains(dramaId);

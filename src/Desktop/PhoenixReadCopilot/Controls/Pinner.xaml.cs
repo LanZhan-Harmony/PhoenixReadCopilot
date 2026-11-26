@@ -51,10 +51,8 @@ internal sealed partial class Pinner : UserControl
         }
         else if (item.Type == PinType.Drama)
         {
-            VideoSnapshot snapshot = new(
-                new VideoInformation(new MediaIdentifier(item.Id, item.Title, null), null)
-            );
-            navVM.NavigateToOver(typeof(VideoPlayerPage), snapshot);
+            PlayableMedia playable = new(item.Id, item.Title, item.Cover);
+            navVM.NavigateToOver(typeof(VideoPlayerPage), playable);
         }
 
         ItemsFlyout.Hide();

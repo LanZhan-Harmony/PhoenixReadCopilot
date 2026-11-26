@@ -32,8 +32,12 @@ internal partial class AnimatedImage : UserControl
 
     private void AnimatedImage_Unloaded(object sender, RoutedEventArgs e)
     {
-        selectAnimation?.Completed -= SelectAnimation_Completed;
-        selectAnimation = null;
+        if (selectAnimation is not null)
+        {
+            selectAnimation.Completed -= SelectAnimation_Completed;
+            selectAnimation.Stop(TopImage);
+            selectAnimation = null;
+        }
     }
 
     protected virtual void IsImageChanged(Uri oldValue, Uri newValue)
@@ -50,10 +54,19 @@ internal partial class AnimatedImage : UserControl
             return;
         }
 
-        BottomImage.Source = new BitmapImage(ImageUrl);
+        // 背景图会经过大半径高斯模糊，按小尺寸解码即可大幅降低 GPU 上传与模糊开销
+        BottomImage.Source = new BitmapImage(ImageUrl)
+        {
+            DecodePixelType = DecodePixelType.Logical,
+            DecodePixelWidth = 240,
+        };
         BottomImage.Opacity = 1;
 
-        selectAnimation?.Completed -= SelectAnimation_Completed;
+        if (selectAnimation is not null)
+        {
+            selectAnimation.Completed -= SelectAnimation_Completed;
+            selectAnimation.Stop(TopImage);
+        }
 
         selectAnimation =
         [
@@ -72,7 +85,7 @@ internal partial class AnimatedImage : UserControl
     {
         try
         {
-            TopImage.Source = new BitmapImage(ImageUrl);
+            TopImage.Source = BottomImage.Source;
             TopImage.Opacity = 1;
         }
         catch { }

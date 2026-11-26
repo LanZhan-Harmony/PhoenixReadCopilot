@@ -4,6 +4,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Controls.Home;
+using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Enums;
 using PhoenixReadCopilot.Helpers.Animations;
 using PhoenixReadCopilot.ViewModels.View;
@@ -16,7 +17,14 @@ namespace PhoenixReadCopilot.Pages;
 /// </summary>
 internal sealed partial class HomePage : Page
 {
+    private const double CarouselPauseScrollOffset = 460;
+
+    private readonly INavigationService _navigationService =
+        Ioc.Default.GetRequiredService<INavigationService>();
+    private readonly List<FrameworkElement> _pendingRepositionElements = [];
+
     private bool _isUpdatingSelector;
+    private bool _isRepositionFlushScheduled;
 
     /// <summary>
     /// 视图模型.
@@ -35,7 +43,9 @@ internal sealed partial class HomePage : Page
         CategorySelector.SelectionChanged += OnCategorySelectionChanged;
         ViewModel.VideoListUpdated += OnVideoListUpdatedAsync;
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        _navigationService.OverlayStateChanged += OnOverlayStateChanged;
 
+        UpdateCarouselPlaybackState();
         _ = ViewModel.InitializeAsync();
         CheckVideoCount();
     }
@@ -45,6 +55,28 @@ internal sealed partial class HomePage : Page
         CategorySelector.SelectionChanged -= OnCategorySelectionChanged;
         ViewModel.VideoListUpdated -= OnVideoListUpdatedAsync;
         ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        _navigationService.OverlayStateChanged -= OnOverlayStateChanged;
+        Carousel.Pause();
+        _pendingRepositionElements.Clear();
+        _isRepositionFlushScheduled = false;
+    }
+
+    private void OnOverlayStateChanged(object? sender, bool isOverlayOpen) =>
+        UpdateCarouselPlaybackState();
+
+    private void UpdateCarouselPlaybackState()
+    {
+        if (
+            _navigationService.IsOverlayOpen
+            || VideoScrollView.VerticalOffset > CarouselPauseScrollOffset
+        )
+        {
+            Carousel.Pause();
+        }
+        else
+        {
+            Carousel.Resume();
+        }
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -114,19 +146,18 @@ internal sealed partial class HomePage : Page
 
     private void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
     {
-        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+        UpdateCarouselPlaybackState();
+
+        if (
+            ViewModel is { IsVideoLoading: false, HasMoreCurrentVideos: true }
+            && VideoScrollView.ExtentHeight
+                - VideoScrollView.ViewportHeight
+                - VideoScrollView.VerticalOffset
+                <= 240
+        )
         {
-            if (
-                VideoScrollView.ExtentHeight
-                    - VideoScrollView.ViewportHeight
-                    - VideoScrollView.VerticalOffset
-                    <= 240
-                && ViewModel is { IsVideoLoading: false, HasMoreCurrentVideos: true }
-            )
-            {
-                _ = ViewModel.LoadVideosAsync();
-            }
-        });
+            _ = ViewModel.LoadVideosAsync();
+        }
     }
 
     private void OnScrollViewSizeChanged(object sender, SizeChangedEventArgs e)
@@ -163,12 +194,12 @@ internal sealed partial class HomePage : Page
 
             // 确保首次排版与从回收池复用就位前关闭动画，防止产生从 (0,0) 或离屏旧位置的飞入滑行动效
             CompositionFactory.DisableStandardReposition(element);
-
-            // 待当前帧排版完成（Visual.Offset 坐标就位）后，再挂载平滑重排动画
-            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+            _pendingRepositionElements.Add(element);
+            if (!_isRepositionFlushScheduled)
             {
-                CompositionFactory.SetStandardReposition(element);
-            });
+                _isRepositionFlushScheduled = true;
+                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, FlushPendingReposition);
+            }
         }
     }
 
@@ -179,8 +210,28 @@ internal sealed partial class HomePage : Page
     {
         if (args.Element is FrameworkElement element)
         {
+            _pendingRepositionElements.Remove(element);
             CompositionFactory.DisableStandardReposition(element);
             RecommendedVideoItemTemplate.ClearImage(element);
         }
+    }
+
+    private void FlushPendingReposition()
+    {
+        _isRepositionFlushScheduled = false;
+        if (_pendingRepositionElements.Count == 0)
+        {
+            return;
+        }
+
+        foreach (FrameworkElement element in _pendingRepositionElements)
+        {
+            if (element.IsLoaded)
+            {
+                CompositionFactory.SetStandardReposition(element);
+            }
+        }
+
+        _pendingRepositionElements.Clear();
     }
 }

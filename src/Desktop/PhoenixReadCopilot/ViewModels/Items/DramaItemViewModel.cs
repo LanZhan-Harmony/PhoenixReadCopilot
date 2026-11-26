@@ -200,6 +200,11 @@ internal partial class DramaItemViewModel : ViewModelBase, IPlayableMedia
     [RelayCommand]
     public void Play()
     {
+        if (!string.IsNullOrEmpty(Drama.Id))
+        {
+            _ = ItemServices.Drama.GetDramaDetailsAsync(Drama.Id);
+        }
+
         PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {

@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.Contracts.Services;
+using PhoenixReadCopilot.Core.Contracts.Media;
 using PhoenixReadCopilot.Core.Contracts.Services;
 using PhoenixReadCopilot.Core.Models.Settings;
 using PhoenixReadCopilot.Forms;
@@ -148,7 +149,16 @@ internal sealed class NavigationService : INavigationService
         if (IsOverlayOpen)
         {
             IsOverlayOpen = false;
-            _overFrame?.Navigate(typeof(Page));
+            if (_overFrame?.Content is VideoPlayerPage vPage)
+            {
+                vPage.ViewModel.Clean();
+                vPage.OnOverlayHidden();
+            }
+            else if (_overFrame is not null)
+            {
+                _overFrame.Navigate(typeof(Page));
+                _overFrame.Content = null;
+            }
             _overFrame?.BackStack.Clear();
             CheckSubPageStatus();
 
@@ -196,6 +206,7 @@ internal sealed class NavigationService : INavigationService
             throw new InvalidOperationException("浮层导航框架未初始化.");
         }
 
+        bool wasOverlayOpen = IsOverlayOpen;
         if (_overFrame.BackStack.Count > 0)
         {
             _overFrame.BackStack.Clear();
@@ -204,10 +215,22 @@ internal sealed class NavigationService : INavigationService
         ActiveMainWindow();
         if (pageType == typeof(VideoPlayerPage) && _overFrame.Content is VideoPlayerPage page)
         {
-            _ = page.ViewModel.InitializePageAsync(parameter);
             IsOverlayOpen = true;
+            page.PrepareForReuse();
+            if (parameter is IPlayableMedia playable)
+            {
+                _ = page.ViewModel.InitializePageAsync(playable);
+            }
             CheckSubPageStatus();
+            OverlayNavigated?.Invoke(this, typeof(VideoPlayerPage));
             return true;
+        }
+
+        bool isPlayerPage = pageType == typeof(VideoPlayerPage);
+        if (isPlayerPage)
+        {
+            // 先折叠主视图并暂停首页后台轮播，避免透明播放页在入场渲染瞬间透出首页残留
+            IsOverlayOpen = true;
         }
 
         bool navigated = _overFrame.Navigate(
@@ -215,6 +238,11 @@ internal sealed class NavigationService : INavigationService
             parameter,
             new EntranceNavigationTransitionInfo()
         );
+        if (!wasOverlayOpen)
+        {
+            // 上一个浮层已处于关闭缓存态，避免新浮层返回栈回退到已关闭的播放页
+            _overFrame.BackStack.Clear();
+        }
         IsOverlayOpen = true;
         CheckSubPageStatus();
         return navigated;
@@ -244,9 +272,17 @@ internal sealed class NavigationService : INavigationService
             }
             else
             {
-                _overFrame.Navigate(typeof(Page));
+                if (_overFrame.Content is VideoPlayerPage vPage)
+                {
+                    vPage.ViewModel.Clean();
+                    vPage.OnOverlayHidden();
+                }
+                else
+                {
+                    _overFrame.Navigate(typeof(Page));
+                    _overFrame.Content = null;
+                }
                 _overFrame.BackStack.Clear();
-                _overFrame.Content = null;
                 IsOverlayOpen = false;
                 _frame.Focus(FocusState.Programmatic);
             }

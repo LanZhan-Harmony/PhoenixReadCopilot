@@ -52,7 +52,7 @@
                       Style="{StaticResource PageScrollViewerStyle}"
                       ViewChanged="OnViewChanged">
             <StackPanel Spacing="10">
-                <home:HeaderCarousel ItemsSource="{x:Bind ViewModel.CarouselDramas, Mode=OneWay}"/>
+                <home:HeaderCarousel x:Name="Carousel" ItemsSource="{x:Bind ViewModel.CarouselDramas, Mode=OneWay}"/>
 
                 <SelectorBar x:Name="CategorySelector"
                              HorizontalAlignment="Center"

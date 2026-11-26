@@ -119,6 +119,18 @@ internal sealed partial class ReadHistoryItemViewModel : ViewModelBase, IPlayabl
     [RelayCommand]
     public void Play()
     {
+        if (!string.IsNullOrEmpty(History.DramaId))
+        {
+            _ = ItemServices.Drama.GetDramaDetailsAsync(History.DramaId);
+            if (!string.IsNullOrEmpty(History.VideoId))
+            {
+                _ = ItemServices.PlaybackMedia.ResolveMediaAsync(
+                    History.DramaId,
+                    History.VideoId
+                );
+            }
+        }
+
         PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {

@@ -49,6 +49,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     private CancellationTokenSource? _pageLoadCancellationTokenSource;
     private CancellationTokenSource? _dashLoadCancellationTokenSource;
     private CancellationTokenSource? _preloadCancellationTokenSource;
+    private VideoPlayerRecommendSectionDetailViewModel? _recommendSection;
     private string? _preloadedEpisodeVideoId;
     private IReadOnlyList<PlaybackMedia>? _preloadedMediaList;
 
@@ -266,55 +267,86 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     /// <inheritdoc/>
     protected override double GetDefaultNavColumnWidth() => 360d;
 
-    public async Task InitializePageAsync(object? parameter)
+    public async Task InitializePageAsync(IPlayableMedia playable)
     {
-        if (IsPageLoading)
+        if (playable is null || string.IsNullOrWhiteSpace(playable.MediaId))
         {
-            CancelPageLoad();
+            return;
         }
 
+        CancelPageLoad();
+        CancelDashLoad();
+        CancelPreload();
+
+        string dramaId = playable.MediaId;
+        string? initialEpisodeId = playable.InitialEpisodeId;
+
+        // 切换不同短剧时，先快照旧剧进度并在后台异步上报，绝不阻塞新剧加载
+        if (
+            !string.IsNullOrEmpty(_dramaId)
+            && _dramaId != dramaId
+            && _currentEpisode is not null
+            && Player.Position > 0
+            && !Player.IsPlayerDataLoading
+        )
+        {
+            _ = ReportProgressSnapshotAsync(
+                _dramaId,
+                _currentEpisode,
+                Player.Position,
+                DramaTitle,
+                CoverUrl
+            );
+        }
+
+        Player.ReleaseCurrentSource();
+        ClearView();
+        Player.CancelNotification();
+        Player.IsSeparatorWindowPlayer = IsSeparatorWindowPlayer;
+
+        _pageLoadCancellationTokenSource = new CancellationTokenSource();
+        CancellationToken pageToken = _pageLoadCancellationTokenSource.Token;
+        _dramaId = dramaId;
         IsPageLoading = true;
-        string dramaId = string.Empty;
-        string? initialEpisodeId = null;
+        Player.IsPlayerDataLoading = true;
 
-        if (parameter is IPlayableMedia playable)
+        // 0ms 预填导航入参已有数据并立即渲染首屏，播放器区域同步进入加载态
+        ApplyInitialPlayableData(playable);
+        LoadInitialProgress(playable.InitialPositionMs);
+        InitializeBaseSections(initialEpisodeId);
+        InitializeLoops();
+        _ = RefreshFavoriteStateAsync(dramaId, pageToken);
+
+        // 若导航已携带起始分集 VideoId（如历史续播/新窗口打开），立刻与详情请求并发解析媒体与弹幕
+        bool hasPrelaunchedEpisodeMedia = false;
+        if (!string.IsNullOrEmpty(initialEpisodeId))
         {
-            dramaId = playable.MediaId;
-            initialEpisodeId = playable.InitialEpisodeId;
+            hasPrelaunchedEpisodeMedia = true;
+            _currentVideoId = initialEpisodeId;
+            IsLiked = _likeService.IsLiked(_dramaId, initialEpisodeId);
+            Danmaku?.ResetData(_dramaId, initialEpisodeId);
+            _ = Danmaku?.LoadDanmakusAsync(0);
+            Subtitle?.ResetData(_dramaId, initialEpisodeId);
+            _ = Subtitle?.InitializeAsync();
+            _ = InitializeMediaByVideoIdAsync(_dramaId, initialEpisodeId, episodeNumber: null);
         }
-        else if (parameter is VideoSnapshot snapshot)
-        {
-            dramaId = snapshot.Video.Identifier.Id;
-        }
-        else if (parameter is Drama drama)
-        {
-            dramaId = drama.Id;
-        }
-        else if (parameter is string id)
-        {
-            dramaId = id;
-        }
+
+        // 关联推荐在后台异步加载，绝不阻塞首屏显示与起播
+        _recommendSection?.StartBackgroundLoad(pageToken);
 
         try
         {
-            if (!string.IsNullOrEmpty(_dramaId) && _dramaId != dramaId)
-            {
-                // 记录上一个视频的播放进度.
-                await ReportProgressAsync(Player.Position);
-            }
-
-            ClearView();
-            Player.CancelNotification();
-
-            Player.IsSeparatorWindowPlayer = IsSeparatorWindowPlayer;
-            _pageLoadCancellationTokenSource = new CancellationTokenSource();
-            _dramaId = dramaId;
-
             // 获取红果短剧详情与分集
             DramaDetails details = await _dramaService.GetDramaDetailsAsync(
                 _dramaId,
-                cancellationToken: _pageLoadCancellationTokenSource.Token
+                cancellationToken: pageToken
             );
+
+            if (pageToken.IsCancellationRequested || _dramaId != dramaId)
+            {
+                return;
+            }
+
             _dramaDetails = details;
             _episodes = details.Episodes;
 
@@ -323,21 +355,40 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 ?? throw new Exception("无法找到短剧的分集信息.");
             _currentEpisode = initialPart;
 
-            // 初始化整剧剧评与分集评论
             _dramaReviews.Initialize(_dramaId, details.Drama.Score);
-            _comments.Initialize(_dramaId, _currentEpisode.VideoId, CommentSortOrder.Hot);
-
-            LoadInitialProgress();
-            await InitializeSectionsAsync();
+            InsertPartSectionIfNeeded();
             InitializeLoops();
-            ChangePart(initialPart);
+
+            if (hasPrelaunchedEpisodeMedia && initialPart.VideoId == initialEpisodeId)
+            {
+                IsLiked = _likeService.IsLiked(_dramaId, initialPart.VideoId);
+                InitializeNextVideo();
+                UpdateSelectedPartInSection(initialPart);
+                Player.InitializeSmtc(
+                    Cover?.ToString() ?? string.Empty,
+                    $"{Title} - 第{initialPart.Number}集"
+                );
+                if (_currentMediaList is { Count: > 0 })
+                {
+                    PreloadNextEpisodeMedia();
+                }
+            }
+            else
+            {
+                ChangePart(initialPart);
+            }
+
             ViewInitialized?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            if (ex is not TaskCanceledException)
+            if (ex is not TaskCanceledException && ex is not OperationCanceledException)
             {
-                IsPageLoadFailed = true;
+                if (_dramaDetails is null)
+                {
+                    IsPageLoadFailed = true;
+                }
+                Player.IsPlayerDataLoading = false;
                 _logger.ZLogError(ex, $"尝试获取短剧 {dramaId} 详情时失败.");
             }
         }
@@ -347,8 +398,22 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    private async Task InitializeDashMediaAsync(Episode episode, bool forceRefresh = false)
+    private Task InitializeDashMediaAsync(Episode episode, bool forceRefresh = false) =>
+        InitializeMediaByVideoIdAsync(_dramaId, episode.VideoId, episode.Number, forceRefresh);
+
+    private async Task InitializeMediaByVideoIdAsync(
+        string dramaId,
+        string videoId,
+        int? episodeNumber,
+        bool forceRefresh = false
+    )
     {
+        if (string.IsNullOrEmpty(dramaId) || string.IsNullOrEmpty(videoId))
+        {
+            Player.IsPlayerDataLoading = false;
+            return;
+        }
+
         if (IsMediaLoading)
         {
             CancelDashLoad();
@@ -356,7 +421,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
         bool isPreloadHit =
             !forceRefresh
-            && _preloadedEpisodeVideoId == episode.VideoId
+            && _preloadedEpisodeVideoId == videoId
             && _preloadedMediaList is { Count: > 0 };
         if (!isPreloadHit)
         {
@@ -366,7 +431,8 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         try
         {
             _dashLoadCancellationTokenSource = new CancellationTokenSource();
-            _currentVideoId = episode.VideoId;
+            CancellationToken token = _dashLoadCancellationTokenSource.Token;
+            _currentVideoId = videoId;
 
             IReadOnlyList<PlaybackMedia>? mediaList;
 
@@ -381,16 +447,22 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             {
                 // 解析红果短剧媒体源（统一通过 PlaybackMediaService 调度与缓存）
                 mediaList = await _playbackMediaService.ResolveMediaAsync(
-                    _dramaId,
-                    episode.VideoId,
+                    dramaId,
+                    videoId,
                     forceRefresh: forceRefresh,
-                    _dashLoadCancellationTokenSource.Token
+                    token
                 );
+            }
+
+            if (token.IsCancellationRequested || _dramaId != dramaId || _currentVideoId != videoId)
+            {
+                return;
             }
 
             if (mediaList is null || mediaList.Count == 0)
             {
                 IsMediaLoading = false;
+                Player.IsPlayerDataLoading = false;
                 return;
             }
 
@@ -400,12 +472,13 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
         catch (Exception ex)
         {
-            if (ex is not TaskCanceledException)
+            if (ex is not TaskCanceledException && ex is not OperationCanceledException)
             {
                 IsMediaLoadFailed = true;
+                Player.IsPlayerDataLoading = false;
                 _logger.ZLogError(
                     ex,
-                    $"尝试获取短剧 {_dramaId} 的第 {episode.Number} 分集媒体时失败."
+                    $"尝试获取短剧 {dramaId} 的第 {episodeNumber?.ToString() ?? videoId} 分集媒体时失败."
                 );
             }
         }
@@ -434,6 +507,16 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             _dashLoadCancellationTokenSource.Dispose();
             _dashLoadCancellationTokenSource = null;
             IsMediaLoading = false;
+        }
+    }
+
+    private void CancelPreload()
+    {
+        if (_preloadCancellationTokenSource is not null)
+        {
+            _preloadCancellationTokenSource.Cancel();
+            _preloadCancellationTokenSource.Dispose();
+            _preloadCancellationTokenSource = null;
         }
     }
 
@@ -485,13 +568,13 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             null,
             isAutoPlay,
             _initialProgress < 0 ? 0 : _initialProgress,
-            extraOptions: _currentEpisode?.VideoId
+            extraOptions: _currentEpisode?.VideoId ?? _currentVideoId
         );
 
-        Player.InitializeSmtc(
-            Cover?.ToString() ?? string.Empty,
-            $"{Title} - 第{_currentEpisode?.Number}集"
-        );
+        string smtcTitle = _currentEpisode is not null
+            ? $"{Title} - 第{_currentEpisode.Number}集"
+            : Title;
+        Player.InitializeSmtc(Cover?.ToString() ?? string.Empty, smtcTitle);
 
         // 重置初始进度，避免影响其它视频
         _initialProgress = 0;
@@ -504,7 +587,26 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     public async Task CleanAsync()
     {
-        await ReportProgressAsync(Player.Position);
+        CancelPageLoad();
+        CancelDashLoad();
+        CancelPreload();
+
+        if (
+            !string.IsNullOrEmpty(_dramaId)
+            && _currentEpisode is not null
+            && Player.Position > 0
+            && !Player.IsPlayerDataLoading
+        )
+        {
+            _ = ReportProgressSnapshotAsync(
+                _dramaId,
+                _currentEpisode,
+                Player.Position,
+                DramaTitle,
+                CoverUrl
+            );
+        }
+
         ClearView();
         Subtitle?.ClearAll();
         Danmaku.ClearAll();
@@ -530,15 +632,39 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         _ = SelectedSection.TryFirstLoadAsync();
     }
 
-    private async Task ReportProgressAsync(int progress)
+    private Task ReportProgressAsync(int progress)
     {
-        bool shouldReport = _settings.ShouldReportProgress;
         if (
-            !shouldReport
-            || string.IsNullOrEmpty(_dramaId)
+            string.IsNullOrEmpty(_dramaId)
             || _currentEpisode is null
             || progress == 0
             || Player.IsPlayerDataLoading
+        )
+        {
+            return Task.CompletedTask;
+        }
+
+        return ReportProgressSnapshotAsync(
+            _dramaId,
+            _currentEpisode,
+            progress,
+            _dramaDetails?.Drama?.Title ?? Title,
+            _dramaDetails?.Drama?.CoverUrl ?? Cover?.ToString() ?? string.Empty
+        );
+    }
+
+    private async Task ReportProgressSnapshotAsync(
+        string dramaId,
+        Episode episode,
+        int progress,
+        string title,
+        string coverUrl
+    )
+    {
+        if (
+            !_settings.ShouldReportProgress
+            || string.IsNullOrEmpty(dramaId)
+            || progress <= 0
         )
         {
             return;
@@ -550,14 +676,14 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             await _historyService.ReportProgressAsync(
                 new ProgressUpdate
                 {
-                    DramaId = _dramaId,
-                    VideoId = _currentEpisode.VideoId,
-                    EpisodeNumber = _currentEpisode.Number,
+                    DramaId = dramaId,
+                    VideoId = episode.VideoId,
+                    EpisodeNumber = episode.Number,
                     CurrentPositionMs = progress * 1000L,
-                    DurationMs = (long)_currentEpisode.Duration.TotalMilliseconds,
+                    DurationMs = (long)episode.Duration.TotalMilliseconds,
                 },
-                title: _dramaDetails?.Drama?.Title ?? string.Empty,
-                coverUrl: _dramaDetails?.Drama?.CoverUrl ?? string.Empty,
+                title: title,
+                coverUrl: coverUrl,
                 cancellationToken: cancellationToken.Token
             );
         }
@@ -706,7 +832,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
     [RelayCommand]
     public async Task PlayNextVideoAsync()
     {
-        if (IsPageLoading || Player.IsPlayerDataLoading)
+        if (_episodes is null || Player.IsPlayerDataLoading)
         {
             return;
         }
@@ -730,7 +856,9 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
         else if (nextPart is Drama rec)
         {
-            _ = InitializePageAsync(rec.Id);
+            _ = InitializePageAsync(
+                new PlayableMedia(rec.Id, rec.Title, rec.CoverUrl, Drama: rec)
+            );
         }
         else
         {
@@ -740,7 +868,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
 
     public async Task PlayPreviousVideoAsync()
     {
-        if (IsPageLoading || Player.IsPlayerDataLoading)
+        if (_episodes is null || Player.IsPlayerDataLoading)
         {
             return;
         }
@@ -776,7 +904,16 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             Player.TogglePlayPause();
         }
 
-        new PlayerWindow().OpenDrama(_dramaId);
+        new PlayerWindow().OpenPlayable(
+            new PlayableMedia(
+                _dramaId,
+                DramaTitle,
+                CoverUrl,
+                InitialEpisodeId: _currentEpisode?.VideoId,
+                InitialPositionMs: Player.Position > 0 ? Player.Position * 1000L : null,
+                Drama: _dramaDetails?.Drama
+            )
+        );
     }
 
     [RelayCommand]
@@ -955,7 +1092,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
                 return;
             }
 
-            if (IsPageLoading || Player.IsPlayerDataLoading)
+            if (_episodes is null || Player.IsPlayerDataLoading)
             {
                 return;
             }
@@ -965,9 +1102,50 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         });
     }
 
-    private void InitializeDramaView(DramaDetails details)
+    private void ApplyInitialPlayableData(IPlayableMedia playable)
     {
-        Drama drama = details.Drama;
+        if (playable.Drama is Drama drama)
+        {
+            InitializeDramaView(drama);
+            return;
+        }
+
+        Title = playable.Title;
+        Cover =
+            !string.IsNullOrEmpty(playable.CoverUrl)
+            && Uri.TryCreate(playable.CoverUrl, UriKind.Absolute, out Uri? coverUri)
+                ? coverUri
+                : null;
+        Player.Title = Title;
+        CalcPlayerHeight();
+    }
+
+    private async Task RefreshFavoriteStateAsync(string dramaId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            bool favorited = await _favoriteService.IsFavoritedAsync(
+                dramaId,
+                cancellationToken: cancellationToken
+            );
+            if (!cancellationToken.IsCancellationRequested && _dramaId == dramaId)
+            {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    if (_dramaId == dramaId)
+                    {
+                        IsFavorited = favorited;
+                    }
+                });
+            }
+        }
+        catch (OperationCanceledException) { }
+    }
+
+    private void InitializeDramaView(DramaDetails details) => InitializeDramaView(details.Drama);
+
+    private void InitializeDramaView(Drama drama)
+    {
         _dramaId = drama.Id;
         Title = drama.Title;
         Description = drama.Description;
@@ -995,7 +1173,6 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             .ToList()
             ?? [];
         Tags = drama.Tags?.ToList() ?? [];
-        IsFavorited = _favoriteService.IsFavorited(_dramaId);
 
         Player.Title = Title;
         CalcPlayerHeight();
@@ -1038,50 +1215,28 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
     }
 
-    private async Task InitializeSectionsAsync()
+    private void InitializeBaseSections(string? initialEpisodeId)
     {
-        if (Sections?.Count > 0)
+        _dramaReviews.Initialize(_dramaId, string.Empty);
+        if (!string.IsNullOrEmpty(initialEpisodeId))
         {
-            return;
+            _comments.Initialize(_dramaId, initialEpisodeId, CommentSortOrder.Hot);
         }
+
+        _recommendSection = new VideoPlayerRecommendSectionDetailViewModel(
+            _dramaService,
+            _dispatcherQueue,
+            _logger
+        );
+        _recommendSection.Initialize(_dramaId);
 
         List<IPlayerSectionDetailViewModel> sections =
         [
             new VideoPlayerInfoSectionDetailViewModel(this),
+            _dramaReviews,
+            _comments,
+            _recommendSection,
         ];
-
-        // 1. 分集列表（网格序号模式）
-        if (_episodes?.Count > 1)
-        {
-            sections.Add(
-                new VideoPlayerPartSectionDetailViewModel(
-                    _episodes,
-                    _currentEpisode?.VideoId ?? string.Empty,
-                    ChangePart,
-                    _settingsService
-                )
-            );
-        }
-
-        // 2. 剧评 Tab（整部剧一份，显示评分与发表评论）
-        sections.Add(_dramaReviews);
-
-        // 3. 评论列表 Tab（分集评论）
-        sections.Add(_comments);
-
-        // 4. 专属关联好剧推荐（调用红果推荐接口）
-        try
-        {
-            DramaRecommendations rec = await _dramaService.GetDramaRecommendationsAsync(_dramaId);
-            if (rec?.Items is { Count: > 0 } recItems)
-            {
-                sections.Add(new VideoPlayerRecommendSectionDetailViewModel(recItems));
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.ZLogError(ex, $"获取推荐好剧失败.");
-        }
 
         Sections = sections;
         SelectSection(Sections.First());
@@ -1089,13 +1244,54 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         SectionInitialized?.Invoke(this, EventArgs.Empty);
     }
 
+    private void InsertPartSectionIfNeeded()
+    {
+        if (
+            Sections is null
+            || _episodes is not { Count: > 1 }
+            || Sections.OfType<VideoPlayerPartSectionDetailViewModel>().Any()
+        )
+        {
+            return;
+        }
+
+        VideoPlayerPartSectionDetailViewModel partSection = new(
+            _episodes,
+            _currentEpisode?.VideoId ?? string.Empty,
+            ChangePart,
+            _settingsService
+        );
+        Sections.Insert(1, partSection);
+        SectionInitialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void UpdateSelectedPartInSection(Episode episode)
+    {
+        VideoPlayerPartSectionDetailViewModel? partSection =
+            Sections?.FirstOrDefault(p => p is VideoPlayerPartSectionDetailViewModel)
+            as VideoPlayerPartSectionDetailViewModel;
+        partSection?.UpdateSelectedPart(episode);
+    }
+
     private void ClearView()
     {
         IsPageLoadFailed = false;
+        _dramaId = string.Empty;
+        _currentVideoId = string.Empty;
         _episodes = null;
         _currentEpisode = null;
         _dramaDetails = null;
+        _currentMediaList = null;
+        _preloadedEpisodeVideoId = null;
+        _preloadedMediaList = null;
+        _recommendSection = null;
         _initialProgress = -1;
+        Title = string.Empty;
+        Description = string.Empty;
+        Cover = null;
+        OnlineCountText = string.Empty;
+        PublishRelativeTime = string.Empty;
+        Credits = null;
         Tags = null;
         IsFollow = false;
         IsMyVideo = false;
@@ -1107,7 +1303,10 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         IsFavorited = false;
         FavoriteFolders = null;
         SelectedFormat = null;
+        Formats = null;
+        SelectedSection = null;
         Sections?.Clear();
+        Sections = null;
     }
 
     private void CalcPlayerHeight()
@@ -1145,13 +1344,11 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         return part ?? _episodes?.FirstOrDefault();
     }
 
-    private void LoadInitialProgress(int? progress = null)
+    private void LoadInitialProgress(long? initialPositionMs = null)
     {
-        _initialProgress = 0;
-        if (progress is not null)
-        {
-            _initialProgress = progress.Value;
-        }
+        _initialProgress = initialPositionMs is > 0
+            ? (int)(initialPositionMs.Value / 1000L)
+            : 0;
     }
 
     private object? FindNextVideo()

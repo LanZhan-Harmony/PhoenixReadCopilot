@@ -67,10 +67,13 @@ internal sealed partial class VideoPlayerSideHeader : UserControl
     private void OnViewModelSectionInitialized(object? sender, EventArgs e) =>
         InitializeChildPartitions();
 
+    private bool _isUpdatingItems;
+
     private void OnSelectorChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
         if (
-            ViewModel is not null
+            !_isUpdatingItems
+            && ViewModel is not null
             && sender.SelectedItem?.Tag is IPlayerSectionDetailViewModel item
         )
         {
@@ -80,22 +83,32 @@ internal sealed partial class VideoPlayerSideHeader : UserControl
 
     private void InitializeChildPartitions()
     {
-        Selector.Items.Clear();
-        if (ViewModel is null)
+        _isUpdatingItems = true;
+        try
         {
-            return;
-        }
-
-        if (ViewModel.Sections is not null)
-        {
-            foreach (IPlayerSectionDetailViewModel item in ViewModel.Sections)
+            Selector.Items.Clear();
+            if (ViewModel is null)
             {
-                Selector.Items.Add(new SelectorBarItem() { Text = item.Title ?? string.Empty, Tag = item });
+                return;
             }
-        }
 
-        Selector.SelectedItem = Selector.Items.FirstOrDefault(p =>
-            p.Tag == ViewModel.SelectedSection
-        );
+            if (ViewModel.Sections is not null)
+            {
+                foreach (IPlayerSectionDetailViewModel item in ViewModel.Sections)
+                {
+                    Selector.Items.Add(
+                        new SelectorBarItem() { Text = item.Title ?? string.Empty, Tag = item }
+                    );
+                }
+            }
+
+            Selector.SelectedItem = Selector.Items.FirstOrDefault(p =>
+                p.Tag == ViewModel.SelectedSection
+            );
+        }
+        finally
+        {
+            _isUpdatingItems = false;
+        }
     }
 }

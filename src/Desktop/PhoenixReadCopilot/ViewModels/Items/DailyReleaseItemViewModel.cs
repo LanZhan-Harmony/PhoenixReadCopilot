@@ -226,6 +226,11 @@ internal sealed partial class DailyReleaseItemViewModel : ViewModelBase, IPlayab
             return;
         }
 
+        if (!string.IsNullOrEmpty(Drama.Id))
+        {
+            _ = ItemServices.Drama.GetDramaDetailsAsync(Drama.Id);
+        }
+
         PlayerDisplayMode preferDisplayMode = ItemServices.Settings.DefaultPlayerDisplayMode;
         if (preferDisplayMode == PlayerDisplayMode.NewWindow)
         {

@@ -28,6 +28,8 @@ internal sealed partial class HeaderCarousel : UserControl
     private int _currentIndex;
     private CancellationTokenSource? _tileCts;
     private INotifyCollectionChanged? _subscribedCollection;
+    private Storyboard? _titleStoryboard;
+    private bool _isPaused;
 
     /// <summary>
     /// 轮播展示的新剧推荐列表.
@@ -72,9 +74,43 @@ internal sealed partial class HeaderCarousel : UserControl
     {
         ActualThemeChanged -= OnActualThemeChanged;
         DetachCollectionChanged();
-        CancelPendingSelection();
+        Pause();
         UnsubscribeToEvents();
         _luminanceCache.Clear();
+    }
+
+    /// <summary>
+    /// 暂停轮播计时器与标题动画，避免在滚动到下方或进入浮层时持续占用 UI 与合成资源.
+    /// </summary>
+    public void Pause()
+    {
+        if (_isPaused)
+        {
+            return;
+        }
+
+        _isPaused = true;
+        CancelPendingSelection();
+        _selectionTimer.Stop();
+        _deselectionTimer.Stop();
+        _titleStoryboard?.Stop();
+    }
+
+    /// <summary>
+    /// 恢复轮播计时器.
+    /// </summary>
+    public void Resume()
+    {
+        if (!_isPaused)
+        {
+            return;
+        }
+
+        _isPaused = false;
+        if (IsLoaded && TilePanel.Children.Count > 0)
+        {
+            _selectionTimer.Start();
+        }
     }
 
     private void OnActualThemeChanged(FrameworkElement sender, object args)
@@ -155,7 +191,10 @@ internal sealed partial class HeaderCarousel : UserControl
         {
             ResetAndShuffle();
             SubscribeToEvents();
-            _ = SelectNextTileAsync();
+            if (!_isPaused)
+            {
+                _ = SelectNextTileAsync();
+            }
         }
     }
 
@@ -185,7 +224,10 @@ internal sealed partial class HeaderCarousel : UserControl
 
         _selectionTimer.Tick += SelectionTimer_Tick;
         _deselectionTimer.Tick += DeselectionTimer_Tick;
-        _selectionTimer.Start();
+        if (!_isPaused)
+        {
+            _selectionTimer.Start();
+        }
 
         foreach (HeaderTile tile in TilePanel.Children.OfType<HeaderTile>())
         {
@@ -234,6 +276,11 @@ internal sealed partial class HeaderCarousel : UserControl
 
     private void SelectionTimer_Tick(object? sender, object e)
     {
+        if (_isPaused)
+        {
+            return;
+        }
+
         _ = SelectNextTileAsync();
     }
 
@@ -246,7 +293,7 @@ internal sealed partial class HeaderCarousel : UserControl
 
     private async Task SelectNextTileAsync()
     {
-        if (!IsLoaded || TilePanel.Children.Count == 0)
+        if (_isPaused || !IsLoaded || TilePanel.Children.Count == 0)
         {
             return;
         }
@@ -268,17 +315,17 @@ internal sealed partial class HeaderCarousel : UserControl
             try
             {
                 if (
-                    RecommendScrollViewer.ActualWidth > 0
+                    RecommendScrollViewer.ViewportWidth > 0
                     && _selectedTile.ActualWidth > 0
                     && TilePanel.Children.Contains(_selectedTile)
                 )
                 {
                     GeneralTransform transform = _selectedTile.TransformToVisual(TilePanel);
-                    Point point = transform.TransformPoint(new Point(0, 0));
+                    Point center = transform.TransformPoint(
+                        new Point(_selectedTile.ActualWidth / 2, _selectedTile.ActualHeight / 2)
+                    );
                     RecommendScrollViewer.ChangeView(
-                        point.X
-                            - (RecommendScrollViewer.ActualWidth / 2)
-                            + (_selectedTile.ActualSize.X / 2),
+                        center.X - (RecommendScrollViewer.ViewportWidth / 2),
                         null,
                         null
                     );
@@ -295,13 +342,16 @@ internal sealed partial class HeaderCarousel : UserControl
                 return;
             }
 
-            if (!IsLoaded || ct.IsCancellationRequested || _selectedTile != tile)
+            if (_isPaused || !IsLoaded || ct.IsCancellationRequested || _selectedTile != tile)
             {
                 return;
             }
 
             SetTileVisuals();
-            _deselectionTimer.Start();
+            if (!_isPaused)
+            {
+                _deselectionTimer.Start();
+            }
         }
     }
 
@@ -401,6 +451,7 @@ internal sealed partial class HeaderCarousel : UserControl
             return;
         }
 
+        _titleStoryboard?.Stop();
         Storyboard storyboard = new();
         int count = Math.Min(brush.GradientStops.Count, AnimatedGradientBrush.GradientStops.Count);
         for (int i = 0; i < count; i++)
@@ -416,6 +467,7 @@ internal sealed partial class HeaderCarousel : UserControl
             storyboard.Children.Add(colorAnimation);
         }
 
+        _titleStoryboard = storyboard;
         storyboard.Begin();
     }
 
@@ -423,17 +475,30 @@ internal sealed partial class HeaderCarousel : UserControl
     {
         CancelPendingSelection();
         ((HeaderTile)sender).IsSelected = false;
-        _selectionTimer.Start();
+        if (!_isPaused)
+        {
+            _selectionTimer.Start();
+        }
     }
 
     private void Tile_PointerEntered(object sender, PointerRoutedEventArgs e)
     {
+        if (_isPaused)
+        {
+            return;
+        }
+
         _selectedTile = (HeaderTile)sender;
         _ = SelectTileAsync();
     }
 
     private async Task SelectTileAsync()
     {
+        if (_isPaused)
+        {
+            return;
+        }
+
         CancelPendingSelection();
         _tileCts = new CancellationTokenSource();
         CancellationToken ct = _tileCts.Token;
@@ -458,7 +523,7 @@ internal sealed partial class HeaderCarousel : UserControl
             return;
         }
 
-        if (!IsLoaded || ct.IsCancellationRequested || _selectedTile != targetTile)
+        if (_isPaused || !IsLoaded || ct.IsCancellationRequested || _selectedTile != targetTile)
         {
             return;
         }
@@ -468,6 +533,11 @@ internal sealed partial class HeaderCarousel : UserControl
 
     private void Tile_GotFocus(object sender, RoutedEventArgs e)
     {
+        if (_isPaused)
+        {
+            return;
+        }
+
         _selectedTile = (HeaderTile)sender;
         _ = SelectTileAsync();
     }
@@ -476,6 +546,9 @@ internal sealed partial class HeaderCarousel : UserControl
     {
         CancelPendingSelection();
         ((HeaderTile)sender).IsSelected = false;
-        _selectionTimer.Start();
+        if (!_isPaused)
+        {
+            _selectionTimer.Start();
+        }
     }
 }

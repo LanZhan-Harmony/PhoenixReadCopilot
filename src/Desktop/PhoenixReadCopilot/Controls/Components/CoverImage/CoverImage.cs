@@ -245,7 +245,6 @@ internal sealed partial class CoverImage : Control
                     {
                         DecodePixelType = DecodePixelType.Logical,
                         DecodePixelWidth = DecodePixelWidth > 0 ? DecodePixelWidth : 300,
-                        CreateOptions = BitmapCreateOptions.IgnoreImageCache,
                     };
                     _image.Source = bitmap;
                 }

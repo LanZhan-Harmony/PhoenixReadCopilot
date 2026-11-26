@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using PhoenixReadCopilot.Core.Enums;
+using PhoenixReadCopilot.Core.Models.Appearance;
+using PhoenixReadCopilot.Forms;
 using PhoenixReadCopilot.ViewModels.Components;
 using PhoenixReadCopilot.ViewModels.Items;
 using PhoenixReadCopilot.ViewModels.View;
@@ -34,9 +36,18 @@ internal sealed partial class VideoInfoSection : UserControl
         InitializeComponent();
     }
 
+    private void OnCoverClick(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel?.Cover is { } coverUri)
+        {
+            AppImage image = new(coverUri);
+            new GalleryWindow(image, [image]).Activate();
+        }
+    }
+
     private void OnTagButtonClick(object sender, RoutedEventArgs e)
     {
-        if ((sender as FrameworkElement)?.DataContext is string data)
+        if (sender is FrameworkElement { DataContext: string data })
         {
             _searchBoxViewModel.Search(data);
         }

@@ -1,3 +1,4 @@
+using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Enums;
 
 namespace PhoenixReadCopilot.Core.Contracts.Media;
@@ -37,4 +38,9 @@ public interface IPlayableMedia
     /// 起始播放时间进度 (毫秒，可选).
     /// </summary>
     long? InitialPositionMs => null;
+
+    /// <summary>
+    /// 可选关联的短剧基础信息（用于在详情接口返回前 0ms 预填界面）.
+    /// </summary>
+    Drama? Drama => null;
 }

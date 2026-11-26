@@ -409,9 +409,9 @@ internal sealed partial class RankPageViewModel(
     private void PlayCuratedList()
     {
         RankDramaItemViewModel? first = Videos.FirstOrDefault();
-        if (first?.Drama is not null)
+        if (first is not null)
         {
-            _navigationService.NavigateToOver(typeof(VideoPlayerPage), first.Drama);
+            _navigationService.NavigateToOver(typeof(VideoPlayerPage), first);
         }
     }
 

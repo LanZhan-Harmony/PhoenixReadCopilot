@@ -24,6 +24,10 @@ public sealed class DramaService(
     [
         with(StringComparer.OrdinalIgnoreCase),
     ];
+    private readonly Dictionary<
+        string,
+        (DramaRecommendations Recommendations, DateTime ExpireAt)
+    > _recommendationsCache = [with(StringComparer.OrdinalIgnoreCase)];
 
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
 
@@ -191,9 +195,43 @@ public sealed class DramaService(
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dramaId);
 
+        await _lock.WaitAsync(cancellationToken);
         try
         {
-            return await _apiClient.GetDramaRecommendationsAsync(dramaId, cancellationToken);
+            if (
+                _recommendationsCache.TryGetValue(
+                    dramaId,
+                    out (DramaRecommendations Recommendations, DateTime ExpireAt) entry
+                )
+                && entry.ExpireAt > DateTime.UtcNow
+            )
+            {
+                return entry.Recommendations;
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+
+        try
+        {
+            DramaRecommendations rec = await _apiClient.GetDramaRecommendationsAsync(
+                dramaId,
+                cancellationToken
+            );
+
+            await _lock.WaitAsync(cancellationToken);
+            try
+            {
+                _recommendationsCache[dramaId] = (rec, DateTime.UtcNow.Add(CacheDuration));
+            }
+            finally
+            {
+                _lock.Release();
+            }
+
+            return rec;
         }
         catch (OperationCanceledException)
         {

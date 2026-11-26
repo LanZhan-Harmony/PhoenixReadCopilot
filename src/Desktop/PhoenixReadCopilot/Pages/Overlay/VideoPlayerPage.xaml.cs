@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Navigation;
 using PhoenixReadCopilot.Controls.Core;
 using PhoenixReadCopilot.Controls.Danmaku;
 using PhoenixReadCopilot.Controls.Player;
+using PhoenixReadCopilot.Core.Contracts.Media;
 using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Pages.Overlay;
@@ -69,6 +70,20 @@ internal sealed partial class VideoPlayerPage : Page
         return true;
     }
 
+    /// <summary>
+    /// 浮层隐藏时暂停内部计时器，保留实例以便快速复用.
+    /// </summary>
+    public void OnOverlayHidden() => PhoenixReadPlayer.PauseTimers();
+
+    /// <summary>
+    /// 重新复用浮层时恢复内部状态与计时器.
+    /// </summary>
+    public void PrepareForReuse()
+    {
+        PhoenixReadPlayer.ViewModel ??= ViewModel.Player;
+        PhoenixReadPlayer.ResumeTimers();
+    }
+
     /// <inheritdoc/>
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
@@ -77,9 +92,9 @@ internal sealed partial class VideoPlayerPage : Page
             ViewModel.IsSeparatorWindowPlayer = true;
         }
 
-        if (e.Parameter is not null)
+        if (e.Parameter is IPlayableMedia playable)
         {
-            _ = ViewModel.InitializePageAsync(e.Parameter);
+            _ = ViewModel.InitializePageAsync(playable);
         }
     }
 

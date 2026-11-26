@@ -31,18 +31,8 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <components:ShimmerLayout IsActive="{x:Bind ViewModel.IsPageLoading, Mode=OneWay}"
-                                  Style="{StaticResource PlayerShimmerStyle}"
-                                  Visibility="{x:Bind ViewModel.IsPageLoading, Mode=OneWay}">
-            <animations:Implicit.HideAnimations>
-                <animations:OpacityAnimation From="1"
-                                             To="0"
-                                             Duration="0:0:0.26"/>
-            </animations:Implicit.HideAnimations>
-        </components:ShimmerLayout>
         <Grid Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsPageLoadFailed), Mode=OneWay}">
-            <Grid Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.IsPageLoading), Mode=OneWay}">
-                <Grid.RowDefinitions>
+            <Grid.RowDefinitions>
                     <RowDefinition x:Name="HeaderRow" Height="56"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
@@ -112,7 +102,6 @@
                                            MinColumnWidth="300"
                                            ShowTip="{x:Bind strings:Resources.Hide}"/>
             </Grid>
-        </Grid>
         <components:EmptyHolder Description="{x:Bind strings:Resources.RequestVideoFailed}"
                                 Emoji="&#x1F635;"
                                 Visibility="{x:Bind ViewModel.IsPageLoadFailed, Mode=OneWay}"/>

@@ -108,6 +108,28 @@ internal sealed partial class PhoenixReadPlayer : UserControl
         _lastRightArrowPressedTime = null;
     }
 
+    /// <summary>
+    /// 暂停播放器内部计时器（用于浮层隐藏复用时省电）.
+    /// </summary>
+    public void PauseTimers() => _cursorTimer?.Stop();
+
+    /// <summary>
+    /// 恢复播放器内部计时器（用于浮层重新显示时恢复）.
+    /// </summary>
+    public void ResumeTimers()
+    {
+        if (_cursorTimer is null)
+        {
+            _cursorTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5) };
+            _cursorTimer.Tick += OnCursorTimerTick;
+        }
+
+        if (!_cursorTimer.IsEnabled)
+        {
+            _cursorTimer.Start();
+        }
+    }
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_cursorTimer is null)

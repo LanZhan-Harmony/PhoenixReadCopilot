@@ -65,6 +65,9 @@ internal static class ItemServices
 
     public static IDramaService Drama => Ioc.Default.GetRequiredService<IDramaService>();
 
+    public static IPlaybackMediaService PlaybackMedia =>
+        Ioc.Default.GetRequiredService<IPlaybackMediaService>();
+
     public static IRecommendService Recommend => Ioc.Default.GetRequiredService<IRecommendService>();
 
     public static AccountViewModel Account = Ioc.Default.GetRequiredService<AccountViewModel>();

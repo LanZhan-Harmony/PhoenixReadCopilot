@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using PhoenixReadApi;
 using PhoenixReadCopilot.ViewModels.View;
 
 namespace PhoenixReadCopilot.Pages.Overlay;
@@ -31,9 +32,9 @@ internal sealed partial class ArticlePage : Page
 
     private void OnPlayDramaButtonClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        if (sender is Microsoft.UI.Xaml.Controls.Button { Tag: string dramaId } && !string.IsNullOrEmpty(dramaId))
+        if (sender is Microsoft.UI.Xaml.Controls.Button { Tag: Drama drama } && !string.IsNullOrEmpty(drama.Id))
         {
-            ViewModel.PlayDramaCommand.Execute(dramaId);
+            ViewModel.PlayDramaCommand.Execute(drama);
         }
     }
 }

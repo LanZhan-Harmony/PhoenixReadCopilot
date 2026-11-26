@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using PhoenixReadApi;
+using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Pages.Overlay;
 
 namespace PhoenixReadCopilot.ViewModels.Items;
@@ -93,7 +94,13 @@ internal sealed partial class UserReviewItemViewModel(UserReview review) : ViewM
     {
         if (!string.IsNullOrEmpty(DramaId))
         {
-            ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), DramaId);
+            PlayableMedia playable = new(
+                DramaId,
+                DramaTitle,
+                DramaCoverUrl,
+                Drama: Data.Drama
+            );
+            ItemServices.Navigation.NavigateToOver(typeof(VideoPlayerPage), playable);
         }
     }
 }

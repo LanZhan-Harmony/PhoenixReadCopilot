@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using PhoenixReadApi;
 using PhoenixReadCopilot.Core.Contracts.Services;
+using PhoenixReadCopilot.Core.Models.Media;
 using PhoenixReadCopilot.Pages.Overlay;
 using PhoenixReadCopilot.Strings;
 using PhoenixReadCopilot.ViewModels.Components;
@@ -233,11 +234,12 @@ internal sealed partial class ArticlePageViewModel(
     }
 
     [RelayCommand]
-    private void PlayDrama(string dramaId)
+    private void PlayDrama(Drama? drama)
     {
-        if (!string.IsNullOrEmpty(dramaId))
+        if (drama is not null && !string.IsNullOrEmpty(drama.Id))
         {
-            _navigationService.NavigateToOver(typeof(VideoPlayerPage), dramaId);
+            PlayableMedia playable = new(drama.Id, drama.Title, drama.CoverUrl, Drama: drama);
+            _navigationService.NavigateToOver(typeof(VideoPlayerPage), playable);
         }
     }
 }
