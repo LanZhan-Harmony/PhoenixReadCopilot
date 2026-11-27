@@ -159,7 +159,7 @@ internal sealed partial class UserMainBody : UserControl
         if (args.Element is FrameworkElement element)
         {
             CompositionFactory.DisableStandardReposition(element);
-            UserVideoItemTemplate.ClearImage(element);
+            UserDramaItemTemplate.ClearImage(element);
         }
     }
 
@@ -191,7 +191,7 @@ internal sealed partial class UserMainBody : UserControl
         if (args.Element is FrameworkElement element)
         {
             CompositionFactory.DisableStandardReposition(element);
-            UserReservationVideoItemTemplate.ClearImage(element);
+            UserReservationDramaItemTemplate.ClearImage(element);
         }
     }
 

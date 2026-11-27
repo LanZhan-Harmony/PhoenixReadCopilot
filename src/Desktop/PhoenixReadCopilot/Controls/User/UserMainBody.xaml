@@ -17,8 +17,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:UserVideoItemTemplate/>
-                <local:UserReservationVideoItemTemplate/>
+                <local:UserDramaItemTemplate/>
+                <local:UserReservationDramaItemTemplate/>
                 <local:CircleFeedItemTemplate/>
                 <local:UserReviewItemTemplate/>
                 <local:UserItemTemplate/>
@@ -33,7 +33,7 @@
                         <ItemsRepeater Margin="16,12"
                                        ElementClearing="VideoItemsRepeater_ElementClearing"
                                        ElementPrepared="VideoItemsRepeater_ElementPrepared"
-                                       ItemTemplate="{StaticResource UserVideoItemTemplate}"
+                                       ItemTemplate="{StaticResource UserDramaItemTemplate}"
                                        ItemsSource="{x:Bind PageViewModel.Videos, Mode=OneWay}"
                                        Layout="{StaticResource VideoLayout}"/>
                     </ScrollViewer>
@@ -107,7 +107,7 @@
                         <ItemsRepeater Margin="16,12"
                                        ElementClearing="ReservationItemsRepeater_ElementClearing"
                                        ElementPrepared="ReservationItemsRepeater_ElementPrepared"
-                                       ItemTemplate="{StaticResource UserReservationVideoItemTemplate}"
+                                       ItemTemplate="{StaticResource UserReservationDramaItemTemplate}"
                                        ItemsSource="{x:Bind PageViewModel.Reservations, Mode=OneWay}"
                                        Layout="{StaticResource VideoLayout}"/>
                     </ScrollViewer>
@@ -120,7 +120,7 @@
                                              RelationTemplate="{StaticResource RelationSectionTemplate}"
                                              ReservationTemplate="{StaticResource ReservationSectionTemplate}"
                                              ReviewTemplate="{StaticResource ReviewSectionTemplate}"
-                                             VideoTemplate="{StaticResource VideoSectionTemplate}"/>
+                                             DramaTemplate="{StaticResource VideoSectionTemplate}"/>
         </ResourceDictionary>
     </UserControl.Resources>
 

@@ -25,7 +25,7 @@
 
         <ext:SearchSectionTemplateSelector x:Key="SectionSelector"
                                            UserTemplate="{StaticResource UserSectionTemplate}"
-                                           VideoTemplate="{StaticResource VideoSectionTemplate}"/>
+                                           DramaTemplate="{StaticResource VideoSectionTemplate}"/>
     </Page.Resources>
 
     <Grid>

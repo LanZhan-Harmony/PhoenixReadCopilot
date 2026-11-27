@@ -109,7 +109,7 @@ internal sealed partial class VideoSectionDetailControl : UserControl
         if (args.Element is FrameworkElement element)
         {
             CompositionFactory.DisableStandardReposition(element);
-            SearchVideoItemTemplate.ClearImage(element);
+            SearchDramaItemTemplate.ClearImage(element);
         }
     }
 }

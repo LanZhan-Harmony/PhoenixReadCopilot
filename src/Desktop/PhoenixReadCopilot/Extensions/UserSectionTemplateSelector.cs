@@ -13,7 +13,7 @@ internal sealed partial class UserSectionTemplateSelector : DataTemplateSelector
     /// <summary>
     /// 短剧网格展示模板.
     /// </summary>
-    public DataTemplate? VideoTemplate { get; set; }
+    public DataTemplate? DramaTemplate { get; set; }
 
     /// <summary>
     /// 剧评列表展示模板.
@@ -49,8 +49,8 @@ internal sealed partial class UserSectionTemplateSelector : DataTemplateSelector
                 "Reviews" => ReviewTemplate,
                 "Circle" => CircleTemplate,
                 "Follows" or "Fans" => RelationTemplate,
-                // 个人主页自己的 Reservation、History、Favorite、ViewLater、Likes 均使用 VideoTemplate
-                _ => VideoTemplate,
+                // 个人主页自己的 Reservation、History、Favorite、ViewLater、Likes 均使用 DramaTemplate
+                _ => DramaTemplate,
             };
         }
 
@@ -61,14 +61,19 @@ internal sealed partial class UserSectionTemplateSelector : DataTemplateSelector
                 return workTab switch
                 {
                     UserWorkSubTab.Review => ReviewTemplate,
-                    UserWorkSubTab.Reservation => ReservationTemplate ?? VideoTemplate,
-                    _ => VideoTemplate,
+                    UserWorkSubTab.Reservation => ReservationTemplate ?? DramaTemplate,
+                    _ => DramaTemplate,
                 };
             }
 
-            return VideoTemplate;
+            if (subTab.Value is CircleItemType)
+            {
+                return CircleTemplate;
+            }
+
+            return DramaTemplate;
         }
 
-        return VideoTemplate;
+        return DramaTemplate;
     }
 }

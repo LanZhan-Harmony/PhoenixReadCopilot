@@ -16,7 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:CalendarVideoItemTemplate/>
+                <local:CalendarDramaItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -31,7 +31,7 @@
                                Margin="16,12"
                                ElementClearing="TimelineRepeater_ElementClearing"
                                ElementPrepared="TimelineRepeater_ElementPrepared"
-                               ItemTemplate="{StaticResource CalendarVideoItemTemplate}"
+                               ItemTemplate="{StaticResource CalendarDramaItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.SelectedTimeline.Items, Mode=OneWay}">
                     <ItemsRepeater.Layout>
                         <UniformGridLayout ItemsStretch="Fill"

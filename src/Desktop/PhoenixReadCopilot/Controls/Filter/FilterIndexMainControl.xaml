@@ -16,7 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:FilterVideoItemTemplate/>
+                <local:FilterDramaItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -31,7 +31,7 @@
                                Margin="16,12"
                                ElementClearing="ItemRepeater_ElementClearing"
                                ElementPrepared="ItemRepeater_ElementPrepared"
-                               ItemTemplate="{StaticResource FilterVideoItemTemplate}"
+                               ItemTemplate="{StaticResource FilterDramaItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
                     <ItemsRepeater.Layout>
                         <UniformGridLayout ItemsStretch="Fill"

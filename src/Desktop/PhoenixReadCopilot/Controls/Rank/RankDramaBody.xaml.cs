@@ -155,7 +155,7 @@ internal sealed partial class RankDramaBody : UserControl
         if (args.Element is FrameworkElement element)
         {
             CompositionFactory.DisableStandardReposition(element);
-            RankVideoItemTemplate.ClearImage(element);
+            RankDramaItemTemplate.ClearImage(element);
         }
     }
 }

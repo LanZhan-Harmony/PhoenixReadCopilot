@@ -31,7 +31,8 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 ItemsSource="{x:Bind ViewModel.Images, Mode=OneWay}"
-                SelectedIndex="{x:Bind ViewModel.SelectedImageIndex, Mode=TwoWay}">
+                SelectedIndex="{x:Bind ViewModel.SelectedImageIndex, Mode=OneWay}"
+                SelectionChanged="OnImageFlipViewSelectionChanged">
                 <FlipView.ItemTemplate>
                     <DataTemplate x:DataType="api:CircleImage">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -50,9 +51,9 @@
                 Margin="0,0,0,16"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
-                NumberOfPages="{x:Bind ViewModel.Images.Count, Mode=OneWay}"
+                NumberOfPages="{x:Bind ViewModel.PipsPageCount, Mode=OneWay}"
                 SelectedPageIndex="{x:Bind ViewModel.SelectedImageIndex, Mode=TwoWay}"
-                Visibility="{x:Bind cvt:Converter.IntCountToVisibility(ViewModel.Images.Count), Mode=OneWay}"/>
+                Visibility="{x:Bind ViewModel.ShowPipsPager, Mode=OneWay}"/>
         </Grid>
 
         <!-- 分割竖线 -->

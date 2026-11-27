@@ -1,14 +1,14 @@
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Controls.Components;
 
-namespace PhoenixReadCopilot.Controls.Calendar;
+namespace PhoenixReadCopilot.Controls.Search;
 
 /// <summary>
-/// 上新日历卡片数据模板字典.
+/// 搜索卡片数据模板字典.
 /// </summary>
-internal sealed partial class CalendarVideoItemTemplate : ResourceDictionary
+internal sealed partial class SearchDramaItemTemplate : ResourceDictionary
 {
-    public CalendarVideoItemTemplate()
+    public SearchDramaItemTemplate()
     {
         InitializeComponent();
     }

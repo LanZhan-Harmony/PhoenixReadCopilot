@@ -130,7 +130,7 @@ internal sealed partial class FilterIndexMainControl : UserControl
         if (args.Element is FrameworkElement element)
         {
             CompositionFactory.DisableStandardReposition(element);
-            FilterVideoItemTemplate.ClearImage(element);
+            FilterDramaItemTemplate.ClearImage(element);
         }
     }
 }

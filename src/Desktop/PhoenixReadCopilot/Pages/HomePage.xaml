@@ -19,14 +19,14 @@
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <home:RecommendedVideoItemTemplate/>
+                <home:RecommendedDramaItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate x:Key="RecommendSectionTemplate" x:DataType="items:HomeSectionItemViewModel">
                 <ItemsRepeater Margin="16,12"
                                ElementClearing="VideoRepeater_ElementClearing"
                                ElementPrepared="VideoRepeater_ElementPrepared"
-                               ItemTemplate="{StaticResource RecommendedVideoItemTemplate}"
+                               ItemTemplate="{StaticResource RecommendedDramaItemTemplate}"
                                ItemsSource="{x:Bind RecommendVideos, Mode=OneWay}"
                                Layout="{StaticResource VideoLayout}"/>
             </DataTemplate>
@@ -35,7 +35,7 @@
                 <ItemsRepeater Margin="16,12"
                                ElementClearing="VideoRepeater_ElementClearing"
                                ElementPrepared="VideoRepeater_ElementPrepared"
-                               ItemTemplate="{StaticResource RecommendedVideoItemTemplate}"
+                               ItemTemplate="{StaticResource RecommendedDramaItemTemplate}"
                                ItemsSource="{x:Bind NewArrivalVideos, Mode=OneWay}"
                                Layout="{StaticResource VideoLayout}"/>
             </DataTemplate>

@@ -21,7 +21,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Padding="12,0" Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}">
+        <Grid Padding="12,0" Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.HasSelectedItem), Mode=OneWay}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
@@ -52,8 +52,8 @@
                          HorizontalAlignment="Left"
                          Command="{x:Bind ViewModel.BackToMainCommand, Mode=OneWay}"
                          Content="{x:Bind strings:Resources.BackToPrevious}"
-                         Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}"/>
-        <Grid Grid.Row="1" Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}">
+                         Visibility="{x:Bind ViewModel.HasSelectedItem, Mode=OneWay}"/>
+        <Grid Grid.Row="1" Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.HasSelectedItem), Mode=OneWay}">
             <ScrollViewer x:Name="CommentScrollView"
                           Padding="0"
                           SizeChanged="OnScrollViewSizeChanged"
@@ -63,7 +63,7 @@
                     <local:CommentItemControl Margin="0,0,0,4"
                                               ShowMoreCommand="{x:Bind ViewModel.TopItem.ShowMoreCommand, Mode=OneWay}"
                                               ViewModel="{x:Bind ViewModel.TopItem.Data, Mode=OneWay}"
-                                              Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.TopItem), Mode=OneWay}"/>
+                                              Visibility="{x:Bind ViewModel.HasTopItem, Mode=OneWay}"/>
                     <ItemsControl ItemsSource="{x:Bind ViewModel.Comments, Mode=OneWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="components1:CommentDetailViewModel">
@@ -87,13 +87,13 @@
         <local:CommentDetailPanel Grid.Row="1"
                                   Grid.RowSpan="2"
                                   ViewModel="{x:Bind ViewModel.SelectedItem, Mode=OneWay}"
-                                  Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}"/>
+                                  Visibility="{x:Bind ViewModel.HasSelectedItem, Mode=OneWay}"/>
         <local:CommentTextBox Grid.Row="2"
                               Margin="12,0"
                               IsEnabled="{x:Bind cvt:Converter.InvertBool(ViewModel.IsReplying), Mode=OneWay}"
                               ReplyTip="{x:Bind ViewModel.ReplyTarget, Mode=OneWay}"
                               ResetSelectedCommand="{x:Bind ViewModel.ResetReplyTargetCommand, Mode=OneWay}"
                               SendCommand="{x:Bind ViewModel.SendReplyCommand, Mode=OneWay}"
-                              Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.SelectedItem), Mode=OneWay}"/>
+                              Visibility="{x:Bind cvt:Converter.InvertVisibility(ViewModel.HasSelectedItem), Mode=OneWay}"/>
     </Grid>
 </UserControl>

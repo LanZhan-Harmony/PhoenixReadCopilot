@@ -36,15 +36,24 @@
             </MenuFlyoutItem>
             <MenuFlyoutSeparator Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
 
-            <!--  我的关注：仅在已登录时显示  -->
+            <!--  我的关注  -->
             <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFollowsCommand}"
                             KeyboardAcceleratorTextOverride="{x:Bind cvt:Converter.LongCountToText(ViewModel.FollowCount), Mode=OneWay}"
-                            Text="{x:Bind strings:Resources.MyFollow}"
-                            Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}">
+                            Text="{x:Bind strings:Resources.MyFollow}">
                 <MenuFlyoutItem.Icon>
                     <ic:SymbolIcon Symbol="PeopleEye"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
+
+            <!--  我的粉丝：仅在已登录时显示  -->
+            <MenuFlyoutItem Command="{x:Bind ViewModel.ShowFansCommand}"
+                            KeyboardAcceleratorTextOverride="{x:Bind cvt:Converter.LongCountToText(ViewModel.FansCount), Mode=OneWay}"
+                            Text="{x:Bind strings:Resources.MyFans}">
+                <MenuFlyoutItem.Icon>
+                    <ic:SymbolIcon Symbol="People"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+
             <MenuFlyoutSeparator Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
 
             <!--  其它项：始终显示  -->
@@ -80,13 +89,7 @@
                 <PersonPicture Width="28"
                                Height="28"
                                DisplayName="{x:Bind ViewModel.MyProfile.User.Name, Mode=OneWay}"
-                               ProfilePicture="{x:Bind cvt:Converter.UriToBitmap(ViewModel.MyProfile.User.Avatar.Uri), Mode=OneWay}"
-                               Visibility="{x:Bind cvt:Converter.ObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
-                <ic:SymbolIcon HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontSize="18"
-                               Symbol="Person"
-                               Visibility="{x:Bind cvt:Converter.InvertObjectToVisibility(ViewModel.MyProfile), Mode=OneWay}"/>
+                               ProfilePicture="{x:Bind cvt:Converter.UriToBitmap(ViewModel.MyProfile.User.Avatar.Uri), Mode=OneWay}"/>
             </Grid>
         </Button>
     </Grid>

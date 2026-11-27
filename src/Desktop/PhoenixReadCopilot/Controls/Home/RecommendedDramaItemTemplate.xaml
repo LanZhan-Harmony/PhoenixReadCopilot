@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ResourceDictionary x:Class="PhoenixReadCopilot.Controls.Home.RecommendedVideoItemTemplate"
+<ResourceDictionary x:Class="PhoenixReadCopilot.Controls.Home.RecommendedDramaItemTemplate"
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -8,7 +8,7 @@
                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
 
-    <DataTemplate x:Key="RecommendedVideoItemTemplate" x:DataType="items:DramaItemViewModel">
+    <DataTemplate x:Key="RecommendedDramaItemTemplate" x:DataType="items:DramaItemViewModel">
         <Button Command="{x:Bind PlayCommand}"
                 DataContext="{x:Bind}"
                 Style="{StaticResource GridRepeaterItemStyle}">
@@ -68,9 +68,9 @@
                         CornerRadius="{StaticResource ControlCornerRadius}"
                         Visibility="{x:Bind HasScore}">
                     <StackPanel Orientation="Horizontal" Spacing="3">
-                        <TextBlock FontWeight="Bold"
+                        <TextBlock FontSize="12"
+                                   FontWeight="Bold"
                                    Foreground="Gold"
-                                   Style="{StaticResource CaptionTextBlockStyle}"
                                    Text="{x:Bind Score}"/>
                         <ic:SymbolIcon FontSize="{StaticResource CaptionTextBlockFontSize}"
                                        Foreground="Gold"

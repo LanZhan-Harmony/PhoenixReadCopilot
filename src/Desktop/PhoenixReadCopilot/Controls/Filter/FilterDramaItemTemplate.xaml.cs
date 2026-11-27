@@ -1,14 +1,14 @@
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Controls.Components;
 
-namespace PhoenixReadCopilot.Controls.Search;
+namespace PhoenixReadCopilot.Controls.Filter;
 
 /// <summary>
-/// 搜索卡片数据模板字典.
+/// 筛选卡片数据模板字典.
 /// </summary>
-internal sealed partial class SearchVideoItemTemplate : ResourceDictionary
+internal sealed partial class FilterDramaItemTemplate : ResourceDictionary
 {
-    public SearchVideoItemTemplate()
+    public FilterDramaItemTemplate()
     {
         InitializeComponent();
     }

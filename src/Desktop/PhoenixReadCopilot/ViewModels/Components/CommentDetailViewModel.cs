@@ -88,7 +88,16 @@ internal sealed partial class CommentDetailViewModel(
         }
 
         string? effectiveDramaId = !string.IsNullOrEmpty(_dramaId) ? _dramaId : Data.DramaId;
-        if (string.IsNullOrEmpty(effectiveDramaId))
+        string? postId = !string.IsNullOrEmpty(_videoId) ? _videoId : effectiveDramaId;
+
+        if (Data.IsCirclePost)
+        {
+            if (string.IsNullOrEmpty(postId))
+            {
+                return;
+            }
+        }
+        else if (string.IsNullOrEmpty(effectiveDramaId))
         {
             return;
         }
@@ -101,10 +110,9 @@ internal sealed partial class CommentDetailViewModel(
             // 圈子帖子回复、剧评回复还是分集评论回复
             if (Data.IsCirclePost)
             {
-                string postId = !string.IsNullOrEmpty(_videoId) ? _videoId : effectiveDramaId;
                 replyPage = await _commentService.GetCirclePostCommentRepliesAsync(
                     commentId: Data.Id,
-                    postId: postId,
+                    postId: postId!,
                     count: 20,
                     cursor: _cursor
                 );
@@ -113,7 +121,7 @@ internal sealed partial class CommentDetailViewModel(
             {
                 replyPage = await _commentService.GetDramaReviewRepliesAsync(
                     commentId: Data.Id,
-                    dramaId: effectiveDramaId,
+                    dramaId: effectiveDramaId!,
                     count: 20,
                     cursor: _cursor
                 );
@@ -122,7 +130,7 @@ internal sealed partial class CommentDetailViewModel(
             {
                 replyPage = await _commentService.GetEpisodeCommentRepliesAsync(
                     commentId: Data.Id,
-                    dramaId: effectiveDramaId,
+                    dramaId: effectiveDramaId!,
                     videoId: _videoId,
                     count: 20,
                     cursor: _cursor
@@ -142,7 +150,7 @@ internal sealed partial class CommentDetailViewModel(
                 Comments.Add(
                     new CommentItemViewModel(
                         item,
-                        effectiveDramaId,
+                        effectiveDramaId ?? string.Empty,
                         _videoId,
                         _commentService,
                         _authService,

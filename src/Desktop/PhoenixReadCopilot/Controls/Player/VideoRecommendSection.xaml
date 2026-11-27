@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:PlayerRecommendedVideoItemTemplate/>
+                <local:PlayerRecommendedDramaItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -26,7 +26,7 @@
                                Margin="12"
                                ElementClearing="VideoRepeater_ElementClearing"
                                ElementPrepared="VideoRepeater_ElementPrepared"
-                               ItemTemplate="{StaticResource PlayerRecommendedVideoItemTemplate}"
+                               ItemTemplate="{StaticResource PlayerRecommendedDramaItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
                     <ItemsRepeater.Layout>
                         <UniformGridLayout ItemsStretch="Fill"

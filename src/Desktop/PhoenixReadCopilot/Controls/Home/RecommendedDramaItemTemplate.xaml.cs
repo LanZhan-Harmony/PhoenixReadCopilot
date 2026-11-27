@@ -1,14 +1,14 @@
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Controls.Components;
 
-namespace PhoenixReadCopilot.Controls.User;
+namespace PhoenixReadCopilot.Controls.Home;
 
 /// <summary>
-/// 他人空间作品预约卡片数据模板字典（模仿上新日历待播卡片风格，保留预约状态交互）.
+/// 推荐短剧卡片数据模板字典.
 /// </summary>
-internal sealed partial class UserReservationVideoItemTemplate : ResourceDictionary
+internal sealed partial class RecommendedDramaItemTemplate : ResourceDictionary
 {
-    public UserReservationVideoItemTemplate()
+    public RecommendedDramaItemTemplate()
     {
         InitializeComponent();
     }

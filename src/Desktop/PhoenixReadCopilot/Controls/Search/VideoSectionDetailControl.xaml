@@ -16,7 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:SearchVideoItemTemplate/>
+                <local:SearchDramaItemTemplate/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -31,7 +31,7 @@
                                Margin="16,12"
                                ElementClearing="VideoRepeater_ElementClearing"
                                ElementPrepared="VideoRepeater_ElementPrepared"
-                               ItemTemplate="{StaticResource SearchVideoItemTemplate}"
+                               ItemTemplate="{StaticResource SearchDramaItemTemplate}"
                                ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
                                Layout="{StaticResource VideoLayout}"/>
             </ScrollViewer>

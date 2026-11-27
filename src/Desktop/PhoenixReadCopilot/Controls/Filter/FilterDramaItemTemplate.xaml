@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ResourceDictionary x:Class="PhoenixReadCopilot.Controls.Rank.RankVideoItemTemplate"
+<ResourceDictionary x:Class="PhoenixReadCopilot.Controls.Filter.FilterDramaItemTemplate"
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -8,7 +8,7 @@
                     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
                     xmlns:strings="using:PhoenixReadCopilot.Strings">
 
-    <DataTemplate x:Key="RankVideoItemTemplate" x:DataType="items:RankDramaItemViewModel">
+    <DataTemplate x:Key="FilterDramaItemTemplate" x:DataType="items:DramaItemViewModel">
         <Button Command="{x:Bind PlayCommand}"
                 DataContext="{x:Bind}"
                 Style="{StaticResource GridRepeaterItemStyle}">
@@ -44,27 +44,26 @@
                                        CornerRadius="5"
                                        Source="{x:Bind Cover}"/>
 
-                <!--  左上角：排名徽章  -->
+                <!--  左下角：集数  -->
                 <Border Grid.Row="0"
                         Margin="12"
                         Padding="4"
                         HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                        VerticalAlignment="Bottom"
+                        Background="#99000000"
                         CornerRadius="{StaticResource ControlCornerRadius}"
-                        Visibility="{x:Bind HasRank}">
-                    <TextBlock FontSize="11"
-                               FontWeight="Bold"
-                               Foreground="White"
-                               Text="{x:Bind RankText}"/>
+                        Visibility="{x:Bind HasEpisodeCount}">
+                    <TextBlock Foreground="White"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Text="{x:Bind EpisodeCountText}"/>
                 </Border>
 
-                <!--  右上角：评分徽章  -->
+                <!--  右下角：评分徽章  -->
                 <Border Grid.Row="0"
                         Margin="12"
                         Padding="4"
                         HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
+                        VerticalAlignment="Bottom"
                         Background="#B0D32F2F"
                         CornerRadius="{StaticResource ControlCornerRadius}"
                         Visibility="{x:Bind HasScore}">
@@ -109,9 +108,9 @@
                         <components:IconTextBlock Grid.Column="0"
                                                   IconBrush="{ThemeResource TextFillColorTertiaryBrush}"
                                                   Symbol="Tag"
-                                                  Text="{x:Bind TagName}"
+                                                  Text="{x:Bind Category}"
                                                   TextBrush="{ThemeResource TextFillColorTertiaryBrush}"
-                                                  Visibility="{x:Bind cvt:Converter.StringToVisibility(TagName)}"/>
+                                                  Visibility="{x:Bind cvt:Converter.StringToVisibility(Category)}"/>
 
                         <!--  热度或播放量  -->
                         <components:IconTextBlock Grid.Column="1"

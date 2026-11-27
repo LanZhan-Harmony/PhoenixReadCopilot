@@ -33,10 +33,22 @@ internal sealed partial class CommentMainViewModel : ViewModelBase, IPlayerSecti
     private CommentItemViewModel? _replyItem;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasTopItem))]
     public partial CommentDetailViewModel? TopItem { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSelectedItem))]
     public partial CommentDetailViewModel? SelectedItem { get; set; }
+
+    /// <summary>
+    /// 是否存在置顶评论.
+    /// </summary>
+    public bool HasTopItem => TopItem is not null;
+
+    /// <summary>
+    /// 是否正在查看某条评论的回复详情.
+    /// </summary>
+    public bool HasSelectedItem => SelectedItem is not null;
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }

@@ -160,7 +160,7 @@ internal sealed partial class CalendarTimelineMainControl : UserControl
         if (args.Element is FrameworkElement element)
         {
             CompositionFactory.DisableStandardReposition(element);
-            CalendarVideoItemTemplate.ClearImage(element);
+            CalendarDramaItemTemplate.ClearImage(element);
         }
     }
 }

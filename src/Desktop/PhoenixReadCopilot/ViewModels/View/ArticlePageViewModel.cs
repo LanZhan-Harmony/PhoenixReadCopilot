@@ -49,6 +49,29 @@ internal sealed partial class ArticlePageViewModel(
     [ObservableProperty]
     public partial int SelectedImageIndex { get; set; }
 
+    /// <summary>
+    /// PipsPager 安全页数（至少为 1，避免 NumberOfPages 为 0 时 WinUI 抛出 ArgumentOutOfRangeException）.
+    /// </summary>
+    public int PipsPageCount => Math.Max(1, Images.Count);
+
+    /// <summary>
+    /// 是否显示底部多图轮播页码指示器（图片大于 1 张时显示）.
+    /// </summary>
+    public bool ShowPipsPager => Images.Count > 1;
+
+    partial void OnSelectedImageIndexChanged(int value)
+    {
+        int maxIndex = Math.Max(0, Images.Count - 1);
+        if (value < 0)
+        {
+            SelectedImageIndex = 0;
+        }
+        else if (value > maxIndex)
+        {
+            SelectedImageIndex = maxIndex;
+        }
+    }
+
     [ObservableProperty]
     public partial string Title { get; set; } = string.Empty;
 
@@ -118,6 +141,9 @@ internal sealed partial class ArticlePageViewModel(
                         Height = circleItem.CoverHeight,
                     }
                 );
+                SelectedImageIndex = 0;
+                OnPropertyChanged(nameof(PipsPageCount));
+                OnPropertyChanged(nameof(ShowPipsPager));
             }
         }
         else if (parameter is CirclePost post)
@@ -181,6 +207,10 @@ internal sealed partial class ArticlePageViewModel(
         {
             Images.Add(img);
         }
+
+        SelectedImageIndex = 0;
+        OnPropertyChanged(nameof(PipsPageCount));
+        OnPropertyChanged(nameof(ShowPipsPager));
 
         RelatedDramas.Clear();
         foreach (Drama drama in post.RelatedDramas)

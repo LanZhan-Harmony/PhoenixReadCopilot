@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary
-    x:Class="PhoenixReadCopilot.Controls.User.UserReservationVideoItemTemplate"
+    x:Class="PhoenixReadCopilot.Controls.User.UserReservationDramaItemTemplate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:PhoenixReadCopilot.Controls.Components"
@@ -9,7 +9,7 @@
     xmlns:items="using:PhoenixReadCopilot.ViewModels.Items"
     xmlns:strings="using:PhoenixReadCopilot.Strings">
 
-    <DataTemplate x:Key="UserReservationVideoItemTemplate" x:DataType="items:DailyReleaseItemViewModel">
+    <DataTemplate x:Key="UserReservationDramaItemTemplate" x:DataType="items:DailyReleaseItemViewModel">
         <Button
             Command="{x:Bind PlayCommand}"
             DataContext="{x:Bind}"

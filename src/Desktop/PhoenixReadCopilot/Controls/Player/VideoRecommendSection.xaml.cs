@@ -55,7 +55,7 @@ internal sealed partial class VideoRecommendSection : UserControl
         if (args.Element is FrameworkElement element)
         {
             CompositionFactory.DisableStandardReposition(element);
-            PlayerRecommendedVideoItemTemplate.ClearImage(element);
+            PlayerRecommendedDramaItemTemplate.ClearImage(element);
         }
     }
 }

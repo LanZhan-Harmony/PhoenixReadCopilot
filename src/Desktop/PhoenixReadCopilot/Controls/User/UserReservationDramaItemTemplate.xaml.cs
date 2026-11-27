@@ -1,14 +1,14 @@
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Controls.Components;
 
-namespace PhoenixReadCopilot.Controls.Rank;
+namespace PhoenixReadCopilot.Controls.User;
 
 /// <summary>
-/// 短剧排行榜卡片数据模板字典.
+/// 他人空间作品预约卡片数据模板字典（模仿上新日历待播卡片风格，保留预约状态交互）.
 /// </summary>
-internal sealed partial class RankVideoItemTemplate : ResourceDictionary
+internal sealed partial class UserReservationDramaItemTemplate : ResourceDictionary
 {
-    public RankVideoItemTemplate()
+    public UserReservationDramaItemTemplate()
     {
         InitializeComponent();
     }

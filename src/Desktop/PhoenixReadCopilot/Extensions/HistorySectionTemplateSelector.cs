@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Extensions;
 
 internal sealed partial class HistorySectionTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate? VideoTemplate { get; set; }
+    public DataTemplate? DramaTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
     {
@@ -15,7 +15,7 @@ internal sealed partial class HistorySectionTemplateSelector : DataTemplateSelec
         {
             DataTemplate? template = vm.Type switch
             {
-                ViewHistoryTabType.Video => VideoTemplate,
+                ViewHistoryTabType.Video => DramaTemplate,
                 _ => throw new ArgumentOutOfRangeException(nameof(vm.Type), vm.Type, null),
             };
             if (template is not null)

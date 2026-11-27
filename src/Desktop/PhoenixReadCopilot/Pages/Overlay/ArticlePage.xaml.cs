@@ -30,6 +30,14 @@ internal sealed partial class ArticlePage : Page
         }
     }
 
+    private void OnImageFlipViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (ImageFlipView.SelectedIndex >= 0 && ImageFlipView.SelectedIndex < ViewModel.Images.Count)
+        {
+            ViewModel.SelectedImageIndex = ImageFlipView.SelectedIndex;
+        }
+    }
+
     private void OnPlayDramaButtonClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         if (sender is Microsoft.UI.Xaml.Controls.Button { Tag: Drama drama } && !string.IsNullOrEmpty(drama.Id))

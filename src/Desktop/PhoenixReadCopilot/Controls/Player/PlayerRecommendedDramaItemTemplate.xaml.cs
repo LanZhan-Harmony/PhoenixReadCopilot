@@ -1,14 +1,14 @@
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Controls.Components;
 
-namespace PhoenixReadCopilot.Controls.Home;
+namespace PhoenixReadCopilot.Controls.Player;
 
 /// <summary>
 /// 推荐短剧卡片数据模板字典.
 /// </summary>
-internal sealed partial class RecommendedVideoItemTemplate : ResourceDictionary
+internal sealed partial class PlayerRecommendedDramaItemTemplate : ResourceDictionary
 {
-    public RecommendedVideoItemTemplate()
+    public PlayerRecommendedDramaItemTemplate()
     {
         InitializeComponent();
     }

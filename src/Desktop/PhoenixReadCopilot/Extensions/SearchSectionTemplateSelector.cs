@@ -7,7 +7,7 @@ namespace PhoenixReadCopilot.Extensions;
 
 internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate? VideoTemplate { get; set; }
+    public DataTemplate? DramaTemplate { get; set; }
 
     public DataTemplate? UserTemplate { get; set; }
 
@@ -17,7 +17,7 @@ internal sealed partial class SearchSectionTemplateSelector : DataTemplateSelect
         {
             DataTemplate? template = searchSectionDetailViewModel.SectionType switch
             {
-                SearchSectionType.Drama => VideoTemplate,
+                SearchSectionType.Drama => DramaTemplate,
                 SearchSectionType.User => UserTemplate,
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(searchSectionDetailViewModel.SectionType),

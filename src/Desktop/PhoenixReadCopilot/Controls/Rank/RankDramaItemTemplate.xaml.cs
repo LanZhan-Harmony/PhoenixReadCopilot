@@ -1,14 +1,14 @@
 using Microsoft.UI.Xaml;
 using PhoenixReadCopilot.Controls.Components;
 
-namespace PhoenixReadCopilot.Controls.Filter;
+namespace PhoenixReadCopilot.Controls.Rank;
 
 /// <summary>
-/// 筛选卡片数据模板字典.
+/// 短剧排行榜卡片数据模板字典.
 /// </summary>
-internal sealed partial class FilterVideoItemTemplate : ResourceDictionary
+internal sealed partial class RankDramaItemTemplate : ResourceDictionary
 {
-    public FilterVideoItemTemplate()
+    public RankDramaItemTemplate()
     {
         InitializeComponent();
     }

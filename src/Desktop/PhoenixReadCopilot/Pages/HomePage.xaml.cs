@@ -212,7 +212,7 @@ internal sealed partial class HomePage : Page
         {
             _pendingRepositionElements.Remove(element);
             CompositionFactory.DisableStandardReposition(element);
-            RecommendedVideoItemTemplate.ClearImage(element);
+            RecommendedDramaItemTemplate.ClearImage(element);
         }
     }
 
