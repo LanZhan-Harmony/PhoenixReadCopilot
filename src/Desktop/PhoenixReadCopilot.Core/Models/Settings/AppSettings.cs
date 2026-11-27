@@ -39,10 +39,10 @@ public sealed partial class AppSettings : ObservableObject
     public partial bool ShouldAutoPlay { get; set; } = false;
 
     [ObservableProperty]
-    public partial bool AutoPlayNextRecommendVideo { get; set; } = false;
+    public partial bool AutoPlayNextRecommendDrama { get; set; } = false;
 
     [ObservableProperty]
-    public partial bool AutoPlayNext { get; set; } = true;
+    public partial bool AutoPlayNextEpisode { get; set; } = true;
 
     [ObservableProperty]
     public partial double SingleFastForwardAndRewindSpan { get; set; } = 15.0;

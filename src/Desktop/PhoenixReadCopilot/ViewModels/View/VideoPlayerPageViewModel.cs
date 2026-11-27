@@ -1072,11 +1072,11 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
             bool shouldAutoPlay = false;
             if (next is Episode)
             {
-                shouldAutoPlay = _settings.AutoPlayNext;
+                shouldAutoPlay = _settings.AutoPlayNextEpisode;
             }
             else if (next is Drama)
             {
-                shouldAutoPlay = _settings.AutoPlayNextRecommendVideo;
+                shouldAutoPlay = _settings.AutoPlayNextRecommendDrama;
             }
 
             if (!shouldAutoPlay)
@@ -1368,7 +1368,7 @@ internal sealed partial class VideoPlayerPageViewModel : PlayerPageViewModelBase
         }
 
         // 2. 检查推荐好剧中是否有下一个短剧.
-        bool isAutoPlayRecommendVideo = _settings.AutoPlayNextRecommendVideo;
+        bool isAutoPlayRecommendVideo = _settings.AutoPlayNextRecommendDrama;
         if (
             isAutoPlayRecommendVideo
             && Sections?.OfType<VideoPlayerRecommendSectionDetailViewModel>().FirstOrDefault()

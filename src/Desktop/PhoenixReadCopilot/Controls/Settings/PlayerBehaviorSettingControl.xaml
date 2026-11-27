@@ -61,10 +61,10 @@
                 <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoLoadHistory, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.AutoNextRelatedVideoDescription}" Header="{x:Bind strings:Resources.AutoNextRelatedVideo}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoPlayNextRecommendVideo, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoPlayNextRecommendDrama, Mode=TwoWay}"/>
             </community:SettingsCard>
             <community:SettingsCard Description="{x:Bind strings:Resources.ContinuousPlayDescription}" Header="{x:Bind strings:Resources.ContinuousPlay}">
-                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoPlayNext, Mode=TwoWay}"/>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.Settings.AutoPlayNextEpisode, Mode=TwoWay}"/>
             </community:SettingsCard>
         </community:SettingsExpander.Items>
     </community:SettingsExpander>
